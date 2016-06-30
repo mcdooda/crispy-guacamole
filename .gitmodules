@@ -1,0 +1,3 @@
+[submodule "flat-engine"]
+	path = flat-engine
+	url = https://github.com/mcdooda/flat-engine.git

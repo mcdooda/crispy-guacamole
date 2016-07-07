@@ -11,7 +11,7 @@ file(
     flat-engine/src/*
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11 -Wall -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11 -Wall -Werror -DFLAT_DEBUG")
 
 add_executable(
     crispy-guacamole

@@ -10,31 +10,15 @@ class Game : public flat::Game
 {
 	public:
 		Game(const std::vector<std::string>& args);
-		virtual ~Game();
+		~Game() override;
 		
-		virtual void checkArgs();
+		void setStates() override;
+		void checkArgs() override;
+		void openWindow() override;
 		
 	public:
 		// views
-		flat::video::View view;
 		flat::video::View interfaceView;
-		
-		// passes
-		flat::video::FrameBuffer frameBuffer;
-		flat::video::Pass levelPass;
-		flat::video::Render renderProgram;
-		flat::video::Program interfaceProgram;
-		
-		// attributes & uniforms
-		flat::video::Attribute levelPositionAttribute;
-		flat::video::Attribute levelUvAttribute;
-		flat::video::Uniform levelVpMatrixUniform;
-		flat::video::Uniform levelColorUniform;
-		
-		flat::video::Attribute renderPositionAttribute;
-		flat::video::Attribute renderUvAttribute;
-		flat::video::Uniform renderCurrentTimeUniform;
-		flat::video::Uniform renderFlashValueUniform;
 };
 
 } // game

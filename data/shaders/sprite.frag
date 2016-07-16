@@ -9,7 +9,7 @@ out vec4 outColor;
 
 void main()
 {
-	outColor = texture(objectTexture, vec2(uv2.x, 1 - uv2.y)) * color;
+	outColor = texture(objectTexture, vec2(uv2.x, uv2.y)) * color;
 }
 
 

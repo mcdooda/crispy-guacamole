@@ -8,6 +8,7 @@ namespace game
 
 class Game : public flat::Game
 {
+	typedef flat::Game Super;
 	public:
 		Game(const std::vector<std::string>& args);
 		~Game() override;
@@ -17,8 +18,20 @@ class Game : public flat::Game
 		void openWindow() override;
 		
 	public:
+		// mod
+		std::string modPath;
+		
 		// views
 		flat::video::View interfaceView;
+		
+		enum class Mode : uint8_t
+		{
+			GAME,
+			EDITOR
+		};
+		Mode mode;
+		
+		bool fullscreen;
 };
 
 } // game

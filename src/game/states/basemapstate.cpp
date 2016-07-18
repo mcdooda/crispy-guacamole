@@ -161,23 +161,6 @@ void BaseMapState::buildUi(game::Game* game)
 	flat::sharp::ui::WidgetFactory widgetFactory(*game);
 
 	flat::sharp::ui::RootWidget* ui = widgetFactory.makeRoot();
-
-	/*
-	flat::sharp::ui::Widget* logo = widgetFactory.makeImage("data/game/interface/logo.png");
-	logo->setPositionPolicy(flat::sharp::ui::Widget::PositionPolicy::BOTTOM_RIGHT);
-	ui->addChild(logo);
-	
-	logo->click.on(
-		[game](flat::sharp::ui::Widget*, bool& eventHandled)
-		{
-			std::cout << "*click*" << std::endl;
-			eventHandled = true;
-		}
-	);
-	*/
-
-	ui->fullLayout();
-
 	m_ui.reset(ui);
 	
 	flat::sharp::ui::lua::setRootWidget(m_luaState, ui);

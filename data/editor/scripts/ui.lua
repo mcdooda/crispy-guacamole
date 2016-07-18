@@ -1,12 +1,52 @@
-print 'UI.LUA'
-
 local root = Widget.getRoot()
 
-local logo = Widget.makeImage("data/game/interface/logo.png")
-logo:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
-root:addChild(logo)
+local toolbar = Widget.makeLineFlow()
+toolbar:setPositionPolicy(Widget.PositionPolicy.BOTTOM_RIGHT)
 
-logo:click(function(w)
-	print '*click lua*'
-	return true
-end)
+local icons = {
+	{
+		'data/editor/interface/brushsizedown.png',
+		function(w)
+			return true
+		end
+	},
+	{
+		'data/editor/interface/brushsizeup.png',
+		function(w)
+			return true
+		end
+	},
+	{
+		'data/editor/interface/cone.png',
+		function(w)
+			return true
+		end
+	},
+	{
+		'data/editor/interface/disc.png',
+		function(w)
+			return true
+		end
+	},
+	{
+		'data/editor/interface/pyramid.png',
+		function(w)
+			return true
+		end
+	},
+	{
+		'data/editor/interface/square.png',
+		function(w)
+			return true
+		end
+	}
+}
+
+for _, pair in pairs(icons) do
+	local image, onClick = unpack(pair)
+	local icon = Widget.makeImage(image)
+	icon:click(onClick)
+	toolbar:addChild(icon)
+end
+
+root:addChild(toolbar)

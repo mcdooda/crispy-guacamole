@@ -12,7 +12,9 @@ namespace mod
 class Mod final
 {
 	public:
-		inline void setPath(const std::string& path) { m_path = path; }
+		void setPath(const std::string& path);
+		inline const std::string& getPath() const { return m_path; }
+		
 		void readConfig(lua_State* L);
 		
 		std::string getScriptPath(const std::string& fileName) const;

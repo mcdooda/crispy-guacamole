@@ -6,6 +6,13 @@ namespace game
 namespace mod
 {
 
+void Mod::setPath(const std::string& path)
+{
+	m_path = path;
+	if (m_path[m_path.size() - 1] != '/')
+		m_path += '/';
+}
+
 void Mod::readConfig(lua_State* L)
 {
 	FLAT_ASSERT_MSG(!m_path.empty(), "Mod path is empty");
@@ -30,24 +37,28 @@ void Mod::readConfig(lua_State* L)
 	
 	lua_getfield(L, -5, "resourcePath");
 	if (lua_isstring(L, -1))
+	{
 		m_resourcePath = luaL_checkstring(L, -1);
+		if (m_resourcePath[m_resourcePath.size() - 1] != '/')
+			m_resourcePath += '/';
+	}
 
 	lua_settop(L, top);
 }
 
 std::string Mod::getScriptPath(const std::string& fileName) const
 {
-	return m_path + "/scripts/" + fileName;
+	return m_path + "scripts/" + fileName;
 }
 
 std::string Mod::getTexturePath(const std::string& fileName) const
 {
-	return m_resourcePath + "/" + fileName;
+	return m_resourcePath + fileName;
 }
 
 std::string Mod::getMapPath() const
 {
-	return m_path + "/map.gpmap";
+	return m_path + "map.gpmap";
 }
 
 } // mod

@@ -7,8 +7,8 @@ namespace map
 {
 
 Tile::Tile() :
-	m_exists(true),
-	m_doodadSprite(nullptr)
+	m_doodadSprite(nullptr),
+	m_exists(true)
 {
 	m_sprite.setColor(flat::video::Color::WHITE);
 }
@@ -74,6 +74,19 @@ void Tile::setDoodadTexture(std::shared_ptr<const flat::video::Texture> doodadTe
 void Tile::removeDoodad()
 {
 	FLAT_DELETE(m_doodadSprite);
+}
+
+void Tile::addEntity(Entity* entity)
+{
+	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
+	m_entities.push_back(entity);
+}
+
+void Tile::removeEntity(Entity* entity)
+{
+	std::vector<Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
+	FLAT_ASSERT(it != m_entities.end());
+	m_entities.erase(it);
 }
 
 } // map

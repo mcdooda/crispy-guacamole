@@ -11,6 +11,12 @@ namespace states
 class GameState : public BaseMapState
 {
 	typedef BaseMapState Super;
+	public:
+		void enter(flat::state::Agent* agent) override;
+		void execute(flat::state::Agent* agent) override;
+		
+	private:
+		map::Entity* m_soldier;
 };
 
 } // states

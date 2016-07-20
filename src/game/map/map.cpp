@@ -1,6 +1,7 @@
 #include "map.h"
 #include "displaymanager.h"
 #include "tile.h"
+#include "entity.h"
 #include "io/reader.h"
 
 namespace game
@@ -34,7 +35,11 @@ void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& vie
 	eachTile([&displayManager](const Tile* tile)
 	{
 		if (tile->exists())
+		{
 			displayManager.add(tile);
+			for (Entity* entity : tile->getEntities())
+				displayManager.add(entity);
+		}
 	});
 }
 
@@ -47,6 +52,37 @@ const Tile* Map::getTile(int x, int y) const
 	
 	FLAT_ASSERT(tileIndex < getNumTiles());
 	return &m_tiles[tileIndex];
+}
+
+Tile* Map::getTile(int x, int y)
+{
+	int tileIndex = getTileIndex(x, y);
+	
+	if (tileIndex < 0)
+		return nullptr;
+	
+	FLAT_ASSERT(tileIndex < getNumTiles());
+	return &m_tiles[tileIndex];
+}
+
+const Tile* Map::getTileIfExists(int x, int y) const
+{
+	const Tile* tile = getTile(x, y);
+	
+	if (!tile->exists())
+		return nullptr;
+		
+	return tile;
+}
+
+Tile* Map::getTileIfExists(int x, int y)
+{
+	Tile* tile = getTile(x, y);
+	
+	if (!tile->exists())
+		return nullptr;
+		
+	return tile;
 }
 
 void Map::eachTile(std::function<void(const Tile*)> func) const
@@ -82,15 +118,19 @@ flat::geometry::Vector2 Map::getZAxis() const
 	return flat::geometry::Vector2(0.f, -m_tileHeight);
 }
 
-Tile* Map::getTile(int x, int y)
+void Map::addEntity(Entity* entity)
 {
-	int tileIndex = getTileIndex(x, y);
-	
-	if (tileIndex < 0)
-		return nullptr;
-	
-	FLAT_ASSERT(tileIndex < getNumTiles());
-	return &m_tiles[tileIndex];
+	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
+	m_entities.push_back(entity);
+	entity->onAddedToMap(this);
+}
+
+void Map::removeEntity(Entity* entity)
+{
+	std::vector<Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
+	FLAT_ASSERT(it != m_entities.end());
+	m_entities.erase(it);
+	entity->onRemovedFromMap();
 }
 
 int Map::getTileIndex(int x, int y) const

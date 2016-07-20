@@ -10,12 +10,13 @@ namespace game
 namespace map
 {
 class Map;
+class Entity;
 
-class Tile : public MapObject
+class Tile final : public MapObject
 {
 	public:
 		Tile();
-		virtual ~Tile();
+		~Tile() override;
 		
 		inline bool exists() const { return m_exists; }
 		inline void setExists(bool exists) { m_exists = exists; }
@@ -24,22 +25,24 @@ class Tile : public MapObject
 		
 		void setCoordinates(const Map& map, int x, int y, float z);
 		
-		inline void setZ(float z) { m_z = z; }
-		inline float getZ() const { return m_z; }
-		
 		void setTexture(std::shared_ptr<const flat::video::Texture> tileTexture);
 		void setDoodadTexture(std::shared_ptr<const flat::video::Texture> doodadTexture);
 		void removeDoodad();
+		
+		void addEntity(Entity* entity);
+		void removeEntity(Entity* entity);
+		const std::vector<Entity*>& getEntities() const { return m_entities; }
 	
 	private:
+		std::vector<Entity*> m_entities;
+		flat::util::Sprite m_sprite;
+		flat::util::Sprite* m_doodadSprite;
+		
 		int m_x;
 		int m_y;
 		float m_z;
 		
 		bool m_exists;
-		
-		flat::util::Sprite m_sprite;
-		flat::util::Sprite* m_doodadSprite;
 };
 
 } // map

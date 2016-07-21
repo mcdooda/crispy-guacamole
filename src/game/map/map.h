@@ -1,6 +1,7 @@
 #ifndef GAME_MAP_H
 #define GAME_MAP_H
 
+#include <functional>
 #include <flat.h>
 
 namespace game

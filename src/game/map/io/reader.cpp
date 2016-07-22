@@ -1,3 +1,4 @@
+#include <sstream>
 #include "reader.h"
 #include "../map.h"
 #include "../tile.h"
@@ -156,11 +157,9 @@ uint16_t Reader::readUint16()
 std::string Reader::readString()
 {
 	uint16_t size = readUint16();
-	char s[size + 1];
-	m_file.read(s, size);
-	s[size] = '\0';
-	std::string string = s;
-	return string;
+	std::string str(size, ' ');
+	m_file.read(&str[0], size);
+	return str;
 }
 
 } // io

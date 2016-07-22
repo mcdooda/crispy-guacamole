@@ -1,4 +1,5 @@
 #include <iostream>
+#include <flat.h>
 #include "basemapstate.h"
 #include "../game.h"
 #include "../map/tile.h"

@@ -3,6 +3,7 @@
 #include "basemapstate.h"
 #include "../game.h"
 #include "../map/tile.h"
+#include "../timer/lua/timer.h"
 
 namespace game
 {
@@ -15,7 +16,11 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	
 	// init lua first
 	m_luaState = flat::lua::open(game);
-	flat::sharp::ui::lua::open(m_luaState); //TODO lua_pushcclosure...
+	
+	//TODO lua_pushcclosure...
+	flat::time::lua::open(m_luaState);
+	flat::sharp::ui::lua::open(m_luaState);
+	timer::lua::open(m_luaState);
 	
 	// ui
 	buildUi(game);
@@ -76,6 +81,8 @@ void BaseMapState::update(game::Game* game)
 {
 	updateGameView(game);
 	updateUi(game);
+	float currentTime = game->time->getTime();
+	game->timerContainer.updateTimers(m_luaState, currentTime);
 }
 
 void BaseMapState::updateGameView(game::Game* game)

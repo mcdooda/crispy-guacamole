@@ -17,6 +17,8 @@ Entity::Entity(std::shared_ptr<const EntityTemplate> entityTemplate) :
 	const EntityTemplate* entityTemplatePtr = entityTemplate.get();
 	m_sprite.setTexture(entityTemplatePtr->getAtlas());
 	m_sprite.setOrigin(entityTemplatePtr->getSpriteOrigin());
+	m_sprite.setAtlasSize(entityTemplatePtr->getAtlasWidth(), entityTemplatePtr->getAtlasHeight());
+	m_sprite.setFrameDuration(entityTemplatePtr->getAnimationFrameDuration());
 }
 
 Entity::~Entity()
@@ -50,11 +52,11 @@ void Entity::setHeading(float heading)
 	m_heading = heading;
 	if (heading >= M_PI / 4.f && heading <= 5.f * M_PI / 4.f)
 	{
-		m_sprite.setFlipX(true);
+		m_sprite.setFlipX(false);
 	}
 	else
 	{
-		m_sprite.setFlipX(false);
+		m_sprite.setFlipX(true);
 	}
 }
 
@@ -77,6 +79,11 @@ void Entity::onRemovedFromMap()
 	FLAT_ASSERT(m_map && m_tile);
 	m_map = nullptr;
 	m_tile = nullptr;
+}
+
+void Entity::update(float currentTime)
+{
+	m_sprite.update(currentTime);
 }
 
 Tile* Entity::getTileFromPosition()

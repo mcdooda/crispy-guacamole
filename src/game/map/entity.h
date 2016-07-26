@@ -29,12 +29,14 @@ class Entity final : public MapObject
 		void onAddedToMap(Map* map);
 		void onRemovedFromMap();
 		
+		void update(float currentTime);
+		
 	protected:
 		Tile* getTileFromPosition();
 		void updateSpritePosition();
 		
 	protected:
-		flat::util::Sprite m_sprite;
+		flat::util::AnimatedSprite m_sprite;
 		flat::geometry::Vector3 m_position;
 		float m_heading;
 		std::shared_ptr<const EntityTemplate> m_template;

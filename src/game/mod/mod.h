@@ -20,6 +20,7 @@ class Mod final
 		std::string getScriptPath(const std::string& fileName) const;
 		std::string getTexturePath(const std::string& fileName) const;
 		std::string getMapPath() const;
+		std::string getEntityTemplatePath(const std::string& entityTemplateName) const;
 		
 	private:
 		std::string m_path;

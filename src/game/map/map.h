@@ -11,10 +11,13 @@ namespace mod
 {
 class Mod;
 }
+namespace entity
+{
+class Entity;
+}
 namespace map
 {
 class Tile;
-class Entity;
 class DisplayManager;
 namespace io
 {
@@ -49,8 +52,8 @@ class Map final
 		inline int getTileWidth() const { return m_tileWidth; }
 		inline int getTileHeight() const { return m_tileHeight; }
 		
-		void addEntity(Entity* entity);
-		void removeEntity(Entity* entity);
+		void addEntity(entity::Entity* entity);
+		void removeEntity(entity::Entity* entity);
 		
 	private:
 		int getTileIndex(int x, int y) const;
@@ -71,7 +74,7 @@ class Map final
 		
 		Tile* m_tiles;
 		
-		std::vector<Entity*> m_entities;
+		std::vector<entity::Entity*> m_entities;
 		
 	private:
 		friend class io::Reader;

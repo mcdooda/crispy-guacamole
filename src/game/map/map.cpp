@@ -1,8 +1,8 @@
 #include "map.h"
 #include "displaymanager.h"
 #include "tile.h"
-#include "entity.h"
 #include "io/reader.h"
+#include "../entity/entity.h"
 
 namespace game
 {
@@ -37,7 +37,7 @@ void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& vie
 		if (tile->exists())
 		{
 			displayManager.add(tile);
-			for (Entity* entity : tile->getEntities())
+			for (entity::Entity* entity : tile->getEntities())
 				displayManager.add(entity);
 		}
 	});
@@ -118,16 +118,16 @@ flat::geometry::Vector2 Map::getZAxis() const
 	return flat::geometry::Vector2(0.f, -m_tileHeight);
 }
 
-void Map::addEntity(Entity* entity)
+void Map::addEntity(entity::Entity* entity)
 {
 	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
 	m_entities.push_back(entity);
 	entity->onAddedToMap(this);
 }
 
-void Map::removeEntity(Entity* entity)
+void Map::removeEntity(entity::Entity* entity)
 {
-	std::vector<Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
+	std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
 	FLAT_ASSERT(it != m_entities.end());
 	m_entities.erase(it);
 	entity->onRemovedFromMap();

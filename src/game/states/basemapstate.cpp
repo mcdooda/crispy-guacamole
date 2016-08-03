@@ -4,6 +4,7 @@
 #include "../game.h"
 #include "../map/tile.h"
 #include "../timer/lua/timer.h"
+#include "../entity/entitytemplate.h"
 
 namespace game
 {
@@ -144,6 +145,7 @@ void BaseMapState::setCameraCenter(const flat::geometry::Vector3& cameraCenter)
 	m_gameView.reset();
 	m_gameView.revertY();
 	m_gameView.move(center2d);
+	m_gameView.zoom(2.f);
 }
 
 void BaseMapState::draw(game::Game* game)
@@ -194,6 +196,12 @@ void BaseMapState::drawUi(game::Game* game)
 	m_uiProgramRenderSettings.colorUniform.setColor(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
 	
 	m_ui->draw(m_uiProgramRenderSettings);
+}
+
+std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const
+{
+	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
+	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath);
 }
 
 } // states

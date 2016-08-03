@@ -1,11 +1,11 @@
 #include "entity.h"
-#include "map.h"
-#include "tile.h"
 #include "entitytemplate.h"
+#include "../map/map.h"
+#include "../map/tile.h"
 
 namespace game
 {
-namespace map
+namespace entity
 {
 
 Entity::Entity(std::shared_ptr<const EntityTemplate> entityTemplate) :
@@ -65,7 +65,7 @@ void Entity::draw(const flat::util::RenderSettings& renderSettings, const flat::
 	m_sprite.draw(renderSettings, viewMatrix);
 }
 
-void Entity::onAddedToMap(Map* map)
+void Entity::onAddedToMap(map::Map* map)
 {
 	FLAT_ASSERT(map && !m_map && !m_tile);
 	m_map = map;
@@ -86,7 +86,7 @@ void Entity::update(float currentTime)
 	m_sprite.update(currentTime);
 }
 
-Tile* Entity::getTileFromPosition()
+map::Tile* Entity::getTileFromPosition()
 {
 	FLAT_ASSERT(m_map);
 	int tileX = floor(m_position.x + 0.5f);
@@ -107,7 +107,7 @@ void Entity::updateSpritePosition()
 	m_sprite.setPosition(position2d);
 }
 
-} // map
+} // entity
 } // game
 
 

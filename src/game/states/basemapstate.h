@@ -10,6 +10,10 @@
 namespace game
 {
 class Game;
+namespace entity
+{
+class EntityTemplate;
+}
 namespace states
 {
 
@@ -33,9 +37,14 @@ class BaseMapState : public flat::state::State
 		void updateUi(game::Game* game);
 		void drawUi(game::Game* game);
 		
+		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const;
+		
 	protected:
 		// lua state
 		lua_State* m_luaState;
+		
+		// resource loading
+		flat::resource::ResourceManager<entity::EntityTemplate, Game*, lua_State*, std::string> m_entityTemplateManager;
 		
 		// rendering settings
 		flat::video::Program m_spriteProgram;

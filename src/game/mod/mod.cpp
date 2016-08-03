@@ -61,6 +61,11 @@ std::string Mod::getMapPath() const
 	return m_path + "map.gpmap";
 }
 
+std::string Mod::getEntityTemplatePath(const std::string& entityTemplateName) const
+{
+	return m_path + "units/" + entityTemplateName + "/"; // path to a directory
+}
+
 } // mod
 } // game
 

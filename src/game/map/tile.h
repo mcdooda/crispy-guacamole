@@ -7,10 +7,13 @@
 
 namespace game
 {
+namespace entity
+{
+class Entity;
+}
 namespace map
 {
 class Map;
-class Entity;
 
 class Tile final : public MapObject
 {
@@ -29,12 +32,12 @@ class Tile final : public MapObject
 		void setDoodadTexture(std::shared_ptr<const flat::video::Texture> doodadTexture);
 		void removeDoodad();
 		
-		void addEntity(Entity* entity);
-		void removeEntity(Entity* entity);
-		const std::vector<Entity*>& getEntities() const { return m_entities; }
+		void addEntity(entity::Entity* entity);
+		void removeEntity(entity::Entity* entity);
+		const std::vector<entity::Entity*>& getEntities() const { return m_entities; }
 	
 	private:
-		std::vector<Entity*> m_entities;
+		std::vector<entity::Entity*> m_entities;
 		flat::util::Sprite m_sprite;
 		flat::util::Sprite* m_doodadSprite;
 		

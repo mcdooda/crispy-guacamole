@@ -2,7 +2,7 @@
 #define GAME_MAP_ENTITY_H
 
 #include <memory>
-#include "mapobject.h"
+#include "../map/mapobject.h"
 
 namespace game
 {
@@ -10,9 +10,12 @@ namespace map
 {
 class Map;
 class Tile;
+}
+namespace entity
+{
 class EntityTemplate;
 
-class Entity final : public MapObject
+class Entity final : public map::MapObject
 {
 	public:
 		Entity(std::shared_ptr<const EntityTemplate> entityTemplate);
@@ -26,13 +29,13 @@ class Entity final : public MapObject
 		
 		void draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const override;
 		
-		void onAddedToMap(Map* map);
+		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
 		
 		void update(float currentTime);
 		
 	protected:
-		Tile* getTileFromPosition();
+		map::Tile* getTileFromPosition();
 		void updateSpritePosition();
 		
 	protected:
@@ -40,11 +43,11 @@ class Entity final : public MapObject
 		flat::geometry::Vector3 m_position;
 		float m_heading;
 		std::shared_ptr<const EntityTemplate> m_template;
-		Map* m_map;
-		Tile* m_tile;
+		map::Map* m_map;
+		map::Tile* m_tile;
 };
 
-} // map
+} // entity
 } // game
 
 #endif // GAME_MAP_ENTITY_H

@@ -18,10 +18,6 @@ void GameState::enter(flat::state::Agent* agent)
 	m_sheep = new entity::Entity(entityTemplate, m_luaState);
 	flat::geometry::Vector3 position(m_map.getWidth() / 2.f, m_map.getHeight() / 2.f, 0.f);
 	m_sheep->setPosition(position);
-	m_sheep->addPointOnPath(flat::geometry::Vector2(position.x + 2.f, position.y + 2.f));
-	m_sheep->addPointOnPath(flat::geometry::Vector2(position.x - 2.f, position.y - 2.f));
-	m_sheep->addPointOnPath(flat::geometry::Vector2(position.x - 2.f, position.y + 2.f));
-	m_sheep->addPointOnPath(flat::geometry::Vector2(position.x + 2.f, position.y - 2.f));
 	m_map.addEntity(m_sheep);
 }
 

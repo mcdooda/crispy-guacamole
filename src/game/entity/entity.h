@@ -44,6 +44,8 @@ class Entity final : public map::MapObject
 		bool followsPath() const { return !m_path.empty(); }
 		void addPointOnPath(const flat::geometry::Vector2& point);
 		
+		void enterState(lua_State* L, int index);
+		
 	protected:
 		map::Tile* getTileFromPosition();
 		void updateSpritePosition();

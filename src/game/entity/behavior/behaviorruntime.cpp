@@ -2,6 +2,7 @@
 #include "behavior.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
+#include "../lua/entity.h"
 
 namespace game
 {
@@ -30,8 +31,9 @@ BehaviorRuntime::~BehaviorRuntime()
 
 void BehaviorRuntime::enterState(const char* stateName)
 {
+	std::cout << "enter state " << stateName << std::endl;
 	const Behavior* behavior = getBehavior();
-	FLAT_ASSERT(behavior && m_coroutineRef == LUA_NOREF);
+	FLAT_ASSERT(behavior);
 	
 	lua_State* L = behavior->pushStates();
 	
@@ -40,10 +42,26 @@ void BehaviorRuntime::enterState(const char* stateName)
 	lua_getfield(L, -1, stateName);
 	luaL_checktype(L, -1, LUA_TFUNCTION);
 	flat::lua::coroutine::create(L);
+	luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
 	m_coroutineRef = luaL_ref(L, LUA_REGISTRYINDEX);
 	lua_pop(L, 1);
 	
 	FLAT_LUA_ASSERT_MSG(lua_gettop(L) == top - 1, L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top - 1);
+}
+
+void BehaviorRuntime::enterState(lua_State* L, int index)
+{
+	std::cout << "enter state " << index << std::endl;
+	
+	FLAT_DEBUG_ONLY(int top = lua_gettop(L);)
+	
+	lua_pushvalue(L, index);
+	luaL_checktype(L, -1, LUA_TFUNCTION);
+	flat::lua::coroutine::create(L);
+	luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
+	m_coroutineRef = luaL_ref(L, LUA_REGISTRYINDEX);
+	
+	FLAT_LUA_ASSERT_MSG(lua_gettop(L) == top, L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top);
 }
 
 void BehaviorRuntime::updateCurrentState()
@@ -64,7 +82,7 @@ void BehaviorRuntime::updateCurrentState()
 	// 1st argument: the states table
 	lua_pushvalue(L, -4);
 	// 2nd argument: the entity
-	lua_pushlightuserdata(L, m_entity);
+	lua::pushEntity(L, m_entity);
 	
 	flat::lua::coroutine::resume(L, 2, 0);
 	

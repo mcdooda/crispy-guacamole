@@ -5,6 +5,7 @@
 #include "../map/tile.h"
 #include "../timer/lua/timer.h"
 #include "../entity/entitytemplate.h"
+#include "../entity/lua/entity.h"
 
 namespace game
 {
@@ -22,6 +23,7 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	flat::time::lua::open(m_luaState);
 	flat::sharp::ui::lua::open(m_luaState);
 	timer::lua::open(m_luaState);
+	entity::lua::open(m_luaState);
 	
 	// ui
 	buildUi(game);

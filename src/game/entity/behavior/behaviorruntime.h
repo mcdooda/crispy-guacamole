@@ -22,6 +22,7 @@ class BehaviorRuntime final
 		~BehaviorRuntime();
 		
 		void enterState(const char* stateName);
+		void enterState(lua_State* L, int index);
 		void updateCurrentState();
 		void update();
 		

@@ -170,6 +170,12 @@ void Entity::addPointOnPath(const flat::geometry::Vector2& point)
 	m_path.push(point);
 }
 
+void Entity::enterState(lua_State* L, int index)
+{
+	FLAT_ASSERT(m_behaviorRuntime);
+	m_behaviorRuntime->enterState(L, index);
+}
+
 } // entity
 } // game
 

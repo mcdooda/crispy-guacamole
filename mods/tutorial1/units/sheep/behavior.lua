@@ -1,24 +1,21 @@
 local states = {}
 
 function states:init(sheep)
-	for i = 1, 10 do
-		print(i, self, sheep)
-		coroutine.yield()
-	end
-	--sheep:enterState(self.wander)
+	sheep:enterState(self.wander)
+	coroutine.yield()
 end
 
 function states:idle()
-	
+	print 'idle'
 end
 
 function states:wander(sheep)
-	local x, y = sheep:getPosition()
-	local px1, py1 = x + 1, y - 1
-	local px2, py2 = x - 1, y + 1
 	while true do
-		sheep:moveTo(px1, py1)
-		sheep:moveTo(px2, py2)
+		local x, y = sheep:getPosition()
+		local rx = x + math.random() * 10 - 5
+		local ry = y + math.random() * 10 - 5
+		sheep:moveTo(rx, ry)
+		coroutine.yield()
 	end
 end
 

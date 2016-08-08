@@ -1,16 +1,24 @@
 local states = {}
 
-function states:init()
-	enter(self.wander)
+function states:init(sheep)
+	for i = 1, 10 do
+		print(i, self, sheep)
+		coroutine.yield()
+	end
+	--sheep:enterState(self.wander)
 end
 
-function states:wander()
-	local x, y, z = getPosition()
+function states:idle()
+	
+end
+
+function states:wander(sheep)
+	local x, y = sheep:getPosition()
 	local px1, py1 = x + 1, y - 1
 	local px2, py2 = x - 1, y + 1
 	while true do
-		moveTo(px1, py1)
-		moveTo(px2, py2)
+		sheep:moveTo(px1, py1)
+		sheep:moveTo(px2, py2)
 	end
 end
 

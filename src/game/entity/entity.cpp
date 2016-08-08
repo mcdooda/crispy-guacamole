@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "entitytemplate.h"
+#include "behavior/behaviorruntime.h"
 #include "../map/map.h"
 #include "../map/tile.h"
 
@@ -8,17 +9,24 @@ namespace game
 namespace entity
 {
 
-Entity::Entity(std::shared_ptr<const EntityTemplate> entityTemplate) :
+Entity::Entity(std::shared_ptr<const EntityTemplate> entityTemplate, lua_State* L) :
 	m_heading(0.f),
-	m_template(entityTemplate),
 	m_map(nullptr),
-	m_tile(nullptr)
+	m_tile(nullptr),
+	m_template(entityTemplate),
+	m_behaviorRuntime(nullptr)
 {
 	const EntityTemplate* entityTemplatePtr = entityTemplate.get();
+	
 	m_sprite.setTexture(entityTemplatePtr->getAtlas());
 	m_sprite.setOrigin(entityTemplatePtr->getSpriteOrigin());
 	m_sprite.setAtlasSize(entityTemplatePtr->getAtlasWidth(), entityTemplatePtr->getAtlasHeight());
 	m_sprite.setFrameDuration(entityTemplatePtr->getAnimationFrameDuration());
+	
+	if (entityTemplatePtr->getBehavior() != nullptr)
+	{
+		m_behaviorRuntime = new behavior::BehaviorRuntime(this);
+	}
 }
 
 Entity::~Entity()
@@ -72,6 +80,9 @@ void Entity::onAddedToMap(map::Map* map)
 	m_tile = getTileFromPosition();
 	m_tile->addEntity(this);
 	updateSpritePosition();
+	
+	if (m_behaviorRuntime)
+		m_behaviorRuntime->enterState("init");
 }
 
 void Entity::onRemovedFromMap()
@@ -84,6 +95,9 @@ void Entity::onRemovedFromMap()
 void Entity::update(float currentTime)
 {
 	m_sprite.update(currentTime);
+	
+	if (m_behaviorRuntime)
+		m_behaviorRuntime->update();
 }
 
 map::Tile* Entity::getTileFromPosition()

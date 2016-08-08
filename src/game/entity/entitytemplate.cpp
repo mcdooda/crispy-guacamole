@@ -13,18 +13,16 @@ EntityTemplate::EntityTemplate(Game* game, lua_State* L, const std::string& path
 	m_animationFrameDuration(1.f),
 	m_radius(0.f)
 {
-	#ifdef FLAT_DEBUG
-	int top = lua_gettop(L);
-	#endif
+	FLAT_DEBUG_ONLY(int top = lua_gettop(L);)
 	loadSpriteConfig(game, L, path);
 	loadPhysicsConfig(game, L, path);
 	loadBehaviorConfig(game, L, path);
-	FLAT_ASSERT_MSG(top == lua_gettop(L), "lua_gettop(L) = %d, should be %d", lua_gettop(L), top);
+	FLAT_LUA_ASSERT_MSG(top == lua_gettop(L), L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top);
 }
 
 EntityTemplate::~EntityTemplate()
 {
-	
+	FLAT_DELETE(m_behavior);
 }
 
 void EntityTemplate::loadSpriteConfig(Game* game, lua_State* L, const std::string& path)

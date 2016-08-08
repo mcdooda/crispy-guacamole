@@ -21,6 +21,11 @@ void Behavior::load(lua_State* L)
 	lua_pop(L, 1);
 }
 
+lua_State* Behavior::pushStates() const
+{
+	return m_states.push();
+}
+
 } // behavior
 } // entity
 } // game

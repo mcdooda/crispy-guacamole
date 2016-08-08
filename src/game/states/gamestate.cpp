@@ -16,7 +16,12 @@ void GameState::enter(flat::state::Agent* agent)
 	
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, "sheep");
 	m_sheep = new entity::Entity(entityTemplate, m_luaState);
-	m_sheep->setPosition(flat::geometry::Vector3(m_map.getWidth() / 2.f, m_map.getHeight() / 2.f, 0.f));
+	flat::geometry::Vector3 position(m_map.getWidth() / 2.f, m_map.getHeight() / 2.f, 0.f);
+	m_sheep->setPosition(position);
+	m_sheep->addPointOnPath(flat::geometry::Vector2(position.x + 2.f, position.y + 2.f));
+	m_sheep->addPointOnPath(flat::geometry::Vector2(position.x - 2.f, position.y - 2.f));
+	m_sheep->addPointOnPath(flat::geometry::Vector2(position.x - 2.f, position.y + 2.f));
+	m_sheep->addPointOnPath(flat::geometry::Vector2(position.x + 2.f, position.y - 2.f));
 	m_map.addEntity(m_sheep);
 }
 
@@ -24,8 +29,8 @@ void GameState::execute(flat::state::Agent* agent)
 {
 	Game* game = agent->to<Game>();
 	
-	float currentTime = game->time->getTime();
-	m_sheep->update(currentTime);
+	flat::time::Time* time = game->time;
+	m_sheep->update(time->getTime(), time->getFrameTime());
 	
 	Super::execute(agent);
 }

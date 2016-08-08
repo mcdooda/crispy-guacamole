@@ -2,6 +2,7 @@
 #define GAME_MAP_ENTITY_H
 
 #include <memory>
+#include <queue>
 #include "../map/mapobject.h"
 
 namespace game
@@ -38,17 +39,25 @@ class Entity final : public map::MapObject
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
 		
-		void update(float currentTime);
+		void update(float currentTime, float elapsedTime);
+		
+		bool followsPath() const { return !m_path.empty(); }
+		void addPointOnPath(const flat::geometry::Vector2& point);
 		
 	protected:
 		map::Tile* getTileFromPosition();
 		void updateSpritePosition();
+		
+		void updateSprite(float currentTime);
+		void updateBehavior();
+		void followPath(float elapsedTime);
 		
 	protected:
 		flat::util::AnimatedSprite m_sprite;
 		
 		flat::geometry::Vector3 m_position;
 		float m_heading;
+		std::queue<flat::geometry::Vector2> m_path;
 		
 		map::Map* m_map;
 		map::Tile* m_tile;

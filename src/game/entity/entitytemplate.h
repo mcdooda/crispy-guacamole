@@ -29,6 +29,7 @@ class EntityTemplate final
 		
 		// physics
 		inline float getRadius() const { return m_radius; }
+		inline float getSpeed() const { return m_speed; }
 		
 		// behavior
 		const behavior::Behavior* getBehavior() const { return m_behavior; }

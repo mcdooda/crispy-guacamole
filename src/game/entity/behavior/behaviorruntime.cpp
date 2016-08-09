@@ -23,7 +23,7 @@ BehaviorRuntime::~BehaviorRuntime()
 	if (m_coroutineRef != LUA_NOREF)
 	{
 		const Behavior* behavior = getBehavior();
-		lua_State* L = behavior->pushStates();
+		lua_State* L = behavior->getLuaState();
 		luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
 		m_coroutineRef = LUA_NOREF;
 	}
@@ -31,35 +31,45 @@ BehaviorRuntime::~BehaviorRuntime()
 
 void BehaviorRuntime::enterState(const char* stateName)
 {
-	std::cout << "enter state " << stateName << std::endl;
 	const Behavior* behavior = getBehavior();
 	FLAT_ASSERT(behavior);
 	
-	lua_State* L = behavior->pushStates();
+	lua_State* L = behavior->getLuaState();
 	
 	FLAT_DEBUG_ONLY(int top = lua_gettop(L);)
 	
+	// new thread
+	luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
+	lua_State* L1 = lua_newthread(L);
+	m_coroutineRef = luaL_ref(L, LUA_REGISTRYINDEX);
+	
+	// states table
+	behavior->pushStates();
+	
+	//function
 	lua_getfield(L, -1, stateName);
 	luaL_checktype(L, -1, LUA_TFUNCTION);
-	flat::lua::coroutine::create(L);
-	luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
-	m_coroutineRef = luaL_ref(L, LUA_REGISTRYINDEX);
+	
+	// states table
+	lua_pushvalue(L, -2);
+	
+	// entity
+	lua::pushEntity(L, m_entity);
+	
+	// move the function and arguments to the new thread
+	lua_xmove(L, L1, 3);
+	int status = lua_resume(L1, nullptr, 2);
+	if (status == LUA_OK)
+	{
+		luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
+		m_coroutineRef = LUA_NOREF;
+	}
+	else if (status != LUA_YIELD)
+	{
+		lua_error(L1);
+	}
+	
 	lua_pop(L, 1);
-	
-	FLAT_LUA_ASSERT_MSG(lua_gettop(L) == top - 1, L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top - 1);
-}
-
-void BehaviorRuntime::enterState(lua_State* L, int index)
-{
-	std::cout << "enter state " << index << std::endl;
-	
-	FLAT_DEBUG_ONLY(int top = lua_gettop(L);)
-	
-	lua_pushvalue(L, index);
-	luaL_checktype(L, -1, LUA_TFUNCTION);
-	flat::lua::coroutine::create(L);
-	luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
-	m_coroutineRef = luaL_ref(L, LUA_REGISTRYINDEX);
 	
 	FLAT_LUA_ASSERT_MSG(lua_gettop(L) == top, L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top);
 }
@@ -69,31 +79,27 @@ void BehaviorRuntime::updateCurrentState()
 	const Behavior* behavior = getBehavior();
 	FLAT_ASSERT(behavior && m_coroutineRef != LUA_NOREF);
 	
-	lua_State* L = behavior->pushStates();
+	lua_State* L = behavior->getLuaState();
 	
-	FLAT_DEBUG_ONLY(int top = lua_gettop(L) - 1;)
+	FLAT_DEBUG_ONLY(int top = lua_gettop(L);)
 	
 	lua_rawgeti(L, LUA_REGISTRYINDEX, m_coroutineRef);
+	luaL_checktype(L, -1, LUA_TTHREAD);
+	lua_State* L1 = lua_tothread(L, -1);
+	FLAT_ASSERT(L1);
 	
-	lua_pushnil(L); // empty space for coroutine.resume
-	lua_pushvalue(L, -2);
-	
-	// coroutine.resume arguments
-	// 1st argument: the states table
-	lua_pushvalue(L, -4);
-	// 2nd argument: the entity
-	lua::pushEntity(L, m_entity);
-	
-	flat::lua::coroutine::resume(L, 2, 0);
-	
-	// if the coroutine is dead, leave the current state
-	if (flat::lua::coroutine::status(L, -2) == flat::lua::coroutine::CoroutineStatus::DEAD)
+	int status = lua_resume(L1, nullptr, 0);
+	if (status == LUA_OK)
 	{
 		luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
 		m_coroutineRef = LUA_NOREF;
 	}
+	else if (status != LUA_YIELD)
+	{
+		lua_error(L1);
+	}
 	
-	lua_pop(L, 3);
+	lua_pop(L, 1);
 	
 	FLAT_LUA_ASSERT_MSG(lua_gettop(L) == top, L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top);
 }
@@ -104,7 +110,10 @@ void BehaviorRuntime::update()
 	{
 		enterState("idle");
 	}
-	updateCurrentState();
+	else
+	{
+		updateCurrentState();
+	}
 }
 
 const Behavior* BehaviorRuntime::getBehavior() const

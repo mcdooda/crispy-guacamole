@@ -122,10 +122,9 @@ void Entity::updateSpritePosition()
 
 void Entity::updateSprite(float currentTime)
 {
-	if (followsPath())
-	{
-		m_sprite.update(currentTime);
-	}
+	m_sprite.setAnimated(followsPath());
+	m_sprite.update(currentTime);
+	
 }
 
 void Entity::updateBehavior()
@@ -170,10 +169,10 @@ void Entity::addPointOnPath(const flat::geometry::Vector2& point)
 	m_path.push(point);
 }
 
-void Entity::enterState(lua_State* L, int index)
+void Entity::enterState(const char* stateName)
 {
 	FLAT_ASSERT(m_behaviorRuntime);
-	m_behaviorRuntime->enterState(L, index);
+	m_behaviorRuntime->enterState(stateName);
 }
 
 } // entity

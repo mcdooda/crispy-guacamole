@@ -47,15 +47,17 @@ int l_Entity_moveTo(lua_State* L)
 	float x = luaL_checknumber(L, 2);
 	float y = luaL_checknumber(L, 3);
 	entity->addPointOnPath(flat::geometry::Vector2(x, y));
-	return 0;
+	return lua_yield(L, 0);
 }
 
 int l_Entity_enterState(lua_State* L)
 {
 	Entity* entity = getEntity(L, 1);
-	luaL_checktype(L, 2, LUA_TFUNCTION);
-	entity->enterState(L, 2);
-	return 0;
+	/*luaL_checktype(L, 2, LUA_TFUNCTION);
+	entity->enterState(L, 2);*/
+	const char* stateName = luaL_checkstring(L, 2);
+	entity->enterState(stateName);
+	return lua_yield(L, 0);
 }
 
 // private

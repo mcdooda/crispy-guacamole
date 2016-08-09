@@ -20,6 +20,7 @@ class Behavior
 	private:
 		void load(lua_State* L);
 		lua_State* pushStates() const;
+		inline lua_State* getLuaState() const { return m_states.getLuaState(); }
 		
 	private:
 		std::string m_fileName;

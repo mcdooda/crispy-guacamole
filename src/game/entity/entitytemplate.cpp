@@ -13,11 +13,10 @@ EntityTemplate::EntityTemplate(Game* game, lua_State* L, const std::string& path
 	m_animationFrameDuration(1.f),
 	m_radius(0.f)
 {
-	FLAT_DEBUG_ONLY(int top = lua_gettop(L);)
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	loadSpriteConfig(game, L, path);
 	loadPhysicsConfig(game, L, path);
 	loadBehaviorConfig(game, L, path);
-	FLAT_LUA_ASSERT_MSG(top == lua_gettop(L), L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top);
 }
 
 EntityTemplate::~EntityTemplate()

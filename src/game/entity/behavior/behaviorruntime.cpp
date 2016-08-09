@@ -35,8 +35,7 @@ void BehaviorRuntime::enterState(const char* stateName)
 	FLAT_ASSERT(behavior);
 	
 	lua_State* L = behavior->getLuaState();
-	
-	FLAT_DEBUG_ONLY(int top = lua_gettop(L);)
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
 	// new thread
 	luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
@@ -70,8 +69,6 @@ void BehaviorRuntime::enterState(const char* stateName)
 	}
 	
 	lua_pop(L, 1);
-	
-	FLAT_LUA_ASSERT_MSG(lua_gettop(L) == top, L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top);
 }
 
 void BehaviorRuntime::updateCurrentState()
@@ -80,8 +77,7 @@ void BehaviorRuntime::updateCurrentState()
 	FLAT_ASSERT(behavior && m_coroutineRef != LUA_NOREF);
 	
 	lua_State* L = behavior->getLuaState();
-	
-	FLAT_DEBUG_ONLY(int top = lua_gettop(L);)
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
 	lua_rawgeti(L, LUA_REGISTRYINDEX, m_coroutineRef);
 	luaL_checktype(L, -1, LUA_TTHREAD);
@@ -100,8 +96,6 @@ void BehaviorRuntime::updateCurrentState()
 	}
 	
 	lua_pop(L, 1);
-	
-	FLAT_LUA_ASSERT_MSG(lua_gettop(L) == top, L, "lua_gettop(L) = %d, should be %d", lua_gettop(L), top);
 }
 
 void BehaviorRuntime::update()

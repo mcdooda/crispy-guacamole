@@ -20,6 +20,7 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	m_luaState = flat::lua::open(game);
 	
 	flat::time::lua::open(m_luaState);
+	flat::input::lua::mouse::open(m_luaState);
 	flat::sharp::ui::lua::open(m_luaState);
 	timer::lua::open(m_luaState);
 	entity::lua::open(m_luaState);

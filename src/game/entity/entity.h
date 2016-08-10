@@ -2,8 +2,10 @@
 #define GAME_MAP_ENTITY_H
 
 #include <memory>
-#include <queue>
 #include "../map/mapobject.h"
+#include "component/behaviorcomponent.h"
+#include "component/movementcomponent.h"
+#include "component/spritecomponent.h"
 
 namespace game
 {
@@ -15,10 +17,6 @@ class Tile;
 namespace entity
 {
 class EntityTemplate;
-namespace behavior
-{
-class BehaviorRuntime;
-}
 
 class Entity final : public map::MapObject
 {
@@ -31,6 +29,9 @@ class Entity final : public map::MapObject
 		void setPosition(const flat::geometry::Vector3& position);
 		inline const flat::geometry::Vector3& getPosition() const { return m_position; }
 		
+		inline const map::Map* getMap() const { return m_map; }
+		inline const map::Tile* getTile() const { return m_tile; }
+		
 		void setHeading(float heading);
 		inline float getHeading() const { return m_heading; }
 		
@@ -41,32 +42,33 @@ class Entity final : public map::MapObject
 		
 		void update(float currentTime, float elapsedTime);
 		
-		bool followsPath() const { return !m_path.empty(); }
-		void addPointOnPath(const flat::geometry::Vector2& point);
+		bool followsPath() const { return m_movementComponent.followsPath(); }
+		void addPointOnPath(const flat::geometry::Vector2& point) { m_movementComponent.addPointOnPath(point); }
 		
 		void enterState(const char* stateName);
 		
+		void setSpriteColumn(int column);
+		
 	protected:
+		void registerComponent(component::Component& component);
+		
 		map::Tile* getTileFromPosition();
 		void updateSpritePosition();
 		
-		void updateSprite(float currentTime);
-		void updateBehavior();
-		void followPath(float elapsedTime);
-		
 	protected:
-		flat::util::AnimatedSprite m_sprite;
+		std::vector<component::Component*> m_components;
+		
+		component::BehaviorComponent m_behaviorComponent;
+		component::MovementComponent m_movementComponent;
+		component::SpriteComponent   m_spriteComponent;
 		
 		flat::geometry::Vector3 m_position;
 		float m_heading;
-		std::queue<flat::geometry::Vector2> m_path;
 		
 		map::Map* m_map;
 		map::Tile* m_tile;
 		
 		std::shared_ptr<const EntityTemplate> m_template;
-		
-		behavior::BehaviorRuntime* m_behaviorRuntime;
 };
 
 } // entity

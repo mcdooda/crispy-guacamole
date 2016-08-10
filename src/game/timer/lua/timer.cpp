@@ -63,7 +63,7 @@ int l_Timer_start(lua_State* L)
 	TimerContainer* timerContainer = getTimerContainer(L);
 	const Timer* timer = new Timer(currentTime, currentTime + timerDuration, onUpdate, onEnd);
 	timerContainer->add(timer);
-	callTimerUpdate(L, timer, currentTime); // TODO move to timerContainer->add?
+	callTimerUpdate(L, timer, currentTime);
 	return 0;
 }
 

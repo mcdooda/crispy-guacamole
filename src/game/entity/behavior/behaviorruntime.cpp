@@ -11,11 +11,11 @@ namespace entity
 namespace behavior
 {
 
-BehaviorRuntime::BehaviorRuntime(Entity* entity) :
-	m_entity(entity),
+BehaviorRuntime::BehaviorRuntime() :
+	m_entity(nullptr),
 	m_coroutineRef(LUA_NOREF)
 {
-	FLAT_ASSERT(getBehavior());
+	
 }
 
 BehaviorRuntime::~BehaviorRuntime()
@@ -32,7 +32,6 @@ BehaviorRuntime::~BehaviorRuntime()
 void BehaviorRuntime::enterState(const char* stateName)
 {
 	const Behavior* behavior = getBehavior();
-	FLAT_ASSERT(behavior);
 	
 	lua_State* L = behavior->getLuaState();
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -74,7 +73,7 @@ void BehaviorRuntime::enterState(const char* stateName)
 void BehaviorRuntime::updateCurrentState()
 {
 	const Behavior* behavior = getBehavior();
-	FLAT_ASSERT(behavior && m_coroutineRef != LUA_NOREF);
+	FLAT_ASSERT(m_coroutineRef != LUA_NOREF);
 	
 	lua_State* L = behavior->getLuaState();
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -116,7 +115,9 @@ const Behavior* BehaviorRuntime::getBehavior() const
 	std::shared_ptr<const EntityTemplate> entityTemplate = m_entity->getEntityTemplate();
 	const EntityTemplate* entityTemplatePtr = entityTemplate.get();
 	FLAT_ASSERT(entityTemplatePtr);
-	return entityTemplatePtr->getBehavior();
+	const Behavior* behavior = entityTemplatePtr->getBehavior();
+	FLAT_ASSERT(behavior);
+	return behavior;
 }
 
 } // behavior

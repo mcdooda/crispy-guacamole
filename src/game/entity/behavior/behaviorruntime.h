@@ -16,10 +16,12 @@ class Behavior;
 class BehaviorRuntime final
 {
 	public:
-		BehaviorRuntime(Entity* entity);
+		BehaviorRuntime();
 		BehaviorRuntime(const BehaviorRuntime&) = delete;
 		void operator=(const BehaviorRuntime&) = delete;
 		~BehaviorRuntime();
+		
+		inline void setEntity(Entity* entity) { m_entity = entity; }
 		
 		void enterState(const char* stateName);
 		void updateCurrentState();

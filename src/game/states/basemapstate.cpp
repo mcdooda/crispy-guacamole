@@ -19,7 +19,6 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	// init lua first
 	m_luaState = flat::lua::open(game);
 	
-	//TODO lua_pushcclosure...
 	flat::time::lua::open(m_luaState);
 	flat::sharp::ui::lua::open(m_luaState);
 	timer::lua::open(m_luaState);

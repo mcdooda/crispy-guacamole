@@ -39,6 +39,8 @@ class BaseMapState : public flat::state::State
 		
 		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const;
 		
+		flat::geometry::Vector2 getCursorMapPosition(game::Game* game);
+		
 	protected:
 		// lua state
 		lua_State* m_luaState;

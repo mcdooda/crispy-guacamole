@@ -145,7 +145,7 @@ void BaseMapState::setCameraCenter(const flat::geometry::Vector3& cameraCenter)
 	                                 + m_map.getYAxis() * cameraCenter.y
 	                                 + m_map.getZAxis() * cameraCenter.z;
 	m_gameView.reset();
-	m_gameView.revertY();
+	m_gameView.flipY();
 	m_gameView.move(center2d);
 	m_gameView.zoom(2.f);
 }
@@ -204,6 +204,23 @@ std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(ga
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
 	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath);
+}
+
+flat::geometry::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
+{
+	const flat::geometry::Vector2& cursorPosition = game->input->mouse->getPosition();
+	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
+	flat::geometry::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
+	
+	flat::geometry::Vector2 xAxis = m_map.getXAxis();
+	flat::geometry::Vector2 yAxis = m_map.getYAxis();
+	
+	flat::geometry::Vector2 mapPosition;
+	
+	mapPosition.x = (gameViewPosition.x * yAxis.y - gameViewPosition.y * yAxis.x) / (xAxis.x * yAxis.y - xAxis.y * yAxis.x);
+	mapPosition.y = (gameViewPosition.y * xAxis.x - gameViewPosition.x * xAxis.y) / (yAxis.y * xAxis.x - yAxis.x * xAxis.y);
+	
+	return mapPosition;
 }
 
 } // states

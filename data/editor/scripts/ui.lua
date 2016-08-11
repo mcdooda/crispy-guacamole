@@ -88,6 +88,17 @@ do
 		icon:click(onClick)
 		toolbar:addChild(icon)
 	end
+	
+	do
+		local icon = Widget.makeImage('data/editor/interface/square.png')
+		icon:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
+		root:addChild(icon)
+		Timer.start(0, function()
+			local x, y = Mouse.getPosition()
+			local width, height = icon:getSize()
+			icon:setPosition(x, y - height)
+		end)
+	end
 
 	root:addChild(toolbar)
 end

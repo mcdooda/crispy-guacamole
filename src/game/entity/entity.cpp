@@ -36,7 +36,7 @@ void Entity::setPosition(const flat::geometry::Vector3& position)
 			newTile->addEntity(this);
 		}
 		m_tile = newTile;
-		m_spriteComponent.updatePosition();
+		positionChanged(m_position);
 	}
 }
 
@@ -48,7 +48,7 @@ void Entity::setHeading(float heading)
 		heading += M_PI * 2.f;
 	
 	m_heading = heading;
-	m_spriteComponent.updateHeading();
+	headingChanged(m_heading);
 }
 
 void Entity::draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const
@@ -62,7 +62,7 @@ void Entity::onAddedToMap(map::Map* map)
 	m_map = map;
 	m_tile = getTileFromPosition();
 	m_tile->addEntity(this);
-	m_spriteComponent.updatePosition();
+	positionChanged(m_position);
 	enterState("init");
 }
 
@@ -92,11 +92,6 @@ map::Tile* Entity::getTileFromPosition()
 void Entity::enterState(const char* stateName)
 {
 	m_behaviorComponent.enterState(stateName);
-}
-
-void Entity::setSpriteColumn(int column)
-{
-	m_spriteComponent.setColumn(column);
 }
 
 void Entity::registerComponent(component::Component& component)

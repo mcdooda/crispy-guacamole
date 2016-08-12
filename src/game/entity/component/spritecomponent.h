@@ -18,11 +18,12 @@ class SpriteComponent : public Component
 		void setOwner(Entity* owner) override;
 		void update(float currentTime, float elapsedTime) override;
 		
-		void updateHeading();
-		void updatePosition();
 		void draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const;
 		
-		inline void setColumn(int column) { m_sprite.setColumn(column); }
+	private:
+		void headingChanged(float heading);
+		void positionChanged(const flat::geometry::Vector3& position);
+		void movementStopped();
 		
 	private:
 		flat::util::AnimatedSprite m_sprite;

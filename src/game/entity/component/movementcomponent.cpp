@@ -32,7 +32,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			m_path.pop();
 			if (!followsPath())
 			{
-				m_owner->setSpriteColumn(0);
+				m_owner->movementStopped();
 			}
 		}
 	}

@@ -47,7 +47,10 @@ class Entity final : public map::MapObject
 		
 		void enterState(const char* stateName);
 		
-		void setSpriteColumn(int column);
+	public:
+		flat::Slot<const flat::geometry::Vector3&> positionChanged;
+		flat::Slot<float> headingChanged;
+		flat::Slot<> movementStopped;
 		
 	protected:
 		void registerComponent(component::Component& component);

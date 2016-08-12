@@ -19,6 +19,10 @@ void SpriteComponent::setOwner(Entity* owner)
 	m_sprite.setOrigin(entityTemplatePtr->getSpriteOrigin());
 	m_sprite.setAtlasSize(entityTemplatePtr->getAtlasWidth(), entityTemplatePtr->getAtlasHeight());
 	m_sprite.setFrameDuration(entityTemplatePtr->getAnimationFrameDuration());
+	
+	owner->headingChanged.on(this, &SpriteComponent::headingChanged);
+	owner->positionChanged.on(this, &SpriteComponent::positionChanged);
+	owner->movementStopped.on(this, &SpriteComponent::movementStopped);
 }
 
 void SpriteComponent::update(float currentTime, float elapsedTime)
@@ -27,9 +31,8 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 	m_sprite.update(currentTime);
 }
 
-void SpriteComponent::updateHeading()
+void SpriteComponent::headingChanged(float heading)
 {
-	float heading = m_owner->getHeading();
 	FLAT_ASSERT(0 <= heading && heading < M_PI * 2.f);
 	if (heading >= M_PI / 4.f && heading <= 5.f * M_PI / 4.f)
 	{
@@ -41,10 +44,8 @@ void SpriteComponent::updateHeading()
 	}
 }
 
-void SpriteComponent::updatePosition()
+void SpriteComponent::positionChanged(const flat::geometry::Vector3& position)
 {
-	const flat::geometry::Vector3& position = m_owner->getPosition();
-	
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map);
 	
@@ -58,6 +59,11 @@ void SpriteComponent::updatePosition()
 	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
 	FLAT_ASSERT(entityTemplatePtr);	
 	m_owner->computeDepth(position.x, position.y, entityTemplatePtr->getRadius());
+}
+
+void SpriteComponent::movementStopped()
+{
+	m_sprite.setColumn(0);
 }
 
 void SpriteComponent::draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <flat.h>
+#include "sprite/description.h"
 
 namespace game
 {
@@ -21,11 +22,7 @@ class EntityTemplate final
 		~EntityTemplate();
 		
 		// sprite
-		inline const flat::geometry::Vector2& getSpriteOrigin() const { return m_spriteOrigin; }
-		inline std::shared_ptr<const flat::video::Texture> getAtlas() const { return m_atlas; }
-		inline int getAtlasWidth() const { return m_atlasWidth; }
-		inline int getAtlasHeight() const { return m_atlasHeight; }
-		inline float getAnimationFrameDuration() const { return m_animationFrameDuration; }
+		inline const sprite::Description& getSpriteDescription() const { return m_spriteDescription; }
 		
 		// physics
 		inline float getRadius() const { return m_radius; }
@@ -41,11 +38,7 @@ class EntityTemplate final
 	
 	private:
 		// sprite
-		flat::geometry::Vector2 m_spriteOrigin;
-		int m_atlasWidth;
-		int m_atlasHeight;
-		float m_animationFrameDuration;
-		std::shared_ptr<const flat::video::Texture> m_atlas;
+		sprite::Description m_spriteDescription;
 		
 		// physics
 		float m_radius;

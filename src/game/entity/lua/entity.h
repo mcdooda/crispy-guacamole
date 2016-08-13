@@ -16,6 +16,7 @@ int open(lua_State* L);
 int l_Entity_getPosition(lua_State* L);
 int l_Entity_moveTo(lua_State* L);
 int l_Entity_enterState(lua_State* L);
+int l_Entity_playAnimation(lua_State* L);
 
 // private
 Entity* getEntity(lua_State* L, int index);

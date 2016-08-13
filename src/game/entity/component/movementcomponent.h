@@ -18,6 +18,8 @@ class MovementComponent : public Component
 	public:
 		void update(float currentTime, float elapsedTime) override;
 		
+		bool isBusy() const override;
+		
 		bool followsPath() const;
 		void addPointOnPath(const flat::geometry::Vector2& point);
 		

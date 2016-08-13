@@ -42,14 +42,18 @@ class Entity final : public map::MapObject
 		
 		void update(float currentTime, float elapsedTime);
 		
+		bool isBusy() const;
+		
 		bool followsPath() const { return m_movementComponent.followsPath(); }
 		void addPointOnPath(const flat::geometry::Vector2& point) { m_movementComponent.addPointOnPath(point); }
 		
 		void enterState(const char* stateName);
+		bool playAnimation(const char* animationName, int numLoops = 1);
 		
 	public:
 		flat::Slot<const flat::geometry::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;
+		flat::Slot<> movementStarted;
 		flat::Slot<> movementStopped;
 		
 	protected:

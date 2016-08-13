@@ -81,6 +81,17 @@ void Entity::update(float currentTime, float elapsedTime)
 	}
 }
 
+bool Entity::isBusy() const
+{
+	for (component::Component* component : m_components)
+	{
+		if (component->isBusy())
+			return true;
+	}
+	
+	return false;
+}
+
 map::Tile* Entity::getTileFromPosition()
 {
 	FLAT_ASSERT(m_map);
@@ -92,6 +103,19 @@ map::Tile* Entity::getTileFromPosition()
 void Entity::enterState(const char* stateName)
 {
 	m_behaviorComponent.enterState(stateName);
+}
+
+bool Entity::playAnimation(const char* animationName, int numLoops)
+{
+	const EntityTemplate* entityTemplatePtr = m_template.get();
+	FLAT_ASSERT(entityTemplatePtr);
+	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
+	if (const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
+	{
+		m_spriteComponent.playAnimation(*animationDescription, numLoops);
+		return true;
+	}
+	return false;
 }
 
 void Entity::registerComponent(component::Component& component)

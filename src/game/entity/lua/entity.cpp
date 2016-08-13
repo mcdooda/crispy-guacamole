@@ -17,9 +17,10 @@ int open(lua_State* L)
 	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
-		{"getPosition", l_Entity_getPosition},
-		{"moveTo",      l_Entity_moveTo},
-		{"enterState",  l_Entity_enterState},
+		{"getPosition",   l_Entity_getPosition},
+		{"moveTo",        l_Entity_moveTo},
+		{"enterState",    l_Entity_enterState},
+		{"playAnimation", l_Entity_playAnimation},
 		
 		{nullptr, nullptr}
 	};
@@ -53,10 +54,21 @@ int l_Entity_moveTo(lua_State* L)
 int l_Entity_enterState(lua_State* L)
 {
 	Entity* entity = getEntity(L, 1);
-	/*luaL_checktype(L, 2, LUA_TFUNCTION);
-	entity->enterState(L, 2);*/
 	const char* stateName = luaL_checkstring(L, 2);
 	entity->enterState(stateName);
+	return lua_yield(L, 0);
+}
+
+int l_Entity_playAnimation(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	const char* animationName = luaL_checkstring(L, 2);
+	int numLoops = luaL_optint(L, 3, 1);
+	bool plays = entity->playAnimation(animationName, numLoops);
+	if (!plays)
+	{
+		luaL_error(L, "Animation %s does not exist", animationName);
+	}
 	return lua_yield(L, 0);
 }
 

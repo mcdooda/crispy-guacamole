@@ -38,6 +38,11 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	}
 }
 
+bool MovementComponent::isBusy() const
+{
+	return followsPath();
+}
+
 bool MovementComponent::followsPath() const
 {
 	return !m_path.empty();
@@ -45,6 +50,9 @@ bool MovementComponent::followsPath() const
 
 void MovementComponent::addPointOnPath(const flat::geometry::Vector2& point)
 {
+	if (m_path.empty())
+		m_owner->movementStarted();
+		
 	m_path.push(point);
 }
 

@@ -20,6 +20,8 @@ class Component
 		
 		virtual void update(float currentTime, float elapsedTime) = 0;
 		
+		virtual bool isBusy() const { return false; }
+		
 	protected:
 		Entity* m_owner;
 };

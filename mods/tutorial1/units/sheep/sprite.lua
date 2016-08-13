@@ -1,6 +1,27 @@
 return {
 	origin = {12, 20},
-	size = {3, 1},
-	animationFrameDuration = 0.12
+	size = {8, 4},
+	animations = {
+		move = {
+			line = 1,
+			numFrames = 3,
+			frameDuration = 0.12
+		},
+		graze = {
+			line = 2,
+			numFrames = 8,
+			frameDuration = 0.12
+		},
+		crouch = {
+			line = 3,
+			numFrames = 3,
+			frameDuration = 0.12
+		},
+		sleep = {
+			line = 4,
+			numFrames = 2,
+			frameDuration = 0.5
+		}
+	}
 }
 

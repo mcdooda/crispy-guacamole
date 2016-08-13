@@ -90,14 +90,16 @@ void BaseMapState::update(game::Game* game)
 
 void BaseMapState::updateGameView(game::Game* game)
 {
-	const flat::geometry::Vector2& mousePosition = game->input->mouse->getPosition();
 	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
-	const float screenBorderWidth = 5.f;
 	
-	int tileWidth = m_map.getTileWidth();
-	int tileHeight = m_map.getTileHeight();
+	const int tileWidth = m_map.getTileWidth();
+	const int tileHeight = m_map.getTileHeight();
 	
 	flat::geometry::Vector2 move;
+	
+	/*
+	const flat::geometry::Vector2& mousePosition = game->input->mouse->getPosition();
+	const float screenBorderWidth = 5.f;
 	
 	if (mousePosition.x < screenBorderWidth)
 		move.x = tileWidth;
@@ -111,6 +113,7 @@ void BaseMapState::updateGameView(game::Game* game)
 		
 	else if (mousePosition.y >= windowSize.y - screenBorderWidth)
 		move.y = -tileHeight;
+	*/
 	
 	// keyboard wins over mouse
 	const flat::input::Keyboard* keyboard = game->input->keyboard;

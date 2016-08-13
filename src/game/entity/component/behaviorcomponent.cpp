@@ -16,7 +16,7 @@ void BehaviorComponent::setOwner(Entity* entity)
 
 void BehaviorComponent::update(float currentTime, float elapsedTime)
 {
-	if (!m_owner->followsPath())
+	if (!m_owner->isBusy())
 	{
 		m_behaviorRuntime.update();
 	}

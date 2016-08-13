@@ -1,3 +1,4 @@
+#include <iostream>
 #include "spritecomponent.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
@@ -15,20 +16,43 @@ void SpriteComponent::setOwner(Entity* owner)
 	Super::setOwner(owner);
 	const EntityTemplate* entityTemplatePtr = owner->getEntityTemplate().get();
 	FLAT_ASSERT(entityTemplatePtr);
-	m_sprite.setTexture(entityTemplatePtr->getAtlas());
-	m_sprite.setOrigin(entityTemplatePtr->getSpriteOrigin());
-	m_sprite.setAtlasSize(entityTemplatePtr->getAtlasWidth(), entityTemplatePtr->getAtlasHeight());
-	m_sprite.setFrameDuration(entityTemplatePtr->getAnimationFrameDuration());
+	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
+	m_sprite.setTexture(spriteDescription.getAtlas());
+	m_sprite.setOrigin(spriteDescription.getOrigin());
+	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
+	if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
+	{
+		playAnimation(*moveAnimationDescription, flat::util::AnimatedSprite::INFINITE_LOOP);
+	}
+	else
+	{
+		m_sprite.setAnimated(false);
+	}
 	
 	owner->headingChanged.on(this, &SpriteComponent::headingChanged);
 	owner->positionChanged.on(this, &SpriteComponent::positionChanged);
+	owner->movementStarted.on(this, &SpriteComponent::movementStarted);
 	owner->movementStopped.on(this, &SpriteComponent::movementStopped);
+}
+
+void SpriteComponent::playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops)
+{
+	m_sprite.playAnimation(
+		animationDescription.getLine(),
+		animationDescription.getNumFrames(),
+		animationDescription.getFrameDuration(),
+		numLoops
+	);
 }
 
 void SpriteComponent::update(float currentTime, float elapsedTime)
 {
-	m_sprite.setAnimated(m_owner->followsPath());
 	m_sprite.update(currentTime);
+}
+
+bool SpriteComponent::isBusy() const
+{
+	return m_sprite.isAnimated() && !m_sprite.hasInfiniteLoop();
 }
 
 void SpriteComponent::headingChanged(float heading)
@@ -61,9 +85,21 @@ void SpriteComponent::positionChanged(const flat::geometry::Vector3& position)
 	m_owner->computeDepth(position.x, position.y, entityTemplatePtr->getRadius());
 }
 
+void SpriteComponent::movementStarted()
+{
+	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
+	FLAT_ASSERT(entityTemplatePtr);
+	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
+	if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
+	{
+		playAnimation(*moveAnimationDescription, flat::util::AnimatedSprite::INFINITE_LOOP);
+	}
+}
+
 void SpriteComponent::movementStopped()
 {
 	m_sprite.setColumn(0);
+	m_sprite.setAnimated(false);
 }
 
 void SpriteComponent::draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const

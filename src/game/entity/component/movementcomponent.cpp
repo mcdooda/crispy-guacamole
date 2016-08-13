@@ -50,10 +50,25 @@ bool MovementComponent::followsPath() const
 
 void MovementComponent::addPointOnPath(const flat::geometry::Vector2& point)
 {
+	const float minDistanceBetweenPoints = 0.3f;
 	if (m_path.empty())
-		m_owner->movementStarted();
-		
-	m_path.push(point);
+	{
+		const flat::geometry::Vector3& position = m_owner->getPosition();
+		flat::geometry::Vector2 position2d(position.x, position.y);
+		if ((point - position2d).lengthSquared() > minDistanceBetweenPoints * minDistanceBetweenPoints)
+		{
+			m_owner->movementStarted();
+			m_path.push(point);
+		}
+	}
+	else
+	{
+		const flat::geometry::Vector2& lastPoint = m_path.back();
+		if ((point - lastPoint).lengthSquared() > minDistanceBetweenPoints * minDistanceBetweenPoints)
+		{
+			m_path.push(point);
+		}
+	}
 }
 
 } // component

@@ -33,7 +33,7 @@ void GameState::execute(flat::state::Agent* agent)
 		map::Tile* clickedTile = m_map.getTileIfExists(x, y);
 		if (clickedTile)
 		{
-			m_sheep->addPointOnPath(flat::geometry::Vector2(x, y));
+			m_sheep->addPointOnPath(clickedTilePosition);
 		}
 	}
 	

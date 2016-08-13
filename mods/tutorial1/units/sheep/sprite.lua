@@ -1,5 +1,5 @@
 return {
-	origin = {12, 20},
+	origin = {8, 13},
 	size = {8, 5},
 	animations = {
 		move = {

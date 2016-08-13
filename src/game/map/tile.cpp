@@ -89,6 +89,15 @@ void Tile::removeEntity(entity::Entity* entity)
 	m_entities.erase(it);
 }
 
+void Tile::setColor(const flat::video::Color& color)
+{
+	m_sprite.setColor(color);
+	if (m_doodadSprite)
+	{
+		m_doodadSprite->setColor(color);
+	}
+}
+
 } // map
 } // game
 

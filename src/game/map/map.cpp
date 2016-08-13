@@ -79,7 +79,7 @@ Tile* Map::getTileIfExists(int x, int y)
 {
 	Tile* tile = getTile(x, y);
 	
-	if (!tile->exists())
+	if (tile && !tile->exists())
 		return nullptr;
 		
 	return tile;

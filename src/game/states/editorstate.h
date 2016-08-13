@@ -2,6 +2,7 @@
 #define GAME_STATES_EDITORSTATE_H
 
 #include "basemapstate.h"
+#include "../map/brush/brush.h"
 
 namespace game
 {
@@ -13,6 +14,11 @@ class EditorState : public BaseMapState
 	typedef BaseMapState Super;
 	public:
 		void enter(flat::state::Agent* agent) override;
+		void execute(flat::state::Agent* agent) override;
+		
+	private:
+		std::unique_ptr<map::brush::Brush> m_brush;
+		std::vector<map::Tile*> m_brushTiles;
 };
 
 } // states

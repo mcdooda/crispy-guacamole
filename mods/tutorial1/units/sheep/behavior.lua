@@ -41,6 +41,7 @@ function states:wander(sheep)
 				sheep:playAnimation 'crouch'
 				local numLoops = random(3, 6)
 				sheep:playAnimation('sleep', numLoops)
+				sheep:playAnimation 'standup'
 			end
 		end
 	end

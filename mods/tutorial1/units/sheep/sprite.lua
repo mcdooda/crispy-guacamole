@@ -1,6 +1,6 @@
 return {
 	origin = {12, 20},
-	size = {8, 4},
+	size = {8, 5},
 	animations = {
 		move = {
 			line = 1,
@@ -17,8 +17,13 @@ return {
 			numFrames = 3,
 			frameDuration = 0.12
 		},
-		sleep = {
+		standup = {
 			line = 4,
+			numFrames = 3,
+			frameDuration = 0.12
+		},
+		sleep = {
+			line = 5,
 			numFrames = 2,
 			frameDuration = 0.5
 		}

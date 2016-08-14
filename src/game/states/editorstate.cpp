@@ -12,6 +12,8 @@ void EditorState::enter(flat::state::Agent* agent)
 {
 	Super::enter(agent);
 	
+	setCameraZoom(0.5f);
+	
 	flat::lua::doFile(m_luaState, "data/editor/scripts/ui.lua");
 	m_ui->fullLayout();
 	

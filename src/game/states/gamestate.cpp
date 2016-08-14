@@ -12,6 +12,8 @@ void GameState::enter(flat::state::Agent* agent)
 {
 	Super::enter(agent);
 	
+	setCameraZoom(2.f);
+	
 	Game* game = agent->to<Game>();
 	
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, "sheep");

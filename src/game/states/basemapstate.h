@@ -30,6 +30,8 @@ class BaseMapState : public flat::state::State
 		void update(game::Game* game);
 		void updateGameView(game::Game* game);
 		void setCameraCenter(const flat::geometry::Vector3& cameraCenter);
+		void setCameraZoom(float cameraZoom);
+		void updateCameraView();
 		
 		void draw(game::Game* game);
 		
@@ -61,6 +63,8 @@ class BaseMapState : public flat::state::State
 		map::DisplayManager m_mapDisplayManager;
 		
 		flat::video::View m_gameView;
+		flat::geometry::Vector2 m_cameraCenter2d;
+		float m_cameraZoom;
 		
 		// ui
 		std::unique_ptr<flat::sharp::ui::RootWidget> m_ui;

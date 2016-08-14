@@ -57,6 +57,7 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	// reset view
 	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
 	m_gameView.updateProjection(windowSize);
+	m_cameraZoom = 1.f;
 	setCameraCenter(cameraCenter);
 }
 
@@ -138,19 +139,36 @@ void BaseMapState::updateGameView(game::Game* game)
 	const float cameraSpeed = 20.f;
 	m_gameView.move(move * game->time->getFrameTime() * cameraSpeed);
 	
+	if (game->input->mouse->wheelJustMoved())
+	{
+		float zoom = m_cameraZoom * (1.f + game->input->mouse->getWheelMove().y / 5.f);
+		setCameraZoom(zoom);
+	}
+	
 	if (game->input->window->isResized())
 		m_gameView.updateProjection(windowSize);
 }
 
 void BaseMapState::setCameraCenter(const flat::geometry::Vector3& cameraCenter)
 {
-	flat::geometry::Vector2 center2d = m_map.getXAxis() * cameraCenter.x
-	                                 + m_map.getYAxis() * cameraCenter.y
-	                                 + m_map.getZAxis() * cameraCenter.z;
+	m_cameraCenter2d = m_map.getXAxis() * cameraCenter.x
+	                 + m_map.getYAxis() * cameraCenter.y
+	                 + m_map.getZAxis() * cameraCenter.z;
+	updateCameraView();
+}
+
+void BaseMapState::setCameraZoom(float cameraZoom)
+{
+	m_cameraZoom = cameraZoom;
+	updateCameraView();
+}
+
+void BaseMapState::updateCameraView()
+{
 	m_gameView.reset();
 	m_gameView.flipY();
-	m_gameView.move(center2d);
-	m_gameView.zoom(2.f);
+	m_gameView.move(m_cameraCenter2d);
+	m_gameView.zoom(m_cameraZoom);
 }
 
 void BaseMapState::draw(game::Game* game)

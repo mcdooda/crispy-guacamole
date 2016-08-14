@@ -294,7 +294,6 @@ void MovementComponent::reconstructPath(
 	const flat::geometry::Vector2& to,
 	std::vector<flat::geometry::Vector2>& path) const
 {
-	const map::Map* map = m_owner->getMap();
 	path.clear();
 	std::map<const map::Tile*, const map::Tile*>::const_iterator it;
 	const map::Tile* current = last;
@@ -318,11 +317,14 @@ void MovementComponent::reconstructPath(
 	
 	simplifyPath(path);
 	
-	for (const flat::geometry::Vector2& p : path)
-	{
-		const map::Tile* tile = map->getTile(round(p.x), round(p.y));
-		FLAT_DEBUG_ONLY(const_cast<map::Tile*>(tile)->setColor(flat::video::Color::RED);)
-	}
+	FLAT_DEBUG_ONLY(
+		const map::Map* map = m_owner->getMap();
+		for (const flat::geometry::Vector2& p : path)
+		{
+			const map::Tile* tile = map->getTile(round(p.x), round(p.y));
+			const_cast<map::Tile*>(tile)->setColor(flat::video::Color::RED);
+		}
+	)
 }
 
 void MovementComponent::simplifyPath(std::vector<flat::geometry::Vector2>& path) const

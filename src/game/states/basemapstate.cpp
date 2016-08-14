@@ -137,7 +137,8 @@ void BaseMapState::updateGameView(game::Game* game)
 		move.y = tileHeight;
 	
 	const float cameraSpeed = 20.f;
-	m_gameView.move(move * game->time->getFrameTime() * cameraSpeed);
+	m_cameraCenter2d += move * game->time->getFrameTime() * cameraSpeed;
+	updateCameraView();
 	
 	if (game->input->mouse->wheelJustMoved())
 	{

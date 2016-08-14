@@ -1,4 +1,4 @@
 return {
-	radius = 0.3,
+	radius = 0.15,
 	speed = 1
 }

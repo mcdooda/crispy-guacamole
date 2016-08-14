@@ -38,10 +38,11 @@ class MovementComponent : public Component
 		
 	private:
 		void separateFromAdjacentTiles();
+		void separateFromNearbyEntities();
 		
 		bool findPath(const flat::geometry::Vector2& from, const flat::geometry::Vector2& to, std::vector<flat::geometry::Vector2>& path) const;
 		void reconstructPath(
-			const std::map<const map::Tile*, const map::Tile*> previous,
+			const std::map<const map::Tile*, const map::Tile*>& previous,
 			const map::Tile* last,
 			const flat::geometry::Vector2& from,
 			const flat::geometry::Vector2& to,

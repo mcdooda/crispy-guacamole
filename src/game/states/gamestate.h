@@ -16,7 +16,7 @@ class GameState : public BaseMapState
 		void execute(flat::state::Agent* agent) override;
 		
 	private:
-		entity::Entity* m_sheep;
+		std::vector<entity::Entity*> m_sheeps;
 };
 
 } // states

@@ -140,6 +140,7 @@ bool Entity::playAnimation(const char* animationName, int numLoops)
 
 void Entity::addComponent(component::Component* component)
 {
+	FLAT_ASSERT(component);
 	component->setOwner(this);
 	m_components.push_back(component);
 }

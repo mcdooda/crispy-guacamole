@@ -14,13 +14,23 @@ void GameState::enter(flat::state::Agent* agent)
 	
 	setCameraZoom(2.f);
 	
+	flat::lua::doFile(m_luaState, "data/game/scripts/ui.lua");
+	m_ui->fullLayout();
+	
 	Game* game = agent->to<Game>();
 	
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, "sheep");
-	m_sheep = new entity::Entity(entityTemplate, m_luaState);
-	flat::geometry::Vector3 position(m_map.getWidth() / 2.f, m_map.getHeight() / 2.f, 0.f);
-	m_sheep->setPosition(position);
-	m_map.addEntity(m_sheep);
+	
+	for (int i = 0; i < 100; ++i)
+	{
+		entity::Entity* sheep = new entity::Entity(entityTemplate, m_luaState);
+		float rx = game->random->nextFloat(-0.1f, 0.1f);
+		float ry = game->random->nextFloat(-0.1f, 0.1f);
+		flat::geometry::Vector3 position(m_map.getWidth() / 2.f + rx, m_map.getHeight() / 2.f + ry, 0.f);
+		sheep->setPosition(position);
+		m_map.addEntity(sheep);
+		m_sheeps.push_back(sheep);
+	}
 }
 
 void GameState::execute(flat::state::Agent* agent)
@@ -35,7 +45,10 @@ void GameState::execute(flat::state::Agent* agent)
 		map::Tile* clickedTile = m_map.getTileIfWalkable(x, y);
 		if (clickedTile)
 		{
-			m_sheep->addPointOnPath(clickedTilePosition);
+			for (entity::Entity* sheep : m_sheeps)
+			{
+				sheep->addPointOnPath(clickedTilePosition);
+			}
 		}
 	}
 	

@@ -29,9 +29,6 @@ class Mod final
 		// config
 		int m_mapWidth;
 		int m_mapHeight;
-		
-		std::string m_defaultTile;
-		std::string m_forestDoodad;
 };
 
 } // mod

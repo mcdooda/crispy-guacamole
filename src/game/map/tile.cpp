@@ -7,24 +7,26 @@ namespace map
 {
 
 Tile::Tile() :
-	m_doodadSprite(nullptr),
-	m_exists(true)
+	m_propSprite(nullptr),
+	m_exists(true),
+	m_walkable(true)
 {
 	m_sprite.setColor(flat::video::Color::WHITE);
 }
 
 Tile::~Tile()
 {
-	FLAT_DELETE(m_doodadSprite);
+	FLAT_DELETE(m_propSprite);
 }
 
 void Tile::draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const
 {
 	FLAT_ASSERT(m_exists);
 	m_sprite.draw(renderSettings, viewMatrix);
-	if (m_doodadSprite)
+	if (m_propSprite)
 	{
-		m_doodadSprite->draw(renderSettings, viewMatrix);
+		// TODO prop depth != tile depth
+		m_propSprite->draw(renderSettings, viewMatrix);
 	}
 }
 
@@ -36,15 +38,15 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	m_z = z;
 	computeDepth(x, y, -0.5f);
 	
-	const flat::geometry::Vector2 xAxis = map.getXAxis();
-	const flat::geometry::Vector2 yAxis = map.getYAxis();
-	const flat::geometry::Vector2 zAxis = map.getZAxis();
+	const flat::geometry::Vector2& xAxis = map.getXAxis();
+	const flat::geometry::Vector2& yAxis = map.getYAxis();
+	const flat::geometry::Vector2& zAxis = map.getZAxis();
 	
 	flat::geometry::Vector2 position2d = xAxis * m_x + yAxis * m_y + zAxis * m_z;
 	m_sprite.setPosition(position2d);
-	if (m_doodadSprite)
+	if (m_propSprite)
 	{
-		m_doodadSprite->setPosition(position2d);
+		m_propSprite->setPosition(position2d);
 	}
 }
 
@@ -57,23 +59,25 @@ void Tile::setTexture(std::shared_ptr<const flat::video::Texture> tileTexture)
 	m_sprite.setOrigin(origin);
 }
 
-void Tile::setDoodadTexture(std::shared_ptr<const flat::video::Texture> doodadTexture)
+void Tile::setPropTexture(std::shared_ptr<const flat::video::Texture> propTexture)
 {
 	FLAT_ASSERT(m_exists);
-	if (!m_doodadSprite)
+	if (!m_propSprite)
 	{
-		m_doodadSprite = new flat::util::Sprite();
-		m_doodadSprite->setPosition(m_sprite.getPosition());
+		m_propSprite = new flat::util::Sprite();
+		m_propSprite->setPosition(m_sprite.getPosition());
 	}
-	m_doodadSprite->setTexture(doodadTexture);
-	const flat::geometry::Vector2& textureSize = doodadTexture->getSize();
+	m_propSprite->setTexture(propTexture);
+	const flat::geometry::Vector2& textureSize = propTexture->getSize();
 	flat::geometry::Vector2 origin(textureSize.x / 2, textureSize.y - textureSize.x / 4);
-	m_doodadSprite->setOrigin(origin);
+	m_propSprite->setOrigin(origin);
+	setWalkable(false);
 }
 
-void Tile::removeDoodad()
+void Tile::removeProp()
 {
-	FLAT_DELETE(m_doodadSprite);
+	FLAT_DELETE(m_propSprite);
+	setWalkable(true);
 }
 
 void Tile::addEntity(entity::Entity* entity)
@@ -92,9 +96,9 @@ void Tile::removeEntity(entity::Entity* entity)
 void Tile::setColor(const flat::video::Color& color)
 {
 	m_sprite.setColor(color);
-	if (m_doodadSprite)
+	if (m_propSprite)
 	{
-		m_doodadSprite->setColor(color);
+		m_propSprite->setColor(color);
 	}
 }
 

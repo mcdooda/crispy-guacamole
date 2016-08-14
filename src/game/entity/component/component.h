@@ -13,6 +13,7 @@ class Component
 {
 	public:
 		Component() : m_owner(nullptr) {}
+		virtual ~Component() {}
 		
 		virtual void setOwner(Entity* owner);
 		inline Entity* getOwner() { return m_owner; }

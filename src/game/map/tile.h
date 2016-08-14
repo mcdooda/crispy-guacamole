@@ -24,6 +24,9 @@ class Tile final : public MapObject
 		inline bool exists() const { return m_exists; }
 		inline void setExists(bool exists) { m_exists = exists; }
 		
+		inline bool isWalkable() const { return m_walkable; }
+		inline void setWalkable(bool walkable) { m_walkable = walkable; }
+		
 		void draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const override;
 		
 		void setCoordinates(const Map& map, int x, int y, float z);
@@ -32,8 +35,8 @@ class Tile final : public MapObject
 		inline float getZ() const { return m_z; }
 		
 		void setTexture(std::shared_ptr<const flat::video::Texture> tileTexture);
-		void setDoodadTexture(std::shared_ptr<const flat::video::Texture> doodadTexture);
-		void removeDoodad();
+		void setPropTexture(std::shared_ptr<const flat::video::Texture> propTexture);
+		void removeProp();
 		
 		void addEntity(entity::Entity* entity);
 		void removeEntity(entity::Entity* entity);
@@ -44,13 +47,14 @@ class Tile final : public MapObject
 	private:
 		std::vector<entity::Entity*> m_entities;
 		flat::util::Sprite m_sprite;
-		flat::util::Sprite* m_doodadSprite;
+		flat::util::Sprite* m_propSprite;
 		
 		int m_x;
 		int m_y;
 		float m_z;
 		
-		bool m_exists;
+		bool m_exists : 1;
+		bool m_walkable : 1;
 };
 
 } // map

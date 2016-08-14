@@ -49,7 +49,7 @@ class Reader
 		int m_mapHeight;
 		
 		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_tileTextures;
-		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_doodadTextures;
+		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_propTextures;
 };
 
 } // io

@@ -3,9 +3,6 @@
 
 #include <memory>
 #include "../map/mapobject.h"
-#include "component/behaviorcomponent.h"
-#include "component/movementcomponent.h"
-#include "component/spritecomponent.h"
 
 namespace game
 {
@@ -17,6 +14,13 @@ class Tile;
 namespace entity
 {
 class EntityTemplate;
+namespace component
+{
+class Component;
+class BehaviorComponent;
+class MovementComponent;
+class SpriteComponent;
+}
 
 class Entity final : public map::MapObject
 {
@@ -44,8 +48,7 @@ class Entity final : public map::MapObject
 		
 		bool isBusy() const;
 		
-		bool followsPath() const { return m_movementComponent.followsPath(); }
-		void addPointOnPath(const flat::geometry::Vector2& point) { m_movementComponent.addPointOnPath(point); }
+		void addPointOnPath(const flat::geometry::Vector2& point);
 		
 		void enterState(const char* stateName);
 		bool playAnimation(const char* animationName, int numLoops = 1);
@@ -57,17 +60,18 @@ class Entity final : public map::MapObject
 		flat::Slot<> movementStopped;
 		
 	protected:
-		void registerComponent(component::Component& component);
+		void addComponent(component::Component* component);
 		
 		map::Tile* getTileFromPosition();
-		void updateSpritePosition();
+		
+		void destroyComponents();
 		
 	protected:
 		std::vector<component::Component*> m_components;
 		
-		component::BehaviorComponent m_behaviorComponent;
-		component::MovementComponent m_movementComponent;
-		component::SpriteComponent   m_spriteComponent;
+		component::BehaviorComponent* m_behaviorComponent;
+		component::MovementComponent* m_movementComponent;
+		component::SpriteComponent*   m_spriteComponent;
 		
 		flat::geometry::Vector3 m_position;
 		float m_heading;

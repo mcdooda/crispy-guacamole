@@ -29,13 +29,7 @@ void Mod::readConfig(lua_State* L)
 	lua_getfield(L, -2, "mapHeight");
 	m_mapHeight = luaL_checkint(L, -1);
 	
-	lua_getfield(L, -3, "defaultTile");
-	m_defaultTile = luaL_checkstring(L, -1);
-	
-	lua_getfield(L, -4, "forestDoodad");
-	m_forestDoodad = luaL_checkstring(L, -1);
-	
-	lua_getfield(L, -5, "resourcePath");
+	lua_getfield(L, -3, "resourcePath");
 	if (lua_isstring(L, -1))
 	{
 		m_resourcePath = luaL_checkstring(L, -1);

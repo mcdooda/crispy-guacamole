@@ -215,8 +215,8 @@ flat::geometry::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
 	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
 	flat::geometry::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
 	
-	flat::geometry::Vector2 xAxis = m_map.getXAxis();
-	flat::geometry::Vector2 yAxis = m_map.getYAxis();
+	const flat::geometry::Vector2& xAxis = m_map.getXAxis();
+	const flat::geometry::Vector2& yAxis = m_map.getYAxis();
 	
 	flat::geometry::Vector2 mapPosition;
 	

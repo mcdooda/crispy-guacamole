@@ -30,7 +30,7 @@ void GameState::execute(flat::state::Agent* agent)
 		flat::geometry::Vector2 clickedTilePosition = getCursorMapPosition(game);
 		int x = round(clickedTilePosition.x);
 		int y = round(clickedTilePosition.y);
-		map::Tile* clickedTile = m_map.getTileIfExists(x, y);
+		map::Tile* clickedTile = m_map.getTileIfWalkable(x, y);
 		if (clickedTile)
 		{
 			m_sheep->addPointOnPath(clickedTilePosition);
@@ -38,7 +38,7 @@ void GameState::execute(flat::state::Agent* agent)
 	}
 	
 	flat::time::Time* time = game->time;
-	m_sheep->update(time->getTime(), time->getFrameTime());
+	m_map.updateEntities(time->getTime(), time->getFrameTime());
 	
 	Super::execute(agent);
 }

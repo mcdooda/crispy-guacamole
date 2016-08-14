@@ -38,13 +38,15 @@ class Map final
 		Tile* getTile(int x, int y);
 		const Tile* getTileIfExists(int x, int y) const;
 		Tile* getTileIfExists(int x, int y);
+		const Tile* getTileIfWalkable(int x, int y) const;
+		Tile* getTileIfWalkable(int x, int y);
 		
 		void eachTile(std::function<void(const Tile*)> func) const;
 		void eachTile(std::function<void(Tile*)> func);
 		
-		flat::geometry::Vector2 getXAxis() const;
-		flat::geometry::Vector2 getYAxis() const;
-		flat::geometry::Vector2 getZAxis() const;
+		inline const flat::geometry::Vector2& getXAxis() const { return m_xAxis; }
+		inline const flat::geometry::Vector2& getYAxis() const { return m_yAxis; }
+		inline const flat::geometry::Vector2& getZAxis() const { return m_zAxis; }
 		
 		inline int getWidth() const { return m_width; }
 		inline int getHeight() const { return m_height; }
@@ -54,6 +56,8 @@ class Map final
 		
 		void addEntity(entity::Entity* entity);
 		void removeEntity(entity::Entity* entity);
+		
+		void updateEntities(float currentTime, float elapsedTime);
 		
 	private:
 		int getTileIndex(int x, int y) const;
@@ -65,6 +69,8 @@ class Map final
 		void createTiles();
 		void destroyTiles();
 		
+		void destroyEntities();
+		
 	private:
 		int m_width;
 		int m_height;
@@ -73,6 +79,10 @@ class Map final
 		int m_tileHeight;
 		
 		Tile* m_tiles;
+		
+		flat::geometry::Vector2 m_xAxis;
+		flat::geometry::Vector2 m_yAxis;
+		flat::geometry::Vector2 m_zAxis;
 		
 		std::vector<entity::Entity*> m_entities;
 		

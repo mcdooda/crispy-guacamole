@@ -45,14 +45,14 @@ void Reader::readHeaders()
 		m_tileTextures.push_back(m_game->video->getTexture(texturePath));
 	}
 
-	// doodad textures
-	uint16_t numDoodads = readUint16();
-	m_doodadTextures.reserve(numDoodads);
-	for (int i = 0; i < numDoodads; ++i)
+	// prop textures
+	uint16_t numProps = readUint16();
+	m_propTextures.reserve(numProps);
+	for (int i = 0; i < numProps; ++i)
 	{
 		std::string name = readString();
-		std::string texturePath = m_mod.getTexturePath("doodads/" + name);
-		m_doodadTextures.push_back(m_game->video->getTexture(texturePath));
+		std::string texturePath = m_mod.getTexturePath("doodads/" + name); // TODO props/
+		m_propTextures.push_back(m_game->video->getTexture(texturePath));
 	}
 	
 	// map size
@@ -87,12 +87,12 @@ void Reader::readTiles()
 				std::shared_ptr<const flat::video::FileTexture> texture = m_tileTextures[tileIndex];
 				tile->setTexture(texture);
 				
-				bool hasDoodad = readBool();
-				if (hasDoodad)
+				bool hasProp = readBool();
+				if (hasProp)
 				{
-					uint16_t doodadIndex = readUint16();
-					std::shared_ptr<const flat::video::FileTexture> texture = m_doodadTextures[doodadIndex];
-					tile->setDoodadTexture(texture);
+					uint16_t propIndex = readUint16();
+					std::shared_ptr<const flat::video::FileTexture> texture = m_propTextures[propIndex];
+					tile->setPropTexture(texture);
 				}
 			}
 		}

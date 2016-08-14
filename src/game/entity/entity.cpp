@@ -1,5 +1,8 @@
 #include "entity.h"
 #include "entitytemplate.h"
+#include "component/behaviorcomponent.h"
+#include "component/movementcomponent.h"
+#include "component/spritecomponent.h"
 #include "../map/map.h"
 #include "../map/tile.h"
 
@@ -14,14 +17,17 @@ Entity::Entity(std::shared_ptr<const EntityTemplate> entityTemplate, lua_State* 
 	m_tile(nullptr),
 	m_template(entityTemplate)
 {
-	registerComponent(m_behaviorComponent);
-	registerComponent(m_movementComponent);
-	registerComponent(m_spriteComponent);
+	m_behaviorComponent = new component::BehaviorComponent();
+	addComponent(m_behaviorComponent);
+	m_movementComponent = new component::MovementComponent();
+	addComponent(m_movementComponent);
+	m_spriteComponent = new component::SpriteComponent();
+	addComponent(m_spriteComponent);
 }
 
 Entity::~Entity()
 {
-	
+	destroyComponents();
 }
 
 void Entity::setPosition(const flat::geometry::Vector3& position)
@@ -53,7 +59,7 @@ void Entity::setHeading(float heading)
 
 void Entity::draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const
 {
-	m_spriteComponent.draw(renderSettings, viewMatrix);
+	m_spriteComponent->draw(renderSettings, viewMatrix);
 }
 
 void Entity::onAddedToMap(map::Map* map)
@@ -92,6 +98,11 @@ bool Entity::isBusy() const
 	return false;
 }
 
+void Entity::addPointOnPath(const flat::geometry::Vector2& point)
+{
+	m_movementComponent->addPointOnPath(point);
+}
+
 map::Tile* Entity::getTileFromPosition()
 {
 	FLAT_ASSERT(m_map);
@@ -100,9 +111,18 @@ map::Tile* Entity::getTileFromPosition()
 	return m_map->getTileIfExists(tileX, tileY);
 }
 
+void Entity::destroyComponents()
+{
+	for (component::Component*& component : m_components)
+	{
+		FLAT_DELETE(component);
+	}
+	m_components.clear();
+}
+
 void Entity::enterState(const char* stateName)
 {
-	m_behaviorComponent.enterState(stateName);
+	m_behaviorComponent->enterState(stateName);
 }
 
 bool Entity::playAnimation(const char* animationName, int numLoops)
@@ -112,16 +132,16 @@ bool Entity::playAnimation(const char* animationName, int numLoops)
 	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
 	if (const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
 	{
-		m_spriteComponent.playAnimation(*animationDescription, numLoops);
+		m_spriteComponent->playAnimation(*animationDescription, numLoops);
 		return true;
 	}
 	return false;
 }
 
-void Entity::registerComponent(component::Component& component)
+void Entity::addComponent(component::Component* component)
 {
-	component.setOwner(this);
-	m_components.push_back(&component);
+	component->setOwner(this);
+	m_components.push_back(component);
 }
 
 } // entity

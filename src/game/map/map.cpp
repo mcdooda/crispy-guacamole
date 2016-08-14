@@ -21,6 +21,7 @@ Map::Map() :
 
 Map::~Map()
 {
+	destroyEntities();
 	destroyTiles();
 }
 
@@ -56,20 +57,14 @@ const Tile* Map::getTile(int x, int y) const
 
 Tile* Map::getTile(int x, int y)
 {
-	int tileIndex = getTileIndex(x, y);
-	
-	if (tileIndex < 0)
-		return nullptr;
-	
-	FLAT_ASSERT(tileIndex < getNumTiles());
-	return &m_tiles[tileIndex];
+	return const_cast<Tile*>((const_cast<const Map*>(this)->getTile(x, y)));
 }
 
 const Tile* Map::getTileIfExists(int x, int y) const
 {
 	const Tile* tile = getTile(x, y);
 	
-	if (!tile->exists())
+	if (!tile || !tile->exists())
 		return nullptr;
 		
 	return tile;
@@ -77,12 +72,22 @@ const Tile* Map::getTileIfExists(int x, int y) const
 
 Tile* Map::getTileIfExists(int x, int y)
 {
-	Tile* tile = getTile(x, y);
+	return const_cast<Tile*>((const_cast<const Map*>(this)->getTileIfExists(x, y)));
+}
+
+const Tile* Map::getTileIfWalkable(int x, int y) const
+{
+	const Tile* tile = getTileIfExists(x, y);
 	
-	if (tile && !tile->exists())
+	if (!tile || !tile->isWalkable())
 		return nullptr;
 		
 	return tile;
+}
+
+Tile* Map::getTileIfWalkable(int x, int y)
+{
+	return const_cast<Tile*>((const_cast<const Map*>(this)->getTileIfWalkable(x, y)));
 }
 
 void Map::eachTile(std::function<void(const Tile*)> func) const
@@ -103,21 +108,6 @@ void Map::eachTile(std::function<void(Tile*)> func)
 	}
 }
 
-flat::geometry::Vector2 Map::getXAxis() const
-{
-	return flat::geometry::Vector2(-m_tileWidth / 2.f, m_tileHeight / 2.f);
-}
-
-flat::geometry::Vector2 Map::getYAxis() const
-{
-	return flat::geometry::Vector2(m_tileWidth / 2.f, m_tileHeight / 2.f);
-}
-
-flat::geometry::Vector2 Map::getZAxis() const
-{
-	return flat::geometry::Vector2(0.f, -m_tileHeight);
-}
-
 void Map::addEntity(entity::Entity* entity)
 {
 	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
@@ -131,6 +121,14 @@ void Map::removeEntity(entity::Entity* entity)
 	FLAT_ASSERT(it != m_entities.end());
 	m_entities.erase(it);
 	entity->onRemovedFromMap();
+}
+
+void Map::updateEntities(float currentTime, float elapsedTime)
+{
+	for (entity::Entity* entity : m_entities)
+	{
+		entity->update(currentTime, elapsedTime);
+	}
 }
 
 int Map::getTileIndex(int x, int y) const
@@ -156,6 +154,15 @@ void Map::setTileSize(int tileWidth, int tileHeight)
 {
 	m_tileWidth = tileWidth;
 	m_tileHeight = tileHeight;
+	
+	m_xAxis.x = -m_tileWidth / 2.f;
+	m_xAxis.y = m_tileHeight / 2.f;
+	
+	m_yAxis.x = m_tileWidth / 2.f;
+	m_yAxis.y = m_tileHeight / 2.f;
+	
+	m_zAxis.x = 0.f;
+	m_zAxis.y = -m_tileHeight;
 }
 
 void Map::createTiles()
@@ -178,6 +185,15 @@ void Map::destroyTiles()
 	FLAT_DELETE_ARRAY(m_tiles);
 	m_width = 0;
 	m_height = 0;
+}
+
+void Map::destroyEntities()
+{
+	for (entity::Entity*& entity : m_entities)
+	{
+		FLAT_DELETE(entity);
+	}
+	m_entities.clear();
 }
 
 } // map

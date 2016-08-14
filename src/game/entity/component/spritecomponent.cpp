@@ -73,9 +73,9 @@ void SpriteComponent::positionChanged(const flat::geometry::Vector3& position)
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map);
 	
-	const flat::geometry::Vector2 xAxis = map->getXAxis();
-	const flat::geometry::Vector2 yAxis = map->getYAxis();
-	const flat::geometry::Vector2 zAxis = map->getZAxis();
+	const flat::geometry::Vector2& xAxis = map->getXAxis();
+	const flat::geometry::Vector2& yAxis = map->getYAxis();
+	const flat::geometry::Vector2& zAxis = map->getZAxis();
 	
 	flat::geometry::Vector2 position2d = xAxis * position.x + yAxis * position.y + zAxis * position.z;
 	m_sprite.setPosition(position2d);

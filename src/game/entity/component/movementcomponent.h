@@ -24,6 +24,9 @@ class MovementComponent : public Component
 		void addPointOnPath(const flat::geometry::Vector2& point);
 		
 	private:
+		void separateFromAdjacentTiles();
+		
+	private:
 		std::queue<flat::geometry::Vector2> m_path;
 };
 

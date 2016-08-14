@@ -1,3 +1,5 @@
+#include <set>
+#include <algorithm>
 #include "movementcomponent.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
@@ -28,7 +30,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 		float speed = entityTemplatePtr->getSpeed();
 		flat::geometry::Vector2 newPosition2d = position2d + direction * speed * elapsedTime;
 		flat::geometry::Vector2 newMove = pathNextPoint - newPosition2d;
-		if (move.dotProduct(newMove) < 0.f)
+		if (move.dotProduct(newMove) <= 0.f)
 		{
 			newPosition2d = pathNextPoint;
 			m_path.pop();
@@ -55,23 +57,40 @@ bool MovementComponent::followsPath() const
 
 void MovementComponent::addPointOnPath(const flat::geometry::Vector2& point)
 {
-	const float minDistanceBetweenPoints = 0.3f;
+	bool startMovement = false;
+	flat::geometry::Vector2 startingPoint;
 	if (m_path.empty())
 	{
 		const flat::geometry::Vector3& position = m_owner->getPosition();
-		flat::geometry::Vector2 position2d(position.x, position.y);
-		if ((point - position2d).lengthSquared() > minDistanceBetweenPoints * minDistanceBetweenPoints)
-		{
-			m_owner->movementStarted();
-			m_path.push(point);
-		}
+		startingPoint.x = position.x;
+		startingPoint.y = position.y;
+		startMovement = true;
 	}
 	else
 	{
-		const flat::geometry::Vector2& lastPoint = m_path.back();
-		if ((point - lastPoint).lengthSquared() > minDistanceBetweenPoints * minDistanceBetweenPoints)
+		startingPoint = m_path.back();
+	}
+	
+	const float minDistanceBetweenPoints = 0.3f;
+	if ((point - startingPoint).lengthSquared() > minDistanceBetweenPoints * minDistanceBetweenPoints)
+	{
+		std::vector<flat::geometry::Vector2> path;
+		if (findPath(startingPoint, point, path))
+		{
+			path.erase(path.begin());
+			for (const flat::geometry::Vector2& point : path)
+			{
+				m_path.push(point);
+			}
+		}
+		else
 		{
 			m_path.push(point);
+		}
+		
+		if (startMovement)
+		{
+			m_owner->movementStarted();
 		}
 	}
 }
@@ -183,6 +202,162 @@ void MovementComponent::separateFromAdjacentTiles()
 	}
 	
 	m_owner->setPosition(flat::geometry::Vector3(newPosition2d.x, newPosition2d.y, z));
+}
+
+bool MovementComponent::findPath(const flat::geometry::Vector2& from, const flat::geometry::Vector2& to, std::vector<flat::geometry::Vector2>& path) const
+{
+	const map::Map* map = m_owner->getMap();
+	FLAT_ASSERT(map);
+	
+	const int fromX = round(from.x);
+	const int fromY = round(from.y);
+	const map::Tile* firstTile = map->getTileIfWalkable(fromX, fromY);
+	if (!firstTile)
+	{
+		return false;
+	}
+	
+	const int toX = round(to.x);
+	const int toY = round(to.y);
+	
+	std::set<const map::Tile*> closedList;
+	std::vector<Node> openList;
+	std::map<const map::Tile*, const map::Tile*> previous;
+	
+	Node firstNode;
+	firstNode.tile = firstTile;
+	firstNode.distance = 0.f;
+	firstNode.heuristic = 0.f;
+	
+	openList.push_back(firstNode);
+	
+	std::vector<const map::Tile*> neighborTiles;
+	
+	while (!openList.empty())
+	{
+		Node current = openList.front();
+		openList.erase(openList.begin());
+		
+		const map::Tile* tile = current.tile;
+		closedList.insert(tile);
+		
+		FLAT_DEBUG_ONLY(const_cast<map::Tile*>(tile)->setColor(flat::video::Color::BLUE);)
+		if (tile->getX() == toX && tile->getY() == toY)
+		{
+			reconstructPath(previous, tile, from, to, path);
+			return true;
+		}
+		else
+		{
+			tile->getWalkableNeighborTiles(*map, neighborTiles);
+			for (const map::Tile* neighborTile : neighborTiles)
+			{
+				// already in closedList
+				{
+					if (closedList.count(neighborTile) > 0)
+					{
+						continue;
+					}
+				}
+				
+				Node neighbor;
+				neighbor.tile = neighborTile;
+				neighbor.distance = current.distance + 1.f;
+				float estimatedDistance = (to - flat::geometry::Vector2(neighborTile->getX(), neighborTile->getY())).length();
+				neighbor.heuristic = neighbor.distance + estimatedDistance;
+				
+				std::vector<Node>::iterator it = std::find(openList.begin(), openList.end(), neighbor);
+				if (it == openList.end())
+				{
+					// sorted insertion to mimic a priority queue
+					std::vector<Node>::iterator it = std::upper_bound(openList.begin(), openList.end(), neighbor);
+					openList.insert(it, neighbor);
+					previous.emplace(neighborTile, tile);
+				}
+				else if (neighbor.distance < it->distance)
+				{
+					it->distance = neighbor.distance;
+					it->heuristic = neighbor.heuristic;
+					previous.emplace(neighborTile, tile);
+				}
+			}
+		}
+	}
+	
+	return false;
+}
+
+void MovementComponent::reconstructPath(
+	const std::map<const map::Tile*, const map::Tile*> previous,
+	const map::Tile* last,
+	const flat::geometry::Vector2& from,
+	const flat::geometry::Vector2& to,
+	std::vector<flat::geometry::Vector2>& path) const
+{
+	const map::Map* map = m_owner->getMap();
+	path.clear();
+	std::map<const map::Tile*, const map::Tile*>::const_iterator it;
+	const map::Tile* current = last;
+	while (true)
+	{
+		it = previous.find(current);
+		if (it != previous.end())
+		{
+			current = it->second;
+			path.insert(path.begin(), flat::geometry::Vector2(current->getX(), current->getY()));
+		}
+		else
+		{
+			break;
+		}
+	}
+	
+	// replace the 
+	path[0] = from;
+	path.push_back(to);
+	
+	simplifyPath(path);
+	
+	for (const flat::geometry::Vector2& p : path)
+	{
+		const map::Tile* tile = map->getTile(round(p.x), round(p.y));
+		FLAT_DEBUG_ONLY(const_cast<map::Tile*>(tile)->setColor(flat::video::Color::RED);)
+	}
+}
+
+void MovementComponent::simplifyPath(std::vector<flat::geometry::Vector2>& path) const
+{
+	unsigned int i = path.size() - 1;
+	while (i >= 2)
+	{
+		while (i >= 2 && isStraightPath(path[i], path[i - 2]))
+		{
+			path.erase(path.begin() + i - 1);
+			--i;
+		}
+		--i;
+	}
+}
+
+bool MovementComponent::isStraightPath(const flat::geometry::Vector2& from, const flat::geometry::Vector2& to) const
+{
+	if (from.x == to.x || from.y == to.y)
+		return true;
+	
+	const float delta = 0.4f;
+	const map::Map* map = m_owner->getMap();
+	flat::geometry::Vector2 move = to - from;
+	flat::geometry::Vector2 segment = move.normalize() * delta;
+	float numSegments = move.length() / delta;
+	for (float f = 1.f; f <= numSegments; ++f)
+	{
+		flat::geometry::Vector2 point = from + segment * f;
+		if (!map->getTileIfWalkable(point.getRoundX(), point.getRoundY()))
+			return false;
+	}
+	
+	
+	return true;
 }
 
 } // component

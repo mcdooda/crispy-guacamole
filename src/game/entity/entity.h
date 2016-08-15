@@ -56,6 +56,7 @@ class Entity final : public map::MapObject
 	public:
 		flat::Slot<const flat::geometry::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;
+		flat::Slot<map::Map*> addedToMap;
 		flat::Slot<> movementStarted;
 		flat::Slot<> movementStopped;
 		

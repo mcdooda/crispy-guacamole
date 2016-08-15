@@ -6,6 +6,10 @@
 
 namespace game
 {
+namespace map
+{
+class Map;
+}
 namespace entity
 {
 namespace component
@@ -19,6 +23,9 @@ class BehaviorComponent : public Component
 		void update(float currentTime, float elapsedTime) override;
 		
 		void enterState(const char* stateName);
+		
+	private:
+		void addedToMap(map::Map* map);
 		
 	private:
 		behavior::BehaviorRuntime m_behaviorRuntime;

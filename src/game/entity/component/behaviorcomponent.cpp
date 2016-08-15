@@ -8,10 +8,12 @@ namespace entity
 namespace component
 {
 
-void BehaviorComponent::setOwner(Entity* entity)
+void BehaviorComponent::setOwner(Entity* owner)
 {
-	Super::setOwner(entity);
-	m_behaviorRuntime.setEntity(entity);
+	Super::setOwner(owner);
+	m_behaviorRuntime.setEntity(owner);
+	
+	owner->addedToMap.on(this, &BehaviorComponent::addedToMap);
 }
 
 void BehaviorComponent::update(float currentTime, float elapsedTime)
@@ -25,6 +27,11 @@ void BehaviorComponent::update(float currentTime, float elapsedTime)
 void BehaviorComponent::enterState(const char* stateName)
 {
 	m_behaviorRuntime.enterState(stateName);
+}
+
+void BehaviorComponent::addedToMap(map::Map* map)
+{
+	enterState("init");
 }
 
 } // component

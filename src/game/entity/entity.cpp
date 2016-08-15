@@ -68,8 +68,8 @@ void Entity::onAddedToMap(map::Map* map)
 	m_map = map;
 	m_tile = getTileFromPosition();
 	m_tile->addEntity(this);
+	addedToMap(map);
 	positionChanged(m_position);
-	enterState("init");
 }
 
 void Entity::onRemovedFromMap()

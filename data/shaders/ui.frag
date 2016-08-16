@@ -1,7 +1,9 @@
 #version 130
 
 uniform sampler2D objectTexture;
+uniform bool textureGiven;
 uniform vec4 color;
+uniform vec4 secondaryColor;
 
 in vec2 uv2;
 
@@ -37,11 +39,15 @@ vec3 lighten(vec3 color)
 
 void main()
 {
-	vec4 textureColor = texture(objectTexture, vec2(uv2.x, uv2.y));
-	vec3 min = textureColor.rgb;
-	vec3 max = lighten(textureColor.rgb);
-	outColor.rgb = min * (1.0 - color.rgb) + max * color.rgb;
-	outColor.a = textureColor.a * color.a;
+	vec4 inputColor = color;
+	if (textureGiven)
+	{
+		inputColor *= texture(objectTexture, vec2(uv2.x, uv2.y));
+	}
+	vec3 min = inputColor.rgb;
+	vec3 max = lighten(inputColor.rgb);
+	outColor.rgb = min * (1.0 - secondaryColor.rgb) + max * secondaryColor.rgb;
+	outColor.a = inputColor.a * secondaryColor.a;
 }
 
 

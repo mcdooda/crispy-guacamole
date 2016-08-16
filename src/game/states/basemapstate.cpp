@@ -41,7 +41,9 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	m_uiProgram.load("data/shaders/ui.frag", "data/shaders/ui.vert");
 	
 	m_uiProgramRenderSettings.textureUniform              = m_uiProgram.getUniform("objectTexture");
+	m_uiProgramRenderSettings.textureGivenUniform         = m_uiProgram.getUniform("textureGiven");
 	m_uiProgramRenderSettings.colorUniform                = m_uiProgram.getUniform("color");
+	m_uiProgramRenderSettings.secondaryColorUniform       = m_uiProgram.getUniform("secondaryColor");
 	m_uiProgramRenderSettings.modelMatrixUniform          = m_uiProgram.getUniform("modelMatrix");
 	m_uiProgramRenderSettings.viewProjectionMatrixUniform = m_uiProgram.getUniform("vpMatrix");
 	m_uiProgramRenderSettings.positionAttribute           = m_uiProgram.getAttribute("position");

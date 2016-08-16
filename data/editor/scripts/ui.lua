@@ -94,6 +94,7 @@ do
 		icon:setBackground('data/editor/interface/square.png')
 		icon:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
 		icon:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
+		icon:setBackgroundColor(0xFF0000FF)
 		root:addChild(icon)
 		Timer.start(0, function()
 			local x, y = Mouse.getPosition()

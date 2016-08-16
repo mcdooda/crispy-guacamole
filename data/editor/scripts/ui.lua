@@ -90,7 +90,9 @@ do
 	end
 	
 	do
-		local icon = Widget.makeImage('data/editor/interface/square.png')
+		local icon = Widget.makeFixedSize(64,64)
+		icon:setBackground('data/editor/interface/square.png')
+		icon:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
 		icon:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
 		root:addChild(icon)
 		Timer.start(0, function()

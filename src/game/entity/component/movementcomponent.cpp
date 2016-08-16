@@ -224,7 +224,9 @@ void MovementComponent::separateFromNearbyEntities()
 			const map::Tile* tile = map->getTileIfWalkable(x, y);
 			if (tile)
 			{
-				for (entity::Entity* neighbor : tile->getEntities())
+				// we actually need to copy this as it is iterated and modified at the same type
+				const std::vector<entity::Entity*> neighbors = tile->getEntities();
+				for (entity::Entity* neighbor : neighbors)
 				{
 					if (neighbor == m_owner)
 						continue;

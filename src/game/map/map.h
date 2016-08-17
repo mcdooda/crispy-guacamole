@@ -30,7 +30,8 @@ class Map final
 		Map();
 		~Map();
 		
-		void load(Game* game, const mod::Mod& mod);
+		bool load(Game* game, const mod::Mod& mod);
+		void createEmptyMap(const mod::Mod& mod);
 		
 		void drawTiles(DisplayManager& displayManager, const flat::video::View& view) const;
 		
@@ -51,9 +52,6 @@ class Map final
 		inline int getWidth() const { return m_width; }
 		inline int getHeight() const { return m_height; }
 		
-		inline int getTileWidth() const { return m_tileWidth; }
-		inline int getTileHeight() const { return m_tileHeight; }
-		
 		void addEntity(entity::Entity* entity);
 		void removeEntity(entity::Entity* entity);
 		
@@ -64,7 +62,9 @@ class Map final
 		int getNumTiles() const;
 		
 		void setSize(int width, int height);
-		void setTileSize(int tileWidth, int tileHeight);
+		void setAxes(const flat::geometry::Vector2& xAxis,
+		             const flat::geometry::Vector2& yAxis,
+		             const flat::geometry::Vector2& zAxis);
 		
 		void createTiles();
 		void destroyTiles();

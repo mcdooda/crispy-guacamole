@@ -53,13 +53,17 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	m_mod.readConfig(m_luaState);
 	
 	// level
-	m_map.load(game, m_mod);
-	flat::geometry::Vector3 cameraCenter(m_map.getWidth() / 2, m_map.getHeight() / 2, 0.f);
+	if (!m_map.load(game, m_mod))
+	{
+		m_map.createEmptyMap(m_mod);
+	}
 	
 	// reset view
 	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
 	m_gameView.updateProjection(windowSize);
 	m_cameraZoom = 1.f;
+
+	flat::geometry::Vector3 cameraCenter(m_map.getWidth() / 2, m_map.getHeight() / 2, 0.f);
 	setCameraCenter(cameraCenter);
 }
 
@@ -95,8 +99,8 @@ void BaseMapState::updateGameView(game::Game* game)
 {
 	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
 	
-	const int tileWidth = m_map.getTileWidth();
-	const int tileHeight = m_map.getTileHeight();
+	const flat::geometry::Vector2& xAxis = m_map.getXAxis();
+	flat::geometry::Vector2 speed(-xAxis.x, xAxis.y);
 	
 	flat::geometry::Vector2 move;
 	
@@ -126,19 +130,16 @@ void BaseMapState::updateGameView(game::Game* game)
 	bool downPressed = keyboard->isPressed(K(DOWN));
 	
 	if (leftPressed && !rightPressed)
-		move.x = tileWidth;
-		
+		move.x = speed.x;
 	else if (rightPressed && !leftPressed)
-		move.x = -tileWidth;
-		
+		move.x = -speed.x;
 		
 	if (upPressed && !downPressed)
-		move.y = -tileHeight;
-		
+		move.y = -speed.y;
 	else if (downPressed && !upPressed)
-		move.y = tileHeight;
+		move.y = speed.y;
 	
-	const float cameraSpeed = 20.f;
+	const float cameraSpeed = 40.f;
 	m_cameraCenter2d += move * game->time->getFrameTime() * cameraSpeed;
 	updateCameraView();
 	

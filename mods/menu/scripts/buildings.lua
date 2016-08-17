@@ -1,2 +1,0 @@
--- insert building definitions here
-

@@ -27,6 +27,7 @@ class Reader
 		Reader(Game* game, const mod::Mod& mod, Map& map);
 		~Reader();
 		
+		bool canRead() const;
 		void read();
 
 	private:

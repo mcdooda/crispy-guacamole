@@ -26,6 +26,11 @@ Reader::~Reader()
 	
 }
 
+bool Reader::canRead() const
+{
+	return m_file.is_open();
+}
+
 void Reader::read()
 {
 	readHeaders();
@@ -51,7 +56,7 @@ void Reader::readHeaders()
 	for (int i = 0; i < numProps; ++i)
 	{
 		std::string name = readString();
-		std::string texturePath = m_mod.getTexturePath("doodads/" + name); // TODO props/
+		std::string texturePath = m_mod.getTexturePath("props/" + name);
 		m_propTextures.push_back(m_game->video->getTexture(texturePath));
 	}
 	
@@ -63,7 +68,14 @@ void Reader::readHeaders()
 void Reader::readTiles()
 {
 	m_map.setSize(m_mapWidth, m_mapHeight);
-	m_map.setTileSize(64, 32);
+	// TODO read from map.gpmap
+	/*
+	m_map.setAxes(
+		flat::geometry::Vector2(-32.f, 16.f),
+		flat::geometry::Vector2( 32.f, 16.f),
+		flat::geometry::Vector2(  0.f,-32.f)
+	);
+	*/
 	m_map.createTiles();
 	
 	for (int x = 0; x < m_mapWidth; ++x)
@@ -74,12 +86,10 @@ void Reader::readTiles()
 			
 			// tile actually exists?
 			bool exists = readBool();
-			if (!exists)
+			if (exists)
 			{
-				tile->setExists(false);
-			}
-			else
-			{
+				tile->setExists(true);
+
 				float z = readFloat();
 				tile->setCoordinates(m_map, x, y, z);
 				

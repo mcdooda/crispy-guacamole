@@ -14,7 +14,7 @@ function List:pushLeft(value)
 	self[first] = value
 end
 
-function List:pushrRight(value)
+function List:pushRight(value)
 	local last = self.last + 1
 	self.last = last
 	self[last] = value

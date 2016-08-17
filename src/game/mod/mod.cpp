@@ -6,53 +6,83 @@ namespace game
 namespace mod
 {
 
-void Mod::setPath(const std::string& path)
+void Mod::setPath(const std::string& mapPath)
 {
-	m_path = path;
-	if (m_path[m_path.size() - 1] != '/')
-		m_path += '/';
+	m_mapPath = mapPath;
+	if (m_mapPath[m_mapPath.size() - 1] != '/')
+		m_mapPath += '/';
+
+	m_path = m_mapPath + "../../";
 }
 
 void Mod::readConfig(lua_State* L)
 {
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	FLAT_ASSERT_MSG(!m_path.empty(), "Mod path is empty");
-	FLAT_ASSERT(L);
 	
-	int top = lua_gettop(L);
-	
-	luaL_loadfile(L, getScriptPath("config.lua").c_str());
+	luaL_loadfile(L, getMapScriptPath("map.lua").c_str());
 	lua_call(L, 0, 1);
 	
-	lua_getfield(L, -1, "mapWidth");
-	m_mapWidth = luaL_checkint(L, -1);
-	
-	lua_getfield(L, -2, "mapHeight");
-	m_mapHeight = luaL_checkint(L, -1);
-	
-	lua_getfield(L, -3, "resourcePath");
-	if (lua_isstring(L, -1))
 	{
-		m_resourcePath = luaL_checkstring(L, -1);
-		if (m_resourcePath[m_resourcePath.size() - 1] != '/')
-			m_resourcePath += '/';
+		lua_getfield(L, -1, "width");
+		m_mapWidth = luaL_checkint(L, -1);
+		lua_getfield(L, -2, "height");
+		m_mapHeight = luaL_checkint(L, -1);
+		lua_pop(L, 2);
 	}
 
-	lua_settop(L, top);
+	{
+		lua_getfield(L, -1, "axes");
+		luaL_checktype(L, -1, LUA_TTABLE);
+		{
+			lua_getfield(L, -1, "x");
+			luaL_checktype(L, -1, LUA_TTABLE);
+			lua_rawgeti(L, -1, 1);
+			m_xAxis.x = luaL_checknumber(L, -1);
+			lua_rawgeti(L, -2, 2);
+			m_xAxis.y = luaL_checknumber(L, -1);
+			lua_pop(L, 3);
+		}
+		{
+			lua_getfield(L, -1, "y");
+			luaL_checktype(L, -1, LUA_TTABLE);
+			lua_rawgeti(L, -1, 1);
+			m_yAxis.x = luaL_checknumber(L, -1);
+			lua_rawgeti(L, -2, 2);
+			m_yAxis.y = luaL_checknumber(L, -1);
+			lua_pop(L, 3);
+		}
+		{
+			lua_getfield(L, -1, "z");
+			luaL_checktype(L, -1, LUA_TTABLE);
+			lua_rawgeti(L, -1, 1);
+			m_zAxis.x = luaL_checknumber(L, -1);
+			lua_rawgeti(L, -2, 2);
+			m_zAxis.y = luaL_checknumber(L, -1);
+			lua_pop(L, 3);
+		}
+		lua_pop(L, 1);
+	}
 }
 
-std::string Mod::getScriptPath(const std::string& fileName) const
+std::string Mod::getMapScriptPath(const std::string& fileName) const
+{
+	return m_mapPath + fileName;
+}
+
+std::string Mod::getModScriptPath(const std::string& fileName) const
 {
 	return m_path + "scripts/" + fileName;
 }
 
 std::string Mod::getTexturePath(const std::string& fileName) const
 {
-	return m_resourcePath + fileName;
+	return m_path + fileName;
 }
 
 std::string Mod::getMapPath() const
 {
-	return m_path + "map.gpmap";
+	return m_mapPath + "map.gpmap";
 }
 
 std::string Mod::getEntityTemplatePath(const std::string& entityTemplateName) const

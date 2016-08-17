@@ -108,7 +108,9 @@ map::Tile* Entity::getTileFromPosition()
 	FLAT_ASSERT(m_map);
 	int tileX = floor(m_position.x + 0.5f);
 	int tileY = floor(m_position.y + 0.5f);
-	return m_map->getTileIfExists(tileX, tileY);
+	map::Tile* tile = m_map->getTileIfExists(tileX, tileY);
+	FLAT_ASSERT_MSG(tile, "Trying to get a tile that does not exist");
+	return tile;
 }
 
 void Entity::destroyComponents()

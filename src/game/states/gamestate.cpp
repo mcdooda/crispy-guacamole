@@ -21,7 +21,7 @@ void GameState::enter(flat::state::Agent* agent)
 	
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, "sheep");
 	
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		entity::Entity* sheep = new entity::Entity(entityTemplate, m_luaState);
 		float rx = game->random->nextFloat(-0.1f, 0.1f);

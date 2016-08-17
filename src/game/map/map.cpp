@@ -2,6 +2,7 @@
 #include "displaymanager.h"
 #include "tile.h"
 #include "io/reader.h"
+#include "../mod/mod.h"
 #include "../entity/entity.h"
 
 namespace game
@@ -25,10 +26,32 @@ Map::~Map()
 	destroyTiles();
 }
 
-void Map::load(Game* game, const mod::Mod& mod)
+bool Map::load(Game* game, const mod::Mod& mod)
 {
 	io::Reader reader(game, mod, *this);
-	reader.read();
+	if (reader.canRead())
+	{
+		// TODO read from map.gpmap
+		setAxes(
+			mod.getXAxis(),
+			mod.getYAxis(),
+			mod.getZAxis()
+		);
+		reader.read();
+		return true;
+	}
+	return false;
+}
+
+void Map::createEmptyMap(const mod::Mod& mod)
+{
+	setSize(mod.getMapWidth(), mod.getMapHeight());
+	setAxes(
+		mod.getXAxis(),
+		mod.getYAxis(),
+		mod.getZAxis()
+	);
+	createTiles();
 }
 
 void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& view) const
@@ -150,19 +173,13 @@ void Map::setSize(int width, int height)
 	m_height = height;
 }
 
-void Map::setTileSize(int tileWidth, int tileHeight)
+void Map::setAxes(const flat::geometry::Vector2& xAxis,
+                  const flat::geometry::Vector2& yAxis,
+                  const flat::geometry::Vector2& zAxis)
 {
-	m_tileWidth = tileWidth;
-	m_tileHeight = tileHeight;
-	
-	m_xAxis.x = -m_tileWidth / 2.f;
-	m_xAxis.y = m_tileHeight / 2.f;
-	
-	m_yAxis.x = m_tileWidth / 2.f;
-	m_yAxis.y = m_tileHeight / 2.f;
-	
-	m_zAxis.x = 0.f;
-	m_zAxis.y = -m_tileHeight;
+	m_xAxis = xAxis;
+	m_yAxis = yAxis;
+	m_zAxis = zAxis;
 }
 
 void Map::createTiles()
@@ -176,6 +193,7 @@ void Map::createTiles()
 		{
 			Tile* tile = getTile(x, y);
 			tile->setCoordinates(*this, x, y, 0.f);
+			tile->setExists(false);
 		}
 	}
 }

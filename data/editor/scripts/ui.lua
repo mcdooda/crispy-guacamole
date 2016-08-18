@@ -47,51 +47,89 @@ do
 		{
 			'data/editor/interface/brushsizedown.png',
 			function(w)
-				print 'size -'
+				print 'click size -'
 				return true
+			end,
+			function(w)
+				print 'mouse enter size -'
+			end,
+			function(w)
+				print 'mouse leave size -'
 			end
 		},
 		{
 			'data/editor/interface/brushsizeup.png',
 			function(w)
-				print 'size +'
+				print 'click size +'
 				return true
+			end,
+			function(w)
+				print 'mouse enter size +'
+			end,
+			function(w)
+				print 'mouse leave size +'
 			end
 		},
 		{
 			'data/editor/interface/cone.png',
 			function(w)
-				print 'cone'
+				print 'click cone'
 				return true
+			end,
+			function(w)
+				print 'mouse enter cone'
+			end,
+			function(w)
+				print 'mouse leave cone'
 			end
 		},
 		{
 			'data/editor/interface/disc.png',
 			function(w)
-				print 'disc'
+				print 'click disc'
 				return true
+			end,
+			function(w)
+				print 'mouse enter disc'
+			end,
+			function(w)
+				print 'mouse leave disc'
 			end
 		},
 		{
 			'data/editor/interface/pyramid.png',
 			function(w)
-				print 'pyramid'
+				print 'click pyramid'
 				return true
+			end,
+			function(w)
+				print 'mouse enter pyramid'
+			end,
+			function(w)
+				print 'mouse leave pyramid'
 			end
 		},
 		{
 			'data/editor/interface/square.png',
 			function(w)
-				print 'square'
+				print 'click square'
 				return true
+			end,
+			function(w)
+				print 'mouse enter square'
+			end,
+			function(w)
+				print 'mouse leave square'
 			end
 		}
 	}
 
 	for _, pair in pairs(icons) do
-		local image, onClick = unpack(pair)
+		local image, onClick, onMouseEnter, onMouseLeave = unpack(pair)
 		local icon = Widget.makeImage(image)
 		icon:click(onClick)
+		icon:mouseEnter(onMouseEnter)
+		icon:mouseLeave(onMouseLeave)
 		toolbar:addChild(icon)
 	end
 	

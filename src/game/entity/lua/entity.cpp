@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "../entity.h"
+#include "../component/movementcomponent.h"
 
 namespace game
 {
@@ -21,6 +22,7 @@ int open(lua_State* L)
 		{"moveTo",        l_Entity_moveTo},
 		{"enterState",    l_Entity_enterState},
 		{"playAnimation", l_Entity_playAnimation},
+		{"jump",          l_Entity_jump},
 		
 		{nullptr, nullptr}
 	};
@@ -69,6 +71,22 @@ int l_Entity_playAnimation(lua_State* L)
 	{
 		luaL_error(L, "Animation %s does not exist", animationName);
 	}
+	return lua_yield(L, 0);
+}
+
+int l_Entity_jump(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	component::MovementComponent* movementComponent = entity->getMovementComponent();
+	if (!movementComponent)
+	{
+		luaL_error(L, "Cannot jump without a movement component");
+	}
+	if (!movementComponent->isTouchingGround())
+	{
+		luaL_error(L, "Cannot jump midair");
+	}
+	movementComponent->jump();
 	return lua_yield(L, 0);
 }
 

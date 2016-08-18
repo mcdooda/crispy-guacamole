@@ -53,6 +53,8 @@ class Entity final : public map::MapObject
 		void enterState(const char* stateName);
 		bool playAnimation(const char* animationName, int numLoops = 1);
 		
+		inline component::MovementComponent* getMovementComponent() { return m_movementComponent; }
+		
 	public:
 		flat::Slot<const flat::geometry::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;

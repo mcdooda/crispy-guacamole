@@ -9,6 +9,7 @@ namespace game
 {
 namespace map
 {
+class Map;
 class Tile;
 }
 namespace entity
@@ -20,12 +21,18 @@ class MovementComponent : public Component
 {
 	typedef Component Super;
 	public:
+		void setOwner(Entity* owner) override;
 		void update(float currentTime, float elapsedTime) override;
+		
+		void addedToMap(map::Map* map);
 		
 		bool isBusy() const override;
 		
 		bool followsPath() const;
 		void addPointOnPath(const flat::geometry::Vector2& point);
+		
+		void jump();
+		inline bool isTouchingGround() const { return m_isTouchingGround; }
 		
 		struct Node
 		{
@@ -37,6 +44,7 @@ class MovementComponent : public Component
 		};
 		
 	private:
+		void fall(float elapsedTime);
 		void separateFromAdjacentTiles();
 		void separateFromNearbyEntities();
 		
@@ -51,7 +59,11 @@ class MovementComponent : public Component
 		bool isStraightPath(const flat::geometry::Vector2& from, const flat::geometry::Vector2& to) const;
 		
 	private:
+		static constexpr float MIN_Z_EPSILON = 0.1f;
+		
 		std::queue<flat::geometry::Vector2> m_path;
+		float m_zSpeed;
+		bool m_isTouchingGround : 1;
 };
 
 } // component

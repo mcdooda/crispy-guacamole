@@ -63,6 +63,8 @@ void Mod::readConfig(lua_State* L)
 		}
 		lua_pop(L, 1);
 	}
+	
+	lua_pop(L, 1);
 }
 
 std::string Mod::getMapScriptPath(const std::string& fileName) const

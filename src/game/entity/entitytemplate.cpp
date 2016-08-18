@@ -9,7 +9,11 @@ namespace entity
 
 EntityTemplate::EntityTemplate(Game* game, lua_State* L, const std::string& path) :
 	m_radius(0.f),
-	m_speed(0.f)
+	m_speed(0.f),
+	m_jumpForce(0.f),
+	m_weight(0.f),
+	m_jumpMaxHeight(0.f),
+	m_jumpDistance(0.f)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	loadSpriteConfig(game, L, path);
@@ -105,7 +109,22 @@ void EntityTemplate::loadPhysicsConfig(Game* game, lua_State* L, const std::stri
 	lua_getfield(L, -2, "speed");
 	m_speed = luaL_checknumber(L, -1);
 	
-	lua_pop(L, 3);
+	lua_getfield(L, -3, "jumpForce");
+	m_jumpForce = luaL_checknumber(L, -1);
+	
+	lua_getfield(L, -4, "weight");
+	m_weight = luaL_checknumber(L, -1);
+	
+	// compute jump height and distance from jump force and weight
+	//const float a = -m_weight / 2.f;
+	//const float b = m_jumpForce;
+	//const float delta = b * b;
+	//m_jumpDuration = (-b - std::sqrt(delta)) / (2.f * a);
+	m_jumpDuration = (2.f * m_jumpForce) / m_weight;
+	m_jumpMaxHeight = getJumpHeight(m_jumpDuration / 2.f);
+	m_jumpDistance = m_speed * m_jumpDuration;
+	
+	lua_pop(L, 5);
 }
 
 void EntityTemplate::loadBehaviorConfig(Game* game, lua_State* L, const std::string& path)

@@ -27,6 +27,13 @@ class EntityTemplate final
 		// physics
 		inline float getRadius() const { return m_radius; }
 		inline float getSpeed() const { return m_speed; }
+		inline float getJumpForce() const { return m_jumpForce; }
+		inline float getWeight() const { return m_weight; }
+		
+		inline float getJumpHeight(float t) const { return (-m_weight / 2.f) * t * t + m_jumpForce * t; }
+		inline float getJumpMaxHeight() const { return m_jumpMaxHeight; }
+		inline float getJumpDuration() const { return m_jumpDuration; }
+		inline float getJumpDistance() const { return m_jumpDistance; }
 		
 		// behavior
 		const behavior::Behavior* getBehavior() const { return m_behavior; }
@@ -43,6 +50,12 @@ class EntityTemplate final
 		// physics
 		float m_radius;
 		float m_speed;
+		float m_jumpForce;
+		float m_weight;
+		
+		float m_jumpMaxHeight;
+		float m_jumpDuration;
+		float m_jumpDistance;
 		
 		// behavior
 		behavior::Behavior* m_behavior;

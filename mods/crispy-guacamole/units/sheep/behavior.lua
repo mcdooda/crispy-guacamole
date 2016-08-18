@@ -13,11 +13,12 @@ end
 local states = {}
 
 function states:init(sheep)
-	sheep:enterState 'wander'
+	--sheep:enterState 'wander'
+	sheep:playAnimation 'graze'
 end
 
 function states:idle(sheep)
-	
+	sheep:jump()
 end
 
 function states:wander(sheep)

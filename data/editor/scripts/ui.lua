@@ -47,36 +47,42 @@ do
 		{
 			'data/editor/interface/brushsizedown.png',
 			function(w)
+				print 'size -'
 				return true
 			end
 		},
 		{
 			'data/editor/interface/brushsizeup.png',
 			function(w)
+				print 'size +'
 				return true
 			end
 		},
 		{
 			'data/editor/interface/cone.png',
 			function(w)
+				print 'cone'
 				return true
 			end
 		},
 		{
 			'data/editor/interface/disc.png',
 			function(w)
+				print 'disc'
 				return true
 			end
 		},
 		{
 			'data/editor/interface/pyramid.png',
 			function(w)
+				print 'pyramid'
 				return true
 			end
 		},
 		{
 			'data/editor/interface/square.png',
 			function(w)
+				print 'square'
 				return true
 			end
 		}

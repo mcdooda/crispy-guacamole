@@ -21,9 +21,9 @@ void Behavior::load(lua_State* L)
 	lua_pop(L, 1);
 }
 
-lua_State* Behavior::pushStates() const
+void Behavior::pushStates(lua_State* L) const
 {
-	return m_states.push();
+	m_states.push(L);
 }
 
 } // behavior

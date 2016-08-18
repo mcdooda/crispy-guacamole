@@ -19,7 +19,7 @@ class Behavior
 		
 	private:
 		void load(lua_State* L);
-		lua_State* pushStates() const;
+		void pushStates(lua_State*) const;
 		inline lua_State* getLuaState() const { return m_states.getLuaState(); }
 		
 	private:

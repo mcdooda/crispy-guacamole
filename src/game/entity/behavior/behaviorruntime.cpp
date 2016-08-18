@@ -42,7 +42,7 @@ void BehaviorRuntime::enterState(const char* stateName)
 	m_coroutineRef = luaL_ref(L, LUA_REGISTRYINDEX);
 	
 	// states table
-	behavior->pushStates();
+	behavior->pushStates(L);
 	
 	//function
 	lua_getfield(L, -1, stateName);

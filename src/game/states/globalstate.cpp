@@ -32,7 +32,7 @@ void GlobalState::exit(flat::state::Agent* agent)
 
 void GlobalState::resetViews(game::Game* game)
 {
-	const flat::geometry::Vector2 windowSize = game->video->window->getSize();
+	const flat::Vector2 windowSize = game->video->window->getSize();
 	
 	game->interfaceView.reset();
 	game->interfaceView.move(windowSize / -2.0f);

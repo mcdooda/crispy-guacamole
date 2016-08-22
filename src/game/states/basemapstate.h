@@ -29,7 +29,7 @@ class BaseMapState : public flat::state::State
 	protected:
 		void update(game::Game* game);
 		void updateGameView(game::Game* game);
-		void setCameraCenter(const flat::geometry::Vector3& cameraCenter);
+		void setCameraCenter(const flat::Vector3& cameraCenter);
 		void setCameraZoom(float cameraZoom);
 		void updateCameraView();
 		
@@ -41,7 +41,7 @@ class BaseMapState : public flat::state::State
 		
 		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const;
 		
-		flat::geometry::Vector2 getCursorMapPosition(game::Game* game);
+		flat::Vector2 getCursorMapPosition(game::Game* game);
 		
 	protected:
 		// lua state
@@ -63,7 +63,7 @@ class BaseMapState : public flat::state::State
 		map::DisplayManager m_mapDisplayManager;
 		
 		flat::video::View m_gameView;
-		flat::geometry::Vector2 m_cameraCenter2d;
+		flat::Vector2 m_cameraCenter2d;
 		float m_cameraZoom;
 		
 		// ui

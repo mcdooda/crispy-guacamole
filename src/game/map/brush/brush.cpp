@@ -16,7 +16,7 @@ Brush::Brush() :
 	
 }
 
-void Brush::getTiles(Map& map, const flat::geometry::Vector2& center, std::vector<map::Tile*>& tiles, float minEffect) const
+void Brush::getTiles(Map& map, const flat::Vector2& center, std::vector<map::Tile*>& tiles, float minEffect) const
 {
 	const int minX = floor(center.x - m_radius);
 	const int maxX = ceil(center.x + m_radius);
@@ -26,7 +26,7 @@ void Brush::getTiles(Map& map, const flat::geometry::Vector2& center, std::vecto
 	tiles.clear();
 	tiles.reserve((maxX - minX) * (maxY - minY));
 	
-	flat::geometry::Vector2 positionFromCenter;
+	flat::Vector2 positionFromCenter;
 	
 	for (int x = minX; x <= maxX; ++x)
 	{
@@ -46,16 +46,16 @@ void Brush::getTiles(Map& map, const flat::geometry::Vector2& center, std::vecto
 	}
 }
 
-float Brush::getTileEffect(const flat::geometry::Vector2& center, const map::Tile* tile) const
+float Brush::getTileEffect(const flat::Vector2& center, const map::Tile* tile) const
 {
-	flat::geometry::Vector2 positionFromCenter(
+	flat::Vector2 positionFromCenter(
 		static_cast<float>(tile->getX()) - center.x,
 		static_cast<float>(tile->getY()) - center.y
 	);
 	return getEffect(positionFromCenter);
 }
 
-void Brush::getEntities(Map& map, const flat::geometry::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect) const
+void Brush::getEntities(Map& map, const flat::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect) const
 {
 	const int minX = floor(center.x - m_radius);
 	const int maxX = ceil(center.x + m_radius);
@@ -64,7 +64,7 @@ void Brush::getEntities(Map& map, const flat::geometry::Vector2& center, std::ve
 	
 	entities.clear();
 	
-	flat::geometry::Vector2 positionFromCenter;
+	flat::Vector2 positionFromCenter;
 	
 	for (int x = minX; x <= maxX; ++x)
 	{

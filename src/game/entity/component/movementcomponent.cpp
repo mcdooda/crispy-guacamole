@@ -24,20 +24,20 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 {
 	if (followsPath())
 	{
-		flat::geometry::Vector2& pathNextPoint = m_path.front();
-		const flat::geometry::Vector3& position = m_owner->getPosition();
-		flat::geometry::Vector2 position2d = flat::geometry::Vector2(position.x, position.y);
-		flat::geometry::Vector2 move = pathNextPoint - position2d;
+		flat::Vector2& pathNextPoint = m_path.front();
+		const flat::Vector3& position = m_owner->getPosition();
+		flat::Vector2 position2d = flat::Vector2(position.x, position.y);
+		flat::Vector2 move = pathNextPoint - position2d;
 		if (move.lengthSquared() > 0.f)
 		{
 			m_owner->setHeading(move.angle());
-			flat::geometry::Vector2 direction = move.normalize();
+			flat::Vector2 direction = move.normalize();
 			const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
 			float speed = entityTemplatePtr->getSpeed();
-			flat::geometry::Vector2 newPosition2d = position2d + direction * speed * elapsedTime;
+			flat::Vector2 newPosition2d = position2d + direction * speed * elapsedTime;
 			
 			const map::Map* map = m_owner->getMap();
-			flat::geometry::Vector2 nextTilePosition = position2d + direction * 0.4f;
+			flat::Vector2 nextTilePosition = position2d + direction * 0.4f;
 			const map::Tile* nextTile = map->getTileIfWalkable(nextTilePosition.getRoundX(), nextTilePosition.getRoundY());
 			
 			if (nextTile && (nextTile->getZ() > position.z + MIN_Z_EPSILON || nextTile->getZ() < position.z - MIN_Z_EPSILON))
@@ -45,7 +45,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 				jump();
 			}
 			
-			flat::geometry::Vector2 newMove = pathNextPoint - newPosition2d;
+			flat::Vector2 newMove = pathNextPoint - newPosition2d;
 			if (move.dotProduct(newMove) <= 0.f)
 			{
 				newPosition2d = pathNextPoint;
@@ -55,7 +55,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 					m_owner->movementStopped();
 				}
 			}
-			m_owner->setPosition(flat::geometry::Vector3(newPosition2d.x, newPosition2d.y, position.z));
+			m_owner->setPosition(flat::Vector3(newPosition2d.x, newPosition2d.y, position.z));
 		}
 	}
 	
@@ -67,7 +67,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 void MovementComponent::addedToMap(map::Map* map)
 {
 	const map::Tile* tile = m_owner->getTile();
-	flat::geometry::Vector3 position = m_owner->getPosition();
+	flat::Vector3 position = m_owner->getPosition();
 	if (tile->getZ() >= position.z)
 	{
 		position.z = tile->getZ();
@@ -91,13 +91,13 @@ bool MovementComponent::followsPath() const
 	return !m_path.empty();
 }
 
-void MovementComponent::addPointOnPath(const flat::geometry::Vector2& point)
+void MovementComponent::addPointOnPath(const flat::Vector2& point)
 {
 	bool startMovement = false;
-	flat::geometry::Vector2 startingPoint;
+	flat::Vector2 startingPoint;
 	if (m_path.empty())
 	{
-		const flat::geometry::Vector3& position = m_owner->getPosition();
+		const flat::Vector3& position = m_owner->getPosition();
 		startingPoint.x = position.x;
 		startingPoint.y = position.y;
 		startMovement = true;
@@ -110,11 +110,11 @@ void MovementComponent::addPointOnPath(const flat::geometry::Vector2& point)
 	const float minDistanceBetweenPoints = 0.3f;
 	if ((point - startingPoint).lengthSquared() > minDistanceBetweenPoints * minDistanceBetweenPoints)
 	{
-		std::vector<flat::geometry::Vector2> path;
+		std::vector<flat::Vector2> path;
 		if (findPath(startingPoint, point, path))
 		{
 			path.erase(path.begin());
-			for (const flat::geometry::Vector2& point : path)
+			for (const flat::Vector2& point : path)
 			{
 				m_path.push(point);
 			}
@@ -149,14 +149,14 @@ void MovementComponent::fall(float elapsedTime)
 	const float acceleration = m_owner->getEntityTemplate()->getWeight();
 	const float oldZSpeed = m_zSpeed;
 	m_zSpeed -= acceleration * elapsedTime;
-	const flat::geometry::Vector3& position = m_owner->getPosition();
+	const flat::Vector3& position = m_owner->getPosition();
 	float z = position.z + (oldZSpeed + m_zSpeed) * 0.5f * elapsedTime;
 	if (z < tile->getZ())
 	{
 		z = tile->getZ();
 		m_isTouchingGround = true;
 	}
-	m_owner->setPosition(flat::geometry::Vector3(position.x, position.y, z));
+	m_owner->setPosition(flat::Vector3(position.x, position.y, z));
 }
 
 void MovementComponent::separateFromAdjacentTiles()
@@ -168,12 +168,12 @@ void MovementComponent::separateFromAdjacentTiles()
 	const int tileX = static_cast<float>(tile->getX());
 	const int tileY = static_cast<float>(tile->getY());
 	
-	const flat::geometry::Vector3& position = m_owner->getPosition();
+	const flat::Vector3& position = m_owner->getPosition();
 	const float z = position.z;
 	const float minZ = z + MIN_Z_EPSILON;
 	FLAT_ASSERT(minZ >= tile->getZ());
 	
-	flat::geometry::Vector2 newPosition2d(position.x, position.y);
+	flat::Vector2 newPosition2d(position.x, position.y);
 	
 	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
 	const float radius = entityTemplatePtr->getRadius();
@@ -218,8 +218,8 @@ void MovementComponent::separateFromAdjacentTiles()
 		const map::Tile* tile2 = map->getTileIfWalkable(tileX - 1, tileY - 1);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
-			flat::geometry::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) - 0.5f);
-			flat::geometry::Vector2 toCorner = corner - newPosition2d;
+			flat::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) - 0.5f);
+			flat::Vector2 toCorner = corner - newPosition2d;
 			if (toCorner.lengthSquared() < radius * radius)
 			{
 				newPosition2d = corner - toCorner.normalize() * radius;
@@ -231,8 +231,8 @@ void MovementComponent::separateFromAdjacentTiles()
 		const map::Tile* tile2 = map->getTileIfWalkable(tileX + 1, tileY + 1);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
-			flat::geometry::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) + 0.5f);
-			flat::geometry::Vector2 toCorner = corner - newPosition2d;
+			flat::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) + 0.5f);
+			flat::Vector2 toCorner = corner - newPosition2d;
 			if (toCorner.lengthSquared() < radius * radius)
 			{
 				newPosition2d = corner - toCorner.normalize() * radius;
@@ -244,8 +244,8 @@ void MovementComponent::separateFromAdjacentTiles()
 		const map::Tile* tile2 = map->getTileIfWalkable(tileX + 1, tileY - 1);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
-			flat::geometry::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) - 0.5f);
-			flat::geometry::Vector2 toCorner = corner - newPosition2d;
+			flat::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) - 0.5f);
+			flat::Vector2 toCorner = corner - newPosition2d;
 			if (toCorner.lengthSquared() < radius * radius)
 			{
 				newPosition2d = corner - toCorner.normalize() * radius;
@@ -257,8 +257,8 @@ void MovementComponent::separateFromAdjacentTiles()
 		const map::Tile* tile2 = map->getTileIfWalkable(tileX - 1, tileY + 1);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
-			flat::geometry::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) + 0.5f);
-			flat::geometry::Vector2 toCorner = corner - newPosition2d;
+			flat::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) + 0.5f);
+			flat::Vector2 toCorner = corner - newPosition2d;
 			if (toCorner.lengthSquared() < radius * radius)
 			{
 				newPosition2d = corner - toCorner.normalize() * radius;
@@ -266,12 +266,12 @@ void MovementComponent::separateFromAdjacentTiles()
 		}
 	}
 	
-	m_owner->setPosition(flat::geometry::Vector3(newPosition2d.x, newPosition2d.y, z));
+	m_owner->setPosition(flat::Vector3(newPosition2d.x, newPosition2d.y, z));
 }
 
 void MovementComponent::separateFromNearbyEntities()
 {
-	const flat::geometry::Vector3& position = m_owner->getPosition();
+	const flat::Vector3& position = m_owner->getPosition();
 	const EntityTemplate* entityTemplate = m_owner->getEntityTemplate().get();
 	const float radius = entityTemplate->getRadius();
 	const float weight = entityTemplate->getWeight();
@@ -281,7 +281,7 @@ void MovementComponent::separateFromNearbyEntities()
 	const int tileMaxX = round(position.x + radius + maxEntityRadius);
 	const int tileMaxY = round(position.y + radius + maxEntityRadius);
 	const map::Map* map = m_owner->getMap();
-	flat::geometry::Vector2 position2d(position.x, position.y);
+	flat::Vector2 position2d(position.x, position.y);
 	for (int x = tileMinX; x <= tileMaxX; ++x)
 	{
 		for (int y = tileMinY; y <= tileMaxY; ++y)
@@ -296,19 +296,19 @@ void MovementComponent::separateFromNearbyEntities()
 					if (neighbor == m_owner)
 						continue;
 					
-					const flat::geometry::Vector3& neighborPosition = neighbor->getPosition();
+					const flat::Vector3& neighborPosition = neighbor->getPosition();
 					const EntityTemplate* neighborEntityTemplate = neighbor->getEntityTemplate().get();
 					const float neighborRadius = neighborEntityTemplate->getRadius();
-					flat::geometry::Vector2 neighborPosition2d(neighborPosition.x, neighborPosition.y);
+					flat::Vector2 neighborPosition2d(neighborPosition.x, neighborPosition.y);
 					const float minDistance = radius + neighborRadius - 0.001f;
 					if ((neighborPosition2d - position2d).lengthSquared() < minDistance * minDistance)
 					{
 						const float penetration = -((neighborPosition2d - position2d).length() - radius - neighborRadius);
 						const float neighborWeight = neighborEntityTemplate->getWeight();
 						const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
-						flat::geometry::Vector2 neighborMove = (neighborPosition2d - position2d).normalize();
+						flat::Vector2 neighborMove = (neighborPosition2d - position2d).normalize();
 						neighborPosition2d += neighborMove * penetration * neighborMoveRatio;
-						neighbor->setPosition(flat::geometry::Vector3(neighborPosition2d.x, neighborPosition2d.y, neighborPosition.z));
+						neighbor->setPosition(flat::Vector3(neighborPosition2d.x, neighborPosition2d.y, neighborPosition.z));
 						
 						const float moveRatio = weight / (neighborWeight + weight);
 						position2d += -neighborMove * penetration * moveRatio;
@@ -317,10 +317,10 @@ void MovementComponent::separateFromNearbyEntities()
 			}
 		}
 	}
-	m_owner->setPosition(flat::geometry::Vector3(position2d.x, position2d.y, position.z));
+	m_owner->setPosition(flat::Vector3(position2d.x, position2d.y, position.z));
 }
 
-bool MovementComponent::findPath(const flat::geometry::Vector2& from, const flat::geometry::Vector2& to, std::vector<flat::geometry::Vector2>& path) const
+bool MovementComponent::findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const
 {
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map);
@@ -379,7 +379,7 @@ bool MovementComponent::findPath(const flat::geometry::Vector2& from, const flat
 				Node neighbor;
 				neighbor.tile = neighborTile;
 				neighbor.distance = current.distance + 1.f;
-				float estimatedDistance = (to - flat::geometry::Vector2(neighborTile->getX(), neighborTile->getY())).length();
+				float estimatedDistance = (to - flat::Vector2(neighborTile->getX(), neighborTile->getY())).length();
 				neighbor.heuristic = neighbor.distance + estimatedDistance;
 				
 				std::vector<Node>::iterator it = std::find(openList.begin(), openList.end(), neighbor);
@@ -406,9 +406,9 @@ bool MovementComponent::findPath(const flat::geometry::Vector2& from, const flat
 void MovementComponent::reconstructPath(
 	const std::map<const map::Tile*, const map::Tile*>& previous,
 	const map::Tile* last,
-	const flat::geometry::Vector2& from,
-	const flat::geometry::Vector2& to,
-	std::vector<flat::geometry::Vector2>& path) const
+	const flat::Vector2& from,
+	const flat::Vector2& to,
+	std::vector<flat::Vector2>& path) const
 {
 	path.clear();
 	std::map<const map::Tile*, const map::Tile*>::const_iterator it;
@@ -419,7 +419,7 @@ void MovementComponent::reconstructPath(
 		if (it != previous.end())
 		{
 			current = it->second;
-			path.insert(path.begin(), flat::geometry::Vector2(current->getX(), current->getY()));
+			path.insert(path.begin(), flat::Vector2(current->getX(), current->getY()));
 		}
 		else
 		{
@@ -435,7 +435,7 @@ void MovementComponent::reconstructPath(
 		
 		FLAT_DEBUG_ONLY(
 			const map::Map* map = m_owner->getMap();
-			for (const flat::geometry::Vector2& p : path)
+			for (const flat::Vector2& p : path)
 			{
 				const_cast<map::Tile*>(map->getTile(p.getRoundX(), p.getRoundY()))->setColor(flat::video::Color::GREEN);
 			}
@@ -444,7 +444,7 @@ void MovementComponent::reconstructPath(
 		simplifyPath(path);
 		
 		FLAT_DEBUG_ONLY(
-			for (const flat::geometry::Vector2& p : path)
+			for (const flat::Vector2& p : path)
 			{
 				const_cast<map::Tile*>(map->getTile(p.getRoundX(), p.getRoundY()))->setColor(flat::video::Color::RED);
 			}
@@ -452,7 +452,7 @@ void MovementComponent::reconstructPath(
 	}
 }
 
-void MovementComponent::simplifyPath(std::vector<flat::geometry::Vector2>& path) const
+void MovementComponent::simplifyPath(std::vector<flat::Vector2>& path) const
 {
 	unsigned int i = path.size() - 1;
 	
@@ -467,20 +467,20 @@ void MovementComponent::simplifyPath(std::vector<flat::geometry::Vector2>& path)
 	}
 }
 
-bool MovementComponent::isStraightPath(const flat::geometry::Vector2& from, const flat::geometry::Vector2& to) const
+bool MovementComponent::isStraightPath(const flat::Vector2& from, const flat::Vector2& to) const
 {
 	const float jumpHeight = m_owner->getEntityTemplate()->getJumpMaxHeight();
 	const float delta = 0.4f;
 	const map::Map* map = m_owner->getMap();
-	flat::geometry::Vector2 move = to - from;
-	flat::geometry::Vector2 segment = move.normalize() * delta;
+	flat::Vector2 move = to - from;
+	flat::Vector2 segment = move.normalize() * delta;
 	float numSegments = move.length() / delta;
 	const map::Tile* fromTile = map->getTileIfWalkable(from.getRoundX(), from.getRoundY());
 	FLAT_ASSERT(fromTile);
 	float previousZ = fromTile->getZ();
 	for (float f = 1.f; f <= numSegments; ++f)
 	{
-		flat::geometry::Vector2 point = from + segment * f;
+		flat::Vector2 point = from + segment * f;
 		const map::Tile* tile = map->getTileIfWalkable(point.getRoundX(), point.getRoundY());
 		if (!tile || tile->getZ() > previousZ + jumpHeight)
 			return false;

@@ -59,11 +59,11 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	}
 	
 	// reset view
-	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
+	const flat::Vector2& windowSize = game->video->window->getSize();
 	m_gameView.updateProjection(windowSize);
 	m_cameraZoom = 1.f;
 
-	flat::geometry::Vector3 cameraCenter(m_map.getWidth() / 2, m_map.getHeight() / 2, 0.f);
+	flat::Vector3 cameraCenter(m_map.getWidth() / 2, m_map.getHeight() / 2, 0.f);
 	setCameraCenter(cameraCenter);
 }
 
@@ -97,15 +97,15 @@ void BaseMapState::update(game::Game* game)
 
 void BaseMapState::updateGameView(game::Game* game)
 {
-	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
+	const flat::Vector2& windowSize = game->video->window->getSize();
 	
-	const flat::geometry::Vector2& xAxis = m_map.getXAxis();
-	flat::geometry::Vector2 speed(-xAxis.x, xAxis.y);
+	const flat::Vector2& xAxis = m_map.getXAxis();
+	flat::Vector2 speed(-xAxis.x, xAxis.y);
 	
-	flat::geometry::Vector2 move;
+	flat::Vector2 move;
 	
 	/*
-	const flat::geometry::Vector2& mousePosition = game->input->mouse->getPosition();
+	const flat::Vector2& mousePosition = game->input->mouse->getPosition();
 	const float screenBorderWidth = 5.f;
 	
 	if (mousePosition.x < screenBorderWidth)
@@ -153,7 +153,7 @@ void BaseMapState::updateGameView(game::Game* game)
 		m_gameView.updateProjection(windowSize);
 }
 
-void BaseMapState::setCameraCenter(const flat::geometry::Vector3& cameraCenter)
+void BaseMapState::setCameraCenter(const flat::Vector3& cameraCenter)
 {
 	m_cameraCenter2d = m_map.getXAxis() * cameraCenter.x
 	                 + m_map.getYAxis() * cameraCenter.y
@@ -219,7 +219,7 @@ void BaseMapState::drawUi(game::Game* game)
 	
 	m_uiProgramRenderSettings.viewProjectionMatrixUniform.setMatrix4(game->interfaceView.getViewProjectionMatrix());
 	
-	m_uiProgramRenderSettings.modelMatrixUniform.setMatrix4(flat::geometry::Matrix4());
+	m_uiProgramRenderSettings.modelMatrixUniform.setMatrix4(flat::Matrix4());
 	m_uiProgramRenderSettings.colorUniform.setColor(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
 	
 	m_ui->draw(m_uiProgramRenderSettings);
@@ -231,16 +231,16 @@ std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(ga
 	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath);
 }
 
-flat::geometry::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
+flat::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
 {
-	const flat::geometry::Vector2& cursorPosition = game->input->mouse->getPosition();
-	const flat::geometry::Vector2& windowSize = game->video->window->getSize();
-	flat::geometry::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
+	const flat::Vector2& cursorPosition = game->input->mouse->getPosition();
+	const flat::Vector2& windowSize = game->video->window->getSize();
+	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
 	
-	const flat::geometry::Vector2& xAxis = m_map.getXAxis();
-	const flat::geometry::Vector2& yAxis = m_map.getYAxis();
+	const flat::Vector2& xAxis = m_map.getXAxis();
+	const flat::Vector2& yAxis = m_map.getYAxis();
 	
-	flat::geometry::Vector2 mapPosition;
+	flat::Vector2 mapPosition;
 	
 	mapPosition.x = (gameViewPosition.x * yAxis.y - gameViewPosition.y * yAxis.x) / (xAxis.x * yAxis.y - xAxis.y * yAxis.x);
 	mapPosition.y = (gameViewPosition.y * xAxis.x - gameViewPosition.x * xAxis.y) / (yAxis.y * xAxis.x - yAxis.x * xAxis.y);

@@ -20,9 +20,9 @@ class Mod final
 		inline int getMapWidth() const { return m_mapWidth; }
 		inline int getMapHeight() const { return m_mapHeight; }
 
-		inline const flat::geometry::Vector2& getXAxis() const { return m_xAxis; }
-		inline const flat::geometry::Vector2& getYAxis() const { return m_yAxis; }
-		inline const flat::geometry::Vector2& getZAxis() const { return m_zAxis; }
+		inline const flat::Vector2& getXAxis() const { return m_xAxis; }
+		inline const flat::Vector2& getYAxis() const { return m_yAxis; }
+		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
 		
 		std::string getMapScriptPath(const std::string& fileName) const;
 		std::string getModScriptPath(const std::string& fileName) const;
@@ -38,9 +38,9 @@ class Mod final
 		int m_mapWidth;
 		int m_mapHeight;
 
-		flat::geometry::Vector2 m_xAxis;
-		flat::geometry::Vector2 m_yAxis;
-		flat::geometry::Vector2 m_zAxis;
+		flat::Vector2 m_xAxis;
+		flat::Vector2 m_yAxis;
+		flat::Vector2 m_zAxis;
 };
 
 } // mod

@@ -30,7 +30,7 @@ Entity::~Entity()
 	destroyComponents();
 }
 
-void Entity::setPosition(const flat::geometry::Vector3& position)
+void Entity::setPosition(const flat::Vector3& position)
 {
 	m_position = position;
 	if (m_map)
@@ -57,7 +57,7 @@ void Entity::setHeading(float heading)
 	headingChanged(m_heading);
 }
 
-void Entity::draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const
+void Entity::draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const
 {
 	m_spriteComponent->draw(renderSettings, viewMatrix);
 }
@@ -98,7 +98,7 @@ bool Entity::isBusy() const
 	return false;
 }
 
-void Entity::addPointOnPath(const flat::geometry::Vector2& point)
+void Entity::addPointOnPath(const flat::Vector2& point)
 {
 	m_movementComponent->addPointOnPath(point);
 }

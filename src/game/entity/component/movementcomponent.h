@@ -29,7 +29,7 @@ class MovementComponent : public Component
 		bool isBusy() const override;
 		
 		bool followsPath() const;
-		void addPointOnPath(const flat::geometry::Vector2& point);
+		void addPointOnPath(const flat::Vector2& point);
 		
 		void jump();
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
@@ -48,20 +48,20 @@ class MovementComponent : public Component
 		void separateFromAdjacentTiles();
 		void separateFromNearbyEntities();
 		
-		bool findPath(const flat::geometry::Vector2& from, const flat::geometry::Vector2& to, std::vector<flat::geometry::Vector2>& path) const;
+		bool findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const;
 		void reconstructPath(
 			const std::map<const map::Tile*, const map::Tile*>& previous,
 			const map::Tile* last,
-			const flat::geometry::Vector2& from,
-			const flat::geometry::Vector2& to,
-			std::vector<flat::geometry::Vector2>& path) const;
-		void simplifyPath(std::vector<flat::geometry::Vector2>& path) const;
-		bool isStraightPath(const flat::geometry::Vector2& from, const flat::geometry::Vector2& to) const;
+			const flat::Vector2& from,
+			const flat::Vector2& to,
+			std::vector<flat::Vector2>& path) const;
+		void simplifyPath(std::vector<flat::Vector2>& path) const;
+		bool isStraightPath(const flat::Vector2& from, const flat::Vector2& to) const;
 		
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;
 		
-		std::queue<flat::geometry::Vector2> m_path;
+		std::queue<flat::Vector2> m_path;
 		float m_zSpeed;
 		bool m_isTouchingGround : 1;
 };

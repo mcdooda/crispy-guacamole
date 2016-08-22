@@ -14,7 +14,7 @@ class MapObject
 		MapObject();
 		virtual ~MapObject();
 		
-		virtual void draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const = 0;
+		virtual void draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const = 0;
 		
 		inline float getDepth() const { return m_depth; }
 		

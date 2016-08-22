@@ -27,7 +27,7 @@ class Tile final : public MapObject
 		inline bool isWalkable() const { return m_walkable; }
 		inline void setWalkable(bool walkable) { m_walkable = walkable; }
 		
-		void draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const override;
+		void draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const override;
 		
 		void setCoordinates(const Map& map, int x, int y, float z);
 		inline int getX() const { return m_x; }

@@ -37,7 +37,7 @@ int open(lua_State* L)
 int l_Entity_getPosition(lua_State* L)
 {
 	Entity* entity = getEntity(L, 1);
-	const flat::geometry::Vector3& position = entity->getPosition();
+	const flat::Vector3& position = entity->getPosition();
 	lua_pushnumber(L, position.x);
 	lua_pushnumber(L, position.y);
 	lua_pushnumber(L, position.z);
@@ -49,7 +49,7 @@ int l_Entity_moveTo(lua_State* L)
 	Entity* entity = getEntity(L, 1);
 	float x = luaL_checknumber(L, 2);
 	float y = luaL_checknumber(L, 3);
-	entity->addPointOnPath(flat::geometry::Vector2(x, y));
+	entity->addPointOnPath(flat::Vector2(x, y));
 	return lua_yield(L, 0);
 }
 

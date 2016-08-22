@@ -68,16 +68,16 @@ void SpriteComponent::headingChanged(float heading)
 	}
 }
 
-void SpriteComponent::positionChanged(const flat::geometry::Vector3& position)
+void SpriteComponent::positionChanged(const flat::Vector3& position)
 {
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map);
 	
-	const flat::geometry::Vector2& xAxis = map->getXAxis();
-	const flat::geometry::Vector2& yAxis = map->getYAxis();
-	const flat::geometry::Vector2& zAxis = map->getZAxis();
+	const flat::Vector2& xAxis = map->getXAxis();
+	const flat::Vector2& yAxis = map->getYAxis();
+	const flat::Vector2& zAxis = map->getZAxis();
 	
-	flat::geometry::Vector2 position2d = xAxis * position.x + yAxis * position.y + zAxis * position.z;
+	flat::Vector2 position2d = xAxis * position.x + yAxis * position.y + zAxis * position.z;
 	m_sprite.setPosition(position2d);
 
 	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
@@ -102,7 +102,7 @@ void SpriteComponent::movementStopped()
 	m_sprite.setAnimated(false);
 }
 
-void SpriteComponent::draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const
+void SpriteComponent::draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const
 {
 	m_sprite.draw(renderSettings, viewMatrix);
 }

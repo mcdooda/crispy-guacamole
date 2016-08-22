@@ -19,7 +19,7 @@ Tile::~Tile()
 	FLAT_DELETE(m_propSprite);
 }
 
-void Tile::draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const
+void Tile::draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const
 {
 	FLAT_ASSERT(m_exists);
 	m_sprite.draw(renderSettings, viewMatrix);
@@ -38,11 +38,11 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	m_z = z;
 	computeDepth(x, y, -0.5f);
 	
-	const flat::geometry::Vector2& xAxis = map.getXAxis();
-	const flat::geometry::Vector2& yAxis = map.getYAxis();
-	const flat::geometry::Vector2& zAxis = map.getZAxis();
+	const flat::Vector2& xAxis = map.getXAxis();
+	const flat::Vector2& yAxis = map.getYAxis();
+	const flat::Vector2& zAxis = map.getZAxis();
 	
-	flat::geometry::Vector2 position2d = xAxis * m_x + yAxis * m_y + zAxis * m_z;
+	flat::Vector2 position2d = xAxis * m_x + yAxis * m_y + zAxis * m_z;
 	m_sprite.setPosition(position2d);
 	if (m_propSprite)
 	{
@@ -54,8 +54,8 @@ void Tile::setTexture(std::shared_ptr<const flat::video::Texture> tileTexture)
 {
 	FLAT_ASSERT(m_exists);
 	m_sprite.setTexture(tileTexture);
-	const flat::geometry::Vector2& textureSize = tileTexture->getSize();
-	flat::geometry::Vector2 origin(textureSize.x / 2, textureSize.x / 4); // should depend on tile width/height instead
+	const flat::Vector2& textureSize = tileTexture->getSize();
+	flat::Vector2 origin(textureSize.x / 2, textureSize.x / 4); // should depend on tile width/height instead
 	m_sprite.setOrigin(origin);
 }
 
@@ -68,8 +68,8 @@ void Tile::setPropTexture(std::shared_ptr<const flat::video::Texture> propTextur
 		m_propSprite->setPosition(m_sprite.getPosition());
 	}
 	m_propSprite->setTexture(propTexture);
-	const flat::geometry::Vector2& textureSize = propTexture->getSize();
-	flat::geometry::Vector2 origin(textureSize.x / 2, textureSize.y - textureSize.x / 4);
+	const flat::Vector2& textureSize = propTexture->getSize();
+	flat::Vector2 origin(textureSize.x / 2, textureSize.y - textureSize.x / 4);
 	m_propSprite->setOrigin(origin);
 	setWalkable(false);
 }

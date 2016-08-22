@@ -173,9 +173,9 @@ void Map::setSize(int width, int height)
 	m_height = height;
 }
 
-void Map::setAxes(const flat::geometry::Vector2& xAxis,
-                  const flat::geometry::Vector2& yAxis,
-                  const flat::geometry::Vector2& zAxis)
+void Map::setAxes(const flat::Vector2& xAxis,
+                  const flat::Vector2& yAxis,
+                  const flat::Vector2& zAxis)
 {
 	m_xAxis = xAxis;
 	m_yAxis = yAxis;

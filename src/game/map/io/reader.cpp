@@ -71,9 +71,9 @@ void Reader::readTiles()
 	// TODO read from map.gpmap
 	/*
 	m_map.setAxes(
-		flat::geometry::Vector2(-32.f, 16.f),
-		flat::geometry::Vector2( 32.f, 16.f),
-		flat::geometry::Vector2(  0.f,-32.f)
+		flat::Vector2(-32.f, 16.f),
+		flat::Vector2( 32.f, 16.f),
+		flat::Vector2(  0.f,-32.f)
 	);
 	*/
 	m_map.createTiles();

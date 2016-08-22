@@ -28,12 +28,12 @@ class Brush
 		inline void setEdgeWidth(float edgeWidth) { m_edgeWidth = edgeWidth; }
 		inline float getEdgeWidth() const { return m_edgeWidth; }
 		
-		virtual float getEffect(const flat::geometry::Vector2& positionFromCenter) const = 0;
+		virtual float getEffect(const flat::Vector2& positionFromCenter) const = 0;
 		
-		void getTiles(Map& map, const flat::geometry::Vector2& center, std::vector<map::Tile*>& tiles, float minEffect = 0.f) const;
-		float getTileEffect(const flat::geometry::Vector2& center, const map::Tile* tile) const;
+		void getTiles(Map& map, const flat::Vector2& center, std::vector<map::Tile*>& tiles, float minEffect = 0.f) const;
+		float getTileEffect(const flat::Vector2& center, const map::Tile* tile) const;
 		
-		void getEntities(Map& map, const flat::geometry::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect = 0.f) const;
+		void getEntities(Map& map, const flat::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect = 0.f) const;
 		
 	protected:
 		float m_radius;

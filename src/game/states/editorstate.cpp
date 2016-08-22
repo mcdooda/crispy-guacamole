@@ -26,7 +26,7 @@ void EditorState::execute(flat::state::Agent* agent)
 {
 	Game* game = agent->to<Game>();
 	
-	flat::geometry::Vector2 brushCenter = getCursorMapPosition(game);
+	flat::Vector2 brushCenter = getCursorMapPosition(game);
 	
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush);

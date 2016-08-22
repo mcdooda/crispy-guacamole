@@ -26,7 +26,7 @@ void GameState::enter(flat::state::Agent* agent)
 		entity::Entity* sheep = new entity::Entity(entityTemplate, m_luaState);
 		float rx = game->random->nextFloat(-0.1f, 0.1f);
 		float ry = game->random->nextFloat(-0.1f, 0.1f);
-		flat::geometry::Vector3 position(m_map.getWidth() / 2.f + rx, m_map.getHeight() / 2.f + ry, 0.f);
+		flat::Vector3 position(m_map.getWidth() / 2.f + rx, m_map.getHeight() / 2.f + ry, 0.f);
 		sheep->setPosition(position);
 		m_map.addEntity(sheep);
 		m_sheeps.push_back(sheep);
@@ -39,7 +39,7 @@ void GameState::execute(flat::state::Agent* agent)
 	
 	if (game->input->mouse->isJustPressed(M(LEFT)))
 	{
-		flat::geometry::Vector2 clickedTilePosition = getCursorMapPosition(game);
+		flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
 		int x = round(clickedTilePosition.x);
 		int y = round(clickedTilePosition.y);
 		map::Tile* clickedTile = m_map.getTileIfWalkable(x, y);

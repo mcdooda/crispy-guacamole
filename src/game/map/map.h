@@ -45,9 +45,9 @@ class Map final
 		void eachTile(std::function<void(const Tile*)> func) const;
 		void eachTile(std::function<void(Tile*)> func);
 		
-		inline const flat::geometry::Vector2& getXAxis() const { return m_xAxis; }
-		inline const flat::geometry::Vector2& getYAxis() const { return m_yAxis; }
-		inline const flat::geometry::Vector2& getZAxis() const { return m_zAxis; }
+		inline const flat::Vector2& getXAxis() const { return m_xAxis; }
+		inline const flat::Vector2& getYAxis() const { return m_yAxis; }
+		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
 		
 		inline int getWidth() const { return m_width; }
 		inline int getHeight() const { return m_height; }
@@ -62,9 +62,9 @@ class Map final
 		int getNumTiles() const;
 		
 		void setSize(int width, int height);
-		void setAxes(const flat::geometry::Vector2& xAxis,
-		             const flat::geometry::Vector2& yAxis,
-		             const flat::geometry::Vector2& zAxis);
+		void setAxes(const flat::Vector2& xAxis,
+		             const flat::Vector2& yAxis,
+		             const flat::Vector2& zAxis);
 		
 		void createTiles();
 		void destroyTiles();
@@ -80,9 +80,9 @@ class Map final
 		
 		Tile* m_tiles;
 		
-		flat::geometry::Vector2 m_xAxis;
-		flat::geometry::Vector2 m_yAxis;
-		flat::geometry::Vector2 m_zAxis;
+		flat::Vector2 m_xAxis;
+		flat::Vector2 m_yAxis;
+		flat::Vector2 m_zAxis;
 		
 		std::vector<entity::Entity*> m_entities;
 		

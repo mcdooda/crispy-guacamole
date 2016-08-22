@@ -26,7 +26,7 @@ void DisplayManager::add(const MapObject* mapObject)
 	m_objects.push_back(mapObject);
 }
 
-void DisplayManager::sortByDepthAndDraw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix)
+void DisplayManager::sortByDepthAndDraw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix)
 {
 	std::sort(std::begin(m_objects), std::end(m_objects), &DisplayManager::isLessDeep);
 	for (const MapObject* mapObject : m_objects)

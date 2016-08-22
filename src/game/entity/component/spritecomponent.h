@@ -26,11 +26,11 @@ class SpriteComponent : public Component
 		
 		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
 		
-		void draw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix) const;
+		void draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const;
 		
 	private:
 		void headingChanged(float heading);
-		void positionChanged(const flat::geometry::Vector3& position);
+		void positionChanged(const flat::Vector3& position);
 		void movementStarted();
 		void movementStopped();
 		

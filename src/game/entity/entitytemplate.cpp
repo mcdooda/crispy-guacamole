@@ -50,7 +50,7 @@ void EntityTemplate::loadSpriteConfig(Game* game, lua_State* L, const std::strin
 	lua_pop(L, 3);
 	
 	// sprite origin
-	flat::geometry::Vector2 origin;
+	flat::Vector2 origin;
 	lua_getfield(L, -1, "origin");
 	lua_rawgeti(L, -1, 1);
 	origin.x = luaL_checknumber(L, -1);

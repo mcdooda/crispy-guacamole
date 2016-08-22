@@ -13,7 +13,7 @@ namespace brush
 class SphereBrush : public Brush
 {
 	public:
-		float getEffect(const flat::geometry::Vector2& positionFromCenter) const override;
+		float getEffect(const flat::Vector2& positionFromCenter) const override;
 };
 
 } // brush

@@ -18,7 +18,7 @@ class DisplayManager final
 		
 		void clearAll();
 		void add(const MapObject* mapObject);
-		void sortByDepthAndDraw(const flat::util::RenderSettings& renderSettings, const flat::geometry::Matrix4& viewMatrix);
+		void sortByDepthAndDraw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix);
 		
 	private:
 		static bool isLessDeep(const MapObject* a, const MapObject* b);

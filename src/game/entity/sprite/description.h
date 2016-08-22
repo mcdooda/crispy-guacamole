@@ -27,8 +27,8 @@ class Description
 		inline void setAtlasHeight(int atlasHeight) { m_atlasHeight = atlasHeight; }
 		inline int getAtlasHeight() const { return m_atlasHeight; }
 		
-		void setOrigin(const flat::geometry::Vector2& origin) { m_origin = origin; }
-		inline const flat::geometry::Vector2& getOrigin() const { return m_origin; }
+		void setOrigin(const flat::Vector2& origin) { m_origin = origin; }
+		inline const flat::Vector2& getOrigin() const { return m_origin; }
 		
 		void addAnimationDescription(const std::string& animationName, AnimationDescription animationDescription);
 		void cacheMandatoryAnimationDescriptions();
@@ -40,7 +40,7 @@ class Description
 		
 		int m_atlasWidth;
 		int m_atlasHeight;
-		flat::geometry::Vector2 m_origin;
+		flat::Vector2 m_origin;
 		
 		std::map<std::string, AnimationDescription> m_animationDescriptions;
 		const AnimationDescription* m_moveAnimationDescription;

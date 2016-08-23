@@ -55,7 +55,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 					m_owner->movementStopped();
 				}
 			}
-			m_owner->setPosition(flat::Vector3(newPosition2d.x, newPosition2d.y, position.z));
+			m_owner->setXY(newPosition2d);
 		}
 	}
 	
@@ -70,9 +70,8 @@ void MovementComponent::addedToMap(map::Map* map)
 	flat::Vector3 position = m_owner->getPosition();
 	if (tile->getZ() >= position.z)
 	{
-		position.z = tile->getZ();
 		m_isTouchingGround = true;
-		m_owner->setPosition(position);
+		m_owner->setZ(tile->getZ());
 	}
 	else
 	{
@@ -156,7 +155,7 @@ void MovementComponent::fall(float elapsedTime)
 		z = tile->getZ();
 		m_isTouchingGround = true;
 	}
-	m_owner->setPosition(flat::Vector3(position.x, position.y, z));
+	m_owner->setZ(z);
 }
 
 void MovementComponent::separateFromAdjacentTiles()
@@ -266,7 +265,7 @@ void MovementComponent::separateFromAdjacentTiles()
 		}
 	}
 	
-	m_owner->setPosition(flat::Vector3(newPosition2d.x, newPosition2d.y, z));
+	m_owner->setXY(newPosition2d);
 }
 
 void MovementComponent::separateFromNearbyEntities()
@@ -308,7 +307,7 @@ void MovementComponent::separateFromNearbyEntities()
 						const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
 						flat::Vector2 neighborMove = (neighborPosition2d - position2d).normalize();
 						neighborPosition2d += neighborMove * penetration * neighborMoveRatio;
-						neighbor->setPosition(flat::Vector3(neighborPosition2d.x, neighborPosition2d.y, neighborPosition.z));
+						neighbor->setXY(neighborPosition2d);
 						
 						const float moveRatio = weight / (neighborWeight + weight);
 						position2d += -neighborMove * penetration * moveRatio;
@@ -317,7 +316,7 @@ void MovementComponent::separateFromNearbyEntities()
 			}
 		}
 	}
-	m_owner->setPosition(flat::Vector3(position2d.x, position2d.y, position.z));
+	m_owner->setXY(position2d);
 }
 
 bool MovementComponent::findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const

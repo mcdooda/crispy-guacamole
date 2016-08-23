@@ -46,6 +46,32 @@ void Entity::setPosition(const flat::Vector3& position)
 	}
 }
 
+void Entity::setXY(const flat::Vector2& xy)
+{
+	m_position.x = xy.x;
+	m_position.y = xy.y;
+	if (m_map)
+	{
+		map::Tile* newTile = getTileFromPosition();
+		if (m_tile && m_tile != newTile)
+		{
+			m_tile->removeEntity(this);
+			newTile->addEntity(this);
+		}
+		m_tile = newTile;
+		positionChanged(m_position);
+	}
+}
+
+void Entity::setZ(float z)
+{
+	m_position.z = z;
+	if (m_map)
+	{
+		positionChanged(m_position);
+	}
+}
+
 void Entity::setHeading(float heading)
 {
 	// keep heading in [0, 2pi) range

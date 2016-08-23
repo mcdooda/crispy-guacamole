@@ -31,6 +31,8 @@ class Entity final : public map::MapObject
 		inline std::shared_ptr<const EntityTemplate> getEntityTemplate() const { return m_template; }
 		
 		void setPosition(const flat::Vector3& position);
+		void setXY(const flat::Vector2& xy);
+		void setZ(float z);
 		inline const flat::Vector3& getPosition() const { return m_position; }
 		
 		inline const map::Map* getMap() const { return m_map; }

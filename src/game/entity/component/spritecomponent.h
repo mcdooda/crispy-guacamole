@@ -36,6 +36,10 @@ class SpriteComponent : public Component
 		
 	private:
 		flat::util::AnimatedSprite m_sprite;
+		bool m_positionChanged : 1;
+		bool m_headingChanged : 1;
+		bool m_movementStarted : 1;
+		bool m_movementStopped : 1;
 };
 
 } // component

@@ -13,8 +13,8 @@ end
 local states = {}
 
 function states:init(sheep)
-	--sheep:enterState 'wander'
-	sheep:playAnimation 'graze'
+	sheep:enterState 'wander'
+	--sheep:playAnimation 'graze'
 end
 
 function states:idle(sheep)

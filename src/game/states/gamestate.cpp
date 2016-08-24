@@ -19,17 +19,26 @@ void GameState::enter(flat::state::Agent* agent)
 	
 	Game* game = agent->to<Game>();
 	
-	std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, "sheep");
+	static const char* entityTemplates[] = {
+		"sheep",
+		"devil",
+		"larva",
+		nullptr
+	};
 	
-	for (int i = 0; i < 1; ++i)
+	for (int j = 0; entityTemplates[j]; ++j)
 	{
-		entity::Entity* sheep = new entity::Entity(entityTemplate, m_luaState);
-		float rx = game->random->nextFloat(-0.1f, 0.1f);
-		float ry = game->random->nextFloat(-0.1f, 0.1f);
-		flat::Vector3 position(m_map.getWidth() / 2.f + rx, m_map.getHeight() / 2.f + ry, 0.f);
-		sheep->setPosition(position);
-		m_map.addEntity(sheep);
-		m_sheeps.push_back(sheep);
+		std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, entityTemplates[j]);
+		for (int i = 0; i < 3; ++i)
+		{
+			entity::Entity* entity = new entity::Entity(entityTemplate, m_luaState);
+			float rx = game->random->nextFloat(-0.1f, 0.1f);
+			float ry = game->random->nextFloat(-0.1f, 0.1f);
+			flat::Vector3 position(m_map.getWidth() / 2.f + rx, m_map.getHeight() / 2.f + ry, 0.f);
+			entity->setPosition(position);
+			m_map.addEntity(entity);
+			m_entities.push_back(entity);
+		}
 	}
 }
 
@@ -45,9 +54,9 @@ void GameState::execute(flat::state::Agent* agent)
 		map::Tile* clickedTile = m_map.getTileIfWalkable(x, y);
 		if (clickedTile)
 		{
-			for (entity::Entity* sheep : m_sheeps)
+			for (entity::Entity* entity : m_entities)
 			{
-				sheep->addPointOnPath(clickedTilePosition);
+				entity->addPointOnPath(clickedTilePosition);
 			}
 		}
 	}

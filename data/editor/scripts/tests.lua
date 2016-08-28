@@ -1,5 +1,7 @@
 require 'data/scripts/dumpenv' ()
 
+local Slider = require 'data/scripts/ui/slider'
+
 local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }
 
 local root = Widget.getRoot()
@@ -39,6 +41,7 @@ do
 	root:addChild(debugContainer)
 end
 
+--[[
 -- icons toolbar
 do
 	local toolbar = Widget.makeLineFlow()
@@ -138,6 +141,7 @@ do
 	
 	root:addChild(toolbar)
 	
+	--
 	do
 		local icon = Widget.makeFixedSize(64,64)
 		icon:setBackground('data/editor/interface/square.png')
@@ -193,3 +197,19 @@ do
 		end)
 	end
 end
+
+do
+	for i = 0, 500, 5 do
+		local slider = Slider:new(100,5)
+		slider:setValue(0.5)
+		slider.container:setPosition(0, -100 - i)
+		root:addChild(slider.container)
+	end
+	for i = 0, 500, 5 do
+		local slider = Slider:new(5,100)
+		slider:setValue(0.5)
+		slider.container:setPosition(100 + i, -100)
+		root:addChild(slider.container)
+	end
+end
+]]

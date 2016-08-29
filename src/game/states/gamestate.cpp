@@ -15,7 +15,6 @@ void GameState::enter(flat::state::Agent* agent)
 	setCameraZoom(2.f);
 	
 	flat::lua::doFile(m_luaState, "data/game/scripts/ui.lua");
-	m_ui->fullLayout();
 	
 	Game* game = agent->to<Game>();
 	

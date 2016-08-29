@@ -11,7 +11,7 @@ namespace game
 namespace entity
 {
 
-Entity::Entity(std::shared_ptr<const EntityTemplate> entityTemplate, lua_State* L) :
+Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, lua_State* L) :
 	m_heading(0.f),
 	m_map(nullptr),
 	m_tile(nullptr),

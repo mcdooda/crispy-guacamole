@@ -50,7 +50,7 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	}
 }
 
-void Tile::setTexture(std::shared_ptr<const flat::video::Texture> tileTexture)
+void Tile::setTexture(const std::shared_ptr<const flat::video::Texture>& tileTexture)
 {
 	FLAT_ASSERT(m_exists);
 	m_sprite.setTexture(tileTexture);
@@ -59,7 +59,7 @@ void Tile::setTexture(std::shared_ptr<const flat::video::Texture> tileTexture)
 	m_sprite.setOrigin(origin);
 }
 
-void Tile::setPropTexture(std::shared_ptr<const flat::video::Texture> propTexture)
+void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& propTexture)
 {
 	FLAT_ASSERT(m_exists);
 	if (!m_propSprite)

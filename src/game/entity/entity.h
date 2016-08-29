@@ -25,10 +25,10 @@ class SpriteComponent;
 class Entity final : public map::MapObject
 {
 	public:
-		Entity(std::shared_ptr<const EntityTemplate> entityTemplate, lua_State* L);
+		Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, lua_State* L);
 		~Entity() override;
 		
-		inline std::shared_ptr<const EntityTemplate> getEntityTemplate() const { return m_template; }
+		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 		
 		void setPosition(const flat::Vector3& position);
 		void setXY(const flat::Vector2& xy);

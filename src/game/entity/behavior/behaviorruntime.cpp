@@ -112,7 +112,7 @@ void BehaviorRuntime::update()
 const Behavior* BehaviorRuntime::getBehavior() const
 {
 	FLAT_ASSERT(m_entity);
-	std::shared_ptr<const EntityTemplate> entityTemplate = m_entity->getEntityTemplate();
+	const std::shared_ptr<const EntityTemplate>& entityTemplate = m_entity->getEntityTemplate();
 	const EntityTemplate* entityTemplatePtr = entityTemplate.get();
 	FLAT_ASSERT(entityTemplatePtr);
 	const Behavior* behavior = entityTemplatePtr->getBehavior();

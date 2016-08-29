@@ -94,14 +94,14 @@ void Reader::readTiles()
 				tile->setCoordinates(m_map, x, y, z);
 				
 				uint16_t tileIndex = readUint16();
-				std::shared_ptr<const flat::video::FileTexture> texture = m_tileTextures[tileIndex];
+				const std::shared_ptr<const flat::video::FileTexture>& texture = m_tileTextures[tileIndex];
 				tile->setTexture(texture);
 				
 				bool hasProp = readBool();
 				if (hasProp)
 				{
 					uint16_t propIndex = readUint16();
-					std::shared_ptr<const flat::video::FileTexture> texture = m_propTextures[propIndex];
+					const std::shared_ptr<const flat::video::FileTexture>& texture = m_propTextures[propIndex];
 					tile->setPropTexture(texture);
 				}
 			}

@@ -18,8 +18,8 @@ class Description
 	public:
 		Description();
 		
-		inline void setAtlas(std::shared_ptr<const flat::video::Texture> atlas) { m_atlas = atlas; }
-		inline std::shared_ptr<const flat::video::Texture> getAtlas() const { return m_atlas; }
+		inline void setAtlas(const std::shared_ptr<const flat::video::Texture>& atlas) { m_atlas = atlas; }
+		inline const std::shared_ptr<const flat::video::Texture>& getAtlas() const { return m_atlas; }
 		
 		inline void setAtlasWidth(int atlasWidth) { m_atlasWidth = atlasWidth; }
 		inline int getAtlasWidth() const { return m_atlasWidth; }

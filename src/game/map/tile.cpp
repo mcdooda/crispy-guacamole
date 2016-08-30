@@ -1,5 +1,6 @@
 #include "tile.h"
 #include "map.h"
+#include "prop.h"
 
 namespace game
 {
@@ -7,7 +8,7 @@ namespace map
 {
 
 Tile::Tile() :
-	m_propSprite(nullptr),
+	m_prop(nullptr),
 	m_exists(true),
 	m_walkable(true)
 {
@@ -16,18 +17,13 @@ Tile::Tile() :
 
 Tile::~Tile()
 {
-	FLAT_DELETE(m_propSprite);
+	FLAT_DELETE(m_prop);
 }
 
 void Tile::draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const
 {
 	FLAT_ASSERT(m_exists);
 	m_sprite.draw(renderSettings, viewMatrix);
-	if (m_propSprite)
-	{
-		// TODO prop depth != tile depth
-		m_propSprite->draw(renderSettings, viewMatrix);
-	}
 }
 
 void Tile::setCoordinates(const Map& map, int x, int y, float z)
@@ -44,9 +40,10 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	
 	flat::Vector2 position2d = xAxis * static_cast<float>(m_x) + yAxis * static_cast<float>(m_y) + zAxis * static_cast<float>(m_z);
 	m_sprite.setPosition(position2d);
-	if (m_propSprite)
+	if (m_prop)
 	{
-		m_propSprite->setPosition(position2d);
+		m_prop->setSpritePosition(position2d);
+		m_prop->computeDepth(static_cast<float>(x), static_cast<float>(y), -0.49f);
 	}
 }
 
@@ -62,21 +59,22 @@ void Tile::setTexture(const std::shared_ptr<const flat::video::Texture>& tileTex
 void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& propTexture)
 {
 	FLAT_ASSERT(m_exists);
-	if (!m_propSprite)
+	if (!m_prop)
 	{
-		m_propSprite = new flat::util::Sprite();
-		m_propSprite->setPosition(m_sprite.getPosition());
+		m_prop = new Prop();
+		m_prop->setSpritePosition(m_sprite.getPosition());
+		m_prop->computeDepth(static_cast<float>(m_x), static_cast<float>(m_y), -0.49f);
 	}
-	m_propSprite->setTexture(propTexture);
+	m_prop->setSpriteTexture(propTexture);
 	const flat::Vector2& textureSize = propTexture->getSize();
-	flat::Vector2 origin(textureSize.x / 2, textureSize.y - textureSize.x / 4);
-	m_propSprite->setOrigin(origin);
+	flat::Vector2 origin(textureSize.x / 2.f, textureSize.y - textureSize.x / 4.f);
+	m_prop->setSpriteOrigin(origin);
 	setWalkable(false);
 }
 
 void Tile::removeProp()
 {
-	FLAT_DELETE(m_propSprite);
+	FLAT_DELETE(m_prop);
 	setWalkable(true);
 }
 
@@ -96,9 +94,9 @@ void Tile::removeEntity(entity::Entity* entity)
 void Tile::setColor(const flat::video::Color& color)
 {
 	m_sprite.setColor(color);
-	if (m_propSprite)
+	if (m_prop)
 	{
-		m_propSprite->setColor(color);
+		m_prop->setSpriteColor(color);
 	}
 }
 

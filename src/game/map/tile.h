@@ -14,6 +14,7 @@ class Entity;
 namespace map
 {
 class Map;
+class Prop;
 
 class Tile final : public MapObject
 {
@@ -37,6 +38,7 @@ class Tile final : public MapObject
 		void setTexture(const std::shared_ptr<const flat::video::Texture>& tileTexture);
 		void setPropTexture(const std::shared_ptr<const flat::video::Texture>& propTexture);
 		void removeProp();
+		inline const Prop* getProp() const { return m_prop; }
 		
 		void addEntity(entity::Entity* entity);
 		void removeEntity(entity::Entity* entity);
@@ -49,7 +51,7 @@ class Tile final : public MapObject
 	private:
 		std::vector<entity::Entity*> m_entities;
 		flat::util::Sprite m_sprite;
-		flat::util::Sprite* m_propSprite;
+		Prop* m_prop;
 		
 		int m_x;
 		int m_y;

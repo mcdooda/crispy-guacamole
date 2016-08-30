@@ -1,6 +1,7 @@
 #include "map.h"
 #include "displaymanager.h"
 #include "tile.h"
+#include "prop.h"
 #include "io/reader.h"
 #include "../mod/mod.h"
 #include "../entity/entity.h"
@@ -61,8 +62,17 @@ void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& vie
 		if (tile->exists())
 		{
 			displayManager.add(tile);
-			for (entity::Entity* entity : tile->getEntities())
-				displayManager.add(entity);
+			if (const Prop* prop = tile->getProp())
+			{
+				displayManager.add(prop);
+			}
+			else
+			{
+				for (entity::Entity* entity : tile->getEntities())
+				{
+					displayManager.add(entity);
+				}
+			}
 		}
 	});
 }

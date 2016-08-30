@@ -53,9 +53,9 @@ void EntityTemplate::loadSpriteConfig(Game* game, lua_State* L, const std::strin
 	flat::Vector2 origin;
 	lua_getfield(L, -1, "origin");
 	lua_rawgeti(L, -1, 1);
-	origin.x = luaL_checknumber(L, -1);
+	origin.x = static_cast<float>(luaL_checknumber(L, -1));
 	lua_rawgeti(L, -2, 2);
-	origin.y = luaL_checknumber(L, -1);
+	origin.y = static_cast<float>(luaL_checknumber(L, -1));
 	m_spriteDescription.setOrigin(origin);
 
 	lua_pop(L, 3);
@@ -83,7 +83,7 @@ void EntityTemplate::loadSpriteConfig(Game* game, lua_State* L, const std::strin
 			luaL_error(L, "Animation %s, numFrames = %d is out of the atlas", animationName, numFrames);
 		}
 		lua_getfield(L, -3, "frameDuration");
-		float frameDuration = luaL_checknumber(L, -1);
+		float frameDuration = static_cast<float>(luaL_checknumber(L, -1));
 		
 		sprite::AnimationDescription animationDescription(line - 1, numFrames, frameDuration);
 		m_spriteDescription.addAnimationDescription(animationName, animationDescription);
@@ -104,16 +104,16 @@ void EntityTemplate::loadPhysicsConfig(Game* game, lua_State* L, const std::stri
 	lua_call(L, 0, 1);
 	
 	lua_getfield(L, -1, "radius");
-	m_radius = luaL_checknumber(L, -1);
+	m_radius = static_cast<float>(luaL_checknumber(L, -1));
 	
 	lua_getfield(L, -2, "speed");
-	m_speed = luaL_checknumber(L, -1);
+	m_speed = static_cast<float>(luaL_checknumber(L, -1));
 	
 	lua_getfield(L, -3, "jumpForce");
-	m_jumpForce = luaL_checknumber(L, -1);
+	m_jumpForce = static_cast<float>(luaL_checknumber(L, -1));
 	
 	lua_getfield(L, -4, "weight");
-	m_weight = luaL_checknumber(L, -1);
+	m_weight = static_cast<float>(luaL_checknumber(L, -1));
 	
 	// compute jump height and distance from jump force and weight
 	//const float a = -m_weight / 2.f;

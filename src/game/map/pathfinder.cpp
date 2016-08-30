@@ -70,7 +70,7 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 				Node neighbor;
 				neighbor.tile = neighborTile;
 				neighbor.distance = current.distance + 1.f;
-				float estimatedDistance = (to - flat::Vector2(neighborTile->getX(), neighborTile->getY())).length();
+				float estimatedDistance = (to - flat::Vector2(static_cast<float>(neighborTile->getX()), static_cast<float>(neighborTile->getY()))).length();
 				neighbor.heuristic = neighbor.distance + estimatedDistance;
 				
 				std::vector<Node>::iterator it = std::find(openList.begin(), openList.end(), neighbor);
@@ -110,7 +110,7 @@ void Pathfinder::reconstructPath(
 		if (it != previous.end())
 		{
 			current = it->second;
-			path.insert(path.begin(), flat::Vector2(current->getX(), current->getY()));
+			path.insert(path.begin(), flat::Vector2(static_cast<float>(current->getX()), static_cast<float>(current->getY())));
 		}
 		else
 		{
@@ -144,7 +144,7 @@ void Pathfinder::reconstructPath(
 
 void Pathfinder::simplifyPath(std::vector<flat::Vector2>& path) const
 {
-	unsigned int i = path.size() - 1;
+	size_t i = path.size() - 1;
 	
 	while (i >= 2)
 	{

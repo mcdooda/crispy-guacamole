@@ -63,7 +63,7 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	m_gameView.updateProjection(windowSize);
 	m_cameraZoom = 1.f;
 
-	flat::Vector3 cameraCenter(m_map.getWidth() / 2, m_map.getHeight() / 2, 0.f);
+	flat::Vector3 cameraCenter(m_map.getWidth() / 2.f, m_map.getHeight() / 2.f, 0.f);
 	setCameraCenter(cameraCenter);
 }
 

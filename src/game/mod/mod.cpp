@@ -38,27 +38,27 @@ void Mod::readConfig(lua_State* L)
 			lua_getfield(L, -1, "x");
 			luaL_checktype(L, -1, LUA_TTABLE);
 			lua_rawgeti(L, -1, 1);
-			m_xAxis.x = luaL_checknumber(L, -1);
+			m_xAxis.x = static_cast<float>(luaL_checknumber(L, -1));
 			lua_rawgeti(L, -2, 2);
-			m_xAxis.y = luaL_checknumber(L, -1);
+			m_xAxis.y = static_cast<float>(luaL_checknumber(L, -1));
 			lua_pop(L, 3);
 		}
 		{
 			lua_getfield(L, -1, "y");
 			luaL_checktype(L, -1, LUA_TTABLE);
 			lua_rawgeti(L, -1, 1);
-			m_yAxis.x = luaL_checknumber(L, -1);
+			m_yAxis.x = static_cast<float>(luaL_checknumber(L, -1));
 			lua_rawgeti(L, -2, 2);
-			m_yAxis.y = luaL_checknumber(L, -1);
+			m_yAxis.y = static_cast<float>(luaL_checknumber(L, -1));
 			lua_pop(L, 3);
 		}
 		{
 			lua_getfield(L, -1, "z");
 			luaL_checktype(L, -1, LUA_TTABLE);
 			lua_rawgeti(L, -1, 1);
-			m_zAxis.x = luaL_checknumber(L, -1);
+			m_zAxis.x = static_cast<float>(luaL_checknumber(L, -1));
 			lua_rawgeti(L, -2, 2);
-			m_zAxis.y = luaL_checknumber(L, -1);
+			m_zAxis.y = static_cast<float>(luaL_checknumber(L, -1));
 			lua_pop(L, 3);
 		}
 		lua_pop(L, 1);

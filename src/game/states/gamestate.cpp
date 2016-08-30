@@ -48,9 +48,7 @@ void GameState::execute(flat::state::Agent* agent)
 	if (game->input->mouse->isJustPressed(M(LEFT)))
 	{
 		flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
-		int x = round(clickedTilePosition.x);
-		int y = round(clickedTilePosition.y);
-		map::Tile* clickedTile = m_map.getTileIfWalkable(x, y);
+		map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.getRoundX(), clickedTilePosition.getRoundY());
 		if (clickedTile)
 		{
 			for (entity::Entity* entity : m_entities)

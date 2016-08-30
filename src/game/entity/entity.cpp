@@ -75,9 +75,10 @@ void Entity::setZ(float z)
 void Entity::setHeading(float heading)
 {
 	// keep heading in [0, 2pi) range
-	heading = fmodf(heading, M_PI * 2.f);
+	const float pi2 = static_cast<float>(M_PI * 2.f);
+	heading = fmodf(heading, pi2);
 	if (heading < 0.f)
-		heading += M_PI * 2.f;
+		heading += pi2;
 	
 	m_heading = heading;
 	headingChanged(m_heading);
@@ -132,8 +133,8 @@ void Entity::addPointOnPath(const flat::Vector2& point)
 map::Tile* Entity::getTileFromPosition()
 {
 	FLAT_ASSERT(m_map);
-	int tileX = floor(m_position.x + 0.5f);
-	int tileY = floor(m_position.y + 0.5f);
+	int tileX = static_cast<int>(std::floor(m_position.x + 0.5f));
+	int tileY = static_cast<int>(std::floor(m_position.y + 0.5f));
 	map::Tile* tile = m_map->getTileIfExists(tileX, tileY);
 	FLAT_ASSERT_MSG(tile, "Trying to get a tile that does not exist");
 	return tile;

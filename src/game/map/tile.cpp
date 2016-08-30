@@ -36,13 +36,13 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	m_x = x;
 	m_y = y;
 	m_z = z;
-	computeDepth(x, y, -0.5f);
+	computeDepth(static_cast<float>(x), static_cast<float>(y), -0.5f);
 	
 	const flat::Vector2& xAxis = map.getXAxis();
 	const flat::Vector2& yAxis = map.getYAxis();
 	const flat::Vector2& zAxis = map.getZAxis();
 	
-	flat::Vector2 position2d = xAxis * m_x + yAxis * m_y + zAxis * m_z;
+	flat::Vector2 position2d = xAxis * static_cast<float>(m_x) + yAxis * static_cast<float>(m_y) + zAxis * static_cast<float>(m_z);
 	m_sprite.setPosition(position2d);
 	if (m_propSprite)
 	{

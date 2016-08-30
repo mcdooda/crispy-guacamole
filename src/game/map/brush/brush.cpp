@@ -18,10 +18,10 @@ Brush::Brush() :
 
 void Brush::getTiles(Map& map, const flat::Vector2& center, std::vector<map::Tile*>& tiles, float minEffect) const
 {
-	const int minX = floor(center.x - m_radius);
-	const int maxX = ceil(center.x + m_radius);
-	const int minY = floor(center.y - m_radius);
-	const int maxY = ceil(center.y + m_radius);
+	const int minX = static_cast<int>(std::floor(center.x - m_radius));
+	const int maxX = static_cast<int>(std::ceil(center.x + m_radius));
+	const int minY = static_cast<int>(std::floor(center.y - m_radius));
+	const int maxY = static_cast<int>(std::ceil(center.y + m_radius));
 	
 	tiles.clear();
 	tiles.reserve((maxX - minX) * (maxY - minY));
@@ -57,10 +57,10 @@ float Brush::getTileEffect(const flat::Vector2& center, const map::Tile* tile) c
 
 void Brush::getEntities(Map& map, const flat::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect) const
 {
-	const int minX = floor(center.x - m_radius);
-	const int maxX = ceil(center.x + m_radius);
-	const int minY = floor(center.y - m_radius);
-	const int maxY = ceil(center.y + m_radius);
+	const int minX = static_cast<int>(std::floor(center.x - m_radius));
+	const int maxX = static_cast<int>(std::ceil(center.x + m_radius));
+	const int minY = static_cast<int>(std::floor(center.y - m_radius));
+	const int maxY = static_cast<int>(std::ceil(center.y + m_radius));
 	
 	entities.clear();
 	

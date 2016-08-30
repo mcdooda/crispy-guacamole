@@ -40,7 +40,7 @@ int open(lua_State* L)
 
 int l_Timer_start(lua_State* L)
 {
-	float timerDuration = luaL_checknumber(L, 1);
+	float timerDuration = static_cast<float>(luaL_checknumber(L, 1));
 	
 	int onUpdate = LUA_NOREF;
 	if (!lua_isnoneornil(L, 2))

@@ -47,8 +47,8 @@ int l_Entity_getPosition(lua_State* L)
 int l_Entity_moveTo(lua_State* L)
 {
 	Entity* entity = getEntity(L, 1);
-	float x = luaL_checknumber(L, 2);
-	float y = luaL_checknumber(L, 3);
+	float x = static_cast<float>(luaL_checknumber(L, 2));
+	float y = static_cast<float>(luaL_checknumber(L, 3));
 	entity->addPointOnPath(flat::Vector2(x, y));
 	return lua_yield(L, 0);
 }

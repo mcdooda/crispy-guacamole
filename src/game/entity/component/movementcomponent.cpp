@@ -166,8 +166,8 @@ void MovementComponent::separateFromAdjacentTiles()
 	FLAT_ASSERT(map);
 	const map::Tile* tile = m_owner->getTile();
 	FLAT_ASSERT(tile);
-	const int tileX = static_cast<float>(tile->getX());
-	const int tileY = static_cast<float>(tile->getY());
+	const int tileX = tile->getX();
+	const int tileY = tile->getY();
 	
 	const flat::Vector3& position = m_owner->getPosition();
 	const float z = position.z;
@@ -277,10 +277,10 @@ void MovementComponent::separateFromNearbyEntities()
 	const float radius = entityTemplate->getRadius();
 	const float weight = entityTemplate->getWeight();
 	const float maxEntityRadius = 0.5f;
-	const int tileMinX = round(position.x - radius - maxEntityRadius);
-	const int tileMinY = round(position.y - radius - maxEntityRadius);
-	const int tileMaxX = round(position.x + radius + maxEntityRadius);
-	const int tileMaxY = round(position.y + radius + maxEntityRadius);
+	const int tileMinX = static_cast<int>(std::round(position.x - radius - maxEntityRadius));
+	const int tileMinY = static_cast<int>(std::round(position.y - radius - maxEntityRadius));
+	const int tileMaxX = static_cast<int>(std::round(position.x + radius + maxEntityRadius));
+	const int tileMaxY = static_cast<int>(std::round(position.y + radius + maxEntityRadius));
 	const map::Map* map = m_owner->getMap();
 	flat::Vector2 position2d(position.x, position.y);
 	for (int x = tileMinX; x <= tileMaxX; ++x)

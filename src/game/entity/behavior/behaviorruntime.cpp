@@ -81,7 +81,7 @@ void BehaviorRuntime::updateCurrentState()
 	lua_rawgeti(L, LUA_REGISTRYINDEX, m_coroutineRef);
 	luaL_checktype(L, -1, LUA_TTHREAD);
 	lua_State* L1 = lua_tothread(L, -1);
-	FLAT_ASSERT(L1);
+	FLAT_ASSERT(L1 != nullptr);
 	
 	int status = lua_resume(L1, nullptr, 0);
 	if (status == LUA_OK)
@@ -111,12 +111,12 @@ void BehaviorRuntime::update()
 
 const Behavior* BehaviorRuntime::getBehavior() const
 {
-	FLAT_ASSERT(m_entity);
+	FLAT_ASSERT(m_entity != nullptr);
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = m_entity->getEntityTemplate();
 	const EntityTemplate* entityTemplatePtr = entityTemplate.get();
-	FLAT_ASSERT(entityTemplatePtr);
+	FLAT_ASSERT(entityTemplatePtr != nullptr);
 	const Behavior* behavior = entityTemplatePtr->getBehavior();
-	FLAT_ASSERT(behavior);
+	FLAT_ASSERT(behavior != nullptr);
 	return behavior;
 }
 

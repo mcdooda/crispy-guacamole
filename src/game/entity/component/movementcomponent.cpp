@@ -163,9 +163,9 @@ void MovementComponent::fall(float elapsedTime)
 void MovementComponent::separateFromAdjacentTiles()
 {
 	const map::Map* map = m_owner->getMap();
-	FLAT_ASSERT(map);
+	FLAT_ASSERT(map != nullptr);
 	const map::Tile* tile = m_owner->getTile();
-	FLAT_ASSERT(tile);
+	FLAT_ASSERT(tile != nullptr);
 	const int tileX = tile->getX();
 	const int tileY = tile->getY();
 	

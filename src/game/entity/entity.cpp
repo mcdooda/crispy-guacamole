@@ -132,11 +132,11 @@ void Entity::addPointOnPath(const flat::Vector2& point)
 
 map::Tile* Entity::getTileFromPosition()
 {
-	FLAT_ASSERT(m_map);
+	FLAT_ASSERT(m_map != nullptr);
 	int tileX = static_cast<int>(std::floor(m_position.x + 0.5f));
 	int tileY = static_cast<int>(std::floor(m_position.y + 0.5f));
 	map::Tile* tile = m_map->getTileIfExists(tileX, tileY);
-	FLAT_ASSERT_MSG(tile, "Trying to get a tile that does not exist");
+	FLAT_ASSERT_MSG(tile != nullptr, "Trying to get a tile that does not exist");
 	return tile;
 }
 
@@ -157,7 +157,7 @@ void Entity::enterState(const char* stateName)
 bool Entity::playAnimation(const char* animationName, int numLoops)
 {
 	const EntityTemplate* entityTemplatePtr = m_template.get();
-	FLAT_ASSERT(entityTemplatePtr);
+	FLAT_ASSERT(entityTemplatePtr != nullptr);
 	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
 	if (const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
 	{
@@ -169,7 +169,7 @@ bool Entity::playAnimation(const char* animationName, int numLoops)
 
 void Entity::addComponent(component::Component* component)
 {
-	FLAT_ASSERT(component);
+	FLAT_ASSERT(component != nullptr);
 	component->setOwner(this);
 	m_components.push_back(component);
 }

@@ -18,7 +18,7 @@ Reader::Reader(Game* game, const mod::Mod& mod, Map& map) :
 	m_map(map),
 	m_file(mod.getMapPath().c_str(), std::ofstream::binary)
 {
-	FLAT_ASSERT(m_file);
+	FLAT_ASSERT(m_file.is_open());
 }
 
 Reader::~Reader()

@@ -164,7 +164,7 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 	flat::Vector2 segment = move.normalize() * delta;
 	float numSegments = move.length() / delta;
 	const map::Tile* fromTile = m_map.getTileIfWalkable(from.getRoundX(), from.getRoundY());
-	FLAT_ASSERT(fromTile);
+	FLAT_ASSERT(fromTile != nullptr);
 	float previousZ = fromTile->getZ();
 	for (float f = 1.f; f <= numSegments; ++f)
 	{

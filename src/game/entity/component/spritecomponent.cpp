@@ -15,7 +15,7 @@ void SpriteComponent::setOwner(Entity* owner)
 {
 	Super::setOwner(owner);
 	const EntityTemplate* entityTemplatePtr = owner->getEntityTemplate().get();
-	FLAT_ASSERT(entityTemplatePtr);
+	FLAT_ASSERT(entityTemplatePtr != nullptr);
 	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
 	m_sprite.setTexture(spriteDescription.getAtlas());
 	m_sprite.setOrigin(spriteDescription.getOrigin());
@@ -53,12 +53,12 @@ void SpriteComponent::playAnimation(const sprite::AnimationDescription& animatio
 void SpriteComponent::update(float currentTime, float elapsedTime)
 {
 	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
-	FLAT_ASSERT(entityTemplatePtr);
+	FLAT_ASSERT(entityTemplatePtr != nullptr);
 	
 	if (m_positionChanged)
 	{
 		const map::Map* map = m_owner->getMap();
-		FLAT_ASSERT(map);
+		FLAT_ASSERT(map != nullptr);
 	
 		const flat::Vector2& xAxis = map->getXAxis();
 		const flat::Vector2& yAxis = map->getYAxis();

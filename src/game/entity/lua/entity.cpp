@@ -77,7 +77,7 @@ int l_Entity_playAnimation(lua_State* L)
 int l_Entity_jump(lua_State* L)
 {
 	Entity* entity = getEntity(L, 1);
-	component::MovementComponent* movementComponent = entity->getMovementComponent();
+	component::MovementComponent* movementComponent = entity->getComponent<component::MovementComponent>();
 	if (!movementComponent)
 	{
 		luaL_error(L, "Cannot jump without a movement component");

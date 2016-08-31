@@ -54,8 +54,11 @@ class Entity final : public map::MapObject
 		
 		void enterState(const char* stateName);
 		bool playAnimation(const char* animationName, int numLoops = 1);
-		
-		inline component::MovementComponent* getMovementComponent() { return m_movementComponent; }
+
+		template <class ComponentType>
+		inline const ComponentType* getComponent() const;
+		template <class ComponentType>
+		inline ComponentType* getComponent();
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -86,6 +89,41 @@ class Entity final : public map::MapObject
 		
 		std::shared_ptr<const EntityTemplate> m_template;
 };
+
+template <class ComponentType>
+inline const ComponentType* Entity::getComponent() const
+{
+	static_assert(std::is_base_of<component::Component, std::decay<ComponentType>::type>::value, "");
+	for (const component::Component* component : m_components)
+	{
+		if (const ComponentType* c = dynamic_cast<const ComponentType*>(component))
+			return c;
+	}
+	return nullptr;
+}
+
+template <class ComponentType>
+inline ComponentType* Entity::getComponent()
+{
+	static_assert(std::is_base_of<component::Component, std::decay<ComponentType>::type>::value, "");
+	for (component::Component* component : m_components)
+	{
+		if (ComponentType* c = dynamic_cast<ComponentType*>(component))
+			return c;
+	}
+	return nullptr;
+}
+
+template <>
+inline const component::MovementComponent* Entity::getComponent() const
+{
+	return m_movementComponent;
+}
+template <>
+inline component::MovementComponent* Entity::getComponent()
+{
+	return m_movementComponent;
+}
 
 } // entity
 } // game

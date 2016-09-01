@@ -84,9 +84,9 @@ void Entity::setHeading(float heading)
 	headingChanged(m_heading);
 }
 
-void Entity::draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const
+const flat::util::Sprite& Entity::getSprite() const
 {
-	m_spriteComponent->draw(renderSettings, viewMatrix);
+	return m_spriteComponent->getSprite();
 }
 
 void Entity::onAddedToMap(map::Map* map)

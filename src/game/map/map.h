@@ -44,6 +44,7 @@ class Map final
 		
 		void eachTile(std::function<void(const Tile*)> func) const;
 		void eachTile(std::function<void(Tile*)> func);
+		void eachTileTopToDown(std::function<void(const Tile*)> func) const;
 		
 		inline const flat::Vector2& getXAxis() const { return m_xAxis; }
 		inline const flat::Vector2& getYAxis() const { return m_yAxis; }

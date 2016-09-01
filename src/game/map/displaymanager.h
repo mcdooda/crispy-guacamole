@@ -13,16 +13,14 @@ class MapObject;
 class DisplayManager final
 {
 	public:
-		DisplayManager();
-		~DisplayManager();
+		DisplayManager() {}
+		~DisplayManager() {}
 		
-		void clearAll();
-		void add(const MapObject* mapObject);
+		inline void clearAll() { m_objects.clear(); }
+		inline void add(const MapObject* mapObject) { m_objects.push_back(mapObject); }
 		void sortByDepthAndDraw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix);
 		
 	private:
-		static bool isLessDeep(const MapObject* a, const MapObject* b);
-		
 		std::vector<const MapObject*> m_objects;
 };
 

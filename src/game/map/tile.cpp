@@ -20,10 +20,10 @@ Tile::~Tile()
 	FLAT_DELETE(m_prop);
 }
 
-void Tile::draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const
+const flat::util::Sprite& Tile::getSprite() const
 {
 	FLAT_ASSERT(m_exists);
-	m_sprite.draw(renderSettings, viewMatrix);
+	return m_sprite;
 }
 
 void Tile::setCoordinates(const Map& map, int x, int y, float z)
@@ -51,6 +51,7 @@ void Tile::setTexture(const std::shared_ptr<const flat::video::Texture>& tileTex
 {
 	FLAT_ASSERT(m_exists);
 	m_sprite.setTexture(tileTexture);
+	setTextureHash(tileTexture.get()->getHash());
 	const flat::Vector2& textureSize = tileTexture->getSize();
 	flat::Vector2 origin(textureSize.x / 2, textureSize.x / 4); // should depend on tile width/height instead
 	m_sprite.setOrigin(origin);
@@ -66,6 +67,7 @@ void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& pro
 		m_prop->computeDepth(static_cast<float>(m_x), static_cast<float>(m_y), -0.49f);
 	}
 	m_prop->setSpriteTexture(propTexture);
+	m_prop->setTextureHash(propTexture.get()->getHash());
 	const flat::Vector2& textureSize = propTexture->getSize();
 	flat::Vector2 origin(textureSize.x / 2.f, textureSize.y - textureSize.x / 4.f);
 	m_prop->setSpriteOrigin(origin);

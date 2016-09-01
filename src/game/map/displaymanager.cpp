@@ -6,38 +6,51 @@ namespace game
 namespace map
 {
 
-DisplayManager::DisplayManager()
+inline bool isLessDeep(const MapObject* a, const MapObject* b)
 {
-	
-}
-
-DisplayManager::~DisplayManager()
-{
-	
-}
-
-void DisplayManager::clearAll()
-{
-	m_objects.clear();
-}
-
-void DisplayManager::add(const MapObject* mapObject)
-{
-	m_objects.push_back(mapObject);
+	const float aDepth = a->getDepth();
+	const float bDepth = b->getDepth();
+	if (aDepth == bDepth)
+	{
+		float ipart;
+		const float fpart = std::modf(aDepth, &ipart);
+		if (fpart < 0.5f)
+		{
+			return a->getTextureHash() < b->getTextureHash();
+		}
+		else
+		{
+			return a->getTextureHash() > b->getTextureHash();
+		}
+	}
+	else
+	{
+		return aDepth < bDepth;
+	}
 }
 
 void DisplayManager::sortByDepthAndDraw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix)
 {
-	std::sort(std::begin(m_objects), std::end(m_objects), &DisplayManager::isLessDeep);
-	for (const MapObject* mapObject : m_objects)
-	{
-		mapObject->draw(renderSettings, viewMatrix);
-	}
-}
+	std::sort(std::begin(m_objects), std::end(m_objects), &isLessDeep);
 
-bool DisplayManager::isLessDeep(const MapObject* a, const MapObject* b)
-{
-	return a->getDepth() < b->getDepth();
+	flat::util::SpriteBatch spriteBatch;
+	std::vector<const MapObject*>::iterator it = m_objects.begin();
+	std::vector<const MapObject*>::iterator end = m_objects.end();
+	while (it != m_objects.end())
+	{
+		spriteBatch.clear();
+
+		const MapObject* mapObject = *it;
+		std::vector<const MapObject*>::iterator it2 = std::upper_bound(it, end, mapObject, &isLessDeep);
+		while (it != it2)
+		{
+			mapObject = *it;
+			spriteBatch.add(mapObject->getSprite());
+			++it;
+		}
+
+		spriteBatch.draw(renderSettings, viewMatrix);
+	}
 }
 
 } // map

@@ -5,9 +5,9 @@ namespace game
 namespace map
 {
 
-void Prop::draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const
+const flat::util::Sprite& Prop::getSprite() const
 {
-	m_sprite.draw(renderSettings, viewMatrix);
+	return m_sprite;
 }
 
 }

@@ -41,7 +41,7 @@ class Entity final : public map::MapObject
 		void setHeading(float heading);
 		inline float getHeading() const { return m_heading; }
 		
-		void draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const override;
+		const flat::util::Sprite& getSprite() const override;
 		
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();

@@ -29,14 +29,15 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	buildUi(game);
 	
 	// rendering settings
-	m_spriteProgram.load("data/shaders/sprite.frag", "data/shaders/sprite.vert");
+	m_spriteProgram.load("data/shaders/spritebatch.frag", "data/shaders/spritebatch.vert");
 	
 	m_spriteProgramRenderSettings.textureUniform              = m_spriteProgram.getUniform<flat::video::Texture>("objectTexture");
-	m_spriteProgramRenderSettings.colorUniform                = m_spriteProgram.getUniform<flat::video::Color>("color");
 	m_spriteProgramRenderSettings.modelMatrixUniform          = m_spriteProgram.getUniform<flat::Matrix4>("modelMatrix");
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform = m_spriteProgram.getUniform<flat::Matrix4>("vpMatrix");
+
 	m_spriteProgramRenderSettings.positionAttribute           = m_spriteProgram.getAttribute("position");
 	m_spriteProgramRenderSettings.uvAttribute                 = m_spriteProgram.getAttribute("uv");
+	m_spriteProgramRenderSettings.colorAttribute              = m_spriteProgram.getAttribute("color");
 	
 	m_uiProgram.load("data/shaders/ui.frag", "data/shaders/ui.vert");
 	
@@ -46,6 +47,7 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	m_uiProgramRenderSettings.secondaryColorUniform       = m_uiProgram.getUniform<flat::video::Color>("secondaryColor");
 	m_uiProgramRenderSettings.modelMatrixUniform          = m_uiProgram.getUniform<flat::Matrix4>("modelMatrix");
 	m_uiProgramRenderSettings.viewProjectionMatrixUniform = m_uiProgram.getUniform<flat::Matrix4>("vpMatrix");
+
 	m_uiProgramRenderSettings.positionAttribute           = m_uiProgram.getAttribute("position");
 	m_uiProgramRenderSettings.uvAttribute                 = m_uiProgram.getAttribute("uv");
 	

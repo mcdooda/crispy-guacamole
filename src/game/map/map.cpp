@@ -57,7 +57,7 @@ void Map::createEmptyMap(const mod::Mod& mod)
 
 void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& view) const
 {
-	eachTile([&displayManager](const Tile* tile)
+	eachTileTopToDown([&displayManager](const Tile* tile)
 	{
 		if (tile->exists())
 		{
@@ -105,7 +105,7 @@ const Tile* Map::getTileIfExists(int x, int y) const
 
 Tile* Map::getTileIfExists(int x, int y)
 {
-	return const_cast<Tile*>((const_cast<const Map*>(this)->getTileIfExists(x, y)));
+	return const_cast<Tile*>(const_cast<const Map*>(this)->getTileIfExists(x, y));
 }
 
 const Tile* Map::getTileIfWalkable(int x, int y) const
@@ -120,7 +120,7 @@ const Tile* Map::getTileIfWalkable(int x, int y) const
 
 Tile* Map::getTileIfWalkable(int x, int y)
 {
-	return const_cast<Tile*>((const_cast<const Map*>(this)->getTileIfWalkable(x, y)));
+	return const_cast<Tile*>(const_cast<const Map*>(this)->getTileIfWalkable(x, y));
 }
 
 void Map::eachTile(std::function<void(const Tile*)> func) const
@@ -138,6 +138,21 @@ void Map::eachTile(std::function<void(Tile*)> func)
 	for (Tile* tile = m_tiles; tile < end; ++tile)
 	{
 		func(tile);
+	}
+}
+
+void Map::eachTileTopToDown(std::function<void(const Tile*)> func) const
+{
+	int size = m_width + m_height;
+	for (int i = 0; i < size; ++i)
+	{
+		for (int x = i, y = 0; x >= 0 && y < m_height; --x, ++y)
+		{
+			if (const Tile* tile = getTile(x, y))
+			{
+				func(tile);
+			}
+		}
 	}
 }
 

@@ -14,7 +14,7 @@ class Prop : public MapObject
 public:
 	Prop() {}
 
-	void draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const override;
+	const flat::util::Sprite& getSprite() const override;
 
 	inline void setSpriteTexture(const std::shared_ptr<const flat::video::Texture>& propTexture) { m_sprite.setTexture(propTexture); }
 	inline void setSpritePosition(const flat::Vector2& spritePosition) { m_sprite.setPosition(spritePosition); }

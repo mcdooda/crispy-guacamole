@@ -18,6 +18,7 @@ void SpriteComponent::setOwner(Entity* owner)
 	FLAT_ASSERT(entityTemplatePtr != nullptr);
 	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
 	m_sprite.setTexture(spriteDescription.getAtlas());
+	m_owner->setTextureHash(spriteDescription.getAtlas().get()->getHash());
 	m_sprite.setOrigin(spriteDescription.getOrigin());
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
 	if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
@@ -135,11 +136,6 @@ void SpriteComponent::movementStarted()
 void SpriteComponent::movementStopped()
 {
 	m_movementStopped = true;
-}
-
-void SpriteComponent::draw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix) const
-{
-	m_sprite.draw(renderSettings, viewMatrix);
 }
 
 } // component

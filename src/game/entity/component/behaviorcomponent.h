@@ -19,8 +19,12 @@ class BehaviorComponent : public Component
 {
 	typedef Component Super;
 	public:
+		enum { Type = 1 << 0 };
+	public:
 		void setOwner(Entity* entity) override;
 		void update(float currentTime, float elapsedTime) override;
+
+		ComponentFlags getType() const override { return Type; }
 		
 		void enterState(const char* stateName);
 		

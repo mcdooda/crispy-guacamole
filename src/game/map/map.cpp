@@ -23,7 +23,7 @@ Map::Map() :
 
 Map::~Map()
 {
-	destroyEntities();
+	FLAT_ASSERT(m_entities.empty());
 	destroyTiles();
 }
 
@@ -228,15 +228,6 @@ void Map::destroyTiles()
 	FLAT_DELETE_ARRAY(m_tiles);
 	m_width = 0;
 	m_height = 0;
-}
-
-void Map::destroyEntities()
-{
-	for (entity::Entity*& entity : m_entities)
-	{
-		FLAT_DELETE(entity);
-	}
-	m_entities.clear();
 }
 
 } // map

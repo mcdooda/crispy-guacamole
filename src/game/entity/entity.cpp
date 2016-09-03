@@ -11,23 +11,22 @@ namespace game
 namespace entity
 {
 
-Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, lua_State* L) :
+Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate) :
+	m_behaviorComponent(nullptr),
+	m_movementComponent(nullptr),
+	m_spriteComponent(nullptr),
 	m_heading(0.f),
 	m_map(nullptr),
 	m_tile(nullptr),
 	m_template(entityTemplate)
 {
-	m_behaviorComponent = new component::BehaviorComponent();
-	addComponent(m_behaviorComponent);
-	m_movementComponent = new component::MovementComponent();
-	addComponent(m_movementComponent);
-	m_spriteComponent = new component::SpriteComponent();
-	addComponent(m_spriteComponent);
+
 }
 
 Entity::~Entity()
 {
-	destroyComponents();
+	//FLAT_ASSERT(m_map == nullptr);
+	FLAT_ASSERT(m_components.empty()); // all components must have been destroyed before
 }
 
 void Entity::setPosition(const flat::Vector3& position)
@@ -86,6 +85,7 @@ void Entity::setHeading(float heading)
 
 const flat::util::Sprite& Entity::getSprite() const
 {
+	FLAT_ASSERT(m_spriteComponent != nullptr);
 	return m_spriteComponent->getSprite();
 }
 
@@ -127,6 +127,7 @@ bool Entity::isBusy() const
 
 void Entity::addPointOnPath(const flat::Vector2& point)
 {
+	FLAT_ASSERT(m_movementComponent != nullptr);
 	m_movementComponent->addPointOnPath(point);
 }
 
@@ -151,6 +152,7 @@ void Entity::destroyComponents()
 
 void Entity::enterState(const char* stateName)
 {
+	FLAT_ASSERT(m_behaviorComponent != nullptr);
 	m_behaviorComponent->enterState(stateName);
 }
 
@@ -161,6 +163,7 @@ bool Entity::playAnimation(const char* animationName, int numLoops)
 	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
 	if (const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
 	{
+		FLAT_ASSERT(m_spriteComponent != nullptr);
 		m_spriteComponent->playAnimation(*animationDescription, numLoops);
 		return true;
 	}
@@ -172,6 +175,13 @@ void Entity::addComponent(component::Component* component)
 	FLAT_ASSERT(component != nullptr);
 	component->setOwner(this);
 	m_components.push_back(component);
+}
+
+void Entity::cacheComponents()
+{
+	m_behaviorComponent = findComponent<component::BehaviorComponent>();
+	m_movementComponent = findComponent<component::MovementComponent>();
+	m_spriteComponent   = findComponent<component::SpriteComponent>();
 }
 
 } // entity

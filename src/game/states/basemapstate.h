@@ -6,6 +6,7 @@
 #include "../mod/mod.h"
 #include "../map/map.h"
 #include "../map/displaymanager.h"
+#include "../entity/entitypool.h"
 
 namespace game
 {
@@ -61,6 +62,7 @@ class BaseMapState : public flat::state::State
 		mod::Mod m_mod;
 		map::Map m_map;
 		map::DisplayManager m_mapDisplayManager;
+		entity::EntityPool m_entityPool;
 		
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;

@@ -25,7 +25,7 @@ class SpriteComponent;
 class Entity final : public map::MapObject
 {
 	public:
-		Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, lua_State* L);
+		Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate);
 		~Entity() override;
 		
 		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
@@ -55,10 +55,21 @@ class Entity final : public map::MapObject
 		void enterState(const char* stateName);
 		bool playAnimation(const char* animationName, int numLoops = 1);
 
+		void addComponent(component::Component* component);
+		void cacheComponents();
+
+		template <class ComponentType>
+		inline const ComponentType* findComponent() const;
+		template <class ComponentType>
+		inline ComponentType* findComponent();
+
 		template <class ComponentType>
 		inline const ComponentType* getComponent() const;
 		template <class ComponentType>
 		inline ComponentType* getComponent();
+
+		inline const std::vector<component::Component*>& getComponents() const { return m_components; }
+		inline void removeAllComponents() { m_components.clear(); }
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -68,7 +79,6 @@ class Entity final : public map::MapObject
 		flat::Slot<> movementStopped;
 		
 	protected:
-		void addComponent(component::Component* component);
 		
 		map::Tile* getTileFromPosition();
 		
@@ -76,7 +86,6 @@ class Entity final : public map::MapObject
 		
 	protected:
 		std::vector<component::Component*> m_components;
-		
 		component::BehaviorComponent* m_behaviorComponent;
 		component::MovementComponent* m_movementComponent;
 		component::SpriteComponent*   m_spriteComponent;
@@ -91,9 +100,9 @@ class Entity final : public map::MapObject
 };
 
 template <class ComponentType>
-inline const ComponentType* Entity::getComponent() const
+inline const ComponentType* Entity::findComponent() const
 {
-	static_assert(std::is_base_of<component::Component, std::decay<ComponentType>::type>::value, "");
+	static_assert(std::is_base_of<component::Component, ComponentType>::value, "ComponentType must inherit from Component");
 	for (const component::Component* component : m_components)
 	{
 		if (const ComponentType* c = dynamic_cast<const ComponentType*>(component))
@@ -103,15 +112,38 @@ inline const ComponentType* Entity::getComponent() const
 }
 
 template <class ComponentType>
-inline ComponentType* Entity::getComponent()
+inline ComponentType* Entity::findComponent()
 {
-	static_assert(std::is_base_of<component::Component, std::decay<ComponentType>::type>::value, "");
+	static_assert(std::is_base_of<component::Component, ComponentType>::value, "ComponentType must inherit from Component");
 	for (component::Component* component : m_components)
 	{
 		if (ComponentType* c = dynamic_cast<ComponentType*>(component))
 			return c;
 	}
 	return nullptr;
+}
+
+template <class ComponentType>
+inline const ComponentType* Entity::getComponent() const
+{
+	return findComponent<ComponentType>();
+}
+
+template <class ComponentType>
+inline ComponentType* Entity::getComponent()
+{
+	return findComponent<ComponentType>();
+}
+
+template <>
+inline const component::BehaviorComponent* Entity::getComponent() const
+{
+	return m_behaviorComponent;
+}
+template <>
+inline component::BehaviorComponent* Entity::getComponent()
+{
+	return m_behaviorComponent;
 }
 
 template <>
@@ -123,6 +155,17 @@ template <>
 inline component::MovementComponent* Entity::getComponent()
 {
 	return m_movementComponent;
+}
+
+template <>
+inline const component::SpriteComponent* Entity::getComponent() const
+{
+	return m_spriteComponent;
+}
+template <>
+inline component::SpriteComponent* Entity::getComponent()
+{
+	return m_spriteComponent;
 }
 
 } // entity

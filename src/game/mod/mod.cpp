@@ -89,7 +89,7 @@ std::string Mod::getMapPath() const
 
 std::string Mod::getEntityTemplatePath(const std::string& entityTemplateName) const
 {
-	return m_path + "units/" + entityTemplateName + "/"; // path to a directory
+	return m_path + "entities/" + entityTemplateName + "/"; // path to a directory
 }
 
 } // mod

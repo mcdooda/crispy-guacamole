@@ -55,6 +55,11 @@ class Map final
 		
 		void addEntity(entity::Entity* entity);
 		void removeEntity(entity::Entity* entity);
+
+		inline void removeAllEntities() { m_entities.clear(); }
+
+		const std::vector<entity::Entity*>& getEntities() const { return m_entities; }
+		std::vector<entity::Entity*>& getEntities() { return m_entities; }
 		
 		void updateEntities(float currentTime, float elapsedTime);
 		

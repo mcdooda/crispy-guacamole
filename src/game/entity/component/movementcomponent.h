@@ -21,12 +21,16 @@ class MovementComponent : public Component
 {
 	typedef Component Super;
 	public:
+		enum { Type = 1 << 1 };
+	public:
 		void setOwner(Entity* owner) override;
 		void update(float currentTime, float elapsedTime) override;
 		
 		void addedToMap(map::Map* map);
 		
 		bool isBusy() const override;
+
+		ComponentFlags getType() const override { return Type; }
 		
 		bool followsPath() const;
 		void addPointOnPath(const flat::Vector2& point);

@@ -1,4 +1,7 @@
 #include "entitytemplate.h"
+#include "component/behaviorcomponent.h"
+#include "component/movementcomponent.h"
+#include "component/spritecomponent.h"
 #include "behavior/behavior.h"
 #include "../game.h"
 
@@ -24,6 +27,22 @@ EntityTemplate::EntityTemplate(Game* game, lua_State* L, const std::string& path
 EntityTemplate::~EntityTemplate()
 {
 	FLAT_DELETE(m_behavior);
+}
+
+component::ComponentFlags EntityTemplate::getComponentFlags() const
+{
+	component::ComponentFlags flags = 0;
+
+	if (m_behavior != nullptr)
+		flags |= component::BehaviorComponent::Type;
+
+	if (m_speed > 0.f)
+		flags |= component::MovementComponent::Type;
+
+	if (m_spriteDescription.getAtlas())
+		flags |= component::SpriteComponent::Type;
+
+	return flags;
 }
 
 void EntityTemplate::loadSpriteConfig(Game* game, lua_State* L, const std::string& path)

@@ -3,6 +3,10 @@
 #include "../entity/entity.h"
 #include "../entity/entitytemplate.h"
 
+#include "../entity/component/behaviorcomponent.h"
+#include "../entity/component/movementcomponent.h"
+#include "../entity/component/spritecomponent.h"
+
 namespace game
 {
 namespace states
@@ -28,12 +32,20 @@ void GameState::enter(flat::state::Agent* agent)
 	for (int j = 0; entityTemplates[j]; ++j)
 	{
 		std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, entityTemplates[j]);
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 50; ++i)
 		{
-			entity::Entity* entity = new entity::Entity(entityTemplate, m_luaState);
-			float rx = game->random->nextFloat(-0.1f, 0.1f);
-			float ry = game->random->nextFloat(-0.1f, 0.1f);
-			flat::Vector3 position(m_map.getWidth() / 2.f + rx, m_map.getHeight() / 2.f + ry, 0.f);
+			flat::Vector3 position;
+			int tileX, tileY;
+			do
+			{
+				position.x = game->random->nextFloat(10.f, -11.f + m_map.getWidth());
+				position.y = game->random->nextFloat(10.f, -11.f + m_map.getHeight());
+				tileX = static_cast<int>(std::floor(position.x + 0.5f));
+				tileY = static_cast<int>(std::floor(position.y + 0.5f));
+			}
+			while (m_map.getTileIfWalkable(tileX, tileY) == nullptr);
+
+			entity::Entity* entity = m_entityPool.createEntity(entityTemplate);
 			entity->setPosition(position);
 			m_map.addEntity(entity);
 			m_entities.push_back(entity);

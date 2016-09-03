@@ -19,10 +19,14 @@ class SpriteComponent : public Component
 {
 	typedef Component Super;
 	public:
+		enum { Type = 1 << 2 };
+	public:
 		void setOwner(Entity* owner) override;
 		void update(float currentTime, float elapsedTime) override;
 		
 		bool isBusy() const override;
+
+		ComponentFlags getType() const override { return Type; }
 		
 		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
 		

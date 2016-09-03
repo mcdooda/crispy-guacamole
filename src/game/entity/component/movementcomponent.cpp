@@ -59,8 +59,8 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	}
 	
 	fall(elapsedTime);
-	separateFromAdjacentTiles();
 	separateFromNearbyEntities();
+	separateFromAdjacentTiles();
 }
 
 void MovementComponent::addedToMap(map::Map* map)

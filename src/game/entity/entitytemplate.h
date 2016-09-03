@@ -4,6 +4,7 @@
 #include <memory>
 #include <flat.h>
 #include "sprite/description.h"
+#include "component/component.h"
 
 namespace game
 {
@@ -20,6 +21,8 @@ class EntityTemplate final
 	public:
 		EntityTemplate(Game* game, lua_State* L, const std::string& path);
 		~EntityTemplate();
+
+		component::ComponentFlags getComponentFlags() const;
 		
 		// sprite
 		inline const sprite::Description& getSpriteDescription() const { return m_spriteDescription; }

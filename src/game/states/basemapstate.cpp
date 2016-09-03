@@ -79,6 +79,12 @@ void BaseMapState::execute(flat::state::Agent* agent)
 
 void BaseMapState::exit(flat::state::Agent* agent)
 {
+	for (entity::Entity* entity : m_map.getEntities())
+	{
+		m_entityPool.destroyEntity(entity);
+	}
+	m_map.removeAllEntities();
+
 	flat::sharp::ui::lua::close(m_luaState);
 	flat::lua::close(m_luaState);
 	m_luaState = nullptr;

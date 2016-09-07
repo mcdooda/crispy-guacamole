@@ -33,6 +33,11 @@ void DisplayManager::sortByDepthAndDraw(const flat::util::RenderSettings& render
 {
 	std::sort(std::begin(m_objects), std::end(m_objects), &isLessDeep);
 
+	/*for (const MapObject* mapObject : m_objects)
+	{
+		mapObject->getSprite().draw(renderSettings, viewMatrix);
+	}*/
+
 	flat::util::SpriteBatch spriteBatch;
 	std::vector<const MapObject*>::iterator it = m_objects.begin();
 	std::vector<const MapObject*>::iterator end = m_objects.end();

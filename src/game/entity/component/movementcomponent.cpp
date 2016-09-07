@@ -27,17 +27,17 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 		const flat::Vector3& position = m_owner->getPosition();
 		flat::Vector2 position2d = flat::Vector2(position.x, position.y);
 		flat::Vector2 move = pathNextPoint - position2d;
-		if (move.lengthSquared() > 0.f)
+		if (flat::length2(move) > 0.f)
 		{
-			m_owner->setHeading(move.angle());
-			flat::Vector2 direction = move.normalize();
+			m_owner->setHeading(flat::vector2_angle(move));
+			flat::Vector2 direction = normalize(move);
 			const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
 			float speed = entityTemplatePtr->getSpeed();
 			flat::Vector2 newPosition2d = position2d + direction * speed * elapsedTime;
 			
 			const map::Map* map = m_owner->getMap();
 			flat::Vector2 nextTilePosition = position2d + direction * 0.4f;
-			const map::Tile* nextTile = map->getTileIfWalkable(nextTilePosition.getRoundX(), nextTilePosition.getRoundY());
+			const map::Tile* nextTile = map->getTileIfWalkable(nextTilePosition.x, nextTilePosition.y);
 			
 			if (nextTile && (nextTile->getZ() > position.z + MIN_Z_EPSILON || nextTile->getZ() < position.z - MIN_Z_EPSILON))
 			{
@@ -45,7 +45,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			}
 			
 			flat::Vector2 newMove = pathNextPoint - newPosition2d;
-			if (move.dotProduct(newMove) <= 0.f)
+			if (dot(move, newMove) <= 0.f)
 			{
 				newPosition2d = pathNextPoint;
 				m_path.pop();
@@ -106,7 +106,7 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 	}
 	
 	const float minDistanceBetweenPoints = 0.3f;
-	if ((point - startingPoint).lengthSquared() > minDistanceBetweenPoints * minDistanceBetweenPoints)
+	if (flat::length2(point - startingPoint) > minDistanceBetweenPoints * minDistanceBetweenPoints)
 	{
 		const map::Map& map = *m_owner->getMap();
 		const float jumpHeight = m_owner->getEntityTemplate()->getJumpMaxHeight();
@@ -221,9 +221,9 @@ void MovementComponent::separateFromAdjacentTiles()
 		{
 			flat::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) - 0.5f);
 			flat::Vector2 toCorner = corner - newPosition2d;
-			if (toCorner.lengthSquared() < radius * radius)
+			if (flat::length2(toCorner) < radius * radius)
 			{
-				newPosition2d = corner - toCorner.normalize() * radius;
+				newPosition2d = corner - flat::normalize(toCorner) * radius;
 			}
 		}
 	}
@@ -234,9 +234,9 @@ void MovementComponent::separateFromAdjacentTiles()
 		{
 			flat::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) + 0.5f);
 			flat::Vector2 toCorner = corner - newPosition2d;
-			if (toCorner.lengthSquared() < radius * radius)
+			if (flat::length2(toCorner) < radius * radius)
 			{
-				newPosition2d = corner - toCorner.normalize() * radius;
+				newPosition2d = corner - flat::normalize(toCorner) * radius;
 			}
 		}
 	}
@@ -247,9 +247,9 @@ void MovementComponent::separateFromAdjacentTiles()
 		{
 			flat::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) - 0.5f);
 			flat::Vector2 toCorner = corner - newPosition2d;
-			if (toCorner.lengthSquared() < radius * radius)
+			if (flat::length2(toCorner) < radius * radius)
 			{
-				newPosition2d = corner - toCorner.normalize() * radius;
+				newPosition2d = corner - flat::normalize(toCorner) * radius;
 			}
 		}
 	}
@@ -260,9 +260,9 @@ void MovementComponent::separateFromAdjacentTiles()
 		{
 			flat::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) + 0.5f);
 			flat::Vector2 toCorner = corner - newPosition2d;
-			if (toCorner.lengthSquared() < radius * radius)
+			if (flat::length2(toCorner) < radius * radius)
 			{
-				newPosition2d = corner - toCorner.normalize() * radius;
+				newPosition2d = corner - flat::normalize(toCorner) * radius;
 			}
 		}
 	}
@@ -302,12 +302,12 @@ void MovementComponent::separateFromNearbyEntities()
 					const float neighborRadius = neighborEntityTemplate->getRadius();
 					flat::Vector2 neighborPosition2d(neighborPosition.x, neighborPosition.y);
 					const float minDistance = radius + neighborRadius - 0.001f;
-					if ((neighborPosition2d - position2d).lengthSquared() < minDistance * minDistance)
+					if (flat::length2(neighborPosition2d - position2d) < minDistance * minDistance)
 					{
 						const float penetration = -((neighborPosition2d - position2d).length() - radius - neighborRadius);
 						const float neighborWeight = neighborEntityTemplate->getWeight();
 						const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
-						flat::Vector2 neighborMove = (neighborPosition2d - position2d).normalize();
+						flat::Vector2 neighborMove = flat::normalize(neighborPosition2d - position2d);
 						neighborPosition2d += neighborMove * penetration * neighborMoveRatio;
 						neighbor->setXY(neighborPosition2d);
 						

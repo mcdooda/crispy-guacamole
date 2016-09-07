@@ -11,7 +11,7 @@ out vec4 color2;
 
 void main()
 {
-	gl_Position = vpMatrix * position;
+	gl_Position = position * vpMatrix;
 	uv2 = uv;
 	color2 = color;
 }

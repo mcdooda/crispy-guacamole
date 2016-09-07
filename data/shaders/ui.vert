@@ -10,7 +10,7 @@ out vec2 uv2;
 
 void main()
 {
-	gl_Position = vpMatrix * modelMatrix * position;
+	gl_Position = position * modelMatrix * vpMatrix;
 	uv2 = uv;
 }
 

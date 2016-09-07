@@ -24,24 +24,24 @@ void GameState::enter(flat::state::Agent* agent)
 	
 	static const char* entityTemplates[] = {
 		"sheep",
-		"devil",
-		"larva",
+		//"devil",
+		//"larva",
 		nullptr
 	};
 	
 	for (int j = 0; entityTemplates[j]; ++j)
 	{
 		std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, entityTemplates[j]);
-		for (int i = 0; i < 50; ++i)
+		for (int i = 0; i < 1; ++i)
 		{
 			flat::Vector3 position;
 			int tileX, tileY;
 			do
 			{
-				position.x = game->random->nextFloat(10.f, -11.f + m_map.getWidth());
-				position.y = game->random->nextFloat(10.f, -11.f + m_map.getHeight());
-				tileX = static_cast<int>(std::floor(position.x + 0.5f));
-				tileY = static_cast<int>(std::floor(position.y + 0.5f));
+				position.x = m_map.getWidth() / 2.f + game->random->nextFloat(-1.f, 1.f);
+				position.y = m_map.getHeight() / 2.f + game->random->nextFloat(-1.f, 1.f);
+				tileX = static_cast<int>(std::round(position.x));
+				tileY = static_cast<int>(std::round(position.y));
 			}
 			while (m_map.getTileIfWalkable(tileX, tileY) == nullptr);
 
@@ -60,7 +60,7 @@ void GameState::execute(flat::state::Agent* agent)
 	if (game->input->mouse->isJustPressed(M(LEFT)))
 	{
 		flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
-		map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.getRoundX(), clickedTilePosition.getRoundY());
+		map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
 		if (clickedTile)
 		{
 			for (entity::Entity* entity : m_entities)

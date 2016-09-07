@@ -18,14 +18,14 @@ Pathfinder::Pathfinder(const Map& map, float jumpHeight) :
 
 bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const
 {
-	const map::Tile* firstTile = m_map.getTileIfWalkable(from.getRoundX(), from.getRoundY());
+	const map::Tile* firstTile = m_map.getTileIfWalkable(from.x, from.y);
 	if (!firstTile)
 	{
 		return false;
 	}
 	
-	const int toX = to.getRoundX();
-	const int toY = to.getRoundY();
+	const int toX = static_cast<int>(std::round(to.x));
+	const int toY = static_cast<int>(std::round(to.y));
 	
 	std::set<const map::Tile*> closedList;
 	std::vector<Node> openList;
@@ -70,7 +70,7 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 				Node neighbor;
 				neighbor.tile = neighborTile;
 				neighbor.distance = current.distance + 1.f;
-				float estimatedDistance = (to - flat::Vector2(static_cast<float>(neighborTile->getX()), static_cast<float>(neighborTile->getY()))).length();
+				float estimatedDistance = flat::length(to - flat::Vector2(static_cast<float>(neighborTile->getX()), static_cast<float>(neighborTile->getY())));
 				neighbor.heuristic = neighbor.distance + estimatedDistance;
 				
 				std::vector<Node>::iterator it = std::find(openList.begin(), openList.end(), neighbor);
@@ -127,7 +127,7 @@ void Pathfinder::reconstructPath(
 		FLAT_DEBUG_ONLY(
 			for (const flat::Vector2& p : path)
 			{
-				const_cast<map::Tile*>(m_map.getTile(p.getRoundX(), p.getRoundY()))->setColor(flat::video::Color::GREEN);
+				const_cast<map::Tile*>(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::GREEN);
 			}
 		)
 	
@@ -136,7 +136,7 @@ void Pathfinder::reconstructPath(
 		FLAT_DEBUG_ONLY(
 			for (const flat::Vector2& p : path)
 			{
-				const_cast<map::Tile*>(m_map.getTile(p.getRoundX(), p.getRoundY()))->setColor(flat::video::Color::RED);
+				const_cast<map::Tile*>(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::RED);
 			}
 		)
 	}
@@ -161,15 +161,15 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 {
 	const float delta = 0.4f;
 	flat::Vector2 move = to - from;
-	flat::Vector2 segment = move.normalize() * delta;
-	float numSegments = move.length() / delta;
-	const map::Tile* fromTile = m_map.getTileIfWalkable(from.getRoundX(), from.getRoundY());
+	flat::Vector2 segment = flat::normalize(move) * delta;
+	float numSegments = flat::length(move) / delta;
+	const map::Tile* fromTile = m_map.getTileIfWalkable(from.x, from.y);
 	FLAT_ASSERT(fromTile != nullptr);
 	float previousZ = fromTile->getZ();
 	for (float f = 1.f; f <= numSegments; ++f)
 	{
 		flat::Vector2 point = from + segment * f;
-		const map::Tile* tile = m_map.getTileIfWalkable(point.getRoundX(), point.getRoundY());
+		const map::Tile* tile = m_map.getTileIfWalkable(point.x, point.y);
 		if (!tile || tile->getZ() > previousZ + m_jumpHeight)
 			return false;
 		

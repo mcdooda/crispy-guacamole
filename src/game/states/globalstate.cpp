@@ -35,7 +35,7 @@ void GlobalState::resetViews(game::Game* game)
 	const flat::Vector2 windowSize = game->video->window->getSize();
 	
 	game->interfaceView.reset();
-	game->interfaceView.move(windowSize / -2.0f);
+	game->interfaceView.move(windowSize / 2.0f);
 	game->interfaceView.updateProjection(windowSize);
 }
 

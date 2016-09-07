@@ -112,24 +112,6 @@ void BaseMapState::updateGameView(game::Game* game)
 	
 	flat::Vector2 move;
 	
-	/*
-	const flat::Vector2& mousePosition = game->input->mouse->getPosition();
-	const float screenBorderWidth = 5.f;
-	
-	if (mousePosition.x < screenBorderWidth)
-		move.x = tileWidth;
-		
-	else if (mousePosition.x >= windowSize.x - screenBorderWidth)
-		move.x = -tileWidth;
-		
-		
-	if (mousePosition.y < screenBorderWidth)
-		move.y = tileHeight;
-		
-	else if (mousePosition.y >= windowSize.y - screenBorderWidth)
-		move.y = -tileHeight;
-	*/
-	
 	// keyboard wins over mouse
 	const flat::input::Keyboard* keyboard = game->input->keyboard;
 	bool leftPressed = keyboard->isPressed(K(LEFT));
@@ -138,9 +120,9 @@ void BaseMapState::updateGameView(game::Game* game)
 	bool downPressed = keyboard->isPressed(K(DOWN));
 	
 	if (leftPressed && !rightPressed)
-		move.x = speed.x;
-	else if (rightPressed && !leftPressed)
 		move.x = -speed.x;
+	else if (rightPressed && !leftPressed)
+		move.x = speed.x;
 		
 	if (upPressed && !downPressed)
 		move.y = -speed.y;
@@ -179,8 +161,8 @@ void BaseMapState::updateCameraView()
 {
 	m_gameView.reset();
 	m_gameView.flipY();
-	m_gameView.move(m_cameraCenter2d);
 	m_gameView.zoom(m_cameraZoom);
+	m_gameView.move(m_cameraCenter2d);
 }
 
 void BaseMapState::draw(game::Game* game)

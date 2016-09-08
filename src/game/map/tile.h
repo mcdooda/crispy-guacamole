@@ -34,6 +34,7 @@ class Tile final : public MapObject
 		inline int getX() const { return m_x; }
 		inline int getY() const { return m_y; }
 		inline float getZ() const { return m_z; }
+		inline void setZ(const Map& map, float z) { setCoordinates(map, m_x, m_y, z); }
 		
 		void setTexture(const std::shared_ptr<const flat::video::Texture>& tileTexture);
 		void setPropTexture(const std::shared_ptr<const flat::video::Texture>& propTexture);

@@ -105,6 +105,9 @@ void BaseMapState::update(game::Game* game)
 
 void BaseMapState::updateGameView(game::Game* game)
 {
+	const flat::input::Keyboard* keyboard = game->input->keyboard;
+	const flat::input::Mouse* mouse = game->input->mouse;
+
 	const flat::Vector2& windowSize = game->video->window->getSize();
 	
 	const flat::Vector2& xAxis = m_map.getXAxis();
@@ -113,7 +116,6 @@ void BaseMapState::updateGameView(game::Game* game)
 	flat::Vector2 move;
 	
 	// keyboard wins over mouse
-	const flat::input::Keyboard* keyboard = game->input->keyboard;
 	bool leftPressed = keyboard->isPressed(K(LEFT));
 	bool rightPressed = keyboard->isPressed(K(RIGHT));
 	bool upPressed = keyboard->isPressed(K(UP));
@@ -132,10 +134,10 @@ void BaseMapState::updateGameView(game::Game* game)
 	const float cameraSpeed = 40.f;
 	m_cameraCenter2d += move * game->time->getFrameTime() * cameraSpeed;
 	updateCameraView();
-	
-	if (game->input->mouse->wheelJustMoved())
+
+	if (mouse->wheelJustMoved() && keyboard->isPressed(K(LCTRL)))
 	{
-		float zoom = m_cameraZoom * (1.f + game->input->mouse->getWheelMove().y / 5.f);
+		float zoom = m_cameraZoom * (1.f + mouse->getWheelMove().y / 5.f);
 		setCameraZoom(zoom);
 	}
 	

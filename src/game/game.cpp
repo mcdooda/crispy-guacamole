@@ -74,6 +74,10 @@ void Game::checkArgs()
 				{
 					modPath = arg;
 				}
+				else if (mapName.empty())
+				{
+					mapName = arg;
+				}
 				else
 				{
 					std::cerr << "Unhandled argument '" << arg << "' (mod path already given)" << std::endl;

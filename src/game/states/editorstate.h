@@ -21,6 +21,7 @@ class EditorState : public BaseMapState
 		void execute(flat::state::Agent* agent) override;
 		
 	private:
+		void saveOnCtrlS(Game* game);
 		void updateBrush(Game* game);
 		void displayBrush(Game* game);
 		void applyBrush(Game* game);

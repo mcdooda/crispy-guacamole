@@ -12,6 +12,8 @@ namespace lua
 
 int open(lua_State* L)
 {
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
 	// Timer metatable
 	luaL_newmetatable(L, "CG.Timer");
 	// mt.__index = mt

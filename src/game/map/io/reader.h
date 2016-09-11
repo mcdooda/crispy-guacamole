@@ -24,13 +24,14 @@ namespace io
 class Reader
 {
 	public:
-		Reader(Game* game, const mod::Mod& mod, Map& map);
+		Reader(Game* game, const mod::Mod& mod, const std::string& mapName, Map& map);
 		~Reader();
 		
 		bool canRead() const;
-		void read();
+		void read(lua_State* L);
 
 	private:
+		void readConfig(lua_State* L);
 		void readHeaders();
 		void readTiles();
 		void readEntities();
@@ -38,10 +39,12 @@ class Reader
 		bool readBool();
 		float readFloat();
 		uint16_t readUint16();
-		std::string readString();
+		void readString(std::string& value);
 		
+	private:
 		Game* m_game;
 		const mod::Mod& m_mod;
+		std::string m_mapName;
 		Map& m_map;
 		
 		std::ifstream m_file;

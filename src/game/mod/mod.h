@@ -12,35 +12,17 @@ namespace mod
 class Mod final
 {
 	public:
-		void setPath(const std::string& mapPath);
+		void setPath(const std::string& path);
 		inline const std::string& getPath() const { return m_path; }
 		
-		void readConfig(lua_State* L);
-
-		inline int getMapWidth() const { return m_mapWidth; }
-		inline int getMapHeight() const { return m_mapHeight; }
-
-		inline const flat::Vector2& getXAxis() const { return m_xAxis; }
-		inline const flat::Vector2& getYAxis() const { return m_yAxis; }
-		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
-		
-		std::string getMapScriptPath(const std::string& fileName) const;
-		std::string getModScriptPath(const std::string& fileName) const;
+		std::string getScriptPath(const std::string& fileName) const;
 		std::string getTexturePath(const std::string& fileName) const;
-		std::string getMapPath() const;
+		std::string getTextureRelativePath(const std::string& absolutePath) const;
+		std::string getMapPath(const std::string& mapName, const char* fileName = "map.gpmap") const;
 		std::string getEntityTemplatePath(const std::string& entityTemplateName) const;
 		
 	private:
 		std::string m_path;
-		std::string m_mapPath;
-		
-		// config
-		int m_mapWidth;
-		int m_mapHeight;
-
-		flat::Vector2 m_xAxis;
-		flat::Vector2 m_yAxis;
-		flat::Vector2 m_zAxis;
 };
 
 } // mod

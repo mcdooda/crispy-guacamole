@@ -12,11 +12,12 @@ namespace map
 namespace io
 {
 
-Reader::Reader(Game* game, const mod::Mod& mod, Map& map) :
+Reader::Reader(Game* game, const mod::Mod& mod, const std::string& mapName, Map& map) :
 	m_game(game),
 	m_mod(mod),
+	m_mapName(mapName),
 	m_map(map),
-	m_file(mod.getMapPath().c_str(), std::ofstream::binary)
+	m_file(mod.getMapPath(mapName).c_str(), std::ofstream::binary)
 {
 	FLAT_ASSERT(m_file.is_open());
 }
@@ -31,11 +32,69 @@ bool Reader::canRead() const
 	return m_file.is_open();
 }
 
-void Reader::read()
+void Reader::read(lua_State* L)
 {
+	readConfig(L);
 	readHeaders();
 	readTiles();
 	readEntities();
+}
+
+void Reader::readConfig(lua_State* L)
+{
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+	std::string configFilePath = m_mod.getMapPath(m_mapName, "map.lua");
+	luaL_loadfile(L, configFilePath.c_str());
+	lua_call(L, 0, 1);
+
+	flat::Vector2 xAxis;
+	flat::Vector2 yAxis;
+	flat::Vector2 zAxis;
+	{
+		lua_getfield(L, -1, "width");
+		m_mapWidth = luaL_checkint(L, -1);
+		lua_getfield(L, -2, "height");
+		m_mapHeight = luaL_checkint(L, -1);
+		lua_pop(L, 2);
+	}
+
+	{
+		lua_getfield(L, -1, "axes");
+		luaL_checktype(L, -1, LUA_TTABLE);
+		{
+			lua_getfield(L, -1, "x");
+			luaL_checktype(L, -1, LUA_TTABLE);
+			lua_rawgeti(L, -1, 1);
+			xAxis.x = static_cast<float>(luaL_checknumber(L, -1));
+			lua_rawgeti(L, -2, 2);
+			xAxis.y = static_cast<float>(luaL_checknumber(L, -1));
+			lua_pop(L, 3);
+		}
+		{
+			lua_getfield(L, -1, "y");
+			luaL_checktype(L, -1, LUA_TTABLE);
+			lua_rawgeti(L, -1, 1);
+			yAxis.x = static_cast<float>(luaL_checknumber(L, -1));
+			lua_rawgeti(L, -2, 2);
+			yAxis.y = static_cast<float>(luaL_checknumber(L, -1));
+			lua_pop(L, 3);
+		}
+		{
+			lua_getfield(L, -1, "z");
+			luaL_checktype(L, -1, LUA_TTABLE);
+			lua_rawgeti(L, -1, 1);
+			zAxis.x = static_cast<float>(luaL_checknumber(L, -1));
+			lua_rawgeti(L, -2, 2);
+			zAxis.y = static_cast<float>(luaL_checknumber(L, -1));
+			lua_pop(L, 3);
+		}
+		lua_pop(L, 1);
+	}
+
+	lua_pop(L, 1);
+
+	m_map.setAxes(xAxis, yAxis, zAxis);
 }
 
 void Reader::readHeaders()
@@ -45,7 +104,8 @@ void Reader::readHeaders()
 	m_tileTextures.reserve(numTiles);
 	for (int i = 0; i < numTiles; ++i)
 	{
-		std::string name = readString();
+		std::string name;
+		readString(name);
 		std::string texturePath = m_mod.getTexturePath("tiles/" + name);
 		m_tileTextures.push_back(m_game->video->getTexture(texturePath));
 	}
@@ -55,7 +115,8 @@ void Reader::readHeaders()
 	m_propTextures.reserve(numProps);
 	for (int i = 0; i < numProps; ++i)
 	{
-		std::string name = readString();
+		std::string name;
+		readString(name);
 		std::string texturePath = m_mod.getTexturePath("props/" + name);
 		m_propTextures.push_back(m_game->video->getTexture(texturePath));
 	}
@@ -115,7 +176,8 @@ void Reader::readEntities()
 	//m_models = new entity::EntityModel*[numModels];
 	for (int i = 0; i < numModels; ++i)
 	{
-		std::string modelName = readString();
+		std::string modelName;
+		readString(modelName);
 		//m_models[i] = entity::EntityModel::getModelByName(modelName);
 	}
 	
@@ -164,17 +226,15 @@ uint16_t Reader::readUint16()
 	return integer;
 }
 
-std::string Reader::readString()
+void Reader::readString(std::string& value)
 {
 	uint16_t size = readUint16();
-	std::string str(size, ' ');
-	m_file.read(&str[0], size);
-	return str;
+	value.resize(size);
+	m_file.read(&value[0], size);
 }
 
 } // io
 } // map
 } // game
-
 
 

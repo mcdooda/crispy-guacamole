@@ -51,14 +51,8 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	m_uiProgramRenderSettings.positionAttribute           = m_uiProgram.getAttribute("position");
 	m_uiProgramRenderSettings.uvAttribute                 = m_uiProgram.getAttribute("uv");
 	
-	// load mod
-	m_mod.readConfig(m_luaState);
-	
 	// level
-	if (!m_map.load(game, m_mod))
-	{
-		m_map.createEmptyMap(m_mod);
-	}
+	loadMap(game, game->mapName);
 	
 	// reset view
 	const flat::Vector2& windowSize = game->video->window->getSize();
@@ -93,6 +87,21 @@ void BaseMapState::exit(flat::state::Agent* agent)
 void BaseMapState::setModPath(const std::string& modPath)
 {
 	m_mod.setPath(modPath);
+}
+
+bool BaseMapState::loadMap(Game* game, const std::string& mapName)
+{
+	if (m_map.load(m_luaState, game, m_mod, mapName))
+	{
+		game->mapName = mapName;
+		return true;
+	}
+	return false;
+}
+
+bool BaseMapState::saveMap(Game* game) const
+{
+	return m_map.save(game, m_mod, game->mapName);
 }
 
 void BaseMapState::update(game::Game* game)

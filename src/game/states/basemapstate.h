@@ -26,6 +26,12 @@ class BaseMapState : public flat::state::State
 		void exit(flat::state::Agent* agent) override;
 		
 		void setModPath(const std::string& modPath);
+
+		bool loadMap(Game* game, const std::string& mapName);
+		bool saveMap(Game* game) const;
+
+		inline map::Map& getMap() { return m_map; }
+		inline const map::Map& getMap() const { return m_map; }
 		
 	protected:
 		void update(game::Game* game);

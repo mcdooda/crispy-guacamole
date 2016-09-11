@@ -29,9 +29,12 @@ class Map final
 	public:
 		Map();
 		~Map();
+
+		void operator=(Map&& other);
 		
-		bool load(Game* game, const mod::Mod& mod);
-		void createEmptyMap(const mod::Mod& mod);
+		bool load(lua_State* L, Game* game, const mod::Mod& mod, const std::string& mapName);
+
+		bool save(Game* game, const mod::Mod& mod, const std::string& mapName) const;
 		
 		void drawTiles(DisplayManager& displayManager, const flat::video::View& view) const;
 		
@@ -82,14 +85,9 @@ class Map final
 		void createTiles();
 		void destroyTiles();
 		
-		void destroyEntities();
-		
 	private:
 		int m_width;
 		int m_height;
-		
-		int m_tileWidth;
-		int m_tileHeight;
 		
 		Tile* m_tiles;
 		

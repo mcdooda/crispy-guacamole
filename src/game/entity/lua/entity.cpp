@@ -11,6 +11,8 @@ namespace lua
 
 int open(lua_State* L)
 {
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
 	// Entity metatable
 	luaL_newmetatable(L, "CG.Entity");
 	// mt.__index = mt

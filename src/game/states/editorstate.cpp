@@ -29,8 +29,18 @@ void EditorState::execute(flat::state::Agent* agent)
 	updateBrush(game);
 	displayBrush(game);
 	applyBrush(game);
+	saveOnCtrlS(game);
 	
 	Super::execute(agent);
+}
+
+void EditorState::saveOnCtrlS(Game* game)
+{
+	const flat::input::Keyboard* keyboard = game->input->keyboard;
+	if (keyboard->isPressed(K(LCTRL)) && keyboard->isJustPressed(K(S)))
+	{
+		saveMap(game);
+	}
 }
 
 void EditorState::updateBrush(Game* game)

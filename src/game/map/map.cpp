@@ -3,6 +3,7 @@
 #include "tile.h"
 #include "prop.h"
 #include "io/reader.h"
+#include "io/writer.h"
 #include "../mod/mod.h"
 #include "../entity/entity.h"
 
@@ -14,8 +15,6 @@ namespace map
 Map::Map() :
 	m_width(0),
 	m_height(0),
-	m_tileWidth(0),
-	m_tileHeight(0),
 	m_tiles(nullptr)
 {
 	
@@ -27,32 +26,48 @@ Map::~Map()
 	destroyTiles();
 }
 
-bool Map::load(Game* game, const mod::Mod& mod)
+void Map::operator=(Map&& other)
 {
-	io::Reader reader(game, mod, *this);
+	if (m_tiles != nullptr)
+	{
+		FLAT_DELETE_ARRAY(m_tiles);
+	}
+	m_tiles = other.m_tiles;
+	other.m_tiles = nullptr;
+
+	m_width = other.m_width;
+	m_height = other.m_height;
+	other.m_width = 0;
+	other.m_height = 0;
+
+	m_xAxis = other.m_xAxis;
+	m_yAxis = other.m_yAxis;
+	m_zAxis = other.m_zAxis;
+
+	m_entities = std::move(other.m_entities);
+}
+
+bool Map::load(lua_State* L, Game* game, const mod::Mod& mod, const std::string& mapName)
+{
+	io::Reader reader(game, mod, mapName, *this);
 	if (reader.canRead())
 	{
-		// TODO read from map.gpmap
-		setAxes(
-			mod.getXAxis(),
-			mod.getYAxis(),
-			mod.getZAxis()
-		);
-		reader.read();
+		reader.read(L);
 		return true;
 	}
+	FLAT_ASSERT(false);
 	return false;
 }
 
-void Map::createEmptyMap(const mod::Mod& mod)
+bool Map::save(Game* game, const mod::Mod& mod, const std::string& mapName) const
 {
-	setSize(mod.getMapWidth(), mod.getMapHeight());
-	setAxes(
-		mod.getXAxis(),
-		mod.getYAxis(),
-		mod.getZAxis()
-	);
-	createTiles();
+	io::Writer writer(game, mod, mapName, *this);
+	if (writer.canWrite())
+	{
+		writer.write();
+		return true;
+	}
+	return false;
 }
 
 void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& view) const

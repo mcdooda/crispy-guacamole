@@ -104,6 +104,23 @@ bool BaseMapState::saveMap(Game* game) const
 	return m_map.save(game, m_mod, game->mapName);
 }
 
+flat::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
+{
+	const flat::Vector2& cursorPosition = game->input->mouse->getPosition();
+	const flat::Vector2& windowSize = game->video->window->getSize();
+	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
+
+	const flat::Vector2& xAxis = m_map.getXAxis();
+	const flat::Vector2& yAxis = m_map.getYAxis();
+
+	flat::Vector2 mapPosition;
+
+	mapPosition.x = (gameViewPosition.x * yAxis.y - gameViewPosition.y * yAxis.x) / (xAxis.x * yAxis.y - xAxis.y * yAxis.x);
+	mapPosition.y = (gameViewPosition.y * xAxis.x - gameViewPosition.x * xAxis.y) / (yAxis.y * xAxis.x - yAxis.x * xAxis.y);
+
+	return mapPosition;
+}
+
 void BaseMapState::update(game::Game* game)
 {
 	updateGameView(game);
@@ -231,23 +248,6 @@ std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(ga
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
 	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath);
-}
-
-flat::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
-{
-	const flat::Vector2& cursorPosition = game->input->mouse->getPosition();
-	const flat::Vector2& windowSize = game->video->window->getSize();
-	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
-	
-	const flat::Vector2& xAxis = m_map.getXAxis();
-	const flat::Vector2& yAxis = m_map.getYAxis();
-	
-	flat::Vector2 mapPosition;
-	
-	mapPosition.x = (gameViewPosition.x * yAxis.y - gameViewPosition.y * yAxis.x) / (xAxis.x * yAxis.y - xAxis.y * yAxis.x);
-	mapPosition.y = (gameViewPosition.y * xAxis.x - gameViewPosition.x * xAxis.y) / (yAxis.y * xAxis.x - yAxis.x * xAxis.y);
-	
-	return mapPosition;
 }
 
 } // states

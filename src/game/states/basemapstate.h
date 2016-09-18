@@ -32,6 +32,8 @@ class BaseMapState : public flat::state::State
 
 		inline map::Map& getMap() { return m_map; }
 		inline const map::Map& getMap() const { return m_map; }
+
+		flat::Vector2 getCursorMapPosition(game::Game* game);
 		
 	protected:
 		void update(game::Game* game);
@@ -47,8 +49,6 @@ class BaseMapState : public flat::state::State
 		void drawUi(game::Game* game);
 		
 		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const;
-		
-		flat::Vector2 getCursorMapPosition(game::Game* game);
 		
 	protected:
 		// lua state

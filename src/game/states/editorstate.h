@@ -2,6 +2,7 @@
 #define GAME_STATES_EDITORSTATE_H
 
 #include "basemapstate.h"
+#include "editor/editormode.h"
 #include "../map/brush/brush.h"
 
 namespace game
@@ -26,16 +27,8 @@ class EditorState : public BaseMapState
 		void displayBrush(Game* game);
 		void applyBrush(Game* game);
 
-		void applyDisplacement(float displacement);
-		void applyMean(float frameTime);
-		void applyZero();
-
-		void eachBrushTile(std::function<void(map::Tile*, float)> func);
-
 	private:
-		std::vector<map::Tile*> m_brushTiles;
-		flat::Vector2 m_brushPosition;
-		std::unique_ptr<map::brush::Brush> m_brush;
+		std::unique_ptr<editor::EditorMode> m_editorMode;
 };
 
 } // states

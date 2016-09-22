@@ -104,7 +104,7 @@ public:
 	}
 
 private:
-	static const int MAX_ENTITIES = 500;
+	static const int MAX_ENTITIES = 5000;
 
 	flat::containers::Pool<Entity, MAX_ENTITIES> m_entityPool;
 	flat::containers::Pool<component::BehaviorComponent, MAX_ENTITIES> m_behaviorComponentPool;

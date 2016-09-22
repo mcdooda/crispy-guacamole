@@ -32,6 +32,9 @@ void EditorState::execute(flat::state::Agent* agent)
 	displayBrush(game);
 	applyBrush(game);
 	saveOnCtrlS(game);
+
+	flat::time::Time* time = game->time;
+	m_map.updateEntities(time->getTime(), time->getFrameTime());
 	
 	Super::execute(agent);
 }

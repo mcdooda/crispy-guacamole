@@ -46,7 +46,7 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 		openList.erase(openList.begin());
 		
 		const map::Tile* tile = current.tile;
-		FLAT_DEBUG_ONLY(const_cast<map::Tile*>(tile)->setColor(flat::video::Color::BLUE);)
+		//FLAT_DEBUG_ONLY(const_cast<map::Tile*>(tile)->setColor(flat::video::Color::BLUE);)
 		closedList.insert(tile);
 		
 		if (tile->getX() == toX && tile->getY() == toY)
@@ -124,21 +124,21 @@ void Pathfinder::reconstructPath(
 		path[0] = from;
 		path.push_back(to);
 		
-		FLAT_DEBUG_ONLY(
+		/*FLAT_DEBUG_ONLY(
 			for (const flat::Vector2& p : path)
 			{
 				const_cast<map::Tile*>(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::GREEN);
 			}
-		)
+		)*/
 	
 		simplifyPath(path);
 		
-		FLAT_DEBUG_ONLY(
+		/*FLAT_DEBUG_ONLY(
 			for (const flat::Vector2& p : path)
 			{
 				const_cast<map::Tile*>(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::RED);
 			}
-		)
+		)*/
 	}
 }
 

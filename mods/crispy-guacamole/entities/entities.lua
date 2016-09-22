@@ -1,5 +1,6 @@
 return {
 	'devil',
 	'larva',
-	'sheep'
+	'sheep',
+	'zombie'
 }

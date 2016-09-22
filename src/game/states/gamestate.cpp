@@ -23,9 +23,10 @@ void GameState::enter(flat::state::Agent* agent)
 	Game* game = agent->to<Game>();
 	
 	static const char* entityTemplates[] = {
-		"sheep",
+		//"sheep",
 		//"devil",
 		//"larva",
+		"zombie",
 		nullptr
 	};
 	

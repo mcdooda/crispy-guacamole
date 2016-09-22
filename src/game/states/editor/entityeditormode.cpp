@@ -11,7 +11,7 @@ namespace editor
 
 EntityEditorMode::EntityEditorMode(Game* game, EditorState* editorState) : Super(game, editorState)
 {
-	m_entityTemplate = editorState->getEntityTemplate(game, "sheep");
+	m_entityTemplate = editorState->getEntityTemplate(game, "zombie");
 }
 
 EntityEditorMode::~EntityEditorMode()
@@ -26,8 +26,8 @@ void EntityEditorMode::applyBrush() const
 	{
 		flat::Vector3 position(m_brushPosition, tile->getZ());
 		entity::Entity* entity = m_editorState->spawnEntityAtPosition(m_entityTemplate, position);
-		float currentTime = m_game->time->getFrameTime();
-		entity->update(currentTime, 0.f);
+		//float currentTime = m_game->time->getFrameTime();
+		//entity->update(currentTime, 0.f);
 	}
 }
 

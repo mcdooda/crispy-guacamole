@@ -32,7 +32,7 @@ void GameState::enter(flat::state::Agent* agent)
 	for (int j = 0; entityTemplates[j]; ++j)
 	{
 		std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, entityTemplates[j]);
-		for (int i = 0; i < 1; ++i)
+		for (int i = 0; i < 10; ++i)
 		{
 			flat::Vector3 position;
 			int tileX, tileY;
@@ -45,10 +45,7 @@ void GameState::enter(flat::state::Agent* agent)
 			}
 			while (m_map.getTileIfWalkable(tileX, tileY) == nullptr);
 
-			entity::Entity* entity = m_entityPool.createEntity(entityTemplate);
-			entity->setPosition(position);
-			m_map.addEntity(entity);
-			m_entities.push_back(entity);
+			spawnEntityAtPosition(entityTemplate, position);
 		}
 	}
 }

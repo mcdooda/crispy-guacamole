@@ -172,7 +172,7 @@ void MovementComponent::separateFromAdjacentTiles()
 	const flat::Vector3& position = m_owner->getPosition();
 	const float z = position.z;
 	const float minZ = z + MIN_Z_EPSILON;
-	FLAT_ASSERT(minZ >= tile->getZ());
+	//FLAT_ASSERT(minZ >= tile->getZ());
 	
 	flat::Vector2 newPosition2d(position.x, position.y);
 	
@@ -304,7 +304,7 @@ void MovementComponent::separateFromNearbyEntities()
 					const float minDistance = radius + neighborRadius - 0.001f;
 					if (flat::length2(neighborPosition2d - position2d) < minDistance * minDistance)
 					{
-						const float penetration = -((neighborPosition2d - position2d).length() - radius - neighborRadius);
+						const float penetration = -(flat::length(neighborPosition2d - position2d) - radius - neighborRadius);
 						const float neighborWeight = neighborEntityTemplate->getWeight();
 						const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
 						flat::Vector2 neighborMove = flat::normalize(neighborPosition2d - position2d);

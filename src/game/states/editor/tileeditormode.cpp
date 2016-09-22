@@ -16,6 +16,15 @@ TileEditorMode::TileEditorMode(Game* game, EditorState* editorState) : Super(gam
 	map::brush::Brush* brush = new map::brush::SphereBrush();
 	brush->setRadius(3.f);
 	m_brush.reset(brush);
+
+	editorState->getMap().eachTile([this](const map::Tile* tile)
+	{
+		if (tile->exists())
+		{
+			const std::shared_ptr<const flat::video::Texture>& tileTexture = tile->getSprite().getTexture();
+			m_tileTexturePack.addTexture(tileTexture, 1.f);
+		}
+	});
 }
 
 TileEditorMode::~TileEditorMode()
@@ -62,15 +71,23 @@ void TileEditorMode::displayBrush() const
 
 void TileEditorMode::applyBrush() const
 {
+	eachBrushTile([this](map::Tile* tile, float effect)
+	{
+		tile->setTexture(m_tileTexturePack.getRandomTexture(m_game));
+	});
+}
+
+void TileEditorMode::handleShortcuts() const
+{
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush != nullptr);
 
 	const float frameTime = m_game->time->getFrameTime();
 	map::Map& map = m_editorState->getMap();
 
-	const flat::input::Keyboard* keyboard =m_game->input->keyboard;
-	bool upPressed = keyboard->isPressed(K(PAGEUP));
-	bool downPressed = keyboard->isPressed(K(PAGEDOWN));
+	const flat::input::Keyboard* keyboard = m_game->input->keyboard;
+	bool upPressed = keyboard->isPressed(K(W));
+	bool downPressed = keyboard->isPressed(K(S));
 	if (upPressed || downPressed)
 	{
 		float displacement = (upPressed ? frameTime : -frameTime) * 10.f;
@@ -97,7 +114,7 @@ void TileEditorMode::applyBrush() const
 		});
 	}
 
-	if (keyboard->isPressed(K(W)))
+	if (keyboard->isPressed(K(R)))
 	{
 		map.eachTile([&map](map::Tile* tile)
 		{
@@ -107,10 +124,6 @@ void TileEditorMode::applyBrush() const
 			}
 		});
 	}
-}
-
-void TileEditorMode::handleShortcuts() const
-{
 }
 
 } // editor

@@ -1,0 +1,5 @@
+return {
+	'devil',
+	'larva',
+	'sheep'
+}

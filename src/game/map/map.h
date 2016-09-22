@@ -40,16 +40,18 @@ class Map final
 		
 		const Tile* getTile(int x, int y) const;
 		Tile* getTile(int x, int y);
-		const Tile* getTile(float x, float y) const { return getTile(static_cast<int>(std::round(x)), static_cast<int>(std::round(y))); }
-		Tile* getTile(float x, float y) { return getTile(static_cast<int>(std::round(x)), static_cast<int>(std::round(y))); }
+		const Tile* getTile(float x, float y) const { return getTile(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
+		Tile* getTile(float x, float y) { return getTile(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
 
 		const Tile* getTileIfExists(int x, int y) const;
 		Tile* getTileIfExists(int x, int y);
+		const Tile* getTileIfExists(float x, float y) const { return getTileIfExists(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
+		Tile* getTileIfExists(float x, float y) { return getTileIfExists(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
 
 		const Tile* getTileIfWalkable(int x, int y) const;
 		Tile* getTileIfWalkable(int x, int y);
-		const Tile* getTileIfWalkable(float x, float y) const { return getTileIfWalkable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y))); }
-		Tile* getTileIfWalkable(float x, float y) { return getTileIfWalkable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y))); }
+		const Tile* getTileIfWalkable(float x, float y) const { return getTileIfWalkable(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
+		Tile* getTileIfWalkable(float x, float y) { return getTileIfWalkable(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
 
 		
 		void eachTile(std::function<void(const Tile*)> func) const;

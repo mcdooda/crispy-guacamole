@@ -121,6 +121,21 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
 	return mapPosition;
 }
 
+std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const
+{
+	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
+	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath);
+}
+
+entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position)
+{
+	entity::Entity* entity = m_entityPool.createEntity(entityTemplate);
+	entity->setPosition(position);
+	m_map.addEntity(entity);
+	m_entities.push_back(entity);
+	return entity;
+}
+
 void BaseMapState::update(game::Game* game)
 {
 	updateGameView(game);
@@ -242,12 +257,6 @@ void BaseMapState::drawUi(game::Game* game)
 	m_uiProgramRenderSettings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
 	
 	m_ui->draw(m_uiProgramRenderSettings);
-}
-
-std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const
-{
-	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath);
 }
 
 } // states

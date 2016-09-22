@@ -34,6 +34,10 @@ class BaseMapState : public flat::state::State
 		inline const map::Map& getMap() const { return m_map; }
 
 		flat::Vector2 getCursorMapPosition(game::Game* game);
+
+		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const;
+
+		entity::Entity* spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position);
 		
 	protected:
 		void update(game::Game* game);
@@ -47,8 +51,6 @@ class BaseMapState : public flat::state::State
 		void buildUi(game::Game* game);
 		void updateUi(game::Game* game);
 		void drawUi(game::Game* game);
-		
-		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const;
 		
 	protected:
 		// lua state
@@ -69,6 +71,7 @@ class BaseMapState : public flat::state::State
 		map::Map m_map;
 		map::DisplayManager m_mapDisplayManager;
 		entity::EntityPool m_entityPool;
+		std::vector<entity::Entity*> m_entities;
 		
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;

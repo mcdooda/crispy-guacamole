@@ -4,6 +4,7 @@
 #include "../map/tile.h"
 #include "../map/brush/spherebrush.h"
 #include "editor/tileeditormode.h"
+#include "editor/entityeditormode.h"
 
 namespace game
 {
@@ -19,7 +20,7 @@ void EditorState::enter(flat::state::Agent* agent)
 	
 	flat::lua::doFile(m_luaState, "data/editor/scripts/ui.lua");
 
-	editor::EditorMode* editorMode = new editor::TileEditorMode(game, this);
+	editor::EditorMode* editorMode = new editor::EntityEditorMode(game, this);
 	m_editorMode.reset(editorMode);
 }
 
@@ -57,11 +58,20 @@ void EditorState::displayBrush(Game* game)
 
 void EditorState::applyBrush(Game* game)
 {
-	m_editorMode->applyBrush();
+	const flat::input::Input* input = game->input;
+
+	if (!input->keyboard->isPressed(K(LCTRL)))
+	{
+		m_editorMode->handleShortcuts();
+	}
+
+	if (input->mouse->isPressed(M(LEFT)))
+	{
+		m_editorMode->applyBrush();
+	}
 }
 
 } // states
 } // game
-
 
 

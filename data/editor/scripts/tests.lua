@@ -1,5 +1,8 @@
 require 'data/scripts/dumpenv' ()
 
+local Mod = require 'data/editor/scripts/mod'
+require 'data/scripts/dump' (Mod)
+
 local Slider = require 'data/scripts/ui/slider'
 
 local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }

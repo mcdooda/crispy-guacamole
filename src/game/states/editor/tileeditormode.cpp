@@ -65,7 +65,12 @@ void TileEditorMode::applyBrush() const
 {
 	eachBrushTile([this](map::Tile* tile, float effect)
 	{
-		tile->setTexture(m_tileTemplate->getRandomTexture(m_game));
+		float random = m_game->random->nextFloat(0.f, 1.f);
+		if (random <= effect)
+		{
+			std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
+			tile->setTexture(texture);
+		}
 	});
 }
 

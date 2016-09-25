@@ -20,6 +20,7 @@ class Mod final
 		std::string getTextureRelativePath(const std::string& absolutePath) const;
 		std::string getMapPath(const std::string& mapName, const char* fileName = "map.gpmap") const;
 		std::string getEntityTemplatePath(const std::string& entityTemplateName) const;
+		std::string getTileTemplatePath(const std::string& tileTemplateName) const;
 		
 	private:
 		std::string m_path;

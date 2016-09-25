@@ -1,34 +1,14 @@
 #include "texturepack.h"
-#include "../../../game.h"
+#include "../game.h"
 
 namespace game
 {
-namespace states
-{
-namespace editor
-{
-namespace texturepack
+namespace map
 {
 
 TexturePack::TexturePack() :
 	m_probabilitiesSum(0.f)
 {
-}
-
-TexturePack::TexturePack(TexturePack&& other) :
-	m_textures(std::move(other.m_textures)),
-	m_probabilitiesSum(other.m_probabilitiesSum)
-{
-	other.m_textures.clear();
-	other.m_probabilitiesSum = 0.f;
-}
-
-void TexturePack::operator=(TexturePack&& other)
-{
-	m_textures = std::move(other.m_textures);
-	m_probabilitiesSum = other.m_probabilitiesSum;
-	other.m_textures.clear();
-	other.m_probabilitiesSum = 0.f;
 }
 
 void TexturePack::addTexture(const std::shared_ptr<const flat::video::Texture>& tileTexture, float probability)
@@ -61,9 +41,7 @@ const std::shared_ptr<const flat::video::Texture>& TexturePack::getRandomTexture
 	return m_textures.at(randomIndex).first;
 }
 
-} // texturepack
-} // editor
-} // states
+} // map
 } // game
 
 

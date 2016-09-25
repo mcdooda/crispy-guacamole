@@ -2,6 +2,7 @@
 #include "../../game.h"
 #include "../editorstate.h"
 #include "../../map/tile.h"
+#include "../../map/tiletemplate.h"
 #include "../../map/brush/spherebrush.h"
 
 namespace game
@@ -16,15 +17,6 @@ TileEditorMode::TileEditorMode(Game* game, EditorState* editorState) : Super(gam
 	map::brush::Brush* brush = new map::brush::SphereBrush();
 	brush->setRadius(3.f);
 	m_brush.reset(brush);
-
-	editorState->getMap().eachTile([this](const map::Tile* tile)
-	{
-		if (tile->exists())
-		{
-			const std::shared_ptr<const flat::video::Texture>& tileTexture = tile->getSprite().getTexture();
-			m_tileTexturePack.addTexture(tileTexture, 1.f);
-		}
-	});
 }
 
 TileEditorMode::~TileEditorMode()
@@ -73,7 +65,7 @@ void TileEditorMode::applyBrush() const
 {
 	eachBrushTile([this](map::Tile* tile, float effect)
 	{
-		tile->setTexture(m_tileTexturePack.getRandomTexture(m_game));
+		tile->setTexture(m_tileTemplate->getRandomTexture(m_game));
 	});
 }
 

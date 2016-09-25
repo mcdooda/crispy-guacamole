@@ -1,14 +1,15 @@
 #include <iostream>
 #include <flat.h>
 #include "basemapstate.h"
-#include "../game.h"
-#include "../map/tile.h"
-#include "../entity/entitytemplate.h"
-#include "../timer/lua/timer.h"
-#include "../entity/lua/entity.h"
-#include "../mod/lua/mod.h"
-#include "../map/lua/map.h"
 #include "editor/lua/editor.h"
+#include "../game.h"
+#include "../timer/lua/timer.h"
+#include "../map/tile.h"
+#include "../map/tiletemplate.h"
+#include "../map/lua/map.h"
+#include "../entity/lua/entity.h"
+#include "../entity/entitytemplate.h"
+#include "../mod/lua/mod.h"
 
 namespace game
 {
@@ -131,6 +132,12 @@ std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(ga
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
 	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath);
+}
+
+std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game* game, const std::string& tileTemplateName) const
+{
+	std::string tileTemplatePath = m_mod.getTileTemplatePath(tileTemplateName);
+	return m_tileTemplateManager.getResource(game, m_luaState, tileTemplatePath);
 }
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position)

@@ -11,7 +11,7 @@ namespace editor
 
 EntityEditorMode::EntityEditorMode(Game* game, EditorState* editorState) : Super(game, editorState)
 {
-	m_entityTemplate = editorState->getEntityTemplate(game, "zombie");
+	
 }
 
 EntityEditorMode::~EntityEditorMode()
@@ -21,6 +21,7 @@ EntityEditorMode::~EntityEditorMode()
 
 void EntityEditorMode::applyBrush() const
 {
+	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
 	const map::Map& map = m_editorState->getMap();
 	const map::Tile* tile = map.getTileIfWalkable(m_brushPosition.x, m_brushPosition.y);
 	if (tile != nullptr)

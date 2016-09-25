@@ -68,7 +68,7 @@ void EditorState::applyBrush(Game* game)
 		m_editorMode->handleShortcuts();
 	}
 
-	if (input->mouse->isPressed(M(LEFT)))
+	if (input->mouse->isPressed(M(LEFT)) && !m_ui->isMouseOver())
 	{
 		m_editorMode->applyBrush();
 	}

@@ -2,10 +2,13 @@
 #define GAME_STATES_EDITOR_TILEEDITORMODE_H
 
 #include "editormode.h"
-#include "texturepack/texturepack.h"
 
 namespace game
 {
+namespace map
+{
+class TileTemplate;
+}
 namespace states
 {
 namespace editor
@@ -23,10 +26,10 @@ class TileEditorMode : public EditorMode
 		void applyBrush() const override;
 		void handleShortcuts() const override;
 
-		inline void setTileTexturePack(texturepack::TexturePack&& tileTexturePack) { m_tileTexturePack = std::move(tileTexturePack); }
+		inline void setTileTemplate(const std::shared_ptr<const map::TileTemplate>& tileTemplate) { m_tileTemplate = tileTemplate; }
 
 	private:
-		texturepack::TexturePack m_tileTexturePack;
+		std::shared_ptr<const map::TileTemplate> m_tileTemplate;
 };
 
 } // editor

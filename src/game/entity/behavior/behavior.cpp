@@ -13,6 +13,11 @@ Behavior::Behavior(lua_State* L, const std::string& fileName) :
 	load(L);
 }
 
+Behavior::~Behavior()
+{
+
+}
+
 void Behavior::load(lua_State* L)
 {
 	luaL_loadfile(L, m_fileName.c_str());

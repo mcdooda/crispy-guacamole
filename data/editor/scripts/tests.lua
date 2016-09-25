@@ -58,6 +58,9 @@ do
 				Editor.setEntity(entityName)
 			end)
 		end
+		
+		Editor.setEntityMode()
+		Editor.setEntity(ModData.entities.names[1])
 	end
 	
 	-- tiles

@@ -33,8 +33,8 @@ void setEditorMode(lua_State* L)
 	static_assert(std::is_base_of<editor::EditorMode, T>::value, "T must inherit from editor::EditorMode");
 	states::EditorState* editorState = getEditorState(L);
 	Game* game = flat::lua::getGameAs<Game>(L);
-	editor::EditorMode* tileEditorMode = new T(game, editorState);
-	editorState->setEditorMode(tileEditorMode);
+	editor::EditorMode* editorMode = new T(game, editorState);
+	editorState->setEditorMode(editorMode);
 }
 
 template <class T>

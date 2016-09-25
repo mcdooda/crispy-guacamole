@@ -16,6 +16,7 @@ class Behavior
 	friend class BehaviorRuntime;
 	public:
 		Behavior(lua_State* L, const std::string& fileName);
+		~Behavior();
 		
 	private:
 		void load(lua_State* L);

@@ -39,6 +39,11 @@ std::string Mod::getEntityTemplatePath(const std::string& entityTemplateName) co
 	return m_path + "entities/" + entityTemplateName + "/"; // path to a directory
 }
 
+std::string Mod::getTileTemplatePath(const std::string& tileTemplateName) const
+{
+	return m_path + "tiles/" + tileTemplateName + "/"; // path to a directory
+}
+
 } // mod
 } // game
 

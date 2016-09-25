@@ -58,7 +58,12 @@ int l_Editor_setTileMode(lua_State * L)
 
 int l_Editor_setTile(lua_State * L)
 {
-	luaL_error(L, "not implemented");
+	const char* tileTemplateName = luaL_checkstring(L, 1);
+	editor::TileEditorMode* tileEditorMode = getEditorMode<editor::TileEditorMode>(L);
+	Game* game = flat::lua::getGameAs<Game>(L);
+	states::EditorState* editorState = getEditorState(L);
+	std::shared_ptr<const map::TileTemplate> tileTemplate = editorState->getTileTemplate(game, tileTemplateName);
+	tileEditorMode->setTileTemplate(tileTemplate);
 	return 0;
 }
 

@@ -1,3 +1,4 @@
 return {
-	'grass'
+	'grass',
+	'desert'
 }

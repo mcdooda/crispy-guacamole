@@ -19,7 +19,7 @@ EntityEditorMode::~EntityEditorMode()
 
 }
 
-void EntityEditorMode::applyBrush() const
+void EntityEditorMode::applyBrushPrimaryEffect() const
 {
 	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
 	const map::Map& map = m_editorState->getMap();

@@ -32,7 +32,7 @@ void EditorMode::updateBrushPosition()
 	}
 }
 
-void EditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) const
+void EditorMode::eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const
 {
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush != nullptr);
@@ -45,6 +45,20 @@ void EditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) cons
 			{
 				func(tile, effect);
 			}
+		}
+	}
+}
+
+void EditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) const
+{
+	map::brush::Brush* brush = m_brush.get();
+	FLAT_ASSERT(brush != nullptr);
+	for (map::Tile* tile : m_brushTiles)
+	{
+		float effect = brush->getTileEffect(m_brushPosition, tile);
+		if (effect > 0.f)
+		{
+			func(tile, effect);
 		}
 	}
 }

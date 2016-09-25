@@ -68,9 +68,16 @@ void EditorState::applyBrush(Game* game)
 		m_editorMode->handleShortcuts();
 	}
 
-	if (input->mouse->isPressed(M(LEFT)) && !m_ui->isMouseOver())
+	if (!m_ui->isMouseOver())
 	{
-		m_editorMode->applyBrush();
+		if (input->mouse->isPressed(M(LEFT)))
+		{
+			m_editorMode->applyBrushPrimaryEffect();
+		}
+		else if (input->mouse->isPressed(M(RIGHT)))
+		{
+			m_editorMode->applyBrushSecondaryEffect();
+		}
 	}
 }
 

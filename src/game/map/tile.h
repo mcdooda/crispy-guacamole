@@ -23,11 +23,12 @@ class Tile final : public MapObject
 		~Tile() override;
 		
 		inline bool exists() const { return m_exists; }
-		inline void setExists(bool exists) { m_exists = exists; }
+		void setExists(bool exists) { m_exists = exists; }
 		
 		inline bool isWalkable() const { return m_walkable; }
 		inline void setWalkable(bool walkable) { m_walkable = walkable; }
 		
+		inline bool hasSprite() const { return static_cast<bool>(m_sprite.getTexture()); }
 		const flat::util::Sprite& getSprite() const override;
 		
 		void setCoordinates(const Map& map, int x, int y, float z);

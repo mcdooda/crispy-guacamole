@@ -24,12 +24,14 @@ public:
 	void updateBrushPosition();
 	virtual void updateBrushTiles() {}
 	virtual void displayBrush() const {}
-	virtual void applyBrush() const {}
+	virtual void applyBrushPrimaryEffect() const {}
+	virtual void applyBrushSecondaryEffect() const {}
 	virtual void handleShortcuts() const {}
 
 	virtual void draw() const {}
 
 protected:
+	void eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const;
 	void eachBrushTile(std::function<void(map::Tile*, float)> func) const;
 
 protected:

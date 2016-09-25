@@ -92,6 +92,7 @@ void Game::checkArgs()
 		          << "Other options:" << std::endl
 		          << "\t-w\twindowed" << std::endl
 		          << "\t-e\teditor mode" << std::endl;
+		FLAT_BREAK();
 		exit(1);
 	}
 }

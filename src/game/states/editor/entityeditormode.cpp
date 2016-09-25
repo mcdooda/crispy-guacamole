@@ -16,6 +16,7 @@ EntityEditorMode::EntityEditorMode(Game* game, EditorState* editorState) : Super
 
 EntityEditorMode::~EntityEditorMode()
 {
+
 }
 
 void EntityEditorMode::applyBrush() const

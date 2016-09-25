@@ -13,17 +13,23 @@ int open(lua_State* L)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	lua_createtable(L, 0, 2);
+	lua_createtable(L, 0, 3);
 	static const luaL_Reg Map_lib_m[] = {
-		{"load", l_Map_load},
-		{"save", l_Map_save},
+		{"getName", l_Map_getName},
+		{"load",    l_Map_load},
+		{"save",    l_Map_save},
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Map_lib_m, 0);
-
-	lua_pop(L, 1);
+	lua_setglobal(L, "Map");
 	
 	return 0;
+}
+
+int l_Map_getName(lua_State * L)
+{
+	lua_pushstring(L, "map1");
+	return 1;
 }
 
 int l_Map_load(lua_State* L)

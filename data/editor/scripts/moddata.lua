@@ -1,11 +1,11 @@
-local Mod = {}
+local ModData = {}
 
-local path = 'mods/crispy-guacamole'
-Mod.path = path
+local path = Mod.getPath()
+ModData.path = path
 
 -- entities
-local entities = dofile(Mod.path .. '/entities/entities.lua')
-Mod.entities = {
+local entities = dofile(ModData.path .. '/entities/entities.lua')
+ModData.entities = {
 	names = entities
 }
 for i = 1, #entities do
@@ -13,7 +13,7 @@ for i = 1, #entities do
 	local entityBehavior = dofile(path .. '/entities/' .. entityName .. '/behavior.lua')
 	local entityPhysics  = dofile(path .. '/entities/' .. entityName .. '/physics.lua')
 	local entitySprite   = dofile(path .. '/entities/' .. entityName .. '/sprite.lua')
-	Mod.entities[entityName] = {
+	ModData.entities[entityName] = {
 		name     = entityName,
 		behavior = entityBehavior,
 		physics  = entityPhysics,
@@ -22,19 +22,19 @@ for i = 1, #entities do
 end
 
 -- maps
-local maps = dofile(Mod.path .. '/maps/maps.lua')
-Mod.maps = {
+local maps = dofile(ModData.path .. '/maps/maps.lua')
+ModData.maps = {
 	names = maps
 }
 for i = 1, #maps do
 	local mapName = maps[i]
 	local map = dofile(path .. '/maps/' .. mapName .. '/map.lua')
-	Mod.maps[mapName] = map
+	ModData.maps[mapName] = map
 end
 
 -- props
-local props = dofile(Mod.path .. '/props/props.lua')
-Mod.props = {
+local props = dofile(ModData.path .. '/props/props.lua')
+ModData.props = {
 	names = props
 }
 for i = 1, #props do
@@ -43,14 +43,14 @@ for i = 1, #props do
 end
 
 -- tiles
-local tiles = dofile(Mod.path .. '/tiles/tiles.lua')
-Mod.tiles = {
+local tiles = dofile(ModData.path .. '/tiles/tiles.lua')
+ModData.tiles = {
 	names = tiles
 }
 for i = 1, #tiles do
 	local tileName = tiles[i]
 	local tile = dofile(path .. '/tiles/' .. tileName .. '/tile.lua')
-	Mod.tiles[tileName] = tile
+	ModData.tiles[tileName] = tile
 end
 
-return Mod
+return ModData

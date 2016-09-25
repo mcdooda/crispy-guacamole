@@ -1,7 +1,9 @@
 require 'data/scripts/dumpenv' ()
 
-local Mod = require 'data/editor/scripts/mod'
-require 'data/scripts/dump' (Mod)
+local dump = require 'data/scripts/dump'
+
+local ModData = require 'data/editor/scripts/moddata'
+dump(ModData)
 
 local Slider = require 'data/scripts/ui/slider'
 
@@ -39,6 +41,57 @@ do
 			label:setText(format('%.1f fps', displayedFps))
 			i = i + 1
 		end)
+	end
+	
+	-- entities
+	do
+		local margin = Widget.makeFixedSize(1, 10)
+		debugContainer:addChild(margin)
+		local title = Widget.makeText('--- Entities ---', unpack(font))
+		debugContainer:addChild(title)
+		for i = 1, #ModData.entities.names do
+			local entityName = ModData.entities.names[i]
+			local label = Widget.makeText(entityName, unpack(font))
+			debugContainer:addChild(label)
+			label:click(function()
+				Editor.setEntityMode()
+				Editor.setEntity(entityName)
+			end)
+		end
+	end
+	
+	-- tiles
+	do
+		local margin = Widget.makeFixedSize(1, 10)
+		debugContainer:addChild(margin)
+		local title = Widget.makeText('--- Tiles ---', unpack(font))
+		debugContainer:addChild(title)
+		for i = 1, #ModData.tiles.names do
+			local tileName = ModData.tiles.names[i]
+			local label = Widget.makeText(tileName, unpack(font))
+			debugContainer:addChild(label)
+			label:click(function()
+				Editor.setTileMode()
+				Editor.setTile(tileName)
+			end)
+		end
+	end
+	
+	-- props
+	do
+		local margin = Widget.makeFixedSize(1, 10)
+		debugContainer:addChild(margin)
+		local title = Widget.makeText('--- Props ---', unpack(font))
+		debugContainer:addChild(title)
+		for i = 1, #ModData.props.names do
+			local propName = ModData.props.names[i]
+			local label = Widget.makeText(propName, unpack(font))
+			debugContainer:addChild(label)
+			label:click(function()
+				Editor.setPropMode()
+				Editor.setProp(propName)
+			end)
+		end
 	end
 
 	root:addChild(debugContainer)

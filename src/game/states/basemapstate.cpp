@@ -3,9 +3,12 @@
 #include "basemapstate.h"
 #include "../game.h"
 #include "../map/tile.h"
-#include "../timer/lua/timer.h"
 #include "../entity/entitytemplate.h"
+#include "../timer/lua/timer.h"
 #include "../entity/lua/entity.h"
+#include "../mod/lua/mod.h"
+#include "../map/lua/map.h"
+#include "editor/lua/editor.h"
 
 namespace game
 {
@@ -24,6 +27,9 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	flat::sharp::ui::lua::open(m_luaState);
 	timer::lua::open(m_luaState);
 	entity::lua::open(m_luaState);
+	mod::lua::open(m_luaState);
+	map::lua::open(m_luaState);
+	editor::lua::open(m_luaState);
 	
 	// ui
 	buildUi(game);

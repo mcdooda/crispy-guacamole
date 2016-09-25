@@ -20,6 +20,8 @@ public:
 
 	void applyBrush() const override;
 
+	inline void setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate) { m_entityTemplate = entityTemplate; }
+
 private:
 	std::shared_ptr<const entity::EntityTemplate> m_entityTemplate;
 };

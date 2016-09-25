@@ -20,6 +20,9 @@ class EditorState : public BaseMapState
 	public:
 		void enter(flat::state::Agent* agent) override;
 		void execute(flat::state::Agent* agent) override;
+
+		inline void setEditorMode(editor::EditorMode* editorMode) { m_editorMode.reset(editorMode); }
+		inline editor::EditorMode* getEditorMode() { return m_editorMode.get(); }
 		
 	private:
 		void saveOnCtrlS(Game* game);

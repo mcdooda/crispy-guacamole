@@ -61,9 +61,9 @@ void TileEditorMode::displayBrush() const
 	});
 }
 
-void TileEditorMode::applyBrush() const
+void TileEditorMode::applyBrushPrimaryEffect() const
 {
-	eachBrushTile([this](map::Tile* tile, float effect)
+	eachBrushTileIfExists([this](map::Tile* tile, float effect)
 	{
 		float random = m_game->random->nextFloat(0.f, 1.f);
 		if (random <= effect)
@@ -72,6 +72,38 @@ void TileEditorMode::applyBrush() const
 			tile->setTexture(texture);
 		}
 	});
+}
+
+void TileEditorMode::applyBrushSecondaryEffect() const
+{
+	bool exists = m_game->input->keyboard->isPressed(K(SPACE));
+	if (exists)
+	{
+		eachBrushTile([this](map::Tile* tile, float effect)
+		{
+			float random = m_game->random->nextFloat(0.f, 1.f);
+			if (random <= effect)
+			{
+				tile->setExists(true);
+				if (!tile->hasSprite())
+				{
+					std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
+					tile->setTexture(texture);
+				}
+			}
+		});
+	}
+	else
+	{
+		eachBrushTile([this](map::Tile* tile, float effect)
+		{
+			float random = m_game->random->nextFloat(0.f, 1.f);
+			if (random <= effect)
+			{
+				tile->setExists(false);
+			}
+		});
+	}
 }
 
 void TileEditorMode::handleShortcuts() const

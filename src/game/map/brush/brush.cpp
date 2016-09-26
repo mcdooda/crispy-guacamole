@@ -32,7 +32,7 @@ void Brush::getTiles(Map& map, const flat::Vector2& center, std::vector<map::Til
 	{
 		for (int y = minY; y <= maxY; ++y)
 		{
-			if (map::Tile* tile = map.getTileIfExists(x, y))
+			if (map::Tile* tile = map.getTile(x, y))
 			{
 				positionFromCenter.x = static_cast<float>(x) - center.x;
 				positionFromCenter.y = static_cast<float>(y) - center.y;

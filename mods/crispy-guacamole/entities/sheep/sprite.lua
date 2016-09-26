@@ -1,8 +1,8 @@
 return {
 	origin = {8, 13},
-	size = {8, 5},
+	size = {8, 6},
 	animations = {
-		move = {
+		run = {
 			line = 1,
 			numFrames = 3,
 			frameDuration = 0.12
@@ -26,7 +26,12 @@ return {
 			line = 5,
 			numFrames = 2,
 			frameDuration = 0.5
-		}
+		},
+        move = {
+            line = 6,
+            numFrames = 2,
+            frameDuration = 0.15
+        }
 	}
 }
 

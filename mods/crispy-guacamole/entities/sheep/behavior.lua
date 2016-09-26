@@ -20,23 +20,22 @@ end
 function states:idle(sheep)
 	sheep:jump()
 end
-
 function states:wander(sheep)
 	local x, y = sheep:getPosition()
 	while true do
-		
+
 		do
 			local rx = x + (random() * 2 - 1) * 2
 			local ry = y + (random() * 2 - 1) * 2
 			sheep:moveTo(rx, ry)
 		end
-		
+
 		do
 			while random() < 0.3 do
 				sheep:playAnimation 'graze'
 			end
 		end
-		
+
 		do
 			if random() < 0.1 then
 				sheep:playAnimation 'crouch'

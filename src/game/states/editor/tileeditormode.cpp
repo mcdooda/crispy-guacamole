@@ -61,7 +61,7 @@ void TileEditorMode::displayBrush() const
 	});
 }
 
-void TileEditorMode::applyBrushPrimaryEffect() const
+void TileEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 {
 	eachBrushTileIfExists([this](map::Tile* tile, float effect)
 	{
@@ -74,7 +74,7 @@ void TileEditorMode::applyBrushPrimaryEffect() const
 	});
 }
 
-void TileEditorMode::applyBrushSecondaryEffect() const
+void TileEditorMode::applyBrushSecondaryEffect(bool justPressed) const
 {
 	bool exists = m_game->input->keyboard->isPressed(K(SPACE));
 	if (exists)

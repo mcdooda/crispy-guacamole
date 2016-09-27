@@ -61,7 +61,7 @@ void PropEditorMode::displayBrush() const
 	});
 }
 
-void PropEditorMode::applyBrushPrimaryEffect() const
+void PropEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 {
 	eachBrushTileIfExists([this](map::Tile* tile, float effect)
 	{
@@ -74,7 +74,7 @@ void PropEditorMode::applyBrushPrimaryEffect() const
 	});
 }
 
-void PropEditorMode::applyBrushSecondaryEffect() const
+void PropEditorMode::applyBrushSecondaryEffect(bool justPressed) const
 {
 	eachBrushTileIfExists([this](map::Tile* tile, float effect)
 	{

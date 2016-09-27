@@ -18,7 +18,7 @@ public:
 	EntityEditorMode(Game* game, EditorState* editorState);
 	~EntityEditorMode() override;
 
-	void applyBrushPrimaryEffect() const override;
+	void applyBrushPrimaryEffect(bool justPressed) const override;
 
 	inline void setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate) { m_entityTemplate = entityTemplate; }
 

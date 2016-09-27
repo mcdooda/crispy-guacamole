@@ -23,6 +23,9 @@ class EditorState : public BaseMapState
 
 		inline void setEditorMode(editor::EditorMode* editorMode) { m_editorMode.reset(editorMode); }
 		inline editor::EditorMode* getEditorMode() { return m_editorMode.get(); }
+
+	protected:
+		entity::component::ComponentFlags getComponentsFilter() const override;
 		
 	private:
 		void saveOnCtrlS(Game* game);

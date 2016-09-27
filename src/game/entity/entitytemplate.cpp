@@ -10,7 +10,8 @@ namespace game
 namespace entity
 {
 
-EntityTemplate::EntityTemplate(Game* game, lua_State* L, const std::string& path) :
+EntityTemplate::EntityTemplate(Game* game, lua_State* L, const std::string& path, const std::string& name) :
+	m_name(name),
 	m_radius(0.f),
 	m_speed(0.f),
 	m_jumpForce(0.f),

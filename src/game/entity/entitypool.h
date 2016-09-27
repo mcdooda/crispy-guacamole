@@ -18,7 +18,10 @@ public:
 	EntityPool() {}
 	~EntityPool() {}
 
-	Entity* createEntity(const std::shared_ptr<const EntityTemplate>& entityTemplate);
+	Entity* createEntity(
+		const std::shared_ptr<const EntityTemplate>& entityTemplate,
+		component::ComponentFlags componentsFilter = component::AllComponents
+	);
 	void destroyEntity(Entity* entity);
 
 	// create components

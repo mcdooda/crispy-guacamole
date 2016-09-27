@@ -6,10 +6,10 @@ namespace game
 namespace entity
 {
 
-Entity* EntityPool::createEntity(const std::shared_ptr<const EntityTemplate>& entityTemplate)
+Entity* EntityPool::createEntity(const std::shared_ptr<const EntityTemplate>& entityTemplate, component::ComponentFlags componentsFilter)
 {
 	Entity* entity = m_entityPool.create(entityTemplate);
-	component::ComponentFlags flags = entityTemplate.get()->getComponentFlags();
+	component::ComponentFlags flags = entityTemplate.get()->getComponentFlags() & componentsFilter;
 	addComponentIfHasFlag<component::BehaviorComponent>(entity, flags);
 	addComponentIfHasFlag<component::MovementComponent>(entity, flags);
 	addComponentIfHasFlag<component::SpriteComponent>(entity, flags);

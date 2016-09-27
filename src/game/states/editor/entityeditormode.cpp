@@ -1,6 +1,7 @@
 #include "entityeditormode.h"
 #include "../editorstate.h"
 #include "../../game.h"
+#include "../../entity/component/behaviorcomponent.h"
 
 namespace game
 {
@@ -19,17 +20,22 @@ EntityEditorMode::~EntityEditorMode()
 
 }
 
-void EntityEditorMode::applyBrushPrimaryEffect() const
+void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 {
+	if (!justPressed)
+		return;
+
 	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
+	flat::Vector2 position = m_brushPosition;
+	// add a little noise to avoid getting entities at the exact same position
+	position.x += m_game->random->nextFloat(-0.001f, 0.001f);
+	position.y += m_game->random->nextFloat(-0.001f, 0.001f);
 	const map::Map& map = m_editorState->getMap();
-	const map::Tile* tile = map.getTileIfWalkable(m_brushPosition.x, m_brushPosition.y);
+	const map::Tile* tile = map.getTileIfWalkable(position.x, position.y);
 	if (tile != nullptr)
 	{
-		flat::Vector3 position(m_brushPosition, tile->getZ());
-		entity::Entity* entity = m_editorState->spawnEntityAtPosition(m_entityTemplate, position);
-		//float currentTime = m_game->time->getFrameTime();
-		//entity->update(currentTime, 0.f);
+		flat::Vector3 position(position, tile->getZ());
+		m_editorState->spawnEntityAtPosition(m_entityTemplate, position);
 	}
 }
 

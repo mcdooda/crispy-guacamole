@@ -24,8 +24,8 @@ public:
 	void updateBrushPosition();
 	virtual void updateBrushTiles() {}
 	virtual void displayBrush() const {}
-	virtual void applyBrushPrimaryEffect() const {}
-	virtual void applyBrushSecondaryEffect() const {}
+	virtual void applyBrushPrimaryEffect(bool justPressed) const {}
+	virtual void applyBrushSecondaryEffect(bool justPressed) const {}
 	virtual void handleShortcuts() const {}
 
 	virtual void draw() const {}

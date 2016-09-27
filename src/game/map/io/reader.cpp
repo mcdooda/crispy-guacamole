@@ -4,6 +4,8 @@
 #include "../tile.h"
 #include "../../game.h"
 #include "../../mod/mod.h"
+#include "../../entity/entitytemplate.h"
+#include "../../states/basemapstate.h"
 
 namespace game
 {
@@ -172,36 +174,31 @@ void Reader::readTiles()
 
 void Reader::readEntities()
 {
-	uint16_t numModels = readUint16();
-	//m_models = new entity::EntityModel*[numModels];
-	for (int i = 0; i < numModels; ++i)
+	states::BaseMapState* baseMapState = static_cast<states::BaseMapState*>(m_game->getStateMachine()->getCurrentState());
+
+	uint16_t numEntityTemplates = readUint16();
+	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;
+	entityTemplates.reserve(numEntityTemplates);
+	for (int i = 0; i < numEntityTemplates; ++i)
 	{
-		std::string modelName;
-		readString(modelName);
-		//m_models[i] = entity::EntityModel::getModelByName(modelName);
+		std::string entityTemplateName;
+		readString(entityTemplateName);
+		std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState->getEntityTemplate(m_game, entityTemplateName);
+		entityTemplates.push_back(entityTemplate);
 	}
 	
 	uint16_t numEntities = readUint16();
 	for (int i = 0; i < numEntities; ++i)
 	{
-		uint16_t modelIndex = readUint16();
-		(void)modelIndex;
-		//entity::EntityModel* model = m_models[modelIndex];
+		uint16_t entityTemplateIndex = readUint16();
+		std::shared_ptr<const entity::EntityTemplate> entityTemplate = entityTemplates.at(entityTemplateIndex);
+
 		float x = readFloat();
 		float y = readFloat();
-		
-		(void)x;
-		(void)y;
-		
-		//entity::Entity* entity;
-		
-		/*if (model->isUnitModel())
-			entity = new entity::Unit(model, engine::Vector2d(x, y));
-		
-		else
-			entity = new entity::Building(model, engine::Vector2d(x, y));
-			
-		m_map->addEntity(entity);*/
+		Tile* tile = m_map.getTile(x, y);
+		FLAT_ASSERT(tile != nullptr);
+		flat::Vector3 position(x, y, tile->getZ());
+		baseMapState->spawnEntityAtPosition(entityTemplate, position);
 	}
 }
 

@@ -1,10 +1,11 @@
 #include <algorithm>
 #include "editorstate.h"
+#include "editor/tileeditormode.h"
+#include "editor/entityeditormode.h"
 #include "../game.h"
 #include "../map/tile.h"
 #include "../map/brush/spherebrush.h"
-#include "editor/tileeditormode.h"
-#include "editor/entityeditormode.h"
+#include "../entity/component/behaviorcomponent.h"
 
 namespace game
 {
@@ -39,6 +40,11 @@ void EditorState::execute(flat::state::Agent* agent)
 	Super::execute(agent);
 }
 
+entity::component::ComponentFlags EditorState::getComponentsFilter() const
+{
+	return Super::getComponentsFilter() & ~entity::component::BehaviorComponent::Type;
+}
+
 void EditorState::saveOnCtrlS(Game* game)
 {
 	const flat::input::Keyboard* keyboard = game->input->keyboard;
@@ -70,13 +76,14 @@ void EditorState::applyBrush(Game* game)
 
 	if (!m_ui->isMouseOver())
 	{
-		if (input->mouse->isPressed(M(LEFT)))
+		const flat::input::Mouse* mouse = input->mouse;
+		if (mouse->isPressed(M(LEFT)))
 		{
-			m_editorMode->applyBrushPrimaryEffect();
+			m_editorMode->applyBrushPrimaryEffect(mouse->isJustPressed(M(LEFT)));
 		}
-		else if (input->mouse->isPressed(M(RIGHT)))
+		else if (mouse->isPressed(M(RIGHT)))
 		{
-			m_editorMode->applyBrushSecondaryEffect();
+			m_editorMode->applyBrushSecondaryEffect(mouse->isJustPressed(M(RIGHT)));
 		}
 	}
 }

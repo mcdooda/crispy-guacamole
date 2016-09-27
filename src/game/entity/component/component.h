@@ -12,6 +12,7 @@ namespace component
 {
 
 typedef uint32_t ComponentFlags;
+enum { AllComponents = 0xFFFFFFFF };
 
 class Component
 {

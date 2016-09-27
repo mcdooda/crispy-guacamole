@@ -4,6 +4,8 @@
 #include "../map.h"
 #include "../tile.h"
 #include "../prop.h"
+#include "../../entity/entity.h"
+#include "../../entity/entitytemplate.h"
 #include "../../game.h"
 #include "../../mod/mod.h"
 
@@ -145,8 +147,40 @@ void Writer::writeTiles()
 
 void Writer::writeEntities()
 {
-	writeUint16(0); // 0 entity template
-	writeUint16(0); // 0 entity
+	const std::vector<entity::Entity*>& entities = m_map.getEntities();
+
+	std::map<const entity::EntityTemplate*, uint16_t> entityTemplates;
+	std::vector<const entity::EntityTemplate*> entityTemplatesOrdered;
+	for (const entity::Entity* entity : entities)
+	{
+		const entity::EntityTemplate* entityTemplate = entity->getEntityTemplate().get();
+		FLAT_ASSERT(entityTemplate != nullptr);
+		std::map<const entity::EntityTemplate*, uint16_t>::iterator it = entityTemplates.find(entityTemplate);
+		if (it == entityTemplates.end())
+		{
+			uint16_t index = static_cast<uint16_t>(entityTemplates.size());
+			entityTemplates[entityTemplate] = index;
+			entityTemplatesOrdered.push_back(entityTemplate);
+		}
+	}
+
+	writeUint16(static_cast<uint16_t>(entityTemplates.size()));
+	for (const entity::EntityTemplate* entityTemplate : entityTemplatesOrdered)
+	{
+		writeString(entityTemplate->getName());
+	}
+
+	writeUint16(static_cast<uint16_t>(entities.size()));
+	for (const entity::Entity* entity : entities)
+	{
+		const entity::EntityTemplate* entityTemplate = entity->getEntityTemplate().get();
+		FLAT_ASSERT(entityTemplate != nullptr);
+		uint16_t entityTemplateIndex = entityTemplates.at(entityTemplate);
+		writeUint16(entityTemplateIndex);
+		const flat::Vector3& position = entity->getPosition();
+		writeFloat(position.x);
+		writeFloat(position.y);
+	}
 }
 
 void Writer::writeBool(bool value)

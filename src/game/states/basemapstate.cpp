@@ -132,7 +132,7 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath);
+	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath, entityTemplateName);
 }
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game* game, const std::string& tileTemplateName) const
@@ -149,7 +149,8 @@ std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Gam
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position)
 {
-	entity::Entity* entity = m_entityPool.createEntity(entityTemplate);
+	entity::component::ComponentFlags componentsFilter = getComponentsFilter();
+	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, componentsFilter);
 	entity->setPosition(position);
 	m_map.addEntity(entity);
 	m_entities.push_back(entity);
@@ -277,6 +278,11 @@ void BaseMapState::drawUi(game::Game* game)
 	m_uiProgramRenderSettings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
 	
 	m_ui->draw(m_uiProgramRenderSettings);
+}
+
+entity::component::ComponentFlags BaseMapState::getComponentsFilter() const
+{
+	return entity::component::AllComponents;
 }
 
 } // states

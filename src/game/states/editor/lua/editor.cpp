@@ -2,6 +2,7 @@
 #include "../../../game.h"
 #include "../../editorstate.h"
 #include "../entityeditormode.h"
+#include "../propeditormode.h"
 #include "../tileeditormode.h"
 
 namespace game
@@ -69,13 +70,18 @@ int l_Editor_setTile(lua_State * L)
 
 int l_Editor_setPropMode(lua_State * L)
 {
-	luaL_error(L, "not implemented");
+	setEditorMode<editor::PropEditorMode>(L);
 	return 0;
 }
 
 int l_Editor_setProp(lua_State * L)
 {
-	luaL_error(L, "not implemented");
+	const char* propTemplateName = luaL_checkstring(L, 1);
+	editor::PropEditorMode* propEditorMode = getEditorMode<editor::PropEditorMode>(L);
+	Game* game = flat::lua::getGameAs<Game>(L);
+	states::EditorState* editorState = getEditorState(L);
+	std::shared_ptr<const map::PropTemplate> propTemplate = editorState->getPropTemplate(game, propTemplateName);
+	propEditorMode->setPropTemplate(propTemplate);
 	return 0;
 }
 

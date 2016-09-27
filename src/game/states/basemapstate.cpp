@@ -6,6 +6,7 @@
 #include "../timer/lua/timer.h"
 #include "../map/tile.h"
 #include "../map/tiletemplate.h"
+#include "../map/proptemplate.h"
 #include "../map/lua/map.h"
 #include "../entity/lua/entity.h"
 #include "../entity/entitytemplate.h"
@@ -138,6 +139,12 @@ std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Gam
 {
 	std::string tileTemplatePath = m_mod.getTileTemplatePath(tileTemplateName);
 	return m_tileTemplateManager.getResource(game, m_luaState, tileTemplatePath);
+}
+
+std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game* game, const std::string& propTemplateName) const
+{
+	std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
+	return m_propTemplateManager.getResource(game, m_luaState, propTemplatePath);
 }
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position)

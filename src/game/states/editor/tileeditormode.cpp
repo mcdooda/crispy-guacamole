@@ -120,7 +120,7 @@ void TileEditorMode::handleShortcuts() const
 	if (upPressed || downPressed)
 	{
 		float displacement = (upPressed ? frameTime : -frameTime) * 10.f;
-		eachBrushTile([this, &map, displacement](map::Tile* tile, float effect)
+		eachBrushTileIfExists([this, &map, displacement](map::Tile* tile, float effect)
 		{
 			tile->setZ(map, tile->getZ() + displacement * effect);
 		});
@@ -130,13 +130,13 @@ void TileEditorMode::handleShortcuts() const
 	{
 		float mean = 0.f;
 		float n = 0.f;
-		eachBrushTile([&mean, &n](map::Tile* tile, float effect)
+		eachBrushTileIfExists([&mean, &n](map::Tile* tile, float effect)
 		{
 			mean += tile->getZ() * effect;
 			n += effect;
 		});
 		mean /= n;
-		eachBrushTile([this, &map, mean, frameTime](map::Tile* tile, float effect)
+		eachBrushTileIfExists([this, &map, mean, frameTime](map::Tile* tile, float effect)
 		{
 			float z = tile->getZ();
 			tile->setZ(map, z + (mean - z) * effect * frameTime * 5.f);

@@ -18,6 +18,7 @@ class EntityTemplate;
 namespace map
 {
 class TileTemplate;
+class PropTemplate;
 }
 namespace states
 {
@@ -41,6 +42,7 @@ class BaseMapState : public flat::state::State
 
 		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const;
 		std::shared_ptr<const map::TileTemplate> getTileTemplate(game::Game* game, const std::string& tileTemplateName) const;
+		std::shared_ptr<const map::PropTemplate> getPropTemplate(game::Game* game, const std::string& propTemplateName) const;
 
 		entity::Entity* spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position);
 		
@@ -64,6 +66,7 @@ class BaseMapState : public flat::state::State
 		// resource loading
 		flat::resource::ResourceManager<entity::EntityTemplate, Game*, lua_State*, std::string> m_entityTemplateManager;
 		flat::resource::ResourceManager<map::TileTemplate, Game*, lua_State*, std::string> m_tileTemplateManager;
+		flat::resource::ResourceManager<map::PropTemplate, Game*, lua_State*, std::string> m_propTemplateManager;
 		
 		// rendering settings
 		flat::video::Program m_spriteProgram;

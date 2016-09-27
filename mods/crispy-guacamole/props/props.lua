@@ -1,5 +1,5 @@
 return {
 	'house',
 	'tower',
-	'war3'
+	'pine'
 }

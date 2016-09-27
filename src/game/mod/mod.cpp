@@ -44,6 +44,11 @@ std::string Mod::getTileTemplatePath(const std::string& tileTemplateName) const
 	return m_path + "tiles/" + tileTemplateName + "/"; // path to a directory
 }
 
+std::string Mod::getPropTemplatePath(const std::string& propTemplateName) const
+{
+	return m_path + "props/" + propTemplateName + "/"; // path to a directory
+}
+
 } // mod
 } // game
 

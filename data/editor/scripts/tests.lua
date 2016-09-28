@@ -101,6 +101,26 @@ do
 end
 
 --[[
+-- padding test
+do
+	local red = Widget.makeFixedSize(200, 200)
+	red:setPadding(100, 0, 0, 100)
+	red:setPositionPolicy(Widget.PositionPolicy.CENTER)
+	red:setBackgroundColor(0xFF0000FF)
+	do
+		local blue = Widget.makeFixedSize(50, 50)
+		blue:setBackgroundColor(0x0000FFFF)
+		red:addChild(blue)
+	end
+	do
+		local green = Widget.makeFixedSize(50, 50)
+		green:setPositionPolicy(Widget.PositionPolicy.BOTTOM + Widget.PositionPolicy.CENTER_X)
+		green:setBackgroundColor(0x00FF00FF)
+		red:addChild(green)
+	end
+	root:addChild(red)
+end
+
 -- icons toolbar
 do
 	local toolbar = Widget.makeLineFlow()

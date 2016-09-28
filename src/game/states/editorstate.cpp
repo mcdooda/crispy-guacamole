@@ -18,16 +18,15 @@ void EditorState::enter(flat::state::Agent* agent)
 	Game* game = agent->to<Game>();
 	
 	setCameraZoom(0.5f);
-	
-	flat::lua::doFile(m_luaState, "data/editor/scripts/ui.lua");
 
-	editor::EditorMode* editorMode = new editor::EntityEditorMode(game, this);
-	m_editorMode.reset(editorMode);
+	flat::lua::doFile(m_luaState, "data/editor/scripts/ui.lua");
 }
 
 void EditorState::execute(flat::state::Agent* agent)
 {
 	Game* game = agent->to<Game>();
+
+	FLAT_ASSERT(m_editorMode.get() != nullptr);
 
 	updateBrush(game);
 	displayBrush(game);

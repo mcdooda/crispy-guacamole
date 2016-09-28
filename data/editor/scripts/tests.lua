@@ -45,9 +45,8 @@ do
 	
 	-- entities
 	do
-		local margin = Widget.makeFixedSize(1, 10)
-		debugContainer:addChild(margin)
 		local title = Widget.makeText('--- Entities ---', unpack(font))
+		title:setMargin(0, 5, 10, 5)
 		debugContainer:addChild(title)
 		for i = 1, #ModData.entities.names do
 			local entityName = ModData.entities.names[i]
@@ -65,9 +64,8 @@ do
 	
 	-- tiles
 	do
-		local margin = Widget.makeFixedSize(1, 10)
-		debugContainer:addChild(margin)
 		local title = Widget.makeText('--- Tiles ---', unpack(font))
+		title:setMargin(0, 5, 10, 5)
 		debugContainer:addChild(title)
 		for i = 1, #ModData.tiles.names do
 			local tileName = ModData.tiles.names[i]
@@ -82,9 +80,8 @@ do
 	
 	-- props
 	do
-		local margin = Widget.makeFixedSize(1, 10)
-		debugContainer:addChild(margin)
 		local title = Widget.makeText('--- Props ---', unpack(font))
+		title:setMargin(0, 5, 10, 5)
 		debugContainer:addChild(title)
 		for i = 1, #ModData.props.names do
 			local propName = ModData.props.names[i]

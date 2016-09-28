@@ -13,12 +13,12 @@ local root = Widget.getRoot()
 -- top right debug info
 do
 	local debugContainer = Widget.makeColumnFlow()
-	debugContainer:setPosition(-10,-10)
 	debugContainer:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
 
 	-- fps
 	do
 		local label = Widget.makeText('X fps', unpack(font))
+		label:setMargin(10)
 		debugContainer:addChild(label)
 		
 		local getFrameRate = Time.getFrameRate
@@ -46,11 +46,12 @@ do
 	-- entities
 	do
 		local title = Widget.makeText('--- Entities ---', unpack(font))
-		title:setMargin(0, 5, 10, 5)
+		title:setMargin(10, 0, 5, 0)
 		debugContainer:addChild(title)
 		for i = 1, #ModData.entities.names do
 			local entityName = ModData.entities.names[i]
 			local label = Widget.makeText(entityName, unpack(font))
+			label:setMargin(0, 0, 0, 7)
 			debugContainer:addChild(label)
 			label:click(function()
 				Editor.setEntityMode()
@@ -65,11 +66,12 @@ do
 	-- tiles
 	do
 		local title = Widget.makeText('--- Tiles ---', unpack(font))
-		title:setMargin(0, 5, 10, 5)
+		title:setMargin(10, 0, 5, 0)
 		debugContainer:addChild(title)
 		for i = 1, #ModData.tiles.names do
 			local tileName = ModData.tiles.names[i]
 			local label = Widget.makeText(tileName, unpack(font))
+			label:setMargin(0, 0, 0, 7)
 			debugContainer:addChild(label)
 			label:click(function()
 				Editor.setTileMode()
@@ -81,11 +83,12 @@ do
 	-- props
 	do
 		local title = Widget.makeText('--- Props ---', unpack(font))
-		title:setMargin(0, 5, 10, 5)
+		title:setMargin(10, 0, 5, 0)
 		debugContainer:addChild(title)
 		for i = 1, #ModData.props.names do
 			local propName = ModData.props.names[i]
 			local label = Widget.makeText(propName, unpack(font))
+			label:setMargin(0, 0, 0, 7)
 			debugContainer:addChild(label)
 			label:click(function()
 				Editor.setPropMode()

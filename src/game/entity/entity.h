@@ -57,6 +57,7 @@ class Entity final : public map::MapObject
 
 		void addComponent(component::Component* component);
 		void cacheComponents();
+		void initComponents();
 
 		template <class ComponentType>
 		inline const ComponentType* findComponent() const;
@@ -75,8 +76,6 @@ class Entity final : public map::MapObject
 		flat::Slot<const flat::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;
 		flat::Slot<map::Map*> addedToMap;
-		flat::Slot<> movementStarted;
-		flat::Slot<> movementStopped;
 		
 	protected:
 		

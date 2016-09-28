@@ -21,7 +21,8 @@ class SpriteComponent : public Component
 	public:
 		enum { Type = 1 << 2 };
 	public:
-		void setOwner(Entity* owner) override;
+		void init() override;
+
 		void update(float currentTime, float elapsedTime) override;
 		
 		bool isBusy() const override;

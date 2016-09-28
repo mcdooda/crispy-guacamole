@@ -20,9 +20,11 @@ class Component
 		Component();
 		virtual ~Component();
 		
-		virtual void setOwner(Entity* owner);
+		inline void setOwner(Entity* owner) { m_owner = owner; }
 		inline Entity* getOwner() { return m_owner; }
 		inline const Entity* getOwner() const { return m_owner; }
+
+		virtual void init() {}
 		
 		virtual void update(float currentTime, float elapsedTime) = 0;
 		

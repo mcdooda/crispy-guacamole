@@ -23,7 +23,8 @@ class MovementComponent : public Component
 	public:
 		enum { Type = 1 << 1 };
 	public:
-		void setOwner(Entity* owner) override;
+		void init() override;
+
 		void update(float currentTime, float elapsedTime) override;
 		
 		void addedToMap(map::Map* map);
@@ -37,6 +38,10 @@ class MovementComponent : public Component
 		
 		void jump();
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
+
+	public:
+		flat::Slot<> movementStarted;
+		flat::Slot<> movementStopped;
 		
 	private:
 		void fall(float elapsedTime);

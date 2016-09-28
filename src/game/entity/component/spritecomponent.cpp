@@ -1,5 +1,6 @@
 #include <iostream>
 #include "spritecomponent.h"
+#include "movementcomponent.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
 #include "../../map/map.h"
@@ -11,10 +12,9 @@ namespace entity
 namespace component
 {
 
-void SpriteComponent::setOwner(Entity* owner)
+void SpriteComponent::init()
 {
-	Super::setOwner(owner);
-	const EntityTemplate* entityTemplatePtr = owner->getEntityTemplate().get();
+	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
 	FLAT_ASSERT(entityTemplatePtr != nullptr);
 	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
 	m_sprite.setTexture(spriteDescription.getAtlas());
@@ -35,10 +35,14 @@ void SpriteComponent::setOwner(Entity* owner)
 	m_movementStarted = false;
 	m_movementStopped = false;
 	
-	owner->headingChanged.on(this, &SpriteComponent::headingChanged);
-	owner->positionChanged.on(this, &SpriteComponent::positionChanged);
-	owner->movementStarted.on(this, &SpriteComponent::movementStarted);
-	owner->movementStopped.on(this, &SpriteComponent::movementStopped);
+	m_owner->headingChanged.on(this, &SpriteComponent::headingChanged);
+	m_owner->positionChanged.on(this, &SpriteComponent::positionChanged);
+
+	if (component::MovementComponent* movementComponent = m_owner->getComponent<component::MovementComponent>())
+	{
+		movementComponent->movementStarted.on(this, &SpriteComponent::movementStarted);
+		movementComponent->movementStopped.on(this, &SpriteComponent::movementStopped);
+	}
 }
 
 void SpriteComponent::playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops)

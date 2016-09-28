@@ -12,11 +12,9 @@ namespace entity
 namespace component
 {
 
-void MovementComponent::setOwner(Entity* owner)
+void MovementComponent::init()
 {
-	Super::setOwner(owner);
-	
-	owner->addedToMap.on(this, &MovementComponent::addedToMap);
+	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
 }
 
 void MovementComponent::update(float currentTime, float elapsedTime)
@@ -51,7 +49,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 				m_path.pop();
 				if (!followsPath())
 				{
-					m_owner->movementStopped();
+					movementStopped();
 				}
 			}
 			m_owner->setXY(newPosition2d);
@@ -127,7 +125,7 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 		
 		if (startMovement)
 		{
-			m_owner->movementStarted();
+			movementStarted();
 		}
 	}
 }

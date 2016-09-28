@@ -8,7 +8,8 @@ namespace entity
 namespace component
 {
 
-Component::Component()
+Component::Component() :
+	m_owner(nullptr)
 {
 
 }
@@ -16,11 +17,6 @@ Component::Component()
 Component::~Component()
 {
 	
-}
-
-void Component::setOwner(Entity* owner)
-{
-	m_owner = owner;
 }
 
 } // component

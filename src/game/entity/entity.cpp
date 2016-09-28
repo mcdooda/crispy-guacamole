@@ -184,6 +184,14 @@ void Entity::cacheComponents()
 	m_spriteComponent   = findComponent<component::SpriteComponent>();
 }
 
+void Entity::initComponents()
+{
+	for (component::Component* component : m_components)
+	{
+		component->init();
+	}
+}
+
 } // entity
 } // game
 

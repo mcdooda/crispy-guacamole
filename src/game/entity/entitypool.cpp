@@ -14,6 +14,7 @@ Entity* EntityPool::createEntity(const std::shared_ptr<const EntityTemplate>& en
 	addComponentIfHasFlag<component::MovementComponent>(entity, flags);
 	addComponentIfHasFlag<component::SpriteComponent>(entity, flags);
 	entity->cacheComponents();
+	entity->initComponents();
 	return entity;
 }
 

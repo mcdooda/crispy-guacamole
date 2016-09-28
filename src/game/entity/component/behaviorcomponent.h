@@ -21,7 +21,8 @@ class BehaviorComponent : public Component
 	public:
 		enum { Type = 1 << 0 };
 	public:
-		void setOwner(Entity* entity) override;
+		void init() override;
+
 		void update(float currentTime, float elapsedTime) override;
 
 		ComponentFlags getType() const override { return Type; }

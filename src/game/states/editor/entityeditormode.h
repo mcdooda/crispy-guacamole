@@ -15,7 +15,7 @@ class EntityEditorMode : public EditorMode
 {
 	typedef EditorMode Super;
 public:
-	EntityEditorMode(Game* game, EditorState* editorState);
+	EntityEditorMode(Game& game, EditorState& editorState);
 	~EntityEditorMode() override;
 
 	void applyBrushPrimaryEffect(bool justPressed) const override;

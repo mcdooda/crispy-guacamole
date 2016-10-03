@@ -18,8 +18,8 @@ class EditorState : public BaseMapState
 {
 	typedef BaseMapState Super;
 	public:
-		void enter(flat::state::Agent* agent) override;
-		void execute(flat::state::Agent* agent) override;
+		void enter(flat::state::Agent& agent) override;
+		void execute(flat::state::Agent& agent) override;
 
 		inline void setEditorMode(editor::EditorMode* editorMode) { m_editorMode.reset(editorMode); }
 		inline editor::EditorMode* getEditorMode() { return m_editorMode.get(); }
@@ -28,10 +28,10 @@ class EditorState : public BaseMapState
 		entity::component::ComponentFlags getComponentsFilter() const override;
 		
 	private:
-		void saveOnCtrlS(Game* game);
-		void updateBrush(Game* game);
-		void displayBrush(Game* game);
-		void applyBrush(Game* game);
+		void saveOnCtrlS(Game& game);
+		void updateBrush(Game& game);
+		void displayBrush(Game& game);
+		void applyBrush(Game& game);
 
 	private:
 		std::unique_ptr<editor::EditorMode> m_editorMode;

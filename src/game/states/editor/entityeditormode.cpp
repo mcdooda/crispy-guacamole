@@ -10,7 +10,7 @@ namespace states
 namespace editor
 {
 
-EntityEditorMode::EntityEditorMode(Game* game, EditorState* editorState) : Super(game, editorState)
+EntityEditorMode::EntityEditorMode(Game& game, EditorState& editorState) : Super(game, editorState)
 {
 	
 }
@@ -28,14 +28,14 @@ void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
 	flat::Vector2 position = m_brushPosition;
 	// add a little noise to avoid getting entities at the exact same position
-	position.x += m_game->random->nextFloat(-0.001f, 0.001f);
-	position.y += m_game->random->nextFloat(-0.001f, 0.001f);
-	const map::Map& map = m_editorState->getMap();
+	position.x += m_game.random->nextFloat(-0.001f, 0.001f);
+	position.y += m_game.random->nextFloat(-0.001f, 0.001f);
+	const map::Map& map = m_editorState.getMap();
 	const map::Tile* tile = map.getTileIfWalkable(position.x, position.y);
 	if (tile != nullptr)
 	{
 		flat::Vector3 position(position, tile->getZ());
-		m_editorState->spawnEntityAtPosition(m_entityTemplate, position);
+		m_editorState.spawnEntityAtPosition(m_entityTemplate, position);
 	}
 }
 

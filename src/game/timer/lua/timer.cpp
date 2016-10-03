@@ -62,18 +62,18 @@ int l_Timer_start(lua_State* L)
 	
 	flat::time::Time* time = flat::lua::getTime(L);
 	float currentTime = time->getTime();
-	TimerContainer* timerContainer = getTimerContainer(L);
+	TimerContainer& timerContainer = getTimerContainer(L);
 	const Timer* timer = new Timer(currentTime, currentTime + timerDuration, onUpdate, onEnd);
-	timerContainer->add(timer);
+	timerContainer.add(timer);
 	callTimerUpdate(L, timer, currentTime);
 	return 0;
 }
 
 int l_Timer_stop(lua_State* L)
 {
-	TimerContainer* timerContainer = getTimerContainer(L);
+	TimerContainer& timerContainer = getTimerContainer(L);
 	const Timer* timer = getTimer(L, 1);
-	if (timerContainer->stop(timer))
+	if (timerContainer.stop(timer))
 	{
 		delete timer;
 		lua_pushboolean(L, 1);
@@ -138,10 +138,10 @@ void pushTimer(lua_State* L, const Timer* timer)
 	}
 }
 
-TimerContainer* getTimerContainer(lua_State* L)
+TimerContainer& getTimerContainer(lua_State* L)
 {
-	Game* game = flat::lua::getGame(L)->to<Game>();
-	return &game->timerContainer;
+	Game& game = flat::lua::getGameAs<Game>(L);
+	return game.timerContainer;
 }
 
 } // lua

@@ -12,19 +12,18 @@ namespace game
 namespace states
 {
 
-void EditorState::enter(flat::state::Agent* agent)
+void EditorState::enter(flat::state::Agent& agent)
 {
 	Super::enter(agent);
-	Game* game = agent->to<Game>();
 	
 	setCameraZoom(0.5f);
 
 	flat::lua::doFile(m_luaState, "data/editor/scripts/ui.lua");
 }
 
-void EditorState::execute(flat::state::Agent* agent)
+void EditorState::execute(flat::state::Agent& agent)
 {
-	Game* game = agent->to<Game>();
+	Game& game = agent.to<Game>();
 
 	FLAT_ASSERT(m_editorMode.get() != nullptr);
 
@@ -33,7 +32,7 @@ void EditorState::execute(flat::state::Agent* agent)
 	applyBrush(game);
 	saveOnCtrlS(game);
 
-	flat::time::Time* time = game->time;
+	flat::time::Time* time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
 	
 	Super::execute(agent);
@@ -44,29 +43,29 @@ entity::component::ComponentFlags EditorState::getComponentsFilter() const
 	return Super::getComponentsFilter() & ~entity::component::BehaviorComponent::Type;
 }
 
-void EditorState::saveOnCtrlS(Game* game)
+void EditorState::saveOnCtrlS(Game& game)
 {
-	const flat::input::Keyboard* keyboard = game->input->keyboard;
+	const flat::input::Keyboard* keyboard = game.input->keyboard;
 	if (keyboard->isPressed(K(LCTRL)) && keyboard->isJustPressed(K(S)))
 	{
 		saveMap(game);
 	}
 }
 
-void EditorState::updateBrush(Game* game)
+void EditorState::updateBrush(Game& game)
 {
 	m_editorMode->updateBrushPosition();
 	m_editorMode->updateBrushTiles();
 }
 
-void EditorState::displayBrush(Game* game)
+void EditorState::displayBrush(Game& game)
 {
 	m_editorMode->displayBrush();
 }
 
-void EditorState::applyBrush(Game* game)
+void EditorState::applyBrush(Game& game)
 {
-	const flat::input::Input* input = game->input;
+	const flat::input::Input* input = game.input;
 
 	if (!input->keyboard->isPressed(K(LCTRL)))
 	{

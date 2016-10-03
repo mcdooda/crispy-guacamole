@@ -25,7 +25,7 @@ void callTimerEnd(lua_State* L, const Timer* timer);
 const Timer* getTimer(lua_State* L, int index);
 void pushTimer(lua_State* L, const Timer* timer);
 
-TimerContainer* getTimerContainer(lua_State* L);
+TimerContainer& getTimerContainer(lua_State* L);
 
 } // lua
 } // timer

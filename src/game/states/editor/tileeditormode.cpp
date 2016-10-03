@@ -12,7 +12,7 @@ namespace states
 namespace editor
 {
 
-TileEditorMode::TileEditorMode(Game* game, EditorState* editorState) : Super(game, editorState)
+TileEditorMode::TileEditorMode(Game& game, EditorState& editorState) : Super(game, editorState)
 {
 	map::brush::Brush* brush = new map::brush::SphereBrush();
 	brush->setRadius(3.f);
@@ -26,8 +26,8 @@ TileEditorMode::~TileEditorMode()
 
 void TileEditorMode::updateBrushTiles()
 {
-	const flat::input::Keyboard* keyboard = m_game->input->keyboard;
-	const flat::input::Mouse* mouse = m_game->input->mouse;
+	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
+	const flat::input::Mouse* mouse = m_game.input->mouse;
 
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush != nullptr);
@@ -41,7 +41,7 @@ void TileEditorMode::updateBrushTiles()
 	}
 
 	m_previousBrushTiles = std::move(m_brushTiles);
-	brush->getTiles(m_editorState->getMap(), m_brushPosition, m_brushTiles);
+	brush->getTiles(m_editorState.getMap(), m_brushPosition, m_brushTiles);
 }
 
 void TileEditorMode::displayBrush() const
@@ -65,7 +65,7 @@ void TileEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 {
 	eachBrushTileIfExists([this](map::Tile* tile, float effect)
 	{
-		float random = m_game->random->nextFloat(0.f, 1.f);
+		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
 			std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
@@ -76,12 +76,12 @@ void TileEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 
 void TileEditorMode::applyBrushSecondaryEffect(bool justPressed) const
 {
-	bool exists = m_game->input->keyboard->isPressed(K(SPACE));
+	bool exists = m_game.input->keyboard->isPressed(K(SPACE));
 	if (exists)
 	{
 		eachBrushTile([this](map::Tile* tile, float effect)
 		{
-			float random = m_game->random->nextFloat(0.f, 1.f);
+			float random = m_game.random->nextFloat(0.f, 1.f);
 			if (random <= effect)
 			{
 				tile->setExists(true);
@@ -97,7 +97,7 @@ void TileEditorMode::applyBrushSecondaryEffect(bool justPressed) const
 	{
 		eachBrushTile([this](map::Tile* tile, float effect)
 		{
-			float random = m_game->random->nextFloat(0.f, 1.f);
+			float random = m_game.random->nextFloat(0.f, 1.f);
 			if (random <= effect)
 			{
 				tile->setExists(false);
@@ -111,10 +111,10 @@ void TileEditorMode::handleShortcuts() const
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush != nullptr);
 
-	const float frameTime = m_game->time->getFrameTime();
-	map::Map& map = m_editorState->getMap();
+	const float frameTime = m_game.time->getFrameTime();
+	map::Map& map = m_editorState.getMap();
 
-	const flat::input::Keyboard* keyboard = m_game->input->keyboard;
+	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
 	bool upPressed = keyboard->isPressed(K(W));
 	bool downPressed = keyboard->isPressed(K(S));
 	if (upPressed || downPressed)

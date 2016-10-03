@@ -14,7 +14,7 @@ namespace map
 namespace io
 {
 
-Reader::Reader(Game* game, const mod::Mod& mod, const std::string& mapName, Map& map) :
+Reader::Reader(Game& game, const mod::Mod& mod, const std::string& mapName, Map& map) :
 	m_game(game),
 	m_mod(mod),
 	m_mapName(mapName),
@@ -109,7 +109,7 @@ void Reader::readHeaders()
 		std::string name;
 		readString(name);
 		std::string texturePath = m_mod.getTexturePath("tiles/" + name);
-		m_tileTextures.push_back(m_game->video->getTexture(texturePath));
+		m_tileTextures.push_back(m_game.video->getTexture(texturePath));
 	}
 
 	// prop textures
@@ -120,7 +120,7 @@ void Reader::readHeaders()
 		std::string name;
 		readString(name);
 		std::string texturePath = m_mod.getTexturePath("props/" + name);
-		m_propTextures.push_back(m_game->video->getTexture(texturePath));
+		m_propTextures.push_back(m_game.video->getTexture(texturePath));
 	}
 	
 	// map size
@@ -174,7 +174,7 @@ void Reader::readTiles()
 
 void Reader::readEntities()
 {
-	states::BaseMapState* baseMapState = static_cast<states::BaseMapState*>(m_game->getStateMachine().getCurrentState());
+	states::BaseMapState* baseMapState = static_cast<states::BaseMapState*>(m_game.getStateMachine().getState());
 
 	uint16_t numEntityTemplates = readUint16();
 	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;

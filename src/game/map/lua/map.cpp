@@ -35,8 +35,8 @@ int l_Map_getName(lua_State * L)
 int l_Map_load(lua_State* L)
 {
 	std::string mapName = luaL_checkstring(L, 1);
-	Game* game = flat::lua::getGameAs<Game>(L);
-	flat::state::State* state = game->getStateMachine().getCurrentState();
+	Game& game = flat::lua::getGameAs<Game>(L);
+	flat::state::State* state = game.getStateMachine().getState();
 	FLAT_ASSERT(dynamic_cast<states::BaseMapState*>(state) != nullptr);
 	states::BaseMapState* baseMapState = static_cast<states::BaseMapState*>(state);
 	bool mapLoaded = baseMapState->loadMap(game, mapName);
@@ -46,8 +46,8 @@ int l_Map_load(lua_State* L)
 
 int l_Map_save(lua_State* L)
 {
-	Game* game = flat::lua::getGameAs<Game>(L);
-	flat::state::State* state = game->getStateMachine().getCurrentState();
+	Game& game = flat::lua::getGameAs<Game>(L);
+	flat::state::State* state = game.getStateMachine().getState();
 	FLAT_ASSERT(dynamic_cast<states::EditorState*>(state) != nullptr);
 	states::EditorState* editorState = static_cast<states::EditorState*>(state);
 	bool mapSaved = editorState->saveMap(game);

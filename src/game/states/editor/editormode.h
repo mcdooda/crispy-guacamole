@@ -18,7 +18,7 @@ namespace editor
 class EditorMode
 {
 public:
-	EditorMode(Game* game, EditorState* editorState);
+	EditorMode(Game& game, EditorState& editorState);
 	virtual ~EditorMode();
 
 	void updateBrushPosition();
@@ -35,8 +35,8 @@ protected:
 	void eachBrushTile(std::function<void(map::Tile*, float)> func) const;
 
 protected:
-	Game* m_game;
-	EditorState* m_editorState;
+	Game& m_game;
+	EditorState& m_editorState;
 
 	std::vector<map::Tile*> m_previousBrushTiles;
 	std::vector<map::Tile*> m_brushTiles;

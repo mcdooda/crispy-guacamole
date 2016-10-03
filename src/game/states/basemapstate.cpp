@@ -17,10 +17,10 @@ namespace game
 namespace states
 {
 
-void BaseMapState::enter(flat::state::Agent* agent)
+void BaseMapState::enter(flat::state::Agent& agent)
 {
-	game::Game* game = agent->to<game::Game>();
-	game->video->window->setTitle("Crispy guacamole");
+	game::Game& game = agent.to<game::Game>();
+	game.video->window->setTitle("Crispy guacamole");
 	
 	// init lua first
 	m_luaState = flat::lua::open(game);
@@ -61,10 +61,10 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	m_uiProgramRenderSettings.uvAttribute                 = m_uiProgram.getAttribute("uv");
 	
 	// level
-	loadMap(game, game->mapName);
+	loadMap(game, game.mapName);
 	
 	// reset view
-	const flat::Vector2& windowSize = game->video->window->getSize();
+	const flat::Vector2& windowSize = game.video->window->getSize();
 	m_gameView.updateProjection(windowSize);
 	m_cameraZoom = 1.f;
 
@@ -74,21 +74,21 @@ void BaseMapState::enter(flat::state::Agent* agent)
 	resetViews(game);
 }
 
-void BaseMapState::execute(flat::state::Agent* agent)
+void BaseMapState::execute(flat::state::Agent& agent)
 {
-	game::Game* game = agent->to<game::Game>();
+	game::Game& game = agent.to<game::Game>();
 
-	if (game->input->window->isResized())
+	if (game.input->window->isResized())
 		resetViews(game);
 
-	if (game->input->keyboard->isJustPressed(K(ESCAPE)))
-		game->stop();
+	if (game.input->keyboard->isJustPressed(K(ESCAPE)))
+		game.stop();
 	
 	update(game);
 	draw(game);
 }
 
-void BaseMapState::exit(flat::state::Agent* agent)
+void BaseMapState::exit(flat::state::Agent& agent)
 {
 	for (entity::Entity* entity : m_map.getEntities())
 	{
@@ -106,25 +106,25 @@ void BaseMapState::setModPath(const std::string& modPath)
 	m_mod.setPath(modPath);
 }
 
-bool BaseMapState::loadMap(Game* game, const std::string& mapName)
+bool BaseMapState::loadMap(Game& game, const std::string& mapName)
 {
 	if (m_map.load(m_luaState, game, m_mod, mapName))
 	{
-		game->mapName = mapName;
+		game.mapName = mapName;
 		return true;
 	}
 	return false;
 }
 
-bool BaseMapState::saveMap(Game* game) const
+bool BaseMapState::saveMap(Game& game) const
 {
-	return m_map.save(game, m_mod, game->mapName);
+	return m_map.save(m_mod, game.mapName);
 }
 
-flat::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
+flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game)
 {
-	const flat::Vector2& cursorPosition = game->input->mouse->getPosition();
-	const flat::Vector2& windowSize = game->video->window->getSize();
+	const flat::Vector2& cursorPosition = game.input->mouse->getPosition();
+	const flat::Vector2& windowSize = game.video->window->getSize();
 	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
 
 	const flat::Vector2& xAxis = m_map.getXAxis();
@@ -138,19 +138,19 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game* game)
 	return mapPosition;
 }
 
-std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game* game, const std::string& entityTemplateName) const
+std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
 	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath, entityTemplateName);
 }
 
-std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game* game, const std::string& tileTemplateName) const
+std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
 {
 	std::string tileTemplatePath = m_mod.getTileTemplatePath(tileTemplateName);
 	return m_tileTemplateManager.getResource(game, m_luaState, tileTemplatePath);
 }
 
-std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game* game, const std::string& propTemplateName) const
+std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
 {
 	std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
 	return m_propTemplateManager.getResource(game, m_luaState, propTemplatePath);
@@ -166,20 +166,20 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const 
 	return entity;
 }
 
-void BaseMapState::update(game::Game* game)
+void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
 	updateUi(game);
-	float currentTime = game->time->getTime();
-	game->timerContainer.updateTimers(m_luaState, currentTime);
+	float currentTime = game.time->getTime();
+	game.timerContainer.updateTimers(m_luaState, currentTime);
 }
 
-void BaseMapState::updateGameView(game::Game* game)
+void BaseMapState::updateGameView(game::Game& game)
 {
-	const flat::input::Keyboard* keyboard = game->input->keyboard;
-	const flat::input::Mouse* mouse = game->input->mouse;
+	const flat::input::Keyboard* keyboard = game.input->keyboard;
+	const flat::input::Mouse* mouse = game.input->mouse;
 
-	const flat::Vector2& windowSize = game->video->window->getSize();
+	const flat::Vector2& windowSize = game.video->window->getSize();
 	
 	const flat::Vector2& xAxis = m_map.getXAxis();
 	flat::Vector2 speed(-xAxis.x, xAxis.y);
@@ -203,7 +203,7 @@ void BaseMapState::updateGameView(game::Game* game)
 		move.y = speed.y;
 	
 	const float cameraSpeed = 40.f;
-	m_cameraCenter2d += move * game->time->getFrameTime() * cameraSpeed;
+	m_cameraCenter2d += move * game.time->getFrameTime() * cameraSpeed;
 	updateCameraView();
 
 	if (mouse->wheelJustMoved() && keyboard->isPressed(K(LCTRL)))
@@ -212,7 +212,7 @@ void BaseMapState::updateGameView(game::Game* game)
 		setCameraZoom(zoom);
 	}
 	
-	if (game->input->window->isResized())
+	if (game.input->window->isResized())
 		m_gameView.updateProjection(windowSize);
 }
 
@@ -238,13 +238,13 @@ void BaseMapState::updateCameraView()
 	m_gameView.move(m_cameraCenter2d);
 }
 
-void BaseMapState::draw(game::Game* game)
+void BaseMapState::draw(game::Game& game)
 {
 	// map
-	m_spriteProgram.use(game->video->window);
+	m_spriteProgram.use(game.video->window);
 	
-	game->video->setClearColor(flat::video::Color::BLACK);
-	game->video->clear();
+	game.video->setClearColor(flat::video::Color::BLACK);
+	game.video->clear();
 	
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform.set(m_gameView.getViewProjectionMatrix());
 	
@@ -256,9 +256,9 @@ void BaseMapState::draw(game::Game* game)
 	drawUi(game);
 }
 
-void BaseMapState::buildUi(game::Game* game)
+void BaseMapState::buildUi(game::Game& game)
 {
-	flat::sharp::ui::WidgetFactory widgetFactory(*game);
+	flat::sharp::ui::WidgetFactory widgetFactory(game);
 
 	flat::sharp::ui::RootWidget* ui = widgetFactory.makeRoot();
 	m_ui.reset(ui);
@@ -266,22 +266,22 @@ void BaseMapState::buildUi(game::Game* game)
 	flat::sharp::ui::lua::setRootWidget(m_luaState, ui);
 }
 
-void BaseMapState::updateUi(game::Game* game)
+void BaseMapState::updateUi(game::Game& game)
 {
 	flat::sharp::ui::RootWidget* ui = m_ui.get();
 
-	if (game->input->window->isResized())
+	if (game.input->window->isResized())
 		ui->fullLayout();
 
 	ui->updateDirtyWidgets();
 	ui->updateInput();
 }
 
-void BaseMapState::drawUi(game::Game* game)
+void BaseMapState::drawUi(game::Game& game)
 {
-	m_uiProgram.use(game->video->window);
+	m_uiProgram.use(game.video->window);
 	
-	m_uiProgramRenderSettings.viewProjectionMatrixUniform.set(game->interfaceView.getViewProjectionMatrix());
+	m_uiProgramRenderSettings.viewProjectionMatrixUniform.set(game.interfaceView.getViewProjectionMatrix());
 	
 	m_uiProgramRenderSettings.modelMatrixUniform.set(flat::Matrix4());
 	m_uiProgramRenderSettings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
@@ -289,13 +289,13 @@ void BaseMapState::drawUi(game::Game* game)
 	m_ui->draw(m_uiProgramRenderSettings);
 }
 
-void BaseMapState::resetViews(game::Game * game)
+void BaseMapState::resetViews(game::Game& game)
 {
-	const flat::Vector2 windowSize = game->video->window->getSize();
+	const flat::Vector2 windowSize = game.video->window->getSize();
 
-	game->interfaceView.reset();
-	game->interfaceView.move(windowSize / 2.0f);
-	game->interfaceView.updateProjection(windowSize);
+	game.interfaceView.reset();
+	game.interfaceView.move(windowSize / 2.0f);
+	game.interfaceView.updateProjection(windowSize);
 }
 
 entity::component::ComponentFlags BaseMapState::getComponentsFilter() const

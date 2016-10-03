@@ -24,7 +24,7 @@ namespace io
 class Writer
 {
 	public:
-		Writer(Game* game, const mod::Mod& mod, const std::string& mapName, const Map& map);
+		Writer(const mod::Mod& mod, const std::string& mapName, const Map& map);
 		~Writer();
 
 		bool canWrite() const;
@@ -41,7 +41,6 @@ class Writer
 		void writeString(const std::string& value);
 
 	private:
-		Game* m_game;
 		const mod::Mod& m_mod;
 		const Map& m_map;
 

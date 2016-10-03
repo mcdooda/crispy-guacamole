@@ -12,7 +12,7 @@ namespace game
 namespace states
 {
 
-void GameState::enter(flat::state::Agent* agent)
+void GameState::enter(flat::state::Agent& agent)
 {
 	Super::enter(agent);
 	
@@ -21,11 +21,11 @@ void GameState::enter(flat::state::Agent* agent)
 	flat::lua::doFile(m_luaState, "data/game/scripts/ui.lua");
 }
 
-void GameState::execute(flat::state::Agent* agent)
+void GameState::execute(flat::state::Agent& agent)
 {
-	Game* game = agent->to<Game>();
+	Game& game = agent.to<Game>();
 	
-	if (game->input->mouse->isJustPressed(M(LEFT)))
+	if (game.input->mouse->isJustPressed(M(LEFT)))
 	{
 		flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
 		map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
@@ -38,7 +38,7 @@ void GameState::execute(flat::state::Agent* agent)
 		}
 	}
 	
-	flat::time::Time* time = game->time;
+	flat::time::Time* time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
 	
 	Super::execute(agent);

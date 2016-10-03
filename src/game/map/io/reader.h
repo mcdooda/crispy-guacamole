@@ -24,7 +24,7 @@ namespace io
 class Reader
 {
 	public:
-		Reader(Game* game, const mod::Mod& mod, const std::string& mapName, Map& map);
+		Reader(Game& game, const mod::Mod& mod, const std::string& mapName, Map& map);
 		~Reader();
 		
 		bool canRead() const;
@@ -42,7 +42,7 @@ class Reader
 		void readString(std::string& value);
 		
 	private:
-		Game* m_game;
+		Game& m_game;
 		const mod::Mod& m_mod;
 		std::string m_mapName;
 		Map& m_map;

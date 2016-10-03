@@ -16,8 +16,7 @@ namespace map
 namespace io
 {
 
-Writer::Writer(Game* game, const mod::Mod& mod, const std::string& mapName, const Map& map) :
-	m_game(game),
+Writer::Writer(const mod::Mod& mod, const std::string& mapName, const Map& map) :
 	m_mod(mod),
 	m_map(map),
 	m_file(mod.getMapPath(mapName).c_str(), std::ofstream::binary)

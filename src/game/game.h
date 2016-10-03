@@ -17,6 +17,9 @@ class Game : public flat::Game
 		void setStates() override;
 		void checkArgs() override;
 		void openWindow() override;
+
+		// make Game& usable as a Resource constructor parameter
+		bool operator<(const Game& other) { return this < &other; }
 		
 	public:
 		// mod

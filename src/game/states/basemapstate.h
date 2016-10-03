@@ -60,6 +60,8 @@ class BaseMapState : public flat::state::State
 		void updateUi(game::Game* game);
 		void drawUi(game::Game* game);
 
+		void resetViews(game::Game* game);
+
 		virtual entity::component::ComponentFlags getComponentsFilter() const;
 		
 	protected:

@@ -20,6 +20,7 @@ namespace states
 void BaseMapState::enter(flat::state::Agent* agent)
 {
 	game::Game* game = agent->to<game::Game>();
+	game->video->window->setTitle("Crispy guacamole");
 	
 	// init lua first
 	m_luaState = flat::lua::open(game);
@@ -69,11 +70,19 @@ void BaseMapState::enter(flat::state::Agent* agent)
 
 	flat::Vector3 cameraCenter(m_map.getWidth() / 2.f, m_map.getHeight() / 2.f, 0.f);
 	setCameraCenter(cameraCenter);
+
+	resetViews(game);
 }
 
 void BaseMapState::execute(flat::state::Agent* agent)
 {
 	game::Game* game = agent->to<game::Game>();
+
+	if (game->input->window->isResized())
+		resetViews(game);
+
+	if (game->input->keyboard->isJustPressed(K(ESCAPE)))
+		game->stop();
 	
 	update(game);
 	draw(game);
@@ -278,6 +287,15 @@ void BaseMapState::drawUi(game::Game* game)
 	m_uiProgramRenderSettings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
 	
 	m_ui->draw(m_uiProgramRenderSettings);
+}
+
+void BaseMapState::resetViews(game::Game * game)
+{
+	const flat::Vector2 windowSize = game->video->window->getSize();
+
+	game->interfaceView.reset();
+	game->interfaceView.move(windowSize / 2.0f);
+	game->interfaceView.updateProjection(windowSize);
 }
 
 entity::component::ComponentFlags BaseMapState::getComponentsFilter() const

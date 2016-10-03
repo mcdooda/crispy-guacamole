@@ -16,9 +16,9 @@ int l_Map_getName(lua_State* L);
 int l_Map_load(lua_State* L);
 int l_Map_save(lua_State* L);
 
-}
-}
-}
+} // lua
+} // map
+} // game
 
 #endif // GAME_MAP_LUA_MAP_H
 

@@ -1,5 +1,4 @@
 #include "game.h"
-#include "states/globalstate.h"
 #include "states/gamestate.h"
 #include "states/editorstate.h"
 
@@ -20,8 +19,6 @@ Game::~Game()
 
 void Game::setStates()
 {
-	getStateMachine()->setGlobalState(new states::GlobalState());
-	
 	states::BaseMapState* state = nullptr;
 	
 	switch (mode)
@@ -39,7 +36,7 @@ void Game::setStates()
 	}
 	
 	state->setModPath(modPath);
-	getStateMachine()->setState(state);
+	getStateMachine().setState(state);
 }
 
 void Game::checkArgs()

@@ -174,7 +174,7 @@ void Reader::readTiles()
 
 void Reader::readEntities()
 {
-	states::BaseMapState* baseMapState = static_cast<states::BaseMapState*>(m_game->getStateMachine()->getCurrentState());
+	states::BaseMapState* baseMapState = static_cast<states::BaseMapState*>(m_game->getStateMachine().getCurrentState());
 
 	uint16_t numEntityTemplates = readUint16();
 	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;

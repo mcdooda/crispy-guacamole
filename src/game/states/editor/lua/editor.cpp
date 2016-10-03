@@ -89,7 +89,7 @@ int l_Editor_setProp(lua_State * L)
 states::EditorState* getEditorState(lua_State * L)
 {
 	Game* game = flat::lua::getGameAs<Game>(L);
-	flat::state::State* state = game->getStateMachine()->getCurrentState();
+	flat::state::State* state = game->getStateMachine().getCurrentState();
 	FLAT_ASSERT(dynamic_cast<states::EditorState*>(state) != nullptr);
 	return static_cast<states::EditorState*>(state);
 }

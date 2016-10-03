@@ -12,6 +12,8 @@ class Game : public flat::Game
 	typedef flat::Game Super;
 	public:
 		Game(const std::vector<std::string>& args);
+		Game(const Game&) = delete;
+		void operator=(const Game&) = delete;
 		~Game() override;
 		
 		void setStates() override;

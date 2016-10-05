@@ -26,6 +26,8 @@ class BehaviorRuntime final
 		void enterState(const char* stateName);
 		void updateCurrentState();
 		void update();
+
+		FLAT_DEBUG_ONLY(inline const std::string& getCurrentStateName() const { return m_currentStateName; })
 		
 	private:
 		const Behavior* getBehavior() const;
@@ -33,6 +35,7 @@ class BehaviorRuntime final
 	private:
 		Entity* m_entity;
 		int m_coroutineRef;
+		FLAT_DEBUG_ONLY(std::string m_currentStateName;)
 };
 
 } // behavior

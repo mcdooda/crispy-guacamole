@@ -1,5 +1,6 @@
 #include "behaviorcomponent.h"
 #include "../entity.h"
+#include "../entitytemplate.h"
 
 namespace game
 {
@@ -16,10 +17,16 @@ void BehaviorComponent::init()
 
 void BehaviorComponent::update(float currentTime, float elapsedTime)
 {
-	if (!m_owner->isBusy())
+	const int maxTicks = 2;
+	for (int numTicks = 0; !m_owner->isBusy() && numTicks < maxTicks; ++numTicks)
 	{
 		m_behaviorRuntime.update();
 	}
+	FLAT_DEBUG_ONLY(
+		const char* entityName = m_owner->getEntityTemplate()->getName().c_str();
+		const char* stateName = m_behaviorRuntime.getCurrentStateName().c_str();
+	)
+	FLAT_ASSERT_MSG(m_owner->isBusy(), "Behavior warning: %s still idling after %d behavior ticks in state %s", entityName, maxTicks, stateName);
 }
 
 void BehaviorComponent::enterState(const char* stateName)

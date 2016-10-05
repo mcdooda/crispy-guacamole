@@ -27,7 +27,7 @@ do
 	do
 		local modes = Widget.makeColumnFlow()
 		modes:setBackgroundColor(0x00FF00FF)
-		modes:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.FIXED_Y)
+		modes:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
 		
 		-- entity
 		local entity = Widget.makeText('Entity', unpack(font))
@@ -38,9 +38,6 @@ do
 		-- prop
 		local prop = Widget.makeText('Prop', unpack(font))
 		modes:addChild(prop)
-		
-		local w, h = prop:getSize()
-		modes:setSize(0, h * 3)
 		
 		leftPanel:addChild(modes)
 	end

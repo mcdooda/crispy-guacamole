@@ -29,15 +29,39 @@ do
 		modes:setBackgroundColor(0x00FF00FF)
 		modes:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
 		
-		-- entity
-		local entity = Widget.makeText('Entity', unpack(font))
-		modes:addChild(entity)
-		-- tile
-		local tile = Widget.makeText('Tile', unpack(font))
-		modes:addChild(tile)
-		-- prop
-		local prop = Widget.makeText('Prop', unpack(font))
-		modes:addChild(prop)
+		local tabs = {
+			'buildingstab',
+			'doodadstab',
+			'tilestab',
+			'unitstab',
+			'zonestab'
+		}
+		local icons = {}
+		
+		local currentTabIndex
+		local function enableTab(i)
+			currentTabIndex = i
+			icons[i]:setBackground('data/editor/interface/' .. tabs[i] .. '/active.png')
+		end
+		local function disableTab(i)
+			assert(currentTabIndex == i)
+			currentTabIndex = nil
+			icons[i]:setBackground('data/editor/interface/' .. tabs[i] .. '/passive.png')
+		end
+		
+		for i = 1, #tabs do
+			local tab = tabs[i]
+			local icon = Widget.makeImage('data/editor/interface/' .. tab .. '/passive.png')
+			icons[i] = icon
+			icon:click(function()
+				if i ~= currentTabIndex then
+					disableTab(currentTabIndex)
+					enableTab(i)
+				end
+			end)
+			modes:addChild(icon)
+		end
+		enableTab(1)
 		
 		leftPanel:addChild(modes)
 	end

@@ -12,13 +12,13 @@ namespace map
 class PropTemplate
 {
 	public:
-		PropTemplate(Game* game, lua_State* L, const std::string& path);
+		PropTemplate(Game& game, lua_State* L, const std::string& path);
 		~PropTemplate();
 
-		inline std::shared_ptr<const flat::video::Texture> getRandomTexture(Game* game) const { return m_texturePack.getRandomTexture(game); }
+		inline std::shared_ptr<const flat::video::Texture> getRandomTexture(Game& game) const { return m_texturePack.getRandomTexture(game); }
 
 	private:
-		void loadPropConfig(Game* game, lua_State* L, const std::string& path);
+		void loadPropConfig(Game& game, lua_State* L, const std::string& path);
 
 	private:
 		TexturePack m_texturePack;

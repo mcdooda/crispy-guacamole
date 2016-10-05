@@ -32,9 +32,9 @@ class Map final
 
 		void operator=(Map&& other);
 		
-		bool load(lua_State* L, Game* game, const mod::Mod& mod, const std::string& mapName);
+		bool load(lua_State* L, Game& game, const mod::Mod& mod, const std::string& mapName);
 
-		bool save(Game* game, const mod::Mod& mod, const std::string& mapName) const;
+		bool save(const mod::Mod& mod, const std::string& mapName) const;
 		
 		void drawTiles(DisplayManager& displayManager, const flat::video::View& view) const;
 		

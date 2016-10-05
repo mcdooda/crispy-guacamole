@@ -12,11 +12,16 @@ class Game : public flat::Game
 	typedef flat::Game Super;
 	public:
 		Game(const std::vector<std::string>& args);
+		Game(const Game&) = delete;
+		void operator=(const Game&) = delete;
 		~Game() override;
 		
 		void setStates() override;
 		void checkArgs() override;
 		void openWindow() override;
+
+		// make Game& usable as a Resource constructor parameter
+		bool operator<(const Game& other) { return this < &other; }
 		
 	public:
 		// mod

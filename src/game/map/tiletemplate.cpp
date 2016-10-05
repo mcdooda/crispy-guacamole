@@ -7,7 +7,7 @@ namespace game
 namespace map
 {
 
-TileTemplate::TileTemplate(Game* game, lua_State* L, const std::string& path)
+TileTemplate::TileTemplate(Game& game, lua_State* L, const std::string& path)
 {
 	loadTileConfig(game, L, path);
 }
@@ -17,7 +17,7 @@ TileTemplate::~TileTemplate()
 
 }
 
-void TileTemplate::loadTileConfig(Game* game, lua_State* L, const std::string& path)
+void TileTemplate::loadTileConfig(Game& game, lua_State* L, const std::string& path)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
@@ -34,7 +34,7 @@ void TileTemplate::loadTileConfig(Game* game, lua_State* L, const std::string& p
 		float probability = static_cast<float>(luaL_checknumber(L, -1));
 
 		std::string tileItemPath = tileConfigPath = path + tileName + ".png";
-		std::shared_ptr<const flat::video::FileTexture> tileTexture = game->video->getTexture(tileConfigPath);
+		std::shared_ptr<const flat::video::FileTexture> tileTexture = game.video->getTexture(tileConfigPath);
 		m_texturePack.addTexture(tileTexture, probability);
 
 		lua_pop(L, 1);

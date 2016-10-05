@@ -18,7 +18,7 @@ class TileEditorMode : public EditorMode
 {
 	typedef EditorMode Super;
 	public:
-		TileEditorMode(Game* game, EditorState* editorState);
+		TileEditorMode(Game& game, EditorState& editorState);
 		~TileEditorMode() override;
 
 		void updateBrushTiles() override;

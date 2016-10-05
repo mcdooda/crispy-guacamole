@@ -24,10 +24,10 @@ void TexturePack::addTexture(const std::shared_ptr<const flat::video::Texture>& 
 	}
 }
 
-const std::shared_ptr<const flat::video::Texture>& TexturePack::getRandomTexture(Game* game) const
+const std::shared_ptr<const flat::video::Texture>& TexturePack::getRandomTexture(Game& game) const
 {
 	FLAT_ASSERT(!m_textures.empty() && m_probabilitiesSum > 0.f);
-	float random = game->random->nextFloat(0.f, m_probabilitiesSum);
+	float random = game.random->nextFloat(0.f, m_probabilitiesSum);
 	int randomIndex = 0;
 	for (const std::pair<std::shared_ptr<const flat::video::Texture>, float>& pair : m_textures)
 	{

@@ -7,7 +7,7 @@ namespace game
 namespace map
 {
 
-PropTemplate::PropTemplate(Game* game, lua_State* L, const std::string& path)
+PropTemplate::PropTemplate(Game& game, lua_State* L, const std::string& path)
 {
 	loadPropConfig(game, L, path);
 }
@@ -17,7 +17,7 @@ PropTemplate::~PropTemplate()
 
 }
 
-void PropTemplate::loadPropConfig(Game* game, lua_State* L, const std::string& path)
+void PropTemplate::loadPropConfig(Game& game, lua_State* L, const std::string& path)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
@@ -34,7 +34,7 @@ void PropTemplate::loadPropConfig(Game* game, lua_State* L, const std::string& p
 		float probability = static_cast<float>(luaL_checknumber(L, -1));
 
 		std::string propItemPath = propConfigPath = path + propName + ".png";
-		std::shared_ptr<const flat::video::FileTexture> propTexture = game->video->getTexture(propConfigPath);
+		std::shared_ptr<const flat::video::FileTexture> propTexture = game.video->getTexture(propConfigPath);
 		m_texturePack.addTexture(propTexture, probability);
 
 		lua_pop(L, 1);

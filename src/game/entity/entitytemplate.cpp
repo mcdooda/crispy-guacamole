@@ -10,7 +10,7 @@ namespace game
 namespace entity
 {
 
-EntityTemplate::EntityTemplate(Game* game, lua_State* L, const std::string& path, const std::string& name) :
+EntityTemplate::EntityTemplate(Game& game, lua_State* L, const std::string& path, const std::string& name) :
 	m_name(name),
 	m_radius(0.f),
 	m_speed(0.f),
@@ -21,8 +21,8 @@ EntityTemplate::EntityTemplate(Game* game, lua_State* L, const std::string& path
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	loadSpriteConfig(game, L, path);
-	loadPhysicsConfig(game, L, path);
-	loadBehaviorConfig(game, L, path);
+	loadPhysicsConfig(L, path);
+	loadBehaviorConfig(L, path);
 }
 
 EntityTemplate::~EntityTemplate()
@@ -46,11 +46,11 @@ component::ComponentFlags EntityTemplate::getComponentFlags() const
 	return flags;
 }
 
-void EntityTemplate::loadSpriteConfig(Game* game, lua_State* L, const std::string& path)
+void EntityTemplate::loadSpriteConfig(Game& game, lua_State* L, const std::string& path)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
-	std::shared_ptr<const flat::video::Texture> atlas = game->video->getTexture(path + "atlas.png");
+	std::shared_ptr<const flat::video::Texture> atlas = game.video->getTexture(path + "atlas.png");
 	m_spriteDescription.setAtlas(atlas);
 	
 	std::string spriteConfigPath = path + "sprite.lua";
@@ -115,7 +115,7 @@ void EntityTemplate::loadSpriteConfig(Game* game, lua_State* L, const std::strin
 	lua_pop(L, 2);
 }
 
-void EntityTemplate::loadPhysicsConfig(Game* game, lua_State* L, const std::string& path)
+void EntityTemplate::loadPhysicsConfig(lua_State* L, const std::string& path)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
@@ -147,7 +147,7 @@ void EntityTemplate::loadPhysicsConfig(Game* game, lua_State* L, const std::stri
 	lua_pop(L, 5);
 }
 
-void EntityTemplate::loadBehaviorConfig(Game* game, lua_State* L, const std::string& path)
+void EntityTemplate::loadBehaviorConfig(lua_State* L, const std::string& path)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	

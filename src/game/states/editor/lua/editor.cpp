@@ -44,7 +44,7 @@ int l_Editor_setEntity(lua_State * L)
 {
 	const char* entityTemplateName = luaL_checkstring(L, 1);
 	editor::EntityEditorMode* entityEditorMode = getEditorMode<editor::EntityEditorMode>(L);
-	Game* game = flat::lua::getGameAs<Game>(L);
+	Game& game = flat::lua::getGameAs<Game>(L);
 	states::EditorState* editorState = getEditorState(L);
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = editorState->getEntityTemplate(game, entityTemplateName);
 	entityEditorMode->setEntityTemplate(entityTemplate);
@@ -61,7 +61,7 @@ int l_Editor_setTile(lua_State * L)
 {
 	const char* tileTemplateName = luaL_checkstring(L, 1);
 	editor::TileEditorMode* tileEditorMode = getEditorMode<editor::TileEditorMode>(L);
-	Game* game = flat::lua::getGameAs<Game>(L);
+	Game& game = flat::lua::getGameAs<Game>(L);
 	states::EditorState* editorState = getEditorState(L);
 	std::shared_ptr<const map::TileTemplate> tileTemplate = editorState->getTileTemplate(game, tileTemplateName);
 	tileEditorMode->setTileTemplate(tileTemplate);
@@ -78,7 +78,7 @@ int l_Editor_setProp(lua_State * L)
 {
 	const char* propTemplateName = luaL_checkstring(L, 1);
 	editor::PropEditorMode* propEditorMode = getEditorMode<editor::PropEditorMode>(L);
-	Game* game = flat::lua::getGameAs<Game>(L);
+	Game& game = flat::lua::getGameAs<Game>(L);
 	states::EditorState* editorState = getEditorState(L);
 	std::shared_ptr<const map::PropTemplate> propTemplate = editorState->getPropTemplate(game, propTemplateName);
 	propEditorMode->setPropTemplate(propTemplate);
@@ -88,8 +88,8 @@ int l_Editor_setProp(lua_State * L)
 // private
 states::EditorState* getEditorState(lua_State * L)
 {
-	Game* game = flat::lua::getGameAs<Game>(L);
-	flat::state::State* state = game->getStateMachine()->getCurrentState();
+	Game& game = flat::lua::getGameAs<Game>(L);
+	flat::state::State* state = game.getStateMachine().getState();
 	FLAT_ASSERT(dynamic_cast<states::EditorState*>(state) != nullptr);
 	return static_cast<states::EditorState*>(state);
 }

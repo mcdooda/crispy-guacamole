@@ -19,7 +19,7 @@ class Behavior;
 class EntityTemplate final
 {
 	public:
-		EntityTemplate(Game* game, lua_State* L, const std::string& path, const std::string& name);
+		EntityTemplate(Game& game, lua_State* L, const std::string& path, const std::string& name);
 		~EntityTemplate();
 
 		component::ComponentFlags getComponentFlags() const;
@@ -44,9 +44,9 @@ class EntityTemplate final
 		inline const std::string& getName() const { return m_name; }
 		
 	private:
-		void loadSpriteConfig(Game* game, lua_State* L, const std::string& path);
-		void loadPhysicsConfig(Game* game, lua_State* L, const std::string& path);
-		void loadBehaviorConfig(Game* game, lua_State* L, const std::string& path);
+		void loadSpriteConfig(Game& game, lua_State* L, const std::string& path);
+		void loadPhysicsConfig(lua_State* L, const std::string& path);
+		void loadBehaviorConfig(lua_State* L, const std::string& path);
 	
 	private:
 		std::string m_name;

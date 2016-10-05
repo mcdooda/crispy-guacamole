@@ -47,7 +47,7 @@ void Map::operator=(Map&& other)
 	m_entities = std::move(other.m_entities);
 }
 
-bool Map::load(lua_State* L, Game* game, const mod::Mod& mod, const std::string& mapName)
+bool Map::load(lua_State* L, Game& game, const mod::Mod& mod, const std::string& mapName)
 {
 	io::Reader reader(game, mod, mapName, *this);
 	if (reader.canRead())
@@ -59,9 +59,9 @@ bool Map::load(lua_State* L, Game* game, const mod::Mod& mod, const std::string&
 	return false;
 }
 
-bool Map::save(Game* game, const mod::Mod& mod, const std::string& mapName) const
+bool Map::save(const mod::Mod& mod, const std::string& mapName) const
 {
-	io::Writer writer(game, mod, mapName, *this);
+	io::Writer writer(mod, mapName, *this);
 	if (writer.canWrite())
 	{
 		writer.write();

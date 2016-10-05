@@ -18,7 +18,7 @@ class PropEditorMode : public EditorMode
 {
 	typedef EditorMode Super;
 	public:
-		PropEditorMode(Game* game, EditorState* editorState);
+		PropEditorMode(Game& game, EditorState& editorState);
 		~PropEditorMode() override;
 
 		void updateBrushTiles() override;

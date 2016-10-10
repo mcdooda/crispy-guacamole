@@ -13,11 +13,12 @@ local root = Widget.getRoot()
 
 do
 	local leftPanel = Widget.makeColumnFlow()
-	leftPanel:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
+	leftPanel:setBackgroundColor(0x444444FF)
+	leftPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
+	leftPanel:setSize(96,0)
 	
 	local content = Widget.makeColumnFlow()
-	content:setBackgroundColor(0x0000FFFF)
-	content:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
+	content:setSizePolicy(Widget.SizePolicy.EXPAND)
 	
 	local contentChildren = {}
 	
@@ -36,21 +37,16 @@ do
 	
 	do
 		local modes = Widget.makeLineFlow()
-		modes:setBackgroundColor(0x00FF00FF)
 		modes:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.COMPRESS_Y)
 		
 		local function openTilesTab()
 			Editor.setTileMode()
 			Editor.setTile(ModData.tiles.names[1])
-			local title = Widget.makeText('--- Tiles ---', unpack(font))
-			title:setMargin(10, 0, 5, 0)
-			addContent(title)
 			for i = 1, #ModData.tiles.names do
 				local tileName = ModData.tiles.names[i]
 				local label = Widget.makeText(tileName, unpack(font))
 				label:setMargin(0, 0, 0, 7)
 				label:click(function()
-					Editor.setTileMode()
 					Editor.setTile(tileName)
 				end)
 				addContent(label)
@@ -60,15 +56,11 @@ do
 		local function openPropsTab()
 			Editor.setPropMode()
 			Editor.setProp(ModData.props.names[1])
-			local title = Widget.makeText('--- Props ---', unpack(font))
-			title:setMargin(10, 0, 5, 0)
-			addContent(title)
 			for i = 1, #ModData.props.names do
 				local propName = ModData.props.names[i]
 				local label = Widget.makeText(propName, unpack(font))
 				label:setMargin(0, 0, 0, 7)
 				label:click(function()
-					Editor.setPropMode()
 					Editor.setProp(propName)
 				end)
 				addContent(label)
@@ -78,15 +70,11 @@ do
 		local function openEntitiesTab()
 			Editor.setEntityMode()
 			Editor.setEntity(ModData.entities.names[1])
-			local title = Widget.makeText('--- Entities ---', unpack(font))
-			title:setMargin(10, 0, 5, 0)
-			addContent(title)
 			for i = 1, #ModData.entities.names do
 				local entityName = ModData.entities.names[i]
 				local label = Widget.makeText(entityName, unpack(font))
 				label:setMargin(0, 0, 0, 7)
 				label:click(function()
-					Editor.setEntityMode()
 					Editor.setEntity(entityName)
 				end)
 				addContent(label)
@@ -94,9 +82,9 @@ do
 		end
 		
 		local tabs = {
-			{'tilestab',   openTilesTab},
-			{'doodadstab', openPropsTab},
-			{'unitstab',   openEntitiesTab}
+			{'tilestab', openTilesTab},
+			{'propstab', openPropsTab},
+			{'unitstab', openEntitiesTab}
 		}
 		local icons = {}
 		

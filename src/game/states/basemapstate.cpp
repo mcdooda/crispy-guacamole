@@ -273,8 +273,8 @@ void BaseMapState::updateUi(game::Game& game)
 	if (game.input->window->isResized())
 		ui->fullLayout();
 
-	ui->updateDirtyWidgets();
 	ui->updateInput();
+	ui->updateDirtyWidgets();
 }
 
 void BaseMapState::drawUi(game::Game& game)

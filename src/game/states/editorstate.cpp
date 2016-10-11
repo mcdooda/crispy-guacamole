@@ -12,19 +12,17 @@ namespace game
 namespace states
 {
 
-void EditorState::enter(flat::state::Agent& agent)
+void EditorState::enter(Game& game)
 {
-	Super::enter(agent);
+	Super::enter(game);
 	
 	setCameraZoom(0.5f);
 
 	flat::lua::doFile(m_luaState, "data/editor/scripts/ui.lua");
 }
 
-void EditorState::execute(flat::state::Agent& agent)
+void EditorState::execute(Game& game)
 {
-	Game& game = agent.to<Game>();
-
 	FLAT_ASSERT(m_editorMode.get() != nullptr);
 
 	updateBrush(game);
@@ -35,7 +33,7 @@ void EditorState::execute(flat::state::Agent& agent)
 	flat::time::Time* time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
 	
-	Super::execute(agent);
+	Super::execute(game);
 }
 
 entity::component::ComponentFlags EditorState::getComponentsFilter() const

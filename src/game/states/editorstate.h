@@ -18,8 +18,8 @@ class EditorState : public BaseMapState
 {
 	typedef BaseMapState Super;
 	public:
-		void enter(flat::state::Agent& agent) override;
-		void execute(flat::state::Agent& agent) override;
+		void enter(Game& game) override final;
+		void execute(Game& game) override final;
 
 		inline void setEditorMode(editor::EditorMode* editorMode) { m_editorMode.reset(editorMode); }
 		inline editor::EditorMode* getEditorMode() { return m_editorMode.get(); }

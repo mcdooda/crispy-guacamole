@@ -40,7 +40,7 @@ void EditorState::execute(flat::state::Agent& agent)
 
 entity::component::ComponentFlags EditorState::getComponentsFilter() const
 {
-	return Super::getComponentsFilter() & ~entity::component::BehaviorComponent::Type;
+	return Super::getComponentsFilter() & ~entity::component::BehaviorComponent::getFlag();
 }
 
 void EditorState::saveOnCtrlS(Game& game)

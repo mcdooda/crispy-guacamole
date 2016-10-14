@@ -17,17 +17,13 @@ namespace component
 
 class SpriteComponent : public Component
 {
-	typedef Component Super;
-	public:
-		enum { Type = 1 << 2 };
+	DECLARE_COMPONENT_TYPE(SpriteComponent, sprite);
 	public:
 		void init() override;
 
 		void update(float currentTime, float elapsedTime) override;
 		
 		bool isBusy() const override;
-
-		ComponentFlags getType() const override { return Type; }
 		
 		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
 		

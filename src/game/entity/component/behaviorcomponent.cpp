@@ -1,4 +1,5 @@
 #include "behaviorcomponent.h"
+#include "componentregistry.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
 
@@ -8,6 +9,8 @@ namespace entity
 {
 namespace component
 {
+
+DEFINE_COMPONENT_TYPE(BehaviorComponent)
 
 void BehaviorComponent::init()
 {

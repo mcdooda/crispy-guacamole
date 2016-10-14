@@ -10,6 +10,9 @@ namespace entity
 class Entity;
 namespace component
 {
+class ComponentType;
+
+typedef uint8_t ComponentTypeId;
 
 typedef uint32_t ComponentFlags;
 enum { AllComponents = 0xFFFFFFFF };
@@ -30,18 +33,29 @@ class Component
 		
 		virtual bool isBusy() const { return false; }
 
-		virtual ComponentFlags getType() const = 0;
+		virtual const ComponentType* getComponentType() const = 0;
 		
 	protected:
 		Entity* m_owner;
 };
 
-template <class ComponentType>
-inline bool hasFlag(ComponentFlags flags)
-{
-	static_assert(std::is_base_of<component::Component, ComponentType>::value, "ComponentType must inherit from Component");
-	return (flags & ComponentType::Type) == ComponentType::Type;
-}
+#define DECLARE_COMPONENT_TYPE(T, name) \
+	typedef Component Super; \
+	private: \
+		static std::shared_ptr<const ComponentType> type; \
+	public: \
+		inline static const char* getConfigName() { return #name; } \
+		inline static const ComponentType* getType() { return type.get(); } \
+		inline static void setType(const std::shared_ptr<const ComponentType>& type) { T::type = type; } \
+		static ComponentFlags getFlag(); \
+		const ComponentType* getComponentType() const override;
+
+#define DEFINE_COMPONENT_TYPE(T) \
+	static_assert(sizeof(ComponentType) > 0, "include componentregistry.h"); \
+	std::shared_ptr<const ComponentType> T::type; \
+	ComponentFlags T::getFlag() { return type.get()->getComponentTypeFlag(); } \
+	const ComponentType* T::getComponentType() const { return type.get(); }
+
 
 } // component
 } // entity

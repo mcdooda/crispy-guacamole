@@ -1,4 +1,5 @@
 #include "movementcomponent.h"
+#include "componentregistry.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
 #include "../../map/map.h"
@@ -11,6 +12,8 @@ namespace entity
 {
 namespace component
 {
+
+DEFINE_COMPONENT_TYPE(MovementComponent)
 
 void MovementComponent::init()
 {

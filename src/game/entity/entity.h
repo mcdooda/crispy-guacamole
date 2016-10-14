@@ -81,8 +81,6 @@ class Entity final : public map::MapObject
 		
 		map::Tile* getTileFromPosition();
 		
-		void destroyComponents();
-		
 	protected:
 		std::vector<component::Component*> m_components;
 		component::BehaviorComponent* m_behaviorComponent;

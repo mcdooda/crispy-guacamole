@@ -134,20 +134,9 @@ void Entity::addPointOnPath(const flat::Vector2& point)
 map::Tile* Entity::getTileFromPosition()
 {
 	FLAT_ASSERT(m_map != nullptr);
-	int tileX = static_cast<int>(std::floor(m_position.x + 0.5f));
-	int tileY = static_cast<int>(std::floor(m_position.y + 0.5f));
-	map::Tile* tile = m_map->getTileIfExists(tileX, tileY);
+	map::Tile* tile = m_map->getTileIfExists(m_position.x, m_position.y);
 	FLAT_ASSERT_MSG(tile != nullptr, "Trying to get a tile that does not exist");
 	return tile;
-}
-
-void Entity::destroyComponents()
-{
-	for (component::Component*& component : m_components)
-	{
-		FLAT_DELETE(component);
-	}
-	m_components.clear();
 }
 
 void Entity::enterState(const char* stateName)

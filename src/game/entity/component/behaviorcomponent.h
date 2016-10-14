@@ -17,15 +17,11 @@ namespace component
 
 class BehaviorComponent : public Component
 {
-	typedef Component Super;
-	public:
-		enum { Type = 1 << 0 };
+	DECLARE_COMPONENT_TYPE(BehaviorComponent, behavior)
 	public:
 		void init() override;
 
 		void update(float currentTime, float elapsedTime) override;
-
-		ComponentFlags getType() const override { return Type; }
 		
 		void enterState(const char* stateName);
 		

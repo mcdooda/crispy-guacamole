@@ -1,5 +1,6 @@
 #include <iostream>
 #include "spritecomponent.h"
+#include "componentregistry.h"
 #include "movementcomponent.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
@@ -11,6 +12,8 @@ namespace entity
 {
 namespace component
 {
+
+DEFINE_COMPONENT_TYPE(SpriteComponent)
 
 void SpriteComponent::init()
 {

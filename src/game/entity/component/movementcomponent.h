@@ -19,9 +19,7 @@ namespace component
 
 class MovementComponent : public Component
 {
-	typedef Component Super;
-	public:
-		enum { Type = 1 << 1 };
+	DECLARE_COMPONENT_TYPE(MovementComponent, movement);
 	public:
 		void init() override;
 
@@ -30,8 +28,6 @@ class MovementComponent : public Component
 		void addedToMap(map::Map* map);
 		
 		bool isBusy() const override;
-
-		ComponentFlags getType() const override { return Type; }
 		
 		bool followsPath() const;
 		void addPointOnPath(const flat::Vector2& point);

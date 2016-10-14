@@ -17,33 +17,18 @@ EntityTemplate::EntityTemplate(Game& game, lua_State* L, const std::string& path
 	m_jumpForce(0.f),
 	m_weight(0.f),
 	m_jumpMaxHeight(0.f),
-	m_jumpDistance(0.f)
+	m_jumpDistance(0.f),
+	m_componentFlags(0)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-	loadSpriteConfig(game, L, path);
-	loadPhysicsConfig(L, path);
 	loadBehaviorConfig(L, path);
+	loadPhysicsConfig(L, path);
+	loadSpriteConfig(game, L, path);
 }
 
 EntityTemplate::~EntityTemplate()
 {
 	FLAT_DELETE(m_behavior);
-}
-
-component::ComponentFlags EntityTemplate::getComponentFlags() const
-{
-	component::ComponentFlags flags = 0;
-
-	if (m_behavior != nullptr)
-		flags |= component::BehaviorComponent::Type;
-
-	if (m_speed > 0.f)
-		flags |= component::MovementComponent::Type;
-
-	if (m_spriteDescription.getAtlas())
-		flags |= component::SpriteComponent::Type;
-
-	return flags;
 }
 
 void EntityTemplate::loadSpriteConfig(Game& game, lua_State* L, const std::string& path)
@@ -113,6 +98,9 @@ void EntityTemplate::loadSpriteConfig(Game& game, lua_State* L, const std::strin
 	m_spriteDescription.cacheMandatoryAnimationDescriptions();
 	
 	lua_pop(L, 2);
+
+	if (m_spriteDescription.getAtlas())
+		m_componentFlags |= component::SpriteComponent::getFlag();
 }
 
 void EntityTemplate::loadPhysicsConfig(lua_State* L, const std::string& path)
@@ -145,6 +133,9 @@ void EntityTemplate::loadPhysicsConfig(lua_State* L, const std::string& path)
 	m_jumpDistance = m_speed * m_jumpDuration;
 	
 	lua_pop(L, 5);
+
+	if (m_speed > 0.f)
+		m_componentFlags |= component::MovementComponent::getFlag();
 }
 
 void EntityTemplate::loadBehaviorConfig(lua_State* L, const std::string& path)
@@ -153,6 +144,8 @@ void EntityTemplate::loadBehaviorConfig(lua_State* L, const std::string& path)
 	
 	std::string behaviorConfigPath = path + "behavior.lua";
 	m_behavior = new behavior::Behavior(L, behaviorConfigPath);
+
+	m_componentFlags |= component::BehaviorComponent::getFlag();
 }
 
 } // entity

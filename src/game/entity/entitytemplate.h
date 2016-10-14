@@ -22,7 +22,7 @@ class EntityTemplate final
 		EntityTemplate(Game& game, lua_State* L, const std::string& path, const std::string& name);
 		~EntityTemplate();
 
-		component::ComponentFlags getComponentFlags() const;
+		inline component::ComponentFlags getComponentFlags() const { return m_componentFlags; }
 		
 		// sprite
 		inline const sprite::Description& getSpriteDescription() const { return m_spriteDescription; }
@@ -66,6 +66,8 @@ class EntityTemplate final
 		
 		// behavior
 		behavior::Behavior* m_behavior;
+
+		component::ComponentFlags m_componentFlags;
 };
 
 } // entity

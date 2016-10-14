@@ -12,19 +12,17 @@ namespace game
 namespace states
 {
 
-void GameState::enter(flat::state::Agent& agent)
+void GameState::enter(Game& game)
 {
-	Super::enter(agent);
+	Super::enter(game);
 	
 	setCameraZoom(2.f);
 	
 	flat::lua::doFile(m_luaState, "data/game/scripts/ui.lua");
 }
 
-void GameState::execute(flat::state::Agent& agent)
+void GameState::execute(Game& game)
 {
-	Game& game = agent.to<Game>();
-	
 	if (game.input->mouse->isJustPressed(M(LEFT)))
 	{
 		flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
@@ -41,7 +39,7 @@ void GameState::execute(flat::state::Agent& agent)
 	flat::time::Time* time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
 	
-	Super::execute(agent);
+	Super::execute(game);
 }
 
 } // states

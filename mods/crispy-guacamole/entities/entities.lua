@@ -1,4 +1,5 @@
 return {
+	'boar',
 	'devil',
 	'larva',
 	'sheep',

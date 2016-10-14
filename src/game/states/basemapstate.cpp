@@ -17,9 +17,8 @@ namespace game
 namespace states
 {
 
-void BaseMapState::enter(flat::state::Agent& agent)
+void BaseMapState::enter(Game& game)
 {
-	game::Game& game = agent.to<game::Game>();
 	game.video->window->setTitle("Crispy guacamole");
 	
 	// init lua first
@@ -74,10 +73,8 @@ void BaseMapState::enter(flat::state::Agent& agent)
 	resetViews(game);
 }
 
-void BaseMapState::execute(flat::state::Agent& agent)
+void BaseMapState::execute(Game& game)
 {
-	game::Game& game = agent.to<game::Game>();
-
 	if (game.input->window->isResized())
 		resetViews(game);
 
@@ -88,7 +85,7 @@ void BaseMapState::execute(flat::state::Agent& agent)
 	draw(game);
 }
 
-void BaseMapState::exit(flat::state::Agent& agent)
+void BaseMapState::exit(Game& game)
 {
 	for (entity::Entity* entity : m_map.getEntities())
 	{
@@ -273,8 +270,8 @@ void BaseMapState::updateUi(game::Game& game)
 	if (game.input->window->isResized())
 		ui->fullLayout();
 
-	ui->updateDirtyWidgets();
 	ui->updateInput();
+	ui->updateDirtyWidgets();
 }
 
 void BaseMapState::drawUi(game::Game& game)

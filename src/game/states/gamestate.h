@@ -12,8 +12,8 @@ class GameState : public BaseMapState
 {
 	typedef BaseMapState Super;
 	public:
-		void enter(flat::state::Agent& agent) override;
-		void execute(flat::state::Agent& agent) override;
+		void enter(Game& game) override final;
+		void execute(Game& game) override final;
 };
 
 } // states

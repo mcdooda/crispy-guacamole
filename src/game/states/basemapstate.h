@@ -24,12 +24,12 @@ class PropTemplate;
 namespace states
 {
 
-class BaseMapState : public flat::state::State
+class BaseMapState : public flat::state::StateImpl<Game>
 {
 	public:
-		void enter(flat::state::Agent& agent) override;
-		void execute(flat::state::Agent& agent) override;
-		void exit(flat::state::Agent& agent) override;
+		void enter(Game& game) override;
+		void execute(Game& game) override;
+		void exit(Game& game) override;
 		
 		void setModPath(const std::string& modPath);
 

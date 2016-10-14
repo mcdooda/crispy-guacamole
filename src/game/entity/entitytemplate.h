@@ -45,7 +45,7 @@ class EntityTemplate final
 		
 	private:
 		void loadSpriteConfig(Game& game, lua_State* L, const std::string& path);
-		void loadPhysicsConfig(lua_State* L, const std::string& path);
+		void loadMovementConfig(lua_State* L, const std::string& path);
 		void loadBehaviorConfig(lua_State* L, const std::string& path);
 	
 	private:

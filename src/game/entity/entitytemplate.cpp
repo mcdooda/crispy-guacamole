@@ -22,7 +22,7 @@ EntityTemplate::EntityTemplate(Game& game, lua_State* L, const std::string& path
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	loadBehaviorConfig(L, path);
-	loadPhysicsConfig(L, path);
+	loadMovementConfig(L, path);
 	loadSpriteConfig(game, L, path);
 }
 
@@ -103,11 +103,11 @@ void EntityTemplate::loadSpriteConfig(Game& game, lua_State* L, const std::strin
 		m_componentFlags |= component::SpriteComponent::getFlag();
 }
 
-void EntityTemplate::loadPhysicsConfig(lua_State* L, const std::string& path)
+void EntityTemplate::loadMovementConfig(lua_State* L, const std::string& path)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
-	std::string physicsConfigPath = path + "physics.lua";
+	std::string physicsConfigPath = path + "movement.lua";
 	luaL_loadfile(L, physicsConfigPath.c_str());
 	lua_call(L, 0, 1);
 	

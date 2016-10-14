@@ -1,5 +1,5 @@
 #include "movementcomponent.h"
-#include "componentregistry.h"
+#include "componenttype.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
 #include "../../map/map.h"

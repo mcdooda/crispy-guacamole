@@ -3,9 +3,6 @@
 
 #include <flat.h>
 #include "entity.h"
-#include "component/behaviorcomponent.h"
-#include "component/movementcomponent.h"
-#include "component/spritecomponent.h"
 #include "component/componentregistry.h"
 
 namespace game
@@ -36,9 +33,6 @@ class EntityPool
 
 		flat::containers::Pool<Entity, MAX_ENTITIES> m_entityPool;
 		std::vector<std::unique_ptr<flat::containers::DynamicPool>> m_componentPools;
-		flat::containers::Pool<component::BehaviorComponent, MAX_ENTITIES> m_behaviorComponentPool;
-		flat::containers::Pool<component::MovementComponent, MAX_ENTITIES> m_movementComponentPool;
-		flat::containers::Pool<component::SpriteComponent, MAX_ENTITIES>   m_spriteComponentPool;
 		component::ComponentRegistry m_componentRegistry;
 };
 

@@ -1,5 +1,5 @@
 #include "behaviorcomponent.h"
-#include "componentregistry.h"
+#include "componenttype.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
 

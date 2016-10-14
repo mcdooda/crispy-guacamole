@@ -51,7 +51,7 @@ class Component
 		const ComponentType* getComponentType() const override;
 
 #define DEFINE_COMPONENT_TYPE(T) \
-	static_assert(sizeof(ComponentType) > 0, "include componentregistry.h"); \
+	static_assert(sizeof(ComponentType) > 0, "include componenttype.h"); \
 	std::shared_ptr<const ComponentType> T::type; \
 	ComponentFlags T::getFlag() { return type.get()->getComponentTypeFlag(); } \
 	const ComponentType* T::getComponentType() const { return type.get(); }

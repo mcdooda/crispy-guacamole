@@ -1,6 +1,6 @@
 #include <iostream>
 #include "spritecomponent.h"
-#include "componentregistry.h"
+#include "componenttype.h"
 #include "movementcomponent.h"
 #include "../entity.h"
 #include "../entitytemplate.h"

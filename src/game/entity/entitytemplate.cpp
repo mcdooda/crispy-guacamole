@@ -1,7 +1,10 @@
 #include "entitytemplate.h"
-#include "component/behaviorcomponent.h"
-#include "component/movementcomponent.h"
-#include "component/spritecomponent.h"
+#include "component/componentregistry.h"
+//////////////
+#include "component/components/behavior/behaviorcomponent.h"
+#include "component/components/movement/movementcomponent.h"
+#include "component/components/sprite/spritecomponent.h"
+//////////////
 #include "behavior/behavior.h"
 #include "../game.h"
 
@@ -10,7 +13,7 @@ namespace game
 namespace entity
 {
 
-EntityTemplate::EntityTemplate(Game& game, lua_State* L, const std::string& path, const std::string& name) :
+EntityTemplate::EntityTemplate(Game& game, lua_State* L, const component::ComponentRegistry& componentRegistry, const std::string& path, const std::string& name) :
 	m_name(name),
 	m_radius(0.f),
 	m_speed(0.f),
@@ -21,9 +24,38 @@ EntityTemplate::EntityTemplate(Game& game, lua_State* L, const std::string& path
 	m_componentFlags(0)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
 	loadBehaviorConfig(L, path);
 	loadMovementConfig(L, path);
 	loadSpriteConfig(game, L, path);
+	m_componentTemplates.reserve(componentRegistry.getNumComponentTypes());
+	componentRegistry.eachComponentType([this, &game, L, &path](const component::ComponentType& componentType)
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		std::string configPath = path + componentType.getConfigName() + ".lua";
+		int code = luaL_loadfile(L, configPath.c_str());
+		if (code == LUA_OK)
+		{
+			lua_call(L, 0, 1);
+			std::shared_ptr<component::ComponentTemplate> componentTemplate = componentType.loadConfigFile(game, L, path);
+			if (componentTemplate)
+			{
+				m_componentTemplates.push_back(componentTemplate);
+				m_componentFlags |= componentType.getComponentTypeFlag();
+			}
+			lua_pop(L, 1); // pop config table
+		}
+		else if (code == LUA_ERRFILE)
+		{
+			// LUA_ERRFILE -> component does not exist -> not an error -> pop error message and continue
+			lua_pop(L, 1);
+		}
+		else
+		{
+			luaL_error(L, "luaL_loadfile failed with error %s", flat::lua::codeToString(code));
+		}
+	});
 }
 
 EntityTemplate::~EntityTemplate()
@@ -143,7 +175,11 @@ void EntityTemplate::loadBehaviorConfig(lua_State* L, const std::string& path)
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
 	std::string behaviorConfigPath = path + "behavior.lua";
-	m_behavior = new behavior::Behavior(L, behaviorConfigPath);
+
+	luaL_loadfile(L, behaviorConfigPath.c_str());
+	lua_call(L, 0, 1);
+	m_behavior = new behavior::Behavior(L);
+	lua_pop(L, 1);
 
 	m_componentFlags |= component::BehaviorComponent::getFlag();
 }

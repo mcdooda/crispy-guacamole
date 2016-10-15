@@ -1,7 +1,8 @@
 #include "behaviorcomponent.h"
-#include "componenttype.h"
-#include "../entity.h"
-#include "../entitytemplate.h"
+#include "behaviorcomponenttemplate.h"
+#include "../../componenttype.h"
+#include "../../../entity.h"
+#include "../../../entitytemplate.h"
 
 namespace game
 {
@@ -40,6 +41,13 @@ void BehaviorComponent::enterState(const char* stateName)
 void BehaviorComponent::addedToMap(map::Map* map)
 {
 	enterState("init");
+}
+
+std::shared_ptr<ComponentTemplate> BehaviorComponent::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath)
+{
+	BehaviorComponentTemplate* behaviorComponentTemplate = new BehaviorComponentTemplate();
+	behaviorComponentTemplate->load(game, L, entityTemplatePath);
+	return std::shared_ptr<ComponentTemplate>(behaviorComponentTemplate);
 }
 
 } // component

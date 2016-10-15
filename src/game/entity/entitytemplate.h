@@ -11,6 +11,11 @@ namespace game
 class Game;
 namespace entity
 {
+namespace component
+{
+class ComponentRegistry;
+class ComponentTemplate;
+}
 namespace behavior
 {
 class Behavior;
@@ -19,7 +24,7 @@ class Behavior;
 class EntityTemplate final
 {
 	public:
-		EntityTemplate(Game& game, lua_State* L, const std::string& path, const std::string& name);
+		EntityTemplate(Game& game, lua_State* L, const component::ComponentRegistry& componentRegistry, const std::string& path, const std::string& name);
 		~EntityTemplate();
 
 		inline component::ComponentFlags getComponentFlags() const { return m_componentFlags; }
@@ -67,6 +72,7 @@ class EntityTemplate final
 		// behavior
 		behavior::Behavior* m_behavior;
 
+		std::vector<std::shared_ptr<component::ComponentTemplate>> m_componentTemplates;
 		component::ComponentFlags m_componentFlags;
 };
 

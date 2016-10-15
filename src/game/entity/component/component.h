@@ -2,15 +2,19 @@
 #define GAME_ENTITY_COMPONENT_COMPONENT_H
 
 #include <cstdint>
+#include <memory>
+#include <flat.h>
 
 namespace game
 {
+class Game;
 namespace entity
 {
 class Entity;
 namespace component
 {
 class ComponentType;
+class ComponentTemplate;
 
 typedef uint8_t ComponentTypeId;
 
@@ -33,7 +37,9 @@ class Component
 		
 		virtual bool isBusy() const { return false; }
 
-		virtual const ComponentType* getComponentType() const = 0;
+		virtual const ComponentType& getComponentType() const = 0;
+
+		static std::shared_ptr<ComponentTemplate> loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
 		
 	protected:
 		Entity* m_owner;
@@ -48,13 +54,13 @@ class Component
 		inline static const ComponentType* getType() { return type.get(); } \
 		inline static void setType(const std::shared_ptr<const ComponentType>& type) { T::type = type; } \
 		static ComponentFlags getFlag(); \
-		const ComponentType* getComponentType() const override;
+		const ComponentType& getComponentType() const override;
 
 #define DEFINE_COMPONENT_TYPE(T) \
 	static_assert(sizeof(ComponentType) > 0, "include componenttype.h"); \
 	std::shared_ptr<const ComponentType> T::type; \
 	ComponentFlags T::getFlag() { return type.get()->getComponentTypeFlag(); } \
-	const ComponentType* T::getComponentType() const { return type.get(); }
+	const ComponentType& T::getComponentType() const { return *type.get(); }
 
 
 } // component

@@ -3,7 +3,7 @@
 
 #include <queue>
 #include <flat.h>
-#include "component.h"
+#include "../../component.h"
 
 namespace game
 {
@@ -19,7 +19,7 @@ namespace component
 
 class MovementComponent : public Component
 {
-	DECLARE_COMPONENT_TYPE(MovementComponent, movement);
+	DECLARE_COMPONENT_TYPE(MovementComponent, movement)
 	public:
 		void init() override;
 
@@ -34,6 +34,8 @@ class MovementComponent : public Component
 		
 		void jump();
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
+
+		static std::shared_ptr<ComponentTemplate> loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
 
 	public:
 		flat::Slot<> movementStarted;

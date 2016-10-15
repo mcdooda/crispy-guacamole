@@ -1,7 +1,6 @@
 #include "entityeditormode.h"
 #include "../editorstate.h"
 #include "../../game.h"
-#include "../../entity/component/behaviorcomponent.h"
 
 namespace game
 {

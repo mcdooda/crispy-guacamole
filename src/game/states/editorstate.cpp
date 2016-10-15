@@ -5,7 +5,7 @@
 #include "../game.h"
 #include "../map/tile.h"
 #include "../map/brush/spherebrush.h"
-#include "../entity/component/behaviorcomponent.h"
+#include "../entity/component/components/behavior/behaviorcomponent.h"
 
 namespace game
 {

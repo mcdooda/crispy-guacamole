@@ -1,10 +1,11 @@
 #include <iostream>
 #include "spritecomponent.h"
-#include "componenttype.h"
-#include "movementcomponent.h"
-#include "../entity.h"
-#include "../entitytemplate.h"
-#include "../../map/map.h"
+#include "spritecomponenttemplate.h"
+#include "../../componenttype.h"
+#include "../../components/movement/movementcomponent.h"
+#include "../../../entity.h"
+#include "../../../entitytemplate.h"
+#include "../../../../map/map.h"
 
 namespace game
 {
@@ -143,6 +144,13 @@ void SpriteComponent::movementStarted()
 void SpriteComponent::movementStopped()
 {
 	m_movementStopped = true;
+}
+
+std::shared_ptr<ComponentTemplate> SpriteComponent::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath)
+{
+	SpriteComponentTemplate* spriteComponentTemplate = new SpriteComponentTemplate();
+	spriteComponentTemplate->load(game, L, entityTemplatePath);
+	return std::shared_ptr<ComponentTemplate>(spriteComponentTemplate);
 }
 
 } // component

@@ -1,8 +1,8 @@
 #include "entity.h"
 #include "entitytemplate.h"
-#include "component/behaviorcomponent.h"
-#include "component/movementcomponent.h"
-#include "component/spritecomponent.h"
+#include "component/components/behavior/behaviorcomponent.h"
+#include "component/components/movement/movementcomponent.h"
+#include "component/components/sprite/spritecomponent.h"
 #include "../map/map.h"
 #include "../map/tile.h"
 

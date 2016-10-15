@@ -1,10 +1,11 @@
 #include "movementcomponent.h"
-#include "componenttype.h"
-#include "../entity.h"
-#include "../entitytemplate.h"
-#include "../../map/map.h"
-#include "../../map/tile.h"
-#include "../../map/pathfinder.h"
+#include "movementcomponenttemplate.h"
+#include "../../componenttype.h"
+#include "../../../entity.h"
+#include "../../../entitytemplate.h"
+#include "../../../../map/map.h"
+#include "../../../../map/tile.h"
+#include "../../../../map/pathfinder.h"
 
 namespace game
 {
@@ -320,6 +321,13 @@ void MovementComponent::separateFromNearbyEntities()
 		}
 	}
 	m_owner->setXY(position2d);
+}
+
+std::shared_ptr<ComponentTemplate> MovementComponent::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath)
+{
+	MovementComponentTemplate* movementComponentTemplate = new MovementComponentTemplate();
+	movementComponentTemplate->load(game, L, entityTemplatePath);
+	return std::shared_ptr<ComponentTemplate>(movementComponentTemplate);
 }
 
 } // component

@@ -3,10 +3,6 @@
 #include "../entity/entity.h"
 #include "../entity/entitytemplate.h"
 
-#include "../entity/component/behaviorcomponent.h"
-#include "../entity/component/movementcomponent.h"
-#include "../entity/component/spritecomponent.h"
-
 namespace game
 {
 namespace states

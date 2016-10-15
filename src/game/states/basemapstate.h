@@ -8,6 +8,7 @@
 #include "../map/displaymanager.h"
 #include "../entity/entitypool.h"
 #include "../entity/component/component.h"
+#include "../entity/component/componentregistry.h"
 
 namespace game
 {
@@ -27,6 +28,8 @@ namespace states
 class BaseMapState : public flat::state::StateImpl<Game>
 {
 	public:
+		BaseMapState();
+
 		void enter(Game& game) override;
 		void execute(Game& game) override;
 		void exit(Game& game) override;
@@ -69,7 +72,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		lua_State* m_luaState;
 		
 		// resource loading
-		flat::resource::ResourceManager<entity::EntityTemplate, Game&, lua_State*, std::string, std::string> m_entityTemplateManager;
+		flat::resource::ResourceManager<entity::EntityTemplate, Game&, lua_State*, const entity::component::ComponentRegistry&, std::string, std::string> m_entityTemplateManager;
 		flat::resource::ResourceManager<map::TileTemplate, Game&, lua_State*, std::string> m_tileTemplateManager;
 		flat::resource::ResourceManager<map::PropTemplate, Game&, lua_State*, std::string> m_propTemplateManager;
 		
@@ -84,7 +87,10 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		mod::Mod m_mod;
 		map::Map m_map;
 		map::DisplayManager m_mapDisplayManager;
+
+		entity::component::ComponentRegistry m_componentRegistry;
 		entity::EntityPool m_entityPool;
+
 		std::vector<entity::Entity*> m_entities;
 		
 		flat::video::View m_gameView;

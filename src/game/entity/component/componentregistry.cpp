@@ -1,7 +1,7 @@
 #include "componentregistry.h"
-#include "behaviorcomponent.h"
-#include "movementcomponent.h"
-#include "spritecomponent.h"
+#include "components/behavior/behaviorcomponent.h"
+#include "components/movement/movementcomponent.h"
+#include "components/sprite/spritecomponent.h"
 
 namespace game
 {
@@ -25,14 +25,6 @@ void ComponentRegistry::registerComponentTypes()
 	registerComponentType<BehaviorComponent>();
 	registerComponentType<MovementComponent>();
 	registerComponentType<SpriteComponent>();
-}
-
-void ComponentRegistry::eachComponentType(std::function<void(const ComponentType*)> func)
-{
-	for (std::shared_ptr<ComponentType>& componentType : m_componentTypes)
-	{
-		func(componentType.get());
-	}
 }
 
 } // component

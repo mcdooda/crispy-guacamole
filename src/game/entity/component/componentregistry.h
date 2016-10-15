@@ -2,7 +2,6 @@
 #define GAME_ENTITY_COMPONENT_COMPONENTREGISTRY_H
 
 #include <vector>
-#include <functional>
 #include <flat.h>
 #include "component.h"
 #include "componenttype.h"
@@ -25,10 +24,13 @@ public:
 	template <class T>
 	inline void registerComponentType();
 
-	inline size_t getNumComponentTypes() { return m_componentTypes.size(); }
-	inline ComponentType* getComponentType(int index) { return m_componentTypes[index].get(); }
+	inline size_t getNumComponentTypes() const { return m_componentTypes.size(); }
 
-	void eachComponentType(std::function<void(const ComponentType*)> func);
+	template <class Func>
+	void eachComponentType(Func func) const;
+
+	// make ComponentRegistry& usable as a Resource constructor parameter
+	bool operator<(const ComponentRegistry& other) const { return this < &other; }
 
 private:
 	std::vector<std::shared_ptr<ComponentType>> m_componentTypes;
@@ -42,6 +44,15 @@ inline void ComponentRegistry::registerComponentType()
 	std::shared_ptr<ComponentType> componentType = std::make_shared<ComponentTypeImpl<T>>(static_cast<ComponentTypeId>(id));
 	T::setType(componentType);
 	m_componentTypes.push_back(componentType);
+}
+
+template<class Func>
+inline void ComponentRegistry::eachComponentType(Func func) const
+{
+	for (const std::shared_ptr<ComponentType>& componentType : m_componentTypes)
+	{
+		func(*componentType.get());
+	}
 }
 
 } // component

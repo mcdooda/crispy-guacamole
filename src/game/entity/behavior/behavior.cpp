@@ -7,8 +7,7 @@ namespace entity
 namespace behavior
 {
 
-Behavior::Behavior(lua_State* L, const std::string& fileName) :
-	m_fileName(fileName)
+Behavior::Behavior(lua_State* L)
 {
 	load(L);
 }
@@ -20,10 +19,8 @@ Behavior::~Behavior()
 
 void Behavior::load(lua_State* L)
 {
-	luaL_loadfile(L, m_fileName.c_str());
-	lua_call(L, 0, 1);
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	m_states.set(L, -1);
-	lua_pop(L, 1);
 }
 
 void Behavior::pushStates(lua_State* L) const

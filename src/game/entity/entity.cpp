@@ -149,7 +149,9 @@ bool Entity::playAnimation(const char* animationName, int numLoops)
 {
 	const EntityTemplate* entityTemplatePtr = m_template.get();
 	FLAT_ASSERT(entityTemplatePtr != nullptr);
-	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
+	const component::SpriteComponentTemplate* spriteComponentTemplate = entityTemplatePtr->getComponentTemplate<component::SpriteComponent>();
+	FLAT_ASSERT(spriteComponentTemplate != nullptr);
+	const sprite::Description& spriteDescription = spriteComponentTemplate->getSpriteDescription();
 	if (const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
 	{
 		FLAT_ASSERT(m_spriteComponent != nullptr);

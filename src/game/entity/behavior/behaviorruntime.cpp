@@ -2,6 +2,7 @@
 #include "behavior.h"
 #include "../entity.h"
 #include "../entitytemplate.h"
+#include "../component/components/behavior/behaviorcomponent.h"
 #include "../lua/entity.h"
 
 namespace game
@@ -22,8 +23,8 @@ BehaviorRuntime::~BehaviorRuntime()
 {
 	if (m_coroutineRef != LUA_NOREF)
 	{
-		const Behavior* behavior = getBehavior();
-		lua_State* L = behavior->getLuaState();
+		const Behavior& behavior = getBehavior();
+		lua_State* L = behavior.getLuaState();
 		luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
 		m_coroutineRef = LUA_NOREF;
 	}
@@ -31,9 +32,9 @@ BehaviorRuntime::~BehaviorRuntime()
 
 void BehaviorRuntime::enterState(const char* stateName)
 {
-	const Behavior* behavior = getBehavior();
+	const Behavior& behavior = getBehavior();
 	
-	lua_State* L = behavior->getLuaState();
+	lua_State* L = behavior.getLuaState();
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
 	// new thread
@@ -42,7 +43,7 @@ void BehaviorRuntime::enterState(const char* stateName)
 	m_coroutineRef = luaL_ref(L, LUA_REGISTRYINDEX);
 	
 	// states table
-	behavior->pushStates(L);
+	behavior.pushStates(L);
 	
 	//function
 	lua_getfield(L, -1, stateName);
@@ -74,10 +75,10 @@ void BehaviorRuntime::enterState(const char* stateName)
 
 void BehaviorRuntime::updateCurrentState()
 {
-	const Behavior* behavior = getBehavior();
+	const Behavior& behavior = getBehavior();
 	FLAT_ASSERT(m_coroutineRef != LUA_NOREF);
 	
-	lua_State* L = behavior->getLuaState();
+	lua_State* L = behavior.getLuaState();
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
 	lua_rawgeti(L, LUA_REGISTRYINDEX, m_coroutineRef);
@@ -111,15 +112,12 @@ void BehaviorRuntime::update()
 	}
 }
 
-const Behavior* BehaviorRuntime::getBehavior() const
+const Behavior& BehaviorRuntime::getBehavior() const
 {
 	FLAT_ASSERT(m_entity != nullptr);
-	const std::shared_ptr<const EntityTemplate>& entityTemplate = m_entity->getEntityTemplate();
-	const EntityTemplate* entityTemplatePtr = entityTemplate.get();
-	FLAT_ASSERT(entityTemplatePtr != nullptr);
-	const Behavior* behavior = entityTemplatePtr->getBehavior();
-	FLAT_ASSERT(behavior != nullptr);
-	return behavior;
+	const EntityTemplate& entityTemplate = *m_entity->getEntityTemplate().get();
+	const component::BehaviorComponentTemplate* behaviorComponentTemplate = entityTemplate.getComponentTemplate<component::BehaviorComponent>();
+	return behaviorComponentTemplate->getBehavior();
 }
 
 } // behavior

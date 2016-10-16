@@ -37,8 +37,6 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void jump();
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
 
-		static std::shared_ptr<ComponentTemplate> loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
-
 	public:
 		flat::Slot<> movementStarted;
 		flat::Slot<> movementStopped;

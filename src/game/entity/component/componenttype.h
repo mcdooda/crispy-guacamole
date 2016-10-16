@@ -2,7 +2,6 @@
 #define GAME_ENTITY_COMPONENT_COMPONENTTYPE_H
 
 #include <flat.h>
-#include "component.h"
 
 namespace game
 {
@@ -11,7 +10,13 @@ namespace entity
 {
 namespace component
 {
+class Component;
 class ComponentTemplate;
+
+typedef uint8_t ComponentTypeId;
+
+typedef uint32_t ComponentFlags;
+enum { AllComponents = 0xFFFFFFFF };
 
 class ComponentType
 {
@@ -23,7 +28,7 @@ public:
 
 	virtual size_t getComponentSize() const = 0;
 	virtual const char* getConfigName() const = 0;
-	virtual std::shared_ptr<ComponentTemplate> loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const = 0;
+	virtual ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const = 0;
 
 	virtual Component* createComponent(flat::containers::DynamicPool& pool) const = 0;
 	virtual void destroyComponent(flat::containers::DynamicPool& pool, Component* component) const = 0;
@@ -40,7 +45,7 @@ public:
 
 	size_t getComponentSize() const override;
 	const char* getConfigName() const override;
-	std::shared_ptr<ComponentTemplate> loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const override;
+	ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const override;
 
 	Component* createComponent(flat::containers::DynamicPool& pool) const override;
 	void destroyComponent(flat::containers::DynamicPool& pool, Component* component) const override;
@@ -59,7 +64,7 @@ const char* ComponentTypeImpl<T>::getConfigName() const
 }
 
 template <class T>
-std::shared_ptr<ComponentTemplate> ComponentTypeImpl<T>::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const
+ComponentTemplate* ComponentTypeImpl<T>::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const
 {
 	return T::loadConfigFile(game, L, entityTemplatePath);
 }

@@ -30,8 +30,6 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
 		
 		inline const flat::util::Sprite& getSprite() const { return m_sprite; }
-
-		static std::shared_ptr<ComponentTemplate> loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
 		
 	private:
 		void headingChanged(float heading);

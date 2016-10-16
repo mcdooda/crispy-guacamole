@@ -31,8 +31,8 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 		{
 			m_owner->setHeading(flat::vector2_angle(move));
 			flat::Vector2 direction = normalize(move);
-			const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
-			float speed = entityTemplatePtr->getSpeed();
+			const MovementComponentTemplate* movementComponentTemplate = getTemplate();
+			const float speed = movementComponentTemplate->getSpeed();
 			flat::Vector2 newPosition2d = position2d + direction * speed * elapsedTime;
 			
 			const map::Map* map = m_owner->getMap();
@@ -109,7 +109,7 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 	if (flat::length2(point - startingPoint) > minDistanceBetweenPoints * minDistanceBetweenPoints)
 	{
 		const map::Map& map = *m_owner->getMap();
-		const float jumpHeight = m_owner->getEntityTemplate()->getJumpMaxHeight();
+		const float jumpHeight = getTemplate()->getJumpMaxHeight();
 		map::Pathfinder pathfinder(map, jumpHeight);
 		std::vector<flat::Vector2> path;
 		if (pathfinder.findPath(startingPoint, point, path))
@@ -136,7 +136,7 @@ void MovementComponent::jump()
 {
 	if (m_isTouchingGround)
 	{
-		m_zSpeed = m_owner->getEntityTemplate()->getJumpForce();
+		m_zSpeed = getTemplate()->getJumpForce();
 		m_isTouchingGround = false;
 	}
 }
@@ -147,7 +147,7 @@ void MovementComponent::fall(float elapsedTime)
 		return;
 		
 	const map::Tile* tile = m_owner->getTile();
-	const float acceleration = m_owner->getEntityTemplate()->getWeight();
+	const float acceleration = getTemplate()->getWeight();
 	const float oldZSpeed = m_zSpeed;
 	m_zSpeed -= acceleration * elapsedTime;
 	const flat::Vector3& position = m_owner->getPosition();
@@ -176,8 +176,7 @@ void MovementComponent::separateFromAdjacentTiles()
 	
 	flat::Vector2 newPosition2d(position.x, position.y);
 	
-	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
-	const float radius = entityTemplatePtr->getRadius();
+	const float radius = getTemplate()->getRadius();
 	
 	// directly adjacent tiles
 	// top right
@@ -273,9 +272,9 @@ void MovementComponent::separateFromAdjacentTiles()
 void MovementComponent::separateFromNearbyEntities()
 {
 	const flat::Vector3& position = m_owner->getPosition();
-	const EntityTemplate* entityTemplate = m_owner->getEntityTemplate().get();
-	const float radius = entityTemplate->getRadius();
-	const float weight = entityTemplate->getWeight();
+	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
+	const float radius = movementComponentTemplate->getRadius();
+	const float weight = movementComponentTemplate->getWeight();
 	const float maxEntityRadius = 0.5f;
 	const int tileMinX = static_cast<int>(std::round(position.x - radius - maxEntityRadius));
 	const int tileMinY = static_cast<int>(std::round(position.y - radius - maxEntityRadius));
@@ -298,34 +297,31 @@ void MovementComponent::separateFromNearbyEntities()
 						continue;
 					
 					const flat::Vector3& neighborPosition = neighbor->getPosition();
-					const EntityTemplate* neighborEntityTemplate = neighbor->getEntityTemplate().get();
-					const float neighborRadius = neighborEntityTemplate->getRadius();
-					flat::Vector2 neighborPosition2d(neighborPosition.x, neighborPosition.y);
-					const float minDistance = radius + neighborRadius - 0.001f;
-					if (flat::length2(neighborPosition2d - position2d) < minDistance * minDistance)
+					const MovementComponentTemplate* neighborMovementComponentTemplate = neighbor->getEntityTemplate()->getComponentTemplate<MovementComponent>();
+					if (neighborMovementComponentTemplate != nullptr)
 					{
-						const float penetration = -(flat::length(neighborPosition2d - position2d) - radius - neighborRadius);
-						const float neighborWeight = neighborEntityTemplate->getWeight();
-						const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
-						flat::Vector2 neighborMove = flat::normalize(neighborPosition2d - position2d);
-						neighborPosition2d += neighborMove * penetration * neighborMoveRatio;
-						neighbor->setXY(neighborPosition2d);
-						
-						const float moveRatio = weight / (neighborWeight + weight);
-						position2d += -neighborMove * penetration * moveRatio;
+						const EntityTemplate* neighborEntityTemplate = neighbor->getEntityTemplate().get();
+						const float neighborRadius = neighborMovementComponentTemplate->getRadius();
+						flat::Vector2 neighborPosition2d(neighborPosition.x, neighborPosition.y);
+						const float minDistance = radius + neighborRadius - 0.001f;
+						if (flat::length2(neighborPosition2d - position2d) < minDistance * minDistance)
+						{
+							const float penetration = -(flat::length(neighborPosition2d - position2d) - radius - neighborRadius);
+							const float neighborWeight = neighborMovementComponentTemplate->getWeight();
+							const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
+							flat::Vector2 neighborMove = flat::normalize(neighborPosition2d - position2d);
+							neighborPosition2d += neighborMove * penetration * neighborMoveRatio;
+							neighbor->setXY(neighborPosition2d);
+
+							const float moveRatio = weight / (neighborWeight + weight);
+							position2d += -neighborMove * penetration * moveRatio;
+						}
 					}
 				}
 			}
 		}
 	}
 	m_owner->setXY(position2d);
-}
-
-std::shared_ptr<ComponentTemplate> MovementComponent::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath)
-{
-	MovementComponentTemplate* movementComponentTemplate = new MovementComponentTemplate();
-	movementComponentTemplate->load(game, L, entityTemplatePath);
-	return std::shared_ptr<ComponentTemplate>(movementComponentTemplate);
 }
 
 } // component

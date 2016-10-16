@@ -16,8 +16,10 @@ class BehaviorComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
+		inline const behavior::Behavior& getBehavior() const { return *m_behavior.get(); }
+
 	private:
-		behavior::Behavior* m_behavior;
+		std::unique_ptr<behavior::Behavior> m_behavior;
 };
 
 } // component

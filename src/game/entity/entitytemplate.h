@@ -4,7 +4,7 @@
 #include <memory>
 #include <flat.h>
 #include "sprite/description.h"
-#include "component/component.h"
+#include "component/componenttype.h"
 
 namespace game
 {
@@ -28,63 +28,31 @@ class EntityTemplate final
 		~EntityTemplate();
 
 		inline component::ComponentFlags getComponentFlags() const { return m_componentFlags; }
-		
-		// sprite
-		inline const sprite::Description& getSpriteDescription() const { return m_spriteDescription; }
-		
-		// physics
-		inline float getRadius() const { return m_radius; }
-		inline float getSpeed() const { return m_speed; }
-		inline float getJumpForce() const { return m_jumpForce; }
-		inline float getWeight() const { return m_weight; }
-		
-		inline float getJumpHeight(float t) const { return (-m_weight / 2.f) * t * t + m_jumpForce * t; }
-		inline float getJumpMaxHeight() const { return m_jumpMaxHeight; }
-		inline float getJumpDuration() const { return m_jumpDuration; }
-		inline float getJumpDistance() const { return m_jumpDistance; }
-		
-		// behavior
-		const behavior::Behavior* getBehavior() const { return m_behavior; }
 
 		inline const std::string& getName() const { return m_name; }
 
 		template <class ComponentType>
-		inline const std::shared_ptr<typename ComponentType::TemplateType>& getComponentTemplate();
-		
-	private:
-		void loadSpriteConfig(Game& game, lua_State* L, const std::string& path);
-		void loadMovementConfig(lua_State* L, const std::string& path);
-		void loadBehaviorConfig(lua_State* L, const std::string& path);
+		inline const typename ComponentType::TemplateType* getComponentTemplate() const;
 	
 	private:
 		std::string m_name;
-
-		// sprite
-		sprite::Description m_spriteDescription;
-		
-		// physics
-		float m_radius;
-		float m_speed;
-		float m_jumpForce;
-		float m_weight;
-		
-		float m_jumpMaxHeight;
-		float m_jumpDuration;
-		float m_jumpDistance;
-		
-		// behavior
-		behavior::Behavior* m_behavior;
-
-		std::vector<std::shared_ptr<component::ComponentTemplate>> m_componentTemplates;
+		std::vector<std::unique_ptr<component::ComponentTemplate>> m_componentTemplates;
 		component::ComponentFlags m_componentFlags;
 };
 
 
 
 template<class ComponentType>
-inline const std::shared_ptr<typename ComponentType::TemplateType>& EntityTemplate::getComponentTemplate()
+inline const typename ComponentType::TemplateType* EntityTemplate::getComponentTemplate() const
 {
-	return m_componentTemplates.at(ComponentType::getId() - 1);
+	typename component::ComponentTemplate* componentTemplate = m_componentTemplates.at(ComponentType::getId() - 1).get();
+	if (componentTemplate == nullptr)
+	{
+		return nullptr;
+	}
+
+	FLAT_ASSERT(dynamic_cast<typename ComponentType::TemplateType*>(componentTemplate) != nullptr);
+	return static_cast<typename ComponentType::TemplateType*>(componentTemplate);
 }
 
 } // entity

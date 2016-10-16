@@ -47,6 +47,9 @@ class EntityTemplate final
 		const behavior::Behavior* getBehavior() const { return m_behavior; }
 
 		inline const std::string& getName() const { return m_name; }
+
+		template <class ComponentType>
+		inline const std::shared_ptr<typename ComponentType::TemplateType>& getComponentTemplate();
 		
 	private:
 		void loadSpriteConfig(Game& game, lua_State* L, const std::string& path);
@@ -75,6 +78,14 @@ class EntityTemplate final
 		std::vector<std::shared_ptr<component::ComponentTemplate>> m_componentTemplates;
 		component::ComponentFlags m_componentFlags;
 };
+
+
+
+template<class ComponentType>
+inline const std::shared_ptr<typename ComponentType::TemplateType>& EntityTemplate::getComponentTemplate()
+{
+	return m_componentTemplates.at(ComponentType::getId() - 1);
+}
 
 } // entity
 } // game

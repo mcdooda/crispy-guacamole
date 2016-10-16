@@ -1,6 +1,7 @@
 #ifndef GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENT_H
 #define GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENT_H
 
+#include "behaviorcomponenttemplate.h"
 #include "../../component.h"
 #include "../../../behavior/behaviorruntime.h"
 
@@ -15,17 +16,16 @@ namespace entity
 namespace component
 {
 
-class BehaviorComponent : public Component
+class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 {
-	DECLARE_COMPONENT_TYPE(BehaviorComponent, behavior)
 	public:
+		inline static const char* getConfigName() { return "behavior"; }
+
 		void init() override;
 
 		void update(float currentTime, float elapsedTime) override;
 		
 		void enterState(const char* stateName);
-
-		static std::shared_ptr<ComponentTemplate> loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
 		
 	private:
 		void addedToMap(map::Map* map);

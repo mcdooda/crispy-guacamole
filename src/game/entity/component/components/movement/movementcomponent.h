@@ -3,6 +3,7 @@
 
 #include <queue>
 #include <flat.h>
+#include "movementcomponenttemplate.h"
 #include "../../component.h"
 
 namespace game
@@ -17,10 +18,11 @@ namespace entity
 namespace component
 {
 
-class MovementComponent : public Component
+class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 {
-	DECLARE_COMPONENT_TYPE(MovementComponent, movement)
 	public:
+		inline static const char* getConfigName() { return "movement"; }
+
 		void init() override;
 
 		void update(float currentTime, float elapsedTime) override;

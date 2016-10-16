@@ -14,8 +14,6 @@ namespace entity
 namespace component
 {
 
-DEFINE_COMPONENT_TYPE(SpriteComponent)
-
 void SpriteComponent::init()
 {
 	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();

@@ -11,8 +11,6 @@ namespace entity
 namespace component
 {
 
-DEFINE_COMPONENT_TYPE(BehaviorComponent)
-
 void BehaviorComponent::init()
 {
 	m_behaviorRuntime.setEntity(m_owner);
@@ -41,13 +39,6 @@ void BehaviorComponent::enterState(const char* stateName)
 void BehaviorComponent::addedToMap(map::Map* map)
 {
 	enterState("init");
-}
-
-std::shared_ptr<ComponentTemplate> BehaviorComponent::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath)
-{
-	BehaviorComponentTemplate* behaviorComponentTemplate = new BehaviorComponentTemplate();
-	behaviorComponentTemplate->load(game, L, entityTemplatePath);
-	return std::shared_ptr<ComponentTemplate>(behaviorComponentTemplate);
 }
 
 } // component

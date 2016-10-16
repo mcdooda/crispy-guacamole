@@ -28,7 +28,7 @@ EntityTemplate::EntityTemplate(Game& game, lua_State* L, const component::Compon
 	loadBehaviorConfig(L, path);
 	loadMovementConfig(L, path);
 	loadSpriteConfig(game, L, path);
-	m_componentTemplates.reserve(componentRegistry.getNumComponentTypes());
+	m_componentTemplates.resize(componentRegistry.getNumComponentTypes());
 	componentRegistry.eachComponentType([this, &game, L, &path](const component::ComponentType& componentType)
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -41,7 +41,8 @@ EntityTemplate::EntityTemplate(Game& game, lua_State* L, const component::Compon
 			std::shared_ptr<component::ComponentTemplate> componentTemplate = componentType.loadConfigFile(game, L, path);
 			if (componentTemplate)
 			{
-				m_componentTemplates.push_back(componentTemplate);
+				int index = componentType.getComponentTypeId() - 1;
+				m_componentTemplates[index] = componentTemplate;
 				m_componentFlags |= componentType.getComponentTypeFlag();
 			}
 			lua_pop(L, 1); // pop config table

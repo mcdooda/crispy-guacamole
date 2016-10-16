@@ -45,23 +45,36 @@ class Component
 		Entity* m_owner;
 };
 
-#define DECLARE_COMPONENT_TYPE(T, name) \
-	typedef Component Super; \
-	private: \
-		static std::shared_ptr<const ComponentType> type; \
-	public: \
-		inline static const char* getConfigName() { return #name; } \
-		inline static const ComponentType* getType() { return type.get(); } \
-		inline static void setType(const std::shared_ptr<const ComponentType>& type) { T::type = type; } \
-		static ComponentFlags getFlag(); \
-		const ComponentType& getComponentType() const override;
+template <class ComponentTemplateType>
+class ComponentImpl : public Component
+{
+	typedef Component Super;
+	public:
+		typedef ComponentTemplateType TemplateType;
 
-#define DEFINE_COMPONENT_TYPE(T) \
-	static_assert(sizeof(ComponentType) > 0, "include componenttype.h"); \
-	std::shared_ptr<const ComponentType> T::type; \
-	ComponentFlags T::getFlag() { return type.get()->getComponentTypeFlag(); } \
-	const ComponentType& T::getComponentType() const { return *type.get(); }
+	public:
+		inline static const char* getConfigName() { FLAT_ASSERT_MSG(false, "ComponentTemplateType::getConfigName() missing"); return nullptr; }
+		inline static void setType(const std::shared_ptr<const ComponentType>& type) { ComponentImpl::type = type; }
+		inline static ComponentFlags getFlag() { return type.get()->getComponentTypeFlag(); }
+		inline static ComponentTypeId getId() { return type.get()->getComponentTypeId(); }
+		const ComponentType& getComponentType() const override { return *type.get(); }
 
+		static std::shared_ptr<ComponentTemplate> loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
+
+	private:
+		static std::shared_ptr<const ComponentType> type;
+};
+
+template <class ComponentTemplateType>
+std::shared_ptr<const ComponentType> ComponentImpl<ComponentTemplateType>::type;
+
+template<class ComponentTemplateType>
+inline std::shared_ptr<ComponentTemplate> ComponentImpl<ComponentTemplateType>::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath)
+{
+	ComponentTemplateType* componentTemplate = new ComponentTemplateType();
+	componentTemplate->load(game, L, entityTemplatePath);
+	return std::shared_ptr<ComponentTemplate>(componentTemplate);
+}
 
 } // component
 } // entity

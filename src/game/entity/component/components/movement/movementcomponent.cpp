@@ -14,8 +14,6 @@ namespace entity
 namespace component
 {
 
-DEFINE_COMPONENT_TYPE(MovementComponent)
-
 void MovementComponent::init()
 {
 	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);

@@ -2,6 +2,7 @@
 #define GAME_ENTITY_COMPONENT_SPRITECOMPONENT_H
 
 #include <flat.h>
+#include "spritecomponenttemplate.h"
 #include "../../component.h"
 
 namespace game
@@ -15,10 +16,11 @@ class AnimationDescription;
 namespace component
 {
 
-class SpriteComponent : public Component
+class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 {
-	DECLARE_COMPONENT_TYPE(SpriteComponent, sprite)
 	public:
+		inline static const char* getConfigName() { return "sprite"; }
+
 		void init() override;
 
 		void update(float currentTime, float elapsedTime) override;

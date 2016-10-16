@@ -14,7 +14,7 @@ namespace component
 class ComponentTemplate
 {
 	public:
-		virtual void load(Game& game, lua_State* L, const std::string& entityTemplatePath) = 0;
+		virtual void load(Game& game, lua_State* L, const std::string& entityTemplatePath);
 };
 
 } // component

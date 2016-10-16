@@ -14,7 +14,7 @@ namespace component
 class SpriteComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override;
+		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
 	private:
 		sprite::Description m_spriteDescription;

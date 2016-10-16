@@ -13,7 +13,7 @@ namespace component
 class MovementComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override;
+		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
 		inline float getJumpHeight(float t) const { return (-m_weight / 2.f) * t * t + m_jumpForce * t; }
 

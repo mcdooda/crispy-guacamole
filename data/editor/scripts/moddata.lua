@@ -11,12 +11,12 @@ ModData.entities = {
 for i = 1, #entities do
 	local entityName = entities[i]
 	local entityBehavior = dofile(path .. '/entities/' .. entityName .. '/behavior.lua')
-	local entityPhysics  = dofile(path .. '/entities/' .. entityName .. '/physics.lua')
+	local entityMovement = dofile(path .. '/entities/' .. entityName .. '/movement.lua')
 	local entitySprite   = dofile(path .. '/entities/' .. entityName .. '/sprite.lua')
 	ModData.entities[entityName] = {
 		name     = entityName,
 		behavior = entityBehavior,
-		physics  = entityPhysics,
+		movement = entityMovement,
 		sprite   = entitySprite
 	}
 end

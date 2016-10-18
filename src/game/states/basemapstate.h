@@ -48,6 +48,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		std::shared_ptr<const map::TileTemplate> getTileTemplate(game::Game& game, const std::string& tileTemplateName) const;
 		std::shared_ptr<const map::PropTemplate> getPropTemplate(game::Game& game, const std::string& propTemplateName) const;
 
+		const entity::component::ComponentRegistry& getComponentRegistry() const { return m_componentRegistry; }
+
 		entity::Entity* spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position);
 		
 	protected:

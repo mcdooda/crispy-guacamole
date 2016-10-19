@@ -20,7 +20,7 @@ Tile::~Tile()
 	FLAT_DELETE(m_prop);
 }
 
-const flat::util::Sprite& Tile::getSprite() const
+const flat::render::Sprite& Tile::getSprite() const
 {
 	FLAT_ASSERT(m_exists);
 	return m_sprite;

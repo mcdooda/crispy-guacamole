@@ -83,7 +83,7 @@ void Entity::setHeading(float heading)
 	headingChanged(m_heading);
 }
 
-const flat::util::Sprite& Entity::getSprite() const
+const flat::render::Sprite& Entity::getSprite() const
 {
 	FLAT_ASSERT(m_spriteComponent != nullptr);
 	return m_spriteComponent->getSprite();

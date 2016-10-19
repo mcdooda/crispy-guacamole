@@ -23,7 +23,7 @@ void SpriteComponent::init()
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
 	if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
 	{
-		playAnimation(*moveAnimationDescription, flat::util::AnimatedSprite::INFINITE_LOOP);
+		playAnimation(*moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
 	}
 	else
 	{
@@ -99,7 +99,7 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 		const sprite::Description& spriteDescription = getTemplate()->getSpriteDescription();
 		if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
 		{
-			playAnimation(*moveAnimationDescription, flat::util::AnimatedSprite::INFINITE_LOOP);
+			playAnimation(*moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
 		}
 		
 		m_movementStarted = false;

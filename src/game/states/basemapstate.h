@@ -80,10 +80,10 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		
 		// rendering settings
 		flat::video::Program m_spriteProgram;
-		flat::util::RenderSettings m_spriteProgramRenderSettings;
+		flat::render::RenderSettings m_spriteProgramRenderSettings;
 		
 		flat::video::Program m_uiProgram;
-		flat::util::RenderSettings m_uiProgramRenderSettings;
+		flat::render::RenderSettings m_uiProgramRenderSettings;
 		
 		// level
 		mod::Mod m_mod;

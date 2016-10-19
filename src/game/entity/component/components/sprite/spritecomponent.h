@@ -29,7 +29,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		
 		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
 		
-		inline const flat::util::Sprite& getSprite() const { return m_sprite; }
+		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
 		
 	private:
 		void headingChanged(float heading);
@@ -38,7 +38,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		void movementStopped();
 		
 	private:
-		flat::util::AnimatedSprite m_sprite;
+		flat::render::AnimatedSprite m_sprite;
 		bool m_positionChanged : 1;
 		bool m_headingChanged : 1;
 		bool m_movementStarted : 1;

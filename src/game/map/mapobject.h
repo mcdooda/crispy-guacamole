@@ -14,7 +14,7 @@ class MapObject
 		MapObject() : m_textureHash(0) {}
 		virtual ~MapObject() {}
 		
-		virtual const flat::util::Sprite& getSprite() const = 0;
+		virtual const flat::render::Sprite& getSprite() const = 0;
 		
 		inline float getDepth() const { return m_depth; }
 		inline std::uint32_t getTextureHash() const { return m_textureHash; }

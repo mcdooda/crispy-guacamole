@@ -25,7 +25,7 @@ class Behavior
 		
 	private:
 		std::string m_fileName;
-		flat::lua::SharedReference<LUA_TTABLE> m_states;
+		flat::lua::SharedLuaReference<LUA_TTABLE> m_states;
 };
 
 } // behavior

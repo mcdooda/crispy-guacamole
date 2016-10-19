@@ -257,10 +257,9 @@ void BaseMapState::buildUi(game::Game& game)
 {
 	flat::sharp::ui::WidgetFactory widgetFactory(game);
 
-	flat::sharp::ui::RootWidget* ui = widgetFactory.makeRoot();
-	m_ui.reset(ui);
+	m_ui = widgetFactory.makeRoot();
 	
-	flat::sharp::ui::lua::setRootWidget(m_luaState, ui);
+	flat::sharp::ui::lua::setRootWidget(m_luaState, m_ui.get());
 }
 
 void BaseMapState::updateUi(game::Game& game)

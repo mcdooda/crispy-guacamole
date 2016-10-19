@@ -92,7 +92,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		float m_cameraZoom;
 		
 		// ui
-		std::unique_ptr<flat::sharp::ui::RootWidget> m_ui;
+		std::shared_ptr<flat::sharp::ui::RootWidget> m_ui;
 };
 
 } // states

@@ -3,7 +3,8 @@
 
 #include <queue>
 #include <flat.h>
-#include "component.h"
+#include "movementcomponenttemplate.h"
+#include "../../component.h"
 
 namespace game
 {
@@ -17,12 +18,11 @@ namespace entity
 namespace component
 {
 
-class MovementComponent : public Component
+class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 {
-	typedef Component Super;
 	public:
-		enum { Type = 1 << 1 };
-	public:
+		inline static const char* getConfigName() { return "movement"; }
+
 		void init() override;
 
 		void update(float currentTime, float elapsedTime) override;
@@ -30,8 +30,6 @@ class MovementComponent : public Component
 		void addedToMap(map::Map* map);
 		
 		bool isBusy() const override;
-
-		ComponentFlags getType() const override { return Type; }
 		
 		bool followsPath() const;
 		void addPointOnPath(const flat::Vector2& point);

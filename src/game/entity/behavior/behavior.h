@@ -15,7 +15,7 @@ class Behavior
 {
 	friend class BehaviorRuntime;
 	public:
-		Behavior(lua_State* L, const std::string& fileName);
+		Behavior(lua_State* L);
 		~Behavior();
 		
 	private:
@@ -24,7 +24,6 @@ class Behavior
 		inline lua_State* getLuaState() const { return m_states.getLuaState(); }
 		
 	private:
-		std::string m_fileName;
 		flat::lua::SharedLuaReference<LUA_TTABLE> m_states;
 };
 

@@ -18,7 +18,7 @@ class DisplayManager final
 		
 		inline void clearAll() { m_objects.clear(); }
 		inline void add(const MapObject* mapObject) { m_objects.push_back(mapObject); }
-		void sortByDepthAndDraw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix);
+		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix);
 		
 	private:
 		std::vector<const MapObject*> m_objects;

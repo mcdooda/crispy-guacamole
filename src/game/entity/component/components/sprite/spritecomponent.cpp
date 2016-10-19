@@ -1,9 +1,11 @@
 #include <iostream>
 #include "spritecomponent.h"
-#include "movementcomponent.h"
-#include "../entity.h"
-#include "../entitytemplate.h"
-#include "../../map/map.h"
+#include "spritecomponenttemplate.h"
+#include "../../componenttype.h"
+#include "../../components/movement/movementcomponent.h"
+#include "../../../entity.h"
+#include "../../../entitytemplate.h"
+#include "../../../../map/map.h"
 
 namespace game
 {
@@ -14,16 +16,14 @@ namespace component
 
 void SpriteComponent::init()
 {
-	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
-	FLAT_ASSERT(entityTemplatePtr != nullptr);
-	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
+	const sprite::Description& spriteDescription = getTemplate()->getSpriteDescription();
 	m_sprite.setTexture(spriteDescription.getAtlas());
 	m_owner->setTextureHash(spriteDescription.getAtlas().get()->getHash());
 	m_sprite.setOrigin(spriteDescription.getOrigin());
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
 	if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
 	{
-		playAnimation(*moveAnimationDescription, flat::util::AnimatedSprite::INFINITE_LOOP);
+		playAnimation(*moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
 	}
 	else
 	{
@@ -57,9 +57,6 @@ void SpriteComponent::playAnimation(const sprite::AnimationDescription& animatio
 
 void SpriteComponent::update(float currentTime, float elapsedTime)
 {
-	const EntityTemplate* entityTemplatePtr = m_owner->getEntityTemplate().get();
-	FLAT_ASSERT(entityTemplatePtr != nullptr);
-	
 	if (m_positionChanged)
 	{
 		const map::Map* map = m_owner->getMap();
@@ -74,7 +71,9 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 		flat::Vector2 position2d = xAxis * position.x + yAxis * position.y + zAxis * position.z;
 		m_sprite.setPosition(position2d);
 
-		m_owner->computeDepth(position.x, position.y, entityTemplatePtr->getRadius());
+		const MovementComponentTemplate* movementComponentTemplate = getTemplate<MovementComponent>();
+		FLAT_ASSERT(movementComponentTemplate != nullptr);
+		m_owner->computeDepth(position.x, position.y, movementComponentTemplate->getRadius());
 		
 		m_positionChanged = false;
 	}
@@ -97,10 +96,10 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 	
 	if (m_movementStarted)
 	{
-		const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
+		const sprite::Description& spriteDescription = getTemplate()->getSpriteDescription();
 		if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
 		{
-			playAnimation(*moveAnimationDescription, flat::util::AnimatedSprite::INFINITE_LOOP);
+			playAnimation(*moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
 		}
 		
 		m_movementStarted = false;

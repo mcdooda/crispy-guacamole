@@ -1,6 +1,8 @@
 #include "behaviorcomponent.h"
-#include "../entity.h"
-#include "../entitytemplate.h"
+#include "behaviorcomponenttemplate.h"
+#include "../../componenttype.h"
+#include "../../../entity.h"
+#include "../../../entitytemplate.h"
 
 namespace game
 {

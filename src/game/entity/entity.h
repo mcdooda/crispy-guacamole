@@ -41,7 +41,7 @@ class Entity final : public map::MapObject
 		void setHeading(float heading);
 		inline float getHeading() const { return m_heading; }
 		
-		const flat::util::Sprite& getSprite() const override;
+		const flat::render::Sprite& getSprite() const override;
 		
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
@@ -80,8 +80,6 @@ class Entity final : public map::MapObject
 	protected:
 		
 		map::Tile* getTileFromPosition();
-		
-		void destroyComponents();
 		
 	protected:
 		std::vector<component::Component*> m_components;

@@ -9,6 +9,7 @@
 #include "../map/proptemplate.h"
 #include "../map/lua/map.h"
 #include "../entity/lua/entity.h"
+#include "../entity/component/lua/componentregistry.h"
 #include "../entity/entitytemplate.h"
 #include "../mod/lua/mod.h"
 
@@ -16,6 +17,11 @@ namespace game
 {
 namespace states
 {
+
+BaseMapState::BaseMapState() :
+	m_entityPool(m_componentRegistry)
+{
+}
 
 void BaseMapState::enter(Game& game)
 {
@@ -29,6 +35,7 @@ void BaseMapState::enter(Game& game)
 	flat::sharp::ui::lua::open(m_luaState);
 	timer::lua::open(m_luaState);
 	entity::lua::open(m_luaState);
+	entity::component::lua::open(m_luaState);
 	mod::lua::open(m_luaState);
 	map::lua::open(m_luaState);
 	editor::lua::open(m_luaState);
@@ -138,7 +145,7 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game)
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(game, m_luaState, entityTemplatePath, entityTemplateName);
+	return m_entityTemplateManager.getResource(game, m_luaState, m_componentRegistry, entityTemplatePath, entityTemplateName);
 }
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
@@ -156,7 +163,7 @@ std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Gam
 entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position)
 {
 	entity::component::ComponentFlags componentsFilter = getComponentsFilter();
-	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, componentsFilter);
+	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
 	entity->setPosition(position);
 	m_map.addEntity(entity);
 	m_entities.push_back(entity);

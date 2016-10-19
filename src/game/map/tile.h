@@ -29,7 +29,7 @@ class Tile final : public MapObject
 		inline void setWalkable(bool walkable) { m_walkable = walkable; }
 		
 		inline bool hasSprite() const { return static_cast<bool>(m_sprite.getTexture()); }
-		const flat::util::Sprite& getSprite() const override;
+		const flat::render::Sprite& getSprite() const override;
 		
 		void setCoordinates(const Map& map, int x, int y, float z);
 		inline int getX() const { return m_x; }
@@ -52,7 +52,7 @@ class Tile final : public MapObject
 	
 	private:
 		std::vector<entity::Entity*> m_entities;
-		flat::util::Sprite m_sprite;
+		flat::render::Sprite m_sprite;
 		Prop* m_prop;
 		
 		int m_x;

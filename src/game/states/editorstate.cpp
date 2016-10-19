@@ -5,7 +5,7 @@
 #include "../game.h"
 #include "../map/tile.h"
 #include "../map/brush/spherebrush.h"
-#include "../entity/component/behaviorcomponent.h"
+#include "../entity/component/components/behavior/behaviorcomponent.h"
 
 namespace game
 {
@@ -38,7 +38,7 @@ void EditorState::execute(Game& game)
 
 entity::component::ComponentFlags EditorState::getComponentsFilter() const
 {
-	return Super::getComponentsFilter() & ~entity::component::BehaviorComponent::Type;
+	return Super::getComponentsFilter() & ~entity::component::BehaviorComponent::getFlag();
 }
 
 void EditorState::saveOnCtrlS(Game& game)

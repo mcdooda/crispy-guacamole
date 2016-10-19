@@ -30,7 +30,7 @@ class BehaviorRuntime final
 		FLAT_DEBUG_ONLY(inline const std::string& getCurrentStateName() const { return m_currentStateName; })
 		
 	private:
-		const Behavior* getBehavior() const;
+		const Behavior& getBehavior() const;
 		
 	private:
 		Entity* m_entity;

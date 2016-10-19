@@ -1,6 +1,6 @@
 #include "entity.h"
 #include "../entity.h"
-#include "../component/movementcomponent.h"
+#include "../component/components/movement/movementcomponent.h"
 
 namespace game
 {

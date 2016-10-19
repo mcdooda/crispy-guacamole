@@ -2,7 +2,8 @@
 #define GAME_ENTITY_COMPONENT_SPRITECOMPONENT_H
 
 #include <flat.h>
-#include "component.h"
+#include "spritecomponenttemplate.h"
+#include "../../component.h"
 
 namespace game
 {
@@ -15,23 +16,20 @@ class AnimationDescription;
 namespace component
 {
 
-class SpriteComponent : public Component
+class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 {
-	typedef Component Super;
 	public:
-		enum { Type = 1 << 2 };
-	public:
+		inline static const char* getConfigName() { return "sprite"; }
+
 		void init() override;
 
 		void update(float currentTime, float elapsedTime) override;
 		
 		bool isBusy() const override;
-
-		ComponentFlags getType() const override { return Type; }
 		
 		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
 		
-		inline const flat::util::Sprite& getSprite() const { return m_sprite; }
+		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
 		
 	private:
 		void headingChanged(float heading);
@@ -40,7 +38,7 @@ class SpriteComponent : public Component
 		void movementStopped();
 		
 	private:
-		flat::util::AnimatedSprite m_sprite;
+		flat::render::AnimatedSprite m_sprite;
 		bool m_positionChanged : 1;
 		bool m_headingChanged : 1;
 		bool m_movementStarted : 1;

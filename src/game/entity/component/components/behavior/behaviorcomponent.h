@@ -1,8 +1,9 @@
 #ifndef GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENT_H
 #define GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENT_H
 
-#include "component.h"
-#include "../behavior/behaviorruntime.h"
+#include "behaviorcomponenttemplate.h"
+#include "../../component.h"
+#include "../../../behavior/behaviorruntime.h"
 
 namespace game
 {
@@ -15,17 +16,14 @@ namespace entity
 namespace component
 {
 
-class BehaviorComponent : public Component
+class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 {
-	typedef Component Super;
 	public:
-		enum { Type = 1 << 0 };
-	public:
+		inline static const char* getConfigName() { return "behavior"; }
+
 		void init() override;
 
 		void update(float currentTime, float elapsedTime) override;
-
-		ComponentFlags getType() const override { return Type; }
 		
 		void enterState(const char* stateName);
 		

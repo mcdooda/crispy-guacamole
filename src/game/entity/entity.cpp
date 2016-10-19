@@ -1,8 +1,8 @@
 #include "entity.h"
 #include "entitytemplate.h"
-#include "component/behaviorcomponent.h"
-#include "component/movementcomponent.h"
-#include "component/spritecomponent.h"
+#include "component/components/behavior/behaviorcomponent.h"
+#include "component/components/movement/movementcomponent.h"
+#include "component/components/sprite/spritecomponent.h"
 #include "../map/map.h"
 #include "../map/tile.h"
 
@@ -83,7 +83,7 @@ void Entity::setHeading(float heading)
 	headingChanged(m_heading);
 }
 
-const flat::util::Sprite& Entity::getSprite() const
+const flat::render::Sprite& Entity::getSprite() const
 {
 	FLAT_ASSERT(m_spriteComponent != nullptr);
 	return m_spriteComponent->getSprite();
@@ -134,20 +134,9 @@ void Entity::addPointOnPath(const flat::Vector2& point)
 map::Tile* Entity::getTileFromPosition()
 {
 	FLAT_ASSERT(m_map != nullptr);
-	int tileX = static_cast<int>(std::floor(m_position.x + 0.5f));
-	int tileY = static_cast<int>(std::floor(m_position.y + 0.5f));
-	map::Tile* tile = m_map->getTileIfExists(tileX, tileY);
+	map::Tile* tile = m_map->getTileIfExists(m_position.x, m_position.y);
 	FLAT_ASSERT_MSG(tile != nullptr, "Trying to get a tile that does not exist");
 	return tile;
-}
-
-void Entity::destroyComponents()
-{
-	for (component::Component*& component : m_components)
-	{
-		FLAT_DELETE(component);
-	}
-	m_components.clear();
 }
 
 void Entity::enterState(const char* stateName)
@@ -160,7 +149,9 @@ bool Entity::playAnimation(const char* animationName, int numLoops)
 {
 	const EntityTemplate* entityTemplatePtr = m_template.get();
 	FLAT_ASSERT(entityTemplatePtr != nullptr);
-	const sprite::Description& spriteDescription = entityTemplatePtr->getSpriteDescription();
+	const component::SpriteComponentTemplate* spriteComponentTemplate = entityTemplatePtr->getComponentTemplate<component::SpriteComponent>();
+	FLAT_ASSERT(spriteComponentTemplate != nullptr);
+	const sprite::Description& spriteDescription = spriteComponentTemplate->getSpriteDescription();
 	if (const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
 	{
 		FLAT_ASSERT(m_spriteComponent != nullptr);

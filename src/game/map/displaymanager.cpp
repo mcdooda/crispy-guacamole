@@ -29,7 +29,7 @@ inline bool isLessDeep(const MapObject* a, const MapObject* b)
 	}
 }
 
-void DisplayManager::sortByDepthAndDraw(const flat::util::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix)
+void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix)
 {
 	std::sort(std::begin(m_objects), std::end(m_objects), &isLessDeep);
 
@@ -38,7 +38,7 @@ void DisplayManager::sortByDepthAndDraw(const flat::util::RenderSettings& render
 		mapObject->getSprite().draw(renderSettings, viewMatrix);
 	}*/
 
-	flat::util::SpriteBatch spriteBatch;
+	flat::render::SpriteBatch spriteBatch;
 	std::vector<const MapObject*>::iterator it = m_objects.begin();
 	std::vector<const MapObject*>::iterator end = m_objects.end();
 	while (it != m_objects.end())

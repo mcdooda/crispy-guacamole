@@ -140,7 +140,7 @@ void pushTimer(lua_State* L, const Timer* timer)
 
 TimerContainer& getTimerContainer(lua_State* L)
 {
-	Game& game = flat::lua::getGameAs<Game>(L);
+	Game& game = flat::lua::getGame(L).to<Game>();
 	return game.timerContainer;
 }
 

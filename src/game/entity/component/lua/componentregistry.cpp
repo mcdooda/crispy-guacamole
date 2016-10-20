@@ -29,7 +29,7 @@ int open(lua_State* L)
 
 int l_ComponentRegistry_getConfigNames(lua_State* L)
 {
-	Game& game = flat::lua::getGameAs<Game>(L);
+	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	const entity::component::ComponentRegistry& componentRegistry = baseMapState.getComponentRegistry();
 	int numComponentTypes = static_cast<int>(componentRegistry.getNumComponentTypes());

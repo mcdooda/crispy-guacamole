@@ -32,7 +32,7 @@ void setEditorMode(lua_State* L)
 {
 	static_assert(std::is_base_of<editor::EditorMode, T>::value, "T must inherit from editor::EditorMode");
 	states::EditorState* editorState = getEditorState(L);
-	Game& game = flat::lua::getGameAs<Game>(L);
+	Game& game = flat::lua::getGame(L).to<Game>();
 	editor::EditorMode* editorMode = new T(game, *editorState);
 	editorState->setEditorMode(editorMode);
 }

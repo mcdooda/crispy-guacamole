@@ -18,7 +18,7 @@ namespace component
 class ComponentType;
 class ComponentTemplate;
 
-class Component
+class Component : public flat::util::Convertible<Component>
 {
 	public:
 		Component();

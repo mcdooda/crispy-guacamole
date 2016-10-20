@@ -78,8 +78,7 @@ Component* ComponentTypeImpl<T>::createComponent(flat::containers::DynamicPool& 
 template <class T>
 void ComponentTypeImpl<T>::destroyComponent(flat::containers::DynamicPool& pool, Component* component) const
 {
-	FLAT_ASSERT(dynamic_cast<T*>(component) != nullptr);
-	pool.destroy<T>(static_cast<T*>(component));
+	pool.destroy<T>(component->toP<T>());
 }
 
 } // component

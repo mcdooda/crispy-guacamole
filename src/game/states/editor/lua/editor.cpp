@@ -90,8 +90,7 @@ states::EditorState* getEditorState(lua_State * L)
 {
 	Game& game = flat::lua::getGameAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
-	FLAT_ASSERT(dynamic_cast<states::EditorState*>(state) != nullptr);
-	return static_cast<states::EditorState*>(state);
+	return state->asP<states::EditorState>();
 }
 
 } // lua

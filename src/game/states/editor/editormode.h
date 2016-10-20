@@ -15,7 +15,7 @@ class EditorState;
 namespace editor
 {
 
-class EditorMode
+class EditorMode : public flat::util::Convertible<EditorMode>
 {
 public:
 	EditorMode(Game& game, EditorState& editorState);

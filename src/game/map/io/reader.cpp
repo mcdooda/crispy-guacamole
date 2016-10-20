@@ -174,7 +174,7 @@ void Reader::readTiles()
 
 void Reader::readEntities()
 {
-	states::BaseMapState* baseMapState = static_cast<states::BaseMapState*>(m_game.getStateMachine().getState());
+	states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
 
 	uint16_t numEntityTemplates = readUint16();
 	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;
@@ -183,7 +183,7 @@ void Reader::readEntities()
 	{
 		std::string entityTemplateName;
 		readString(entityTemplateName);
-		std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState->getEntityTemplate(m_game, entityTemplateName);
+		std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(m_game, entityTemplateName);
 		entityTemplates.push_back(entityTemplate);
 	}
 	
@@ -198,7 +198,7 @@ void Reader::readEntities()
 		Tile* tile = m_map.getTile(x, y);
 		FLAT_ASSERT(tile != nullptr);
 		flat::Vector3 position(x, y, tile->getZ());
-		baseMapState->spawnEntityAtPosition(entityTemplate, position);
+		baseMapState.spawnEntityAtPosition(entityTemplate, position);
 	}
 }
 

@@ -11,7 +11,7 @@ namespace entity
 namespace component
 {
 
-class ComponentTemplate
+class ComponentTemplate : public flat::util::Convertible<ComponentTemplate>
 {
 	public:
 		virtual void load(Game& game, lua_State* L, const std::string& entityTemplatePath);

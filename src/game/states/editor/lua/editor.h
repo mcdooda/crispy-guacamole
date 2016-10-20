@@ -43,8 +43,7 @@ T* getEditorMode(lua_State* L)
 	static_assert(std::is_base_of<editor::EditorMode, T>::value, "T must inherit from editor::EditorMode");
 	states::EditorState* editorState = getEditorState(L);
 	editor::EditorMode* editorMode = editorState->getEditorMode();
-	FLAT_ASSERT(dynamic_cast<T*>(editorMode) != nullptr);
-	return static_cast<T*>(editorMode);
+	return editorMode->asP<T>();
 }
 
 } // lua

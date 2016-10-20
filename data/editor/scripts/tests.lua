@@ -30,7 +30,6 @@ do
 	local function clearContent()
 		for i = 1, #contentChildren do
 			contentChildren[i]:removeFromParent()
-			contentChildren[i]:destroy()
 		end
 		contentChildren = {}
 	end

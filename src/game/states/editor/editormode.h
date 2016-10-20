@@ -9,6 +9,10 @@
 namespace game
 {
 class Game;
+namespace map
+{
+class Map;
+}
 namespace states
 {
 class EditorState;
@@ -18,7 +22,7 @@ namespace editor
 class EditorMode : public flat::util::Convertible<EditorMode>
 {
 public:
-	EditorMode(Game& game, EditorState& editorState);
+	EditorMode(Game& game);
 	virtual ~EditorMode();
 
 	void updateBrushPosition();
@@ -33,10 +37,11 @@ public:
 protected:
 	void eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const;
 	void eachBrushTile(std::function<void(map::Tile*, float)> func) const;
+	states::EditorState& getEditorState() const;
+	map::Map& getMap() const;
 
 protected:
 	Game& m_game;
-	EditorState& m_editorState;
 
 	std::vector<map::Tile*> m_previousBrushTiles;
 	std::vector<map::Tile*> m_brushTiles;

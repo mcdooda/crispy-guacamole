@@ -9,7 +9,7 @@ namespace states
 namespace editor
 {
 
-EntityEditorMode::EntityEditorMode(Game& game, EditorState& editorState) : Super(game, editorState)
+EntityEditorMode::EntityEditorMode(Game& game) : Super(game)
 {
 	
 }
@@ -29,12 +29,12 @@ void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 	// add a little noise to avoid getting entities at the exact same position
 	position.x += m_game.random->nextFloat(-0.001f, 0.001f);
 	position.y += m_game.random->nextFloat(-0.001f, 0.001f);
-	const map::Map& map = m_editorState.getMap();
+	const map::Map& map = getMap();
 	const map::Tile* tile = map.getTileIfWalkable(position.x, position.y);
 	if (tile != nullptr)
 	{
 		flat::Vector3 position(position, tile->getZ());
-		m_editorState.spawnEntityAtPosition(m_entityTemplate, position);
+		getEditorState().spawnEntityAtPosition(m_entityTemplate, position);
 	}
 }
 

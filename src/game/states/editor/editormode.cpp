@@ -9,9 +9,8 @@ namespace states
 namespace editor
 {
 
-EditorMode::EditorMode(Game& game, EditorState& editorState) :
-	m_game(game),
-	m_editorState(editorState)
+EditorMode::EditorMode(Game& game) :
+	m_game(game)
 {
 
 }
@@ -24,7 +23,7 @@ EditorMode::~EditorMode()
 void EditorMode::updateBrushPosition()
 {
 	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
-	m_brushPosition = m_editorState.getCursorMapPosition(m_game);
+	m_brushPosition = getEditorState().getCursorMapPosition(m_game);
 	if (keyboard->isPressed(K(LSHIFT)))
 	{
 		m_brushPosition.x = std::round(m_brushPosition.x);
@@ -61,6 +60,16 @@ void EditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) cons
 			func(tile, effect);
 		}
 	}
+}
+
+states::EditorState& EditorMode::getEditorState() const
+{
+	return m_game.getStateMachine().getState()->to<states::EditorState>();
+}
+
+map::Map& EditorMode::getMap() const
+{
+	return getEditorState().getMap();
 }
 
 } // editor

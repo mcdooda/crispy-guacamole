@@ -10,6 +10,7 @@ namespace states
 class EditorState;
 namespace editor
 {
+class EditorMode;
 namespace lua
 {
 
@@ -25,26 +26,18 @@ int l_Editor_setPropMode(lua_State* L);
 int l_Editor_setProp(lua_State* L);
 
 // private
-states::EditorState* getEditorState(lua_State* L);
+states::EditorState& getEditorState(lua_State* L);
 
 template <class T>
 void setEditorMode(lua_State* L)
 {
 	static_assert(std::is_base_of<editor::EditorMode, T>::value, "T must inherit from editor::EditorMode");
-	states::EditorState* editorState = getEditorState(L);
 	Game& game = flat::lua::getGame(L).to<Game>();
-	editor::EditorMode* editorMode = new T(game, *editorState);
-	editorState->setEditorMode(editorMode);
+	editor::EditorMode* editorMode = new T(game);
+	getEditorState(L).setEditorMode(editorMode);
 }
 
-template <class T>
-T* getEditorMode(lua_State* L)
-{
-	static_assert(std::is_base_of<editor::EditorMode, T>::value, "T must inherit from editor::EditorMode");
-	states::EditorState* editorState = getEditorState(L);
-	editor::EditorMode* editorMode = editorState->getEditorMode();
-	return editorMode->asP<T>();
-}
+editor::EditorMode& getEditorMode(lua_State* L);
 
 } // lua
 } // editor

@@ -12,7 +12,7 @@ namespace states
 namespace editor
 {
 
-TileEditorMode::TileEditorMode(Game& game, EditorState& editorState) : Super(game, editorState)
+TileEditorMode::TileEditorMode(Game& game) : Super(game)
 {
 	map::brush::Brush* brush = new map::brush::SphereBrush();
 	brush->setRadius(3.f);
@@ -41,7 +41,7 @@ void TileEditorMode::updateBrushTiles()
 	}
 
 	m_previousBrushTiles = std::move(m_brushTiles);
-	brush->getTiles(m_editorState.getMap(), m_brushPosition, m_brushTiles);
+	brush->getTiles(getMap(), m_brushPosition, m_brushTiles);
 }
 
 void TileEditorMode::displayBrush() const
@@ -112,7 +112,7 @@ void TileEditorMode::handleShortcuts() const
 	FLAT_ASSERT(brush != nullptr);
 
 	const float frameTime = m_game.time->getFrameTime();
-	map::Map& map = m_editorState.getMap();
+	map::Map& map = getMap();
 
 	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
 	bool upPressed = keyboard->isPressed(K(W));

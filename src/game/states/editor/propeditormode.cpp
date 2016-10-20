@@ -12,7 +12,7 @@ namespace states
 namespace editor
 {
 
-PropEditorMode::PropEditorMode(Game& game, EditorState& editorState) : Super(game, editorState)
+PropEditorMode::PropEditorMode(Game& game) : Super(game)
 {
 	map::brush::Brush* brush = new map::brush::SphereBrush();
 	brush->setRadius(3.f);
@@ -41,7 +41,7 @@ void PropEditorMode::updateBrushTiles()
 	}
 
 	m_previousBrushTiles = std::move(m_brushTiles);
-	brush->getTiles(m_editorState.getMap(), m_brushPosition, m_brushTiles);
+	brush->getTiles(getMap(), m_brushPosition, m_brushTiles);
 }
 
 void PropEditorMode::displayBrush() const

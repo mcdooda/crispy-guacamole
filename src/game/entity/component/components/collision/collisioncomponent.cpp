@@ -133,7 +133,7 @@ void CollisionComponent::separateFromNearbyEntities()
 {
 	const flat::Vector3& position = m_owner->getPosition();
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
-	const MovementComponentTemplate* movementComponentTemplate = getEntityTemplate().getComponentTemplate<MovementComponent>();
+	const MovementComponentTemplate* movementComponentTemplate = getTemplate<MovementComponent>();
 	const float weight = movementComponentTemplate ? movementComponentTemplate->getWeight() : 0.f;
 	const float radius = collisionComponentTemplate->getRadius();
 	const float maxEntityRadius = 0.5f;
@@ -171,13 +171,16 @@ void CollisionComponent::separateFromNearbyEntities()
 							const float penetration = -(flat::length(neighborPosition2d - position2d) - radius - neighborRadius);
 							const MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<MovementComponent>();
 							const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
-							const float neighborMoveRatio = neighborWeight + weight > 0.f ? neighborWeight / (neighborWeight + weight) : 0.f;
-							flat::Vector2 neighborMove = flat::normalize(neighborPosition2d - position2d);
-							neighborPosition2d += neighborMove * penetration * neighborMoveRatio;
-							neighbor->setXY(neighborPosition2d);
+							if (neighborWeight + weight > 0.f)
+							{
+								const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
+								flat::Vector2 neighborMove = flat::normalize(neighborPosition2d - position2d);
+								neighborPosition2d += neighborMove * penetration * neighborMoveRatio;
+								neighbor->setXY(neighborPosition2d);
 
-							const float moveRatio = weight / (neighborWeight + weight);
-							position2d += -neighborMove * penetration * moveRatio;
+								const float moveRatio = weight / (neighborWeight + weight);
+								position2d += -neighborMove * penetration * moveRatio;
+							}
 						}
 					}
 				}

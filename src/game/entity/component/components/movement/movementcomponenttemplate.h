@@ -15,7 +15,6 @@ class MovementComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
-		inline float getRadius() const { return m_radius; }
 		inline float getSpeed() const { return m_speed; }
 		inline float getJumpForce() const { return m_jumpForce; }
 		inline float getWeight() const { return m_weight; }
@@ -26,7 +25,6 @@ class MovementComponentTemplate : public ComponentTemplate
 		inline float getJumpDistance() const { return m_jumpDistance; }
 
 	private:
-		float m_radius;
 		float m_speed;
 		float m_jumpForce;
 		float m_weight;

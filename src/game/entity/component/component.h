@@ -52,9 +52,9 @@ class ComponentImpl : public Component
 	public:
 		inline static const char* getConfigName() { FLAT_ASSERT_MSG(false, "ComponentTemplateType::getConfigName() missing"); return nullptr; }
 		inline static void setType(const std::shared_ptr<const ComponentType>& type) { ComponentImpl::type = type; }
-		inline static ComponentFlags getFlag() { return type.get()->getComponentTypeFlag(); }
-		inline static ComponentTypeId getId() { return type.get()->getComponentTypeId(); }
-		const ComponentType& getComponentType() const override { return *type.get(); }
+		inline static ComponentFlags getFlag() { return getType().getComponentTypeFlag(); }
+		inline static ComponentTypeId getId() { return getType().getComponentTypeId(); }
+		const ComponentType& getComponentType() const override final { FLAT_ASSERT_MSG(type != nullptr, "Component not registered"); return *type.get(); }
 
 		static ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
 
@@ -62,6 +62,8 @@ class ComponentImpl : public Component
 		inline const typename T::TemplateType* getTemplate() const;
 
 	private:
+		inline static const ComponentType& getType();
+
 		static std::shared_ptr<const ComponentType> type;
 };
 
@@ -81,6 +83,13 @@ template<class T>
 inline const typename T::TemplateType* ComponentImpl<ComponentTemplateType>::getTemplate() const
 {
 	return getEntityTemplate().getComponentTemplate<T>();
+}
+
+template<class ComponentTemplateType>
+inline const ComponentType& ComponentImpl<ComponentTemplateType>::getType()
+{
+	FLAT_ASSERT_MSG(type != nullptr, "Component not registered");
+	return *type.get();
 }
 
 } // component

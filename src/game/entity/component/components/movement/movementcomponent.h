@@ -43,8 +43,6 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		
 	private:
 		void fall(float elapsedTime);
-		void separateFromAdjacentTiles();
-		void separateFromNearbyEntities();
 		
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;

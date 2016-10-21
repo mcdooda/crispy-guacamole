@@ -1,6 +1,7 @@
 #include "componentregistry.h"
 #include "components/behavior/behaviorcomponent.h"
 #include "components/movement/movementcomponent.h"
+#include "components/collision/collisioncomponent.h"
 #include "components/sprite/spritecomponent.h"
 
 namespace game
@@ -22,8 +23,10 @@ ComponentRegistry::~ComponentRegistry()
 
 void ComponentRegistry::registerComponentTypes()
 {
+	// components are updated in the order they are declared
 	registerComponentType<BehaviorComponent>();
 	registerComponentType<MovementComponent>();
+	registerComponentType<CollisionComponent>();
 	registerComponentType<SpriteComponent>();
 }
 

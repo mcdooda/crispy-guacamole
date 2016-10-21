@@ -3,6 +3,7 @@
 #include "spritecomponenttemplate.h"
 #include "../../componenttype.h"
 #include "../../components/movement/movementcomponent.h"
+#include "../../components/collision/collisioncomponent.h"
 #include "../../../entity.h"
 #include "../../../entitytemplate.h"
 #include "../../../../map/map.h"
@@ -71,9 +72,9 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 		flat::Vector2 position2d = xAxis * position.x + yAxis * position.y + zAxis * position.z;
 		m_sprite.setPosition(position2d);
 
-		const MovementComponentTemplate* movementComponentTemplate = getTemplate<MovementComponent>();
-		FLAT_ASSERT(movementComponentTemplate != nullptr);
-		m_owner->computeDepth(position.x, position.y, movementComponentTemplate->getRadius());
+		const CollisionComponentTemplate* collisionComponentTemplate = getTemplate<CollisionComponent>();
+		const float radius = collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
+		m_owner->computeDepth(position.x, position.y, radius);
 		
 		m_positionChanged = false;
 	}

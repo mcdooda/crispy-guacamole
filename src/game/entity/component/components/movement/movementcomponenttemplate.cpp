@@ -12,16 +12,13 @@ void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	lua_getfield(L, -1, "radius");
-	m_radius = static_cast<float>(luaL_checknumber(L, -1));
-
-	lua_getfield(L, -2, "speed");
+	lua_getfield(L, -1, "speed");
 	m_speed = static_cast<float>(luaL_checknumber(L, -1));
 
-	lua_getfield(L, -3, "jumpForce");
+	lua_getfield(L, -2, "jumpForce");
 	m_jumpForce = static_cast<float>(luaL_checknumber(L, -1));
 
-	lua_getfield(L, -4, "weight");
+	lua_getfield(L, -3, "weight");
 	m_weight = static_cast<float>(luaL_checknumber(L, -1));
 
 	// compute jump height and distance from jump force and weight
@@ -33,7 +30,7 @@ void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string
 	m_jumpMaxHeight = getJumpHeight(m_jumpDuration / 2.f);
 	m_jumpDistance = m_speed * m_jumpDuration;
 
-	lua_pop(L, 4);
+	lua_pop(L, 3);
 }
 
 } // component

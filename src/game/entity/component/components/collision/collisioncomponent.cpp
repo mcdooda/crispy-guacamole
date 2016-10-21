@@ -126,7 +126,11 @@ void CollisionComponent::separateFromAdjacentTiles()
 		}
 	}
 	
-	m_owner->setXY(newPosition2d);
+	if (position.x != newPosition2d.x || position.y != newPosition2d.y)
+	{
+		m_owner->setXY(newPosition2d);
+		onCollidedWithMap();
+	}
 }
 
 void CollisionComponent::separateFromNearbyEntities()
@@ -168,6 +172,7 @@ void CollisionComponent::separateFromNearbyEntities()
 						const float minDistance = radius + neighborRadius - 0.001f;
 						if (flat::length2(neighborPosition2d - position2d) < minDistance * minDistance)
 						{
+							onCollidedWithEntity(neighbor);
 							const float penetration = -(flat::length(neighborPosition2d - position2d) - radius - neighborRadius);
 							const MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<MovementComponent>();
 							const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;

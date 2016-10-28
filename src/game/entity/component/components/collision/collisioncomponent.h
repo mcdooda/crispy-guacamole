@@ -30,8 +30,8 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 		flat::Slot<> onCollidedWithMap;
 
 	private:
-		void separateFromAdjacentTiles();
 		void separateFromNearbyEntities();
+		void separateFromAdjacentTiles();
 
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;

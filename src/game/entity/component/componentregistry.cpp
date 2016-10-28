@@ -3,6 +3,7 @@
 #include "components/movement/movementcomponent.h"
 #include "components/collision/collisioncomponent.h"
 #include "components/sprite/spritecomponent.h"
+#include "components/texture/texturecomponent.h"
 
 namespace game
 {
@@ -28,6 +29,7 @@ void ComponentRegistry::registerComponentTypes()
 	registerComponentType<movement::MovementComponent>();
 	registerComponentType<collision::CollisionComponent>();
 	registerComponentType<sprite::SpriteComponent>();
+	registerComponentType<texture::TextureComponent>();
 }
 
 } // component

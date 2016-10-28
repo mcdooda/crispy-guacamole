@@ -5,7 +5,6 @@
 #include "../../components/movement/movementcomponent.h"
 #include "../../components/collision/collisioncomponent.h"
 #include "../../../entity.h"
-#include "../../../entitytemplate.h"
 #include "../../../../map/map.h"
 
 namespace game

@@ -1,4 +1,5 @@
 return {
+	'arrow',
 	'boar',
 	'devil',
 	'larva',

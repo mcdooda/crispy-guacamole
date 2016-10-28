@@ -19,7 +19,8 @@ namespace component
 class Component;
 namespace behavior { class BehaviorComponent; }
 namespace movement { class MovementComponent; }
-namespace sprite { class SpriteComponent; }
+namespace sprite   { class SpriteComponent; }
+namespace texture  { class TextureComponent; }
 }
 
 class Entity final : public map::MapObject
@@ -86,6 +87,7 @@ class Entity final : public map::MapObject
 		component::behavior::BehaviorComponent* m_behaviorComponent;
 		component::movement::MovementComponent* m_movementComponent;
 		component::sprite::SpriteComponent*     m_spriteComponent;
+		component::texture::TextureComponent*   m_textureComponent;
 		
 		flat::Vector3 m_position;
 		float m_heading;
@@ -133,17 +135,6 @@ inline ComponentType* Entity::getComponent()
 }
 
 template <>
-inline const component::behavior::BehaviorComponent* Entity::getComponent() const
-{
-	return m_behaviorComponent;
-}
-template <>
-inline component::behavior::BehaviorComponent* Entity::getComponent()
-{
-	return m_behaviorComponent;
-}
-
-template <>
 inline const component::movement::MovementComponent* Entity::getComponent() const
 {
 	return m_movementComponent;
@@ -152,17 +143,6 @@ template <>
 inline component::movement::MovementComponent* Entity::getComponent()
 {
 	return m_movementComponent;
-}
-
-template <>
-inline const component::sprite::SpriteComponent* Entity::getComponent() const
-{
-	return m_spriteComponent;
-}
-template <>
-inline component::sprite::SpriteComponent* Entity::getComponent()
-{
-	return m_spriteComponent;
 }
 
 } // entity

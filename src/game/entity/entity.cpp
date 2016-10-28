@@ -3,6 +3,7 @@
 #include "component/components/behavior/behaviorcomponent.h"
 #include "component/components/movement/movementcomponent.h"
 #include "component/components/sprite/spritecomponent.h"
+#include "component/components/texture/texturecomponent.h"
 #include "../map/map.h"
 #include "../map/tile.h"
 
@@ -85,8 +86,13 @@ void Entity::setHeading(float heading)
 
 const flat::render::Sprite& Entity::getSprite() const
 {
-	FLAT_ASSERT(m_spriteComponent != nullptr);
-	return m_spriteComponent->getSprite();
+	FLAT_ASSERT(m_spriteComponent != nullptr || m_textureComponent != nullptr);
+
+	if (m_spriteComponent != nullptr)
+		return m_spriteComponent->getSprite();
+
+	else
+		return m_textureComponent->getSprite();
 }
 
 void Entity::onAddedToMap(map::Map* map)
@@ -173,6 +179,7 @@ void Entity::cacheComponents()
 	m_behaviorComponent = findComponent<component::behavior::BehaviorComponent>();
 	m_movementComponent = findComponent<component::movement::MovementComponent>();
 	m_spriteComponent   = findComponent<component::sprite::SpriteComponent>();
+	m_textureComponent  = findComponent<component::texture::TextureComponent>();
 }
 
 void Entity::initComponents()

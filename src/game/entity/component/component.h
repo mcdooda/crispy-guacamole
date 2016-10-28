@@ -6,6 +6,7 @@
 #include <flat.h>
 #include "componenttype.h"
 #include "componenttemplate.h"
+#include "../entitytemplate.h"
 
 namespace game
 {
@@ -13,7 +14,6 @@ class Game;
 namespace entity
 {
 class Entity;
-class EntityTemplate;
 namespace component
 {
 

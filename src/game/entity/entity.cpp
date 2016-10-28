@@ -149,10 +149,10 @@ bool Entity::playAnimation(const char* animationName, int numLoops)
 {
 	const EntityTemplate* entityTemplatePtr = m_template.get();
 	FLAT_ASSERT(entityTemplatePtr != nullptr);
-	const component::SpriteComponentTemplate* spriteComponentTemplate = entityTemplatePtr->getComponentTemplate<component::SpriteComponent>();
+	const component::sprite::SpriteComponentTemplate* spriteComponentTemplate = entityTemplatePtr->getComponentTemplate<component::sprite::SpriteComponent>();
 	FLAT_ASSERT(spriteComponentTemplate != nullptr);
-	const sprite::Description& spriteDescription = spriteComponentTemplate->getSpriteDescription();
-	if (const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
+	const component::sprite::Description& spriteDescription = spriteComponentTemplate->getSpriteDescription();
+	if (const component::sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
 	{
 		FLAT_ASSERT(m_spriteComponent != nullptr);
 		m_spriteComponent->playAnimation(*animationDescription, numLoops);
@@ -172,7 +172,7 @@ void Entity::cacheComponents()
 {
 	m_behaviorComponent = findComponent<component::behavior::BehaviorComponent>();
 	m_movementComponent = findComponent<component::movement::MovementComponent>();
-	m_spriteComponent   = findComponent<component::SpriteComponent>();
+	m_spriteComponent   = findComponent<component::sprite::SpriteComponent>();
 }
 
 void Entity::initComponents()

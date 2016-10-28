@@ -27,7 +27,7 @@ void ComponentRegistry::registerComponentTypes()
 	registerComponentType<behavior::BehaviorComponent>();
 	registerComponentType<movement::MovementComponent>();
 	registerComponentType<collision::CollisionComponent>();
-	registerComponentType<SpriteComponent>();
+	registerComponentType<sprite::SpriteComponent>();
 }
 
 } // component

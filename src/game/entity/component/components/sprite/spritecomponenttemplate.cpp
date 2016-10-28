@@ -7,6 +7,8 @@ namespace entity
 {
 namespace component
 {
+namespace sprite
+{
 
 void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::string& entityTemplatePath)
 {
@@ -73,6 +75,7 @@ void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::string& 
 	lua_pop(L, 1);
 }
 
+} // sprite
 } // component
 } // entity
 } // game

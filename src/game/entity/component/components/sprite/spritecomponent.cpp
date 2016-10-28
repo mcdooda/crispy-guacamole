@@ -14,6 +14,8 @@ namespace entity
 {
 namespace component
 {
+namespace sprite
+{
 
 void SpriteComponent::init()
 {
@@ -142,6 +144,7 @@ void SpriteComponent::movementStopped()
 	m_movementStopped = true;
 }
 
+} // sprite
 } // component
 } // entity
 } // game

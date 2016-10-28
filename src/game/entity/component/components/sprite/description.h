@@ -10,6 +10,8 @@ namespace game
 {
 namespace entity
 {
+namespace component
+{
 namespace sprite
 {
 
@@ -47,6 +49,7 @@ class Description
 };
 
 } // sprite
+} // component
 } // entity
 } // game
 

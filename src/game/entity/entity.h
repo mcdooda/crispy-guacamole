@@ -19,7 +19,7 @@ namespace component
 class Component;
 namespace behavior { class BehaviorComponent; }
 namespace movement { class MovementComponent; }
-class SpriteComponent;
+namespace sprite { class SpriteComponent; }
 }
 
 class Entity final : public map::MapObject
@@ -85,7 +85,7 @@ class Entity final : public map::MapObject
 		std::vector<component::Component*> m_components;
 		component::behavior::BehaviorComponent* m_behaviorComponent;
 		component::movement::MovementComponent* m_movementComponent;
-		component::SpriteComponent*   m_spriteComponent;
+		component::sprite::SpriteComponent*     m_spriteComponent;
 		
 		flat::Vector3 m_position;
 		float m_heading;
@@ -155,12 +155,12 @@ inline component::movement::MovementComponent* Entity::getComponent()
 }
 
 template <>
-inline const component::SpriteComponent* Entity::getComponent() const
+inline const component::sprite::SpriteComponent* Entity::getComponent() const
 {
 	return m_spriteComponent;
 }
 template <>
-inline component::SpriteComponent* Entity::getComponent()
+inline component::sprite::SpriteComponent* Entity::getComponent()
 {
 	return m_spriteComponent;
 }

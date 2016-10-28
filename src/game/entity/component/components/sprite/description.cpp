@@ -4,6 +4,8 @@ namespace game
 {
 namespace entity
 {
+namespace component
+{
 namespace sprite
 {
 
@@ -37,6 +39,7 @@ const AnimationDescription* Description::getAnimationDescription(const std::stri
 }
 
 } // sprite
+} // component
 } // entity
 } // game
 

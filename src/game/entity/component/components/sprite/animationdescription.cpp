@@ -4,6 +4,8 @@ namespace game
 {
 namespace entity
 {
+namespace component
+{
 namespace sprite
 {
 
@@ -16,6 +18,7 @@ AnimationDescription::AnimationDescription(int line, int numFrames, float frameD
 }
 
 } // sprite
+} // component
 } // entity
 } // game
 

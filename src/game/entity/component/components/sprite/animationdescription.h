@@ -7,6 +7,8 @@ namespace game
 {
 namespace entity
 {
+namespace component
+{
 namespace sprite
 {
 
@@ -32,6 +34,7 @@ class AnimationDescription
 };
 
 } // sprite
+} // component
 } // entity
 } // game
 

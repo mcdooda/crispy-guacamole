@@ -9,11 +9,9 @@ namespace game
 {
 namespace entity
 {
-namespace sprite
-{
-class AnimationDescription;
-}
 namespace component
+{
+namespace sprite
 {
 
 class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
@@ -45,6 +43,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool m_movementStopped : 1;
 };
 
+} // sprite
 } // component
 } // entity
 } // game

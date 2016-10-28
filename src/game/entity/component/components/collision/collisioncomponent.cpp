@@ -13,6 +13,8 @@ namespace entity
 {
 namespace component
 {
+namespace collision
+{
 
 void CollisionComponent::update(float currentTime, float elapsedTime)
 {
@@ -193,6 +195,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	}
 }
 
+} // collision
 } // component
 } // entity
 } // game

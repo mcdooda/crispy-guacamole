@@ -9,6 +9,8 @@ namespace entity
 {
 namespace component
 {
+namespace collision
+{
 
 enum class CollisionType : uint8_t
 {
@@ -57,6 +59,7 @@ private:
 	static bool cylinderVsCylinder(const flat::Vector3& aPos, const flat::Vector3& bPos, const CollisionBox& a, const CollisionBox& b, flat::Vector3& penetration);
 };
 
+} // collision
 } // component
 } // entity
 } // game

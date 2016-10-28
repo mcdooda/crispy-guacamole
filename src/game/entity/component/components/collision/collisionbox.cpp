@@ -6,6 +6,8 @@ namespace entity
 {
 namespace component
 {
+namespace collision
+{
 
 bool CollisionBox::collides(const flat::Vector3& aPos, const flat::Vector3& bPos, const CollisionBox& a, const CollisionBox& b, flat::Vector3& penetration)
 {
@@ -113,6 +115,7 @@ bool CollisionBox::cylinderVsCylinder(const flat::Vector3& aPos, const flat::Vec
 	return false;
 }
 
+} // collision
 } // component
 } // entity
 } // game

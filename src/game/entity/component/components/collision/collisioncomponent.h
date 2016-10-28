@@ -17,6 +17,8 @@ namespace entity
 {
 namespace component
 {
+namespace collision
+{
 
 class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 {
@@ -37,6 +39,7 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 		static constexpr float MIN_Z_EPSILON = 0.1f;
 };
 
+} // collision
 } // component
 } // entity
 } // game

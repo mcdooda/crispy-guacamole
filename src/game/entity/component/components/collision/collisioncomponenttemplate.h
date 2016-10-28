@@ -10,6 +10,8 @@ namespace entity
 {
 namespace component
 {
+namespace collision
+{
 
 class CollisionComponentTemplate : public ComponentTemplate
 {
@@ -24,6 +26,7 @@ class CollisionComponentTemplate : public ComponentTemplate
 		CollisionBox m_collisionBox;
 };
 
+} // collision
 } // component
 } // entity
 } // game

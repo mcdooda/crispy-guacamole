@@ -72,7 +72,7 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 		flat::Vector2 position2d = xAxis * position.x + yAxis * position.y + zAxis * position.z;
 		m_sprite.setPosition(position2d);
 
-		const CollisionComponentTemplate* collisionComponentTemplate = getTemplate<CollisionComponent>();
+		const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();
 		const float radius = collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
 		m_owner->computeDepth(position.x, position.y, radius);
 		

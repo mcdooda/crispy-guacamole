@@ -7,6 +7,8 @@ namespace entity
 {
 namespace component
 {
+namespace collision
+{
 
 void CollisionComponentTemplate::load(Game& game, lua_State* L, const std::string& entityTemplatePath)
 {
@@ -60,6 +62,7 @@ void CollisionComponentTemplate::load(Game& game, lua_State* L, const std::strin
 	}
 }
 
+} // collision
 } // component
 } // entity
 } // game

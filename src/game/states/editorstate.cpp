@@ -38,7 +38,7 @@ void EditorState::execute(Game& game)
 
 entity::component::ComponentFlags EditorState::getComponentsFilter() const
 {
-	return Super::getComponentsFilter() & ~entity::component::BehaviorComponent::getFlag();
+	return Super::getComponentsFilter() & ~entity::component::behavior::BehaviorComponent::getFlag();
 }
 
 void EditorState::saveOnCtrlS(Game& game)

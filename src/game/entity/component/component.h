@@ -5,6 +5,7 @@
 #include <memory>
 #include <flat.h>
 #include "componenttype.h"
+#include "componenttemplate.h"
 
 namespace game
 {
@@ -15,8 +16,6 @@ class Entity;
 class EntityTemplate;
 namespace component
 {
-class ComponentType;
-class ComponentTemplate;
 
 class Component : public flat::util::Convertible<Component>
 {

@@ -1,13 +1,15 @@
 #include "behaviorruntime.h"
 #include "behavior.h"
-#include "../entity.h"
-#include "../entitytemplate.h"
-#include "../component/components/behavior/behaviorcomponent.h"
-#include "../lua/entity.h"
+#include "behaviorcomponent.h"
+#include "../../../entity.h"
+#include "../../../entitytemplate.h"
+#include "../../../lua/entity.h"
 
 namespace game
 {
 namespace entity
+{
+namespace component
 {
 namespace behavior
 {
@@ -116,11 +118,12 @@ const Behavior& BehaviorRuntime::getBehavior() const
 {
 	FLAT_ASSERT(m_entity != nullptr);
 	const EntityTemplate& entityTemplate = *m_entity->getEntityTemplate().get();
-	const component::BehaviorComponentTemplate* behaviorComponentTemplate = entityTemplate.getComponentTemplate<component::BehaviorComponent>();
+	const BehaviorComponentTemplate* behaviorComponentTemplate = entityTemplate.getComponentTemplate<BehaviorComponent>();
 	return behaviorComponentTemplate->getBehavior();
 }
 
 } // behavior
+} // component
 } // entity
 } // game
 

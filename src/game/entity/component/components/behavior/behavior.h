@@ -1,11 +1,13 @@
-#ifndef GAME_ENTITY_BEHAVIOR_BEHAVIOR_H
-#define GAME_ENTITY_BEHAVIOR_BEHAVIOR_H
+#ifndef GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIOR_H
+#define GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIOR_H
 
 #include <flat.h>
 
 namespace game
 {
 namespace entity
+{
+namespace component
 {
 namespace behavior
 {
@@ -28,10 +30,11 @@ class Behavior
 };
 
 } // behavior
+} // component
 } // entity
 } // game
 
-#endif // GAME_ENTITY_BEHAVIOR_BEHAVIOR_H
+#endif // GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIOR_H
 
 
 

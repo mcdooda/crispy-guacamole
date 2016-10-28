@@ -4,6 +4,8 @@ namespace game
 {
 namespace entity
 {
+namespace component
+{
 namespace behavior
 {
 
@@ -29,6 +31,7 @@ void Behavior::pushStates(lua_State* L) const
 }
 
 } // behavior
+} // component
 } // entity
 } // game
 

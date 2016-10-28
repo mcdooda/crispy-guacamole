@@ -17,7 +17,7 @@ class EntityTemplate;
 namespace component
 {
 class Component;
-class BehaviorComponent;
+namespace behavior { class BehaviorComponent; }
 class MovementComponent;
 class SpriteComponent;
 }
@@ -83,7 +83,7 @@ class Entity final : public map::MapObject
 		
 	protected:
 		std::vector<component::Component*> m_components;
-		component::BehaviorComponent* m_behaviorComponent;
+		component::behavior::BehaviorComponent* m_behaviorComponent;
 		component::MovementComponent* m_movementComponent;
 		component::SpriteComponent*   m_spriteComponent;
 		
@@ -133,12 +133,12 @@ inline ComponentType* Entity::getComponent()
 }
 
 template <>
-inline const component::BehaviorComponent* Entity::getComponent() const
+inline const component::behavior::BehaviorComponent* Entity::getComponent() const
 {
 	return m_behaviorComponent;
 }
 template <>
-inline component::BehaviorComponent* Entity::getComponent()
+inline component::behavior::BehaviorComponent* Entity::getComponent()
 {
 	return m_behaviorComponent;
 }

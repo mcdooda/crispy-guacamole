@@ -1,8 +1,8 @@
-#ifndef GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENTTEMPLATE_H
-#define GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENTTEMPLATE_H
+#ifndef GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIORCOMPONENTTEMPLATE_H
+#define GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIORCOMPONENTTEMPLATE_H
 
+#include "behavior.h"
 #include "../../componenttemplate.h"
-#include "../../../behavior/behavior.h"
 
 namespace game
 {
@@ -10,22 +10,25 @@ namespace entity
 {
 namespace component
 {
+namespace behavior
+{
 
 class BehaviorComponentTemplate : public ComponentTemplate
 {
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
-		inline const behavior::Behavior& getBehavior() const { return *m_behavior.get(); }
+		inline const Behavior& getBehavior() const { return *m_behavior.get(); }
 
 	private:
-		std::unique_ptr<behavior::Behavior> m_behavior;
+		std::unique_ptr<Behavior> m_behavior;
 };
 
+} // behavior
 } // component
 } // entity
 } // game
 
-#endif // GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENTTEMPLATE_H
+#endif // GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIORCOMPONENTTEMPLATE_H
 
 

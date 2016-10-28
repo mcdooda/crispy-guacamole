@@ -10,6 +10,8 @@ namespace entity
 {
 namespace component
 {
+namespace behavior
+{
 
 void BehaviorComponent::init()
 {
@@ -41,6 +43,7 @@ void BehaviorComponent::addedToMap(map::Map* map)
 	enterState("init");
 }
 
+} // behavior
 } // component
 } // entity
 } // game

@@ -9,6 +9,8 @@ namespace game
 namespace entity
 {
 class Entity;
+namespace component
+{
 namespace behavior
 {
 class Behavior;
@@ -39,6 +41,7 @@ class BehaviorRuntime final
 };
 
 } // behavior
+} // component
 } // entity
 } // game
 

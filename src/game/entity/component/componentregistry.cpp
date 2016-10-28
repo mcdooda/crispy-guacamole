@@ -24,7 +24,7 @@ ComponentRegistry::~ComponentRegistry()
 void ComponentRegistry::registerComponentTypes()
 {
 	// components are updated in the order they are declared
-	registerComponentType<BehaviorComponent>();
+	registerComponentType<behavior::BehaviorComponent>();
 	registerComponentType<MovementComponent>();
 	registerComponentType<CollisionComponent>();
 	registerComponentType<SpriteComponent>();

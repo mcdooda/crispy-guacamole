@@ -1,11 +1,5 @@
 #include "entitytemplate.h"
 #include "component/componentregistry.h"
-//////////////
-#include "component/components/behavior/behaviorcomponent.h"
-#include "component/components/movement/movementcomponent.h"
-#include "component/components/sprite/spritecomponent.h"
-//////////////
-#include "behavior/behavior.h"
 #include "../game.h"
 
 namespace game

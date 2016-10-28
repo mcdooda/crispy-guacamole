@@ -1,9 +1,9 @@
-#ifndef GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENT_H
-#define GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENT_H
+#ifndef GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIORCOMPONENT_H
+#define GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIORCOMPONENT_H
 
 #include "behaviorcomponenttemplate.h"
+#include "behaviorruntime.h"
 #include "../../component.h"
-#include "../../../behavior/behaviorruntime.h"
 
 namespace game
 {
@@ -14,6 +14,8 @@ class Map;
 namespace entity
 {
 namespace component
+{
+namespace behavior
 {
 
 class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
@@ -31,14 +33,15 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		void addedToMap(map::Map* map);
 		
 	private:
-		behavior::BehaviorRuntime m_behaviorRuntime;
+		BehaviorRuntime m_behaviorRuntime;
 };
 
+} // behavior
 } // component
 } // entity
 } // game
 
-#endif // GAME_ENTITY_COMPONENT_BEHAVIORCOMPONENT_H
+#endif // GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIORCOMPONENT_H
 
 
 

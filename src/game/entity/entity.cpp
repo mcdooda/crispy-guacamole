@@ -170,7 +170,7 @@ void Entity::addComponent(component::Component* component)
 
 void Entity::cacheComponents()
 {
-	m_behaviorComponent = findComponent<component::BehaviorComponent>();
+	m_behaviorComponent = findComponent<component::behavior::BehaviorComponent>();
 	m_movementComponent = findComponent<component::MovementComponent>();
 	m_spriteComponent   = findComponent<component::SpriteComponent>();
 }

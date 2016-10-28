@@ -7,6 +7,8 @@ namespace entity
 {
 namespace component
 {
+namespace behavior
+{
 
 void BehaviorComponentTemplate::load(Game& game, lua_State* L, const std::string& entityTemplatePath)
 {
@@ -14,6 +16,7 @@ void BehaviorComponentTemplate::load(Game& game, lua_State* L, const std::string
 	m_behavior.reset(new behavior::Behavior(L));
 }
 
+} // behavior
 } // component
 } // entity
 } // game

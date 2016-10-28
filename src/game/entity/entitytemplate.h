@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <flat.h>
-#include "sprite/description.h"
 #include "component/componenttype.h"
 
 namespace game

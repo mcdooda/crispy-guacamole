@@ -1,5 +1,5 @@
-#ifndef GAME_ENTITY_COMPONENT_SPRITECOMPONENT_H
-#define GAME_ENTITY_COMPONENT_SPRITECOMPONENT_H
+#ifndef GAME_ENTITY_COMPONENT_SPRITE_SPRITECOMPONENT_H
+#define GAME_ENTITY_COMPONENT_SPRITE_SPRITECOMPONENT_H
 
 #include <flat.h>
 #include "spritecomponenttemplate.h"
@@ -48,7 +48,6 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 } // entity
 } // game
 
-#endif // GAME_ENTITY_COMPONENT_SPRITECOMPONENT_H
-
+#endif // GAME_ENTITY_COMPONENT_SPRITE_SPRITECOMPONENT_H
 
 

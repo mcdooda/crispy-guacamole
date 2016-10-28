@@ -2,7 +2,7 @@
 #define GAME_ENTITY_COMPONENT_SPRITE_SPRITECOMPONENTTEMPLATE_H
 
 #include "../../componenttemplate.h"
-#include "description.h"
+#include "spritedescription.h"
 
 namespace game
 {

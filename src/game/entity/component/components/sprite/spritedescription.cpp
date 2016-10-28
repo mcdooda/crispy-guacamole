@@ -1,4 +1,4 @@
-#include "description.h"
+#include "spritedescription.h"
 
 namespace game
 {

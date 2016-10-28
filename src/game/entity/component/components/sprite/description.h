@@ -15,10 +15,10 @@ namespace component
 namespace sprite
 {
 
-class Description
+class SpriteDescription
 {
 	public:
-		Description();
+		SpriteDescription();
 		
 		inline void setAtlas(const std::shared_ptr<const flat::video::Texture>& atlas) { m_atlas = atlas; }
 		inline const std::shared_ptr<const flat::video::Texture>& getAtlas() const { return m_atlas; }

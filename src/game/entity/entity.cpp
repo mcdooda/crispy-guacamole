@@ -151,7 +151,7 @@ bool Entity::playAnimation(const char* animationName, int numLoops)
 	FLAT_ASSERT(entityTemplatePtr != nullptr);
 	const component::sprite::SpriteComponentTemplate* spriteComponentTemplate = entityTemplatePtr->getComponentTemplate<component::sprite::SpriteComponent>();
 	FLAT_ASSERT(spriteComponentTemplate != nullptr);
-	const component::sprite::Description& spriteDescription = spriteComponentTemplate->getSpriteDescription();
+	const component::sprite::SpriteDescription& spriteDescription = spriteComponentTemplate->getSpriteDescription();
 	if (const component::sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
 	{
 		FLAT_ASSERT(m_spriteComponent != nullptr);

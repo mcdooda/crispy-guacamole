@@ -18,10 +18,10 @@ class SpriteComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
-		inline const Description& getSpriteDescription() const { return m_spriteDescription; }
+		inline const SpriteDescription& getSpriteDescription() const { return m_spriteDescription; }
 
 	private:
-		Description m_spriteDescription;
+		SpriteDescription m_spriteDescription;
 };
 
 } // sprite

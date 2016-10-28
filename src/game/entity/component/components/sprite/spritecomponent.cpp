@@ -19,7 +19,7 @@ namespace sprite
 
 void SpriteComponent::init()
 {
-	const sprite::Description& spriteDescription = getTemplate()->getSpriteDescription();
+	const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
 	m_sprite.setTexture(spriteDescription.getAtlas());
 	m_owner->setTextureHash(spriteDescription.getAtlas().get()->getHash());
 	m_sprite.setOrigin(spriteDescription.getOrigin());
@@ -99,7 +99,7 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 	
 	if (m_movementStarted)
 	{
-		const sprite::Description& spriteDescription = getTemplate()->getSpriteDescription();
+		const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
 		if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
 		{
 			playAnimation(*moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);

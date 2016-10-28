@@ -139,14 +139,16 @@ void CollisionComponent::separateFromNearbyEntities()
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
 	const MovementComponentTemplate* movementComponentTemplate = getTemplate<MovementComponent>();
 	const float weight = movementComponentTemplate ? movementComponentTemplate->getWeight() : 0.f;
-	const float radius = collisionComponentTemplate->getRadius();
+	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
 	const float maxEntityRadius = 0.5f;
+	const float radius = collisionComponentTemplate->getRadius();
+	FLAT_ASSERT(radius <= maxEntityRadius);
 	const int tileMinX = static_cast<int>(std::round(position.x - radius - maxEntityRadius));
 	const int tileMinY = static_cast<int>(std::round(position.y - radius - maxEntityRadius));
 	const int tileMaxX = static_cast<int>(std::round(position.x + radius + maxEntityRadius));
 	const int tileMaxY = static_cast<int>(std::round(position.y + radius + maxEntityRadius));
 	const map::Map* map = m_owner->getMap();
-	flat::Vector2 position2d(position.x, position.y);
+	flat::Vector3 newPosition = position;
 	for (int x = tileMinX; x <= tileMaxX; ++x)
 	{
 		for (int y = tileMinY; y <= tileMaxY; ++y)
@@ -155,8 +157,8 @@ void CollisionComponent::separateFromNearbyEntities()
 			if (tile)
 			{
 				// we actually need to copy this as it is iterated and modified at the same type
-				const std::vector<entity::Entity*> neighbors = tile->getEntities();
-				for (entity::Entity* neighbor : neighbors)
+				const std::vector<Entity*> neighbors = tile->getEntities();
+				for (Entity* neighbor : neighbors)
 				{
 					if (neighbor == m_owner)
 						continue;
@@ -166,25 +168,22 @@ void CollisionComponent::separateFromNearbyEntities()
 					const CollisionComponentTemplate* neighborCollisionComponentTemplate = neighborTemplate->getComponentTemplate<CollisionComponent>();
 					if (neighborCollisionComponentTemplate != nullptr)
 					{
+						const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
 						const EntityTemplate* neighborEntityTemplate = neighbor->getEntityTemplate().get();
-						const float neighborRadius = neighborCollisionComponentTemplate->getRadius();
-						flat::Vector2 neighborPosition2d(neighborPosition.x, neighborPosition.y);
-						const float minDistance = radius + neighborRadius - 0.001f;
-						if (flat::length2(neighborPosition2d - position2d) < minDistance * minDistance)
+						flat::Vector3 distanceVec = neighborPosition - position;
+						float distance = flat::length(distanceVec);
+						flat::Vector3 penetration;
+						if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
 						{
 							onCollidedWithEntity(neighbor);
-							const float penetration = -(flat::length(neighborPosition2d - position2d) - radius - neighborRadius);
 							const MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<MovementComponent>();
 							const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
 							if (neighborWeight + weight > 0.f)
 							{
 								const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
-								flat::Vector2 neighborMove = flat::normalize(neighborPosition2d - position2d);
-								neighborPosition2d += neighborMove * penetration * neighborMoveRatio;
-								neighbor->setXY(neighborPosition2d);
-
-								const float moveRatio = weight / (neighborWeight + weight);
-								position2d += -neighborMove * penetration * moveRatio;
+								neighbor->setPosition(neighborPosition + penetration * neighborMoveRatio);
+								const float moveRatio = neighborMoveRatio - 1.f;
+								newPosition += penetration * moveRatio;
 							}
 						}
 					}
@@ -192,7 +191,7 @@ void CollisionComponent::separateFromNearbyEntities()
 			}
 		}
 	}
-	m_owner->setXY(position2d);
+	m_owner->setPosition(newPosition);
 }
 
 } // component

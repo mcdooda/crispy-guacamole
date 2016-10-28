@@ -1,3 +1,5 @@
 return {
-	radius = 0.15
+	type = 'cylinder',
+	radius = 0.15,
+	height = 1
 }

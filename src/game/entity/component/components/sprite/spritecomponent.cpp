@@ -39,7 +39,7 @@ void SpriteComponent::init()
 	m_owner->headingChanged.on(this, &SpriteComponent::headingChanged);
 	m_owner->positionChanged.on(this, &SpriteComponent::positionChanged);
 
-	if (component::MovementComponent* movementComponent = m_owner->getComponent<component::MovementComponent>())
+	if (movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>())
 	{
 		movementComponent->movementStarted.on(this, &SpriteComponent::movementStarted);
 		movementComponent->movementStopped.on(this, &SpriteComponent::movementStopped);

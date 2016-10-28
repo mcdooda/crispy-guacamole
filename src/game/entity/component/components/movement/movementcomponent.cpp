@@ -13,6 +13,8 @@ namespace entity
 {
 namespace component
 {
+namespace movement
+{
 
 void MovementComponent::init()
 {
@@ -158,6 +160,7 @@ void MovementComponent::fall(float elapsedTime)
 	m_owner->setZ(z);
 }
 
+} // movement
 } // component
 } // entity
 } // game

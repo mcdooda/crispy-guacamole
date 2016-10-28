@@ -7,6 +7,8 @@ namespace entity
 {
 namespace component
 {
+namespace movement
+{
 
 void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string& entityTemplatePath)
 {
@@ -33,6 +35,7 @@ void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string
 	lua_pop(L, 3);
 }
 
+} // movement
 } // component
 } // entity
 } // game

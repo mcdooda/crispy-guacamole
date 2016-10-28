@@ -26,7 +26,7 @@ void CollisionComponent::separateFromNearbyEntities()
 {
 	const flat::Vector3& position = m_owner->getPosition();
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
-	const MovementComponentTemplate* movementComponentTemplate = getTemplate<MovementComponent>();
+	const movement::MovementComponentTemplate* movementComponentTemplate = getTemplate<movement::MovementComponent>();
 	const float weight = movementComponentTemplate ? movementComponentTemplate->getWeight() : 0.f;
 	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
 	const float maxEntityRadius = 0.5f;
@@ -65,7 +65,7 @@ void CollisionComponent::separateFromNearbyEntities()
 						if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
 						{
 							onCollidedWithEntity(neighbor);
-							const MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<MovementComponent>();
+							const movement::MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<movement::MovementComponent>();
 							const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
 							if (neighborWeight + weight > 0.f)
 							{

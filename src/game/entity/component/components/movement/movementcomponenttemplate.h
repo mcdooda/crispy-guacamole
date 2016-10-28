@@ -9,6 +9,8 @@ namespace entity
 {
 namespace component
 {
+namespace movement
+{
 
 class MovementComponentTemplate : public ComponentTemplate
 {
@@ -34,6 +36,7 @@ class MovementComponentTemplate : public ComponentTemplate
 		float m_jumpDistance;
 };
 
+} // movement
 } // component
 } // entity
 } // game

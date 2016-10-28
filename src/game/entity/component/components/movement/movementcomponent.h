@@ -17,6 +17,8 @@ namespace entity
 {
 namespace component
 {
+namespace movement
+{
 
 class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 {
@@ -52,11 +54,11 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool m_isTouchingGround : 1;
 };
 
+} // movement
 } // component
 } // entity
 } // game
 
 #endif // GAME_ENTITY_COMPONENT_MOVEMENTCOMPONENT_H
-
 
 

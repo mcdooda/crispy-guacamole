@@ -81,25 +81,27 @@ void BehaviorRuntime::updateCurrentState()
 	FLAT_ASSERT(m_coroutineRef != LUA_NOREF);
 	
 	lua_State* L = behavior.getLuaState();
-	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-	
-	lua_rawgeti(L, LUA_REGISTRYINDEX, m_coroutineRef);
-	luaL_checktype(L, -1, LUA_TTHREAD);
-	lua_State* L1 = lua_tothread(L, -1);
-	FLAT_ASSERT(L1 != nullptr);
-	
-	int status = lua_resume(L1, nullptr, 0);
-	if (status == LUA_OK)
 	{
-		luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
-		m_coroutineRef = LUA_NOREF;
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		lua_rawgeti(L, LUA_REGISTRYINDEX, m_coroutineRef);
+		luaL_checktype(L, -1, LUA_TTHREAD);
+		lua_State* L1 = lua_tothread(L, -1);
+		FLAT_ASSERT(L1 != nullptr);
+
+		int status = lua_resume(L1, nullptr, 0);
+		if (status == LUA_OK)
+		{
+			luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
+			m_coroutineRef = LUA_NOREF;
+		}
+		else if (status != LUA_YIELD)
+		{
+			lua_error(L1);
+		}
+
+		lua_pop(L, 1);
 	}
-	else if (status != LUA_YIELD)
-	{
-		lua_error(L1);
-	}
-	
-	lua_pop(L, 1);
 }
 
 void BehaviorRuntime::update()

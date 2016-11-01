@@ -48,7 +48,9 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 	{
 		const float heading = m_owner->getHeading();
 		FLAT_ASSERT(0 <= heading && heading < M_PI * 2.f);
-		
+
+		const float h = std::atan2f(std::sin(heading + flat::PI / 4.f) / 2.f, std::cos(heading + flat::PI / 4.f));	
+		m_sprite.setRotationZ(h);
 
 		m_headingChanged = false;
 	}

@@ -1,6 +1,8 @@
 #include "entity.h"
 #include "../entity.h"
 #include "../component/components/movement/movementcomponent.h"
+#include "../../game.h"
+#include "../../states/basemapstate.h"
 
 namespace game
 {
@@ -20,7 +22,12 @@ int open(lua_State* L)
 	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
+		{"setPosition",   l_Entity_setPosition},
 		{"getPosition",   l_Entity_getPosition},
+
+		{"setHeading",    l_Entity_setHeading},
+		{"getHeading",    l_Entity_getHeading},
+
 		{"moveTo",        l_Entity_moveTo},
 		{"enterState",    l_Entity_enterState},
 		{"playAnimation", l_Entity_playAnimation},
@@ -28,11 +35,29 @@ int open(lua_State* L)
 		
 		{nullptr, nullptr}
 	};
-	
 	luaL_setfuncs(L, Entity_lib_m, 0);
 	
+	lua_createtable(L, 0, 1);
+	static const luaL_Reg Entity_lib_f[] = {
+		{"spawn", l_Entity_spawn},
+		{nullptr, nullptr}
+	};
+	luaL_setfuncs(L, Entity_lib_f, 0);
+	lua_setglobal(L, "Entity");
+
 	lua_pop(L, 1);
 	
+	return 0;
+}
+
+int l_Entity_setPosition(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	float x = static_cast<float>(luaL_checknumber(L, 2));
+	float y = static_cast<float>(luaL_checknumber(L, 3));
+	float z = static_cast<float>(luaL_checknumber(L, 4));
+	flat::Vector3 position(x, y, z);
+	entity->setPosition(position);
 	return 0;
 }
 
@@ -44,6 +69,21 @@ int l_Entity_getPosition(lua_State* L)
 	lua_pushnumber(L, position.y);
 	lua_pushnumber(L, position.z);
 	return 3;
+}
+
+int l_Entity_setHeading(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	float heading = static_cast<float>(luaL_checknumber(L, 2));
+	entity->setHeading(heading);
+	return 0;
+}
+
+int l_Entity_getHeading(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	lua_pushnumber(L, entity->getHeading());
+	return 1;
 }
 
 int l_Entity_moveTo(lua_State* L)
@@ -90,6 +130,23 @@ int l_Entity_jump(lua_State* L)
 	}
 	movementComponent->jump();
 	return lua_yield(L, 0);
+}
+
+// static lua functions
+int l_Entity_spawn(lua_State* L)
+{
+	const char* entityTemplateName = luaL_checkstring(L, 1);
+	float x = static_cast<float>(luaL_checknumber(L, 2));
+	float y = static_cast<float>(luaL_checknumber(L, 3));
+	float z = static_cast<float>(luaL_checknumber(L, 4));
+	flat::Vector3 position(x, y, z);
+	float heading = static_cast<float>(luaL_checknumber(L, 5));
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
+	Entity* entity = baseMapState.spawnEntityAtPosition(entityTemplate, position);
+	entity->setHeading(heading);
+	return 1;
 }
 
 // private

@@ -188,7 +188,8 @@ void Map::removeEntity(entity::Entity* entity)
 
 void Map::updateEntities(float currentTime, float elapsedTime)
 {
-	for (entity::Entity* entity : m_entities)
+	std::vector<entity::Entity*> entities = m_entities;
+	for (entity::Entity* entity : entities)
 	{
 		entity->update(currentTime, elapsedTime);
 	}

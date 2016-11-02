@@ -14,10 +14,18 @@ namespace lua
 int open(lua_State* L);
 
 int l_Entity_getPosition(lua_State* L);
+int l_Entity_setPosition(lua_State* L);
+
+int l_Entity_getHeading(lua_State* L);
+int l_Entity_setHeading(lua_State* L);
+
 int l_Entity_moveTo(lua_State* L);
 int l_Entity_enterState(lua_State* L);
 int l_Entity_playAnimation(lua_State* L);
 int l_Entity_jump(lua_State* L);
+
+// static lua functions
+int l_Entity_spawn(lua_State* L);
 
 // private
 Entity* getEntity(lua_State* L, int index);

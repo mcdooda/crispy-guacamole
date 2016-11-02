@@ -108,6 +108,7 @@ void Entity::onAddedToMap(map::Map* map)
 void Entity::onRemovedFromMap()
 {
 	FLAT_ASSERT(m_map && m_tile);
+	m_tile->removeEntity(this);
 	m_map = nullptr;
 	m_tile = nullptr;
 }

@@ -19,19 +19,7 @@ void GameState::enter(Game& game)
 
 void GameState::execute(Game& game)
 {
-	if (game.input->mouse->isJustPressed(M(LEFT)))
-	{
-		flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
-		map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
-		if (clickedTile)
-		{
-			for (entity::Entity* entity : m_entities)
-			{
-				entity->addPointOnPath(clickedTilePosition);
-			}
-		}
-	}
-	
+	despawnEntities();
 	flat::time::Time* time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
 	

@@ -170,6 +170,37 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const 
 	return entity;
 }
 
+void BaseMapState::markEntityForDelete(entity::Entity* entity)
+{
+	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) != m_entities.end());
+	std::vector<entity::Entity*>::iterator it = std::find(m_markedForDeleteEntities.begin(), m_markedForDeleteEntities.end(), entity);
+	FLAT_ASSERT(it == m_markedForDeleteEntities.end());
+	if (it == m_markedForDeleteEntities.end())
+	{
+		m_markedForDeleteEntities.push_back(entity);
+	}
+}
+
+void BaseMapState::despawnEntity(entity::Entity* entity)
+{
+	m_map.removeEntity(entity);
+	std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
+	if (it != m_entities.end())
+	{
+		m_entities.erase(it);
+	}
+	m_entityPool.destroyEntity(entity);
+}
+
+void BaseMapState::despawnEntities()
+{
+	for (entity::Entity* entity : m_markedForDeleteEntities)
+	{
+		despawnEntity(entity);
+	}
+	m_markedForDeleteEntities.clear();
+}
+
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);

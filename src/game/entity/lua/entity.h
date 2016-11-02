@@ -13,6 +13,8 @@ namespace lua
 
 int open(lua_State* L);
 
+int l_Entity_despawn(lua_State* L);
+
 int l_Entity_getPosition(lua_State* L);
 int l_Entity_setPosition(lua_State* L);
 

@@ -22,6 +22,8 @@ int open(lua_State* L)
 	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
+		{"despawn",       l_Entity_despawn},
+
 		{"setPosition",   l_Entity_setPosition},
 		{"getPosition",   l_Entity_getPosition},
 
@@ -47,6 +49,15 @@ int open(lua_State* L)
 
 	lua_pop(L, 1);
 	
+	return 0;
+}
+
+int l_Entity_despawn(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	baseMapState.markEntityForDelete(entity);
 	return 0;
 }
 

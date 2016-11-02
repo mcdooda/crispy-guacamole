@@ -51,6 +51,9 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		const entity::component::ComponentRegistry& getComponentRegistry() const { return m_componentRegistry; }
 
 		entity::Entity* spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position);
+		void markEntityForDelete(entity::Entity* entity);
+		void despawnEntity(entity::Entity* entity);
+		void despawnEntities();
 		
 	protected:
 		void update(game::Game& game);
@@ -94,6 +97,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		entity::EntityPool m_entityPool;
 
 		std::vector<entity::Entity*> m_entities;
+		std::vector<entity::Entity*> m_markedForDeleteEntities;
 		
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;

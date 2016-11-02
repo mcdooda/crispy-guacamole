@@ -91,6 +91,7 @@ bool MovementComponent::followsPath() const
 
 void MovementComponent::addPointOnPath(const flat::Vector2& point)
 {
+	FLAT_ASSERT(isEnabled());
 	bool startMovement = false;
 	flat::Vector2 startingPoint;
 	if (m_path.empty())

@@ -49,7 +49,13 @@ void ProjectileComponent::collided(Entity* collidedEntity)
 		collidedCallback.push(L);
 		lua::pushEntity(L, m_owner);
 		lua::pushEntity(L, collidedEntity);
-		lua_call(L, 2, 0);
+		lua_call(L, 2, 1);
+		bool keepEnabled = lua_toboolean(L, -1) == 1;
+		if (!keepEnabled)
+		{
+			disable();
+		}
+		lua_pop(L, 1);
 	}
 }
 

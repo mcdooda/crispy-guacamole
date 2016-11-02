@@ -11,7 +11,8 @@ namespace component
 {
 
 Component::Component() :
-	m_owner(nullptr)
+	m_owner(nullptr),
+	m_enabled(true)
 {
 
 }

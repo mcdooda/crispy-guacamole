@@ -36,9 +36,18 @@ class Component : public flat::util::Convertible<Component>
 		static ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
 
 		const EntityTemplate& getEntityTemplate() const;
+
+		inline bool isEnabled() const { return m_enabled; }
+
+	protected:
+		inline void enable() { m_enabled = true; }
+		inline void disable() { m_enabled = false; }
 		
 	protected:
 		Entity* m_owner;
+
+	private:
+		bool m_enabled;
 };
 
 template <class ComponentTemplateType>

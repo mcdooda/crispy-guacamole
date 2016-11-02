@@ -116,7 +116,10 @@ void Entity::update(float currentTime, float elapsedTime)
 {
 	for (component::Component* component : m_components)
 	{
-		component->update(currentTime, elapsedTime);
+		if (component->isEnabled())
+		{
+			component->update(currentTime, elapsedTime);
+		}
 	}
 }
 
@@ -124,7 +127,7 @@ bool Entity::isBusy() const
 {
 	for (component::Component* component : m_components)
 	{
-		if (component->isBusy())
+		if (component->isEnabled() && component->isBusy())
 			return true;
 	}
 	

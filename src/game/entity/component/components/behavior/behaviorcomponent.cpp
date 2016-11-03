@@ -30,7 +30,7 @@ void BehaviorComponent::update(float currentTime, float elapsedTime)
 		const char* entityName = m_owner->getEntityTemplate()->getName().c_str();
 		const char* stateName = m_behaviorRuntime.getCurrentStateName().c_str();
 	)
-	FLAT_ASSERT_MSG(m_owner->isBusy(), "Behavior warning: %s still idling after %d behavior ticks in state %s", entityName, maxTicks, stateName);
+	//FLAT_ASSERT_MSG(m_owner->isBusy(), "Behavior warning: %s still idling after %d behavior ticks in state %s", entityName, maxTicks, stateName);
 }
 
 void BehaviorComponent::enterState(const char* stateName)

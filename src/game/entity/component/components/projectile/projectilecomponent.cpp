@@ -19,7 +19,7 @@ void ProjectileComponent::init()
 
 	m_speed.x = getTemplate()->getSpeed();
 	m_speed.y = 0.f;
-	m_speed.z = 1.f;
+	m_speed.z = 4.f;
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)

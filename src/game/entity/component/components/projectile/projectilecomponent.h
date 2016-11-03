@@ -33,6 +33,8 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 	private:
 		void headingChanged(float heading);
 		void collided(Entity* collidedEntity);
+
+		inline float getSpeedXY() const { return std::sqrt(m_speed.x * m_speed.x + m_speed.y * m_speed.y); }
 		
 	private:
 		flat::Vector3 m_speed;

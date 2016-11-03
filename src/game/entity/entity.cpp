@@ -76,10 +76,9 @@ void Entity::setZ(float z)
 void Entity::setHeading(float heading)
 {
 	// keep heading in [0, 2pi) range
-	const float pi2 = static_cast<float>(M_PI * 2.f);
-	heading = fmodf(heading, pi2);
+	heading = fmodf(heading, flat::PI2);
 	if (heading < 0.f)
-		heading += pi2;
+		heading += flat::PI2;
 	
 	m_heading = heading;
 	headingChanged(m_heading);
@@ -87,12 +86,13 @@ void Entity::setHeading(float heading)
 
 void Entity::setElevation(float elevation)
 {
-	// TODO: error outside of [-pi, pi]
-	// keep heading in [0, 2pi) range
-	const float pi2 = static_cast<float>(M_PI * 2.f);
-	elevation = fmodf(elevation, pi2);
-	if (elevation < 0.f)
-		elevation += pi2;
+	// keep elevation in [-pi, pi) range
+	elevation = fmodf(elevation, flat::PI2);
+	if (elevation < -flat::PI)
+		elevation += flat::PI2;
+
+	else if (elevation > flat::PI)
+		elevation -= flat::PI2;
 
 	m_elevation = elevation;
 	elevationChanged(m_elevation);

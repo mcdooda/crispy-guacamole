@@ -20,6 +20,7 @@ void TextureComponent::init()
 	m_sprite.setOrigin(textureComponentTemplate->getOrigin());
 
 	m_owner->headingChanged.on(this, &TextureComponent::headingChanged);
+	m_owner->elevationChanged.on(this, &TextureComponent::elevationChanged);
 	m_owner->positionChanged.on(this, &TextureComponent::positionChanged);
 }
 
@@ -44,22 +45,40 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 		m_positionChanged = false;
 	}
 
-	if (m_headingChanged)
+	if (m_headingChanged || m_elevationChanged)
 	{
 		const float heading = m_owner->getHeading();
-		FLAT_ASSERT(0 <= heading && heading < M_PI * 2.f);
+		FLAT_ASSERT(0.f <= heading && heading < flat::PI2);
+		const float elevation = m_owner->getElevation();
+		FLAT_ASSERT(-flat::PI <= elevation && elevation < flat::PI);
 
-		// TODO: use map axes instead of the hardcoded y / 2
-		const float h = -std::atan2f(std::sin(heading - flat::PI * (3.f / 4.f)) / 2.f, std::cos(heading - flat::PI * (3.f / 4.f)));
+		flat::Vector3 direction(std::cos(heading), std::sin(heading), std::sin(elevation));
+
+		const map::Map* map = m_owner->getMap();
+		FLAT_ASSERT(map != nullptr);
+
+		const flat::Vector2& xAxis = map->getXAxis();
+		const flat::Vector2& yAxis = map->getYAxis();
+		const flat::Vector2& zAxis = map->getZAxis();
+
+		flat::Vector2 direction2d = xAxis * direction.x + yAxis * direction.y + zAxis * direction.z;
+
+		const float h = std::atan2f(direction2d.y, direction2d.x);
 		m_sprite.setRotationZ(h);
 
 		m_headingChanged = false;
+		m_elevationChanged = false;
 	}
 }
 
 void TextureComponent::headingChanged(float heading)
 {
 	m_headingChanged = true;
+}
+
+void TextureComponent::elevationChanged(float elevation)
+{
+	m_elevationChanged = true;
 }
 
 void TextureComponent::positionChanged(const flat::Vector3 & position)

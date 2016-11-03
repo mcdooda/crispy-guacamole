@@ -27,12 +27,14 @@ class TextureComponent : public ComponentImpl<TextureComponentTemplate>
 
 	private:
 		void headingChanged(float heading);
+		void elevationChanged(float elevation);
 		void positionChanged(const flat::Vector3& position);
 
 	private:
 		flat::render::Sprite m_sprite;
 		bool m_positionChanged : 1;
 		bool m_headingChanged : 1;
+		bool m_elevationChanged : 1;
 };
 
 } // texture

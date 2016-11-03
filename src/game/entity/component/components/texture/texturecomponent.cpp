@@ -62,9 +62,7 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 		const flat::Vector2& zAxis = map->getZAxis();
 
 		flat::Vector2 direction2d = xAxis * direction.x + yAxis * direction.y + zAxis * direction.z;
-
-		const float h = std::atan2f(direction2d.y, direction2d.x);
-		m_sprite.setRotationZ(h);
+		m_sprite.setRotationZ(flat::vector2_angle(direction2d));
 
 		m_headingChanged = false;
 		m_elevationChanged = false;

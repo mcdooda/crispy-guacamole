@@ -30,6 +30,9 @@ int open(lua_State* L)
 		{"setHeading",    l_Entity_setHeading},
 		{"getHeading",    l_Entity_getHeading},
 
+		{"setElevation",  l_Entity_setElevation},
+		{"getElevation",  l_Entity_getElevation},
+
 		{"moveTo",        l_Entity_moveTo},
 		{"enterState",    l_Entity_enterState},
 		{"playAnimation", l_Entity_playAnimation},
@@ -94,6 +97,21 @@ int l_Entity_getHeading(lua_State* L)
 {
 	Entity* entity = getEntity(L, 1);
 	lua_pushnumber(L, entity->getHeading());
+	return 1;
+}
+
+int l_Entity_setElevation(lua_State * L)
+{
+	Entity* entity = getEntity(L, 1);
+	float elevation = static_cast<float>(luaL_checknumber(L, 2));
+	entity->setElevation(elevation);
+	return 0;
+}
+
+int l_Entity_getElevation(lua_State * L)
+{
+	Entity* entity = getEntity(L, 1);
+	lua_pushnumber(L, entity->getElevation());
 	return 1;
 }
 

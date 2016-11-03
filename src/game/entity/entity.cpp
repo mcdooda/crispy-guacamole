@@ -17,6 +17,7 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate) :
 	m_movementComponent(nullptr),
 	m_spriteComponent(nullptr),
 	m_heading(0.f),
+	m_elevation(0.f),
 	m_map(nullptr),
 	m_tile(nullptr),
 	m_template(entityTemplate)
@@ -84,6 +85,19 @@ void Entity::setHeading(float heading)
 	headingChanged(m_heading);
 }
 
+void Entity::setElevation(float elevation)
+{
+	// TODO: error outside of [-pi, pi]
+	// keep heading in [0, 2pi) range
+	const float pi2 = static_cast<float>(M_PI * 2.f);
+	elevation = fmodf(elevation, pi2);
+	if (elevation < 0.f)
+		elevation += pi2;
+
+	m_elevation = elevation;
+	elevationChanged(m_elevation);
+}
+
 const flat::render::Sprite& Entity::getSprite() const
 {
 	FLAT_ASSERT(m_spriteComponent != nullptr || m_textureComponent != nullptr);
@@ -104,6 +118,7 @@ void Entity::onAddedToMap(map::Map* map)
 	addedToMap(map);
 	positionChanged(m_position);
 	headingChanged(m_heading);
+	elevationChanged(m_elevation);
 }
 
 void Entity::onRemovedFromMap()

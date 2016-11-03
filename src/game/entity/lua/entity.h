@@ -15,11 +15,14 @@ int open(lua_State* L);
 
 int l_Entity_despawn(lua_State* L);
 
-int l_Entity_getPosition(lua_State* L);
 int l_Entity_setPosition(lua_State* L);
+int l_Entity_getPosition(lua_State* L);
 
-int l_Entity_getHeading(lua_State* L);
 int l_Entity_setHeading(lua_State* L);
+int l_Entity_getHeading(lua_State* L);
+
+int l_Entity_setElevation(lua_State* L);
+int l_Entity_getElevation(lua_State* L);
 
 int l_Entity_moveTo(lua_State* L);
 int l_Entity_enterState(lua_State* L);

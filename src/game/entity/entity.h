@@ -41,6 +41,9 @@ class Entity final : public map::MapObject
 		
 		void setHeading(float heading);
 		inline float getHeading() const { return m_heading; }
+
+		void setElevation(float elevation);
+		inline float getElevation() const { return m_elevation; }
 		
 		const flat::render::Sprite& getSprite() const override;
 		
@@ -76,6 +79,7 @@ class Entity final : public map::MapObject
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;
+		flat::Slot<float> elevationChanged;
 		flat::Slot<map::Map*> addedToMap;
 		
 	protected:
@@ -91,6 +95,7 @@ class Entity final : public map::MapObject
 		
 		flat::Vector3 m_position;
 		float m_heading;
+		float m_elevation;
 		
 		map::Map* m_map;
 		map::Tile* m_tile;

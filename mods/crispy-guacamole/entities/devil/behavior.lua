@@ -5,9 +5,9 @@ function states:init(devil)
 end
 
 function states:idle(devil)
+	devil:jump()
 	local r = math.random(-math.pi, math.pi)
 	devil:setHeading(r)
-	devil:jump()
 	local x, y, z = devil:getPosition()
 	local heading = devil:getHeading()
 	local radius = 0.25 + 0.1 + 0.01

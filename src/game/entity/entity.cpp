@@ -103,6 +103,7 @@ void Entity::onAddedToMap(map::Map* map)
 	m_tile->addEntity(this);
 	addedToMap(map);
 	positionChanged(m_position);
+	headingChanged(m_heading);
 }
 
 void Entity::onRemovedFromMap()

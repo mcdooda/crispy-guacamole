@@ -1,5 +1,5 @@
 return {
-	weight = 5,
+	weight = 10,
 	speed = 5,
 	collidedCallback = function(projectile, collidedEntity)
 		--print('Collided at ', projectile:getPosition())

@@ -7,6 +7,10 @@
 
 namespace game
 {
+namespace map
+{
+class Map;
+}
 namespace entity
 {
 class Entity;
@@ -27,6 +31,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		bool isBusy() const override { return true; }
 
 	private:
+		void headingChanged(float heading);
 		void collided(Entity* collidedEntity);
 		
 	private:

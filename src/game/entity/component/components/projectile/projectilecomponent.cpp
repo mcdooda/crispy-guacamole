@@ -15,11 +15,7 @@ namespace projectile
 
 void ProjectileComponent::init()
 {
-	const float speed = getTemplate()->getSpeed();
-	const float heading = m_owner->getHeading();
-	m_speed.x = std::cos(heading) * speed;
-	m_speed.y = std::sin(heading) * speed;
-	m_speed.z = 1.f;
+	m_owner->headingChanged.on(this, &ProjectileComponent::headingChanged);
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
@@ -39,8 +35,19 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	m_owner->setPosition(newPosition);
 }
 
+void ProjectileComponent::headingChanged(float heading)
+{
+	const float speed = getTemplate()->getSpeed();
+	m_speed.x = std::cos(heading) * speed;
+	m_speed.y = std::sin(heading) * speed;
+	m_speed.z = 1.f;
+}
+
 void ProjectileComponent::collided(Entity* collidedEntity)
 {
+	if (!isEnabled())
+		return;
+
 	const flat::Vector3& position = m_owner->getPosition();
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& collidedCallback = getTemplate()->getCollidedCallback();
 

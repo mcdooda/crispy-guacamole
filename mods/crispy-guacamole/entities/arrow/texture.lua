@@ -1,3 +1,3 @@
 return {
-	origin = {10, 2.5}
+	origin = {9, 2.5}
 }

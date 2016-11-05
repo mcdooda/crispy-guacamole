@@ -81,7 +81,10 @@ void CollisionComponent::separateFromNearbyEntities()
 			}
 		}
 	}
-	m_owner->setPosition(newPosition);
+	if (newPosition != position)
+	{
+		m_owner->setPosition(newPosition);
+	}
 }
 
 void CollisionComponent::separateFromAdjacentTiles()

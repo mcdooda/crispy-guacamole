@@ -26,6 +26,8 @@ int open(lua_State* L)
 
 		{"despawn",         l_Entity_despawn},
 
+		{"getExtraData",    l_Entity_getExtraData},
+
 		{"setPosition",     l_Entity_setPosition},
 		{"getPosition",     l_Entity_getPosition},
 
@@ -71,6 +73,22 @@ int l_Entity_despawn(lua_State* L)
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	baseMapState.markEntityForDelete(entity);
 	return 0;
+}
+
+int l_Entity_getExtraData(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	flat::lua::SharedLuaReference<LUA_TTABLE>& extraData = entity->getExtraData();
+	if (!extraData)
+	{
+		lua_createtable(L, 0, 1);
+		extraData.set(L, -1);
+	}
+	else
+	{
+		extraData.push(L);
+	}
+	return 1;
 }
 
 int l_Entity_setPosition(lua_State* L)

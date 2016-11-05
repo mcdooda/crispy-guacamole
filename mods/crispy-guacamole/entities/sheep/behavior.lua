@@ -50,18 +50,25 @@ function states:wander(sheep)
 end
 
 function states:flee(sheep)
+	local data = sheep:getExtraData()
+	local fleeTarget = data.fleeTarget
+	print('fleeing ' .. fleeTarget:getTemplateName())
 	local endFleeTime = Time.getTime() + 5
 	while Time.getTime() < endFleeTime do
 		local x, y = sheep:getPosition()
-		local rx = x + (random() * 5 - 5) * 10
-		local ry = y + (random() * 5 - 5) * 10
+		local fx, fy = fleeTarget:getPosition()
+		local dx, dy = x - fx, y - fy
+		local rx, ry = x + dx, y + dy
 		sheep:moveTo(rx, ry)
 	end
+	sheep:enterState 'wander'
 end
 
 function states:onEntityEnteredVisionRange(sheep, entity)
 	local isHostile = entity:getTemplateName() ~= 'sheep'
 	if isHostile then
+		local data = sheep:getExtraData()
+		data.fleeTarget = entity
 		return 'flee'
 	end
 end

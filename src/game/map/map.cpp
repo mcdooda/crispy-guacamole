@@ -186,6 +186,32 @@ void Map::removeEntity(entity::Entity* entity)
 	entity->onRemovedFromMap();
 }
 
+void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const
+{
+	const int tileMinX = static_cast<int>(std::round(center2d.x - range));
+	const int tileMinY = static_cast<int>(std::round(center2d.y - range));
+	const int tileMaxX = static_cast<int>(std::round(center2d.x + range));
+	const int tileMaxY = static_cast<int>(std::round(center2d.y + range));
+	const float range2 = range * range;
+	for (int x = tileMinX; x <= tileMaxX; ++x)
+	{
+		for (int y = tileMinY; y <= tileMaxY; ++y)
+		{
+			if (const map::Tile* tile = getTileIfWalkable(x, y))
+			{
+				for (entity::Entity* entity : tile->getEntities())
+				{
+					flat::Vector2 entityPosition2d(entity->getPosition());
+					if (flat::length2(center2d - entityPosition2d) <= range2)
+					{
+						func(entity);
+					}
+				}
+			}
+		}
+	}
+}
+
 void Map::updateEntities(float currentTime, float elapsedTime)
 {
 	std::vector<entity::Entity*> entities = m_entities;

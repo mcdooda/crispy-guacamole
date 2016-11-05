@@ -72,6 +72,8 @@ class Map final
 
 		const std::vector<entity::Entity*>& getEntities() const { return m_entities; }
 		std::vector<entity::Entity*>& getEntities() { return m_entities; }
+
+		void eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const;
 		
 		void updateEntities(float currentTime, float elapsedTime);
 		

@@ -38,6 +38,7 @@ void CollisionComponent::separateFromNearbyEntities()
 	const int tileMaxY = static_cast<int>(std::round(position.y + radius + maxEntityRadius));
 	const map::Map* map = m_owner->getMap();
 	flat::Vector3 newPosition = position;
+	// we can't use Map::eachEntityInRange here because we make changes to Tile::m_entities while iterating it
 	for (int x = tileMinX; x <= tileMaxX; ++x)
 	{
 		for (int y = tileMinY; y <= tileMaxY; ++y)
@@ -45,7 +46,7 @@ void CollisionComponent::separateFromNearbyEntities()
 			const map::Tile* tile = map->getTileIfWalkable(x, y);
 			if (tile)
 			{
-				// we actually need to copy this as it is iterated and modified at the same type
+				// we actually need to copy this as it is iterated and modified at the same time
 				const std::vector<Entity*> neighbors = tile->getEntities();
 				for (Entity* neighbor : neighbors)
 				{

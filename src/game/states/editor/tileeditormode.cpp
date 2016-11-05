@@ -101,6 +101,10 @@ void TileEditorMode::applyBrushSecondaryEffect(bool justPressed) const
 			if (random <= effect)
 			{
 				tile->setExists(false);
+				for (entity::Entity* entity : tile->getEntities())
+				{
+					getEditorState().markEntityForDelete(entity);
+				}
 			}
 		});
 	}

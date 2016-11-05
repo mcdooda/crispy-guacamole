@@ -3,7 +3,7 @@ require 'data/scripts/dumpenv' ()
 local dump = require 'data/scripts/dump'
 
 local ModData = require 'data/editor/scripts/moddata'
-dump(ModData)
+--dump(ModData)
 
 local Slider = require 'data/scripts/ui/slider'
 

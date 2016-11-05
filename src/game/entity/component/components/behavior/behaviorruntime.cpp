@@ -3,7 +3,6 @@
 #include "behaviorcomponent.h"
 #include "../../../entity.h"
 #include "../../../entitytemplate.h"
-#include "../../../lua/entity.h"
 
 namespace game
 {

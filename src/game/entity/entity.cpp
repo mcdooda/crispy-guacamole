@@ -157,6 +157,11 @@ void Entity::addPointOnPath(const flat::Vector2& point)
 	m_movementComponent->addPointOnPath(point);
 }
 
+const std::string& Entity::getTemplateName() const
+{
+	return m_template->getName();
+}
+
 map::Tile* Entity::getTileFromPosition()
 {
 	FLAT_ASSERT(m_map != nullptr);

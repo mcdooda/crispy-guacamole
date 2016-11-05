@@ -31,6 +31,8 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		
 	private:
 		void addedToMap(map::Map* map);
+		void entityEnteredVisionRange(entity::Entity* entity);
+		void entityLeftVisionRange(entity::Entity* entity);
 		
 	private:
 		BehaviorRuntime m_behaviorRuntime;

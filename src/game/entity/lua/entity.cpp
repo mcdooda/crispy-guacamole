@@ -22,21 +22,23 @@ int open(lua_State* L)
 	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
-		{"despawn",       l_Entity_despawn},
+		{"getTemplateName", l_Entity_getTemplateName},
 
-		{"setPosition",   l_Entity_setPosition},
-		{"getPosition",   l_Entity_getPosition},
+		{"despawn",         l_Entity_despawn},
 
-		{"setHeading",    l_Entity_setHeading},
-		{"getHeading",    l_Entity_getHeading},
+		{"setPosition",     l_Entity_setPosition},
+		{"getPosition",     l_Entity_getPosition},
 
-		{"setElevation",  l_Entity_setElevation},
-		{"getElevation",  l_Entity_getElevation},
+		{"setHeading",      l_Entity_setHeading},
+		{"getHeading",      l_Entity_getHeading},
 
-		{"moveTo",        l_Entity_moveTo},
-		{"enterState",    l_Entity_enterState},
-		{"playAnimation", l_Entity_playAnimation},
-		{"jump",          l_Entity_jump},
+		{"setElevation",    l_Entity_setElevation},
+		{"getElevation",    l_Entity_getElevation},
+
+		{"moveTo",          l_Entity_moveTo},
+		{"enterState",      l_Entity_enterState},
+		{"playAnimation",   l_Entity_playAnimation},
+		{"jump",            l_Entity_jump},
 		
 		{nullptr, nullptr}
 	};
@@ -53,6 +55,13 @@ int open(lua_State* L)
 	lua_pop(L, 1);
 	
 	return 0;
+}
+
+int l_Entity_getTemplateName(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	lua_pushstring(L, entity->getTemplateName().c_str());
+	return 1;
 }
 
 int l_Entity_despawn(lua_State* L)

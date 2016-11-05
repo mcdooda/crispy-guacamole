@@ -75,6 +75,8 @@ class Entity final : public map::MapObject
 
 		inline const std::vector<component::Component*>& getComponents() const { return m_components; }
 		inline void removeAllComponents() { m_components.clear(); }
+
+		const std::string& getTemplateName() const;
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;

@@ -11,6 +11,7 @@ local function sleep(duration)
 end
 
 local states = {}
+local inputs = {}
 
 function states:init(sheep)
 	sheep:enterState 'wander'
@@ -20,6 +21,7 @@ end
 function states:idle(sheep)
 	sheep:jump()
 end
+
 function states:wander(sheep)
 	local x, y = sheep:getPosition()
 	while true do
@@ -44,6 +46,23 @@ function states:wander(sheep)
 				sheep:playAnimation 'standup'
 			end
 		end
+	end
+end
+
+function states:flee(sheep)
+	local endFleeTime = Time.getTime() + 5
+	while Time.getTime() < endFleeTime do
+		local x, y = sheep:getPosition()
+		local rx = x + (random() * 5 - 5) * 10
+		local ry = y + (random() * 5 - 5) * 10
+		sheep:moveTo(rx, ry)
+	end
+end
+
+function states:onEntityEnteredVisionRange(sheep, entity)
+	local isHostile = entity:getTemplateName() ~= 'sheep'
+	if isHostile then
+		return 'flee'
 	end
 end
 

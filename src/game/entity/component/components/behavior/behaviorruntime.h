@@ -3,6 +3,7 @@
 
 #include <flat.h>
 #include <memory>
+#include "../../../lua/entity.h"
 
 namespace game
 {
@@ -26,6 +27,13 @@ class BehaviorRuntime final
 		inline void setEntity(Entity* entity) { m_entity = entity; }
 		
 		void enterState(const char* stateName);
+
+		template <class EventType, class... T>
+		void handleEvent(T... params);
+
+		template <class EventType>
+		bool isEventHandled();
+
 		void updateCurrentState();
 		void update();
 
@@ -36,9 +44,59 @@ class BehaviorRuntime final
 		
 	private:
 		Entity* m_entity;
-		int m_coroutineRef;
+		int m_coroutineRef; // TODO: replace by SharedLuaReference
 		FLAT_DEBUG_ONLY(std::string m_currentStateName;)
 };
+
+template <class EventType, class... T>
+void BehaviorRuntime::handleEvent(T... params)
+{
+	const Behavior& behavior = getBehavior();
+	lua_State* L = behavior.getLuaState();
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+	// states table
+	behavior.pushStates(L);
+
+	//function
+	lua_getfield(L, -1, EventType::getMethodName());
+	luaL_checktype(L, -1, LUA_TFUNCTION);
+
+	// states table
+	lua_pushvalue(L, -2);
+
+	lua::pushEntity(L, m_entity);
+	int numParams = EventType::push(L, params...);
+
+	lua_call(L, numParams + 2, 1);
+
+	if (!lua_isnil(L, -1))
+	{
+		const char* stateName = luaL_checkstring(L, -1);
+		enterState(stateName);
+	}
+
+	lua_pop(L, 2);
+}
+
+template<class EventType>
+inline bool component::behavior::BehaviorRuntime::isEventHandled()
+{
+	const Behavior& behavior = getBehavior();
+	lua_State* L = behavior.getLuaState();
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+	// states table
+	behavior.pushStates(L);
+
+	//function
+	lua_getfield(L, -1, EventType::getMethodName());
+	bool eventHandled = lua_isfunction(L, -1);
+
+	lua_pop(L, 2);
+
+	return eventHandled;
+}
 
 } // behavior
 } // component

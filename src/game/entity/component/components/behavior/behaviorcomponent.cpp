@@ -1,8 +1,10 @@
 #include "behaviorcomponent.h"
 #include "behaviorcomponenttemplate.h"
+#include "behaviorevent.h"
 #include "../../componenttype.h"
 #include "../../../entity.h"
 #include "../../../entitytemplate.h"
+#include "../detection/detectioncomponent.h"
 
 namespace game
 {
@@ -17,6 +19,18 @@ void BehaviorComponent::init()
 {
 	m_behaviorRuntime.setEntity(m_owner);
 	m_owner->addedToMap.on(this, &BehaviorComponent::addedToMap);
+
+	if (detection::DetectionComponent* detectionComponent = m_owner->getComponent<detection::DetectionComponent>())
+	{
+		if (m_behaviorRuntime.isEventHandled<EntityEnteredVisionRangeBehaviorEvent>())
+		{
+			detectionComponent->entityEnteredVisionRange.on(this, &BehaviorComponent::entityEnteredVisionRange);
+		}
+		if (m_behaviorRuntime.isEventHandled<EntityLeftVisionRangeBehaviorEvent>())
+		{
+			detectionComponent->entityLeftVisionRange.on(this, &BehaviorComponent::entityLeftVisionRange);
+		}
+	}
 }
 
 void BehaviorComponent::update(float currentTime, float elapsedTime)
@@ -41,6 +55,16 @@ void BehaviorComponent::enterState(const char* stateName)
 void BehaviorComponent::addedToMap(map::Map* map)
 {
 	enterState("init");
+}
+
+void BehaviorComponent::entityEnteredVisionRange(entity::Entity* entity)
+{
+	m_behaviorRuntime.handleEvent<EntityEnteredVisionRangeBehaviorEvent>(entity);
+}
+
+void BehaviorComponent::entityLeftVisionRange(entity::Entity* entity)
+{
+	m_behaviorRuntime.handleEvent<EntityLeftVisionRangeBehaviorEvent>(entity);
 }
 
 } // behavior

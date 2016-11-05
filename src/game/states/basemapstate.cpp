@@ -101,6 +101,8 @@ void BaseMapState::exit(Game& game)
 	m_map.removeAllEntities();
 
 	flat::sharp::ui::lua::close(m_luaState);
+	m_ui.reset();
+
 	flat::lua::close(m_luaState);
 	m_luaState = nullptr;
 }

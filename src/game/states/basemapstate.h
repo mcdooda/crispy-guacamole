@@ -77,6 +77,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		inline bool isSelecting() { return !m_selectionWidget->getParent().expired(); }
 		bool updateSelectionWidget(Game& game);
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);
+		void clearSelection(Game& game);
 		
 	protected:
 		// lua state

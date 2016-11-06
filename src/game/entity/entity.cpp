@@ -163,6 +163,11 @@ const std::string& Entity::getTemplateName() const
 	return m_template->getName();
 }
 
+bool Entity::canBeSelected() const
+{
+	return m_movementComponent != nullptr; // TODO: find a more generic method
+}
+
 void Entity::setSelected(bool selected)
 {
 	FLAT_ASSERT(selected != m_selected); // we want to avoid triggering slots again if the selected state did not change

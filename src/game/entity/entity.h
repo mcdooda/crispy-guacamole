@@ -80,6 +80,8 @@ class Entity final : public map::MapObject
 
 		const std::string& getTemplateName() const;
 
+		bool canBeSelected() const;
+
 		void setSelected(bool selected);
 		inline bool isSelected() const { return m_selected; }
 		

@@ -419,6 +419,11 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 
 	for (entity::Entity* entity : m_entities) // TODO: optimize this
 	{
+		if (!entity->canBeSelected())
+		{
+			continue;
+		}
+
 		const flat::render::Sprite& sprite = entity->getSprite(); // TODO: discard entities with no sprite
 		const flat::Vector2& spritePosition = sprite.getPosition();
 		if (viewBottomLeft.x <= spritePosition.x && spritePosition.x <= viewTopRight.x
@@ -439,6 +444,15 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 			entity->setSelected(false);
 		}
 	}
+}
+
+void BaseMapState::clearSelection(Game & game)
+{
+	for (entity::Entity* entity : m_selectedEntities)
+	{
+		entity->setSelected(false);
+	}
+	m_selectedEntities.clear();
 }
 
 } // states

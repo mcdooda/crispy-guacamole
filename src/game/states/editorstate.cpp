@@ -74,15 +74,12 @@ void EditorState::applyBrush(Game& game)
 
 	if (!m_ui->isMouseOver() || isSelecting())
 	{
-		if (m_editorMode->canSelectEntities() && updateSelectionWidget(game))
-		{
-			// selected entities are already updated
-		}
-		else
+		if (!m_editorMode->canSelectEntities() || !updateSelectionWidget(game))
 		{
 			const flat::input::Mouse* mouse = input->mouse;
 			if ((!m_editorMode->canSelectEntities() && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))
 			{
+				clearSelection(game);
 				m_editorMode->applyBrushPrimaryEffect(mouse->isJustPressed(M(LEFT)));
 			}
 			else if (mouse->isPressed(M(RIGHT)))

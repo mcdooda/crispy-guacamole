@@ -174,7 +174,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const 
 
 void BaseMapState::markEntityForDelete(entity::Entity* entity)
 {
-	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) != m_entities.end());
+	FLAT_ASSERT_MSG(std::find(m_entities.begin(), m_entities.end(), entity) != m_entities.end(), "Trying to despawn an entity that does not exist");
 	std::vector<entity::Entity*>::iterator it = std::find(m_markedForDeleteEntities.begin(), m_markedForDeleteEntities.end(), entity);
 	if (it == m_markedForDeleteEntities.end())
 	{

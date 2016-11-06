@@ -19,6 +19,7 @@ public:
 	~EntityEditorMode() override;
 
 	void applyBrushPrimaryEffect(bool justPressed) const override;
+	bool canSelectEntities() const override { return true; }
 
 	inline void setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate) { m_entityTemplate = entityTemplate; }
 

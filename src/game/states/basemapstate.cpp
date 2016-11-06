@@ -299,6 +299,11 @@ void BaseMapState::buildUi(game::Game& game)
 	m_ui = widgetFactory.makeRoot();
 	
 	flat::sharp::ui::lua::setRootWidget(m_luaState, m_ui.get());
+
+	// create selection widget
+	m_selectionWidget = widgetFactory.makeFixedSize(flat::Vector2(1.f, 1.f));
+	m_selectionWidget->setPositionPolicy(flat::sharp::ui::Widget::PositionPolicy::BOTTOM_LEFT);
+	m_selectionWidget->setBackgroundColor(flat::video::Color(0.f, 8.f, 0.f, 0.3f));
 }
 
 void BaseMapState::updateUi(game::Game& game)
@@ -336,6 +341,52 @@ void BaseMapState::resetViews(game::Game& game)
 entity::component::ComponentFlags BaseMapState::getComponentsFilter() const
 {
 	return entity::component::AllComponents;
+}
+
+bool BaseMapState::updateSelectionWidget(Game& game)
+{
+	const flat::input::Mouse* mouse = game.input->mouse;
+	const flat::Vector2& mousePosition = mouse->getPosition();
+
+	if (mouse->isJustPressed(M(LEFT)))
+	{
+		m_mouseDownPosition = mousePosition;
+	}
+
+	if (mouse->isPressed(M(LEFT)) && mouse->justMoved())
+	{
+		if (!isSelecting())
+		{
+			// begin selection
+			m_ui->addChild(m_selectionWidget);
+		}
+
+		// update selection bounds
+		flat::Vector2 bottomLeft;
+		bottomLeft.x = std::min(m_mouseDownPosition.x, mousePosition.x);
+		bottomLeft.y = std::min(m_mouseDownPosition.y, mousePosition.y);
+		flat::Vector2 topRight;
+		topRight.x = std::max(m_mouseDownPosition.x, mousePosition.x);
+		topRight.y = std::max(m_mouseDownPosition.y, mousePosition.y);
+		flat::Vector2 size = topRight - bottomLeft;
+
+		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
+		FLAT_ASSERT(selectionWidget != nullptr);
+		selectionWidget->setPosition(bottomLeft);
+		selectionWidget->setSize(size);
+		selectionWidget->setDirty();
+		return true;
+	}
+	else if (mouse->isJustReleased(M(LEFT)))
+	{
+		if (isSelecting())
+		{
+			m_selectionWidget->removeFromParent();
+			return true;
+		}
+	}
+
+	return false;
 }
 
 } // states

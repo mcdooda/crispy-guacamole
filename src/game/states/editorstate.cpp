@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include "editorstate.h"
 #include "editor/tileeditormode.h"
 #include "editor/entityeditormode.h"
@@ -73,14 +74,21 @@ void EditorState::applyBrush(Game& game)
 
 	if (!m_ui->isMouseOver())
 	{
-		const flat::input::Mouse* mouse = input->mouse;
-		if (mouse->isPressed(M(LEFT)))
+		if (m_editorMode->canSelectEntities() && updateSelectionWidget(game))
 		{
-			m_editorMode->applyBrushPrimaryEffect(mouse->isJustPressed(M(LEFT)));
+			// update selected entities
 		}
-		else if (mouse->isPressed(M(RIGHT)))
+		else
 		{
-			m_editorMode->applyBrushSecondaryEffect(mouse->isJustPressed(M(RIGHT)));
+			const flat::input::Mouse* mouse = input->mouse;
+			if ((!m_editorMode->canSelectEntities() && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))
+			{
+				m_editorMode->applyBrushPrimaryEffect(mouse->isJustPressed(M(LEFT)));
+			}
+			else if (mouse->isPressed(M(RIGHT)))
+			{
+				m_editorMode->applyBrushSecondaryEffect(mouse->isJustPressed(M(RIGHT)));
+			}
 		}
 	}
 }

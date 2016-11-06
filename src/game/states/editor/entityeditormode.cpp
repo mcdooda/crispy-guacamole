@@ -21,8 +21,7 @@ EntityEditorMode::~EntityEditorMode()
 
 void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 {
-	if (!justPressed)
-		return;
+	FLAT_ASSERT(!justPressed); // as selection is enabled, entities are spawned where the left click is released
 
 	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
 	flat::Vector2 position = m_brushPosition;

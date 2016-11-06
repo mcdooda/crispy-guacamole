@@ -71,6 +71,9 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		void resetViews(game::Game& game);
 
 		virtual entity::component::ComponentFlags getComponentsFilter() const;
+
+		inline bool isSelecting() { return !m_selectionWidget->getParent().expired(); }
+		bool updateSelectionWidget(Game& game);
 		
 	protected:
 		// lua state
@@ -105,6 +108,9 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		
 		// ui
 		std::shared_ptr<flat::sharp::ui::RootWidget> m_ui;
+
+		flat::Vector2 m_mouseDownPosition;
+		std::shared_ptr<flat::sharp::ui::Widget> m_selectionWidget;
 };
 
 } // states

@@ -31,6 +31,7 @@ public:
 	virtual void applyBrushPrimaryEffect(bool justPressed) const {}
 	virtual void applyBrushSecondaryEffect(bool justPressed) const {}
 	virtual void handleShortcuts() const {}
+	virtual bool canSelectEntities() const { return false; }
 
 	virtual void draw() const {}
 

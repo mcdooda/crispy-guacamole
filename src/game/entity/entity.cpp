@@ -20,7 +20,8 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate) :
 	m_elevation(0.f),
 	m_map(nullptr),
 	m_tile(nullptr),
-	m_template(entityTemplate)
+	m_template(entityTemplate),
+	m_selected(false)
 {
 
 }
@@ -160,6 +161,20 @@ void Entity::addPointOnPath(const flat::Vector2& point)
 const std::string& Entity::getTemplateName() const
 {
 	return m_template->getName();
+}
+
+void Entity::setSelected(bool selected)
+{
+	FLAT_ASSERT(selected != m_selected); // we want to avoid triggering slots again if the selected state did not change
+	m_selected = selected;
+	if (selected)
+	{
+		this->selected();
+	}
+	else
+	{
+		deselected();
+	}
 }
 
 map::Tile* Entity::getTileFromPosition()

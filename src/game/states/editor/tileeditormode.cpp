@@ -119,8 +119,8 @@ void TileEditorMode::handleShortcuts() const
 	map::Map& map = getMap();
 
 	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
-	bool upPressed = keyboard->isPressed(K(W));
-	bool downPressed = keyboard->isPressed(K(S));
+	const bool upPressed = keyboard->isPressed(K(W));
+	const bool downPressed = keyboard->isPressed(K(S));
 	if (upPressed || downPressed)
 	{
 		float displacement = (upPressed ? frameTime : -frameTime) * 10.f;

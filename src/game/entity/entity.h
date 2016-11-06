@@ -79,15 +79,19 @@ class Entity final : public map::MapObject
 		inline flat::lua::SharedLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
 
 		const std::string& getTemplateName() const;
+
+		void setSelected(bool selected);
+		inline bool isSelected() const { return m_selected; }
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;
 		flat::Slot<float> elevationChanged;
 		flat::Slot<map::Map*> addedToMap;
+		flat::Slot<> selected;
+		flat::Slot<> deselected;
 		
 	protected:
-		
 		map::Tile* getTileFromPosition();
 		
 	protected:
@@ -107,6 +111,8 @@ class Entity final : public map::MapObject
 		map::Tile* m_tile;
 		
 		std::shared_ptr<const EntityTemplate> m_template;
+
+		bool m_selected;
 };
 
 template <class ComponentType>

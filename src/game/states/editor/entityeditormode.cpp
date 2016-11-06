@@ -21,8 +21,6 @@ EntityEditorMode::~EntityEditorMode()
 
 void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 {
-	FLAT_ASSERT(!justPressed); // as selection is enabled, entities are spawned where the left click is released
-
 	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
 	flat::Vector2 position = m_brushPosition;
 	// add a little noise to avoid getting entities at the exact same position
@@ -34,6 +32,20 @@ void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 	{
 		flat::Vector3 position(position, tile->getZ());
 		getEditorState().spawnEntityAtPosition(m_entityTemplate, position);
+	}
+}
+
+void EntityEditorMode::handleShortcuts() const
+{
+	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
+	const bool delPressed = keyboard->isJustPressed(K(DELETE));
+	if (delPressed)
+	{
+		states::EditorState& editorState = getEditorState();
+		for (entity::Entity* entity : editorState.getSelectedEntities())
+		{
+			editorState.markEntityForDelete(entity);
+		}
 	}
 }
 

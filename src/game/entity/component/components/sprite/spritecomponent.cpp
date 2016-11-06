@@ -40,6 +40,9 @@ void SpriteComponent::init()
 	m_owner->headingChanged.on(this, &SpriteComponent::headingChanged);
 	m_owner->positionChanged.on(this, &SpriteComponent::positionChanged);
 
+	m_owner->selected.on(this, &SpriteComponent::selected);
+	m_owner->deselected.on(this, &SpriteComponent::deselected);
+
 	if (movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>())
 	{
 		movementComponent->movementStarted.on(this, &SpriteComponent::movementStarted);
@@ -141,6 +144,16 @@ void SpriteComponent::movementStarted()
 void SpriteComponent::movementStopped()
 {
 	m_movementStopped = true;
+}
+
+void SpriteComponent::selected()
+{
+	m_sprite.setColor(flat::video::Color::RED);
+}
+
+void SpriteComponent::deselected()
+{
+	m_sprite.setColor(flat::video::Color::WHITE);
 }
 
 } // sprite

@@ -72,11 +72,11 @@ void EditorState::applyBrush(Game& game)
 		m_editorMode->handleShortcuts();
 	}
 
-	if (!m_ui->isMouseOver())
+	if (!m_ui->isMouseOver() || isSelecting())
 	{
 		if (m_editorMode->canSelectEntities() && updateSelectionWidget(game))
 		{
-			// update selected entities
+			// selected entities are already updated
 		}
 		else
 		{

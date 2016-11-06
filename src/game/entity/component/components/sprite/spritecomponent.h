@@ -34,6 +34,8 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		void positionChanged(const flat::Vector3& position);
 		void movementStarted();
 		void movementStopped();
+		void selected();
+		void deselected();
 		
 	private:
 		flat::render::AnimatedSprite m_sprite;

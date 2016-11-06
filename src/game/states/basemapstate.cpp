@@ -185,10 +185,20 @@ void BaseMapState::markEntityForDelete(entity::Entity* entity)
 void BaseMapState::despawnEntity(entity::Entity* entity)
 {
 	m_map.removeEntity(entity);
-	std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
-	if (it != m_entities.end())
 	{
-		m_entities.erase(it);
+		// remove from entities
+		std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
+		if (it != m_entities.end())
+		{
+			m_entities.erase(it);
+		}
+	}
+	if (entity->isSelected())
+	{
+		// remove from selected entities
+		std::vector<entity::Entity*>::iterator it = std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity);
+		FLAT_ASSERT(it != m_selectedEntities.end());
+		m_selectedEntities.erase(it);
 	}
 	m_entityPool.destroyEntity(entity);
 }
@@ -371,7 +381,6 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		flat::Vector2 size = topRight - bottomLeft;
 
 		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
-		FLAT_ASSERT(selectionWidget != nullptr);
 		selectionWidget->setPosition(bottomLeft);
 		selectionWidget->setSize(size);
 		selectionWidget->setDirty();
@@ -381,12 +390,44 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 	{
 		if (isSelecting())
 		{
-			m_selectionWidget->removeFromParent();
+			flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
+			const flat::Vector2& bottomLeft = selectionWidget->getPosition();
+			flat::Vector2 topRight = bottomLeft + selectionWidget->getSize();
+
+			updateSelectedEntities(game, bottomLeft, topRight);
+
+			selectionWidget->removeFromParent();
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight)
+{
+	const flat::Vector2& windowSize = game.video->window->getSize();
+	const flat::Vector2 viewBottomLeft = m_gameView.getRelativePosition(bottomLeft, windowSize);
+	const flat::Vector2 viewTopRight = m_gameView.getRelativePosition(topRight, windowSize);
+	m_selectedEntities.clear();
+	for (entity::Entity* entity : m_entities) // TODO: optimize this
+	{
+		const flat::render::Sprite& sprite = entity->getSprite(); // TODO: discard entities with no sprite
+		const flat::Vector2& spritePosition = sprite.getPosition();
+		if (viewBottomLeft.x <= spritePosition.x && spritePosition.x <= viewTopRight.x
+			&& viewTopRight.y <= spritePosition.y && spritePosition.y <= viewBottomLeft.y) // y is flipped in the game view
+		{
+			m_selectedEntities.push_back(entity);
+			if (!entity->isSelected())
+			{
+				entity->setSelected(true);
+			}
+		}
+		else if (entity->isSelected())
+		{
+			entity->setSelected(false);
+		}
+	}
 }
 
 } // states

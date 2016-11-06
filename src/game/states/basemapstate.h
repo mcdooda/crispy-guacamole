@@ -54,6 +54,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		void markEntityForDelete(entity::Entity* entity);
 		void despawnEntity(entity::Entity* entity);
 		void despawnEntities();
+
+		inline const std::vector<entity::Entity*>& getSelectedEntities() const { return m_selectedEntities; }
 		
 	protected:
 		void update(game::Game& game);
@@ -74,6 +76,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		inline bool isSelecting() { return !m_selectionWidget->getParent().expired(); }
 		bool updateSelectionWidget(Game& game);
+		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight);
 		
 	protected:
 		// lua state
@@ -101,6 +104,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		std::vector<entity::Entity*> m_entities;
 		std::vector<entity::Entity*> m_markedForDeleteEntities;
+		std::vector<entity::Entity*> m_selectedEntities;
 		
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;

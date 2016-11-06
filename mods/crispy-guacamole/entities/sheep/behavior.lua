@@ -52,7 +52,6 @@ end
 function states:flee(sheep)
 	local data = sheep:getExtraData()
 	local fleeTarget = data.fleeTarget
-	print('fleeing ' .. fleeTarget:getTemplateName())
 	local endFleeTime = Time.getTime() + 5
 	while Time.getTime() < endFleeTime do
 		local x, y = sheep:getPosition()
@@ -68,7 +67,18 @@ function states:onEntityEnteredVisionRange(sheep, entity)
 	local isHostile = entity:getTemplateName() ~= 'sheep'
 	if isHostile then
 		local data = sheep:getExtraData()
-		data.fleeTarget = entity
+		if not data.fleeTarget then
+			data.fleeTarget = entity
+		elseif data.fleeTarget ~= entity then
+			local x, y = sheep:getPosition()
+			local ex, ey = entity:getPosition()
+			local tx, ty = data.fleeTarget:getPosition()
+			local entityDistance2 = (ex - x) * (ex - x) + (ey - y) * (ey - y)
+			local targetDistance2 = (tx - x) * (tx - x) + (ty - y) * (ty - y)
+			if entityDistance2 < targetDistance2 then
+				data.fleeTarget = entity
+			end
+		end
 		return 'flee'
 	end
 end

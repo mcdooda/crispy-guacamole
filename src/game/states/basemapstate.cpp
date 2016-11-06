@@ -356,6 +356,7 @@ entity::component::ComponentFlags BaseMapState::getComponentsFilter() const
 bool BaseMapState::updateSelectionWidget(Game& game)
 {
 	const flat::input::Mouse* mouse = game.input->mouse;
+	const flat::input::Keyboard* keyboard = game.input->keyboard;
 	const flat::Vector2& mousePosition = mouse->getPosition();
 
 	if (mouse->isJustPressed(M(LEFT)))
@@ -394,7 +395,8 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 			const flat::Vector2& bottomLeft = selectionWidget->getPosition();
 			flat::Vector2 topRight = bottomLeft + selectionWidget->getSize();
 
-			updateSelectedEntities(game, bottomLeft, topRight);
+			const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
+			updateSelectedEntities(game, bottomLeft, topRight, shiftPressed);
 
 			selectionWidget->removeFromParent();
 			return true;
@@ -404,12 +406,17 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 	return false;
 }
 
-void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight)
+void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection)
 {
 	const flat::Vector2& windowSize = game.video->window->getSize();
 	const flat::Vector2 viewBottomLeft = m_gameView.getRelativePosition(bottomLeft, windowSize);
 	const flat::Vector2 viewTopRight = m_gameView.getRelativePosition(topRight, windowSize);
-	m_selectedEntities.clear();
+
+	if (!addToSelection)
+	{
+		m_selectedEntities.clear();
+	}
+
 	for (entity::Entity* entity : m_entities) // TODO: optimize this
 	{
 		const flat::render::Sprite& sprite = entity->getSprite(); // TODO: discard entities with no sprite
@@ -417,13 +424,17 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 		if (viewBottomLeft.x <= spritePosition.x && spritePosition.x <= viewTopRight.x
 			&& viewTopRight.y <= spritePosition.y && spritePosition.y <= viewBottomLeft.y) // y is flipped in the game view
 		{
-			m_selectedEntities.push_back(entity);
+			if (!addToSelection || !entity->isSelected())
+			{
+				m_selectedEntities.push_back(entity);
+			}
+
 			if (!entity->isSelected())
 			{
 				entity->setSelected(true);
 			}
 		}
-		else if (entity->isSelected())
+		else if (!addToSelection && entity->isSelected())
 		{
 			entity->setSelected(false);
 		}

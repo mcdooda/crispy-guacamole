@@ -15,9 +15,11 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 3);
 	static const luaL_Reg Map_lib_m[] = {
-		{"getName", l_Map_getName},
-		{"load",    l_Map_load},
-		{"save",    l_Map_save},
+		{"getName",        l_Map_getName},
+		{"load",           l_Map_load},
+		{"save",           l_Map_save},
+
+		{"getNumEntities", l_Map_getNumEntities},
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Map_lib_m, 0);
@@ -50,6 +52,15 @@ int l_Map_save(lua_State* L)
 	states::EditorState& editorState = state->as<states::EditorState>();
 	bool mapSaved = editorState.saveMap(game);
 	lua_pushboolean(L, mapSaved);
+	return 1;
+}
+
+int l_Map_getNumEntities(lua_State* L)
+{
+	Game& game = flat::lua::getGame(L).to<Game>();
+	flat::state::State* state = game.getStateMachine().getState();
+	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
+	lua_pushinteger(L, baseMapState.getMap().getEntities().size());
 	return 1;
 }
 

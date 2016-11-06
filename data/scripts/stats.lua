@@ -1,3 +1,5 @@
+local format = string.format
+
 local root = Widget.getRoot()
 
 -- top right debug info
@@ -16,7 +18,6 @@ do
 		debugContainer:addChild(label)
 		
 		local getFrameRate = Time.getFrameRate
-		local format = string.format
 		local medianNumFrames = 50
 		local medianFps = {}
 		for j = 1, medianNumFrames do
@@ -34,6 +35,17 @@ do
 			displayedFps = displayedFps / medianNumFrames
 			label:setText(format('%.1f fps', displayedFps))
 			i = i + 1
+		end)
+	end
+	
+	-- entity count
+	do
+		local label = Widget.makeText('X entities', unpack(font))
+		label:setMargin(5)
+		debugContainer:addChild(label)
+		
+		Timer.start(0, function()
+			label:setText(format('%d entities', Map.getNumEntities()))
 		end)
 	end
 

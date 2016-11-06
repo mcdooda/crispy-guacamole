@@ -150,6 +150,15 @@ do
 		a:addChild(b)
 	end
 	
+	do
+		local c = Widget.makeFixedSize(32, 32)
+		c:setBackground 'data/editor/interface/widgets/checkbox.png'
+		c:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
+		c:setBackgroundPosition(32, 0)
+		c:setPositionPolicy(Widget.PositionPolicy.CENTER)
+		a:addChild(c)
+	end
+	
 	local w, h = a:getSize()
 	Timer.start(0, function()
 		local x, y = Mouse.getPosition()

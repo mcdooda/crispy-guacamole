@@ -57,7 +57,6 @@ class Entity final : public map::MapObject
 		void addPointOnPath(const flat::Vector2& point);
 		
 		void enterState(const char* stateName);
-		bool playAnimation(const char* animationName, int numLoops = 1);
 
 		void addComponent(component::Component* component);
 		void cacheComponents();

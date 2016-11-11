@@ -26,7 +26,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool isBusy() const override;
 		
 		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
-
+		bool playAnimationByName(const std::string& animationName, int numLoops = 1);
 		bool setMoveAnimationByName(const std::string& moveAnimationName);
 		bool setDefaultMoveAnimation();
 		

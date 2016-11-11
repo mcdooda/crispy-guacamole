@@ -167,10 +167,11 @@ int l_Entity_playAnimation(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	const char* animationName = luaL_checkstring(L, 2);
 	int numLoops = luaL_optint(L, 3, 1);
-	bool plays = entity.playAnimation(animationName, numLoops);
-	if (!plays)
+	component::sprite::SpriteComponent& spriteComponent = getComponent<component::sprite::SpriteComponent>(L, entity);
+	bool animationExists = spriteComponent.playAnimationByName(animationName, numLoops);
+	if (!animationExists)
 	{
-		luaL_error(L, "Animation %s does not exist", animationName);
+		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
 	}
 	return lua_yield(L, 0);
 }
@@ -178,16 +179,12 @@ int l_Entity_playAnimation(lua_State* L)
 int l_Entity_jump(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	component::movement::MovementComponent* movementComponent = entity.getComponent<component::movement::MovementComponent>();
-	if (!movementComponent)
-	{
-		luaL_error(L, "Cannot jump without a movement component");
-	}
-	if (!movementComponent->isTouchingGround())
+	component::movement::MovementComponent& movementComponent = getComponent<component::movement::MovementComponent>(L, entity);
+	if (!movementComponent.isTouchingGround())
 	{
 		luaL_error(L, "Cannot jump midair");
 	}
-	movementComponent->jump();
+	movementComponent.jump();
 	return lua_yield(L, 0);
 }
 
@@ -195,15 +192,11 @@ int l_Entity_setMoveAnimation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* moveAnimationName = luaL_checkstring(L, 2);
-	component::sprite::SpriteComponent* spriteComponent = entity.getComponent<component::sprite::SpriteComponent>();
-	if (!spriteComponent)
-	{
-		luaL_error(L, "Cannot set a move animation without a sprite component");
-	}
-	bool animationExists = spriteComponent->setMoveAnimationByName(moveAnimationName);
+	component::sprite::SpriteComponent& spriteComponent = getComponent<component::sprite::SpriteComponent>(L, entity);
+	bool animationExists = spriteComponent.setMoveAnimationByName(moveAnimationName);
 	if (!animationExists)
 	{
-		luaL_error(L, "Animation %s does not exist", moveAnimationName);
+		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), moveAnimationName);
 	}
 	return 0;
 }
@@ -211,15 +204,11 @@ int l_Entity_setMoveAnimation(lua_State* L)
 int l_Entity_setDefaultMoveAnimation(lua_State * L)
 {
 	Entity& entity = getEntity(L, 1);
-	component::sprite::SpriteComponent* spriteComponent = entity.getComponent<component::sprite::SpriteComponent>();
-	if (!spriteComponent)
-	{
-		luaL_error(L, "Cannot set a move animation without a sprite component");
-	}
-	bool defaultMoveAnimationExists = spriteComponent->setDefaultMoveAnimation();
+	component::sprite::SpriteComponent& spriteComponent = getComponent<component::sprite::SpriteComponent>(L, entity);
+	bool defaultMoveAnimationExists = spriteComponent.setDefaultMoveAnimation();
 	if (!defaultMoveAnimationExists)
 	{
-		luaL_error(L, "Not default move animation");
+		luaL_error(L, "%s has no default move animation", entity.getTemplateName().c_str());
 	}
 	return 0;
 }
@@ -243,6 +232,7 @@ int l_Entity_spawn(lua_State* L)
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
 	Entity* entity = baseMapState.spawnEntityAtPosition(entityTemplate, position);
 	entity->setHeading(heading);
+	pushEntity(L, entity);
 	return 1;
 }
 

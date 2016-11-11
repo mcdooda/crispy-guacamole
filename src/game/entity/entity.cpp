@@ -196,22 +196,6 @@ void Entity::enterState(const char* stateName)
 	m_behaviorComponent->enterState(stateName);
 }
 
-bool Entity::playAnimation(const char* animationName, int numLoops)
-{
-	const EntityTemplate* entityTemplatePtr = m_template.get();
-	FLAT_ASSERT(entityTemplatePtr != nullptr);
-	const component::sprite::SpriteComponentTemplate* spriteComponentTemplate = entityTemplatePtr->getComponentTemplate<component::sprite::SpriteComponent>();
-	FLAT_ASSERT(spriteComponentTemplate != nullptr);
-	const component::sprite::SpriteDescription& spriteDescription = spriteComponentTemplate->getSpriteDescription();
-	if (const component::sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName))
-	{
-		FLAT_ASSERT(m_spriteComponent != nullptr);
-		m_spriteComponent->playAnimation(*animationDescription, numLoops);
-		return true;
-	}
-	return false;
-}
-
 void Entity::addComponent(component::Component* component)
 {
 	FLAT_ASSERT(component != nullptr);

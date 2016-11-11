@@ -64,6 +64,18 @@ void SpriteComponent::playAnimation(const sprite::AnimationDescription& animatio
 	);
 }
 
+bool SpriteComponent::playAnimationByName(const std::string& animationName, int numLoops)
+{
+	const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
+	const AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
+	if (animationDescription)
+	{
+		playAnimation(*animationDescription, numLoops);
+		return true;
+	}
+	return false;
+}
+
 bool SpriteComponent::setMoveAnimationByName(const std::string & moveAnimationName)
 {
 	const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();

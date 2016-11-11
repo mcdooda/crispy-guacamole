@@ -42,6 +42,17 @@ int l_Entity_spawn(lua_State* L);
 Entity& getEntity(lua_State* L, int index);
 void pushEntity(lua_State* L, Entity* entity);
 
+template <class T>
+T& getComponent(lua_State* L, Entity& entity)
+{
+	T* component = entity.getComponent<T>();
+	if (!component)
+	{
+		luaL_error(L, "%s has no %s component", entity.getTemplateName().c_str(), T::getConfigName());
+	}
+	return *component;
+}
+
 } // lua
 } // entity
 } // game

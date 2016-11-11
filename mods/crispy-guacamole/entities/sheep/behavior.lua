@@ -54,8 +54,7 @@ function states:flee(sheep)
 	sheep:setMoveAnimation 'run'
 	local data = sheep:getExtraData()
 	local fleeTarget = data.fleeTarget
-	local endFleeTime = Time.getTime() + 5
-	while Time.getTime() < endFleeTime do
+	while sheep:canSee(fleeTarget) do
 		local x, y = sheep:getPosition()
 		local fx, fy = fleeTarget:getPosition()
 		local dx, dy = x - fx, y - fy

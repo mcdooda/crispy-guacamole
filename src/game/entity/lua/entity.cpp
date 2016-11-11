@@ -2,6 +2,7 @@
 #include "../entity.h"
 #include "../component/components/movement/movementcomponent.h"
 #include "../component/components/sprite/spritecomponent.h"
+#include "../component/components/detection/detectioncomponent.h"
 #include "../../game.h"
 #include "../../states/basemapstate.h"
 
@@ -44,6 +45,7 @@ int open(lua_State* L)
 		{"jump",                    l_Entity_jump},
 		{"setMoveAnimation",        l_Entity_setMoveAnimation},
 		{"setDefaultMoveAnimation", l_Entity_setDefaultMoveAnimation},
+		{"canSee",                  l_Entity_canSee},
 		
 		{nullptr, nullptr}
 	};
@@ -213,9 +215,14 @@ int l_Entity_setDefaultMoveAnimation(lua_State * L)
 	return 0;
 }
 
-int l_Entity_canSee(lua_State * L)
+int l_Entity_canSee(lua_State* L)
 {
-	return 0;
+	Entity& entity = getEntity(L, 1);
+	Entity& target = getEntity(L, 2);
+	component::detection::DetectionComponent& detectionComponent = getComponent<component::detection::DetectionComponent>(L, entity);
+	bool canSee = detectionComponent.isVisible(target);
+	lua_pushboolean(L, canSee);
+	return 1;
 }
 
 // static lua functions

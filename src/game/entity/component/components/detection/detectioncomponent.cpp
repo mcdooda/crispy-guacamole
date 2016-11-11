@@ -51,6 +51,11 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 	});
 }
 
+bool DetectionComponent::isVisible(const entity::Entity& target) const
+{
+	return m_visibleEntities.find(const_cast<entity::Entity*>(&target)) != m_visibleEntities.end();
+}
+
 } // detection
 } // component
 } // entity

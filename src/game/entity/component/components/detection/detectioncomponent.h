@@ -22,6 +22,8 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 
 		void update(float currentTime, float elapsedTime) override;
 
+		bool isVisible(const entity::Entity& target) const;
+
 	public:
 		flat::Slot<entity::Entity*> entityEnteredVisionRange;
 		flat::Slot<entity::Entity*> entityLeftVisionRange;

@@ -23,6 +23,7 @@ function states:idle(sheep)
 end
 
 function states:wander(sheep)
+	sheep:setDefaultMoveAnimation()
 	local x, y = sheep:getPosition()
 	while true do
 
@@ -50,6 +51,7 @@ function states:wander(sheep)
 end
 
 function states:flee(sheep)
+	sheep:setMoveAnimation 'run'
 	local data = sheep:getExtraData()
 	local fleeTarget = data.fleeTarget
 	local endFleeTime = Time.getTime() + 5

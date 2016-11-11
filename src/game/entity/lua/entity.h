@@ -32,6 +32,8 @@ int l_Entity_moveTo(lua_State* L);
 int l_Entity_enterState(lua_State* L);
 int l_Entity_playAnimation(lua_State* L);
 int l_Entity_jump(lua_State* L);
+int l_Entity_setMoveAnimation(lua_State* L);
+int l_Entity_setDefaultMoveAnimation(lua_State* L);
 
 // static lua functions
 int l_Entity_spawn(lua_State* L);

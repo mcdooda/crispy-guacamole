@@ -23,9 +23,10 @@ void SpriteComponent::init()
 	m_owner->setTextureHash(spriteDescription.getAtlas().get()->getHash());
 	m_sprite.setOrigin(spriteDescription.getOrigin());
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
-	if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
+	
+	if (setDefaultMoveAnimation())
 	{
-		playAnimation(*moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
+		playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
 	}
 	else
 	{
@@ -43,10 +44,13 @@ void SpriteComponent::init()
 	m_owner->selected.on(this, &SpriteComponent::selected);
 	m_owner->deselected.on(this, &SpriteComponent::deselected);
 
-	if (movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>())
+	if (m_moveAnimationDescription)
 	{
-		movementComponent->movementStarted.on(this, &SpriteComponent::movementStarted);
-		movementComponent->movementStopped.on(this, &SpriteComponent::movementStopped);
+		if (movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>())
+		{
+			movementComponent->movementStarted.on(this, &SpriteComponent::movementStarted);
+			movementComponent->movementStopped.on(this, &SpriteComponent::movementStopped);
+		}
 	}
 }
 
@@ -58,6 +62,30 @@ void SpriteComponent::playAnimation(const sprite::AnimationDescription& animatio
 		animationDescription.getFrameDuration(),
 		numLoops
 	);
+}
+
+bool SpriteComponent::setMoveAnimationByName(const std::string & moveAnimationName)
+{
+	const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
+	const AnimationDescription* moveAnimationDescription = spriteDescription.getAnimationDescription(moveAnimationName);
+	if (moveAnimationDescription)
+	{
+		m_moveAnimationDescription = moveAnimationDescription;
+		return true;
+	}
+	return false;
+}
+
+bool SpriteComponent::setDefaultMoveAnimation()
+{
+	const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
+	const AnimationDescription* defaultMoveAnimationDescription = spriteDescription.getDefaultMoveAnimationDescription();
+	if (defaultMoveAnimationDescription)
+	{
+		m_moveAnimationDescription = defaultMoveAnimationDescription;
+		return true;
+	}
+	return false;
 }
 
 void SpriteComponent::update(float currentTime, float elapsedTime)
@@ -101,10 +129,9 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 	
 	if (m_movementStarted)
 	{
-		const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
-		if (const sprite::AnimationDescription* moveAnimationDescription = spriteDescription.getMoveAnimationDescription())
+		if (m_moveAnimationDescription)
 		{
-			playAnimation(*moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
+			playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
 		}
 		
 		m_movementStarted = false;

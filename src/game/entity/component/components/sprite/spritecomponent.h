@@ -26,6 +26,9 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool isBusy() const override;
 		
 		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
+
+		bool setMoveAnimationByName(const std::string& moveAnimationName);
+		bool setDefaultMoveAnimation();
 		
 		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
 		
@@ -39,6 +42,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		
 	private:
 		flat::render::AnimatedSprite m_sprite;
+		const sprite::AnimationDescription* m_moveAnimationDescription;
 		bool m_positionChanged : 1;
 		bool m_headingChanged : 1;
 		bool m_movementStarted : 1;

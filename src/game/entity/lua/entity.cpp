@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "../entity.h"
 #include "../component/components/movement/movementcomponent.h"
+#include "../component/components/sprite/spritecomponent.h"
 #include "../../game.h"
 #include "../../states/basemapstate.h"
 
@@ -22,25 +23,27 @@ int open(lua_State* L)
 	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
-		{"getTemplateName", l_Entity_getTemplateName},
+		{"getTemplateName",         l_Entity_getTemplateName},
 
-		{"despawn",         l_Entity_despawn},
+		{"despawn",                 l_Entity_despawn},
 
-		{"getExtraData",    l_Entity_getExtraData},
+		{"getExtraData",            l_Entity_getExtraData},
 
-		{"setPosition",     l_Entity_setPosition},
-		{"getPosition",     l_Entity_getPosition},
+		{"setPosition",             l_Entity_setPosition},
+		{"getPosition",             l_Entity_getPosition},
 
-		{"setHeading",      l_Entity_setHeading},
-		{"getHeading",      l_Entity_getHeading},
+		{"setHeading",              l_Entity_setHeading},
+		{"getHeading",              l_Entity_getHeading},
 
-		{"setElevation",    l_Entity_setElevation},
-		{"getElevation",    l_Entity_getElevation},
+		{"setElevation",            l_Entity_setElevation},
+		{"getElevation",            l_Entity_getElevation},
 
-		{"moveTo",          l_Entity_moveTo},
-		{"enterState",      l_Entity_enterState},
-		{"playAnimation",   l_Entity_playAnimation},
-		{"jump",            l_Entity_jump},
+		{"moveTo",                  l_Entity_moveTo},
+		{"enterState",              l_Entity_enterState},
+		{"playAnimation",           l_Entity_playAnimation},
+		{"jump",                    l_Entity_jump},
+		{"setMoveAnimation",        l_Entity_setMoveAnimation},
+		{"setDefaultMoveAnimation", l_Entity_setDefaultMoveAnimation},
 		
 		{nullptr, nullptr}
 	};
@@ -186,6 +189,39 @@ int l_Entity_jump(lua_State* L)
 	}
 	movementComponent->jump();
 	return lua_yield(L, 0);
+}
+
+int l_Entity_setMoveAnimation(lua_State* L)
+{
+	Entity* entity = getEntity(L, 1);
+	const char* moveAnimationName = luaL_checkstring(L, 2);
+	component::sprite::SpriteComponent* spriteComponent = entity->getComponent<component::sprite::SpriteComponent>();
+	if (!spriteComponent)
+	{
+		luaL_error(L, "Cannot set a move animation without a sprite component");
+	}
+	bool animationExists = spriteComponent->setMoveAnimationByName(moveAnimationName);
+	if (!animationExists)
+	{
+		luaL_error(L, "Animation %s does not exist", moveAnimationName);
+	}
+	return 0;
+}
+
+int l_Entity_setDefaultMoveAnimation(lua_State * L)
+{
+	Entity* entity = getEntity(L, 1);
+	component::sprite::SpriteComponent* spriteComponent = entity->getComponent<component::sprite::SpriteComponent>();
+	if (!spriteComponent)
+	{
+		luaL_error(L, "Cannot set a move animation without a sprite component");
+	}
+	bool defaultMoveAnimationExists = spriteComponent->setDefaultMoveAnimation();
+	if (!defaultMoveAnimationExists)
+	{
+		luaL_error(L, "Not default move animation");
+	}
+	return 0;
 }
 
 // static lua functions

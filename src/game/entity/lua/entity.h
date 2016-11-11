@@ -39,7 +39,7 @@ int l_Entity_setDefaultMoveAnimation(lua_State* L);
 int l_Entity_spawn(lua_State* L);
 
 // private
-Entity* getEntity(lua_State* L, int index);
+Entity& getEntity(lua_State* L, int index);
 void pushEntity(lua_State* L, Entity* entity);
 
 } // lua

@@ -31,13 +31,9 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 		const map::Map* map = m_owner->getMap();
 		FLAT_ASSERT(map != nullptr);
 
-		const flat::Vector2& xAxis = map->getXAxis();
-		const flat::Vector2& yAxis = map->getYAxis();
-		const flat::Vector2& zAxis = map->getZAxis();
-
 		const flat::Vector3& position = m_owner->getPosition();
 
-		flat::Vector2 position2d = xAxis * position.x + yAxis * position.y + zAxis * position.z;
+		flat::Vector2 position2d(map->getTransform() * position);
 		m_sprite.setPosition(position2d);
 
 		m_owner->computeDepth(position.x, position.y, 0.f);
@@ -57,11 +53,7 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 		const map::Map* map = m_owner->getMap();
 		FLAT_ASSERT(map != nullptr);
 
-		const flat::Vector2& xAxis = map->getXAxis();
-		const flat::Vector2& yAxis = map->getYAxis();
-		const flat::Vector2& zAxis = map->getZAxis();
-
-		flat::Vector2 direction2d = xAxis * direction.x + yAxis * direction.y + zAxis * direction.z;
+		flat::Vector2 direction2d(map->getTransform() * direction);
 		m_sprite.setRotationZ(flat::vector2_angle(direction2d));
 
 		m_headingChanged = false;

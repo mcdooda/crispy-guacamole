@@ -106,14 +106,10 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 	{
 		const map::Map* map = m_owner->getMap();
 		FLAT_ASSERT(map != nullptr);
-	
-		const flat::Vector2& xAxis = map->getXAxis();
-		const flat::Vector2& yAxis = map->getYAxis();
-		const flat::Vector2& zAxis = map->getZAxis();
 		
 		const flat::Vector3& position = m_owner->getPosition();
 	
-		flat::Vector2 position2d = xAxis * position.x + yAxis * position.y + zAxis * position.z;
+		flat::Vector2 position2d(map->getTransform() * position);
 		m_sprite.setPosition(position2d);
 
 		const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();

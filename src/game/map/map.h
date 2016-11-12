@@ -59,6 +59,7 @@ class Map final
 		void eachTile(std::function<void(Tile*)> func);
 		void eachTileTopToDown(std::function<void(const Tile*)> func) const;
 		
+		inline const flat::Matrix3& getTransform() const { return m_transform; }
 		inline const flat::Vector2& getXAxis() const { return m_xAxis; }
 		inline const flat::Vector2& getYAxis() const { return m_yAxis; }
 		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
@@ -100,6 +101,7 @@ class Map final
 		
 		Tile* m_tiles;
 		
+		flat::Matrix3 m_transform;
 		flat::Vector2 m_xAxis;
 		flat::Vector2 m_yAxis;
 		flat::Vector2 m_zAxis;

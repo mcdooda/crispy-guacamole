@@ -267,9 +267,7 @@ void BaseMapState::updateGameView(game::Game& game)
 
 void BaseMapState::setCameraCenter(const flat::Vector3& cameraCenter)
 {
-	m_cameraCenter2d = m_map.getXAxis() * cameraCenter.x
-	                 + m_map.getYAxis() * cameraCenter.y
-	                 + m_map.getZAxis() * cameraCenter.z;
+	m_cameraCenter2d = flat::Vector2(m_map.getTransform() * cameraCenter);
 	updateCameraView();
 }
 

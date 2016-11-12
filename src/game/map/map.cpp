@@ -254,6 +254,7 @@ void Map::setAxes(const flat::Vector2& xAxis,
                   const flat::Vector2& yAxis,
                   const flat::Vector2& zAxis)
 {
+	m_transform = flat::Matrix3(flat::Vector3(xAxis, 1.f), flat::Vector3(yAxis, 1.f), flat::Vector3(zAxis, 1.f));
 	m_xAxis = xAxis;
 	m_yAxis = yAxis;
 	m_zAxis = zAxis;

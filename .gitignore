@@ -5,6 +5,6 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 /crispy-guacamole
-Debug
-Release
+/Debug
+/Release
 .vscode

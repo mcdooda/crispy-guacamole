@@ -1,3 +1,5 @@
+#ifdef FLAT_DEBUG
+
 #include "debugdisplayelement.h"
 
 namespace game
@@ -42,5 +44,7 @@ void DebugDisplayLine::draw(const flat::render::RenderSettings& renderSettings, 
 
 } // debug
 } // game
+
+#endif // FLAT_DEBUG
 
 

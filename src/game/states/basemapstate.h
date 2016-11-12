@@ -9,6 +9,7 @@
 #include "../entity/entitypool.h"
 #include "../entity/component/component.h"
 #include "../entity/component/componentregistry.h"
+#include "../debug/debugdisplay.h"
 
 namespace game
 {
@@ -116,6 +117,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		flat::Vector2 m_mouseDownPosition;
 		std::shared_ptr<flat::sharp::ui::Widget> m_selectionWidget;
+
+		FLAT_DEBUG_ONLY(debug::DebugDisplay m_debugDisplay;)
 };
 
 } // states

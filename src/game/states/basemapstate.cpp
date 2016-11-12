@@ -20,6 +20,9 @@ namespace states
 
 BaseMapState::BaseMapState() :
 	m_entityPool(m_componentRegistry)
+#ifdef FLAT_DEBUG
+	, m_debugDisplay(m_map)
+#endif
 {
 }
 
@@ -298,6 +301,11 @@ void BaseMapState::draw(game::Game& game)
 	m_map.drawTiles(m_mapDisplayManager, m_gameView);
 	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView.getViewProjectionMatrix());
 	
+#ifdef FLAT_DEBUG
+	m_map.debugDraw(m_debugDisplay);
+	m_debugDisplay.drawElements(game, m_gameView);
+#endif
+	
 	// ui
 	drawUi(game);
 }
@@ -446,7 +454,7 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 	}
 }
 
-void BaseMapState::clearSelection(Game & game)
+void BaseMapState::clearSelection(Game& game)
 {
 	for (entity::Entity* entity : m_selectedEntities)
 	{

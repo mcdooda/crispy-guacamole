@@ -3,6 +3,7 @@
 #include "detectioncomponenttemplate.h"
 #include "../../../entity.h"
 #include "../../../../map/map.h"
+#include "../../../../game.h"
 
 namespace game
 {
@@ -24,9 +25,9 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 	flat::Vector2 position(m_owner->getPosition());
 
 	// remove entities too far away
-	for (std::set<entity::Entity*>::iterator it = m_visibleEntities.begin(); it != m_visibleEntities.end(); )
+	for (std::set<Entity*>::iterator it = m_visibleEntities.begin(); it != m_visibleEntities.end(); )
 	{
-		entity::Entity* entity = *it;
+		Entity* entity = *it;
 		flat::Vector2 entityPosition(entity->getPosition());
 		if (flat::length2(entityPosition - position) > visionRange2)
 		{
@@ -40,9 +41,14 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 	}
 
 	// add entities in vision range
-	map->eachEntityInRange(position, visionRange, [this](entity::Entity* entity)
+	map->eachEntityInRange(position, visionRange, [this](Entity* entity)
 	{
-		std::set<entity::Entity*>::iterator it = m_visibleEntities.find(entity);
+		if (entity == m_owner)
+		{
+			return;
+		}
+
+		std::set<Entity*>::iterator it = m_visibleEntities.find(entity);
 		if (it == m_visibleEntities.end())
 		{
 			m_visibleEntities.insert(entity);
@@ -51,10 +57,21 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 	});
 }
 
-bool DetectionComponent::isVisible(const entity::Entity& target) const
+bool DetectionComponent::isVisible(const Entity& target) const
 {
-	return m_visibleEntities.find(const_cast<entity::Entity*>(&target)) != m_visibleEntities.end();
+	return m_visibleEntities.find(const_cast<Entity*>(&target)) != m_visibleEntities.end();
 }
+
+#ifdef FLAT_DEBUG
+void DetectionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	flat::Vector3 ownerPosition = m_owner->getPosition() + flat::Vector3(0.f, 0.f, 0.5f);
+	for (Entity* entity : m_visibleEntities)
+	{
+		debugDisplay.addLine(ownerPosition, entity->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE);
+	}
+}
+#endif
 
 } // detection
 } // component

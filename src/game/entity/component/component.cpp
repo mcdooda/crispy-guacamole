@@ -13,6 +13,9 @@ namespace component
 Component::Component() :
 	m_owner(nullptr),
 	m_enabled(true)
+#ifdef FLAT_DEBUG
+	, m_debug(true)
+#endif
 {
 
 }

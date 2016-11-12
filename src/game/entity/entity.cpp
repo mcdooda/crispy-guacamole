@@ -22,6 +22,9 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate) :
 	m_tile(nullptr),
 	m_template(entityTemplate),
 	m_selected(false)
+#ifdef FLAT_DEBUG
+	, m_debug(true)
+#endif
 {
 
 }
@@ -140,6 +143,19 @@ void Entity::update(float currentTime, float elapsedTime)
 		}
 	}
 }
+
+#ifdef FLAT_DEBUG
+void Entity::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	if (m_debug)
+	{
+		for (component::Component* component : m_components)
+		{
+			component->debugDraw(debugDisplay);
+		}
+	}
+}
+#endif
 
 bool Entity::isBusy() const
 {

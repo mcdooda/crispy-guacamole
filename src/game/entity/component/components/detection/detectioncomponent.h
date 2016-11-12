@@ -22,14 +22,16 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 
 		void update(float currentTime, float elapsedTime) override;
 
-		bool isVisible(const entity::Entity& target) const;
+		bool isVisible(const Entity& target) const;
+
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:
-		flat::Slot<entity::Entity*> entityEnteredVisionRange;
-		flat::Slot<entity::Entity*> entityLeftVisionRange;
+		flat::Slot<Entity*> entityEnteredVisionRange;
+		flat::Slot<Entity*> entityLeftVisionRange;
 
 	private:
-		std::set<entity::Entity*> m_visibleEntities;
+		std::set<Entity*> m_visibleEntities;
 };
 
 } // detection

@@ -221,6 +221,16 @@ void Map::updateEntities(float currentTime, float elapsedTime)
 	}
 }
 
+#ifdef FLAT_DEBUG
+void Map::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	for (entity::Entity* entity : m_entities)
+	{
+		entity->debugDraw(debugDisplay);
+	}
+}
+#endif
+
 int Map::getTileIndex(int x, int y) const
 {
 	if (x < 0 || x >= m_width || y < 0 || y >= m_height)

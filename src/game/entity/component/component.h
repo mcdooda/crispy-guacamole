@@ -7,6 +7,7 @@
 #include "componenttype.h"
 #include "componenttemplate.h"
 #include "../entitytemplate.h"
+#include "../../debug/debugdisplay.h"
 
 namespace game
 {
@@ -31,6 +32,8 @@ class Component : public flat::util::Convertible<Component>
 		virtual void update(float currentTime, float elapsedTime) = 0;
 		virtual bool isBusy() const { return false; }
 
+		FLAT_DEBUG_ONLY(virtual void debugDraw(debug::DebugDisplay& debugDisplay) const {})
+
 		virtual const ComponentType& getComponentType() const = 0;
 
 		static ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
@@ -47,7 +50,8 @@ class Component : public flat::util::Convertible<Component>
 		Entity* m_owner;
 
 	private:
-		bool m_enabled;
+		bool m_enabled : 1;
+		FLAT_DEBUG_ONLY(bool m_debug : 1;)
 };
 
 template <class ComponentTemplateType>

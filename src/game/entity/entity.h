@@ -3,9 +3,11 @@
 
 #include <memory>
 #include "../map/mapobject.h"
+#include "../debug/debugdisplay.h"
 
 namespace game
 {
+class Game;
 namespace map
 {
 class Map;
@@ -51,6 +53,10 @@ class Entity final : public map::MapObject
 		void onRemovedFromMap();
 		
 		void update(float currentTime, float elapsedTime);
+
+#ifdef FLAT_DEBUG
+		void debugDraw(debug::DebugDisplay& debugDisplay) const;
+#endif
 		
 		bool isBusy() const;
 		
@@ -83,6 +89,10 @@ class Entity final : public map::MapObject
 
 		void setSelected(bool selected);
 		inline bool isSelected() const { return m_selected; }
+
+#ifdef FLAT_DEBUG
+		inline void enableDebug(bool debug) { m_debug = debug; }
+#endif
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -113,7 +123,8 @@ class Entity final : public map::MapObject
 		
 		std::shared_ptr<const EntityTemplate> m_template;
 
-		bool m_selected;
+		bool m_selected : 1;
+		FLAT_DEBUG_ONLY(bool m_debug : 1;)
 };
 
 template <class ComponentType>

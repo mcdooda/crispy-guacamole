@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <flat.h>
+#include "../debug/debugdisplay.h"
 
 namespace game
 {
@@ -76,6 +77,10 @@ class Map final
 		void eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const;
 		
 		void updateEntities(float currentTime, float elapsedTime);
+
+#ifdef FLAT_DEBUG
+		void debugDraw(debug::DebugDisplay& debugDisplay) const;
+#endif
 		
 	private:
 		int getTileIndex(int x, int y) const;

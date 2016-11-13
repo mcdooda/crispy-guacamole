@@ -40,14 +40,22 @@ int open(lua_State* L)
 		{"setElevation",            l_Entity_setElevation},
 		{"getElevation",            l_Entity_getElevation},
 
+		// movement
 		{"moveTo",                  l_Entity_moveTo},
 		{"clearPath",               l_Entity_clearPath},
 		{"setSpeed",                l_Entity_setSpeed},
-		{"enterState",              l_Entity_enterState},
-		{"playAnimation",           l_Entity_playAnimation},
+		{"getSpeed",                l_Entity_getSpeed},
 		{"jump",                    l_Entity_jump},
+
+		// behavior
+		{"enterState",              l_Entity_enterState},
+
+		// sprite
+		{"playAnimation",           l_Entity_playAnimation},
 		{"setMoveAnimation",        l_Entity_setMoveAnimation},
 		{"setDefaultMoveAnimation", l_Entity_setDefaultMoveAnimation},
+
+		// detection
 		{"canSee",                  l_Entity_canSee},
 		
 		{nullptr, nullptr}
@@ -177,6 +185,26 @@ int l_Entity_setSpeed(lua_State * L)
 	return 0;
 }
 
+int l_Entity_getSpeed(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	lua_pushnumber(L, movementComponent.getSpeed());
+	return 1;
+}
+
+int l_Entity_jump(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	if (!movementComponent.isTouchingGround())
+	{
+		luaL_error(L, "Cannot jump midair");
+	}
+	movementComponent.jump();
+	return lua_yield(L, 0);
+}
+
 int l_Entity_enterState(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -196,18 +224,6 @@ int l_Entity_playAnimation(lua_State* L)
 	{
 		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
 	}
-	return lua_yield(L, 0);
-}
-
-int l_Entity_jump(lua_State* L)
-{
-	Entity& entity = getEntity(L, 1);
-	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	if (!movementComponent.isTouchingGround())
-	{
-		luaL_error(L, "Cannot jump midair");
-	}
-	movementComponent.jump();
 	return lua_yield(L, 0);
 }
 

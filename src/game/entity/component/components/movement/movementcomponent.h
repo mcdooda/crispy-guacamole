@@ -41,6 +41,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
 
 		inline void setSpeed(float speed) { m_speed = speed; }
+		inline float getSpeed() const { return m_speed; }
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 

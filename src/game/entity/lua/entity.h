@@ -28,14 +28,22 @@ int l_Entity_getHeading(lua_State* L);
 int l_Entity_setElevation(lua_State* L);
 int l_Entity_getElevation(lua_State* L);
 
+// movement
 int l_Entity_moveTo(lua_State* L);
 int l_Entity_clearPath(lua_State* L);
 int l_Entity_setSpeed(lua_State* L);
-int l_Entity_enterState(lua_State* L);
-int l_Entity_playAnimation(lua_State* L);
+int l_Entity_getSpeed(lua_State* L);
 int l_Entity_jump(lua_State* L);
+
+// behavior
+int l_Entity_enterState(lua_State* L);
+
+// sprite
+int l_Entity_playAnimation(lua_State* L);
 int l_Entity_setMoveAnimation(lua_State* L);
 int l_Entity_setDefaultMoveAnimation(lua_State* L);
+
+// detection
 int l_Entity_canSee(lua_State* L);
 
 // static lua functions

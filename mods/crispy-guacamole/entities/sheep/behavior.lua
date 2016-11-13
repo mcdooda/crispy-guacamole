@@ -54,20 +54,24 @@ function states:flee(sheep)
 	sheep:setMoveAnimation 'run'
 	local data = sheep:getExtraData()
 	local fleeTarget = data.fleeTarget
-	while sheep:canSee(fleeTarget) do
+	local endFleeTime = data.endFleeTime
+	local distance = 0.5
+	while Time.getTime() < endFleeTime or sheep:canSee(fleeTarget) do
 		local x, y = sheep:getPosition()
 		local fx, fy = fleeTarget:getPosition()
 		local dx, dy = x - fx, y - fy
-		local rx, ry = x + dx, y + dy
+		local d = math.sqrt(dx * dx + dy * dy)
+		local rx, ry = x + (dx / d) * distance, y + (dy / d) * distance
 		sheep:moveTo(rx, ry)
 	end
+	data.fleeTarget = nil
 	sheep:enterState 'wander'
 end
 
 function states:onEntityEnteredVisionRange(sheep, entity)
 	local isHostile = entity:getTemplateName() ~= 'sheep'
+	local data = sheep:getExtraData()
 	if isHostile then
-		local data = sheep:getExtraData()
 		if not data.fleeTarget then
 			data.fleeTarget = entity
 		elseif data.fleeTarget ~= entity then
@@ -80,8 +84,17 @@ function states:onEntityEnteredVisionRange(sheep, entity)
 				data.fleeTarget = entity
 			end
 		end
+		data.endFleeTime = Time.getTime() + 5
 		sheep:clearPath()
 		return 'flee'
+	else
+		local entityData = entity:getExtraData()
+		if entityData.fleeTarget then
+			data.fleeTarget = entityData.fleeTarget
+			data.endFleeTime = entityData.endFleeTime
+			sheep:clearPath()
+			return 'flee'
+		end
 	end
 end
 

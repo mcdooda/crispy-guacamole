@@ -18,6 +18,10 @@ namespace movement
 
 void MovementComponent::init()
 {
+	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
+	const float speed = movementComponentTemplate->getSpeed();
+	m_speed = speed;
+
 	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
 }
 
@@ -33,9 +37,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 		{
 			m_owner->setHeading(flat::vector2_angle(move));
 			flat::Vector2 direction = normalize(move);
-			const MovementComponentTemplate* movementComponentTemplate = getTemplate();
-			const float speed = movementComponentTemplate->getSpeed();
-			flat::Vector2 newPosition2d = position2d + direction * speed * elapsedTime;
+			flat::Vector2 newPosition2d = position2d + direction * m_speed * elapsedTime;
 			
 			const map::Map* map = m_owner->getMap();
 			flat::Vector2 nextTilePosition = position2d + direction * 0.4f;

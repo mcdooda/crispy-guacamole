@@ -1,6 +1,8 @@
 local math = math
 local random = math.random
 
+local movement = require 'mods/crispy-guacamole/entities/sheep/movement'
+
 local function sleep(duration)
 	local getTime = Time.getTime
 	local endTime = getTime() + duration
@@ -24,6 +26,7 @@ end
 
 function states:wander(sheep)
 	sheep:setDefaultMoveAnimation()
+	sheep:setSpeed(movement.speed)
 	local x, y = sheep:getPosition()
 	while true do
 
@@ -52,6 +55,7 @@ end
 
 function states:flee(sheep)
 	sheep:setMoveAnimation 'run'
+	sheep:setSpeed(movement.runSpeed)
 	local data = sheep:getExtraData()
 	local fleeTarget = data.fleeTarget
 	local endFleeTime = data.endFleeTime

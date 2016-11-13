@@ -42,6 +42,7 @@ int open(lua_State* L)
 
 		{"moveTo",                  l_Entity_moveTo},
 		{"clearPath",               l_Entity_clearPath},
+		{"setSpeed",                l_Entity_setSpeed},
 		{"enterState",              l_Entity_enterState},
 		{"playAnimation",           l_Entity_playAnimation},
 		{"jump",                    l_Entity_jump},
@@ -164,6 +165,15 @@ int l_Entity_clearPath(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	movementComponent.clearPath();
+	return 0;
+}
+
+int l_Entity_setSpeed(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	float speed = static_cast<float>(luaL_checknumber(L, 2));
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	movementComponent.setSpeed(speed);
 	return 0;
 }
 

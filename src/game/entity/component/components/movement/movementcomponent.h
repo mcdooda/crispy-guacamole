@@ -40,6 +40,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void jump();
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
 
+		inline void setSpeed(float speed) { m_speed = speed; }
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:
@@ -53,6 +55,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		static constexpr float MIN_Z_EPSILON = 0.1f;
 		
 		std::deque<flat::Vector2> m_path; // TODO: use the right container like a traversable queue
+		float m_speed;
 		float m_zSpeed;
 		bool m_isTouchingGround : 1;
 };

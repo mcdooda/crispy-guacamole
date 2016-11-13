@@ -68,7 +68,7 @@ void DetectionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	flat::Vector3 ownerPosition = m_owner->getPosition() + flat::Vector3(0.f, 0.f, 0.5f);
 	for (Entity* entity : m_visibleEntities)
 	{
-		debugDisplay.addLine(ownerPosition, entity->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE);
+		debugDisplay.addLine(ownerPosition, entity->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE, 2.5f);
 	}
 }
 #endif

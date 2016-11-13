@@ -25,8 +25,8 @@ class DebugDisplay
 	public:
 		DebugDisplay(const map::Map& map);
 
-		void addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color = flat::video::Color::BLUE);
-		void addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor);
+		void addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color = flat::video::Color::BLUE, float lineWidth = 1.f);
+		void addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth = 1.f);
 
 		void drawElements(Game& game, const flat::video::View& view);
 

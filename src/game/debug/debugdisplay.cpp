@@ -20,19 +20,19 @@ DebugDisplay::DebugDisplay(const map::Map& map) :
 	m_programRenderSettings.colorAttribute = m_program.getAttribute("color");
 }
 
-void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color)
+void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color, float lineWidth)
 {
-	addLine(fromPos, toPos, color, color);
+	addLine(fromPos, toPos, color, color, lineWidth);
 }
 
-void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color & toColor)
+void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth)
 {
 	const flat::Matrix3& mapTransform = m_map.getTransform();
 
 	flat::Vector3 from2d = mapTransform * fromPos;
 	flat::Vector3 to2d = mapTransform * toPos;
 
-	DebugDisplayLine* line = new DebugDisplayLine(flat::Vector2(from2d), flat::Vector2(to2d), fromColor, toColor);
+	DebugDisplayLine* line = new DebugDisplayLine(flat::Vector2(from2d), flat::Vector2(to2d), fromColor, toColor, lineWidth);
 	m_elements.emplace_back(line);
 }
 

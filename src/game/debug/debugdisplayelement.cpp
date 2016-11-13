@@ -15,7 +15,8 @@ DebugDisplayElement::~DebugDisplayElement()
 {
 }
 
-DebugDisplayLine::DebugDisplayLine(const flat::Vector2& fromPos, const flat::Vector2& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor)
+DebugDisplayLine::DebugDisplayLine(const flat::Vector2& fromPos, const flat::Vector2& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth) :
+	m_lineWidth(lineWidth)
 {
 	m_vertices[0].pos = fromPos;
 	m_vertices[0].color = fromColor;
@@ -28,7 +29,7 @@ void DebugDisplayLine::draw(const flat::render::RenderSettings& renderSettings, 
 	const flat::video::Attribute positionAttribute = renderSettings.positionAttribute;
 	const flat::video::Attribute colorAttribute = renderSettings.colorAttribute;
 
-	glLineWidth(3);
+	glLineWidth(m_lineWidth);
 
 	glEnableVertexAttribArray(positionAttribute);
 	glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(DebugDisplayVertex), &m_vertices[0].pos);

@@ -1,7 +1,7 @@
 #ifndef GAME_ENTITY_COMPONENT_MOVEMENT_MOVEMENTCOMPONENT_H
 #define GAME_ENTITY_COMPONENT_MOVEMENT_MOVEMENTCOMPONENT_H
 
-#include <queue>
+#include <deque>
 #include <flat.h>
 #include "movementcomponenttemplate.h"
 #include "../../component.h"
@@ -39,6 +39,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void jump();
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
 
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
+
 	public:
 		flat::Slot<> movementStarted;
 		flat::Slot<> movementStopped;
@@ -49,7 +51,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;
 		
-		std::queue<flat::Vector2> m_path;
+		std::deque<flat::Vector2> m_path; // TODO: use the right container like a traversable queue
 		float m_zSpeed;
 		bool m_isTouchingGround : 1;
 };

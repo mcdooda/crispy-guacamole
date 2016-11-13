@@ -50,7 +50,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			if (dot(move, newMove) <= 0.f)
 			{
 				newPosition2d = pathNextPoint;
-				m_path.pop();
+				m_path.pop_front();
 				if (!followsPath())
 				{
 					movementStopped();
@@ -118,12 +118,12 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 			path.erase(path.begin());
 			for (const flat::Vector2& point : path)
 			{
-				m_path.push(point);
+				m_path.push_back(point);
 			}
 		}
 		else
 		{
-			m_path.push(point);
+			m_path.push_back(point);
 		}
 		
 		if (startMovement)
@@ -160,6 +160,23 @@ void MovementComponent::fall(float elapsedTime)
 	}
 	m_owner->setZ(z);
 }
+
+#ifdef FLAT_DEBUG
+void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	const map::Map* map = m_owner->getMap();
+	FLAT_ASSERT(map != nullptr);
+	flat::Vector3 previousPoint = m_owner->getPosition();
+	for (flat::Vector2 point2d : m_path)
+	{
+		const map::Tile* tile = map->getTileIfExists(point2d.x, point2d.y);
+		FLAT_ASSERT(tile != nullptr);
+		flat::Vector3 point(point2d, tile->getZ());
+		debugDisplay.addLine(previousPoint, point);
+		previousPoint = point;
+	}
+}
+#endif
 
 } // movement
 } // component

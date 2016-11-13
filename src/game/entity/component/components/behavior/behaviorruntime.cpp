@@ -33,6 +33,8 @@ BehaviorRuntime::~BehaviorRuntime()
 
 void BehaviorRuntime::enterState(const char* stateName)
 {
+	FLAT_DEBUG_ONLY(m_currentStateName = stateName;)
+
 	const Behavior& behavior = getBehavior();
 	
 	lua_State* L = behavior.getLuaState();
@@ -70,8 +72,6 @@ void BehaviorRuntime::enterState(const char* stateName)
 	}
 	
 	lua_pop(L, 1);
-
-	FLAT_DEBUG_ONLY(m_currentStateName = stateName;)
 }
 
 void BehaviorRuntime::updateCurrentState()

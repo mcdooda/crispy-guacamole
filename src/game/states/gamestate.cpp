@@ -47,16 +47,17 @@ void GameState::execute(Game& game)
 	}
 
 #ifdef FLAT_DEBUG
+	std::vector<entity::Entity*>& entitiesToDebug = m_selectedEntities.empty() ? m_entities : m_selectedEntities;
 	if (keyboard->isJustPressed(K(F1)))
 	{
-		for (entity::Entity* entity : m_selectedEntities)
+		for (entity::Entity* entity : entitiesToDebug)
 		{
 			entity->enableDebug(true);
 		}
 	}
 	else if (keyboard->isJustPressed(K(F2)))
 	{
-		for (entity::Entity* entity : m_selectedEntities)
+		for (entity::Entity* entity : entitiesToDebug)
 		{
 			entity->enableDebug(false);
 		}

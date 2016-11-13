@@ -28,6 +28,8 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		void update(float currentTime, float elapsedTime) override;
 		
 		void enterState(const char* stateName);
+
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		
 	private:
 		void addedToMap(map::Map* map);

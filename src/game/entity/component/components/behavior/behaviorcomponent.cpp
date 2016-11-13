@@ -67,6 +67,13 @@ void BehaviorComponent::entityLeftVisionRange(entity::Entity* entity)
 	m_behaviorRuntime.handleEvent<EntityLeftVisionRangeBehaviorEvent>(entity);
 }
 
+#ifdef FLAT_DEBUG
+void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	debugDisplay.addText(m_owner->getPosition(), m_behaviorRuntime.getCurrentStateName(), flat::video::Color::BLACK);
+}
+#endif
+
 } // behavior
 } // component
 } // entity

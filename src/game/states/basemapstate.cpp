@@ -42,6 +42,8 @@ void BaseMapState::enter(Game& game)
 	mod::lua::open(m_luaState);
 	map::lua::open(m_luaState);
 	editor::lua::open(m_luaState);
+
+	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
 	
 	// ui
 	buildUi(game);

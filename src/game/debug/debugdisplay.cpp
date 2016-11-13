@@ -12,12 +12,27 @@ namespace debug
 DebugDisplay::DebugDisplay(const map::Map& map) :
 	m_map(map)
 {
-	m_program.load("data/shaders/debug.frag", "data/shaders/debug.vert");
+	// line shader
+	m_lineProgram.load("data/shaders/debugline.frag", "data/shaders/debugline.vert");
+	m_lineProgramRenderSettings.viewProjectionMatrixUniform = m_lineProgram.getUniform<flat::Matrix4>("vpMatrix");
+	m_lineProgramRenderSettings.positionAttribute = m_lineProgram.getAttribute("position");
+	m_lineProgramRenderSettings.colorAttribute = m_lineProgram.getAttribute("color");
 
-	m_programRenderSettings.viewProjectionMatrixUniform = m_program.getUniform<flat::Matrix4>("vpMatrix");
+	// text shader
+	m_textProgram.load("data/shaders/debugtext.frag", "data/shaders/debugtext.vert");
+	m_textProgramRenderSettings.viewProjectionMatrixUniform = m_textProgram.getUniform<flat::Matrix4>("vpMatrix");
+	m_textProgramRenderSettings.modelMatrixUniform          = m_textProgram.getUniform<flat::Matrix4>("modelMatrix");
+	m_textProgramRenderSettings.textureUniform              = m_textProgram.getUniform<flat::video::Texture>("fontTexture");
+	m_textProgramRenderSettings.colorUniform                = m_textProgram.getUniform<flat::video::Color>("color");
+	m_textProgramRenderSettings.secondaryColorUniform       = m_textProgram.getUniform<flat::video::Color>("backgroundColor");
 
-	m_programRenderSettings.positionAttribute = m_program.getAttribute("position");
-	m_programRenderSettings.colorAttribute = m_program.getAttribute("color");
+	m_textProgramRenderSettings.positionAttribute = m_textProgram.getAttribute("position");
+	m_textProgramRenderSettings.uvAttribute       = m_textProgram.getAttribute("uv");
+}
+
+void DebugDisplay::loadResources(Game& game)
+{
+	m_font = game.video->getFont("data/misc/fonts/LucidaSansRegular.ttf", 12);
 }
 
 void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color, float lineWidth)
@@ -32,22 +47,35 @@ void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& to
 	flat::Vector3 from2d = mapTransform * fromPos;
 	flat::Vector3 to2d = mapTransform * toPos;
 
-	DebugDisplayLine* line = new DebugDisplayLine(flat::Vector2(from2d), flat::Vector2(to2d), fromColor, toColor, lineWidth);
-	m_elements.emplace_back(line);
+	DebugDisplayLine* debugDisplayLine = new DebugDisplayLine(flat::Vector2(from2d), flat::Vector2(to2d), fromColor, toColor, lineWidth);
+	m_lineElements.emplace_back(debugDisplayLine);
+}
+
+void DebugDisplay::addText(const flat::Vector3& pos, const std::string& text, const flat::video::Color& color, const flat::video::Color& backgroundColor)
+{
+	const flat::Matrix3& mapTransform = m_map.getTransform();
+
+	flat::Vector3 pos2d = mapTransform * pos;
+	DebugDisplayText* debugDisplayText = new DebugDisplayText(flat::Vector2(pos2d), text, color, backgroundColor, m_font);
+	m_textElements.emplace_back(debugDisplayText);
 }
 
 void DebugDisplay::drawElements(Game& game, const flat::video::View& view)
 {
-	m_program.use(game.video->window);
-	m_programRenderSettings.viewProjectionMatrixUniform.set(view.getViewProjectionMatrix());
+	drawElementList(game, view, m_lineProgram, m_lineProgramRenderSettings, m_lineElements);
+	drawElementList(game, view, m_textProgram, m_textProgramRenderSettings, m_textElements);
+}
 
-	const flat::Matrix4& viewMatrix = view.getViewMatrix();
+void DebugDisplay::drawElementList(Game& game, const flat::video::View& view, flat::video::Program& program, flat::render::RenderSettings& renderSettings, std::vector<std::unique_ptr<DebugDisplayElement>>& elements)
+{
+	program.use(game.video->window);
+	renderSettings.viewProjectionMatrixUniform.set(view.getViewProjectionMatrix());
 
-	for (const std::unique_ptr<DebugDisplayElement>& element : m_elements)
+	for (const std::unique_ptr<DebugDisplayElement>& element : elements)
 	{
-		element->draw(m_programRenderSettings, viewMatrix);
+		element->draw(renderSettings);
 	}
-	m_elements.clear();
+	elements.clear();
 }
 
 } // debug

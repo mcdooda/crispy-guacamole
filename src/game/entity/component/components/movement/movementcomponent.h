@@ -35,6 +35,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		
 		bool followsPath() const;
 		void addPointOnPath(const flat::Vector2& point);
+		void clearPath();
 		
 		void jump();
 		inline bool isTouchingGround() const { return m_isTouchingGround; }

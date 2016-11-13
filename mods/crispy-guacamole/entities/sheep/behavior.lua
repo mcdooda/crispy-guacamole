@@ -80,6 +80,7 @@ function states:onEntityEnteredVisionRange(sheep, entity)
 				data.fleeTarget = entity
 			end
 		end
+		sheep:clearPath()
 		return 'flee'
 	end
 end

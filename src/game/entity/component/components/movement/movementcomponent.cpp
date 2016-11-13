@@ -133,6 +133,11 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 	}
 }
 
+void MovementComponent::clearPath()
+{
+	m_path.clear();
+}
+
 void MovementComponent::jump()
 {
 	if (m_isTouchingGround)

@@ -10,6 +10,7 @@ namespace game
 {
 namespace entity
 {
+using namespace component;
 namespace lua
 {
 
@@ -40,6 +41,7 @@ int open(lua_State* L)
 		{"getElevation",            l_Entity_getElevation},
 
 		{"moveTo",                  l_Entity_moveTo},
+		{"clearPath",               l_Entity_clearPath},
 		{"enterState",              l_Entity_enterState},
 		{"playAnimation",           l_Entity_playAnimation},
 		{"jump",                    l_Entity_jump},
@@ -152,8 +154,17 @@ int l_Entity_moveTo(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	float x = static_cast<float>(luaL_checknumber(L, 2));
 	float y = static_cast<float>(luaL_checknumber(L, 3));
-	entity.addPointOnPath(flat::Vector2(x, y));
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	movementComponent.addPointOnPath(flat::Vector2(x, y));
 	return lua_yield(L, 0);
+}
+
+int l_Entity_clearPath(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	movementComponent.clearPath();
+	return 0;
 }
 
 int l_Entity_enterState(lua_State* L)
@@ -169,7 +180,7 @@ int l_Entity_playAnimation(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	const char* animationName = luaL_checkstring(L, 2);
 	int numLoops = luaL_optint(L, 3, 1);
-	component::sprite::SpriteComponent& spriteComponent = getComponent<component::sprite::SpriteComponent>(L, entity);
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
 	bool animationExists = spriteComponent.playAnimationByName(animationName, numLoops);
 	if (!animationExists)
 	{
@@ -181,7 +192,7 @@ int l_Entity_playAnimation(lua_State* L)
 int l_Entity_jump(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	component::movement::MovementComponent& movementComponent = getComponent<component::movement::MovementComponent>(L, entity);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	if (!movementComponent.isTouchingGround())
 	{
 		luaL_error(L, "Cannot jump midair");
@@ -194,7 +205,7 @@ int l_Entity_setMoveAnimation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* moveAnimationName = luaL_checkstring(L, 2);
-	component::sprite::SpriteComponent& spriteComponent = getComponent<component::sprite::SpriteComponent>(L, entity);
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
 	bool animationExists = spriteComponent.setMoveAnimationByName(moveAnimationName);
 	if (!animationExists)
 	{
@@ -206,7 +217,7 @@ int l_Entity_setMoveAnimation(lua_State* L)
 int l_Entity_setDefaultMoveAnimation(lua_State * L)
 {
 	Entity& entity = getEntity(L, 1);
-	component::sprite::SpriteComponent& spriteComponent = getComponent<component::sprite::SpriteComponent>(L, entity);
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
 	bool defaultMoveAnimationExists = spriteComponent.setDefaultMoveAnimation();
 	if (!defaultMoveAnimationExists)
 	{
@@ -219,7 +230,7 @@ int l_Entity_canSee(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	Entity& target = getEntity(L, 2);
-	component::detection::DetectionComponent& detectionComponent = getComponent<component::detection::DetectionComponent>(L, entity);
+	detection::DetectionComponent& detectionComponent = getComponent<detection::DetectionComponent>(L, entity);
 	bool canSee = detectionComponent.isVisible(target);
 	lua_pushboolean(L, canSee);
 	return 1;

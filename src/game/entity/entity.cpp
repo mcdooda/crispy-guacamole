@@ -23,7 +23,7 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate) :
 	m_template(entityTemplate),
 	m_selected(false)
 #ifdef FLAT_DEBUG
-	, m_debug(true)
+	, m_debug(false)
 #endif
 {
 

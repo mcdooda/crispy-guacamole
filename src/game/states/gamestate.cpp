@@ -20,6 +20,7 @@ void GameState::enter(Game& game)
 void GameState::execute(Game& game)
 {
 	const flat::input::Mouse* mouse = game.input->mouse;
+	const flat::input::Keyboard* keyboard = game.input->keyboard;
 
 	if (!m_ui->isMouseOver() || isSelecting())
 	{
@@ -44,6 +45,23 @@ void GameState::execute(Game& game)
 			}
 		}
 	}
+
+#ifdef FLAT_DEBUG
+	if (keyboard->isJustPressed(K(F1)))
+	{
+		for (entity::Entity* entity : m_selectedEntities)
+		{
+			entity->enableDebug(true);
+		}
+	}
+	else if (keyboard->isJustPressed(K(F2)))
+	{
+		for (entity::Entity* entity : m_selectedEntities)
+		{
+			entity->enableDebug(false);
+		}
+	}
+#endif
 
 	despawnEntities();
 	flat::time::Time* time = game.time;

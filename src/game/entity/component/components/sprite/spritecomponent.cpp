@@ -56,12 +56,23 @@ void SpriteComponent::init()
 
 void SpriteComponent::playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops)
 {
-	m_sprite.playAnimation(
-		animationDescription.getLine(),
-		animationDescription.getNumFrames(),
-		animationDescription.getFrameDuration(),
-		numLoops
-	);
+	if (numLoops == flat::render::AnimatedSprite::INFINITE_LOOP
+		&& m_sprite.getLastUpdateTime() > 0.f
+		&& animationDescription.getLine() == m_sprite.getCurrentLine())
+	{
+		// avoid animation hiccups and continue the animation from the same frame
+		m_sprite.setNumLoops(flat::render::AnimatedSprite::INFINITE_LOOP);
+		m_sprite.setAnimated(true);
+	}
+	else
+	{
+		m_sprite.playAnimation(
+			animationDescription.getLine(),
+			animationDescription.getNumFrames(),
+			animationDescription.getFrameDuration(),
+			numLoops
+		);
+	}
 }
 
 bool SpriteComponent::playAnimationByName(const std::string& animationName, int numLoops)
@@ -147,7 +158,6 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 	
 	if (m_movementStopped)
 	{
-		m_sprite.setColumn(0);
 		m_sprite.setAnimated(false);
 		
 		m_movementStopped = false;

@@ -144,7 +144,7 @@ do
 	}
 	for i = 1, #positionPolicies do
 		local positionPolicy = positionPolicies[i]
-		local b = Widget.makeFixedSize(5, 5)
+		local b = Widget.makeFixedSize(10, 10)
 		b:setBackgroundColor(0x00FF00FF)
 		b:setPositionPolicy(positionPolicy)
 		a:addChild(b)
@@ -154,7 +154,7 @@ do
 		local c = Widget.makeFixedSize(32, 32)
 		c:setBackground 'data/editor/interface/widgets/checkbox.png'
 		c:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
-		c:setBackgroundPosition(32, 0)
+		c:setBackgroundPosition(0.5, 0)
 		c:setPositionPolicy(Widget.PositionPolicy.CENTER)
 		a:addChild(c)
 	end
@@ -168,4 +168,4 @@ do
 	end)
 	root:addChild(a)
 end
-]]
+--]]

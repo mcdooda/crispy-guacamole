@@ -47,6 +47,11 @@ void GameState::execute(Game& game)
 	}
 
 #ifdef FLAT_DEBUG
+	if (keyboard->isJustPressed(K(F10)))
+	{
+		toggleGamePause(game);
+	}
+
 	std::vector<entity::Entity*>& entitiesToDebug = m_selectedEntities.empty() ? m_entities : m_selectedEntities;
 	if (keyboard->isJustPressed(K(F1)))
 	{
@@ -64,12 +69,38 @@ void GameState::execute(Game& game)
 	}
 #endif
 
+#ifdef FLAT_DEBUG
+	if (!isGamePaused())
+	{
+#endif
+
 	despawnEntities();
 	flat::time::Time* time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
+
+#ifdef FLAT_DEBUG
+	}
+#endif
 	
 	Super::execute(game);
 }
+
+#ifdef FLAT_DEBUG
+void GameState::toggleGamePause(Game& game)
+{
+	m_gamePaused = !m_gamePaused;
+
+	flat::time::Time* time = game.time;
+	if (m_gamePaused)
+	{
+		time->pause();
+	}
+	else
+	{
+		time->resume();
+	}
+}
+#endif
 
 } // states
 } // game

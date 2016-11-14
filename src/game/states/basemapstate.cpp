@@ -254,7 +254,7 @@ void BaseMapState::updateGameView(game::Game& game)
 		move.y = speed.y;
 	
 	const float cameraSpeed = 40.f;
-	m_cameraCenter2d += move * game.time->getFrameTime() * cameraSpeed;
+	m_cameraCenter2d += move * game.time->getActualFrameTime() * cameraSpeed;
 	updateCameraView();
 
 	if (mouse->wheelJustMoved() && keyboard->isPressed(K(LCTRL)))

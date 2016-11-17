@@ -39,6 +39,14 @@ void GameState::execute(Game& game)
 		map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
 		if (clickedTile)
 		{
+			if (!keyboard->isPressed(K(LSHIFT)))
+			{
+				for (entity::Entity* entity : m_selectedEntities)
+				{
+					entity->clearPath();
+				}
+			}
+
 			for (entity::Entity* entity : m_selectedEntities)
 			{
 				entity->addPointOnPath(clickedTilePosition);

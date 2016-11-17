@@ -61,6 +61,7 @@ class Entity final : public map::MapObject
 		bool isBusy() const;
 		
 		void addPointOnPath(const flat::Vector2& point);
+		void clearPath();
 		
 		void enterState(const char* stateName);
 

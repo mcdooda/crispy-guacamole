@@ -174,6 +174,12 @@ void Entity::addPointOnPath(const flat::Vector2& point)
 	m_movementComponent->addPointOnPath(point);
 }
 
+void Entity::clearPath()
+{
+	FLAT_ASSERT(m_movementComponent != nullptr);
+	m_movementComponent->clearPath();
+}
+
 const std::string& Entity::getTemplateName() const
 {
 	return m_template->getName();

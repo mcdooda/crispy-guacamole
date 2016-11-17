@@ -4,5 +4,6 @@ return {
 	'devil',
 	'larva',
 	'sheep',
+	'soldier',
 	'zombie'
 }

@@ -5,5 +5,6 @@ return {
 	'larva',
 	'sheep',
 	'soldier',
+	'warlock',
 	'zombie'
 }

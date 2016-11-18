@@ -274,7 +274,7 @@ int l_Entity_spawn(lua_State* L)
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
-	Entity* entity = baseMapState.spawnEntityAtPosition(entityTemplate, position);
+	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position);
 	entity->setHeading(heading);
 	pushEntity(L, entity);
 	return 1;

@@ -125,10 +125,13 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			
 			// has the entity reached the next point on the planned path?
 			flat::Vector2 newMove = pathNextPoint - newPosition2d;
-			if (flat::dot(move, newMove) <= 0.f
-				|| flat::length2(newMove) < radius * radius)
+			const bool pointOvertook = flat::dot(move, newMove) <= 0.f;
+			if (pointOvertook || flat::length2(newMove) < radius * radius)
 			{
-				newPosition2d = pathNextPoint;
+				if (pointOvertook)
+				{
+					newPosition2d = pathNextPoint;
+				}
 				m_path.pop_front();
 				if (!followsPath())
 				{

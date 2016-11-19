@@ -27,7 +27,7 @@ function states:idle(warlock)
 			local zombie = Entity.spawn('zombie', x + math.cos(heading) * distance, y + math.sin(heading) * distance, z, heading)
 			zombies[#zombies + 1] = zombie
 		end
-		sleep(3)
+		sleep(6)
 		for i = 1, numZombies do
 			zombies[i]:despawn()
 		end

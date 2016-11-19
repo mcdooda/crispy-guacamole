@@ -30,7 +30,7 @@ Entity* EntityPool::createEntity(
 	component::ComponentFlags componentsFilter
 )
 {
-	Entity* entity = m_entityPool.create(entityTemplate);
+	Entity* entity = m_entityPool.create(entityTemplate, m_entityIdFactory.makeTransientId());
 	component::ComponentFlags flags = entityTemplate.get()->getComponentFlags() & componentsFilter;
 
 	componentRegistry.eachComponentType([this, entity, flags](const component::ComponentType& componentType)

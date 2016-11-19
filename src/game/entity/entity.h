@@ -2,6 +2,7 @@
 #define GAME_MAP_ENTITY_H
 
 #include <memory>
+#include "entityhandle.h"
 #include "../map/mapobject.h"
 #include "../debug/debugdisplay.h"
 
@@ -28,10 +29,13 @@ namespace texture  { class TextureComponent; }
 class Entity final : public map::MapObject
 {
 	public:
-		Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate);
+		Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, EntityId id);
 		~Entity() override;
 		
 		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
+
+		inline EntityId getId() { return m_id; }
+		inline EntityHandle getHandle() { return EntityHandle(this); }
 		
 		void setPosition(const flat::Vector3& position);
 		void setXY(const flat::Vector2& xy);
@@ -113,6 +117,8 @@ class Entity final : public map::MapObject
 		component::sprite::SpriteComponent*     m_spriteComponent;
 		component::texture::TextureComponent*   m_textureComponent;
 		
+		EntityId m_id;
+
 		flat::Vector3 m_position;
 		float m_heading;
 		float m_elevation;

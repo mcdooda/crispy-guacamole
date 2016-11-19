@@ -283,15 +283,20 @@ int l_Entity_spawn(lua_State* L)
 // private
 Entity& getEntity(lua_State* L, int index)
 {
-	return **static_cast<Entity**>(luaL_checkudata(L, index, "CG.Entity"));
+	EntityHandle entityHandle = *static_cast<EntityHandle*>(luaL_checkudata(L, index, "CG.Entity"));
+	if (!entityHandle.isValid())
+	{
+		luaL_argerror(L, index, "The entity is not valid anymore");
+	}
+	return *entityHandle.getEntity();
 }
 
 void pushEntity(lua_State* L, Entity* entity)
 {
 	if (entity != nullptr)
 	{
-		Entity** entityPointer = static_cast<Entity**>(lua_newuserdata(L, sizeof(Entity*)));
-		*entityPointer = entity;
+		EntityHandle* entityHandle = static_cast<EntityHandle*>(lua_newuserdata(L, sizeof(EntityHandle)));
+		new (entityHandle) EntityHandle(entity);
 		luaL_getmetatable(L, "CG.Entity");
 		lua_setmetatable(L, -2);
 	}

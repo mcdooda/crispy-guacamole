@@ -25,6 +25,8 @@ int open(lua_State* L)
 	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
+		{"isValid",                 l_Entity_isValid},
+
 		{"getTemplateName",         l_Entity_getTemplateName},
 
 		{"despawn",                 l_Entity_despawn},
@@ -73,6 +75,13 @@ int open(lua_State* L)
 	lua_pop(L, 1);
 	
 	return 0;
+}
+
+int l_Entity_isValid(lua_State* L)
+{
+	EntityHandle entityHandle = getEntityHandle(L, 1);
+	lua_pushboolean(L, entityHandle.isValid());
+	return 1;
 }
 
 int l_Entity_getTemplateName(lua_State* L)
@@ -280,10 +289,15 @@ int l_Entity_spawn(lua_State* L)
 	return 1;
 }
 
+EntityHandle getEntityHandle(lua_State * L, int index)
+{
+	return *static_cast<EntityHandle*>(luaL_checkudata(L, index, "CG.Entity"));
+}
+
 // private
 Entity& getEntity(lua_State* L, int index)
 {
-	EntityHandle entityHandle = *static_cast<EntityHandle*>(luaL_checkudata(L, index, "CG.Entity"));
+	EntityHandle entityHandle = getEntityHandle(L, index);
 	if (!entityHandle.isValid())
 	{
 		luaL_argerror(L, index, "The entity is not valid anymore");

@@ -14,6 +14,8 @@ namespace lua
 
 int open(lua_State* L);
 
+int l_Entity_eq(lua_State* L);
+
 int l_Entity_isValid(lua_State* L);
 
 int l_Entity_getTemplateName(lua_State* L);

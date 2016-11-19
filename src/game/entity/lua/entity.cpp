@@ -25,6 +25,8 @@ int open(lua_State* L)
 	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
+		{"__eq",                    l_Entity_eq},
+
 		{"isValid",                 l_Entity_isValid},
 
 		{"getTemplateName",         l_Entity_getTemplateName},
@@ -75,6 +77,14 @@ int open(lua_State* L)
 	lua_pop(L, 1);
 	
 	return 0;
+}
+
+int l_Entity_eq(lua_State* L)
+{
+	EntityHandle entityHandle1 = getEntityHandle(L, 1);
+	EntityHandle entityHandle2 = getEntityHandle(L, 2);
+	lua_pushboolean(L, entityHandle1 == entityHandle2);
+	return 1;
 }
 
 int l_Entity_isValid(lua_State* L)

@@ -34,6 +34,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool isBusy() const override;
 		
 		bool followsPath() const;
+		flat::Vector2 getCurrentDirection() const;
 		void addPointOnPath(const flat::Vector2& point);
 		void clearPath();
 		
@@ -59,6 +60,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		float m_speed;
 		float m_zSpeed;
 		bool m_isTouchingGround : 1;
+
+		FLAT_DEBUG_ONLY(flat::Vector2 m_steering;)
 };
 
 } // movement

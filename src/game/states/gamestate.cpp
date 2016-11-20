@@ -10,6 +10,11 @@ namespace states
 
 void GameState::enter(Game& game)
 {
+#ifdef FLAT_DEBUG
+	m_gamePaused = false;
+	m_pauseNextFrame = false;
+#endif
+
 	Super::enter(game);
 	
 	setCameraZoom(2.f);
@@ -59,6 +64,16 @@ void GameState::execute(Game& game)
 	{
 		toggleGamePause(game);
 	}
+	else if (keyboard->isJustPressed(K(F11)))
+	{
+		setGamePause(game, false);
+		m_pauseNextFrame = true;
+	}
+	else if (m_pauseNextFrame)
+	{
+		setGamePause(game, true);
+		m_pauseNextFrame = false;
+	}
 
 	std::vector<entity::Entity*>& entitiesToDebug = m_selectedEntities.empty() ? m_entities : m_selectedEntities;
 	if (keyboard->isJustPressed(K(F1)))
@@ -94,12 +109,17 @@ void GameState::execute(Game& game)
 }
 
 #ifdef FLAT_DEBUG
-void GameState::toggleGamePause(Game& game)
+void GameState::setGamePause(Game& game, bool pause)
 {
-	m_gamePaused = !m_gamePaused;
+	if (m_gamePaused == pause)
+	{
+		return;
+	}
+
+	m_gamePaused = pause;
 
 	flat::time::Time* time = game.time;
-	if (m_gamePaused)
+	if (pause)
 	{
 		time->pause();
 	}
@@ -107,6 +127,11 @@ void GameState::toggleGamePause(Game& game)
 	{
 		time->resume();
 	}
+}
+
+void GameState::toggleGamePause(Game& game)
+{
+	setGamePause(game, !m_gamePaused);
 }
 #endif
 

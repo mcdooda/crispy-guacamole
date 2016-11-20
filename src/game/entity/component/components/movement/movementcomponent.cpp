@@ -126,7 +126,8 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			// has the entity reached the next point on the planned path?
 			flat::Vector2 newMove = pathNextPoint - newPosition2d;
 			const bool pointOvertook = flat::dot(move, newMove) <= 0.f;
-			if (pointOvertook || flat::length2(newMove) < radius * radius)
+			const bool lastPoint = m_path.size() == 1;
+			if (pointOvertook || (!lastPoint && flat::length2(newMove) < radius * radius))
 			{
 				if (pointOvertook)
 				{

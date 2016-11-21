@@ -1,5 +1,5 @@
 return {
-	origin = {7, 18},
+	origin = {6.5, 17},
 	size = {10, 3},
 	animations = {
 		spawn = {

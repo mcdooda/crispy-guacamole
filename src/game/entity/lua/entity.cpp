@@ -25,6 +25,10 @@ int open(lua_State* L)
 	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
+		{"__eq",                    l_Entity_eq},
+
+		{"isValid",                 l_Entity_isValid},
+
 		{"getTemplateName",         l_Entity_getTemplateName},
 
 		{"despawn",                 l_Entity_despawn},
@@ -73,6 +77,21 @@ int open(lua_State* L)
 	lua_pop(L, 1);
 	
 	return 0;
+}
+
+int l_Entity_eq(lua_State* L)
+{
+	EntityHandle entityHandle1 = getEntityHandle(L, 1);
+	EntityHandle entityHandle2 = getEntityHandle(L, 2);
+	lua_pushboolean(L, entityHandle1 == entityHandle2);
+	return 1;
+}
+
+int l_Entity_isValid(lua_State* L)
+{
+	EntityHandle entityHandle = getEntityHandle(L, 1);
+	lua_pushboolean(L, entityHandle.isValid());
+	return 1;
 }
 
 int l_Entity_getTemplateName(lua_State* L)
@@ -274,24 +293,34 @@ int l_Entity_spawn(lua_State* L)
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
-	Entity* entity = baseMapState.spawnEntityAtPosition(entityTemplate, position);
+	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position);
 	entity->setHeading(heading);
 	pushEntity(L, entity);
 	return 1;
 }
 
+EntityHandle getEntityHandle(lua_State * L, int index)
+{
+	return *static_cast<EntityHandle*>(luaL_checkudata(L, index, "CG.Entity"));
+}
+
 // private
 Entity& getEntity(lua_State* L, int index)
 {
-	return **static_cast<Entity**>(luaL_checkudata(L, index, "CG.Entity"));
+	EntityHandle entityHandle = getEntityHandle(L, index);
+	if (!entityHandle.isValid())
+	{
+		luaL_argerror(L, index, "The entity is not valid anymore");
+	}
+	return *entityHandle.getEntity();
 }
 
 void pushEntity(lua_State* L, Entity* entity)
 {
 	if (entity != nullptr)
 	{
-		Entity** entityPointer = static_cast<Entity**>(lua_newuserdata(L, sizeof(Entity*)));
-		*entityPointer = entity;
+		EntityHandle* entityHandle = static_cast<EntityHandle*>(lua_newuserdata(L, sizeof(EntityHandle)));
+		new (entityHandle) EntityHandle(entity);
 		luaL_getmetatable(L, "CG.Entity");
 		lua_setmetatable(L, -2);
 	}

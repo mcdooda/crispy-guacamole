@@ -2,6 +2,7 @@
 #define GAME_ENTITY_LUA_ENTITY_H
 
 #include <flat.h>
+#include "../entityhandle.h"
 
 namespace game
 {
@@ -12,6 +13,10 @@ namespace lua
 {
 
 int open(lua_State* L);
+
+int l_Entity_eq(lua_State* L);
+
+int l_Entity_isValid(lua_State* L);
 
 int l_Entity_getTemplateName(lua_State* L);
 
@@ -50,6 +55,7 @@ int l_Entity_canSee(lua_State* L);
 int l_Entity_spawn(lua_State* L);
 
 // private
+EntityHandle getEntityHandle(lua_State* L, int index);
 Entity& getEntity(lua_State* L, int index);
 void pushEntity(lua_State* L, Entity* entity);
 

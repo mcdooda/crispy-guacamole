@@ -24,14 +24,8 @@ void SpriteComponent::init()
 	m_sprite.setOrigin(spriteDescription.getOrigin());
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
 	
-	if (setDefaultMoveAnimation())
-	{
-		playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
-	}
-	else
-	{
-		m_sprite.setAnimated(false);
-	}
+	setDefaultMoveAnimation();
+	m_currentAnimationDescription = nullptr;
 	
 	m_positionChanged = false;
 	m_headingChanged = false;
@@ -58,7 +52,7 @@ void SpriteComponent::playAnimation(const sprite::AnimationDescription& animatio
 {
 	if (numLoops == flat::render::AnimatedSprite::INFINITE_LOOP
 		&& m_sprite.getLastUpdateTime() > 0.f
-		&& animationDescription.getLine() == m_sprite.getCurrentLine())
+		&& m_currentAnimationDescription == &animationDescription)
 	{
 		// avoid animation hiccups and continue the animation from the same frame
 		m_sprite.setNumLoops(flat::render::AnimatedSprite::INFINITE_LOOP);
@@ -73,6 +67,7 @@ void SpriteComponent::playAnimation(const sprite::AnimationDescription& animatio
 			numLoops
 		);
 	}
+	m_currentAnimationDescription = &animationDescription;
 }
 
 bool SpriteComponent::playAnimationByName(const std::string& animationName, int numLoops)

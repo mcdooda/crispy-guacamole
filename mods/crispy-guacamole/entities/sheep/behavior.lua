@@ -60,9 +60,16 @@ function states:flee(sheep)
 	local fleeTarget = data.fleeTarget
 	local endFleeTime = data.endFleeTime
 	local distance = 0.5
-	while Time.getTime() < endFleeTime or sheep:canSee(fleeTarget) do
+	local lastKnownX, lastKnownY = fleeTarget:getPosition()
+	while Time.getTime() < endFleeTime or fleeTarget:isValid() and sheep:canSee(fleeTarget) do
 		local x, y = sheep:getPosition()
-		local fx, fy = fleeTarget:getPosition()
+		local fx, fy
+		if fleeTarget:isValid() then
+			fx, fy = fleeTarget:getPosition()
+			lastKnownX, lastKnownY = fx, fy
+		else
+			fx, fy = lastKnownX, lastKnownY
+		end
 		local dx, dy = x - fx, y - fy
 		local d = math.sqrt(dx * dx + dy * dy)
 		local rx, ry = x + (dx / d) * distance, y + (dy / d) * distance
@@ -76,7 +83,7 @@ function states:onEntityEnteredVisionRange(sheep, entity)
 	local isHostile = entity:getTemplateName() ~= 'sheep'
 	local data = sheep:getExtraData()
 	if isHostile then
-		if not data.fleeTarget then
+		if not data.fleeTarget or not data.fleeTarget:isValid() then
 			data.fleeTarget = entity
 		elseif data.fleeTarget ~= entity then
 			local x, y = sheep:getPosition()
@@ -93,7 +100,7 @@ function states:onEntityEnteredVisionRange(sheep, entity)
 		return 'flee'
 	else
 		local entityData = entity:getExtraData()
-		if entityData.fleeTarget then
+		if entityData.fleeTarget and entityData.fleeTarget:isValid() then
 			data.fleeTarget = entityData.fleeTarget
 			data.endFleeTime = entityData.endFleeTime
 			sheep:clearPath()

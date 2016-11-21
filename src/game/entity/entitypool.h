@@ -36,8 +36,10 @@ class EntityPool
 	private:
 		static const int MAX_ENTITIES = 5000;
 
+		EntityIdFactory m_entityIdFactory;
 		flat::containers::Pool<Entity, MAX_ENTITIES> m_entityPool;
 		std::vector<std::unique_ptr<flat::containers::DynamicPool>> m_componentPools;
+
 };
 
 }

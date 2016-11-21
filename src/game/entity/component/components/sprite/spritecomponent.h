@@ -43,6 +43,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 	private:
 		flat::render::AnimatedSprite m_sprite;
 		const sprite::AnimationDescription* m_moveAnimationDescription;
+		const sprite::AnimationDescription* m_currentAnimationDescription;
 		bool m_positionChanged : 1;
 		bool m_headingChanged : 1;
 		bool m_movementStarted : 1;

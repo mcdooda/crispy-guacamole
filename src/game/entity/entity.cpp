@@ -12,10 +12,12 @@ namespace game
 namespace entity
 {
 
-Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate) :
+Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, EntityId id) :
 	m_behaviorComponent(nullptr),
 	m_movementComponent(nullptr),
 	m_spriteComponent(nullptr),
+	m_textureComponent(nullptr),
+	m_id(id),
 	m_heading(0.f),
 	m_elevation(0.f),
 	m_map(nullptr),
@@ -31,6 +33,7 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate) :
 
 Entity::~Entity()
 {
+	m_id = EntityIdFactory::InvalidId; // writes InvalidId into the entity pool to make handles to this entity invalid
 	//FLAT_ASSERT(m_map == nullptr);
 	FLAT_ASSERT(m_components.empty()); // all components must have been destroyed before
 }
@@ -172,6 +175,12 @@ void Entity::addPointOnPath(const flat::Vector2& point)
 {
 	FLAT_ASSERT(m_movementComponent != nullptr);
 	m_movementComponent->addPointOnPath(point);
+}
+
+void Entity::clearPath()
+{
+	FLAT_ASSERT(m_movementComponent != nullptr);
+	m_movementComponent->clearPath();
 }
 
 const std::string& Entity::getTemplateName() const

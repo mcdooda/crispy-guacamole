@@ -17,13 +17,19 @@ class GameState : public BaseMapState
 		void execute(Game& game) override final;
 
 	private:
+		void moveToFormation(Game& game);
+
 #ifdef FLAT_DEBUG
+		void setGamePause(Game& game, bool pause);
 		void toggleGamePause(Game& game);
 		inline bool isGamePaused() const { return m_gamePaused; }
 #endif
 
 	private:
-		FLAT_DEBUG_ONLY(bool m_gamePaused;)
+#ifdef FLAT_DEBUG
+		bool m_gamePaused;
+		bool m_pauseNextFrame;
+#endif
 };
 
 } // states

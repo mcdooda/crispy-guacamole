@@ -167,13 +167,15 @@ std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Gam
 	return m_propTemplateManager.getResource(game, m_luaState, propTemplatePath);
 }
 
-entity::Entity* BaseMapState::spawnEntityAtPosition(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position)
+entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position)
 {
 	entity::component::ComponentFlags componentsFilter = getComponentsFilter();
 	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
 	entity->setPosition(position);
 	m_map.addEntity(entity);
 	m_entities.push_back(entity);
+	const float currentTime = game.time->getTime();
+	entity->update(currentTime, 0.f);
 	return entity;
 }
 

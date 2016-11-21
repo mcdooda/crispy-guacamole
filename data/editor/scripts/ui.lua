@@ -6,7 +6,7 @@ local checkbox = require 'data/scripts/ui/checkbox'
 
 local root = Widget.getRoot()
 do
-    local check1 = checkbox:new(false, 10, false)
-    check1.container:setPosition(300,-300)
+    local check1 = checkbox:new(true, 10, false)
+    check1.container:setPosition(100,0)
     root:addChild(check1.container)
 end

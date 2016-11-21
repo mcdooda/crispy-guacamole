@@ -28,8 +28,7 @@ void SpriteComponent::init()
 
 	if (setDefaultMoveAnimation())
 	{
-		playAnimation(*m_moveAnimationDescription);
-		m_sprite.setAnimated(false);
+		m_sprite.setLine(m_moveAnimationDescription->getLine());
 	}
 	
 	m_positionChanged = false;

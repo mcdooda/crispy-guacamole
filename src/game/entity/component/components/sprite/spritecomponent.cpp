@@ -24,8 +24,12 @@ void SpriteComponent::init()
 	m_sprite.setOrigin(spriteDescription.getOrigin());
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
 	
-	setDefaultMoveAnimation();
 	m_currentAnimationDescription = nullptr;
+
+	if (setDefaultMoveAnimation())
+	{
+		m_sprite.setLine(m_moveAnimationDescription->getLine());
+	}
 	
 	m_positionChanged = false;
 	m_headingChanged = false;

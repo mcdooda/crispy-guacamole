@@ -26,7 +26,6 @@ target_link_libraries(
     SDL2_mixer
     SDL2_ttf
     GL
-    GLU
     GLEW
 )
 

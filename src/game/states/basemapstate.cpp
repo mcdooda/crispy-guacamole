@@ -328,13 +328,7 @@ void BaseMapState::buildUi(game::Game& game)
 
 void BaseMapState::updateUi(game::Game& game)
 {
-	flat::sharp::ui::RootWidget* ui = m_ui.get();
-
-	if (game.input->window->isResized())
-		ui->fullLayout();
-
-	ui->updateInput();
-	ui->updateDirtyWidgets();
+	m_ui->update();
 }
 
 void BaseMapState::drawUi(game::Game& game)

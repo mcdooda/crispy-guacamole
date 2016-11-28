@@ -23,6 +23,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "projectile"; }
+		inline static bool enableInEditor() { return false; }
 
 		void init() override;
 

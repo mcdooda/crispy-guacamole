@@ -9,11 +9,12 @@ do
 	debugContainer:setMargin(5)
 	debugContainer:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
 	debugContainer:setSizePolicy(Widget.SizePolicy.COMPRESS)
-	debugContainer:setBackgroundColor(0xFFFFFF55)
+	debugContainer:setBackgroundColor(0xFFFFFFAA)
 
 	-- fps
 	do
 		local label = Widget.makeText('X fps', unpack(font))
+		label:setTextColor(0x000000FF)
 		label:setMargin(5)
 		debugContainer:addChild(label)
 		
@@ -41,6 +42,7 @@ do
 	-- entity count
 	do
 		local label = Widget.makeText('X entities', unpack(font))
+		label:setTextColor(0x000000FF)
 		label:setMargin(5)
 		debugContainer:addChild(label)
 		

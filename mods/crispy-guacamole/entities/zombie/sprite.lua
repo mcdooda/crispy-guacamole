@@ -1,10 +1,15 @@
 return {
-	origin = {6.5, 17},
-	size = {10, 3},
+	origin = {10.5, 17},
+	size = {10, 4},
 	animations = {
 		spawn = {
 			line = 1,
 			numFrames = 10,
+			frameDuration = 0.12
+		},
+		despawn = {
+			line = 4,
+			numFrames = 6,
 			frameDuration = 0.12
 		},
 		move = {

@@ -53,9 +53,11 @@ int open(lua_State* L)
 
 		// behavior
 		{"enterState",              l_Entity_enterState},
+		{"enterStateAsync",         l_Entity_enterStateAsync},
 
 		// sprite
 		{"playAnimation",           l_Entity_playAnimation},
+		{"playAnimationAsync",      l_Entity_playAnimationAsync},
 		{"setMoveAnimation",        l_Entity_setMoveAnimation},
 		{"setDefaultMoveAnimation", l_Entity_setDefaultMoveAnimation},
 
@@ -224,15 +226,31 @@ int l_Entity_jump(lua_State* L)
 	return lua_yield(L, 0);
 }
 
-int l_Entity_enterState(lua_State* L)
+namespace
+{
+static void locEnterState(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* stateName = luaL_checkstring(L, 2);
 	entity.enterState(stateName);
+}
+}
+
+int l_Entity_enterState(lua_State* L)
+{
+	locEnterState(L);
 	return lua_yield(L, 0);
 }
 
-int l_Entity_playAnimation(lua_State* L)
+int l_Entity_enterStateAsync(lua_State * L)
+{
+	locEnterState(L);
+	return 0;
+}
+
+namespace
+{
+static void locPlayAnimation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* animationName = luaL_checkstring(L, 2);
@@ -243,7 +261,19 @@ int l_Entity_playAnimation(lua_State* L)
 	{
 		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
 	}
+}
+}
+
+int l_Entity_playAnimation(lua_State* L)
+{
+	locPlayAnimation(L);
 	return lua_yield(L, 0);
+}
+
+int l_Entity_playAnimationAsync(lua_State * L)
+{
+	locPlayAnimation(L);
+	return 0;
 }
 
 int l_Entity_setMoveAnimation(lua_State* L)

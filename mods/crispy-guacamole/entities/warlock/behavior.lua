@@ -29,7 +29,7 @@ function states:idle(warlock)
 		end
 		sleep(6)
 		for i = 1, numZombies do
-			zombies[i]:despawn()
+			zombies[i]:enterStateAsync 'despawn'
 		end
 		sleep(3)
 	end

@@ -28,6 +28,8 @@ public:
 
 	virtual size_t getComponentSize() const = 0;
 	virtual const char* getConfigName() const = 0;
+	virtual bool enableInEditor() const = 0;
+	virtual bool allowEntityInEditor() const = 0;
 	virtual ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const = 0;
 
 	virtual Component* createComponent(flat::containers::DynamicPool& pool) const = 0;
@@ -45,6 +47,8 @@ public:
 
 	size_t getComponentSize() const override;
 	const char* getConfigName() const override;
+	bool enableInEditor() const override;
+	bool allowEntityInEditor() const override;
 	ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const override;
 
 	Component* createComponent(flat::containers::DynamicPool& pool) const override;
@@ -61,6 +65,18 @@ template <class T>
 const char* ComponentTypeImpl<T>::getConfigName() const
 {
 	return T::getConfigName();
+}
+
+template <class T>
+bool ComponentTypeImpl<T>::enableInEditor() const
+{
+	return T::enableInEditor();
+}
+
+template <class T>
+bool ComponentTypeImpl<T>::allowEntityInEditor() const
+{
+	return T::allowEntityInEditor();
 }
 
 template <class T>

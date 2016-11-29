@@ -14,7 +14,8 @@ namespace entity
 namespace component
 {
 
-ComponentRegistry::ComponentRegistry()
+ComponentRegistry::ComponentRegistry() :
+	m_editorComponentsFilter(0)
 {
 	registerComponentTypes();
 }

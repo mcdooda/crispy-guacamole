@@ -26,6 +26,8 @@ public:
 
 	inline size_t getNumComponentTypes() const { return m_componentTypes.size(); }
 
+	inline ComponentFlags getEditorComponentsFilter() const { return m_editorComponentsFilter; }
+
 	template <class Func>
 	void eachComponentType(Func func) const;
 
@@ -34,6 +36,7 @@ public:
 
 private:
 	std::vector<std::shared_ptr<ComponentType>> m_componentTypes;
+	ComponentFlags m_editorComponentsFilter;
 };
 
 template<class T>
@@ -44,6 +47,10 @@ inline void ComponentRegistry::registerComponentType()
 	std::shared_ptr<ComponentType> componentType = std::make_shared<ComponentTypeImpl<T>>(static_cast<ComponentTypeId>(id));
 	T::setType(componentType);
 	m_componentTypes.push_back(componentType);
+	if (T::enableInEditor())
+	{
+		m_editorComponentsFilter |= T::getFlag();
+	}
 }
 
 template<class Func>

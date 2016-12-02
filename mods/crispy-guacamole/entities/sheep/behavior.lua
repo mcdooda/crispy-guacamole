@@ -80,7 +80,7 @@ function states:flee(sheep)
 end
 
 function states:onEntityEnteredVisionRange(sheep, entity)
-	local isHostile = entity:getTemplateName() ~= 'sheep'
+	local isHostile = sheep:isHostile(entity)
 	local data = sheep:getExtraData()
 	if isHostile then
 		if not data.fleeTarget or not data.fleeTarget:isValid() then

@@ -1,8 +1,10 @@
 #include "entity.h"
 #include "../entity.h"
+#include "../faction/faction.h"
 #include "../component/components/movement/movementcomponent.h"
 #include "../component/components/sprite/spritecomponent.h"
 #include "../component/components/detection/detectioncomponent.h"
+#include "../component/components/faction/factioncomponent.h"
 #include "../../game.h"
 #include "../../states/basemapstate.h"
 
@@ -63,6 +65,11 @@ int open(lua_State* L)
 
 		// detection
 		{"canSee",                  l_Entity_canSee},
+
+		// faction
+		{"isNeutral",               l_Entity_isNeutral},
+		{"isFriendly",              l_Entity_isFriendly},
+		{"isHostile",               l_Entity_isHostile},
 		
 		{nullptr, nullptr}
 	};
@@ -308,6 +315,50 @@ int l_Entity_canSee(lua_State* L)
 	detection::DetectionComponent& detectionComponent = getComponent<detection::DetectionComponent>(L, entity);
 	bool canSee = detectionComponent.isVisible(target);
 	lua_pushboolean(L, canSee);
+	return 1;
+}
+
+namespace
+{
+
+static entity::faction::FactionRelation getFactionRelation(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity& other = getEntity(L, 2);
+
+	component::faction::FactionComponent* factionComponent = entity.getComponent<component::faction::FactionComponent>();
+	if (!factionComponent)
+	{
+		return entity::faction::FactionRelation::NEUTRAL;
+	}
+
+	component::faction::FactionComponent* otherFactionComponent = other.getComponent<component::faction::FactionComponent>();
+	if (!otherFactionComponent)
+	{
+		return entity::faction::FactionRelation::NEUTRAL;
+	}
+
+	// other entity's relation towards the first entity
+	return otherFactionComponent->getFaction().getFactionRelation(factionComponent->getFaction());
+}
+
+}
+
+int l_Entity_isNeutral(lua_State* L)
+{
+	lua_pushboolean(L, getFactionRelation(L) == entity::faction::FactionRelation::NEUTRAL);
+	return 1;
+}
+
+int l_Entity_isFriendly(lua_State* L)
+{
+	lua_pushboolean(L, getFactionRelation(L) == entity::faction::FactionRelation::FRIENDLY);
+	return 1;
+}
+
+int l_Entity_isHostile(lua_State* L)
+{
+	lua_pushboolean(L, getFactionRelation(L) == entity::faction::FactionRelation::HOSTILE);
 	return 1;
 }
 

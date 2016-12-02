@@ -49,6 +49,11 @@ std::string Mod::getPropTemplatePath(const std::string& propTemplateName) const
 	return m_path + "props/" + propTemplateName + "/"; // path to a directory
 }
 
+std::string Mod::getFactionsConfigPath() const
+{
+	return m_path + "factions.lua";
+}
+
 } // mod
 } // game
 

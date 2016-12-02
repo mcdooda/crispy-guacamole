@@ -10,6 +10,7 @@
 #include "../map/lua/map.h"
 #include "../entity/lua/entity.h"
 #include "../entity/component/lua/componentregistry.h"
+#include "../entity/faction/lua/faction.h"
 #include "../entity/entitytemplate.h"
 #include "../mod/lua/mod.h"
 
@@ -39,6 +40,7 @@ void BaseMapState::enter(Game& game)
 	timer::lua::open(m_luaState);
 	entity::lua::open(m_luaState);
 	entity::component::lua::open(m_luaState);
+	entity::faction::lua::open(m_luaState, m_mod.getFactionsConfigPath());
 	mod::lua::open(m_luaState);
 	map::lua::open(m_luaState);
 	editor::lua::open(m_luaState);
@@ -147,6 +149,33 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game)
 	mapPosition.y = (gameViewPosition.y * xAxis.x - gameViewPosition.x * xAxis.y) / (yAxis.y * xAxis.x - yAxis.x * xAxis.y);
 
 	return mapPosition;
+}
+
+void BaseMapState::addFaction(const std::string& factionName)
+{
+	m_factions.emplace(std::piecewise_construct,
+		std::forward_as_tuple(factionName),
+		std::forward_as_tuple(factionName));
+}
+
+entity::faction::Faction* BaseMapState::getFactionByName(const std::string& factionName)
+{
+	std::map<std::string, entity::faction::Faction>::iterator it = m_factions.find(factionName);
+	if (it == m_factions.end())
+	{
+		return nullptr;
+	}
+	return &it->second;
+}
+
+const entity::faction::Faction* BaseMapState::getFactionByName(const std::string& factionName) const
+{
+	std::map<std::string, entity::faction::Faction>::const_iterator it = m_factions.find(factionName);
+	if (it == m_factions.end())
+	{
+		return nullptr;
+	}
+	return &it->second;
 }
 
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const

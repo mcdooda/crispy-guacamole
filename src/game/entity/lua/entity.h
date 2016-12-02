@@ -53,6 +53,11 @@ int l_Entity_setDefaultMoveAnimation(lua_State* L);
 // detection
 int l_Entity_canSee(lua_State* L);
 
+// faction
+int l_Entity_isNeutral(lua_State* L);
+int l_Entity_isFriendly(lua_State* L);
+int l_Entity_isHostile(lua_State* L);
+
 // static lua functions
 int l_Entity_spawn(lua_State* L);
 

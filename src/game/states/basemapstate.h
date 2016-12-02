@@ -9,6 +9,7 @@
 #include "../entity/entitypool.h"
 #include "../entity/component/component.h"
 #include "../entity/component/componentregistry.h"
+#include "../entity/faction/faction.h"
 #include "../debug/debugdisplay.h"
 
 namespace game
@@ -44,6 +45,10 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		inline const map::Map& getMap() const { return m_map; }
 
 		flat::Vector2 getCursorMapPosition(game::Game& game);
+
+		void addFaction(const std::string& factionName);
+		entity::faction::Faction* getFactionByName(const std::string& factionName);
+		const entity::faction::Faction* getFactionByName(const std::string& factionName) const;
 
 		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const;
 		std::shared_ptr<const map::TileTemplate> getTileTemplate(game::Game& game, const std::string& tileTemplateName) const;
@@ -100,6 +105,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		mod::Mod m_mod;
 		map::Map m_map;
 		map::DisplayManager m_mapDisplayManager;
+
+		std::map<std::string, entity::faction::Faction> m_factions;
 
 		entity::component::ComponentRegistry m_componentRegistry;
 		entity::EntityPool m_entityPool;

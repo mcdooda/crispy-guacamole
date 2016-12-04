@@ -1,4 +1,5 @@
 #include "componentregistry.h"
+#include "components/attack/attackcomponent.h"
 #include "components/behavior/behaviorcomponent.h"
 #include "components/collision/collisioncomponent.h"
 #include "components/detection/detectioncomponent.h"
@@ -31,6 +32,7 @@ void ComponentRegistry::registerComponentTypes()
 	// components are updated in the order they are declared
 	registerComponentType<detection::DetectionComponent>();
 	registerComponentType<behavior::BehaviorComponent>();
+	registerComponentType<attack::AttackComponent>();
 	registerComponentType<movement::MovementComponent>();
 	registerComponentType<projectile::ProjectileComponent>();
 	registerComponentType<collision::CollisionComponent>();

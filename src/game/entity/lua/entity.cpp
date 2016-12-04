@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "../entity.h"
 #include "../faction/faction.h"
+#include "../component/components/attack/attackcomponent.h"
 #include "../component/components/movement/movementcomponent.h"
 #include "../component/components/sprite/spritecomponent.h"
 #include "../component/components/detection/detectioncomponent.h"
@@ -70,6 +71,10 @@ int open(lua_State* L)
 		{"isNeutral",               l_Entity_isNeutral},
 		{"isFriendly",              l_Entity_isFriendly},
 		{"isHostile",               l_Entity_isHostile},
+
+		// attack
+		{"setAttackTarget",         l_Entity_setAttackTarget},
+		{"getAttackTarget",         l_Entity_getAttackTarget},
 		
 		{nullptr, nullptr}
 	};
@@ -320,8 +325,7 @@ int l_Entity_canSee(lua_State* L)
 
 namespace
 {
-
-static entity::faction::FactionRelation getFactionRelation(lua_State* L)
+static entity::faction::FactionRelation locGetFactionRelation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	Entity& other = getEntity(L, 2);
@@ -341,24 +345,40 @@ static entity::faction::FactionRelation getFactionRelation(lua_State* L)
 	// other entity's relation towards the first entity
 	return otherFactionComponent->getFaction().getFactionRelation(factionComponent->getFaction());
 }
-
 }
 
 int l_Entity_isNeutral(lua_State* L)
 {
-	lua_pushboolean(L, getFactionRelation(L) == entity::faction::FactionRelation::NEUTRAL);
+	lua_pushboolean(L, locGetFactionRelation(L) == entity::faction::FactionRelation::NEUTRAL);
 	return 1;
 }
 
 int l_Entity_isFriendly(lua_State* L)
 {
-	lua_pushboolean(L, getFactionRelation(L) == entity::faction::FactionRelation::FRIENDLY);
+	lua_pushboolean(L, locGetFactionRelation(L) == entity::faction::FactionRelation::FRIENDLY);
 	return 1;
 }
 
 int l_Entity_isHostile(lua_State* L)
 {
-	lua_pushboolean(L, getFactionRelation(L) == entity::faction::FactionRelation::HOSTILE);
+	lua_pushboolean(L, locGetFactionRelation(L) == entity::faction::FactionRelation::HOSTILE);
+	return 1;
+}
+
+int l_Entity_setAttackTarget(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity* target = getEntityPtr(L, 2);
+	attack::AttackComponent& attackComponent = getComponent<attack::AttackComponent>(L, entity);
+	attackComponent.setAttackTarget(target);
+	return 0;
+}
+
+int l_Entity_getAttackTarget(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	attack::AttackComponent& attackComponent = getComponent<attack::AttackComponent>(L, entity);
+	pushEntity(L, attackComponent.getAttackTarget());
 	return 1;
 }
 
@@ -394,6 +414,17 @@ Entity& getEntity(lua_State* L, int index)
 		luaL_argerror(L, index, "The entity is not valid anymore");
 	}
 	return *entityHandle.getEntity();
+}
+
+Entity* getEntityPtr(lua_State* L, int index)
+{
+	if (lua_isnil(L, index))
+	{
+		return nullptr;
+	}
+
+	EntityHandle entityHandle = getEntityHandle(L, index);
+	return entityHandle.getEntity();
 }
 
 void pushEntity(lua_State* L, Entity* entity)

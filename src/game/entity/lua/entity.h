@@ -58,12 +58,17 @@ int l_Entity_isNeutral(lua_State* L);
 int l_Entity_isFriendly(lua_State* L);
 int l_Entity_isHostile(lua_State* L);
 
+// attack
+int l_Entity_setAttackTarget(lua_State* L);
+int l_Entity_getAttackTarget(lua_State* L);
+
 // static lua functions
 int l_Entity_spawn(lua_State* L);
 
 // private
 EntityHandle getEntityHandle(lua_State* L, int index);
 Entity& getEntity(lua_State* L, int index);
+Entity* getEntityPtr(lua_State* L, int index);
 void pushEntity(lua_State* L, Entity* entity);
 
 template <class T>

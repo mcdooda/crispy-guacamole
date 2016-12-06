@@ -1,12 +1,13 @@
 local atan2 = math.atan2
 
 return {
-	attackRange = 0.2,
+	attackRange = 0.05,
 	attackCooldown = 1,
 	autoAttack = true,
 	moveDuringAttack = false,
-	attackFunc = function(zombie, target)
+	attackFunc = function(zombie)
 		local x, y = zombie:getPosition()
+		local target = zombie:getAttackTarget()
 		local tx, ty = target:getPosition()
 		local heading = atan2(ty - y, tx - x)
 		zombie:setHeading(heading) -- TODO: entity:lookAtEntity

@@ -40,11 +40,9 @@ class Component : public flat::util::Convertible<Component>
 
 		const EntityTemplate& getEntityTemplate() const;
 
-		inline bool isEnabled() const { return m_enabled; }
-
-	protected:
 		inline void enable() { m_enabled = true; }
 		inline void disable() { m_enabled = false; }
+		inline bool isEnabled() const { return m_enabled; }
 		
 	protected:
 		Entity* m_owner;

@@ -6,6 +6,7 @@
 #include "attackcomponenttemplate.h"
 #include "../../component.h"
 #include "../../../entityhandle.h"
+#include "../../../entitythread.h"
 
 namespace game
 {
@@ -33,8 +34,18 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
+		void tryBeginAttack(float currentTime);
+		void tryEndAttack();
+
+		void beginAttack(float currentTime);
+		void updateAttack();
+		void endAttack();
+
+	private:
 		EntityHandle m_target;
+		EntityThread m_attackThread;
 		float m_lastAttackTime;
+		bool m_attacking : 1;
 };
 
 } // attack

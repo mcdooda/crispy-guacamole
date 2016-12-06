@@ -47,6 +47,8 @@ int open(lua_State* L)
 		{"setElevation",            l_Entity_setElevation},
 		{"getElevation",            l_Entity_getElevation},
 
+		{"lookAtEntity",            l_Entity_lookAtEntity},
+
 		// movement
 		{"moveTo",                  l_Entity_moveTo},
 		{"clearPath",               l_Entity_clearPath},
@@ -189,6 +191,17 @@ int l_Entity_getElevation(lua_State * L)
 	Entity& entity = getEntity(L, 1);
 	lua_pushnumber(L, entity.getElevation());
 	return 1;
+}
+
+int l_Entity_lookAtEntity(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity& target = getEntity(L, 2);
+	flat::Vector2 entityPosition2d(entity.getPosition());
+	flat::Vector2 targetPosition2d(target.getPosition());
+	float heading = flat::vector2_angle(targetPosition2d - entityPosition2d);
+	entity.setHeading(heading);
+	return 0;
 }
 
 int l_Entity_moveTo(lua_State* L)

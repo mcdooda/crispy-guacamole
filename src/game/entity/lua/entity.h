@@ -33,6 +33,8 @@ int l_Entity_getHeading(lua_State* L);
 int l_Entity_setElevation(lua_State* L);
 int l_Entity_getElevation(lua_State* L);
 
+int l_Entity_lookAtEntity(lua_State* L);
+
 // movement
 int l_Entity_moveTo(lua_State* L);
 int l_Entity_clearPath(lua_State* L);

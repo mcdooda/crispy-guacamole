@@ -25,7 +25,7 @@ namespace io
 class Reader;
 }
 
-class Map final
+class Map
 {
 	public:
 		Map();
@@ -41,18 +41,18 @@ class Map final
 		
 		const Tile* getTile(int x, int y) const;
 		Tile* getTile(int x, int y);
-		const Tile* getTile(float x, float y) const { return getTile(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
-		Tile* getTile(float x, float y) { return getTile(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
+		Tile* getTile(float x, float y);
+		const Tile* getTile(float x, float y) const;
 
 		const Tile* getTileIfExists(int x, int y) const;
 		Tile* getTileIfExists(int x, int y);
-		const Tile* getTileIfExists(float x, float y) const { return getTileIfExists(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
-		Tile* getTileIfExists(float x, float y) { return getTileIfExists(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
+		const Tile* getTileIfExists(float x, float y) const;
+		Tile* getTileIfExists(float x, float y);
 
 		const Tile* getTileIfWalkable(int x, int y) const;
 		Tile* getTileIfWalkable(int x, int y);
-		const Tile* getTileIfWalkable(float x, float y) const { return getTileIfWalkable(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
-		Tile* getTileIfWalkable(float x, float y) { return getTileIfWalkable(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
+		const Tile* getTileIfWalkable(float x, float y) const;
+		Tile* getTileIfWalkable(float x, float y);
 
 		
 		void eachTile(std::function<void(const Tile*)> func) const;
@@ -110,6 +110,12 @@ class Map final
 		
 	private:
 		friend class io::Reader;
+};
+
+template <class MapContainer>
+class MapImpl : public Map
+{
+
 };
 
 } // map

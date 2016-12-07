@@ -94,48 +94,78 @@ void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& vie
 
 const Tile* Map::getTile(int x, int y) const
 {
-	int tileIndex = getTileIndex(x, y);
-	
-	if (tileIndex < 0)
-		return nullptr;
-	
-	FLAT_ASSERT(tileIndex < getNumTiles());
-	return &m_tiles[tileIndex];
+	return const_cast<Map*>(this)->getTile(x, y);
 }
 
 Tile* Map::getTile(int x, int y)
 {
-	return const_cast<Tile*>((const_cast<const Map*>(this)->getTile(x, y)));
+	int tileIndex = getTileIndex(x, y);
+
+	if (tileIndex < 0)
+		return nullptr;
+
+	FLAT_ASSERT(tileIndex < getNumTiles());
+	return &m_tiles[tileIndex];
+}
+
+const Tile* Map::getTile(float x, float y) const
+{
+	return const_cast<Map*>(this)->getTile(x, y);
+}
+
+Tile* Map::getTile(float x, float y)
+{
+	return getTile(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
 const Tile* Map::getTileIfExists(int x, int y) const
 {
-	const Tile* tile = getTile(x, y);
-	
-	if (!tile || !tile->exists())
-		return nullptr;
-		
-	return tile;
+	return const_cast<Map*>(this)->getTileIfExists(x, y);
 }
 
 Tile* Map::getTileIfExists(int x, int y)
 {
-	return const_cast<Tile*>(const_cast<const Map*>(this)->getTileIfExists(x, y));
+	Tile* tile = getTile(x, y);
+
+	if (!tile || !tile->exists())
+		return nullptr;
+
+	return tile;
+}
+
+const Tile* Map::getTileIfExists(float x, float y) const
+{
+	return const_cast<Map*>(this)->getTileIfExists(x, y);
+}
+
+Tile* Map::getTileIfExists(float x, float y)
+{
+	return getTileIfExists(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
 const Tile* Map::getTileIfWalkable(int x, int y) const
 {
-	const Tile* tile = getTileIfExists(x, y);
-	
-	if (!tile || !tile->isWalkable())
-		return nullptr;
-		
-	return tile;
+	return const_cast<Map*>(this)->getTileIfWalkable(x, y);
 }
 
 Tile* Map::getTileIfWalkable(int x, int y)
 {
-	return const_cast<Tile*>(const_cast<const Map*>(this)->getTileIfWalkable(x, y));
+	Tile* tile = getTileIfExists(x, y);
+
+	if (!tile || !tile->isWalkable())
+		return nullptr;
+
+	return tile;
+}
+
+const Tile* Map::getTileIfWalkable(float x, float y) const
+{
+	return const_cast<Map*>(this)->getTileIfWalkable(x, y);
+}
+
+Tile* Map::getTileIfWalkable(float x, float y)
+{
+	return getTileIfWalkable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));;
 }
 
 void Map::eachTile(std::function<void(const Tile*)> func) const

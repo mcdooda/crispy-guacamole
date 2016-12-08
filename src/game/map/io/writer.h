@@ -37,6 +37,7 @@ class Writer
 
 		void writeBool(bool value);
 		void writeFloat(float value);
+		void writeInt16(int16_t value);
 		void writeUint16(uint16_t value);
 		void writeString(const std::string& value);
 

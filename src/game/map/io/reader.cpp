@@ -54,10 +54,12 @@ void Reader::readConfig(lua_State* L)
 	flat::Vector2 yAxis;
 	flat::Vector2 zAxis;
 	{
+		m_minX = 0;
+		m_minY = 0;
 		lua_getfield(L, -1, "width");
-		m_mapWidth = luaL_checkint(L, -1);
+		m_maxX = luaL_checkint(L, -1) + 1;
 		lua_getfield(L, -2, "height");
-		m_mapHeight = luaL_checkint(L, -1);
+		m_maxY = luaL_checkint(L, -1) + 1;
 		lua_pop(L, 2);
 	}
 
@@ -124,13 +126,15 @@ void Reader::readHeaders()
 	}
 	
 	// map size
-	m_mapWidth = readUint16();
-	m_mapHeight = readUint16();
+	m_minX = readInt16();
+	m_maxX = readInt16();
+	m_minY = readInt16();
+	m_maxY = readInt16();
 }
 
 void Reader::readTiles()
 {
-	m_map.setSize(m_mapWidth, m_mapHeight);
+	m_map.setBounds(m_minX, m_maxX, m_minY, m_maxY);
 	// TODO read from map.gpmap
 	/*
 	m_map.setAxes(
@@ -141,9 +145,9 @@ void Reader::readTiles()
 	*/
 	m_map.createTiles();
 	
-	for (int x = 0; x < m_mapWidth; ++x)
+	for (int x = m_minX; x <= m_maxX; ++x)
 	{
-		for (int y = 0; y < m_mapHeight; ++y)
+		for (int y = m_minY; y <= m_maxY; ++y)
 		{
 			Tile* tile = m_map.getTile(x, y);
 			
@@ -214,6 +218,13 @@ float Reader::readFloat()
 	float f;
 	m_file.read(reinterpret_cast<char*>(&f), sizeof(float));
 	return f;
+}
+
+int16_t Reader::readInt16()
+{
+	int16_t integer;
+	m_file.read(reinterpret_cast<char*>(&integer), sizeof(int16_t));
+	return integer;
 }
 
 uint16_t Reader::readUint16()

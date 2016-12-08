@@ -4,6 +4,7 @@
 #include "editor/lua/editor.h"
 #include "../game.h"
 #include "../timer/lua/timer.h"
+#include "../map/map.h"
 #include "../map/tile.h"
 #include "../map/tiletemplate.h"
 #include "../map/proptemplate.h"
@@ -21,9 +22,6 @@ namespace states
 
 BaseMapState::BaseMapState() :
 	m_entityPool(m_componentRegistry)
-#ifdef FLAT_DEBUG
-	, m_debugDisplay(m_map)
-#endif
 {
 }
 
@@ -44,8 +42,6 @@ void BaseMapState::enter(Game& game)
 	mod::lua::open(m_luaState);
 	map::lua::open(m_luaState);
 	editor::lua::open(m_luaState);
-
-	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
 	
 	// ui
 	buildUi(game);
@@ -75,13 +71,19 @@ void BaseMapState::enter(Game& game)
 	
 	// level
 	loadMap(game, game.mapName);
+
+	// load debug display resources *after* the map is loaded!
+	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
 	
 	// reset view
 	const flat::Vector2& windowSize = game.video->window->getSize();
 	m_gameView.updateProjection(windowSize);
 	m_cameraZoom = 1.f;
 
-	flat::Vector3 cameraCenter(m_map.getWidth() / 2.f, m_map.getHeight() / 2.f, 0.f);
+	const map::Map& map = getMap();
+	int minX, maxX, minY, maxY;
+	map.getBounds(minX, maxX, minY, maxY);
+	flat::Vector3 cameraCenter((maxX + minX) / 2.f, (maxY + minY) / 2.f, 0.f);
 	setCameraCenter(cameraCenter);
 
 	resetViews(game);
@@ -101,11 +103,12 @@ void BaseMapState::execute(Game& game)
 
 void BaseMapState::exit(Game& game)
 {
-	for (entity::Entity* entity : m_map.getEntities())
+	map::Map& map = getMap();
+	for (entity::Entity* entity : map.getEntities())
 	{
 		m_entityPool.destroyEntity(entity);
 	}
-	m_map.removeAllEntities();
+	map.removeAllEntities();
 
 	flat::sharp::ui::lua::close(m_luaState);
 	m_ui.reset();
@@ -121,7 +124,8 @@ void BaseMapState::setModPath(const std::string& modPath)
 
 bool BaseMapState::loadMap(Game& game, const std::string& mapName)
 {
-	if (m_map.load(m_luaState, game, m_mod, mapName))
+	map::Map& map = getMap();
+	if (map.load(m_luaState, game, m_mod, mapName))
 	{
 		game.mapName = mapName;
 		return true;
@@ -131,7 +135,13 @@ bool BaseMapState::loadMap(Game& game, const std::string& mapName)
 
 bool BaseMapState::saveMap(Game& game) const
 {
-	return m_map.save(m_mod, game.mapName);
+	const map::Map& map = getMap();
+	return map.save(m_mod, game.mapName);
+}
+
+const map::Map& BaseMapState::getMap() const
+{
+	return const_cast<BaseMapState*>(this)->getMap();
 }
 
 flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game)
@@ -140,8 +150,9 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game)
 	const flat::Vector2& windowSize = game.video->window->getSize();
 	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
 
-	const flat::Vector2& xAxis = m_map.getXAxis();
-	const flat::Vector2& yAxis = m_map.getYAxis();
+	const map::Map& map = getMap();
+	const flat::Vector2& xAxis = map.getXAxis();
+	const flat::Vector2& yAxis = map.getYAxis();
 
 	flat::Vector2 mapPosition;
 
@@ -201,7 +212,8 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::share
 	entity::component::ComponentFlags componentsFilter = getComponentsFilter();
 	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
 	entity->setPosition(position);
-	m_map.addEntity(entity);
+	map::Map& map = getMap();
+	map.addEntity(entity);
 	m_entities.push_back(entity);
 	const float currentTime = game.time->getTime();
 	entity->update(currentTime, 0.f);
@@ -220,7 +232,8 @@ void BaseMapState::markEntityForDelete(entity::Entity* entity)
 
 void BaseMapState::despawnEntity(entity::Entity* entity)
 {
-	m_map.removeEntity(entity);
+	map::Map& map = getMap();
+	map.removeEntity(entity);
 	{
 		// remove from entities
 		std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
@@ -263,7 +276,8 @@ void BaseMapState::updateGameView(game::Game& game)
 
 	const flat::Vector2& windowSize = game.video->window->getSize();
 	
-	const flat::Vector2& xAxis = m_map.getXAxis();
+	const map::Map& map = getMap();
+	const flat::Vector2& xAxis = map.getXAxis();
 	flat::Vector2 speed(-xAxis.x, xAxis.y);
 	
 	flat::Vector2 move;
@@ -300,7 +314,8 @@ void BaseMapState::updateGameView(game::Game& game)
 
 void BaseMapState::setCameraCenter(const flat::Vector3& cameraCenter)
 {
-	m_cameraCenter2d = flat::Vector2(m_map.getTransform() * cameraCenter);
+	const map::Map& map = getMap();
+	m_cameraCenter2d = flat::Vector2(map.getTransform() * cameraCenter);
 	updateCameraView();
 }
 
@@ -329,11 +344,12 @@ void BaseMapState::draw(game::Game& game)
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform.set(m_gameView.getViewProjectionMatrix());
 	
 	m_mapDisplayManager.clearAll();
-	m_map.drawTiles(m_mapDisplayManager, m_gameView);
+	const map::Map& map = getMap();
+	map.drawTiles(m_mapDisplayManager, m_gameView);
 	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView.getViewProjectionMatrix());
 	
 #ifdef FLAT_DEBUG
-	m_map.debugDraw(m_debugDisplay);
+	map.debugDraw(m_debugDisplay);
 	m_debugDisplay.drawElements(game, m_gameView);
 #endif
 	

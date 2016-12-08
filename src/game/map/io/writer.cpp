@@ -105,17 +105,21 @@ void Writer::writeHeaders()
 		writeString(propTextureName);
 	}
 
-	writeUint16(m_map.getWidth());
-	writeUint16(m_map.getHeight());
+	int minX, maxX, minY, maxY;
+	m_map.getActualBounds(minX, maxX, minY, maxY);
+	writeInt16(minX);
+	writeInt16(maxX);
+	writeInt16(minY);
+	writeInt16(maxY);
 }
 
 void Writer::writeTiles()
 {
-	const int mapWidth = m_map.getWidth();
-	const int mapHeight = m_map.getHeight();
-	for (int x = 0; x < mapWidth; ++x)
+	int minX, maxX, minY, maxY;
+	m_map.getActualBounds(minX, maxX, minY, maxY);
+	for (int x = minX; x <= maxX; ++x)
 	{
-		for (int y = 0; y < mapHeight; ++y)
+		for (int y = minY; y <= maxY; ++y)
 		{
 			const Tile* tile = m_map.getTile(x, y);
 
@@ -190,6 +194,11 @@ void Writer::writeBool(bool value)
 void Writer::writeFloat(float value)
 {
 	m_file.write(reinterpret_cast<const char*>(&value), sizeof(float));
+}
+
+void Writer::writeInt16(int16_t value)
+{
+	m_file.write(reinterpret_cast<const char*>(&value), sizeof(int16_t));
 }
 
 void Writer::writeUint16(uint16_t value)

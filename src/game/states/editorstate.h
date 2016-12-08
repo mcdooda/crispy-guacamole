@@ -4,6 +4,7 @@
 #include "basemapstate.h"
 #include "editor/editormode.h"
 #include "../map/brush/brush.h"
+#include "../map/editormap.h"
 
 namespace game
 {
@@ -14,9 +15,9 @@ class Tile;
 namespace states
 {
 
-class EditorState : public BaseMapState
+class EditorState : public BaseMapStateImpl<map::EditorMap>
 {
-	typedef BaseMapState Super;
+	typedef BaseMapStateImpl<map::EditorMap> Super;
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;

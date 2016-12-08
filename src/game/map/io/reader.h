@@ -38,6 +38,7 @@ class Reader
 
 		bool readBool();
 		float readFloat();
+		int16_t readInt16();
 		uint16_t readUint16();
 		void readString(std::string& value);
 		
@@ -49,8 +50,10 @@ class Reader
 		
 		std::ifstream m_file;
 
-		int m_mapWidth;
-		int m_mapHeight;
+		int m_minX;
+		int m_maxX;
+		int m_minY;
+		int m_maxY;
 		
 		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_tileTextures;
 		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_propTextures;

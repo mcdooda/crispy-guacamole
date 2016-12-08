@@ -4,7 +4,6 @@
 #include <flat.h>
 #include <lua5.2/lua.hpp>
 #include "../mod/mod.h"
-#include "../map/map.h"
 #include "../map/displaymanager.h"
 #include "../entity/entitypool.h"
 #include "../entity/component/component.h"
@@ -21,6 +20,7 @@ class EntityTemplate;
 }
 namespace map
 {
+class Map;
 class TileTemplate;
 class PropTemplate;
 }
@@ -41,8 +41,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		bool loadMap(Game& game, const std::string& mapName);
 		bool saveMap(Game& game) const;
 
-		inline map::Map& getMap() { return m_map; }
-		inline const map::Map& getMap() const { return m_map; }
+		virtual map::Map& getMap() = 0;
+		const map::Map& getMap() const;
 
 		flat::Vector2 getCursorMapPosition(game::Game& game);
 
@@ -103,7 +103,6 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		
 		// level
 		mod::Mod m_mod;
-		map::Map m_map;
 		map::DisplayManager m_mapDisplayManager;
 
 		std::map<std::string, entity::faction::Faction> m_factions;
@@ -126,6 +125,16 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		std::shared_ptr<flat::sharp::ui::Widget> m_selectionWidget;
 
 		FLAT_DEBUG_ONLY(debug::DebugDisplay m_debugDisplay;)
+};
+
+template <class MapType>
+class BaseMapStateImpl : public BaseMapState
+{
+	public:
+		map::Map& getMap() override { return m_map; }
+
+	protected:
+		MapType m_map;
 };
 
 } // states

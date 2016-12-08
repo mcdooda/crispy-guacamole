@@ -3,14 +3,14 @@
 #include "debugdisplay.h"
 #include "../map/map.h"
 #include "../game.h"
+#include "../states/basemapstate.h"
 
 namespace game
 {
 namespace debug
 {
 
-DebugDisplay::DebugDisplay(const map::Map& map) :
-	m_map(map)
+DebugDisplay::DebugDisplay()
 {
 	// line shader
 	m_lineProgram.load("data/shaders/debugline.frag", "data/shaders/debugline.vert");
@@ -33,6 +33,9 @@ DebugDisplay::DebugDisplay(const map::Map& map) :
 void DebugDisplay::loadResources(Game& game)
 {
 	m_font = game.video->getFont("data/misc/fonts/LucidaSansRegular.ttf", 12);
+
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	m_transform = baseMapState.getMap().getTransform();
 }
 
 void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color, float lineWidth)
@@ -42,10 +45,8 @@ void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& to
 
 void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth)
 {
-	const flat::Matrix3& mapTransform = m_map.getTransform();
-
-	flat::Vector3 from2d = mapTransform * fromPos;
-	flat::Vector3 to2d = mapTransform * toPos;
+	flat::Vector3 from2d = m_transform * fromPos;
+	flat::Vector3 to2d = m_transform * toPos;
 
 	DebugDisplayLine* debugDisplayLine = new DebugDisplayLine(flat::Vector2(from2d), flat::Vector2(to2d), fromColor, toColor, lineWidth);
 	m_lineElements.emplace_back(debugDisplayLine);
@@ -53,9 +54,7 @@ void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& to
 
 void DebugDisplay::addText(const flat::Vector3& pos, const std::string& text, const flat::video::Color& color, const flat::video::Color& backgroundColor)
 {
-	const flat::Matrix3& mapTransform = m_map.getTransform();
-
-	flat::Vector3 pos2d = mapTransform * pos;
+	flat::Vector3 pos2d = m_transform * pos;
 	DebugDisplayText* debugDisplayText = new DebugDisplayText(flat::Vector2(pos2d), text, color, backgroundColor, m_font);
 	m_textElements.emplace_back(debugDisplayText);
 }

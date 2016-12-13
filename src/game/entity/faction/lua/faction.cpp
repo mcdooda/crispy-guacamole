@@ -16,42 +16,41 @@ int open(lua_State* L, const std::string& factionsConfigPath)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
+	// load function
+	luaL_loadfile(L, factionsConfigPath.c_str());
+
+	// setup environment table
 	static const luaL_Reg factionMethods[] = {
 		{"faction",         l_faction},
 		{"factionRelation", l_factionRelation}
 	};
-	for (const luaL_Reg& reg : factionMethods)
-	{
-		lua_pushcfunction(L, reg.func);
-		lua_setglobal(L, reg.name);
-	}
 
 	static const flat::lua::table::KeyValuePair<int> factionRelations[] = {
 		{"NEUTRAL",  FactionRelation::NEUTRAL},
 		{"FRIENDLY", FactionRelation::FRIENDLY},
 		{"HOSTILE",  FactionRelation::HOSTILE}
 	};
+
+	lua_createtable(L, 0, std::size(factionMethods) + std::size(factionRelations));
+
+	for (const luaL_Reg& reg : factionMethods)
+	{
+		lua_pushstring(L, reg.name);
+		lua_pushcfunction(L, reg.func);
+		lua_rawset(L, -3);
+	}
 	for (const flat::lua::table::KeyValuePair<int>& pair : factionRelations)
 	{
+		lua_pushstring(L, pair.key);
 		lua_pushinteger(L, pair.value);
-		lua_setglobal(L, pair.key);
+		lua_rawset(L, -3);
 	}
 
-	// TODO: load file with env instead of clearing global variables afterwards
-	luaL_dofile(L, factionsConfigPath.c_str());
+	// set the table as the 1st upvalue
+	lua_setupvalue(L, -2, 1);
 
-	const char* clearGlobals[] = {
-		"faction",
-		"factionRelation",
-		"NEUTRAL",
-		"FRIENDLY",
-		"HOSTILE"
-	};
-	for (const char* name : clearGlobals)
-	{
-		lua_pushnil(L);
-		lua_setglobal(L, name);
-	}
+	// call the function with the environment correctly set
+	lua_call(L, 0, 0);
 
 	return 0;
 }

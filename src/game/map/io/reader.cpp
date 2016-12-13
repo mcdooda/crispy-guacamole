@@ -104,32 +104,39 @@ void Reader::readConfig(lua_State* L)
 void Reader::readHeaders()
 {
 	// tile textures
-	uint16_t numTiles = readUint16();
+	uint16_t numTiles;
+	read(numTiles);
 	m_tileTextures.reserve(numTiles);
 	for (int i = 0; i < numTiles; ++i)
 	{
 		std::string name;
-		readString(name);
+		read(name);
 		std::string texturePath = m_mod.getTexturePath("tiles/" + name);
 		m_tileTextures.push_back(m_game.video->getTexture(texturePath));
 	}
 
 	// prop textures
-	uint16_t numProps = readUint16();
+	uint16_t numProps;
+	read(numProps);
 	m_propTextures.reserve(numProps);
 	for (int i = 0; i < numProps; ++i)
 	{
 		std::string name;
-		readString(name);
+		read(name);
 		std::string texturePath = m_mod.getTexturePath("props/" + name);
 		m_propTextures.push_back(m_game.video->getTexture(texturePath));
 	}
 	
 	// map size
-	m_minX = readInt16();
-	m_maxX = readInt16();
-	m_minY = readInt16();
-	m_maxY = readInt16();
+	int16_t minX, maxX, minY, maxY;
+	read(minX);
+	read(maxX);
+	read(minY);
+	read(maxY);
+	m_minX = minX;
+	m_maxX = maxX;
+	m_minY = minY;
+	m_maxY = maxY;
 }
 
 void Reader::readTiles()
@@ -152,22 +159,27 @@ void Reader::readTiles()
 			Tile* tile = m_map.getTile(x, y);
 			
 			// tile actually exists?
-			bool exists = readBool();
+			bool exists;
+			read(exists);
 			if (exists)
 			{
 				tile->setExists(true);
 
-				float z = readFloat();
+				float z;
+				read(z);
 				tile->setCoordinates(m_map, x, y, z);
 				
-				uint16_t tileIndex = readUint16();
+				uint16_t tileIndex;
+				read(tileIndex);
 				const std::shared_ptr<const flat::video::FileTexture>& texture = m_tileTextures[tileIndex];
 				tile->setTexture(texture);
 				
-				bool hasProp = readBool();
+				bool hasProp;
+				read(hasProp);
 				if (hasProp)
 				{
-					uint16_t propIndex = readUint16();
+					uint16_t propIndex;
+					read(propIndex);
 					const std::shared_ptr<const flat::video::FileTexture>& texture = m_propTextures[propIndex];
 					tile->setPropTexture(texture);
 				}
@@ -180,65 +192,34 @@ void Reader::readEntities()
 {
 	states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
 
-	uint16_t numEntityTemplates = readUint16();
+	uint16_t numEntityTemplates;
+	read(numEntityTemplates);
 	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;
 	entityTemplates.reserve(numEntityTemplates);
 	for (int i = 0; i < numEntityTemplates; ++i)
 	{
 		std::string entityTemplateName;
-		readString(entityTemplateName);
+		read(entityTemplateName);
 		std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(m_game, entityTemplateName);
 		entityTemplates.push_back(entityTemplate);
 	}
 	
-	uint16_t numEntities = readUint16();
+	uint16_t numEntities;
+	read(numEntities);
 	for (int i = 0; i < numEntities; ++i)
 	{
-		uint16_t entityTemplateIndex = readUint16();
+		uint16_t entityTemplateIndex;
+		read(entityTemplateIndex);
 		std::shared_ptr<const entity::EntityTemplate> entityTemplate = entityTemplates.at(entityTemplateIndex);
 
-		float x = readFloat();
-		float y = readFloat();
+		float x, y;
+		read(x);
+		read(y);
 		Tile* tile = m_map.getTile(x, y);
 		FLAT_ASSERT(tile != nullptr);
 		flat::Vector3 position(x, y, tile->getZ());
 		baseMapState.spawnEntityAtPosition(m_game, entityTemplate, position);
 	}
-}
-
-bool Reader::readBool()
-{
-	bool boolean;
-	m_file.read(reinterpret_cast<char*>(&boolean), sizeof(bool));
-	return boolean;
-}
-
-float Reader::readFloat()
-{
-	float f;
-	m_file.read(reinterpret_cast<char*>(&f), sizeof(float));
-	return f;
-}
-
-int16_t Reader::readInt16()
-{
-	int16_t integer;
-	m_file.read(reinterpret_cast<char*>(&integer), sizeof(int16_t));
-	return integer;
-}
-
-uint16_t Reader::readUint16()
-{
-	uint16_t integer;
-	m_file.read(reinterpret_cast<char*>(&integer), sizeof(uint16_t));
-	return integer;
-}
-
-void Reader::readString(std::string& value)
-{
-	uint16_t size = readUint16();
-	value.resize(size);
-	m_file.read(&value[0], size);
 }
 
 } // io

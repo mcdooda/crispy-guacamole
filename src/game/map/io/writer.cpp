@@ -62,14 +62,14 @@ void Writer::writeHeaders()
 	});
 
 	uint16_t numTiles = static_cast<uint16_t>(tileTexturesOrdered.size());
-	writeUint16(numTiles);
+	write(numTiles);
 	const size_t tilesPrefixSize = std::string("tiles/").size();
 	for (const flat::video::Texture* tileTexture : tileTexturesOrdered)
 	{
 		const flat::video::FileTexture* tileFileTexture = static_cast<const flat::video::FileTexture*>(tileTexture);
 		std::string tileTextureName = m_mod.getTextureRelativePath(tileFileTexture->getFileName());
 		tileTextureName = tileTextureName.substr(tilesPrefixSize, tileTextureName.size() - tilesPrefixSize);
-		writeString(tileTextureName);
+		write<const std::string&>(tileTextureName);
 	}
 
 	// prop textures
@@ -95,22 +95,22 @@ void Writer::writeHeaders()
 	});
 
 	uint16_t numProps = static_cast<uint16_t>(m_propTextures.size());
-	writeUint16(numProps);
+	write(numProps);
 	const size_t propsPrefixSize = std::string("props/").size();
 	for (const flat::video::Texture* propTexture : propTexturesOrdered)
 	{
 		const flat::video::FileTexture* propFileTexture = static_cast<const flat::video::FileTexture*>(propTexture);
 		std::string propTextureName = m_mod.getTextureRelativePath(propFileTexture->getFileName());
 		propTextureName = propTextureName.substr(propsPrefixSize, propTextureName.size() - propsPrefixSize);
-		writeString(propTextureName);
+		write<const std::string&>(propTextureName);
 	}
 
 	int minX, maxX, minY, maxY;
 	m_map.getActualBounds(minX, maxX, minY, maxY);
-	writeInt16(minX);
-	writeInt16(maxX);
-	writeInt16(minY);
-	writeInt16(maxY);
+	write<uint16_t>(minX);
+	write<uint16_t>(maxX);
+	write<uint16_t>(minY);
+	write<uint16_t>(maxY);
 }
 
 void Writer::writeTiles()
@@ -125,23 +125,23 @@ void Writer::writeTiles()
 
 			// tile actually exists?
 			bool exists = tile->exists();
-			writeBool(exists);
+			write(exists);
 			if (exists)
 			{
-				writeFloat(tile->getZ());
+				write(tile->getZ());
 
 				const flat::video::Texture* tileTexture = tile->getSprite().getTexture().get();
 				uint16_t tileIndex = m_tileTextures.at(tileTexture);
-				writeUint16(tileIndex);
+				write(tileIndex);
 
 				const Prop* prop = tile->getProp();
 				bool hasProp = prop != nullptr;
-				writeBool(hasProp);
+				write(hasProp);
 				if (hasProp)
 				{
 					const flat::video::Texture* propTexture = prop->getSprite().getTexture().get();
 					uint16_t propIndex = m_propTextures.at(propTexture);
-					writeUint16(propIndex);
+					write(propIndex);
 				}
 			}
 		}
@@ -167,50 +167,23 @@ void Writer::writeEntities()
 		}
 	}
 
-	writeUint16(static_cast<uint16_t>(entityTemplates.size()));
+	write(static_cast<uint16_t>(entityTemplates.size()));
 	for (const entity::EntityTemplate* entityTemplate : entityTemplatesOrdered)
 	{
-		writeString(entityTemplate->getName());
+		write<const std::string&>(entityTemplate->getName());
 	}
 
-	writeUint16(static_cast<uint16_t>(entities.size()));
+	write(static_cast<uint16_t>(entities.size()));
 	for (const entity::Entity* entity : entities)
 	{
 		const entity::EntityTemplate* entityTemplate = entity->getEntityTemplate().get();
 		FLAT_ASSERT(entityTemplate != nullptr);
 		uint16_t entityTemplateIndex = entityTemplates.at(entityTemplate);
-		writeUint16(entityTemplateIndex);
+		write(entityTemplateIndex);
 		const flat::Vector3& position = entity->getPosition();
-		writeFloat(position.x);
-		writeFloat(position.y);
+		write(position.x);
+		write(position.y);
 	}
-}
-
-void Writer::writeBool(bool value)
-{
-	m_file.write(reinterpret_cast<const char*>(&value), sizeof(bool));
-}
-
-void Writer::writeFloat(float value)
-{
-	m_file.write(reinterpret_cast<const char*>(&value), sizeof(float));
-}
-
-void Writer::writeInt16(int16_t value)
-{
-	m_file.write(reinterpret_cast<const char*>(&value), sizeof(int16_t));
-}
-
-void Writer::writeUint16(uint16_t value)
-{
-	m_file.write(reinterpret_cast<const char*>(&value), sizeof(uint16_t));
-}
-
-void Writer::writeString(const std::string& value)
-{
-	uint16_t size = static_cast<uint16_t>(value.size());
-	writeUint16(size);
-	m_file.write(value.data(), size);
 }
 
 } // io

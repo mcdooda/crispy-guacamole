@@ -35,11 +35,11 @@ class Writer
 		void writeTiles();
 		void writeEntities();
 
-		void writeBool(bool value);
-		void writeFloat(float value);
-		void writeInt16(int16_t value);
-		void writeUint16(uint16_t value);
-		void writeString(const std::string& value);
+		template <class T>
+		void write(T value);
+
+		template <>
+		void Writer::write(const std::string& value);
 
 	private:
 		const mod::Mod& m_mod;
@@ -50,6 +50,21 @@ class Writer
 		std::map<const flat::video::Texture*, uint16_t> m_tileTextures;
 		std::map<const flat::video::Texture*, uint16_t> m_propTextures;
 };
+
+template <class T>
+void Writer::write(T value)
+{
+	static_assert(std::is_pod<T>::value, "Generic implementation only for pod types");
+	m_file.write(reinterpret_cast<const char*>(&value), sizeof(T));
+}
+
+template <>
+void Writer::write(const std::string& value)
+{
+	uint16_t size = static_cast<uint16_t>(value.size());
+	write<uint16_t>(size);
+	m_file.write(value.data(), size);
+}
 
 } // io
 } // map

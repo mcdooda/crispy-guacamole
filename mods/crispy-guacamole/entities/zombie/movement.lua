@@ -1,5 +1,5 @@
 return {
-	speed = 1,
+	speed = 2,
 	jumpForce = 3,
 	weight = 7
 }

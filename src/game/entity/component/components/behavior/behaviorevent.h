@@ -24,7 +24,7 @@ class EntityEnteredVisionRangeBehaviorEvent : public BehaviorEvent
 	public:
 		inline static const char* getMethodName() { return "onEntityEnteredVisionRange"; }
 
-		static int push(lua_State* L, entity::Entity* entity);
+		static int push(lua_State* L, Entity* entity);
 };
 
 class EntityLeftVisionRangeBehaviorEvent : public BehaviorEvent
@@ -32,7 +32,7 @@ class EntityLeftVisionRangeBehaviorEvent : public BehaviorEvent
 public:
 	inline static const char* getMethodName() { return "onEntityLeftVisionRange"; }
 
-	static int push(lua_State* L, entity::Entity* entity);
+	static int push(lua_State* L, Entity* entity);
 };
 
 } // behavior

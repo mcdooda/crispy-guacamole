@@ -3,15 +3,16 @@
 
 #include <flat.h>
 #include "basemapstate.h"
+#include "../map/gamemap.h"
 
 namespace game
 {
 namespace states
 {
 
-class GameState : public BaseMapState
+class GameState : public BaseMapStateImpl<map::GameMap>
 {
-	typedef BaseMapState Super;
+	typedef BaseMapStateImpl<map::GameMap> Super;
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;

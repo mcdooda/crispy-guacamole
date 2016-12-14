@@ -57,12 +57,12 @@ void BehaviorComponent::addedToMap(map::Map* map)
 	enterState("init");
 }
 
-void BehaviorComponent::entityEnteredVisionRange(entity::Entity* entity)
+void BehaviorComponent::entityEnteredVisionRange(Entity* entity)
 {
 	m_behaviorRuntime.handleEvent<EntityEnteredVisionRangeBehaviorEvent>(entity);
 }
 
-void BehaviorComponent::entityLeftVisionRange(entity::Entity* entity)
+void BehaviorComponent::entityLeftVisionRange(Entity* entity)
 {
 	m_behaviorRuntime.handleEvent<EntityLeftVisionRangeBehaviorEvent>(entity);
 }

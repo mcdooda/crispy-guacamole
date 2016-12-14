@@ -28,7 +28,7 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 		void update(float currentTime, float elapsedTime) override;
 
 	public:
-		flat::Slot<entity::Entity*> onCollidedWithEntity;
+		flat::Slot<Entity*> onCollidedWithEntity;
 		flat::Slot<> onCollidedWithMap;
 
 	private:

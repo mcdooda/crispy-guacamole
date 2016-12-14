@@ -13,9 +13,10 @@ namespace map
 {
 
 Map::Map() :
-	m_width(0),
-	m_height(0),
-	m_tiles(nullptr)
+	m_minX(0),
+	m_maxX(0),
+	m_minY(0),
+	m_maxY(0)
 {
 	
 }
@@ -23,28 +24,6 @@ Map::Map() :
 Map::~Map()
 {
 	FLAT_ASSERT(m_entities.empty());
-	destroyTiles();
-}
-
-void Map::operator=(Map&& other)
-{
-	if (m_tiles != nullptr)
-	{
-		FLAT_DELETE_ARRAY(m_tiles);
-	}
-	m_tiles = other.m_tiles;
-	other.m_tiles = nullptr;
-
-	m_width = other.m_width;
-	m_height = other.m_height;
-	other.m_width = 0;
-	other.m_height = 0;
-
-	m_xAxis = other.m_xAxis;
-	m_yAxis = other.m_yAxis;
-	m_zAxis = other.m_zAxis;
-
-	m_entities = std::move(other.m_entities);
 }
 
 bool Map::load(lua_State* L, Game& game, const mod::Mod& mod, const std::string& mapName)
@@ -70,9 +49,44 @@ bool Map::save(const mod::Mod& mod, const std::string& mapName) const
 	return false;
 }
 
+void Map::setBounds(int minX, int maxX, int minY, int maxY)
+{
+	m_minX = minX;
+	m_maxX = maxX;
+	m_minY = minY;
+	m_maxY = maxY;
+}
+
+void Map::getBounds(int& minX, int& maxX, int& minY, int& maxY) const
+{
+	minX = m_minX;
+	maxX = m_maxX;
+	minY = m_minY;
+	maxY = m_maxY;
+}
+
+void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
+{
+	// note that min and max are swapped
+	getBounds(maxX, minX, maxY, minY);
+
+	eachTile([&](const Tile* tile)
+	{
+		if (tile->exists())
+		{
+			const int x = tile->getX();
+			const int y = tile->getY();
+			minX = std::min(minX, x);
+			maxX = std::max(maxX, x);
+			minY = std::min(minY, y);
+			maxY = std::max(maxY, y);
+		}
+	});
+}
+
 void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& view) const
 {
-	eachTileTopToDown([&displayManager](const Tile* tile)
+	eachTile([&displayManager](const Tile* tile)
 	{
 		if (tile->exists())
 		{
@@ -94,81 +108,75 @@ void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& vie
 
 const Tile* Map::getTile(int x, int y) const
 {
-	int tileIndex = getTileIndex(x, y);
-	
-	if (tileIndex < 0)
-		return nullptr;
-	
-	FLAT_ASSERT(tileIndex < getNumTiles());
-	return &m_tiles[tileIndex];
+	return const_cast<Map*>(this)->getTile(x, y);
 }
 
-Tile* Map::getTile(int x, int y)
+const Tile* Map::getTile(float x, float y) const
 {
-	return const_cast<Tile*>((const_cast<const Map*>(this)->getTile(x, y)));
+	return const_cast<Map*>(this)->getTile(x, y);
+}
+
+Tile* Map::getTile(float x, float y)
+{
+	return getTile(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
 const Tile* Map::getTileIfExists(int x, int y) const
 {
-	const Tile* tile = getTile(x, y);
-	
-	if (!tile || !tile->exists())
-		return nullptr;
-		
-	return tile;
+	return const_cast<Map*>(this)->getTileIfExists(x, y);
 }
 
 Tile* Map::getTileIfExists(int x, int y)
 {
-	return const_cast<Tile*>(const_cast<const Map*>(this)->getTileIfExists(x, y));
+	Tile* tile = getTile(x, y);
+
+	if (!tile || !tile->exists())
+		return nullptr;
+
+	return tile;
+}
+
+const Tile* Map::getTileIfExists(float x, float y) const
+{
+	return const_cast<Map*>(this)->getTileIfExists(x, y);
+}
+
+Tile* Map::getTileIfExists(float x, float y)
+{
+	return getTileIfExists(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
 const Tile* Map::getTileIfWalkable(int x, int y) const
 {
-	const Tile* tile = getTileIfExists(x, y);
-	
-	if (!tile || !tile->isWalkable())
-		return nullptr;
-		
-	return tile;
+	return const_cast<Map*>(this)->getTileIfWalkable(x, y);
 }
 
 Tile* Map::getTileIfWalkable(int x, int y)
 {
-	return const_cast<Tile*>(const_cast<const Map*>(this)->getTileIfWalkable(x, y));
+	Tile* tile = getTileIfExists(x, y);
+
+	if (!tile || !tile->isWalkable())
+		return nullptr;
+
+	return tile;
+}
+
+const Tile* Map::getTileIfWalkable(float x, float y) const
+{
+	return const_cast<Map*>(this)->getTileIfWalkable(x, y);
+}
+
+Tile* Map::getTileIfWalkable(float x, float y)
+{
+	return getTileIfWalkable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));;
 }
 
 void Map::eachTile(std::function<void(const Tile*)> func) const
 {
-	const Tile* end = m_tiles + getNumTiles();
-	for (const Tile* tile = m_tiles; tile < end; ++tile)
+	const_cast<Map*>(this)->eachTile([func](Tile* tile)
 	{
 		func(tile);
-	}
-}
-
-void Map::eachTile(std::function<void(Tile*)> func)
-{
-	Tile* end = m_tiles + getNumTiles();
-	for (Tile* tile = m_tiles; tile < end; ++tile)
-	{
-		func(tile);
-	}
-}
-
-void Map::eachTileTopToDown(std::function<void(const Tile*)> func) const
-{
-	int size = m_width + m_height;
-	for (int i = 0; i < size; ++i)
-	{
-		for (int x = i, y = 0; x >= 0 && y < m_height; --x, ++y)
-		{
-			if (const Tile* tile = getTile(x, y))
-			{
-				func(tile);
-			}
-		}
-	}
+	});
 }
 
 void Map::addEntity(entity::Entity* entity)
@@ -231,25 +239,6 @@ void Map::debugDraw(debug::DebugDisplay& debugDisplay) const
 }
 #endif
 
-int Map::getTileIndex(int x, int y) const
-{
-	if (x < 0 || x >= m_width || y < 0 || y >= m_height)
-		return -1;
-	
-	return m_width * y + x;
-}
-
-int Map::getNumTiles() const
-{
-	return m_width * m_height;
-}
-
-void Map::setSize(int width, int height)
-{
-	m_width = width;
-	m_height = height;
-}
-
 void Map::setAxes(const flat::Vector2& xAxis,
                   const flat::Vector2& yAxis,
                   const flat::Vector2& zAxis)
@@ -258,29 +247,6 @@ void Map::setAxes(const flat::Vector2& xAxis,
 	m_xAxis = xAxis;
 	m_yAxis = yAxis;
 	m_zAxis = zAxis;
-}
-
-void Map::createTiles()
-{
-	FLAT_ASSERT(m_tiles == nullptr);
-	FLAT_ASSERT(m_width > 0 && m_height > 0);
-	m_tiles = new Tile[m_width * m_height];
-	for (int y = 0; y < m_height; ++y)
-	{
-		for (int x = 0; x < m_width; ++x)
-		{
-			Tile* tile = getTile(x, y);
-			tile->setCoordinates(*this, x, y, 0.f);
-			tile->setExists(false);
-		}
-	}
-}
-
-void Map::destroyTiles()
-{
-	FLAT_DELETE_ARRAY(m_tiles);
-	m_width = 0;
-	m_height = 0;
 }
 
 } // map

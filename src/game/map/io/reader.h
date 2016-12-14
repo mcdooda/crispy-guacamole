@@ -36,10 +36,11 @@ class Reader
 		void readTiles();
 		void readEntities();
 
-		bool readBool();
-		float readFloat();
-		uint16_t readUint16();
-		void readString(std::string& value);
+		template <class T>
+		void read(T& value);
+
+		template <>
+		void read(std::string& value);
 		
 	private:
 		Game& m_game;
@@ -49,12 +50,29 @@ class Reader
 		
 		std::ifstream m_file;
 
-		int m_mapWidth;
-		int m_mapHeight;
+		int m_minX;
+		int m_maxX;
+		int m_minY;
+		int m_maxY;
 		
 		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_tileTextures;
 		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_propTextures;
 };
+
+template <class T>
+void Reader::read(T& value)
+{
+	m_file.read(reinterpret_cast<char*>(&value), sizeof(T));
+}
+
+template <>
+void Reader::read(std::string& value)
+{
+	uint16_t size;
+	read<uint16_t>(size);
+	value.resize(size);
+	m_file.read(&value[0], size);
+}
 
 } // io
 } // map

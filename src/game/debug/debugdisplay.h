@@ -23,7 +23,7 @@ namespace debug
 class DebugDisplay
 {
 	public:
-		DebugDisplay(const map::Map& map);
+		DebugDisplay();
 
 		void loadResources(Game& game);
 
@@ -45,7 +45,7 @@ class DebugDisplay
 		flat::render::RenderSettings m_textProgramRenderSettings;
 
 		std::shared_ptr<const flat::video::font::Font> m_font;
-		const map::Map& m_map;
+		flat::Matrix3 m_transform;
 
 		std::vector<std::unique_ptr<DebugDisplayElement>> m_lineElements;
 		std::vector<std::unique_ptr<DebugDisplayElement>> m_textElements;

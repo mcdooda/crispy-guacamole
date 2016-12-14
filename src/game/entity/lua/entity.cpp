@@ -1,8 +1,11 @@
 #include "entity.h"
 #include "../entity.h"
+#include "../faction/faction.h"
+#include "../component/components/attack/attackcomponent.h"
 #include "../component/components/movement/movementcomponent.h"
 #include "../component/components/sprite/spritecomponent.h"
 #include "../component/components/detection/detectioncomponent.h"
+#include "../component/components/faction/factioncomponent.h"
 #include "../../game.h"
 #include "../../states/basemapstate.h"
 
@@ -44,6 +47,8 @@ int open(lua_State* L)
 		{"setElevation",            l_Entity_setElevation},
 		{"getElevation",            l_Entity_getElevation},
 
+		{"lookAtEntity",            l_Entity_lookAtEntity},
+
 		// movement
 		{"moveTo",                  l_Entity_moveTo},
 		{"clearPath",               l_Entity_clearPath},
@@ -63,6 +68,15 @@ int open(lua_State* L)
 
 		// detection
 		{"canSee",                  l_Entity_canSee},
+
+		// faction
+		{"isNeutral",               l_Entity_isNeutral},
+		{"isFriendly",              l_Entity_isFriendly},
+		{"isHostile",               l_Entity_isHostile},
+
+		// attack
+		{"setAttackTarget",         l_Entity_setAttackTarget},
+		{"getAttackTarget",         l_Entity_getAttackTarget},
 		
 		{nullptr, nullptr}
 	};
@@ -177,6 +191,17 @@ int l_Entity_getElevation(lua_State * L)
 	Entity& entity = getEntity(L, 1);
 	lua_pushnumber(L, entity.getElevation());
 	return 1;
+}
+
+int l_Entity_lookAtEntity(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity& target = getEntity(L, 2);
+	flat::Vector2 entityPosition2d(entity.getPosition());
+	flat::Vector2 targetPosition2d(target.getPosition());
+	float heading = flat::vector2_angle(targetPosition2d - entityPosition2d);
+	entity.setHeading(heading);
+	return 0;
 }
 
 int l_Entity_moveTo(lua_State* L)
@@ -311,6 +336,65 @@ int l_Entity_canSee(lua_State* L)
 	return 1;
 }
 
+namespace
+{
+static entity::faction::FactionRelation locGetFactionRelation(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity& other = getEntity(L, 2);
+
+	component::faction::FactionComponent* factionComponent = entity.getComponent<component::faction::FactionComponent>();
+	if (!factionComponent)
+	{
+		return entity::faction::FactionRelation::NEUTRAL;
+	}
+
+	component::faction::FactionComponent* otherFactionComponent = other.getComponent<component::faction::FactionComponent>();
+	if (!otherFactionComponent)
+	{
+		return entity::faction::FactionRelation::NEUTRAL;
+	}
+
+	// other entity's relation towards the first entity
+	return otherFactionComponent->getFaction().getFactionRelation(factionComponent->getFaction());
+}
+}
+
+int l_Entity_isNeutral(lua_State* L)
+{
+	lua_pushboolean(L, locGetFactionRelation(L) == entity::faction::FactionRelation::NEUTRAL);
+	return 1;
+}
+
+int l_Entity_isFriendly(lua_State* L)
+{
+	lua_pushboolean(L, locGetFactionRelation(L) == entity::faction::FactionRelation::FRIENDLY);
+	return 1;
+}
+
+int l_Entity_isHostile(lua_State* L)
+{
+	lua_pushboolean(L, locGetFactionRelation(L) == entity::faction::FactionRelation::HOSTILE);
+	return 1;
+}
+
+int l_Entity_setAttackTarget(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity* target = getEntityPtr(L, 2);
+	attack::AttackComponent& attackComponent = getComponent<attack::AttackComponent>(L, entity);
+	attackComponent.setAttackTarget(target);
+	return 0;
+}
+
+int l_Entity_getAttackTarget(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	attack::AttackComponent& attackComponent = getComponent<attack::AttackComponent>(L, entity);
+	pushEntity(L, attackComponent.getAttackTarget());
+	return 1;
+}
+
 // static lua functions
 int l_Entity_spawn(lua_State* L)
 {
@@ -343,6 +427,17 @@ Entity& getEntity(lua_State* L, int index)
 		luaL_argerror(L, index, "The entity is not valid anymore");
 	}
 	return *entityHandle.getEntity();
+}
+
+Entity* getEntityPtr(lua_State* L, int index)
+{
+	if (lua_isnil(L, index))
+	{
+		return nullptr;
+	}
+
+	EntityHandle entityHandle = getEntityHandle(L, index);
+	return entityHandle.getEntity();
 }
 
 void pushEntity(lua_State* L, Entity* entity)

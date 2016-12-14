@@ -52,48 +52,56 @@ template <class EventType, class... T>
 void BehaviorRuntime::handleEvent(T... params)
 {
 	const Behavior& behavior = getBehavior();
+
 	lua_State* L = behavior.getLuaState();
-	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-	// states table
-	behavior.pushStates(L);
-
-	//function
-	lua_getfield(L, -1, EventType::getMethodName());
-	luaL_checktype(L, -1, LUA_TFUNCTION);
-
-	// states table
-	lua_pushvalue(L, -2);
-
-	lua::pushEntity(L, m_entity);
-	int numParams = EventType::push(L, params...);
-
-	lua_call(L, numParams + 2, 1);
-
-	if (!lua_isnil(L, -1))
 	{
-		const char* stateName = luaL_checkstring(L, -1);
-		enterState(stateName);
-	}
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	lua_pop(L, 2);
+		// states table
+		behavior.pushStates(L);
+
+		//function
+		lua_getfield(L, -1, EventType::getMethodName());
+		luaL_checktype(L, -1, LUA_TFUNCTION);
+
+		// states table
+		lua_pushvalue(L, -2);
+
+		lua::pushEntity(L, m_entity);
+		int numParams = EventType::push(L, params...);
+
+		lua_call(L, numParams + 2, 1);
+
+		if (!lua_isnil(L, -1))
+		{
+			const char* stateName = luaL_checkstring(L, -1);
+			enterState(stateName);
+		}
+
+		lua_pop(L, 2);
+	}
 }
 
 template<class EventType>
 inline bool component::behavior::BehaviorRuntime::isEventHandled()
 {
+	bool eventHandled = false;
+
 	const Behavior& behavior = getBehavior();
+
 	lua_State* L = behavior.getLuaState();
-	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	// states table
-	behavior.pushStates(L);
+		// states table
+		behavior.pushStates(L);
 
-	//function
-	lua_getfield(L, -1, EventType::getMethodName());
-	bool eventHandled = lua_isfunction(L, -1);
+		//function
+		lua_getfield(L, -1, EventType::getMethodName());
+		eventHandled = lua_isfunction(L, -1);
 
-	lua_pop(L, 2);
+		lua_pop(L, 2);
+	}
 
 	return eventHandled;
 }

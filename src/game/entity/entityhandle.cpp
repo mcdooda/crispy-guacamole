@@ -35,7 +35,7 @@ void EntityHandle::operator=(EntityHandle& handle)
 void EntityHandle::operator=(Entity* entity)
 {
 	m_entity = entity;
-	m_id = entity->getId();
+	m_id = entity != nullptr ? entity->getId() : EntityIdFactory::InvalidId;
 }
 
 bool EntityHandle::isValid() const

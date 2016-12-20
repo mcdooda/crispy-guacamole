@@ -181,6 +181,7 @@ void Map::eachTile(std::function<void(const Tile*)> func) const
 
 void Map::addEntity(entity::Entity* entity)
 {
+	FLAT_ASSERT(entity != nullptr);
 	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
 	m_entities.push_back(entity);
 	entity->onAddedToMap(this);
@@ -188,6 +189,7 @@ void Map::addEntity(entity::Entity* entity)
 
 void Map::removeEntity(entity::Entity* entity)
 {
+	FLAT_ASSERT(entity != nullptr);
 	std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
 	FLAT_ASSERT(it != m_entities.end());
 	m_entities.erase(it);

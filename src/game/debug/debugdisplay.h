@@ -30,6 +30,8 @@ class DebugDisplay
 		void addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color = flat::video::Color::BLUE, float lineWidth = 1.f);
 		void addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth = 1.f);
 
+		void addCircle(const flat::Vector3& center, float radius, const flat::video::Color& color, float lineWidth = 1.f);
+
 		void addText(const flat::Vector3& pos, const std::string& text, const flat::video::Color& color = flat::video::Color::BLACK, const flat::video::Color& backgroundColor = flat::video::Color::WHITE);
 
 		void drawElements(Game& game, const flat::video::View& view);

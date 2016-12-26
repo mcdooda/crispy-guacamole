@@ -70,6 +70,8 @@ void DetectionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	{
 		debugDisplay.addLine(ownerPosition, entity->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE, 2.5f);
 	}
+
+	debugDisplay.addCircle(m_owner->getPosition(), getTemplate()->getVisionRange(), flat::video::Color::BLUE, 0.5f);
 }
 #endif
 

@@ -41,6 +41,8 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 		void updateAttack();
 		void endAttack();
 
+		float getAttackRange() const;
+
 	private:
 		EntityHandle m_target;
 		EntityThread m_attackThread;

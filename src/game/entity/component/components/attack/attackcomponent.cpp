@@ -52,17 +52,14 @@ void AttackComponent::tryBeginAttack(float currentTime)
 	{
 		if (Entity* target = m_target.getEntity())
 		{
-			const float attackRange = attackComponentTemplate->getAttackRange();
-
-			const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();
-			const float radius = collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
+			const float attackRange = getAttackRange();
 
 			const std::shared_ptr<const EntityTemplate>& targetEntityTemplate = target->getEntityTemplate();
 			const collision::CollisionComponentTemplate* targetCollisionComponentTemplate = targetEntityTemplate->getComponentTemplate<collision::CollisionComponent>();
 			const float targetRadius = targetCollisionComponentTemplate ? targetCollisionComponentTemplate->getRadius() : 0.f;
 
 			float distance2 = flat::length2(target->getPosition() - m_owner->getPosition());
-			if (distance2 <= (attackRange + radius + targetRadius) * (attackRange + radius + targetRadius))
+			if (distance2 <= (attackRange + targetRadius) * (attackRange + targetRadius))
 			{
 				beginAttack(currentTime);
 			}
@@ -159,6 +156,12 @@ void AttackComponent::endAttack()
 	}
 }
 
+float AttackComponent::getAttackRange() const
+{
+	const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();
+	return getTemplate()->getAttackRange() + (collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f);
+}
+
 #ifdef FLAT_DEBUG
 void AttackComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
@@ -166,6 +169,8 @@ void AttackComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	{
 		debugDisplay.addLine(m_owner->getPosition(), target->getPosition(), flat::video::Color::GREEN);
 	}
+
+	debugDisplay.addCircle(m_owner->getPosition(), getAttackRange(), flat::video::Color::GREEN, 0.5f);
 }
 #endif
 

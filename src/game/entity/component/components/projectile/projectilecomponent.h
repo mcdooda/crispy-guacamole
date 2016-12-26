@@ -31,6 +31,8 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		
 		bool isBusy() const override { return true; }
 
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
+
 	private:
 		void headingChanged(float heading);
 		void collided(Entity* collidedEntity);

@@ -85,6 +85,13 @@ float ProjectileComponent::getSpeedXY() const
 	return std::sqrt(m_speed.x * m_speed.x + m_speed.y * m_speed.y);
 }
 
+#ifdef FLAT_DEBUG
+void ProjectileComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	debugDisplay.addLine(m_owner->getPosition(), flat::Vector3(m_owner->getPosition().x, m_owner->getPosition().y, 0.f), flat::video::Color::BLACK);
+}
+#endif
+
 } // projectile
 } // component
 } // entity

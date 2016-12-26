@@ -48,7 +48,8 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 		const float elevation = m_owner->getElevation();
 		FLAT_ASSERT(-flat::PI <= elevation && elevation < flat::PI);
 
-		flat::Vector3 direction(std::cos(heading), std::sin(heading), std::sin(elevation));
+		const float directionLenXY = std::cos(elevation);
+		flat::Vector3 direction(std::cos(heading) * directionLenXY, std::sin(heading) * directionLenXY, std::sin(elevation));
 
 		const map::Map* map = m_owner->getMap();
 		FLAT_ASSERT(map != nullptr);

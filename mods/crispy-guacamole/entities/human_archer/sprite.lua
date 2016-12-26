@@ -14,7 +14,7 @@ return {
 		}
 	},
 	attachPoints = {
-		crossbow = {22, 13}
+		crossbow = {22, 11}
 	}
 }
 

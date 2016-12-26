@@ -29,6 +29,8 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool playAnimationByName(const std::string& animationName, int numLoops = 1);
 		bool setMoveAnimationByName(const std::string& moveAnimationName);
 		bool setDefaultMoveAnimation();
+
+		bool getAttachPoint(const std::string& attachPointName, flat::Vector3& attachPoint) const;
 		
 		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
 		

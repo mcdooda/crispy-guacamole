@@ -73,6 +73,33 @@ void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::string& 
 	m_spriteDescription.cacheMandatoryAnimationDescriptions();
 
 	lua_pop(L, 1);
+
+	// attach points
+	lua_getfield(L, -1, "attachPoints");
+	if (!lua_isnil(L, -1))
+	{
+		luaL_checktype(L, -1, LUA_TTABLE);
+
+		lua_pushnil(L);
+		while (lua_next(L, -2) != 0)
+		{
+			const char* attachPointName = luaL_checkstring(L, -2);
+
+			luaL_checktype(L, -1, LUA_TTABLE);
+
+			lua_rawgeti(L, -1, 1);
+			float x = static_cast<float>(luaL_checknumber(L, -1));
+
+			lua_rawgeti(L, -2, 2);
+			float y = static_cast<float>(luaL_checknumber(L, -1));
+
+			m_spriteDescription.addAttachPoint(attachPointName, flat::Vector2(x, y));
+
+			lua_pop(L, 3);
+		}
+	}
+
+	lua_pop(L, 1);
 }
 
 } // sprite

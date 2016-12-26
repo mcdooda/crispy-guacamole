@@ -110,6 +110,28 @@ bool SpriteComponent::setDefaultMoveAnimation()
 	return false;
 }
 
+bool SpriteComponent::getAttachPoint(const std::string& attachPointName, flat::Vector3& attachPoint) const
+{
+	const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
+	if (const flat::Vector2* attachPoint2d = spriteDescription.getAttachPoint(attachPointName))
+	{
+		flat::Vector2 relativePosition2d = *attachPoint2d - m_sprite.getOrigin();
+		const map::Map* map = m_owner->getMap();
+		const flat::Matrix3& mapInvTransform = map->getInvTransform();
+
+		if (m_sprite.getFlipX())
+		{
+			relativePosition2d.x = -relativePosition2d.x;
+		}
+
+		// screen to map position
+		flat::Vector3 relativePosition3d = mapInvTransform * flat::Vector3(relativePosition2d, 1.f);
+		attachPoint = m_owner->getPosition() + relativePosition3d;
+		return true;
+	}
+	return false;
+}
+
 void SpriteComponent::update(float currentTime, float elapsedTime)
 {
 	if (m_positionChanged)

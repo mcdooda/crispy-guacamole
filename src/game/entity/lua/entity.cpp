@@ -65,6 +65,7 @@ int open(lua_State* L)
 		{"playAnimationAsync",      l_Entity_playAnimationAsync},
 		{"setMoveAnimation",        l_Entity_setMoveAnimation},
 		{"setDefaultMoveAnimation", l_Entity_setDefaultMoveAnimation},
+		{"getAttachPoint",          l_Entity_getAttachPoint},
 
 		// detection
 		{"canSee",                  l_Entity_canSee},
@@ -326,6 +327,22 @@ int l_Entity_setDefaultMoveAnimation(lua_State * L)
 	return 0;
 }
 
+int l_Entity_getAttachPoint(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	const char* attachPointName = luaL_checkstring(L, 2);
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
+	flat::Vector3 attachPoint;
+	if (spriteComponent.getAttachPoint(attachPointName, attachPoint))
+	{
+		lua_pushnumber(L, attachPoint.x);
+		lua_pushnumber(L, attachPoint.y);
+		lua_pushnumber(L, attachPoint.z);
+		return 3;
+	}
+	return 0;
+}
+
 int l_Entity_canSee(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -407,8 +424,7 @@ int l_Entity_spawn(lua_State* L)
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
-	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position);
-	entity->setHeading(heading);
+	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, 0.f);
 	pushEntity(L, entity);
 	return 1;
 }

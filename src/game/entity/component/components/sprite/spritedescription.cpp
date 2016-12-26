@@ -38,6 +38,21 @@ const AnimationDescription* SpriteDescription::getAnimationDescription(const std
 	return &it->second;
 }
 
+void SpriteDescription::addAttachPoint(const std::string& attachPointName, const flat::Vector2& attachPoint)
+{
+	m_attachPoints.emplace(attachPointName, attachPoint);
+}
+
+const flat::Vector2* SpriteDescription::getAttachPoint(const std::string& attachPointName) const
+{
+	std::map<std::string, flat::Vector2>::const_iterator it = m_attachPoints.find(attachPointName);
+
+	if (it == m_attachPoints.cend())
+		return nullptr;
+
+	return &it->second;
+}
+
 } // sprite
 } // component
 } // entity

@@ -65,6 +65,7 @@ class Map
 		
 		// axes
 		inline const flat::Matrix3& getTransform() const { return m_transform; }
+		inline const flat::Matrix3& getInvTransform() const { return m_invTransform; }
 		inline const flat::Vector2& getXAxis() const { return m_xAxis; }
 		inline const flat::Vector2& getYAxis() const { return m_yAxis; }
 		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
@@ -95,6 +96,7 @@ class Map
 		
 	protected:
 		flat::Matrix3 m_transform;
+		flat::Matrix3 m_invTransform;
 		flat::Vector2 m_xAxis;
 		flat::Vector2 m_yAxis;
 		flat::Vector2 m_zAxis;

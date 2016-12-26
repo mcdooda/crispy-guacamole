@@ -36,6 +36,9 @@ class SpriteDescription
 		void cacheMandatoryAnimationDescriptions();
 		const AnimationDescription* getAnimationDescription(const std::string& animationName) const;
 		inline const AnimationDescription* getDefaultMoveAnimationDescription() const { return m_defaultMoveAnimationDescription; }
+
+		void addAttachPoint(const std::string& attachPointName, const flat::Vector2& attachPoint);
+		const flat::Vector2* getAttachPoint(const std::string& attachPointName) const;
 		
 	private:
 		std::shared_ptr<const flat::video::Texture> m_atlas;
@@ -46,6 +49,8 @@ class SpriteDescription
 		
 		std::map<std::string, AnimationDescription> m_animationDescriptions;
 		const AnimationDescription* m_defaultMoveAnimationDescription;
+
+		std::map<std::string, flat::Vector2> m_attachPoints;
 };
 
 } // sprite

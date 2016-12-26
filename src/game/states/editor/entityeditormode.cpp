@@ -31,7 +31,7 @@ void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 	if (tile != nullptr)
 	{
 		flat::Vector3 position(position, tile->getZ());
-		getEditorState().spawnEntityAtPosition(m_game, m_entityTemplate, position);
+		getEditorState().spawnEntityAtPosition(m_game, m_entityTemplate, position, 0.f, 0.f);
 	}
 }
 

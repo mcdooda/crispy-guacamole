@@ -51,6 +51,7 @@ int l_Entity_playAnimation(lua_State* L);
 int l_Entity_playAnimationAsync(lua_State* L);
 int l_Entity_setMoveAnimation(lua_State* L);
 int l_Entity_setDefaultMoveAnimation(lua_State* L);
+int l_Entity_getAttachPoint(lua_State* L);
 
 // detection
 int l_Entity_canSee(lua_State* L);

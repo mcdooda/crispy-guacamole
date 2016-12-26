@@ -12,6 +12,9 @@ return {
 			numFrames = 8,
 			frameDuration = 0.07
 		}
+	},
+	attachPoints = {
+		crossbow = {22, 13}
 	}
 }
 

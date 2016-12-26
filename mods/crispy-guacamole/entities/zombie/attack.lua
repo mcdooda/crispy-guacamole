@@ -1,5 +1,3 @@
-local atan2 = math.atan2
-
 return {
 	attackRange = 0.05,
 	attackCooldown = 1,

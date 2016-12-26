@@ -420,11 +420,12 @@ int l_Entity_spawn(lua_State* L)
 	float y = static_cast<float>(luaL_checknumber(L, 3));
 	float z = static_cast<float>(luaL_checknumber(L, 4));
 	flat::Vector3 position(x, y, z);
-	float heading = static_cast<float>(luaL_checknumber(L, 5));
+	float heading = static_cast<float>(luaL_optnumber(L, 5, 0.f));
+	float elevation = static_cast<float>(luaL_optnumber(L, 6, 0.f));
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
-	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, 0.f);
+	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation);
 	pushEntity(L, entity);
 	return 1;
 }

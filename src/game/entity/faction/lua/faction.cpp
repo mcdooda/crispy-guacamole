@@ -31,7 +31,7 @@ int open(lua_State* L, const std::string& factionsConfigPath)
 		{"HOSTILE",  FactionRelation::HOSTILE}
 	};
 
-	lua_createtable(L, 0, std::size(factionMethods) + std::size(factionRelations));
+	lua_createtable(L, 0, static_cast<int>(std::size(factionMethods) + std::size(factionRelations)));
 
 	for (const luaL_Reg& reg : factionMethods)
 	{

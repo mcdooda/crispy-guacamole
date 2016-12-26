@@ -15,7 +15,8 @@ local states = {}
 
 function states:init(zombie)
 	zombie:playAnimation 'spawn'
-	zombie:enterState 'wander'
+	zombie:playAnimation 'move'
+	--zombie:enterState 'wander'
 end
 
 function states:despawn(zombie)

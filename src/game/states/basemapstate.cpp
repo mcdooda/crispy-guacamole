@@ -213,6 +213,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::share
 	entity->setPosition(position);
 	entity->setHeading(heading);
 	entity->setElevation(elevation);
+	entity->initComponents();
 	map::Map& map = getMap();
 	map.addEntity(entity);
 	m_entities.push_back(entity);

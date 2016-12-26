@@ -15,7 +15,7 @@ return {
 			
 			local x, y, z = archer:getAttachPoint 'crossbow'
 			local heading = archer:getHeading()
-			Entity.spawn('arrow', x, y, z, heading)
+			Entity.spawn('arrow', x, y, z, heading, math.pi / 4)
 		end)
 	end
 }

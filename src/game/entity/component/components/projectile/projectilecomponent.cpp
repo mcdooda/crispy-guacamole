@@ -17,9 +17,16 @@ void ProjectileComponent::init()
 {
 	m_owner->headingChanged.on(this, &ProjectileComponent::headingChanged);
 
-	m_speed.x = getTemplate()->getSpeed();
-	m_speed.y = 0.f;
-	m_speed.z = 4.f;
+	const float projectileSpeed = getTemplate()->getSpeed();
+
+	const float heading = m_owner->getHeading();
+	const float elevation = m_owner->getElevation();
+
+	const float speedXY = std::cos(elevation) * projectileSpeed;
+
+	m_speed.x = std::cos(heading) * speedXY;
+	m_speed.y = std::sin(heading) * speedXY;
+	m_speed.z = std::sin(elevation) * projectileSpeed;
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
@@ -71,6 +78,11 @@ void ProjectileComponent::collided(Entity* collidedEntity)
 		}
 		lua_pop(L, 1);
 	}
+}
+
+float ProjectileComponent::getSpeedXY() const
+{
+	return std::sqrt(m_speed.x * m_speed.x + m_speed.y * m_speed.y);
 }
 
 } // projectile

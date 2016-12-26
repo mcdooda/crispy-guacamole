@@ -45,7 +45,6 @@ Entity* EntityPool::createEntity(
 	});
 
 	entity->cacheComponents();
-	entity->initComponents();
 	return entity;
 }
 

@@ -46,67 +46,73 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			flat::rotateZBy(transform2d, flat::vector2_angle(move));
 			flat::Matrix4 transform2dInverse = flat::inverse(transform2d);
 
+			flat::Vector2 steering = move;
+
 			// entity radius
 			const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();
-			const float radius = collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
-
-			Entity* entityToAvoid = nullptr;
-			float entityToAvoidDistance = std::numeric_limits<float>::max();
-
-			// find entities moving in the opposite direction
-			map->eachEntityInRange(position2d, 3.f, [this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance](Entity* entity)
+			float radius = 0.f;
+			if (collisionComponentTemplate != nullptr && collisionComponentTemplate->getSeparate())
 			{
-				if (entity == m_owner)
-					return;
+				radius = collisionComponentTemplate->getRadius();
 
-				// in front of the component owner?
-				flat::Vector2 entityPosition2d(entity->getPosition());
-				if (flat::dot(move, entityPosition2d - position2d) > 0.f
-					&& flat::length2(entityPosition2d - position2d) < moveLen2)
+				Entity* entityToAvoid = nullptr;
+				float entityToAvoidDistance = std::numeric_limits<float>::max();
+
+				// find entities moving in the opposite direction
+				map->eachEntityInRange(position2d, 3.f, [this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance](Entity* entity)
 				{
-					movement::MovementComponent* entityMovementComponent = entity->getComponent<movement::MovementComponent>();
-					// moving in opposite direction?
-					// TODO: also avoid if the other entity moves slower than the current entity
-					if (!entityMovementComponent
-						|| !entityMovementComponent->followsPath()
-						|| flat::dot(getCurrentDirection(), entityMovementComponent->getCurrentDirection()) < 0.f)
+					if (entity == m_owner)
+						return;
+
+					// in front of the component owner?
+					flat::Vector2 entityPosition2d(entity->getPosition());
+					if (flat::dot(move, entityPosition2d - position2d) > 0.f
+						&& flat::length2(entityPosition2d - position2d) < moveLen2)
 					{
-						const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
-						const collision::CollisionComponentTemplate* collisionComponentTemplate = entityTemplate->getComponentTemplate<collision::CollisionComponent>();
-						const float entityRadius = collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
-
-						const float avoidDistance = (radius + entityRadius) * flat::SQRT2;
-
-						// compute the other entity's position relatively to the current entity's position and heading
-						flat::Vector2 relativeEntityPosition2d = flat::Vector2(transform2dInverse * flat::Vector4(entityPosition2d, 0.f, 1.f));
-						//FLAT_ASSERT(relativeEntityPosition2d.x > 0.f);
-						if (std::abs(relativeEntityPosition2d.y) <= avoidDistance)
+						movement::MovementComponent* entityMovementComponent = entity->getComponent<movement::MovementComponent>();
+						// moving in opposite direction?
+						// TODO: also avoid if the other entity moves slower than the current entity
+						if (!entityMovementComponent
+							|| !entityMovementComponent->followsPath()
+							|| flat::dot(getCurrentDirection(), entityMovementComponent->getCurrentDirection()) < 0.f)
 						{
-							if (relativeEntityPosition2d.x < entityToAvoidDistance)
+							const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
+							const collision::CollisionComponentTemplate* collisionComponentTemplate = entityTemplate->getComponentTemplate<collision::CollisionComponent>();
+							if (collisionComponentTemplate != nullptr && collisionComponentTemplate->getSeparate())
 							{
-								entityToAvoidDistance = relativeEntityPosition2d.x;
-								entityToAvoid = entity;
+								const float entityRadius = collisionComponentTemplate->getRadius();
+								const float avoidDistance = (radius + entityRadius) * flat::SQRT2;
+
+								// compute the other entity's position relatively to the current entity's position and heading
+								flat::Vector2 relativeEntityPosition2d = flat::Vector2(transform2dInverse * flat::Vector4(entityPosition2d, 0.f, 1.f));
+								//FLAT_ASSERT(relativeEntityPosition2d.x > 0.f);
+								if (std::abs(relativeEntityPosition2d.y) <= avoidDistance)
+								{
+									if (relativeEntityPosition2d.x < entityToAvoidDistance)
+									{
+										entityToAvoidDistance = relativeEntityPosition2d.x;
+										entityToAvoid = entity;
+									}
+								}
 							}
 						}
 					}
+				});
+
+				if (entityToAvoid != nullptr)
+				{
+					const std::shared_ptr<const EntityTemplate>& entityToAvoidTemplate = entityToAvoid->getEntityTemplate();
+					const collision::CollisionComponentTemplate* collisionComponentTemplate = entityToAvoidTemplate->getComponentTemplate<collision::CollisionComponent>();
+					const float entityToAvoidRadius = collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
+
+					flat::Vector2 relativeEntityPosition2d(transform2dInverse * flat::Vector4(entityToAvoid->getPosition(), 1.f));
+					const float avoidDistance = (radius + entityToAvoidRadius) * flat::SQRT2;
+					const float ySign = flat::sign(relativeEntityPosition2d.y);
+					flat::Vector2 relativeAvoidPosition2d(relativeEntityPosition2d.x, relativeEntityPosition2d.y - ySign * avoidDistance);
+
+					flat::Vector2 absoluteAvoidPosition2d(transform2d * flat::Vector4(relativeAvoidPosition2d, 0.f, 1.f));
+					steering = absoluteAvoidPosition2d - position2d;
 				}
-			});
-
-			flat::Vector2 steering = move;
-
-			if (entityToAvoid != nullptr)
-			{
-				const std::shared_ptr<const EntityTemplate>& entityToAvoidTemplate = entityToAvoid->getEntityTemplate();
-				const collision::CollisionComponentTemplate* collisionComponentTemplate = entityToAvoidTemplate->getComponentTemplate<collision::CollisionComponent>();
-				const float entityToAvoidRadius = collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
-
-				flat::Vector2 relativeEntityPosition2d(transform2dInverse * flat::Vector4(entityToAvoid->getPosition(), 1.f));
-				const float avoidDistance = (radius + entityToAvoidRadius) * flat::SQRT2;
-				const float ySign = flat::sign(relativeEntityPosition2d.y);
-				flat::Vector2 relativeAvoidPosition2d(relativeEntityPosition2d.x, relativeEntityPosition2d.y - ySign * avoidDistance);
-
-				flat::Vector2 absoluteAvoidPosition2d(transform2d * flat::Vector4(relativeAvoidPosition2d, 0.f, 1.f));
-				steering = absoluteAvoidPosition2d - position2d;
 			}
 
 			FLAT_DEBUG_ONLY(m_steering = steering;)

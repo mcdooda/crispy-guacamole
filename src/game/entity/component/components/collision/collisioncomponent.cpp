@@ -24,8 +24,11 @@ void CollisionComponent::update(float currentTime, float elapsedTime)
 
 void CollisionComponent::separateFromNearbyEntities()
 {
-	const flat::Vector3& position = m_owner->getPosition();
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
+	if (!collisionComponentTemplate->getSeparate())
+		return;
+
+	const flat::Vector3& position = m_owner->getPosition();
 	const movement::MovementComponentTemplate* movementComponentTemplate = getTemplate<movement::MovementComponent>();
 	const float weight = movementComponentTemplate ? movementComponentTemplate->getWeight() : 0.f;
 	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
@@ -56,7 +59,7 @@ void CollisionComponent::separateFromNearbyEntities()
 					const flat::Vector3& neighborPosition = neighbor->getPosition();
 					const EntityTemplate* neighborTemplate = neighbor->getEntityTemplate().get();
 					const CollisionComponentTemplate* neighborCollisionComponentTemplate = neighborTemplate->getComponentTemplate<CollisionComponent>();
-					if (neighborCollisionComponentTemplate != nullptr)
+					if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate())
 					{
 						const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
 						const EntityTemplate* neighborEntityTemplate = neighbor->getEntityTemplate().get();

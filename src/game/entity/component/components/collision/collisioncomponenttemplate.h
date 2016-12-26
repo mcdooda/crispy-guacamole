@@ -22,8 +22,11 @@ class CollisionComponentTemplate : public ComponentTemplate
 
 		inline float getRadius() const { return m_collisionBox.getRadius(); }
 
+		inline bool getSeparate() const { return m_separate; }
+
 	private:
 		CollisionBox m_collisionBox;
+		bool m_separate;
 };
 
 } // collision

@@ -1,5 +1,3 @@
-local dump = require 'data/scripts/dump'
-
 local ModData = {}
 
 local path = Mod.getPath()
@@ -19,12 +17,8 @@ for i = 1, #entities do
 	for j = 1, #componentConfigNames do
 		local componentConfigName = componentConfigNames[j]
 		local componentExists, componentTemplate = pcall(dofile, path .. '/entities/' .. entityName .. '/' .. componentConfigName .. '.lua')
-		print 'componentTemplate'
-		print(componentExists)
-		dump(componentTemplate)
 		if componentExists then
 			entityTemplate[componentConfigName] = componentTemplate
-			print(entityName .. '.' .. componentConfigName)
 		end
 	end
 	ModData.entities[entityName] = entityTemplate

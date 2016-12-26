@@ -50,7 +50,6 @@ void BaseMapState::enter(Game& game)
 	m_spriteProgram.load("data/shaders/spritebatch.frag", "data/shaders/spritebatch.vert");
 	
 	m_spriteProgramRenderSettings.textureUniform              = m_spriteProgram.getUniform<flat::video::Texture>("objectTexture");
-	m_spriteProgramRenderSettings.modelMatrixUniform          = m_spriteProgram.getUniform<flat::Matrix4>("modelMatrix");
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform = m_spriteProgram.getUniform<flat::Matrix4>("vpMatrix");
 
 	m_spriteProgramRenderSettings.positionAttribute           = m_spriteProgram.getAttribute("position");

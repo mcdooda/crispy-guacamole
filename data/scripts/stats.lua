@@ -53,5 +53,3 @@ do
 
 	root:addChild(debugContainer)
 end
-
-print 'STATS'

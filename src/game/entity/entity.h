@@ -96,7 +96,8 @@ class Entity final : public map::MapObject
 		inline bool isSelected() const { return m_selected; }
 
 #ifdef FLAT_DEBUG
-		inline void enableDebug(bool debug) { m_debug = debug; }
+		inline void setDebug(bool debug) { m_debug = debug; }
+		inline void setDebugBreak(bool debugBreak) { m_debugBreak = debugBreak; }
 #endif
 		
 	public:
@@ -131,7 +132,10 @@ class Entity final : public map::MapObject
 		std::shared_ptr<const EntityTemplate> m_template;
 
 		bool m_selected : 1;
-		FLAT_DEBUG_ONLY(bool m_debug : 1;)
+#ifdef FLAT_DEBUG
+		bool m_debug : 1;
+		bool m_debugBreak : 1;
+#endif
 };
 
 template <class ComponentType>

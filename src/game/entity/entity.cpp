@@ -26,6 +26,7 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_selected(false)
 #ifdef FLAT_DEBUG
 	, m_debug(false)
+	, m_debugBreak(false)
 #endif
 {
 
@@ -138,6 +139,12 @@ void Entity::onRemovedFromMap()
 
 void Entity::update(float currentTime, float elapsedTime)
 {
+#ifdef FLAT_DEBUG
+	if (m_debugBreak)
+	{
+		FLAT_BREAK();
+	}
+#endif
 	for (component::Component* component : m_components)
 	{
 		if (component->isEnabled())

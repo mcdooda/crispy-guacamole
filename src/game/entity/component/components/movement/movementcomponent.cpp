@@ -19,8 +19,9 @@ namespace movement
 
 void MovementComponent::init()
 {
-	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
-	const float speed = movementComponentTemplate->getSpeed();
+	m_destination = flat::Vector2(m_owner->getPosition());
+
+	const float speed = getTemplate()->getSpeed();
 	m_speed = speed;
 
 	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
@@ -29,6 +30,17 @@ void MovementComponent::init()
 void MovementComponent::update(float currentTime, float elapsedTime)
 {
 	FLAT_DEBUG_ONLY(m_steering = flat::Vector2(0.f, 0.f);)
+
+	if (!followsPath())
+	{
+		flat::Vector2 ownerPosition(m_owner->getPosition());
+		if (flat::length2(ownerPosition - m_destination) > MIN_DISTANCE_TO_DESTINATION * MIN_DISTANCE_TO_DESTINATION
+			&& currentTime > m_returnToDestinationTime)
+		{
+			addPointOnPath(m_destination);
+		}
+	}
+
 	if (followsPath())
 	{
 		flat::Vector2& pathNextPoint = m_path.front();
@@ -155,6 +167,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	}
 	else if (!m_isMoving && wasMoving)
 	{
+		m_returnToDestinationTime = currentTime + RETURN_TO_DESTINATION_DURATION;
 		movementStopped();
 	}
 }
@@ -193,24 +206,21 @@ flat::Vector2 MovementComponent::getCurrentDirection() const
 
 void MovementComponent::addPointOnPath(const flat::Vector2& point)
 {
-	//FLAT_ASSERT(isEnabled());
+	m_destination = point;
 
-	bool startMovement = false;
 	flat::Vector2 startingPoint;
 	if (m_path.empty())
 	{
 		const flat::Vector3& position = m_owner->getPosition();
 		startingPoint.x = position.x;
 		startingPoint.y = position.y;
-		startMovement = true;
 	}
 	else
 	{
 		startingPoint = m_path.back();
 	}
 	
-	const float minDistanceBetweenPoints = 0.1f;
-	if (flat::length2(point - startingPoint) > minDistanceBetweenPoints * minDistanceBetweenPoints)
+	if (flat::length2(point - startingPoint) > MIN_DISTANCE_TO_DESTINATION * MIN_DISTANCE_TO_DESTINATION)
 	{
 		const map::Map& map = *m_owner->getMap();
 		const float jumpHeight = getTemplate()->getJumpMaxHeight();

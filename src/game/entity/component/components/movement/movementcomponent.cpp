@@ -140,16 +140,23 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 					newPosition2d = pathNextPoint;
 				}
 				m_path.pop_front();
-				if (!followsPath())
-				{
-					movementStopped();
-				}
 			}
 			m_owner->setXY(newPosition2d);
 		}
 	}
 	
 	fall(elapsedTime);
+
+	const bool wasMoving = m_isMoving;
+	m_isMoving = followsPath();
+	if (!wasMoving && m_isMoving)
+	{
+		movementStarted();
+	}
+	else if (!m_isMoving && wasMoving)
+	{
+		movementStopped();
+	}
 }
 
 void MovementComponent::addedToMap(map::Map* map)
@@ -187,6 +194,7 @@ flat::Vector2 MovementComponent::getCurrentDirection() const
 void MovementComponent::addPointOnPath(const flat::Vector2& point)
 {
 	//FLAT_ASSERT(isEnabled());
+
 	bool startMovement = false;
 	flat::Vector2 startingPoint;
 	if (m_path.empty())
@@ -201,7 +209,7 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 		startingPoint = m_path.back();
 	}
 	
-	const float minDistanceBetweenPoints = 0.3f;
+	const float minDistanceBetweenPoints = 0.1f;
 	if (flat::length2(point - startingPoint) > minDistanceBetweenPoints * minDistanceBetweenPoints)
 	{
 		const map::Map& map = *m_owner->getMap();
@@ -219,11 +227,6 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 		else
 		{
 			m_path.push_back(point);
-		}
-		
-		if (startMovement)
-		{
-			movementStarted();
 		}
 	}
 }

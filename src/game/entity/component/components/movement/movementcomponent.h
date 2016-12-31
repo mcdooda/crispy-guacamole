@@ -60,6 +60,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		float m_speed;
 		float m_zSpeed;
 		bool m_isTouchingGround : 1;
+		bool m_isMoving : 1; // should not be set directly, only used to trigger movementStarted/movementStopped when needed
 
 		FLAT_DEBUG_ONLY(flat::Vector2 m_steering;)
 };

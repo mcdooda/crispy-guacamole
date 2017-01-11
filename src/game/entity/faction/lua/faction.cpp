@@ -1,3 +1,4 @@
+#include <iterator>
 #include "faction.h"
 #include "../factionrelation.h"
 #include "../../../game.h"
@@ -31,7 +32,7 @@ int open(lua_State* L, const std::string& factionsConfigPath)
 		{"HOSTILE",  FactionRelation::HOSTILE}
 	};
 
-	lua_createtable(L, 0, static_cast<int>(std::size(factionMethods) + std::size(factionRelations)));
+	lua_createtable(L, 0, static_cast<int>(flat::size(factionMethods) + flat::size(factionRelations)));
 
 	for (const luaL_Reg& reg : factionMethods)
 	{

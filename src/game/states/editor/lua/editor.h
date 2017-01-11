@@ -2,12 +2,13 @@
 #define GAME_STATES_EDITOR_LUA_EDITOR_H
 
 #include <flat.h>
+#include "../../../game.h"
+#include "../../editorstate.h"
 
 namespace game
 {
 namespace states
 {
-class EditorState;
 namespace editor
 {
 class EditorMode;
@@ -34,7 +35,8 @@ void setEditorMode(lua_State* L)
 	static_assert(std::is_base_of<editor::EditorMode, T>::value, "T must inherit from editor::EditorMode");
 	Game& game = flat::lua::getGame(L).to<Game>();
 	editor::EditorMode* editorMode = new T(game);
-	getEditorState(L).setEditorMode(editorMode);
+	states::EditorState& editorState = getEditorState(L);
+	editorState.setEditorMode(editorMode);
 }
 
 editor::EditorMode& getEditorMode(lua_State* L);

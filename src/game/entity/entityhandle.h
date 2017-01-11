@@ -13,7 +13,7 @@ class EntityHandle
 {
 	public:
 		EntityHandle();
-		EntityHandle(EntityHandle& handle);
+		EntityHandle(const EntityHandle& handle);
 		EntityHandle(Entity* entity);
 
 		void operator=(EntityHandle& handle);

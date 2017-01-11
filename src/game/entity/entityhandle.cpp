@@ -12,7 +12,7 @@ EntityHandle::EntityHandle() :
 {
 }
 
-EntityHandle::EntityHandle(EntityHandle& handle) :
+EntityHandle::EntityHandle(const EntityHandle& handle) :
 	m_entity(handle.m_entity),
 	m_id(handle.m_id)
 {

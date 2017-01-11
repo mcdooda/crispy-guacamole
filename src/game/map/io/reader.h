@@ -38,9 +38,6 @@ class Reader
 
 		template <class T>
 		void read(T& value);
-
-		template <>
-		void read(std::string& value);
 		
 	private:
 		Game& m_game;

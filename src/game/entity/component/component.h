@@ -94,7 +94,8 @@ template<class ComponentTemplateType>
 template<class T>
 inline const typename T::TemplateType* ComponentImpl<ComponentTemplateType>::getTemplate() const
 {
-	return getEntityTemplate().getComponentTemplate<T>();
+	const EntityTemplate& entityTemplate = getEntityTemplate();
+	return entityTemplate.getComponentTemplate<T>();
 }
 
 template<class ComponentTemplateType>

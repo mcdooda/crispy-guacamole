@@ -50,7 +50,8 @@ inline const typename ComponentType::TemplateType* EntityTemplate::getComponentT
 		return nullptr;
 	}
 
-	return componentTemplate->toP<typename ComponentType::TemplateType>();
+	FLAT_ASSERT(dynamic_cast<typename ComponentType::TemplateType*>(componentTemplate) != nullptr);
+	return static_cast<typename ComponentType::TemplateType*>(componentTemplate);
 }
 
 } // entity

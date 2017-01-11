@@ -2,7 +2,7 @@
 #define GAME_ENTITY_LUA_ENTITY_H
 
 #include <flat.h>
-#include "../entityhandle.h"
+#include "../entity.h"
 
 namespace game
 {

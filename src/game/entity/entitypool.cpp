@@ -35,7 +35,6 @@ Entity* EntityPool::createEntity(
 
 	componentRegistry.eachComponentType([this, entity, flags](const component::ComponentType& componentType)
 	{
-		flat::containers::DynamicPool* componentPool = m_componentPools[componentType.getComponentTypeId() - 1].get();
 		const component::ComponentFlags componentTypeFlag = componentType.getComponentTypeFlag();
 		if ((flags & componentTypeFlag) == componentTypeFlag)
 		{

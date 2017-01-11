@@ -30,7 +30,7 @@ void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 	const map::Tile* tile = map.getTileIfWalkable(position.x, position.y);
 	if (tile != nullptr)
 	{
-		flat::Vector3 position(position, tile->getZ());
+		flat::Vector3 position(position.x, position.y, tile->getZ());
 		getEditorState().spawnEntityAtPosition(m_game, m_entityTemplate, position, 0.f, 0.f);
 	}
 }

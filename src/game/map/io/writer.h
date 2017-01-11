@@ -38,9 +38,6 @@ class Writer
 		template <class T>
 		void write(T value);
 
-		template <>
-		void Writer::write(const std::string& value);
-
 	private:
 		const mod::Mod& m_mod;
 		const Map& m_map;

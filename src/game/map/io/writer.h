@@ -36,7 +36,7 @@ class Writer
 		void writeEntities();
 
 		template <class T>
-		void write(T value);
+		inline void write(T value);
 
 	private:
 		const mod::Mod& m_mod;
@@ -49,14 +49,14 @@ class Writer
 };
 
 template <class T>
-void Writer::write(T value)
+inline void Writer::write(T value)
 {
 	static_assert(std::is_pod<T>::value, "Generic implementation only for pod types");
 	m_file.write(reinterpret_cast<const char*>(&value), sizeof(T));
 }
 
 template <>
-void Writer::write(const std::string& value)
+inline void Writer::write(const std::string& value)
 {
 	uint16_t size = static_cast<uint16_t>(value.size());
 	write<uint16_t>(size);

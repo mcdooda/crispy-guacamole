@@ -37,7 +37,7 @@ class Reader
 		void readEntities();
 
 		template <class T>
-		void read(T& value);
+		inline void read(T& value);
 		
 	private:
 		Game& m_game;
@@ -57,13 +57,13 @@ class Reader
 };
 
 template <class T>
-void Reader::read(T& value)
+inline void Reader::read(T& value)
 {
 	m_file.read(reinterpret_cast<char*>(&value), sizeof(T));
 }
 
 template <>
-void Reader::read(std::string& value)
+inline void Reader::read(std::string& value)
 {
 	uint16_t size;
 	read<uint16_t>(size);

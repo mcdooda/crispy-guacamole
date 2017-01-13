@@ -45,7 +45,7 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	flat::Vector3 newPosition = position + (oldSpeed + m_speed) * 0.5f * elapsedTime;
 	m_owner->setPosition(newPosition);
 	const float speedXY = getSpeedXY();
-	float elevation = std::atan2f(m_speed.z, speedXY);
+	float elevation = std::atan2(m_speed.z, speedXY);
 	m_owner->setElevation(elevation);
 }
 
@@ -61,7 +61,6 @@ void ProjectileComponent::collided(Entity* collidedEntity)
 	if (!isEnabled())
 		return;
 
-	const flat::Vector3& position = m_owner->getPosition();
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& collidedCallback = getTemplate()->getCollidedCallback();
 
 	lua_State* L = collidedCallback.getLuaState();

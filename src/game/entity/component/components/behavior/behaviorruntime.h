@@ -1,8 +1,8 @@
 #ifndef GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIORRUNTIME_H
 #define GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIORRUNTIME_H
 
-#include <flat.h>
 #include <memory>
+#include "behavior.h"
 #include "../../../lua/entity.h"
 
 namespace game
@@ -14,7 +14,6 @@ namespace component
 {
 namespace behavior
 {
-class Behavior;
 
 class BehaviorRuntime final
 {

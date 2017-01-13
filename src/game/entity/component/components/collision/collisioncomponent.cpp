@@ -62,9 +62,6 @@ void CollisionComponent::separateFromNearbyEntities()
 					if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate())
 					{
 						const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
-						const EntityTemplate* neighborEntityTemplate = neighbor->getEntityTemplate().get();
-						flat::Vector3 distanceVec = neighborPosition - position;
-						float distance = flat::length(distanceVec);
 						flat::Vector3 penetration;
 						if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
 						{

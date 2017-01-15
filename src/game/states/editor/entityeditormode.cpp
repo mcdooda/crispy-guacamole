@@ -22,15 +22,15 @@ EntityEditorMode::~EntityEditorMode()
 void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 {
 	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
-	flat::Vector2 position = m_brushPosition;
+	flat::Vector2 position2d = m_brushPosition;
 	// add a little noise to avoid getting entities at the exact same position
-	position.x += m_game.random->nextFloat(-0.001f, 0.001f);
-	position.y += m_game.random->nextFloat(-0.001f, 0.001f);
+	position2d.x += m_game.random->nextFloat(-0.001f, 0.001f);
+	position2d.y += m_game.random->nextFloat(-0.001f, 0.001f);
 	const map::Map& map = getMap();
-	const map::Tile* tile = map.getTileIfWalkable(position.x, position.y);
+	const map::Tile* tile = map.getTileIfWalkable(position2d.x, position2d.y);
 	if (tile != nullptr)
 	{
-		flat::Vector3 position(position.x, position.y, tile->getZ());
+		flat::Vector3 position(position2d.x, position2d.y, tile->getZ());
 		getEditorState().spawnEntityAtPosition(m_game, m_entityTemplate, position, 0.f, 0.f);
 	}
 }

@@ -87,18 +87,10 @@ void AttackComponent::beginAttack(float currentTime)
 
 	if (!attackComponentTemplate->getMoveDuringAttack())
 	{
-		movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>();
-		if (movementComponent)
-		{
-			movementComponent->disable();
-		}
+		disableComponent<movement::MovementComponent>();
 	}
-
-	behavior::BehaviorComponent* behaviorComponent = m_owner->getComponent<behavior::BehaviorComponent>();
-	if (behaviorComponent)
-	{
-		behaviorComponent->disable();
-	}
+	
+	disableComponent<behavior::BehaviorComponent>();
 
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& attackFunc = attackComponentTemplate->getAttackFunc();
 	lua_State* L = attackFunc.getLuaState();
@@ -140,20 +132,10 @@ void AttackComponent::endAttack()
 
 	if (!attackComponentTemplate->getMoveDuringAttack())
 	{
-		movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>();
-		if (movementComponent)
-		{
-			FLAT_ASSERT(!movementComponent->isEnabled());
-			movementComponent->enable();
-		}
+		enableComponent<movement::MovementComponent>();
 	}
-
-	behavior::BehaviorComponent* behaviorComponent = m_owner->getComponent<behavior::BehaviorComponent>();
-	if (behaviorComponent)
-	{
-		FLAT_ASSERT(!behaviorComponent->isEnabled());
-		behaviorComponent->enable();
-	}
+	
+	enableComponent<behavior::BehaviorComponent>();
 }
 
 float AttackComponent::getAttackRange() const

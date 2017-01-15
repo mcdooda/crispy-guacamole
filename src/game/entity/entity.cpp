@@ -218,7 +218,7 @@ map::Tile* Entity::getTileFromPosition()
 {
 	FLAT_ASSERT(m_map != nullptr);
 	map::Tile* tile = m_map->getTileIfExists(m_position.x, m_position.y);
-	FLAT_ASSERT_MSG(tile != nullptr, "Trying to get a tile that does not exist");
+	FLAT_ASSERT_MSG(tile != nullptr, "Trying to get a tile that does not exist at position (%lf, %lf)", m_position.x, m_position.y);
 	return tile;
 }
 

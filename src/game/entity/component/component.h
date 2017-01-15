@@ -6,6 +6,7 @@
 #include <flat.h>
 #include "componenttype.h"
 #include "componenttemplate.h"
+#include "../entity.h"
 #include "../entitytemplate.h"
 #include "../../debug/debugdisplay.h"
 
@@ -72,6 +73,12 @@ class ComponentImpl : public Component
 
 		template <class T = ComponentImpl<ComponentTemplateType>>
 		inline const typename T::TemplateType* getTemplate() const;
+		
+		template <class T>
+		inline void enableComponent() const;
+		
+		template <class T>
+		inline void disableComponent() const;
 
 	private:
 		inline static const ComponentType& getType();
@@ -96,6 +103,32 @@ inline const typename T::TemplateType* ComponentImpl<ComponentTemplateType>::get
 {
 	const EntityTemplate& entityTemplate = getEntityTemplate();
 	return entityTemplate.getComponentTemplate<T>();
+}
+
+template <class ComponentTemplateType>
+template <class T>
+inline void ComponentImpl<ComponentTemplateType>::enableComponent() const
+{
+	static_assert(!std::is_same<ComponentTemplateType, T>::value, "call enable() instead of T::enableComponent<T>()");
+	T* otherComponent = m_owner->getComponent<T>();
+	if (otherComponent)
+	{
+		FLAT_ASSERT(!otherComponent->isEnabled());
+		otherComponent->enable();
+	}
+}
+
+template <class ComponentTemplateType>
+template <class T>
+inline void ComponentImpl<ComponentTemplateType>::disableComponent() const
+{
+	static_assert(!std::is_same<ComponentTemplateType, T>::value, "call disable() instead of T::disableComponent<T>()");
+	T* otherComponent = m_owner->getComponent<T>();
+	if (otherComponent)
+	{
+		FLAT_ASSERT(otherComponent->isEnabled());
+		otherComponent->disable();
+	}
 }
 
 template<class ComponentTemplateType>

@@ -14,7 +14,7 @@ end
 local states = {}
 
 function states:init(zombie)
-	--zombie:enterState 'wander'
+	zombie:enterState 'wander'
 end
 
 function states:despawn(zombie)

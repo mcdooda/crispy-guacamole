@@ -29,7 +29,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 
 		void update(float currentTime, float elapsedTime) override;
 		
-		bool isBusy() const override { return true; }
+		bool isBusy() const override { return false; }
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 

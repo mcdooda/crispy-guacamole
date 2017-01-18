@@ -172,9 +172,11 @@ bool Entity::isBusy() const
 	for (component::Component* component : m_components)
 	{
 		if (component->isEnabled() && component->isBusy())
+		{
 			return true;
+		}
 	}
-	
+
 	return false;
 }
 
@@ -247,8 +249,23 @@ void Entity::initComponents()
 {
 	for (component::Component* component : m_components)
 	{
+		FLAT_ASSERT(component->isEnabled());
 		component->init();
 	}
+
+#ifdef FLAT_DEBUG
+	if (isBusy())
+	{
+		for (component::Component* component : m_components)
+		{
+			if (component->isBusy())
+			{
+				std::cerr << "Component " << component->getComponentType().getConfigName() << " is busy" << std::endl;
+			}
+		}
+		FLAT_ASSERT_MSG(false, "Entity %s should not be busy right after components init", getTemplateName().c_str());
+	}
+#endif
 }
 
 } // entity

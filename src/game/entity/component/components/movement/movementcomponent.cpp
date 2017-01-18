@@ -21,8 +21,10 @@ void MovementComponent::init()
 {
 	m_destination = flat::Vector2(m_owner->getPosition());
 
-	const float speed = getTemplate()->getSpeed();
-	m_speed = speed;
+	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
+	m_speed = movementComponentTemplate->getSpeed();
+	// not yet in the map but makes the component not busy
+	m_isTouchingGround = movementComponentTemplate->getSnapToGround();
 
 	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
 }
@@ -176,21 +178,19 @@ void MovementComponent::addedToMap(map::Map* map)
 {
 	const map::Tile* tile = m_owner->getTile();
 	flat::Vector3 position = m_owner->getPosition();
-	if (tile->getZ() >= position.z)
+	// m_isTouchingGround already set is init()
+	FLAT_ASSERT(m_isTouchingGround == getTemplate()->getSnapToGround());
+	if (m_isTouchingGround || tile->getZ() >= position.z)
 	{
-		m_isTouchingGround = true;
 		m_owner->setZ(tile->getZ());
-	}
-	else
-	{
-		m_isTouchingGround = false;
+		m_isTouchingGround = true; // in case the entity was below its tile
 	}
 	m_zSpeed = 0.f;
 }
 
 bool MovementComponent::isBusy() const
 {
-	return followsPath() || !isTouchingGround();
+	return followsPath() || (!isTouchingGround() && getTemplate()->getSnapToGround());
 }
 
 bool MovementComponent::followsPath() const

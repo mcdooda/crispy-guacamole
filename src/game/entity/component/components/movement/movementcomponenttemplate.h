@@ -26,6 +26,8 @@ class MovementComponentTemplate : public ComponentTemplate
 		inline float getJumpDuration() const { return m_jumpDuration; }
 		inline float getJumpDistance() const { return m_jumpDistance; }
 
+		inline bool getSnapToGround() const { return m_snapToGround; }
+
 	private:
 		float m_speed;
 		float m_jumpForce;
@@ -34,6 +36,8 @@ class MovementComponentTemplate : public ComponentTemplate
 		float m_jumpMaxHeight;
 		float m_jumpDuration;
 		float m_jumpDistance;
+
+		bool m_snapToGround : 1;
 };
 
 } // movement

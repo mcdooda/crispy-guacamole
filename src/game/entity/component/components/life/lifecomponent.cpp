@@ -15,7 +15,7 @@ namespace life
 void LifeComponent::init()
 {
 	m_health = getTemplate()->getMaxHealth();
-	m_spawnNextUpdate = true;
+	m_owner->addedToMap.on(this, &LifeComponent::addedToMap);
 	m_spawning = false;
 	m_despawning = false;
 }
@@ -28,12 +28,7 @@ void LifeComponent::update(float currentTime, float elapsedTime)
 		return;
 	}
 	
-	if (m_spawnNextUpdate)
-	{
-		m_spawnNextUpdate = false;
-		onSpawn();
-	}
-	else if (m_spawnDespawnThread.isRunning()) // the thread might be finished but we still update because the entity was busy
+	if (m_spawnDespawnThread.isRunning()) // the thread might be finished but we still update because the entity was busy
 	{
 		m_spawnDespawnThread.update(m_owner);
 		checkSpawnDespawnThreadFinished();
@@ -49,6 +44,11 @@ void LifeComponent::dealDamage(int damage)
 	{
 		onDespawn();
 	}
+}
+
+void LifeComponent::addedToMap(map::Map* map)
+{
+	onSpawn();
 }
 
 void LifeComponent::onSpawn()

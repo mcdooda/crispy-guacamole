@@ -7,6 +7,10 @@
 
 namespace game
 {
+namespace map
+{
+class Map;
+}
 namespace entity
 {
 namespace component
@@ -34,6 +38,8 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		flat::Slot<> despawn;
 
 	private:
+		void addedToMap(map::Map* map);
+
 		void onSpawn();
 		void onDespawn();
 		
@@ -42,7 +48,6 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 	private:
 		EntityThread m_spawnDespawnThread;
 		int m_health;
-		bool m_spawnNextUpdate : 1;
 		bool m_spawning : 1;
 		bool m_despawning : 1;
 };

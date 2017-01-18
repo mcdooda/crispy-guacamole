@@ -32,7 +32,10 @@ void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string
 	m_jumpMaxHeight = getJumpHeight(m_jumpDuration / 2.f);
 	m_jumpDistance = m_speed * m_jumpDuration;
 
-	lua_pop(L, 3);
+	lua_getfield(L, -4, "snapToGround");
+	m_snapToGround = lua_toboolean(L, -1) == 1;
+
+	lua_pop(L, 4);
 }
 
 } // movement

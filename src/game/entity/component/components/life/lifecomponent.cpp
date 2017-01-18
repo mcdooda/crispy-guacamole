@@ -113,6 +113,7 @@ void LifeComponent::checkSpawnDespawnThreadFinished()
 		if (m_despawning)
 		{
 			m_despawning = false;
+			m_owner->markForDelete();
 			despawn();
 		}
 		else

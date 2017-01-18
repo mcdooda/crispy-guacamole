@@ -222,28 +222,10 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::share
 	return entity;
 }
 
-void BaseMapState::markEntityForDelete(entity::Entity* entity)
-{
-	FLAT_ASSERT_MSG(std::find(m_entities.begin(), m_entities.end(), entity) != m_entities.end(), "Trying to despawn an entity that does not exist");
-	std::vector<entity::Entity*>::iterator it = std::find(m_markedForDeleteEntities.begin(), m_markedForDeleteEntities.end(), entity);
-	if (it == m_markedForDeleteEntities.end())
-	{
-		m_markedForDeleteEntities.push_back(entity);
-	}
-}
-
 void BaseMapState::despawnEntity(entity::Entity* entity)
 {
 	map::Map& map = getMap();
 	map.removeEntity(entity);
-	{
-		// remove from entities
-		std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
-		if (it != m_entities.end())
-		{
-			m_entities.erase(it);
-		}
-	}
 	if (entity->isSelected())
 	{
 		// remove from selected entities
@@ -256,11 +238,21 @@ void BaseMapState::despawnEntity(entity::Entity* entity)
 
 void BaseMapState::despawnEntities()
 {
-	for (entity::Entity* entity : m_markedForDeleteEntities)
+	for (int i = static_cast<int>(m_entities.size()) - 1; i >= 0; --i)
 	{
-		despawnEntity(entity);
+		entity::Entity* entity = m_entities[i];
+		if (entity->isMarkedForDelete())
+		{
+			// swap the current and the last element (if current != last)
+			if (i < static_cast<int>(m_entities.size()) - 1)
+			{
+				entity::Entity* lastEntity = m_entities.back();
+				m_entities[i] = lastEntity;
+			}
+			m_entities.pop_back();
+			despawnEntity(entity);
+		}
 	}
-	m_markedForDeleteEntities.clear();
 }
 
 void BaseMapState::update(game::Game& game)

@@ -44,7 +44,7 @@ void EntityEditorMode::handleShortcuts() const
 		states::EditorState& editorState = getEditorState();
 		for (entity::Entity* entity : editorState.getSelectedEntities())
 		{
-			editorState.markEntityForDelete(entity);
+			entity->markForDelete();
 		}
 	}
 }

@@ -23,7 +23,8 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_map(nullptr),
 	m_tile(nullptr),
 	m_template(entityTemplate),
-	m_selected(false)
+	m_selected(false),
+	m_markedForDelete(false)
 #ifdef FLAT_DEBUG
 	, m_debug(false)
 	, m_debugBreak(false)

@@ -95,6 +95,9 @@ class Entity final : public map::MapObject
 		void setSelected(bool selected);
 		inline bool isSelected() const { return m_selected; }
 
+		inline void markForDelete() { m_markedForDelete = true; }
+		inline bool isMarkedForDelete() const { return m_markedForDelete; }
+
 #ifdef FLAT_DEBUG
 		inline void setDebug(bool debug) { m_debug = debug; }
 		inline void setDebugBreak(bool debugBreak) { m_debugBreak = debugBreak; }
@@ -132,6 +135,7 @@ class Entity final : public map::MapObject
 		std::shared_ptr<const EntityTemplate> m_template;
 
 		bool m_selected : 1;
+		bool m_markedForDelete : 1;
 #ifdef FLAT_DEBUG
 		bool m_debug : 1;
 		bool m_debugBreak : 1;

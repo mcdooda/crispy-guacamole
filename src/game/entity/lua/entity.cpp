@@ -123,9 +123,7 @@ int l_Entity_getTemplateName(lua_State* L)
 int l_Entity_despawn(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	Game& game = flat::lua::getGame(L).to<Game>();
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-	baseMapState.markEntityForDelete(&entity);
+	entity.markForDelete();
 	return 0;
 }
 
@@ -133,12 +131,6 @@ int l_Entity_kill(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
-	Game& game = flat::lua::getGame(L).to<Game>();
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-	lifeComponent.despawn.on([&baseMapState, &entity]()
-	{
-		baseMapState.markEntityForDelete(&entity);
-	});
 	lifeComponent.kill();
 	return 0;
 }

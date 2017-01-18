@@ -6,6 +6,7 @@
 #include "../component/components/sprite/spritecomponent.h"
 #include "../component/components/detection/detectioncomponent.h"
 #include "../component/components/faction/factioncomponent.h"
+#include "../component/components/life/lifecomponent.h"
 #include "../../game.h"
 #include "../../states/basemapstate.h"
 
@@ -35,6 +36,7 @@ int open(lua_State* L)
 		{"getTemplateName",         l_Entity_getTemplateName},
 
 		{"despawn",                 l_Entity_despawn},
+		{"kill",                    l_Entity_kill},
 
 		{"getExtraData",            l_Entity_getExtraData},
 
@@ -124,6 +126,20 @@ int l_Entity_despawn(lua_State* L)
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	baseMapState.markEntityForDelete(&entity);
+	return 0;
+}
+
+int l_Entity_kill(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	lifeComponent.despawn.on([&baseMapState, &entity]()
+	{
+		baseMapState.markEntityForDelete(&entity);
+	});
+	lifeComponent.kill();
 	return 0;
 }
 

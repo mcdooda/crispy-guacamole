@@ -4,7 +4,6 @@ return {
 		zombie:playAnimation 'spawn'
 	end,
 	despawn = function(zombie)
-		print 'despawn'
 		zombie:playAnimation 'despawn'
 	end
 }

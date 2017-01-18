@@ -3,7 +3,6 @@
 #include "detectioncomponenttemplate.h"
 #include "../../../entity.h"
 #include "../../../../map/map.h"
-#include "../../../../game.h"
 
 namespace game
 {

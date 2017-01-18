@@ -35,6 +35,12 @@ void LifeComponent::update(float currentTime, float elapsedTime)
 	}
 }
 
+void LifeComponent::kill()
+{
+	m_health = 0;
+	onDespawn();
+}
+
 void LifeComponent::dealDamage(int damage)
 {
 	damage = std::min(damage, m_health);
@@ -81,8 +87,6 @@ void LifeComponent::onDespawn()
 	disableComponent<movement::MovementComponent>();
 	disableComponent<behavior::BehaviorComponent>();
 	
-	despawn();
-	
 	const LifeComponentTemplate* lifeComponentTemplate = getTemplate();
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& despawnFunc = lifeComponentTemplate->getDespawnFunc();
 	if (despawnFunc)
@@ -106,8 +110,15 @@ void LifeComponent::checkSpawnDespawnThreadFinished()
 	if (m_spawnDespawnThread.isFinished())
 	{
 		// the entity either finished spawning or despawning
-		m_spawning = false;
-		m_despawning = false;
+		if (m_despawning)
+		{
+			m_despawning = false;
+			despawn();
+		}
+		else
+		{
+			m_spawning = false;
+		}
 		
 		enableComponent<movement::MovementComponent>();
 		enableComponent<behavior::BehaviorComponent>();

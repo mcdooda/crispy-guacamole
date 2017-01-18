@@ -17,10 +17,6 @@ function states:init(zombie)
 	zombie:enterState 'wander'
 end
 
-function states:despawn(zombie)
-	zombie:despawn()
-end
-
 function states:idle(zombie)
 	zombie:jump()
 end

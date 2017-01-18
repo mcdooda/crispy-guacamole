@@ -28,6 +28,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 
 		void update(float currentTime, float elapsedTime) override;
 
+		void kill();
 		void dealDamage(int damage);
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)

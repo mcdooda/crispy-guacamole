@@ -36,7 +36,6 @@ int open(lua_State* L)
 		{"getTemplateName",         l_Entity_getTemplateName},
 
 		{"despawn",                 l_Entity_despawn},
-		{"kill",                    l_Entity_kill},
 
 		{"getExtraData",            l_Entity_getExtraData},
 
@@ -80,6 +79,11 @@ int open(lua_State* L)
 		// attack
 		{"setAttackTarget",         l_Entity_setAttackTarget},
 		{"getAttackTarget",         l_Entity_getAttackTarget},
+
+		// life
+		{"isLiving",                l_Entity_isLiving},
+		{"kill",                    l_Entity_kill},
+		{"dealDamage",              l_Entity_dealDamage},
 		
 		{nullptr, nullptr}
 	};
@@ -124,14 +128,6 @@ int l_Entity_despawn(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	entity.markForDelete();
-	return 0;
-}
-
-int l_Entity_kill(lua_State* L)
-{
-	Entity& entity = getEntity(L, 1);
-	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
-	lifeComponent.kill();
 	return 0;
 }
 
@@ -418,6 +414,31 @@ int l_Entity_getAttackTarget(lua_State* L)
 	attack::AttackComponent& attackComponent = getComponent<attack::AttackComponent>(L, entity);
 	pushEntity(L, attackComponent.getAttackTarget());
 	return 1;
+}
+
+int l_Entity_isLiving(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent* lifeComponent = entity.getComponent<life::LifeComponent>();
+	lua_pushboolean(L, lifeComponent != nullptr);
+	return 1;
+}
+
+int l_Entity_kill(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lifeComponent.kill();
+	return 0;
+}
+
+int l_Entity_dealDamage(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	int damage = luaL_checkint(L, 2);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lifeComponent.dealDamage(damage);
+	return 0;
 }
 
 // static lua functions

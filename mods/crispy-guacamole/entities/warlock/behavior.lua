@@ -29,7 +29,9 @@ function states:idle(warlock)
 		end
 		sleep(6)
 		for i = 1, numZombies do
-			zombies[i]:kill()
+			if zombies[i]:isValid() then
+				zombies[i]:kill()
+			end
 		end
 		sleep(3)
 	end

@@ -37,18 +37,24 @@ void LifeComponent::update(float currentTime, float elapsedTime)
 
 void LifeComponent::kill()
 {
-	m_health = 0;
-	onDespawn();
+	if (!m_spawning && !m_despawning)
+	{
+		m_health = 0;
+		onDespawn();
+	}
 }
 
 void LifeComponent::dealDamage(int damage)
 {
-	damage = std::min(damage, m_health);
-	m_health -= damage;
-	damageDealt(damage);
-	if (m_health == 0)
+	if (!m_spawning && !m_despawning)
 	{
-		onDespawn();
+		damage = std::min(damage, m_health);
+		m_health -= damage;
+		damageDealt(damage);
+		if (m_health == 0)
+		{
+			onDespawn();
+		}
 	}
 }
 
@@ -59,6 +65,10 @@ void LifeComponent::addedToMap(map::Map* map)
 
 void LifeComponent::onSpawn()
 {
+	FLAT_ASSERT(!m_spawning && !m_despawning);
+
+	m_spawning = true;
+
 	disableComponent<movement::MovementComponent>();
 	disableComponent<behavior::BehaviorComponent>();
 	
@@ -68,7 +78,6 @@ void LifeComponent::onSpawn()
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& spawnFunc = lifeComponentTemplate->getSpawnFunc();
 	if (spawnFunc)
 	{
-		m_spawning = true;
 		lua_State* L = spawnFunc.getLuaState();
 		{
 			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -84,6 +93,10 @@ void LifeComponent::onSpawn()
 
 void LifeComponent::onDespawn()
 {
+	FLAT_ASSERT(!m_spawning && !m_despawning);
+
+	m_despawning = true;
+
 	disableComponent<movement::MovementComponent>();
 	disableComponent<behavior::BehaviorComponent>();
 	
@@ -91,7 +104,6 @@ void LifeComponent::onDespawn()
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& despawnFunc = lifeComponentTemplate->getDespawnFunc();
 	if (despawnFunc)
 	{
-		m_despawning = true;
 		lua_State* L = despawnFunc.getLuaState();
 		{
 			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);

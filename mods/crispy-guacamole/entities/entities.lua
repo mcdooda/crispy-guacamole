@@ -9,5 +9,6 @@ return {
 	'sheep',
 	'soldier',
 	'warlock',
-	'zombie'
+	'zombie',
+	'chaos_skeleton'
 }

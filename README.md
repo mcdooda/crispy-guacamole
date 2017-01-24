@@ -3,9 +3,11 @@ __Crispy guacamole__ *(code name)* is an old school 2D real time strategy game.
 It comes with an easy to use map editor.
 
 <p align="center">
-	<img src="https://raw.githubusercontent.com/mcdooda/crispy-guacamole/master/preview.gif" alt="Crispy guacamole screenshot" />
+	<img src="https://raw.githubusercontent.com/mcdooda/crispy-guacamole/master/gifs/preview.gif" alt="Crispy guacamole screenshot" />
 </p>
-<p align="center"><em>Smell that guacamole?</em></p>
+<p align="center">
+	<img src="https://raw.githubusercontent.com/mcdooda/crispy-guacamole/master/gifs/purple-fx-optimized.gif" alt="Crispy guacamole screenshot" />
+</p>
 
 # How to
 ## Windows

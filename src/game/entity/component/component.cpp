@@ -12,7 +12,7 @@ namespace component
 
 Component::Component() :
 	m_owner(nullptr),
-	m_enabled(true)
+	m_disableLevel(0)
 #ifdef FLAT_DEBUG
 	, m_debug(true)
 #endif

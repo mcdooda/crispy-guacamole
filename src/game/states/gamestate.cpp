@@ -19,7 +19,22 @@ void GameState::enter(Game& game)
 	
 	setCameraZoom(2.f);
 	
-	flat::lua::doFile(m_luaState, "data/game/scripts/ui.lua");
+	lua_State* L = m_luaState;
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		flat::lua::doFile(L, "data/game/scripts/ui.lua");
+
+		flat::lua::loadFile(L, m_mod.getMapPath(game.mapName, "setup.lua"));
+		if (!lua_isnil(L, -1))
+		{
+			luaL_checktype(L, -1, LUA_TFUNCTION);
+			m_levelThread.set(L, -1);
+			m_levelThread.start(0);
+		}
+
+		lua_pop(L, 1);
+	}
 }
 
 void GameState::execute(Game& game)
@@ -119,6 +134,11 @@ void GameState::execute(Game& game)
 #ifdef FLAT_DEBUG
 	}
 #endif
+
+	if (!m_levelThread.isFinished())
+	{
+		m_levelThread.update();
+	}
 	
 	Super::execute(game);
 }

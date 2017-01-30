@@ -27,6 +27,7 @@ class GameState : public BaseMapStateImpl<map::GameMap>
 #endif
 
 	private:
+		flat::lua::Thread m_levelThread;
 #ifdef FLAT_DEBUG
 		bool m_gamePaused;
 		bool m_pauseNextFrame;

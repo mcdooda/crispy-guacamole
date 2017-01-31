@@ -21,7 +21,11 @@ public:
 	inline void setSpriteOrigin(const flat::Vector2& spriteOrigin) { m_sprite.setOrigin(spriteOrigin); }
 	inline void setSpriteColor(const flat::video::Color& spriteColor) { m_sprite.setColor(spriteColor); }
 
+	inline void setMapObjectZ(float z) { m_z = z; }
+	float getMapObjectZ() const override { return m_z; }
+
 private:
+	float m_z;
 	flat::render::Sprite m_sprite;
 };
 

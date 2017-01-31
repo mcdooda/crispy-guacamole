@@ -49,6 +49,9 @@ class Tile final : public MapObject
 		void setColor(const flat::video::Color& color);
 		
 		void getWalkableNeighborTiles(const Map& map, float jumpHeight, std::vector<const Tile*>& neighborTiles) const;
+
+		bool isTile() const override { return true; }
+		float getMapObjectZ() const override { return m_z; }
 	
 	private:
 		std::vector<entity::Entity*> m_entities;

@@ -41,6 +41,8 @@ class Entity final : public map::MapObject
 		void setXY(const flat::Vector2& xy);
 		void setZ(float z);
 		inline const flat::Vector3& getPosition() const { return m_position; }
+
+		float getMapObjectZ() const { return m_position.z; }
 		
 		inline const map::Map* getMap() const { return m_map; }
 		inline const map::Tile* getTile() const { return m_tile; }

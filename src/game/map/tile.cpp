@@ -32,14 +32,15 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	m_x = x;
 	m_y = y;
 	m_z = z;
-	computeDepth(static_cast<float>(x), static_cast<float>(y), -0.5f);
+	computeDepth(static_cast<float>(x), static_cast<float>(y), 0.f);
 	
 	flat::Vector2 position2d(map.getTransform() * flat::Vector3(m_x, m_y, m_z));
 	m_sprite.setPosition(position2d);
 	if (m_prop)
 	{
 		m_prop->setSpritePosition(position2d);
-		m_prop->computeDepth(static_cast<float>(x), static_cast<float>(y), -0.49f);
+		m_prop->computeDepth(static_cast<float>(x), static_cast<float>(y), 0.01f);
+		m_prop->setMapObjectZ(m_z);
 	}
 }
 
@@ -60,7 +61,8 @@ void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& pro
 	{
 		m_prop = new Prop();
 		m_prop->setSpritePosition(m_sprite.getPosition());
-		m_prop->computeDepth(static_cast<float>(m_x), static_cast<float>(m_y), -0.49f);
+		m_prop->computeDepth(static_cast<float>(m_x), static_cast<float>(m_y), 0.01f);
+		m_prop->setMapObjectZ(m_z);
 	}
 	m_prop->setSpriteTexture(propTexture);
 	m_prop->setTextureHash(propTexture.get()->getHash());

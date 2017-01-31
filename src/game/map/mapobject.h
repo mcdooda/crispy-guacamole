@@ -21,6 +21,10 @@ class MapObject
 		
 		inline void computeDepth(float x, float y, float radius) { m_depth = x + y + radius; }
 		inline void setTextureHash(std::uint32_t textureHash) { m_textureHash = textureHash; }
+
+		virtual bool isTile() const { return false; }
+
+		virtual float getMapObjectZ() const = 0;
 		
 	private:
 		float m_depth;

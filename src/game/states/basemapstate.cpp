@@ -106,8 +106,6 @@ void BaseMapState::exit(Game& game)
 		m_entityPool.destroyEntity(entity);
 	}
 	map.removeAllEntities();
-
-	m_ui.reset();
 }
 
 void BaseMapState::setModPath(const std::string& modPath)
@@ -347,13 +345,8 @@ void BaseMapState::draw(game::Game& game)
 
 void BaseMapState::buildUi(game::Game& game)
 {
-	flat::sharp::ui::WidgetFactory widgetFactory(game);
-
-	m_ui = widgetFactory.makeRoot();
-	
-	flat::sharp::ui::lua::setRootWidget(game.lua->state, m_ui.get()); // TODO: move to flat
-
 	// create selection widget
+	flat::sharp::ui::WidgetFactory& widgetFactory = game.ui->factory;
 	m_selectionWidget = widgetFactory.makeFixedSize(flat::Vector2(1.f, 1.f));
 	m_selectionWidget->setPositionPolicy(flat::sharp::ui::Widget::PositionPolicy::BOTTOM_LEFT);
 	m_selectionWidget->setBackgroundColor(flat::video::Color(0.f, 8.f, 0.f, 0.3f));
@@ -361,7 +354,8 @@ void BaseMapState::buildUi(game::Game& game)
 
 void BaseMapState::updateUi(game::Game& game)
 {
-	m_ui->update();
+	flat::sharp::ui::RootWidget* root = game.ui->root.get();
+	root->update();
 }
 
 void BaseMapState::drawUi(game::Game& game)
@@ -373,7 +367,8 @@ void BaseMapState::drawUi(game::Game& game)
 	m_uiProgramRenderSettings.modelMatrixUniform.set(flat::Matrix4());
 	m_uiProgramRenderSettings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
 	
-	m_ui->draw(m_uiProgramRenderSettings);
+	flat::sharp::ui::RootWidget* root = game.ui->root.get();
+	root->draw(m_uiProgramRenderSettings);
 }
 
 void BaseMapState::resetViews(game::Game& game)
@@ -406,7 +401,8 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		if (!isSelecting())
 		{
 			// begin selection
-			m_ui->addChild(m_selectionWidget);
+			flat::sharp::ui::RootWidget* root = game.ui->root.get();
+			root->addChild(m_selectionWidget);
 		}
 
 		// update selection bounds

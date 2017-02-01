@@ -113,8 +113,6 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		float m_cameraZoom;
 		
 		// ui
-		std::shared_ptr<flat::sharp::ui::RootWidget> m_ui;
-
 		flat::Vector2 m_mouseDownPosition;
 		std::shared_ptr<flat::sharp::ui::Widget> m_selectionWidget;
 

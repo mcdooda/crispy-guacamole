@@ -34,69 +34,73 @@ bool Reader::canRead() const
 	return m_file.is_open();
 }
 
-void Reader::read(lua_State* L)
+void Reader::read()
 {
-	readConfig(L);
+	readConfig();
 	readHeaders();
 	readTiles();
 	readEntities();
 }
 
-void Reader::readConfig(lua_State* L)
+void Reader::readConfig()
 {
-	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-	std::string configFilePath = m_mod.getMapPath(m_mapName, "map.lua");
-	luaL_loadfile(L, configFilePath.c_str());
-	lua_call(L, 0, 1);
-
 	flat::Vector2 xAxis;
 	flat::Vector2 yAxis;
 	flat::Vector2 zAxis;
-	{
-		m_minX = 0;
-		m_minY = 0;
-		lua_getfield(L, -1, "width");
-		m_maxX = luaL_checkint(L, -1) + 1;
-		lua_getfield(L, -2, "height");
-		m_maxY = luaL_checkint(L, -1) + 1;
-		lua_pop(L, 2);
-	}
 
+	lua_State* L = m_game.lua->state;
 	{
-		lua_getfield(L, -1, "axes");
-		luaL_checktype(L, -1, LUA_TTABLE);
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		std::string configFilePath = m_mod.getMapPath(m_mapName, "map.lua");
+		luaL_loadfile(L, configFilePath.c_str());
+		lua_call(L, 0, 1);
+
 		{
-			lua_getfield(L, -1, "x");
-			luaL_checktype(L, -1, LUA_TTABLE);
-			lua_rawgeti(L, -1, 1);
-			xAxis.x = static_cast<float>(luaL_checknumber(L, -1));
-			lua_rawgeti(L, -2, 2);
-			xAxis.y = static_cast<float>(luaL_checknumber(L, -1));
-			lua_pop(L, 3);
+			m_minX = 0;
+			m_minY = 0;
+			lua_getfield(L, -1, "width");
+			m_maxX = luaL_checkint(L, -1) + 1;
+			lua_getfield(L, -2, "height");
+			m_maxY = luaL_checkint(L, -1) + 1;
+			lua_pop(L, 2);
 		}
+
 		{
-			lua_getfield(L, -1, "y");
+			lua_getfield(L, -1, "axes");
 			luaL_checktype(L, -1, LUA_TTABLE);
-			lua_rawgeti(L, -1, 1);
-			yAxis.x = static_cast<float>(luaL_checknumber(L, -1));
-			lua_rawgeti(L, -2, 2);
-			yAxis.y = static_cast<float>(luaL_checknumber(L, -1));
-			lua_pop(L, 3);
+			{
+				lua_getfield(L, -1, "x");
+				luaL_checktype(L, -1, LUA_TTABLE);
+				lua_rawgeti(L, -1, 1);
+				xAxis.x = static_cast<float>(luaL_checknumber(L, -1));
+				lua_rawgeti(L, -2, 2);
+				xAxis.y = static_cast<float>(luaL_checknumber(L, -1));
+				lua_pop(L, 3);
+			}
+			{
+				lua_getfield(L, -1, "y");
+				luaL_checktype(L, -1, LUA_TTABLE);
+				lua_rawgeti(L, -1, 1);
+				yAxis.x = static_cast<float>(luaL_checknumber(L, -1));
+				lua_rawgeti(L, -2, 2);
+				yAxis.y = static_cast<float>(luaL_checknumber(L, -1));
+				lua_pop(L, 3);
+			}
+			{
+				lua_getfield(L, -1, "z");
+				luaL_checktype(L, -1, LUA_TTABLE);
+				lua_rawgeti(L, -1, 1);
+				zAxis.x = static_cast<float>(luaL_checknumber(L, -1));
+				lua_rawgeti(L, -2, 2);
+				zAxis.y = static_cast<float>(luaL_checknumber(L, -1));
+				lua_pop(L, 3);
+			}
+			lua_pop(L, 1);
 		}
-		{
-			lua_getfield(L, -1, "z");
-			luaL_checktype(L, -1, LUA_TTABLE);
-			lua_rawgeti(L, -1, 1);
-			zAxis.x = static_cast<float>(luaL_checknumber(L, -1));
-			lua_rawgeti(L, -2, 2);
-			zAxis.y = static_cast<float>(luaL_checknumber(L, -1));
-			lua_pop(L, 3);
-		}
+
 		lua_pop(L, 1);
 	}
-
-	lua_pop(L, 1);
 
 	m_map.setAxes(xAxis, yAxis, zAxis);
 }

@@ -2,7 +2,6 @@
 #define GAME_STATES_BASEMAPSTATE_H
 
 #include <flat.h>
-#include <lua5.2/lua.hpp>
 #include "../mod/mod.h"
 #include "../map/displaymanager.h"
 #include "../entity/entitypool.h"
@@ -85,13 +84,10 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		void clearSelection(Game& game);
 		
 	protected:
-		// lua state
-		lua_State* m_luaState;
-		
 		// resource loading
-		flat::resource::ResourceManager<entity::EntityTemplate, Game&, lua_State*, const entity::component::ComponentRegistry&, std::string, std::string> m_entityTemplateManager;
-		flat::resource::ResourceManager<map::TileTemplate, Game&, lua_State*, std::string> m_tileTemplateManager;
-		flat::resource::ResourceManager<map::PropTemplate, Game&, lua_State*, std::string> m_propTemplateManager;
+		flat::resource::ResourceManager<entity::EntityTemplate, Game&, const entity::component::ComponentRegistry&, std::string, std::string> m_entityTemplateManager;
+		flat::resource::ResourceManager<map::TileTemplate, Game&, std::string> m_tileTemplateManager;
+		flat::resource::ResourceManager<map::PropTemplate, Game&, std::string> m_propTemplateManager;
 		
 		// rendering settings
 		flat::video::Program m_spriteProgram;

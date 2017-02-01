@@ -19,7 +19,7 @@ void GameState::enter(Game& game)
 	
 	setCameraZoom(2.f);
 	
-	lua_State* L = m_luaState;
+	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 

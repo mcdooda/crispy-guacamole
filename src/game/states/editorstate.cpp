@@ -19,7 +19,7 @@ void EditorState::enter(Game& game)
 	
 	setCameraZoom(0.5f);
 
-	flat::lua::doFile(m_luaState, "data/editor/scripts/ui.lua");
+	game.lua->doFile("data/editor/scripts/ui.lua");
 }
 
 void EditorState::execute(Game& game)

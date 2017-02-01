@@ -1,3 +1,4 @@
 return {
-	'map1'
+	'map1',
+	'td'
 }

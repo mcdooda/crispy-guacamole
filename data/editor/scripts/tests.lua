@@ -42,10 +42,8 @@ do
 			Editor.setTile(ModData.tiles.names[1])
 			for i = 1, #ModData.tiles.names do
 				local tileName = ModData.tiles.names[i]
-				local preview = Widget.makeFixedSize(40,30)
-				local preview = Widget.makeImage(ModData.props.getPath(propName, ModData.props.getHighest(propName)))
-				preview:setBackground(ModData.tiles.getPath(tileName, tileName))
-
+				local preview = Widget.makeImage(ModData.tiles.getPath(tileName, ModData.tiles.getHighest(tileName)))
+				preview:setSize(40,30)
 				preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()

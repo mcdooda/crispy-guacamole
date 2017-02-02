@@ -43,6 +43,7 @@ ModData.props = {
 	names = props,
 	getHighest = function(propDir)
 		local max = { nil, 0 }
+		dump(ModData.props[propDir])
 		for k,v in pairs(ModData.props[propDir]) do
 			if max[2] < v then
 				max = {k,v}
@@ -70,7 +71,7 @@ ModData.tiles = {
 	names = tiles,
 	getHighest = function(tileDir)
 		local max = { nil, 0 }
-		for k,v in pairs(props[tileDir]) do
+		for k,v in pairs(ModData.tiles[tileDir]) do
 			if max[2] < v then
 				max = {k,v}
 			end
@@ -78,8 +79,6 @@ ModData.tiles = {
 		return max[1]
 	end,
 	getPath = function(tileDir, tileFile)
-		assert(ModData.tiles[tileDir])
-		assert(ModData.tiles[tileDir][tileFile])
 		return path .. '/tiles/' .. tileDir .. '/' .. tileFile .. '.png'
 	end
 }

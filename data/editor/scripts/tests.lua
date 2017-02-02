@@ -9,62 +9,68 @@ local Slider = require 'data/scripts/ui/slider'
 local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }
 
 local root = Widget.getRoot()
-
+dump(ModData.tiles)
 do
 	local leftPanel = Widget.makeColumnFlow()
 	leftPanel:setBackgroundColor(0x444444FF)
 	leftPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
-	leftPanel:setSize(96,0)
-	
+	leftPanel:setSize(150,0)
+
 	local content = Widget.makeColumnFlow()
 	content:setSizePolicy(Widget.SizePolicy.EXPAND)
-	
+
 	local contentChildren = {}
-	
+
 	local function addContent(widget)
 		content:addChild(widget)
 		contentChildren[#contentChildren + 1] = widget
 	end
-	
+
 	local function clearContent()
 		for i = 1, #contentChildren do
 			contentChildren[i]:removeFromParent()
 		end
 		contentChildren = {}
 	end
-	
+
 	do
 		local modes = Widget.makeLineFlow()
 		modes:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.COMPRESS_Y)
-		
+
 		local function openTilesTab()
 			Editor.setTileMode()
 			Editor.setTile(ModData.tiles.names[1])
 			for i = 1, #ModData.tiles.names do
 				local tileName = ModData.tiles.names[i]
-				local label = Widget.makeText(tileName, unpack(font))
-				label:setMargin(0, 0, 0, 7)
-				label:click(function()
+				local preview = Widget.makeFixedSize(40,30)
+				local preview = Widget.makeImage(ModData.props.getPath(propName, ModData.props.getHighest(propName)))
+				preview:setBackground(ModData.tiles.getPath(tileName, tileName))
+
+				preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
+				preview:setMargin(10, 0, 0, 7)
+				preview:click(function()
 					Editor.setTile(tileName)
 				end)
-				addContent(label)
+				addContent(preview)
 			end
 		end
-		
+
 		local function openPropsTab()
 			Editor.setPropMode()
 			Editor.setProp(ModData.props.names[1])
-			for i = 1, #ModData.props.names do
+			for i = 1,  #ModData.props.names do
 				local propName = ModData.props.names[i]
-				local label = Widget.makeText(propName, unpack(font))
-				label:setMargin(0, 0, 0, 7)
-				label:click(function()
+				print(propName)
+				local preview = Widget.makeImage(ModData.props.getPath(propName, ModData.props.getHighest(propName)))
+
+				preview:setMargin(10, 0, 0, 7)
+				preview:click(function()
 					Editor.setProp(propName)
 				end)
-				addContent(label)
+				addContent(preview)
 			end
 		end
-		
+
 		local function openEntitiesTab()
 			Editor.setEntityMode()
 			Editor.setEntity(ModData.entities.names[1])
@@ -78,14 +84,14 @@ do
 				addContent(label)
 			end
 		end
-		
+
 		local tabs = {
 			{'tilestab', openTilesTab},
 			{'propstab', openPropsTab},
 			{'unitstab', openEntitiesTab}
 		}
 		local icons = {}
-		
+
 		local currentTabIndex
 		local function enableTab(i)
 			currentTabIndex = i
@@ -100,7 +106,7 @@ do
 			currentTabIndex = nil
 			icons[i]:setBackground('data/editor/interface/' .. tab .. '/passive.png')
 		end
-		
+
 		for i = 1, #tabs do
 			local tab = tabs[i][1]
 			local icon = Widget.makeImage('data/editor/interface/' .. tab .. '/passive.png')
@@ -115,12 +121,12 @@ do
 			modes:addChild(icon)
 		end
 		enableTab(1)
-		
+
 		leftPanel:addChild(modes)
 	end
-	
+
 	leftPanel:addChild(content)
-	
+
 	root:addChild(leftPanel)
 end
 
@@ -130,7 +136,7 @@ do
 	a:setBackgroundColor(0xFF0000FF)
 	a:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
 	a:setPadding(2)
-	
+
 	local positionPolicies = {
 		Widget.PositionPolicy.TOP_LEFT,
 		Widget.PositionPolicy.CENTER_X     + Widget.PositionPolicy.TOP,
@@ -148,7 +154,7 @@ do
 		b:setPositionPolicy(positionPolicy)
 		a:addChild(b)
 	end
-	
+
 	do
 		local c = Widget.makeFixedSize(32, 32)
 		c:setBackground 'data/editor/interface/widgets/checkbox.png'
@@ -157,7 +163,7 @@ do
 		c:setPositionPolicy(Widget.PositionPolicy.CENTER)
 		a:addChild(c)
 	end
-	
+
 	local w, h = a:getSize()
 	Timer.start(0, function()
 		local x, y = Mouse.getPosition()

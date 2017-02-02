@@ -41,15 +41,15 @@ class Component : public flat::util::Convertible<Component>
 
 		const EntityTemplate& getEntityTemplate() const;
 
-		inline void enable() { m_enabled = true; }
-		inline void disable() { m_enabled = false; }
-		inline bool isEnabled() const { return m_enabled; }
+		inline void decDisableLevel() { --m_disableLevel; FLAT_ASSERT(m_disableLevel >= 0); }
+		inline void incDisableLevel() { ++m_disableLevel; FLAT_ASSERT(m_disableLevel >= 0); }
+		inline bool isEnabled() const { return m_disableLevel == 0; }
 		
 	protected:
 		Entity* m_owner;
 
 	private:
-		bool m_enabled : 1;
+		int8_t m_disableLevel;
 		FLAT_DEBUG_ONLY(bool m_debug : 1;)
 };
 
@@ -113,8 +113,7 @@ inline void ComponentImpl<ComponentTemplateType>::enableComponent() const
 	T* otherComponent = m_owner->getComponent<T>();
 	if (otherComponent)
 	{
-		FLAT_ASSERT(!otherComponent->isEnabled());
-		otherComponent->enable();
+		otherComponent->decDisableLevel();
 	}
 }
 
@@ -126,8 +125,7 @@ inline void ComponentImpl<ComponentTemplateType>::disableComponent() const
 	T* otherComponent = m_owner->getComponent<T>();
 	if (otherComponent)
 	{
-		FLAT_ASSERT(otherComponent->isEnabled());
-		otherComponent->disable();
+		otherComponent->incDisableLevel();
 	}
 }
 

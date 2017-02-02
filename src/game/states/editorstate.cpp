@@ -19,7 +19,7 @@ void EditorState::enter(Game& game)
 	
 	setCameraZoom(0.5f);
 
-	flat::lua::doFile(m_luaState, "data/editor/scripts/ui.lua");
+	game.lua->doFile("data/editor/scripts/ui.lua");
 }
 
 void EditorState::execute(Game& game)
@@ -67,12 +67,14 @@ void EditorState::applyBrush(Game& game)
 {
 	const flat::input::Input* input = game.input;
 
+	flat::sharp::ui::RootWidget* root = game.ui->root.get();
+
 	if (!input->keyboard->isPressed(K(LCTRL)))
 	{
 		m_editorMode->handleShortcuts();
 	}
 
-	if (!m_ui->isMouseOver() || isSelecting())
+	if (!root->isMouseOver() || isSelecting())
 	{
 		if (!m_editorMode->canSelectEntities() || !updateSelectionWidget(game))
 		{

@@ -28,10 +28,10 @@ class Reader
 		~Reader();
 		
 		bool canRead() const;
-		void read(lua_State* L);
+		void read();
 
 	private:
-		void readConfig(lua_State* L);
+		void readConfig();
 		void readHeaders();
 		void readTiles();
 		void readEntities();

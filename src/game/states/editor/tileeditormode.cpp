@@ -119,11 +119,21 @@ void TileEditorMode::handleShortcuts() const
 	map::Map& map = getMap();
 
 	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
-	const bool upPressed = keyboard->isPressed(K(W));
-	const bool downPressed = keyboard->isPressed(K(S));
+
+	const bool altPressed = keyboard->isPressed(K(LALT));
+	const bool upPressed   = altPressed ? keyboard->isJustPressed(K(W)) : keyboard->isPressed(K(W));
+	const bool downPressed = altPressed ? keyboard->isJustPressed(K(S)) : keyboard->isPressed(K(S));
 	if (upPressed || downPressed)
 	{
-		float displacement = (upPressed ? frameTime : -frameTime) * 10.f;
+		float displacement = upPressed ? 1.f : -1.f;
+		if (!altPressed)
+		{
+			displacement *= 10.f * frameTime;
+		}
+		else
+		{
+			displacement *= 0.2f;
+		}
 		eachBrushTileIfExists([this, &map, displacement](map::Tile* tile, float effect)
 		{
 			tile->setZ(map, tile->getZ() + displacement * effect);

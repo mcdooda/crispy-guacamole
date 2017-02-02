@@ -26,12 +26,12 @@ Map::~Map()
 	FLAT_ASSERT(m_entities.empty());
 }
 
-bool Map::load(lua_State* L, Game& game, const mod::Mod& mod, const std::string& mapName)
+bool Map::load(Game& game, const mod::Mod& mod, const std::string& mapName)
 {
 	io::Reader reader(game, mod, mapName, *this);
 	if (reader.canRead())
 	{
-		reader.read(L);
+		reader.read();
 		return true;
 	}
 	FLAT_ASSERT(false);

@@ -73,7 +73,7 @@ void ProjectileComponent::collided(Entity* collidedEntity)
 		bool keepEnabled = lua_toboolean(L, -1) == 1;
 		if (!keepEnabled)
 		{
-			disable();
+			incDisableLevel();
 		}
 		lua_pop(L, 1);
 	}

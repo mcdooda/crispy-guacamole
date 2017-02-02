@@ -30,18 +30,16 @@ void BaseMapState::enter(Game& game)
 	game.video->window->setTitle("Crispy guacamole");
 	
 	// init lua first
-	m_luaState = flat::lua::open(game);
-	
-	flat::time::lua::open(m_luaState);
-	flat::input::lua::mouse::open(m_luaState);
-	flat::sharp::ui::lua::open(m_luaState);
-	timer::lua::open(m_luaState);
-	entity::lua::open(m_luaState);
-	entity::component::lua::open(m_luaState);
-	entity::faction::lua::open(m_luaState, m_mod.getFactionsConfigPath());
-	mod::lua::open(m_luaState);
-	map::lua::open(m_luaState);
-	editor::lua::open(m_luaState);
+	lua_State* L = game.lua->state;
+	{
+		timer::lua::open(L);
+		entity::lua::open(L);
+		entity::component::lua::open(L);
+		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
+		mod::lua::open(L);
+		map::lua::open(L);
+		editor::lua::open(L);
+	}
 	
 	// ui
 	buildUi(game);
@@ -108,12 +106,6 @@ void BaseMapState::exit(Game& game)
 		m_entityPool.destroyEntity(entity);
 	}
 	map.removeAllEntities();
-
-	flat::sharp::ui::lua::close(m_luaState);
-	m_ui.reset();
-
-	flat::lua::close(m_luaState);
-	m_luaState = nullptr;
 }
 
 void BaseMapState::setModPath(const std::string& modPath)
@@ -124,7 +116,7 @@ void BaseMapState::setModPath(const std::string& modPath)
 bool BaseMapState::loadMap(Game& game, const std::string& mapName)
 {
 	map::Map& map = getMap();
-	if (map.load(m_luaState, game, m_mod, mapName))
+	if (map.load(game, m_mod, mapName))
 	{
 		game.mapName = mapName;
 		return true;
@@ -191,19 +183,19 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(game, m_luaState, m_componentRegistry, entityTemplatePath, entityTemplateName);
+	return m_entityTemplateManager.getResource(game, m_componentRegistry, entityTemplatePath, entityTemplateName);
 }
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
 {
 	std::string tileTemplatePath = m_mod.getTileTemplatePath(tileTemplateName);
-	return m_tileTemplateManager.getResource(game, m_luaState, tileTemplatePath);
+	return m_tileTemplateManager.getResource(game, tileTemplatePath);
 }
 
 std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
 {
 	std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
-	return m_propTemplateManager.getResource(game, m_luaState, propTemplatePath);
+	return m_propTemplateManager.getResource(game, propTemplatePath);
 }
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position, float heading, float elevation)
@@ -260,7 +252,7 @@ void BaseMapState::update(game::Game& game)
 	updateGameView(game);
 	updateUi(game);
 	float currentTime = game.time->getTime();
-	game.timerContainer.updateTimers(m_luaState, currentTime);
+	game.timerContainer.updateTimers(game.lua->state, currentTime);
 }
 
 void BaseMapState::updateGameView(game::Game& game)
@@ -353,13 +345,8 @@ void BaseMapState::draw(game::Game& game)
 
 void BaseMapState::buildUi(game::Game& game)
 {
-	flat::sharp::ui::WidgetFactory widgetFactory(game);
-
-	m_ui = widgetFactory.makeRoot();
-	
-	flat::sharp::ui::lua::setRootWidget(m_luaState, m_ui.get());
-
 	// create selection widget
+	flat::sharp::ui::WidgetFactory& widgetFactory = game.ui->factory;
 	m_selectionWidget = widgetFactory.makeFixedSize(flat::Vector2(1.f, 1.f));
 	m_selectionWidget->setPositionPolicy(flat::sharp::ui::Widget::PositionPolicy::BOTTOM_LEFT);
 	m_selectionWidget->setBackgroundColor(flat::video::Color(0.f, 8.f, 0.f, 0.3f));
@@ -367,7 +354,8 @@ void BaseMapState::buildUi(game::Game& game)
 
 void BaseMapState::updateUi(game::Game& game)
 {
-	m_ui->update();
+	flat::sharp::ui::RootWidget* root = game.ui->root.get();
+	root->update();
 }
 
 void BaseMapState::drawUi(game::Game& game)
@@ -379,7 +367,8 @@ void BaseMapState::drawUi(game::Game& game)
 	m_uiProgramRenderSettings.modelMatrixUniform.set(flat::Matrix4());
 	m_uiProgramRenderSettings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
 	
-	m_ui->draw(m_uiProgramRenderSettings);
+	flat::sharp::ui::RootWidget* root = game.ui->root.get();
+	root->draw(m_uiProgramRenderSettings);
 }
 
 void BaseMapState::resetViews(game::Game& game)
@@ -412,7 +401,8 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		if (!isSelecting())
 		{
 			// begin selection
-			m_ui->addChild(m_selectionWidget);
+			flat::sharp::ui::RootWidget* root = game.ui->root.get();
+			root->addChild(m_selectionWidget);
 		}
 
 		// update selection bounds

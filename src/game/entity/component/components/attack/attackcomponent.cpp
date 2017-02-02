@@ -118,7 +118,7 @@ void AttackComponent::updateAttack()
 	// the thread might be finished but we still update because the entity was busy
 	if (m_attackThread.isRunning())
 	{
-		m_attackThread.update(m_owner);
+		m_attackThread.update();
 	}
 
 	tryEndAttack();

@@ -34,7 +34,7 @@ class Map
 		void operator=(Map&&) = delete;
 		void operator=(const Map&) = delete;
 		
-		bool load(lua_State* L, Game& game, const mod::Mod& mod, const std::string& mapName);
+		bool load(Game& game, const mod::Mod& mod, const std::string& mapName);
 		bool save(const mod::Mod& mod, const std::string& mapName) const;
 
 		void setBounds(int minX, int maxX, int minY, int maxY);

@@ -21,7 +21,6 @@ int l_Entity_isValid(lua_State* L);
 int l_Entity_getTemplateName(lua_State* L);
 
 int l_Entity_despawn(lua_State* L);
-int l_Entity_kill(lua_State* L);
 
 int l_Entity_getExtraData(lua_State* L);
 
@@ -65,6 +64,11 @@ int l_Entity_isHostile(lua_State* L);
 // attack
 int l_Entity_setAttackTarget(lua_State* L);
 int l_Entity_getAttackTarget(lua_State* L);
+
+// life
+int l_Entity_isLiving(lua_State* L);
+int l_Entity_kill(lua_State* L);
+int l_Entity_dealDamage(lua_State* L);
 
 // static lua functions
 int l_Entity_spawn(lua_State* L);

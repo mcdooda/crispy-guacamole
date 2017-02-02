@@ -13,13 +13,13 @@ namespace debug
 DebugDisplay::DebugDisplay()
 {
 	// line shader
-	m_lineProgram.load("data/shaders/debugline.frag", "data/shaders/debugline.vert");
+	m_lineProgram.load("data/shaders/debug/debugline.frag", "data/shaders/debug/debugline.vert");
 	m_lineProgramRenderSettings.viewProjectionMatrixUniform = m_lineProgram.getUniform<flat::Matrix4>("vpMatrix");
 	m_lineProgramRenderSettings.positionAttribute = m_lineProgram.getAttribute("position");
 	m_lineProgramRenderSettings.colorAttribute = m_lineProgram.getAttribute("color");
 
 	// text shader
-	m_textProgram.load("data/shaders/debugtext.frag", "data/shaders/debugtext.vert");
+	m_textProgram.load("data/shaders/debug/debugtext.frag", "data/shaders/debug/debugtext.vert");
 	m_textProgramRenderSettings.viewProjectionMatrixUniform = m_textProgram.getUniform<flat::Matrix4>("vpMatrix");
 	m_textProgramRenderSettings.modelMatrixUniform          = m_textProgram.getUniform<flat::Matrix4>("modelMatrix");
 	m_textProgramRenderSettings.textureUniform              = m_textProgram.getUniform<flat::video::Texture>("fontTexture");

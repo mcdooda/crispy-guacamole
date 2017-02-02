@@ -45,7 +45,7 @@ void BaseMapState::enter(Game& game)
 	buildUi(game);
 	
 	// rendering settings
-	m_spriteProgram.load("data/shaders/spritebatch.frag", "data/shaders/spritebatch.vert");
+	m_spriteProgram.load("data/shaders/sprite/spritebatch.frag", "data/shaders/sprite/spritebatch.vert");
 	
 	m_spriteProgramRenderSettings.textureUniform              = m_spriteProgram.getUniform<flat::video::Texture>("objectTexture");
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform = m_spriteProgram.getUniform<flat::Matrix4>("vpMatrix");
@@ -54,7 +54,7 @@ void BaseMapState::enter(Game& game)
 	m_spriteProgramRenderSettings.uvAttribute                 = m_spriteProgram.getAttribute("uv");
 	m_spriteProgramRenderSettings.colorAttribute              = m_spriteProgram.getAttribute("color");
 	
-	m_uiProgram.load("data/shaders/ui.frag", "data/shaders/ui.vert");
+	m_uiProgram.load("data/shaders/ui/ui.frag", "data/shaders/ui/ui.vert");
 	
 	m_uiProgramRenderSettings.textureUniform              = m_uiProgram.getUniform<flat::video::Texture>("objectTexture");
 	m_uiProgramRenderSettings.textureGivenUniform         = m_uiProgram.getUniform<bool>("textureGiven");

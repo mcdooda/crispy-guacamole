@@ -1,4 +1,6 @@
 return {
 	'grass',
-	'desert'
+    'desert',
+	'frozen_dirt',
+    'snow'
 }

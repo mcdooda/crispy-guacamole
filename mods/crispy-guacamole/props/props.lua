@@ -1,5 +1,6 @@
 return {
 	'house',
 	'tower',
-	'pine'
+	'pine',
+	'snow_pine'
 }

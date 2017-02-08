@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "entitytemplate.h"
 #include "component/components/behavior/behaviorcomponent.h"
+#include "component/components/collision/collisioncomponent.h"
 #include "component/components/movement/movementcomponent.h"
 #include "component/components/sprite/spritecomponent.h"
 #include "component/components/texture/texturecomponent.h"
@@ -116,6 +117,19 @@ const flat::render::Sprite& Entity::getSprite() const
 
 	else
 		return m_textureComponent->getSprite();
+}
+
+void Entity::updateAABB()
+{
+	if (m_collisionComponent != nullptr)
+	{
+		m_collisionComponent->getAABB(m_AABB);
+	}
+	else
+	{
+		m_AABB.min = m_position;
+		m_AABB.max = m_position;
+	}
 }
 
 void Entity::onAddedToMap(map::Map* map)
@@ -241,6 +255,7 @@ void Entity::addComponent(component::Component* component)
 void Entity::cacheComponents()
 {
 	m_behaviorComponent = findComponent<component::behavior::BehaviorComponent>();
+	m_collisionComponent = findComponent<component::collision::CollisionComponent>();
 	m_movementComponent = findComponent<component::movement::MovementComponent>();
 	m_spriteComponent   = findComponent<component::sprite::SpriteComponent>();
 	m_textureComponent  = findComponent<component::texture::TextureComponent>();

@@ -16,6 +16,8 @@ public:
 
 	const flat::render::Sprite& getSprite() const override;
 
+	void setAABB(const flat::Vector3& position);
+
 	inline void setSpriteTexture(const std::shared_ptr<const flat::video::Texture>& propTexture) { m_sprite.setTexture(propTexture); }
 	inline void setSpritePosition(const flat::Vector2& spritePosition) { m_sprite.setPosition(spritePosition); }
 	inline void setSpriteOrigin(const flat::Vector2& spriteOrigin) { m_sprite.setOrigin(spriteOrigin); }

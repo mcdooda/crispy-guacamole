@@ -20,10 +20,11 @@ class EntityTemplate;
 namespace component
 {
 class Component;
-namespace behavior { class BehaviorComponent; }
-namespace movement { class MovementComponent; }
-namespace sprite   { class SpriteComponent; }
-namespace texture  { class TextureComponent; }
+namespace behavior  { class BehaviorComponent; }
+namespace collision { class CollisionComponent; }
+namespace movement  { class MovementComponent; }
+namespace sprite    { class SpriteComponent; }
+namespace texture   { class TextureComponent; }
 }
 
 class Entity final : public map::MapObject
@@ -52,6 +53,7 @@ class Entity final : public map::MapObject
 		inline float getElevation() const { return m_elevation; }
 		
 		const flat::render::Sprite& getSprite() const override;
+		void updateAABB();
 		
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
@@ -116,10 +118,11 @@ class Entity final : public map::MapObject
 		
 	protected:
 		std::vector<component::Component*> m_components;
-		component::behavior::BehaviorComponent* m_behaviorComponent;
-		component::movement::MovementComponent* m_movementComponent;
-		component::sprite::SpriteComponent*     m_spriteComponent;
-		component::texture::TextureComponent*   m_textureComponent;
+		component::behavior::BehaviorComponent*   m_behaviorComponent;
+		component::collision::CollisionComponent* m_collisionComponent;
+		component::movement::MovementComponent*   m_movementComponent;
+		component::sprite::SpriteComponent*       m_spriteComponent;
+		component::texture::TextureComponent*     m_textureComponent;
 		
 		EntityId m_id;
 

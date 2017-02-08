@@ -9,6 +9,25 @@ namespace component
 namespace collision
 {
 
+void CollisionBox::getAABB(const flat::Vector3& position, flat::AABB3& aabb) const
+{
+	switch (type)
+	{
+	case CollisionType::SPHERE:
+		aabb.min = position - flat::Vector3(sphere.radius);
+		aabb.max = position + flat::Vector3(sphere.radius);
+		break;
+
+	case CollisionType::CYLINDER:
+		aabb.min = position - flat::Vector3(cylinder.radius, cylinder.radius, 0.f);
+		aabb.max = position + flat::Vector3(cylinder.radius, cylinder.radius, cylinder.height);
+		break;
+
+	default:
+		FLAT_ASSERT(false);	
+	}
+}
+
 bool CollisionBox::collides(const flat::Vector3& aPos, const flat::Vector3& bPos, const CollisionBox& a, const CollisionBox& b, flat::Vector3& penetration)
 {
 	if (a.type == CollisionType::SPHERE && b.type == CollisionType::SPHERE)

@@ -30,6 +30,7 @@ class Tile final : public MapObject
 		
 		inline bool hasSprite() const { return static_cast<bool>(m_sprite.getTexture()); }
 		const flat::render::Sprite& getSprite() const override;
+		void updateAABB();
 		
 		void setCoordinates(const Map& map, int x, int y, float z);
 		inline int getX() const { return m_x; }

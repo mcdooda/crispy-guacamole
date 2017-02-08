@@ -26,20 +26,28 @@ const flat::render::Sprite& Tile::getSprite() const
 	return m_sprite;
 }
 
+void Tile::updateAABB()
+{
+	m_AABB.max = flat::Vector3(m_x + 0.5f, m_y + 0.5f, m_z);
+	m_AABB.min = flat::Vector3(m_x - 0.5f, m_y - 0.5f, m_z - 100.f);
+}
+
 void Tile::setCoordinates(const Map& map, int x, int y, float z)
 {
 	FLAT_ASSERT(m_exists);
 	m_x = x;
 	m_y = y;
 	m_z = z;
-	computeDepth(static_cast<float>(x), static_cast<float>(y), -0.5f);
+	updateAABB();
 	
-	flat::Vector2 position2d(map.getTransform() * flat::Vector3(m_x, m_y, m_z));
+	flat::Vector3 position(x, y, z);
+
+	flat::Vector2 position2d(map.getTransform() * position);
 	m_sprite.setPosition(position2d);
 	if (m_prop)
 	{
 		m_prop->setSpritePosition(position2d);
-		m_prop->computeDepth(static_cast<float>(x), static_cast<float>(y), -0.49f);
+		m_prop->setAABB(position);
 	}
 }
 
@@ -60,7 +68,7 @@ void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& pro
 	{
 		m_prop = new Prop();
 		m_prop->setSpritePosition(m_sprite.getPosition());
-		m_prop->computeDepth(static_cast<float>(m_x), static_cast<float>(m_y), -0.49f);
+		m_prop->setAABB(flat::Vector3(m_x, m_y, m_z));
 	}
 	m_prop->setSpriteTexture(propTexture);
 	m_prop->setTextureHash(propTexture.get()->getHash());

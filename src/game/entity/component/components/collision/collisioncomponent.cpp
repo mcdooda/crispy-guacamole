@@ -22,6 +22,13 @@ void CollisionComponent::update(float currentTime, float elapsedTime)
 	separateFromAdjacentTiles();
 }
 
+void CollisionComponent::getAABB(flat::AABB3& aabb) const
+{
+	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
+	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
+	collisionBox.getAABB(m_owner->getPosition(), aabb);
+}
+
 void CollisionComponent::separateFromNearbyEntities()
 {
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();

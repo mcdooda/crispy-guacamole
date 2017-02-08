@@ -8,13 +8,15 @@ namespace game
 {
 namespace map
 {
+class Map;
 class MapObject;
 
 class DisplayManager final
 {
 	public:
-		DisplayManager() {}
-		~DisplayManager() {}
+		DisplayManager();
+
+		inline void setMap(const Map& map) { m_map = &map; }
 		
 		inline void clearAll() { m_objects.clear(); }
 		inline void add(const MapObject* mapObject) { m_objects.push_back(mapObject); }
@@ -22,6 +24,8 @@ class DisplayManager final
 		
 	private:
 		std::vector<const MapObject*> m_objects;
+		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
+		const Map* m_map;
 };
 
 } // map

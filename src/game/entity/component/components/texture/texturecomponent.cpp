@@ -36,7 +36,7 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 		flat::Vector2 position2d(map->getTransform() * position);
 		m_sprite.setPosition(position2d);
 
-		m_owner->computeDepth(position.x, position.y, 0.f);
+		m_owner->updateAABB();
 
 		m_positionChanged = false;
 	}

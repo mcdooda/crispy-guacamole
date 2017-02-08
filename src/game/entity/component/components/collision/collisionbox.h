@@ -51,6 +51,8 @@ struct CollisionBox
 		return 0.f;
 	}
 
+	void getAABB(const flat::Vector3& position, flat::AABB3& aabb) const;
+
 	static bool collides(const flat::Vector3& aPos, const flat::Vector3& bPos, const CollisionBox& a, const CollisionBox& b, flat::Vector3& penetration);
 
 private:

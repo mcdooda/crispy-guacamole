@@ -329,8 +329,9 @@ void BaseMapState::draw(game::Game& game)
 	
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform.set(m_gameView.getViewProjectionMatrix());
 	
-	m_mapDisplayManager.clearAll();
 	const map::Map& map = getMap();
+	m_mapDisplayManager.setMap(map);
+	m_mapDisplayManager.clearAll();
 	map.drawTiles(m_mapDisplayManager, m_gameView);
 	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView.getViewProjectionMatrix());
 	

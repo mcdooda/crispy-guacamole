@@ -16,14 +16,15 @@ class MapObject
 		
 		virtual const flat::render::Sprite& getSprite() const = 0;
 		
-		inline float getDepth() const { return m_depth; }
+		inline const flat::AABB3& getAABB() const { return m_AABB; }
+
+		inline void setTextureHash(std::uint32_t textureHash) { m_textureHash = textureHash; }
 		inline std::uint32_t getTextureHash() const { return m_textureHash; }
 		
-		inline void computeDepth(float x, float y, float radius) { m_depth = x + y + radius; }
-		inline void setTextureHash(std::uint32_t textureHash) { m_textureHash = textureHash; }
-		
+	protected:
+		flat::AABB3 m_AABB;
+
 	private:
-		float m_depth;
 		std::uint32_t m_textureHash;
 };
 

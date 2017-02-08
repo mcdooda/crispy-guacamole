@@ -27,6 +27,8 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 
 		void update(float currentTime, float elapsedTime) override;
 
+		void getAABB(flat::AABB3& aabb) const;
+
 	public:
 		flat::Slot<Entity*> onCollidedWithEntity;
 		flat::Slot<> onCollidedWithMap;

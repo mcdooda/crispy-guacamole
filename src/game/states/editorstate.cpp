@@ -26,6 +26,7 @@ void EditorState::execute(Game& game)
 {
 	FLAT_ASSERT(m_editorMode.get() != nullptr);
 
+	clearBrush(game);
 	updateBrush(game);
 	displayBrush(game);
 	applyBrush(game);
@@ -56,6 +57,11 @@ void EditorState::updateBrush(Game& game)
 {
 	m_editorMode->updateBrushPosition();
 	m_editorMode->updateBrushTiles();
+}
+
+void EditorState::clearBrush(Game& game)
+{
+	m_editorMode->clearBrush();
 }
 
 void EditorState::displayBrush(Game& game)

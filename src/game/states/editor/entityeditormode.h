@@ -18,8 +18,8 @@ public:
 	EntityEditorMode(Game& game);
 	~EntityEditorMode() override;
 
-	void applyBrushPrimaryEffect(bool justPressed) const override;
-	void handleShortcuts() const override;
+	void applyBrushPrimaryEffect(bool justPressed) override;
+	void handleShortcuts() override;
 	bool canSelectEntities() const override { return true; }
 
 	inline void setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate) { m_entityTemplate = entityTemplate; }

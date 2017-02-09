@@ -106,6 +106,11 @@ void Tile::setColor(const flat::video::Color& color)
 	}
 }
 
+const flat::video::Color& Tile::getColor() const
+{
+	return m_sprite.getColor();
+}
+
 void Tile::getWalkableNeighborTiles(const Map& map, float jumpHeight, std::vector<const Tile*>& neighborTiles) const
 {
 	neighborTiles.clear();

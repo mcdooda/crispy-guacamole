@@ -30,7 +30,7 @@ class Brush
 		
 		virtual float getEffect(const flat::Vector2& positionFromCenter) const = 0;
 		
-		void getTiles(Map& map, const flat::Vector2& center, std::vector<map::Tile*>& tiles, float minEffect = 0.f) const;
+		void getTiles(Map& map, const flat::Vector2& center, std::map<map::Tile*, float>& tiles, float minEffect = 0.f) const;
 		float getTileEffect(const flat::Vector2& center, const map::Tile* tile) const;
 		
 		void getEntities(Map& map, const flat::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect = 0.f) const;

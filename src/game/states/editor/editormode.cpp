@@ -31,33 +31,51 @@ void EditorMode::updateBrushPosition()
 	}
 }
 
-void EditorMode::eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const
+void EditorMode::clearBrush() const
 {
-	map::brush::Brush* brush = m_brush.get();
-	FLAT_ASSERT(brush != nullptr);
-	for (map::Tile* tile : m_brushTiles)
+	auto clearTiles = [](map::Tile* tile, float effect)
 	{
-		if (tile->exists())
+		tile->setColor(flat::video::Color::WHITE);
+	};
+	eachSelectedTile(clearTiles);
+	eachBrushTile(clearTiles);
+}
+
+void EditorMode::displayBrush() const
+{
+	eachSelectedTile([](map::Tile* tile, float effect)
+	{
+		flat::video::Color color(1.f - effect, 1.f - effect, 1.f, 1.f);
+		tile->setColor(color);
+	});
+	eachBrushTile([](map::Tile* tile, float effect)
+	{
+		const flat::video::Color& currentColor = tile->getColor();
+		flat::video::Color color(currentColor.r, (1.f - effect) * currentColor.g, (1.f - effect) * currentColor.b, 1.f);
+		tile->setColor(color);
+	});
+}
+
+void EditorMode::eachSelectedTile(std::function<void(map::Tile*, float)> func) const
+{
+	for (const std::pair<map::Tile*, float>& tile : m_selectedTiles)
+	{
+		const float effect = tile.second;
+		if (effect > 0.f)
 		{
-			float effect = brush->getTileEffect(m_brushPosition, tile);
-			if (effect > 0.f)
-			{
-				func(tile, effect);
-			}
+			func(tile.first, effect);
 		}
 	}
 }
 
 void EditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) const
 {
-	map::brush::Brush* brush = m_brush.get();
-	FLAT_ASSERT(brush != nullptr);
-	for (map::Tile* tile : m_brushTiles)
+	for (const std::pair<map::Tile*, float>& tile : m_brushTiles)
 	{
-		float effect = brush->getTileEffect(m_brushPosition, tile);
+		const float effect = tile.second;
 		if (effect > 0.f)
 		{
-			func(tile, effect);
+			func(tile.first, effect);
 		}
 	}
 }

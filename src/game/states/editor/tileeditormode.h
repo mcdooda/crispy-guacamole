@@ -22,10 +22,9 @@ class TileEditorMode : public EditorMode
 		~TileEditorMode() override;
 
 		void updateBrushTiles() override;
-		void displayBrush() const override;
-		void applyBrushPrimaryEffect(bool justPressed) const override;
-		void applyBrushSecondaryEffect(bool justPressed) const override;
-		void handleShortcuts() const override;
+		void applyBrushPrimaryEffect(bool justPressed) override;
+		void applyBrushSecondaryEffect(bool justPressed) override;
+		void handleShortcuts() override;
 
 		inline void setTileTemplate(const std::shared_ptr<const map::TileTemplate>& tileTemplate) { m_tileTemplate = tileTemplate; }
 

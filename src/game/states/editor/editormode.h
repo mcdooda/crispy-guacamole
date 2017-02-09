@@ -27,16 +27,17 @@ public:
 
 	void updateBrushPosition();
 	virtual void updateBrushTiles() {}
-	virtual void displayBrush() const {}
-	virtual void applyBrushPrimaryEffect(bool justPressed) const {}
-	virtual void applyBrushSecondaryEffect(bool justPressed) const {}
-	virtual void handleShortcuts() const {}
+	virtual void clearBrush() const;
+	virtual void displayBrush() const;
+	virtual void applyBrushPrimaryEffect(bool justPressed) {}
+	virtual void applyBrushSecondaryEffect(bool justPressed) {}
+	virtual void handleShortcuts() {}
 	virtual bool canSelectEntities() const { return false; }
 
 	virtual void draw() const {}
 
 protected:
-	void eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const;
+	void eachSelectedTile(std::function<void(map::Tile*, float)> func) const;
 	void eachBrushTile(std::function<void(map::Tile*, float)> func) const;
 	states::EditorState& getEditorState() const;
 	map::Map& getMap() const;
@@ -44,10 +45,11 @@ protected:
 protected:
 	Game& m_game;
 
-	std::vector<map::Tile*> m_previousBrushTiles;
-	std::vector<map::Tile*> m_brushTiles;
+	std::map<map::Tile*, float> m_selectedTiles;
+	std::map<map::Tile*, float> m_brushTiles;
 	flat::Vector2 m_brushPosition;
 	std::unique_ptr<map::brush::Brush> m_brush;
+	bool m_keepSelection;
 };
 
 } // editor

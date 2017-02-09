@@ -19,7 +19,7 @@ EntityEditorMode::~EntityEditorMode()
 
 }
 
-void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
+void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
 	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
 	flat::Vector2 position2d = m_brushPosition;
@@ -35,7 +35,7 @@ void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 	}
 }
 
-void EntityEditorMode::handleShortcuts() const
+void EntityEditorMode::handleShortcuts()
 {
 	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
 	const bool delPressed = keyboard->isJustPressed(K(DELETE));

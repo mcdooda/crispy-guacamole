@@ -31,6 +31,7 @@ class EditorState : public BaseMapStateImpl<map::EditorMap>
 	private:
 		void saveOnCtrlS(Game& game);
 		void updateBrush(Game& game);
+		void clearBrush(Game& game);
 		void displayBrush(Game& game);
 		void applyBrush(Game& game);
 

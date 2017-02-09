@@ -22,9 +22,8 @@ class PropEditorMode : public EditorMode
 		~PropEditorMode() override;
 
 		void updateBrushTiles() override;
-		void displayBrush() const override;
-		void applyBrushPrimaryEffect(bool justPressed) const override;
-		void applyBrushSecondaryEffect(bool justPressed) const override;
+		void applyBrushPrimaryEffect(bool justPressed) override;
+		void applyBrushSecondaryEffect(bool justPressed) override;
 
 		inline void setPropTemplate(const std::shared_ptr<const map::PropTemplate>& propTemplate) { m_propTemplate = propTemplate; }
 

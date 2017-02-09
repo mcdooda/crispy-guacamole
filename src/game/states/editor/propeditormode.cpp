@@ -40,30 +40,14 @@ void PropEditorMode::updateBrushTiles()
 		brush->setRadius(radius);
 	}
 
-	m_previousBrushTiles = std::move(m_brushTiles);
-	brush->getTiles(getMap(), m_brushPosition, m_brushTiles);
+	m_selectedTiles.clear();
+	brush->getTiles(getMap(), m_brushPosition, m_selectedTiles);
+	m_brushTiles = m_selectedTiles;
 }
 
-void PropEditorMode::displayBrush() const
+void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
-	map::brush::Brush* brush = m_brush.get();
-	FLAT_ASSERT(brush != nullptr);
-
-	for (map::Tile* tile : m_previousBrushTiles)
-	{
-		tile->setColor(flat::video::Color::WHITE);
-	}
-
-	eachBrushTile([](map::Tile* tile, float effect)
-	{
-		flat::video::Color color(1.f, 1.f - effect, 1.f - effect, 1.f);
-		tile->setColor(color);
-	});
-}
-
-void PropEditorMode::applyBrushPrimaryEffect(bool justPressed) const
-{
-	eachBrushTileIfExists([this](map::Tile* tile, float effect)
+	eachBrushTile([this](map::Tile* tile, float effect)
 	{
 		if (tile->getEntities().empty())
 		{
@@ -77,9 +61,9 @@ void PropEditorMode::applyBrushPrimaryEffect(bool justPressed) const
 	});
 }
 
-void PropEditorMode::applyBrushSecondaryEffect(bool justPressed) const
+void PropEditorMode::applyBrushSecondaryEffect(bool justPressed)
 {
-	eachBrushTileIfExists([this](map::Tile* tile, float effect)
+	eachBrushTile([this](map::Tile* tile, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)

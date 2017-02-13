@@ -108,10 +108,10 @@ void EditorMode::eachBrushTileIfExists(std::function<void(map::Tile*, float)> fu
 
 void EditorMode::clearSelectedTiles()
 {
-	eachSelectedTile([](map::Tile* tile, float effect)
+	for (const std::pair<map::Tile*, float>& pair : m_selectedTiles)
 	{
-		tile->setColor(flat::video::Color::WHITE);
-	});
+		pair.first->setColor(flat::video::Color::WHITE);
+	}
 	m_selectedTiles.clear();
 }
 

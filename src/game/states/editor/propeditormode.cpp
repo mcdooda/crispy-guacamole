@@ -40,9 +40,9 @@ void PropEditorMode::updateBrushTiles()
 		brush->setRadius(radius);
 	}
 
-	m_selectedTiles.clear();
-	brush->getTiles(getMap(), m_brushPosition, m_selectedTiles);
-	m_brushTiles = m_selectedTiles;
+
+	m_brushTiles.clear();
+	brush->getTiles(getMap(), m_brushPosition, m_brushTiles);
 }
 
 void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)

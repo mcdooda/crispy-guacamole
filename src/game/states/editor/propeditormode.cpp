@@ -47,7 +47,7 @@ void PropEditorMode::updateBrushTiles()
 
 void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
-	eachBrushTile([this](map::Tile* tile, float effect)
+	eachBrushTileIfExists([this](map::Tile* tile, float effect)
 	{
 		if (tile->getEntities().empty())
 		{
@@ -63,7 +63,7 @@ void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)
 
 void PropEditorMode::applyBrushSecondaryEffect(bool justPressed)
 {
-	eachBrushTile([this](map::Tile* tile, float effect)
+	eachBrushTileIfExists([this](map::Tile* tile, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)

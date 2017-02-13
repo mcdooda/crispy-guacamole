@@ -38,7 +38,10 @@ public:
 
 protected:
 	void eachSelectedTile(std::function<void(map::Tile*, float)> func) const;
+	void eachSelectedTileIfExists(std::function<void(map::Tile*, float)> func) const;
 	void eachBrushTile(std::function<void(map::Tile*, float)> func) const;
+	void eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const;
+	void clearSelectedTiles();
 	states::EditorState& getEditorState() const;
 	map::Map& getMap() const;
 
@@ -49,7 +52,6 @@ protected:
 	std::map<map::Tile*, float> m_brushTiles;
 	flat::Vector2 m_brushPosition;
 	std::unique_ptr<map::brush::Brush> m_brush;
-	bool m_keepSelection;
 };
 
 } // editor

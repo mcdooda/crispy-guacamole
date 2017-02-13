@@ -62,6 +62,8 @@ class Map
 
 		void eachTile(std::function<void(const Tile*)> func) const;
 		virtual void eachTile(std::function<void(Tile*)> func) = 0;
+		void eachTileIfExists(std::function<void(const Tile*)> func) const;
+		void eachTileIfExists(std::function<void(Tile*)> func);
 		
 		// axes
 		inline const flat::Matrix3& getTransform() const { return m_transform; }

@@ -179,6 +179,25 @@ void Map::eachTile(std::function<void(const Tile*)> func) const
 	});
 }
 
+void Map::eachTileIfExists(std::function<void(const Tile*)> func) const
+{
+	const_cast<Map*>(this)->eachTileIfExists([func](Tile* tile)
+	{
+		func(tile);
+	});
+}
+
+void Map::eachTileIfExists(std::function<void(Tile*)> func)
+{
+	eachTile([func](Tile* tile)
+	{
+		if (tile->exists())
+		{
+			func(tile);
+		}
+	});
+}
+
 void Map::addEntity(entity::Entity* entity)
 {
 	FLAT_ASSERT(entity != nullptr);

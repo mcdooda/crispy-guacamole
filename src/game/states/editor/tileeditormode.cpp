@@ -17,12 +17,15 @@ TileEditorMode::TileEditorMode(Game& game) : Super(game)
 	map::brush::Brush* brush = new map::brush::SphereBrush();
 	brush->setRadius(3.f);
 	m_brush.reset(brush);
-	m_keepSelection = false;
 }
 
 TileEditorMode::~TileEditorMode()
 {
-	
+	map::Map& map = getMap();
+	map.eachTileIfExists([](map::Tile* tile)
+	{
+		tile->setColor(flat::video::Color::WHITE);
+	});
 }
 
 void TileEditorMode::updateBrushTiles()
@@ -44,31 +47,22 @@ void TileEditorMode::updateBrushTiles()
 	m_brushTiles.clear();
 	brush->getTiles(getMap(), m_brushPosition, m_brushTiles);
 
-	if (m_keepSelection)
+	if (mouse->isPressed(M(RIGHT)))
 	{
-		if (mouse->isPressed(M(RIGHT)))
+		eachBrushTile([this](map::Tile* tile, float effect)
 		{
-			eachBrushTile([this](map::Tile* tile, float effect)
+			std::map<map::Tile*, float>::iterator it = m_selectedTiles.find(tile);
+			if (it == m_selectedTiles.end() || effect > it->second)
 			{
-				std::map<map::Tile*, float>::iterator it = m_selectedTiles.find(tile);
-				if (it == m_selectedTiles.end() || effect > it->second)
-				{
-					m_selectedTiles[tile] = effect;
-				}
-			});
-		}
-	}
-	else
-	{
-		m_selectedTiles.clear();
-		brush->getTiles(getMap(), m_brushPosition, m_selectedTiles);
+				m_selectedTiles[tile] = effect;
+			}
+		});
 	}
 }
 
 void TileEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
-	m_keepSelection = false;
-	eachBrushTile([this](map::Tile* tile, float effect)
+	eachBrushTileIfExists([this](map::Tile* tile, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
@@ -77,11 +71,12 @@ void TileEditorMode::applyBrushPrimaryEffect(bool justPressed)
 			tile->setTexture(texture);
 		}
 	});
+	clearSelectedTiles();
 }
 
 void TileEditorMode::applyBrushSecondaryEffect(bool justPressed)
 {
-	m_keepSelection = true;
+	// nothing to do
 }
 
 void TileEditorMode::handleShortcuts()
@@ -105,7 +100,7 @@ void TileEditorMode::handleShortcuts()
 		{
 			displacement *= 0.2f;
 		}
-		eachSelectedTile([this, &map, displacement](map::Tile* tile, float effect)
+		eachSelectedTileIfExists([this, &map, displacement](map::Tile* tile, float effect)
 		{
 			tile->setZ(map, tile->getZ() + displacement * effect);
 		});
@@ -115,26 +110,52 @@ void TileEditorMode::handleShortcuts()
 	{
 		float mean = 0.f;
 		float n = 0.f;
-		eachSelectedTile([&mean, &n](map::Tile* tile, float effect)
+		eachSelectedTileIfExists([&mean, &n](map::Tile* tile, float effect)
 		{
 			mean += tile->getZ() * effect;
 			n += effect;
 		});
 		mean /= n;
-		eachSelectedTile([this, &map, mean, frameTime](map::Tile* tile, float effect)
+		eachSelectedTileIfExists([this, &map, mean, frameTime](map::Tile* tile, float effect)
 		{
 			float z = tile->getZ();
 			tile->setZ(map, z + (mean - z) * effect * frameTime * 5.f);
 		});
 	}
 
-	if (keyboard->isPressed(K(R)))
+	if (keyboard->isJustPressed(K(R)))
 	{
-		map.eachTile([&map](map::Tile* tile)
+		map.eachTileIfExists([&map](map::Tile* tile)
 		{
-			if (tile->exists())
+			tile->setZ(map, 0.f);
+		});
+	}
+
+	if (keyboard->isJustPressed(K(DELETE)))
+	{
+		eachSelectedTileIfExists([](map::Tile* tile, float effect)
+		{
+			tile->setExists(false);
+			for (entity::Entity* entity : tile->getEntities())
 			{
-				tile->setZ(map, 0.f);
+				entity->markForDelete();
+			}
+		});
+	}
+
+	if (keyboard->isPressed(K(SPACE)))
+	{
+		eachBrushTile([this](map::Tile* tile, float effect)
+		{
+			float random = m_game.random->nextFloat(0.f, 1.f);
+			if (random <= effect)
+			{
+				tile->setExists(true);
+				if (!tile->hasSprite())
+				{
+					std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
+					tile->setTexture(texture);
+				}
 			}
 		});
 	}

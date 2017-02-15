@@ -21,6 +21,8 @@ class Tile final : public MapObject
 	public:
 		Tile();
 		~Tile() override;
+
+		bool isTile() const override { return true; }
 		
 		inline bool exists() const { return m_exists; }
 		void setExists(bool exists) { m_exists = exists; }

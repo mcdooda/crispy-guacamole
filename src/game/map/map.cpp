@@ -86,22 +86,16 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 
 void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& view) const
 {
-	eachTile([&displayManager](const Tile* tile)
+	eachTileIfExists([&displayManager](const Tile* tile)
 	{
-		if (tile->exists())
+		displayManager.add(tile);
+		if (const Prop* prop = tile->getProp())
 		{
-			displayManager.add(tile);
-			if (const Prop* prop = tile->getProp())
-			{
-				displayManager.add(prop);
-			}
-			else
-			{
-				for (entity::Entity* entity : tile->getEntities())
-				{
-					displayManager.add(entity);
-				}
-			}
+			displayManager.add(prop);
+		}
+		for (entity::Entity* entity : tile->getEntities())
+		{
+			displayManager.add(entity);
 		}
 	});
 }

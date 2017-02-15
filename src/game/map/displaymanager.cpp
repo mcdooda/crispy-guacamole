@@ -1,6 +1,10 @@
 #include "displaymanager.h"
 #include "mapobject.h"
 #include "map.h"
+#include "tile.h"
+#include "../entity/entity.h"
+
+#define DEBUG_DRAW 0
 
 namespace game
 {
@@ -12,122 +16,161 @@ DisplayManager::DisplayManager()
 	m_spriteBatch = std::make_unique<flat::render::SpriteBatch>();
 }
 
-struct Hexagon
+inline bool sortMapObjects(const MapObject* a, const MapObject* b)
 {
-	float xmin;
-	float xmax;
-	float ymin;
-	float ymax;
-	float hmin;
-	float hmax;
-};
-
-inline void getHexagonFromAABB(const flat::Matrix3& mapTransform, const flat::AABB3& aabb, Hexagon& hexagon)
-{
-	hexagon.xmin = aabb.max.x;
-	hexagon.xmax; // TODO
-	hexagon.ymin = aabb.max.y;
-	hexagon.ymax; // TODO
-	hexagon.hmin = aabb.min.y - aabb.max.x;
-	hexagon.hmax = aabb.min.x - aabb.max.y;
-}
-
-inline bool hexagonsOverlap(const flat::Matrix3& mapTransform, const flat::AABB3& aAABB, const flat::AABB3& bAABB)
-{
-	Hexagon aHexagon;
-	getHexagonFromAABB(mapTransform, aAABB, aHexagon);
-
-	Hexagon bHexagon;
-	getHexagonFromAABB(mapTransform, bAABB, bHexagon);
-
-	return !(aHexagon.xmin >= bHexagon.xmax || bHexagon.xmin >= aHexagon.xmax) &&
-	       !(aHexagon.ymin >= bHexagon.ymax || bHexagon.ymin >= aHexagon.ymax) &&
-	       !(aHexagon.hmin >= bHexagon.hmax || bHexagon.hmin >= aHexagon.hmax);
-}
-
-class SortMapObjects
-{
-	public:
-		SortMapObjects(const flat::Matrix3& mapTransform) :
-			m_mapTransform(mapTransform)
-		{}
-
-		inline bool operator()(const MapObject* a, const MapObject* b)
+	const flat::Vector3 aCenter = a->getAABB().getCenter();
+	const flat::Vector3 bCenter = b->getAABB().getCenter();
+	const float aDepth = aCenter.x + aCenter.y;
+	const float bDepth = bCenter.x + bCenter.y;
+	if (aDepth == bDepth)
+	{
+		if (aCenter.z == bCenter.z)
 		{
-			const flat::Vector3 aCenter = a->getAABB().getCenter();
-			const flat::Vector3 bCenter = b->getAABB().getCenter();
-			const float aDepth = aCenter.x + aCenter.y;
-			const float bDepth = bCenter.x + bCenter.y;
-			if (aDepth == bDepth)
+			if (a->getTextureHash() == b->getTextureHash())
 			{
-				return a->getTextureHash() < b->getTextureHash();
+				return aCenter.x < bCenter.x;
 			}
-			return aDepth < bDepth;
-
-			/*
-			const flat::AABB3& aAABB = a->getAABB();
-			const flat::AABB3& bAABB = b->getAABB();
-
-			if (!hexagonsOverlap(m_mapTransform, aAABB, bAABB))
-			{
-				return a->getTextureHash() < b->getTextureHash();
-			}
-
-			if (aAABB.min.x >= bAABB.max.x)
-				return false;
-			else if (bAABB.min.x >= aAABB.max.x)
-				return true;
-
-			if (aAABB.min.y >= bAABB.max.y)
-				return false;
-			else if (bAABB.min.y >= aAABB.max.y)
-				return true;
-
-			if (aAABB.min.z >= bAABB.max.z)
-				return false;
-			else if (bAABB.min.z >= aAABB.max.z)
-				return true;
-
 			return a->getTextureHash() < b->getTextureHash();
-			*/
 		}
+		return aCenter.z < bCenter.z;
+	}
+	return aDepth < bDepth;
+}
 
-	private:
-		const flat::Matrix3& m_mapTransform;
-};
+inline bool sortMapObjects2(const MapObject* a, const MapObject* b)
+{
+	const float aDepth = a->getAABB().min.z + 0.01f;
+	const float bDepth = b->getAABB().max.z;
+	if (aDepth == bDepth)
+	{
+		if (a->getTextureHash() == b->getTextureHash())
+		{
+			return a->getAABB().getCenter().x < b->getAABB().getCenter().x;
+		}
+		return a->getTextureHash() < b->getTextureHash();
+	}
+	return aDepth < bDepth;
+}
+
+inline bool spritesOverlap(const MapObject* a, const MapObject* b)
+{
+	return a->getSprite().overlaps(b->getSprite());
+}
+
+void DisplayManager::add(const MapObject * mapObject)
+{
+	m_objects.push_back(mapObject);
+}
 
 void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix)
 {
-	const flat::Matrix3& mapTransform = m_map->getTransform();
-	SortMapObjects sorter(mapTransform);
-	std::sort(std::begin(m_objects), std::end(m_objects), sorter);
-	FLAT_ASSERT_MSG(std::is_sorted(std::begin(m_objects), std::end(m_objects), sorter), "Sort function is not coherent");
+	std::sort(m_objects.begin(), m_objects.end(), sortMapObjects);
+	FLAT_ASSERT(std::is_sorted(m_objects.begin(), m_objects.end(), sortMapObjects));
 
-	/*for (const MapObject* mapObject : m_objects)
 	{
-		mapObject->getSprite().draw(renderSettings, viewMatrix);
-	}*/
-
-	flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
-
-	std::vector<const MapObject*>::iterator it = m_objects.begin();
-	std::vector<const MapObject*>::iterator end = m_objects.end();
-	while (it != m_objects.end())
-	{
-		spriteBatch->clear();
-
-		const MapObject* mapObject = *it;
-		std::vector<const MapObject*>::iterator it2 = std::upper_bound(it, end, mapObject, sorter);
-		while (it != it2)
+#if DEBUG_DRAW
+		for (const MapObject* o : m_objects)
 		{
-			mapObject = *it;
-			spriteBatch->add(mapObject->getSprite());
-			++it;
+			const_cast<flat::render::Sprite&>(o->getSprite()).setColor(flat::video::Color::WHITE);
+		}
+#endif
+
+		const int size = static_cast<int>(m_objects.size());
+		int numSwaps = 0;
+		for (int i = 0; i < size; ++i)
+		{
+			const MapObject* mapObject = m_objects[i];
+			const flat::Vector3 aCenter = mapObject->getAABB().getCenter();
+			const float aDepth = aCenter.x + aCenter.y;
+			if (mapObject->isEntity())
+			{
+				int k = 0;
+				for (int j = i + 1; j < size; ++j)
+				{
+					const MapObject* mapObject2 = m_objects[j];
+					const flat::Vector3 bCenter = mapObject2->getAABB().getCenter();
+					const float bDepth = bCenter.x + bCenter.y;
+
+					if (bDepth > aDepth + 1.f)
+						break;
+
+					if (mapObject2->isTile() && spritesOverlap(mapObject, mapObject2) && !sortMapObjects2(mapObject, mapObject2))
+					{
+#if DEBUG_DRAW
+						const_cast<flat::render::Sprite&>(mapObject->getSprite()).setColor(flat::video::Color::RED);
+						const_cast<flat::render::Sprite&>(mapObject2->getSprite()).setColor(flat::video::Color::BLUE);
+#endif
+						if (k == 0 || !sortMapObjects(m_objects[j], m_objects[k]))
+						{
+							k = j;
+						}
+					}
+				}
+				if (k != 0)
+				{
+					while (k < size - 1 && m_objects[k + 1]->isEntity() && sortMapObjects2(mapObject, m_objects[k + 1]))
+					{
+						++k;
+					}
+
+#if DEBUG_DRAW
+					const_cast<flat::render::Sprite&>(m_objects[k]->getSprite()).setColor(flat::video::Color::GREEN);
+#endif
+					for (int l = i; l < k; ++l)
+					{
+						m_objects[l] = m_objects[l + 1];
+					}
+					m_objects[k] = mapObject;
+					--i; // avoids to skip the 1st shifted element
+					++numSwaps;
+				}
+			}
 		}
 
-		spriteBatch->draw(renderSettings, viewMatrix);
+#if DEBUG_DRAW
+		std::cout << "numSwaps = " << numSwaps << std::endl;
+#endif
+	}
+
+
+	{
+#if DEBUG_DRAW
+		int numDrawCalls = 0;
+		int numSprites = 0;
+#endif
+
+		flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
+
+		std::vector<const MapObject*>::iterator it = m_objects.begin();
+		std::vector<const MapObject*>::iterator end = m_objects.end();
+		while (it != end)
+		{
+			spriteBatch->clear();
+
+			std::vector<const MapObject*>::iterator it2 = it;
+			while (it2 != end && (*it2)->getTextureHash() == (*it)->getTextureHash())
+			{
+				spriteBatch->add((*it2)->getSprite());
+#if DEBUG_DRAW
+				++numSprites;
+#endif
+				++it2;
+			}
+			it = it2;
+
+			spriteBatch->draw(renderSettings, viewMatrix);
+#if DEBUG_DRAW
+			++numDrawCalls;
+#endif
+		}
+
+#if DEBUG_DRAW
+		std::cout << "numDrawCalls = " << numDrawCalls << " / numSprites = " << numSprites << std::endl;
+#endif
 	}
 }
+
+#undef DEBUG_DRAW
 
 } // map
 } // game

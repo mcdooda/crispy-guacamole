@@ -32,6 +32,8 @@ class Entity final : public map::MapObject
 	public:
 		Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, EntityId id);
 		~Entity() override;
+
+		bool isEntity() const override { return true; }
 		
 		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 

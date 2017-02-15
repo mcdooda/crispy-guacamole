@@ -19,7 +19,7 @@ class DisplayManager final
 		inline void setMap(const Map& map) { m_map = &map; }
 		
 		inline void clearAll() { m_objects.clear(); }
-		inline void add(const MapObject* mapObject) { m_objects.push_back(mapObject); }
+		void add(const MapObject* mapObject);
 		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix);
 		
 	private:

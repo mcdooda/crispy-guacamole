@@ -49,6 +49,11 @@ void TileEditorMode::updateBrushTiles()
 
 	if (mouse->isPressed(M(RIGHT)))
 	{
+		if (mouse->isJustPressed(M(RIGHT)) && !keyboard->isPressed(K(LSHIFT)))
+		{
+			m_selectedTiles.clear();
+		}
+
 		eachBrushTile([this](map::Tile* tile, float effect)
 		{
 			std::map<map::Tile*, float>::iterator it = m_selectedTiles.find(tile);

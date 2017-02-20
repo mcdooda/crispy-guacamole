@@ -4,6 +4,7 @@
 #include "../entityeditormode.h"
 #include "../propeditormode.h"
 #include "../tileeditormode.h"
+#include "../zoneeditormode.h"
 
 namespace game
 {
@@ -20,12 +21,21 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 6);
 	static const luaL_Reg Editor_lib_m[] = {
-		{"setEntityMode", l_Editor_setEntityMode},
-		{"setEntity",     l_Editor_setEntity},
-		{"setTileMode",   l_Editor_setTileMode},
-		{"setTile",       l_Editor_setTile},
-		{"setPropMode",   l_Editor_setPropMode},
-		{"setProp",       l_Editor_setProp},
+		{"setEntityMode",    l_Editor_setEntityMode},
+		{"setEntity",        l_Editor_setEntity},
+
+		{"setTileMode",      l_Editor_setTileMode},
+		{"setTile",          l_Editor_setTile},
+
+		{"setPropMode",      l_Editor_setPropMode},
+		{"setProp",          l_Editor_setProp},
+
+		{"setZoneMode",      l_Editor_setZoneMode},
+		{"setZone",          l_Editor_setZone},
+		{"addZone",          l_Editor_addZone},
+
+		{"getBrushPosition", l_Editor_getBrushPosition},
+
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Editor_lib_m, 0);
@@ -83,6 +93,55 @@ int l_Editor_setProp(lua_State * L)
 	std::shared_ptr<const map::PropTemplate> propTemplate = editorState.getPropTemplate(game, propTemplateName);
 	propEditorMode.setPropTemplate(propTemplate);
 	return 0;
+}
+
+int l_Editor_setZoneMode(lua_State * L)
+{
+	setEditorMode<editor::ZoneEditorMode>(L);
+	return 0;
+}
+
+int l_Editor_setZone(lua_State* L)
+{
+	const char* zoneName = luaL_checkstring(L, 1);
+	editor::ZoneEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneEditorMode>();
+	states::EditorState& editorState = getEditorState(L);
+	const map::Map& map = editorState.getMap();
+	std::shared_ptr<map::Zone> zone;
+	if (map.getZone(zoneName, zone))
+	{
+		zoneEditorMode.setCurrentZone(zone);
+		lua_pushboolean(L, 1);
+	}
+	else
+	{
+		lua_pushboolean(L, 0);
+	}
+	return 1;
+}
+
+int l_Editor_addZone(lua_State* L)
+{
+	luaL_error(L, "TODO");
+	return 0;
+}
+
+int l_Editor_getBrushPosition(lua_State * L)
+{
+	states::EditorState& editorState = getEditorState(L);
+	editor::EditorMode* editorMode = editorState.getEditorMode();
+	if (editorMode != nullptr) // editorMode not ready yet? TODO: fix this
+	{
+		flat::Vector2 brushPosition = editorMode->getBrushPosition();
+		lua_pushnumber(L, brushPosition.x);
+		lua_pushnumber(L, brushPosition.y);
+	}
+	else
+	{
+		lua_pushnumber(L, 0.f);
+		lua_pushnumber(L, 0.f);
+	}
+	return 2;
 }
 
 // private

@@ -17,7 +17,11 @@ EditorMode::EditorMode(Game& game) :
 
 EditorMode::~EditorMode()
 {
-
+	map::Map& map = getMap();
+	map.eachTileIfExists([](map::Tile* tile)
+	{
+		tile->setColor(flat::video::Color::WHITE);
+	});
 }
 
 void EditorMode::updateBrushPosition()

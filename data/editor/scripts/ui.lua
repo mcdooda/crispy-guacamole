@@ -1,10 +1,5 @@
-dofile 'data/editor/scripts/tests.lua'
+dump = require 'data/scripts/dump'
 dofile 'data/scripts/stats.lua'
+dofile 'data/scripts/brushposition.lua'
 
-local dump = require 'data/scripts/dump'
-local radiobutton = require 'data/scripts/ui/radiobutton'
-
-local root = Widget.getRoot()
-do
-    
-end
+dofile 'data/editor/scripts/tests.lua'

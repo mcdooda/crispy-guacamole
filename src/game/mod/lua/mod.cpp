@@ -1,4 +1,5 @@
 #include "mod.h"
+#include "../../game.h"
 
 namespace game
 {
@@ -13,7 +14,8 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 1);
 	static const luaL_Reg Mod_lib_m[] = {
-		{"getPath", l_Mod_getPath},
+		{"getPath",           l_Mod_getPath},
+		{"getCurrentMapName", l_Mod_getCurrentMapName},
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Mod_lib_m, 0);
@@ -24,7 +26,15 @@ int open(lua_State* L)
 
 int l_Mod_getPath(lua_State * L)
 {
-	lua_pushstring(L, "mods/crispy-guacamole");
+	Game& game = flat::lua::getGame(L).to<Game>();
+	lua_pushstring(L, game.modPath.c_str());
+	return 1;
+}
+
+int l_Mod_getCurrentMapName(lua_State* L)
+{
+	Game& game = flat::lua::getGame(L).to<Game>();
+	lua_pushstring(L, game.mapName.c_str());
 	return 1;
 }
 

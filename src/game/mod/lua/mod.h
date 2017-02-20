@@ -13,6 +13,7 @@ namespace lua
 int open(lua_State* L);
 
 int l_Mod_getPath(lua_State* L);
+int l_Mod_getCurrentMapName(lua_State* L);
 
 } // lua
 } // mod

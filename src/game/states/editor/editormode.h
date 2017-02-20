@@ -25,6 +25,8 @@ public:
 	EditorMode(Game& game);
 	virtual ~EditorMode();
 
+	inline const flat::Vector2& getBrushPosition() const { return m_brushPosition; }
+
 	void updateBrushPosition();
 	virtual void updateBrushTiles() {}
 	virtual void clearBrush() const;

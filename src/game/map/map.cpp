@@ -2,6 +2,7 @@
 #include "displaymanager.h"
 #include "tile.h"
 #include "prop.h"
+#include "zone.h"
 #include "io/reader.h"
 #include "io/writer.h"
 #include "../mod/mod.h"
@@ -242,6 +243,34 @@ void Map::updateEntities(float currentTime, float elapsedTime)
 	{
 		entity->update(currentTime, elapsedTime);
 	}
+}
+
+std::shared_ptr<Zone>& Map::addZone(const std::string& zoneName)
+{
+	FLAT_ASSERT(m_zones.find(zoneName) == m_zones.end());
+	return m_zones.emplace(zoneName, std::make_shared<Zone>(*this)).first->second;
+}
+
+bool Map::removeZone(const std::string& zoneName)
+{
+	std::map<std::string, std::shared_ptr<Zone>>::iterator it = m_zones.find(zoneName);
+	if (it != m_zones.end())
+	{
+		m_zones.erase(it);
+		return true;
+	}
+	return false;
+}
+
+bool Map::getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) const
+{
+	std::map<std::string, std::shared_ptr<Zone>>::const_iterator it = m_zones.find(zoneName);
+	if (it != m_zones.end())
+	{
+		zone = it->second;
+		return true;
+	}
+	return false;
 }
 
 #ifdef FLAT_DEBUG

@@ -26,6 +26,12 @@ int l_Editor_setTile(lua_State* L);
 int l_Editor_setPropMode(lua_State* L);
 int l_Editor_setProp(lua_State* L);
 
+int l_Editor_setZoneMode(lua_State* L);
+int l_Editor_setZone(lua_State* L);
+int l_Editor_addZone(lua_State* L);
+
+int l_Editor_getBrushPosition(lua_State* L);
+
 // private
 states::EditorState& getEditorState(lua_State* L);
 

@@ -21,11 +21,7 @@ TileEditorMode::TileEditorMode(Game& game) : Super(game)
 
 TileEditorMode::~TileEditorMode()
 {
-	map::Map& map = getMap();
-	map.eachTileIfExists([](map::Tile* tile)
-	{
-		tile->setColor(flat::video::Color::WHITE);
-	});
+
 }
 
 void TileEditorMode::updateBrushTiles()

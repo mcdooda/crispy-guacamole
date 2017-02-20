@@ -32,6 +32,7 @@ class Reader
 
 	private:
 		void readConfig();
+		void readZones();
 		void readHeaders();
 		void readTiles();
 		void readEntities();

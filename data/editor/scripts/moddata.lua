@@ -1,9 +1,16 @@
 local ModData = {}
 
-local dump = require 'data/scripts/dump'
+ModData.path = Mod.getPath()
+ModData.currentMapName = Mod.getCurrentMapName()
 
-local path = Mod.getPath()
-ModData.path = path
+do
+	local path = ModData.path
+	local mapName = ModData.currentMapName
+
+	function ModData.mapFile(file)
+		return path .. '/maps/' .. mapName .. '/' .. file
+	end
+end
 
 -- entities
 local entities = dofile(ModData.path .. '/entities/entities.lua')
@@ -18,7 +25,7 @@ for i = 1, #entities do
 	local componentConfigNames = ComponentRegistry.getConfigNames()
 	for j = 1, #componentConfigNames do
 		local componentConfigName = componentConfigNames[j]
-		local componentExists, componentTemplate = pcall(dofile, path .. '/entities/' .. entityName .. '/' .. componentConfigName .. '.lua')
+		local componentExists, componentTemplate = pcall(dofile, ModData.path .. '/entities/' .. entityName .. '/' .. componentConfigName .. '.lua')
 		if componentExists then
 			entityTemplate[componentConfigName] = componentTemplate
 		end
@@ -33,8 +40,19 @@ ModData.maps = {
 }
 for i = 1, #maps do
 	local mapName = maps[i]
-	local map = dofile(path .. '/maps/' .. mapName .. '/map.lua')
-	ModData.maps[mapName] = map
+	local map = dofile(ModData.mapFile 'map.lua')
+	local zones = dofile(ModData.mapFile 'zones.lua')
+	local zoneNames = {}
+	for zoneName, zone in pairs(zones) do
+		zoneNames[#zoneNames + 1] = zoneName
+	end
+	zones.names = zoneNames
+	ModData.maps[mapName] = {
+		name = mapName,
+		map = map,
+		zones = zones
+	}
+	ModData.currentMap = ModData.maps[ModData.currentMapName]
 end
 
 -- props
@@ -43,7 +61,6 @@ ModData.props = {
 	names = props,
 	getHighest = function(propDir)
 		local max = { nil, 0 }
-		dump(ModData.props[propDir])
 		for k,v in pairs(ModData.props[propDir]) do
 			if max[2] < v then
 				max = {k,v}
@@ -52,17 +69,14 @@ ModData.props = {
 		return max[1]
 	end,
 	getPath = function(propDir, propFile)
-		print(path .. '/props/' .. propDir .. '/' .. propFile .. '.png')
-		return path .. '/props/' .. propDir .. '/' .. propFile .. '.png'
+		return ModData.path .. '/props/' .. propDir .. '/' .. propFile .. '.png'
 	end
 }
 
 for i = 1, #props do
 	local propName = props[i]
-	local prop = dofile(path .. '/props/' .. propName .. '/prop.lua')
-	dump(prop)
+	local prop = dofile(ModData.path .. '/props/' .. propName .. '/prop.lua')
 	ModData.props[propName] = prop
-
 end
 
 -- tiles
@@ -79,15 +93,14 @@ ModData.tiles = {
 		return max[1]
 	end,
 	getPath = function(tileDir, tileFile)
-		return path .. '/tiles/' .. tileDir .. '/' .. tileFile .. '.png'
+		return ModData.path .. '/tiles/' .. tileDir .. '/' .. tileFile .. '.png'
 	end
 }
 
 for i = 1, #tiles do
 	local tileDir = tiles[i]
-	local tile = dofile(path .. '/tiles/' .. tileDir .. '/tile.lua')
+	local tile = dofile(ModData.path .. '/tiles/' .. tileDir .. '/tile.lua')
 	ModData.tiles[tileDir] = tile
 end
-
 
 return ModData

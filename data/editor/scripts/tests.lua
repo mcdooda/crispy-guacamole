@@ -1,7 +1,3 @@
---require 'data/scripts/dumpenv' ()
-
-local dump = require 'data/scripts/dump'
-
 local ModData = require 'data/editor/scripts/moddata'
 
 local Slider = require 'data/scripts/ui/slider'
@@ -9,12 +5,11 @@ local Slider = require 'data/scripts/ui/slider'
 local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }
 
 local root = Widget.getRoot()
-dump(ModData.tiles)
 do
 	local leftPanel = Widget.makeColumnFlow()
 	leftPanel:setBackgroundColor(0x444444FF)
 	leftPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
-	leftPanel:setSize(150,0)
+	leftPanel:setSize(128,0)
 
 	local content = Widget.makeColumnFlow()
 	content:setSizePolicy(Widget.SizePolicy.EXPAND)
@@ -58,9 +53,7 @@ do
 			Editor.setProp(ModData.props.names[1])
 			for i = 1,  #ModData.props.names do
 				local propName = ModData.props.names[i]
-				print(propName)
 				local preview = Widget.makeImage(ModData.props.getPath(propName, ModData.props.getHighest(propName)))
-
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()
 					Editor.setProp(propName)
@@ -83,10 +76,27 @@ do
 			end
 		end
 
+		local function openZonesTab()
+			Editor.setZoneMode()
+			if #ModData.currentMap.zones.names > 0 then
+				Editor.setZone(ModData.currentMap.zones.names[1])
+			end
+			for i = 1, #ModData.currentMap.zones.names do
+				local zoneName = ModData.currentMap.zones.names[i]
+				local label = Widget.makeText(zoneName, unpack(font))
+				label:setMargin(0, 0, 0, 7)
+				label:click(function()
+					Editor.setZone(zoneName)
+				end)
+				addContent(label)
+			end
+		end
+
 		local tabs = {
 			{'tilestab', openTilesTab},
 			{'propstab', openPropsTab},
-			{'unitstab', openEntitiesTab}
+			{'unitstab', openEntitiesTab},
+			{'zonestab', openZonesTab}
 		}
 		local icons = {}
 

@@ -20,6 +20,7 @@ namespace map
 {
 class Tile;
 class DisplayManager;
+class Zone;
 namespace io
 {
 class Reader;
@@ -85,6 +86,11 @@ class Map
 		
 		void updateEntities(float currentTime, float elapsedTime);
 
+		std::shared_ptr<Zone>& addZone(const std::string& zoneName);
+		bool removeZone(const std::string& zoneName);
+		bool getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) const;
+		inline const std::map<std::string, std::shared_ptr<Zone>>& getZones() const { return m_zones; }
+
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
 #endif
@@ -109,6 +115,8 @@ class Map
 		int m_maxY;
 		
 		std::vector<entity::Entity*> m_entities;
+
+		std::map<std::string, std::shared_ptr<Zone>> m_zones;
 		
 	private:
 		friend class io::Reader;

@@ -2,6 +2,7 @@
 #include "reader.h"
 #include "../map.h"
 #include "../tile.h"
+#include "../zone.h"
 #include "../../game.h"
 #include "../../mod/mod.h"
 #include "../../entity/entitytemplate.h"
@@ -40,6 +41,7 @@ void Reader::read()
 	readHeaders();
 	readTiles();
 	readEntities();
+	readZones();
 }
 
 void Reader::readConfig()
@@ -103,6 +105,68 @@ void Reader::readConfig()
 	}
 
 	m_map.setAxes(xAxis, yAxis, zAxis);
+}
+
+void Reader::readZones()
+{
+	lua_State* L = m_game.lua->state;
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		std::string zonesFilePath = m_mod.getMapPath(m_mapName, "zones.lua");
+		luaL_loadfile(L, zonesFilePath.c_str());
+		lua_call(L, 0, 1);
+
+		luaL_checktype(L, -1, LUA_TTABLE);
+
+		lua_pushnil(L);
+		while (lua_next(L, -2) != 0)
+		{
+			FLAT_LUA_EXPECT_STACK_GROWTH(L, -1);
+
+			const char* zoneName = luaL_checkstring(L, -2);
+			luaL_checktype(L, -1, LUA_TTABLE);
+
+			lua_getfield(L, -1, "color");
+			std::uint32_t color = luaL_checkint(L, -1);
+
+			std::shared_ptr<Zone>& zone = m_map.addZone(zoneName);
+			zone->setColor(flat::video::Color(color));
+
+			lua_len(L, -2);
+			int len = luaL_checkint(L, -1);
+
+			lua_pop(L, 2);
+
+			for (int i = 1; i <= len; ++i)
+			{
+				lua_rawgeti(L, -1, i);
+				luaL_checktype(L, -1, LUA_TTABLE);
+
+				Zone::Rectangle zoneRectangle;
+
+				lua_rawgeti(L, -1, 1);
+				zoneRectangle.minX = luaL_checkint(L, -1);
+
+				lua_rawgeti(L, -2, 2);
+				zoneRectangle.minY = luaL_checkint(L, -1);
+
+				lua_rawgeti(L, -3, 3);
+				zoneRectangle.maxX = luaL_checkint(L, -1);
+
+				lua_rawgeti(L, -4, 4);
+				zoneRectangle.maxY = luaL_checkint(L, -1);
+
+				zone->addRectangle(zoneRectangle);
+
+				lua_pop(L, 5);
+			}
+
+			lua_pop(L, 1);
+		}
+
+		lua_pop(L, 1);
+	}
 }
 
 void Reader::readHeaders()

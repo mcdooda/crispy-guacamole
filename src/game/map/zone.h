@@ -30,7 +30,8 @@ class Zone
 		Zone(const Zone& zone) = default;
 		Zone& operator=(const Zone& zone) = default;
 
-		void addRectangle(const Rectangle& rectangle);
+		const Rectangle& addRectangle(const Rectangle& rectangle);
+		void removeRectangle(const Rectangle& rectangle);
 
 		inline const std::vector<Rectangle>& getRectangles() const { return m_rectangles; }
 
@@ -40,6 +41,8 @@ class Zone
 		inline const flat::video::Color& getColor() const { return m_color; }
 
 		void eachTileIfExists(std::function<void(Tile*)> func);
+
+		const Rectangle* selectRectangle(const flat::Vector2& position) const;
 
 	private:
 		void eachRectangleTileIfExists(const Rectangle& rectangle, std::function<void(Tile*)> func);

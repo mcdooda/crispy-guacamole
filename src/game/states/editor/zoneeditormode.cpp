@@ -116,6 +116,7 @@ void ZoneEditorMode::updateBrushTiles()
 	{
 		m_mouseDownMapPosition = m_brushPosition;
 		m_drawingRectangle = true;
+		m_selectedRectangle = nullptr;
 	}
 	
 	if (m_drawingRectangle)
@@ -190,6 +191,13 @@ void ZoneEditorMode::setCurrentZone(const std::shared_ptr<map::Zone>& currentZon
 	clearBrush();
 	m_selectedRectangle = nullptr;
 	m_currentZone = currentZone;
+}
+
+const std::shared_ptr<map::Zone>& ZoneEditorMode::addZone(const std::string& zoneName)
+{
+	map::Map& map = getMap();
+	const std::shared_ptr<map::Zone>& zone = map.addZone(zoneName);
+	return zone;
 }
 
 } // editor

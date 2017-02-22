@@ -32,6 +32,31 @@ do
 		local modes = Widget.makeLineFlow()
 		modes:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.COMPRESS_Y)
 
+		local tabs = {}
+		local icons = {}
+		local currentTabIndex
+		local function enableTab(i)
+			currentTabIndex = i
+			local tab = tabs[i][1]
+			local callback = tabs[i][2]
+			icons[i]:setBackground('data/editor/interface/' .. tab .. '/active.png')
+			callback()
+		end
+		local function disableTab(i)
+			assert(currentTabIndex == i)
+			local tab = tabs[i][1]
+			currentTabIndex = nil
+			icons[i]:setBackground('data/editor/interface/' .. tab .. '/passive.png')
+		end
+		local function setCurrentTab(i)
+			disableTab(currentTabIndex)
+			clearContent()
+			enableTab(i)
+		end
+		local function refreshCurrentTab()
+			setCurrentTab(currentTabIndex)
+		end
+
 		local function openTilesTab()
 			Editor.setTileMode()
 			Editor.setTile(ModData.tiles.names[1])
@@ -90,30 +115,37 @@ do
 				end)
 				addContent(label)
 			end
+			do
+				local addZoneButton = Widget.makeLineFlow()
+				local icon = Widget.makeImage 'data/editor/interface/icons/plus.png'
+				icon:setMargin(2)
+				local text = Widget.makeText('Add new zone', unpack(font))
+				addZoneButton:addChild(icon)
+				addZoneButton:addChild(text)
+				addZoneButton:setMargin(0, 0, 0, 7)
+				addZoneButton:click(function()
+					local zoneNames = {
+						'Cherry', 'Apple', 'Lemon', 'Blueberry', 'Jam', 'Cream', 'Rhubarb', 'Lime',
+						'Butter', 'Grape', 'Pomegranate', 'Sugar', 'Cinnamon', 'Avocado', 'Honey'
+					}
+					local newZoneName = assert(zoneNames[#ModData.currentMap.zones.names + 1])
+					ModData.currentMap.zones.names[#ModData.currentMap.zones.names + 1] = newZoneName
+					Editor.addZone(newZoneName)
+					refreshCurrentTab()
+					Editor.setZone(newZoneName)
+				end)
+				addContent(addZoneButton)
+			end
 		end
 
-		local tabs = {
-			{'tilestab', openTilesTab},
-			{'propstab', openPropsTab},
-			{'unitstab', openEntitiesTab},
-			{'zonestab', openZonesTab}
-		}
-		local icons = {}
+		local function addTab(iconName, openTabFunc)
+			tabs[#tabs + 1] = {iconName, openTabFunc}
+		end
 
-		local currentTabIndex
-		local function enableTab(i)
-			currentTabIndex = i
-			local tab = tabs[i][1]
-			local callback = tabs[i][2]
-			icons[i]:setBackground('data/editor/interface/' .. tab .. '/active.png')
-			callback()
-		end
-		local function disableTab(i)
-			assert(currentTabIndex == i)
-			local tab = tabs[i][1]
-			currentTabIndex = nil
-			icons[i]:setBackground('data/editor/interface/' .. tab .. '/passive.png')
-		end
+		addTab('tilestab', openTilesTab)
+		addTab('propstab', openPropsTab)
+		addTab('unitstab', openEntitiesTab)
+		addTab('zonestab', openZonesTab)
 
 		for i = 1, #tabs do
 			local tab = tabs[i][1]
@@ -121,9 +153,7 @@ do
 			icons[i] = icon
 			icon:click(function()
 				if i ~= currentTabIndex then
-					disableTab(currentTabIndex)
-					clearContent()
-					enableTab(i)
+					setCurrentTab(i)
 				end
 			end)
 			modes:addChild(icon)

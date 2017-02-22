@@ -122,7 +122,9 @@ int l_Editor_setZone(lua_State* L)
 
 int l_Editor_addZone(lua_State* L)
 {
-	luaL_error(L, "TODO");
+	const char* zoneName = luaL_checkstring(L, 1);
+	editor::ZoneEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneEditorMode>();
+	zoneEditorMode.addZone(zoneName);
 	return 0;
 }
 

@@ -28,6 +28,8 @@ class ZoneEditorMode : public EditorMode
 		void handleShortcuts() override;
 
 		void setCurrentZone(const std::shared_ptr<map::Zone>& currentZone);
+		const std::shared_ptr<map::Zone>& addZone(const std::string& zoneName);
+		inline const map::Zone* getCurrentZone() const { return m_currentZone.lock().get(); }
 
 	private:
 		std::weak_ptr<map::Zone> m_currentZone;

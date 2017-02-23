@@ -1,12 +1,14 @@
 #include <set>
 #include <algorithm>
 #include "pathfinder.h"
-#include "map.h"
-#include "tile.h"
+#include "../map.h"
+#include "../tile.h"
 
 namespace game
 {
 namespace map
+{
+namespace pathfinder
 {
 
 Pathfinder::Pathfinder(const Map& map, float jumpHeight) :
@@ -176,11 +178,15 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 		previousZ = tile->getZ();
 	}
 	
-	
 	return true;
 }
 
+void Pathfinder::getNeighborTiles(const Tile* tile, std::vector<const Tile*>& neighborTiles) const
+{
+	tile->getWalkableNeighborTiles(m_map, m_jumpHeight, neighborTiles);
+}
 
+} // pathfinder
 } // map
 } // game
 

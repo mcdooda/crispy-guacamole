@@ -6,7 +6,7 @@
 #include "../../../entitytemplate.h"
 #include "../../../../map/map.h"
 #include "../../../../map/tile.h"
-#include "../../../../map/pathfinder.h"
+#include "../../../../map/pathfinder/pathfinder.h"
 
 namespace game
 {
@@ -224,7 +224,7 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 	{
 		const map::Map& map = *m_owner->getMap();
 		const float jumpHeight = getTemplate()->getJumpMaxHeight();
-		map::Pathfinder pathfinder(map, jumpHeight);
+		map::pathfinder::Pathfinder pathfinder(map, jumpHeight);
 		std::vector<flat::Vector2> path;
 		if (pathfinder.findPath(startingPoint, point, path))
 		{

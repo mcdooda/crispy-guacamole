@@ -192,14 +192,14 @@ void Writer::writeZones()
 {
 	const std::map<std::string, std::shared_ptr<Zone>>& zones = m_map.getZones();
 
-	write<uint16_t>(zones.size());
+	write<uint16_t>(static_cast<uint16_t>(zones.size()));
 	for (const std::pair<std::string, std::shared_ptr<Zone>>& pair : zones)
 	{
 		write<const std::string&>(pair.first);
 		const Zone* zone = pair.second.get();
 		write<uint32_t>(zone->getColor());
 		const std::vector<Zone::Rectangle>& rectangles = zone->getRectangles();
-		write<uint8_t>(rectangles.size());
+		write<uint8_t>(static_cast<uint8_t>(rectangles.size()));
 		for (const Zone::Rectangle& rectangle : rectangles)
 		{
 			write<uint16_t>(rectangle.minX);

@@ -33,6 +33,7 @@ int open(lua_State* L)
 		{"setZoneMode",      l_Editor_setZoneMode},
 		{"setZone",          l_Editor_setZone},
 		{"addZone",          l_Editor_addZone},
+		{"getZoneNames",     l_Editor_getZoneNames},
 
 		{"getBrushPosition", l_Editor_getBrushPosition},
 
@@ -126,6 +127,23 @@ int l_Editor_addZone(lua_State* L)
 	editor::ZoneEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneEditorMode>();
 	zoneEditorMode.addZone(zoneName);
 	return 0;
+}
+
+int l_Editor_getZoneNames(lua_State* L)
+{
+	states::EditorState& editorState = getEditorState(L);
+	const map::Map& map = editorState.getMap();
+	const std::map<std::string, std::shared_ptr<map::Zone>>& zones = map.getZones();
+	int numZones = static_cast<int>(zones.size());
+	lua_createtable(L, numZones, 0);
+	int i = 1;
+	for (const std::pair<std::string, std::shared_ptr<map::Zone>>& pair : zones)
+	{
+		lua_pushstring(L, pair.first.c_str());
+		lua_rawseti(L, -2, i);
+		++i;
+	}
+	return 1;
 }
 
 int l_Editor_getBrushPosition(lua_State * L)

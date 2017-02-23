@@ -41,16 +41,9 @@ ModData.maps = {
 for i = 1, #maps do
 	local mapName = maps[i]
 	local map = dofile(ModData.mapFile 'map.lua')
-	local zones = dofile(ModData.mapFile 'zones.lua')
-	local zoneNames = {}
-	for zoneName, zone in pairs(zones) do
-		zoneNames[#zoneNames + 1] = zoneName
-	end
-	zones.names = zoneNames
 	ModData.maps[mapName] = {
 		name = mapName,
-		map = map,
-		zones = zones
+		map = map
 	}
 	ModData.currentMap = ModData.maps[ModData.currentMapName]
 end

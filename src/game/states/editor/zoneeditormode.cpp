@@ -110,6 +110,11 @@ void ZoneEditorMode::displayBrush() const
 
 void ZoneEditorMode::updateBrushTiles()
 {
+	if (m_currentZone.expired())
+	{
+		return;
+	}
+
 	flat::input::Mouse* mouse = m_game.input->mouse;
 
 	if (mouse->isJustPressed(M(LEFT)))

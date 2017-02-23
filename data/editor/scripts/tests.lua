@@ -103,11 +103,12 @@ do
 
 		local function openZonesTab()
 			Editor.setZoneMode()
-			if #ModData.currentMap.zones.names > 0 then
-				Editor.setZone(ModData.currentMap.zones.names[1])
+			local zoneNames = Editor.getZoneNames()
+			if #zoneNames > 0 then
+				Editor.setZone(zoneNames[1])
 			end
-			for i = 1, #ModData.currentMap.zones.names do
-				local zoneName = ModData.currentMap.zones.names[i]
+			for i = 1, #zoneNames do
+				local zoneName = zoneNames[i]
 				local label = Widget.makeText(zoneName, unpack(font))
 				label:setMargin(0, 0, 0, 7)
 				label:click(function()
@@ -124,12 +125,11 @@ do
 				addZoneButton:addChild(text)
 				addZoneButton:setMargin(0, 0, 0, 7)
 				addZoneButton:click(function()
-					local zoneNames = {
+					local newZoneNames = {
 						'Cherry', 'Apple', 'Lemon', 'Blueberry', 'Jam', 'Cream', 'Rhubarb', 'Lime',
 						'Butter', 'Grape', 'Pomegranate', 'Sugar', 'Cinnamon', 'Avocado', 'Honey'
 					}
-					local newZoneName = assert(zoneNames[#ModData.currentMap.zones.names + 1])
-					ModData.currentMap.zones.names[#ModData.currentMap.zones.names + 1] = newZoneName
+					local newZoneName = assert(newZoneNames[#zoneNames + 1])
 					Editor.addZone(newZoneName)
 					refreshCurrentTab()
 					Editor.setZone(newZoneName)

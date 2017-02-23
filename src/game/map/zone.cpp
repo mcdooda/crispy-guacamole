@@ -29,7 +29,7 @@ const Zone::Rectangle& Zone::addRectangle(const Rectangle& rectangle)
 
 void Zone::removeRectangle(const Rectangle& rectangle)
 {
-	int index = &rectangle - &m_rectangles[0];
+	ptrdiff_t index = &rectangle - &m_rectangles[0];
 	FLAT_ASSERT(index >= 0 && index < m_rectangles.size());
 	std::vector<Rectangle>::iterator it = m_rectangles.begin() + index;
 	m_rectangles.erase(it);

@@ -34,6 +34,7 @@ class Writer
 		void writeHeaders();
 		void writeTiles();
 		void writeEntities();
+		void writeZones();
 
 		template <class T>
 		inline void write(T value);

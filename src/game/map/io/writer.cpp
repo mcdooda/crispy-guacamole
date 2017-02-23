@@ -4,6 +4,7 @@
 #include "../map.h"
 #include "../tile.h"
 #include "../prop.h"
+#include "../zone.h"
 #include "../../entity/entity.h"
 #include "../../entity/entitytemplate.h"
 #include "../../game.h"
@@ -38,6 +39,7 @@ void Writer::write()
 	writeHeaders();
 	writeTiles();
 	writeEntities();
+	writeZones();
 }
 
 void Writer::writeHeaders()
@@ -183,6 +185,28 @@ void Writer::writeEntities()
 		const flat::Vector3& position = entity->getPosition();
 		write(position.x);
 		write(position.y);
+	}
+}
+
+void Writer::writeZones()
+{
+	const std::map<std::string, std::shared_ptr<Zone>>& zones = m_map.getZones();
+
+	write<uint16_t>(zones.size());
+	for (const std::pair<std::string, std::shared_ptr<Zone>>& pair : zones)
+	{
+		write<const std::string&>(pair.first);
+		const Zone* zone = pair.second.get();
+		write<uint32_t>(zone->getColor());
+		const std::vector<Zone::Rectangle>& rectangles = zone->getRectangles();
+		write<uint8_t>(rectangles.size());
+		for (const Zone::Rectangle& rectangle : rectangles)
+		{
+			write<uint16_t>(rectangle.minX);
+			write<uint16_t>(rectangle.minY);
+			write<uint16_t>(rectangle.maxX);
+			write<uint16_t>(rectangle.maxY);
+		}
 	}
 }
 

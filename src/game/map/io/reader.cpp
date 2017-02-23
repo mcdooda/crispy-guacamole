@@ -107,68 +107,6 @@ void Reader::readConfig()
 	m_map.setAxes(xAxis, yAxis, zAxis);
 }
 
-void Reader::readZones()
-{
-	lua_State* L = m_game.lua->state;
-	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-		std::string zonesFilePath = m_mod.getMapPath(m_mapName, "zones.lua");
-		luaL_loadfile(L, zonesFilePath.c_str());
-		lua_call(L, 0, 1);
-
-		luaL_checktype(L, -1, LUA_TTABLE);
-
-		lua_pushnil(L);
-		while (lua_next(L, -2) != 0)
-		{
-			FLAT_LUA_EXPECT_STACK_GROWTH(L, -1);
-
-			const char* zoneName = luaL_checkstring(L, -2);
-			luaL_checktype(L, -1, LUA_TTABLE);
-
-			lua_getfield(L, -1, "color");
-			std::uint32_t color = luaL_checkint(L, -1);
-
-			std::shared_ptr<Zone>& zone = m_map.addZone(zoneName);
-			zone->setColor(flat::video::Color(color));
-
-			lua_len(L, -2);
-			int len = luaL_checkint(L, -1);
-
-			lua_pop(L, 2);
-
-			for (int i = 1; i <= len; ++i)
-			{
-				lua_rawgeti(L, -1, i);
-				luaL_checktype(L, -1, LUA_TTABLE);
-
-				Zone::Rectangle zoneRectangle;
-
-				lua_rawgeti(L, -1, 1);
-				zoneRectangle.minX = luaL_checkint(L, -1);
-
-				lua_rawgeti(L, -2, 2);
-				zoneRectangle.minY = luaL_checkint(L, -1);
-
-				lua_rawgeti(L, -3, 3);
-				zoneRectangle.maxX = luaL_checkint(L, -1);
-
-				lua_rawgeti(L, -4, 4);
-				zoneRectangle.maxY = luaL_checkint(L, -1);
-
-				zone->addRectangle(zoneRectangle);
-
-				lua_pop(L, 5);
-			}
-
-			lua_pop(L, 1);
-		}
-
-		lua_pop(L, 1);
-	}
-}
-
 void Reader::readHeaders()
 {
 	// tile textures
@@ -287,6 +225,37 @@ void Reader::readEntities()
 		FLAT_ASSERT(tile != nullptr);
 		flat::Vector3 position(x, y, tile->getZ());
 		baseMapState.spawnEntityAtPosition(m_game, entityTemplate, position, 0.f, 0.f);
+	}
+}
+
+void Reader::readZones()
+{
+	uint16_t numZones;
+	read<uint16_t>(numZones);
+	for (int i = 0; i < numZones; ++i)
+	{
+		std::string zoneName;
+		read<std::string>(zoneName);
+		std::shared_ptr<Zone>& zone = m_map.addZone(zoneName);
+		uint32_t color;
+		read<uint32_t>(color);
+		zone->setColor(flat::video::Color(color));
+		uint8_t numRectangles;
+		read<uint8_t>(numRectangles);
+		for (uint8_t j = 0; j < numRectangles; ++j)
+		{
+			uint16_t minX, minY, maxX, maxY;
+			read<uint16_t>(minX);
+			read<uint16_t>(minY);
+			read<uint16_t>(maxX);
+			read<uint16_t>(maxY);
+			Zone::Rectangle rectangle;
+			rectangle.minX = minX;
+			rectangle.minY = minY;
+			rectangle.maxX = maxX;
+			rectangle.maxY = maxY;
+			zone->addRectangle(rectangle);
+		}
 	}
 }
 

@@ -56,7 +56,7 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 		}
 		else
 		{
-			tile->eachWalkableNeighborTiles(m_map, m_jumpHeight, [&](const map::Tile* neighborTile)
+			eachNeighborTiles(tile, [&](const map::Tile* neighborTile)
 			{
 				if (closedList.count(neighborTile) > 0)
 				{

@@ -27,9 +27,10 @@ void ZoneEditorMode::clearBrush() const
 
 	if (previousZone != nullptr)
 	{
-		previousZone->eachTileIfExists([previousZone](map::Tile* tile)
+		previousZone->eachTileIfExists([previousZone](const map::Tile* tile)
 		{
-			tile->setColor(flat::video::Color::WHITE);
+			// TODO: fix this shit
+			const_cast<map::Tile*>(tile)->setColor(flat::video::Color::WHITE);
 		});
 	}
 
@@ -70,9 +71,10 @@ void ZoneEditorMode::displayBrush() const
 	map::Zone* currentZone = m_currentZone.lock().get();
 	if (currentZone != nullptr)
 	{
-		currentZone->eachTileIfExists([currentZone](map::Tile* tile)
+		currentZone->eachTileIfExists([currentZone](const map::Tile* tile)
 		{
-			tile->setColor(currentZone->getColor());
+			// TODO: fix this shit
+			const_cast<map::Tile*>(tile)->setColor(currentZone->getColor());
 		});
 	}
 

@@ -38,10 +38,11 @@ bool Reader::canRead() const
 void Reader::read()
 {
 	readConfig();
+
 	readHeaders();
 	readTiles();
-	readEntities();
 	readZones();
+	readEntities();
 }
 
 void Reader::readConfig()

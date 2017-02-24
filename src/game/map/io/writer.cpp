@@ -38,8 +38,8 @@ void Writer::write()
 {
 	writeHeaders();
 	writeTiles();
-	writeEntities();
 	writeZones();
+	writeEntities();
 }
 
 void Writer::writeHeaders()

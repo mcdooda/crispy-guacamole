@@ -7,8 +7,9 @@
 #include "../component/components/detection/detectioncomponent.h"
 #include "../component/components/faction/factioncomponent.h"
 #include "../component/components/life/lifecomponent.h"
-#include "../../game.h"
 #include "../../states/basemapstate.h"
+#include "../../game.h"
+#include "../../map/map.h"
 
 namespace game
 {
@@ -56,6 +57,7 @@ int open(lua_State* L)
 		{"setSpeed",                l_Entity_setSpeed},
 		{"getSpeed",                l_Entity_getSpeed},
 		{"jump",                    l_Entity_jump},
+		{"restrictToZone",          l_Entity_restrictToZone},
 
 		// behavior
 		{"enterState",              l_Entity_enterState},
@@ -254,6 +256,23 @@ int l_Entity_jump(lua_State* L)
 	}
 	movementComponent.jump();
 	return lua_yield(L, 0);
+}
+
+int l_Entity_restrictToZone(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	const char* zoneName = luaL_checkstring(L, 2);
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	map::Map& map = baseMapState.getMap();
+	std::shared_ptr<map::Zone> zone;
+	if (!map.getZone(zoneName, zone))
+	{
+		luaL_error(L, "No zone named %s", zoneName);
+	}
+	movementComponent.restrictToZone(zone);
+	return 0;
 }
 
 namespace

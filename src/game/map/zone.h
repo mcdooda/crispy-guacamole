@@ -36,21 +36,22 @@ class Zone
 		inline const std::vector<Rectangle>& getRectangles() const { return m_rectangles; }
 
 		bool isInside(const flat::Vector2& point) const;
+		inline bool isTileInside(const Tile* tile) const { return m_tiles.count(tile) > 0; }
 
 		inline void setColor(const flat::video::Color& color) { m_color = color; }
 		inline const flat::video::Color& getColor() const { return m_color; }
 
-		void eachTileIfExists(std::function<void(Tile*)> func);
+		void eachTileIfExists(std::function<void(const Tile*)> func);
 
 		const Rectangle* selectRectangle(const flat::Vector2& position) const;
 
 	private:
-		void eachRectangleTileIfExists(const Rectangle& rectangle, std::function<void(Tile*)> func);
+		void eachRectangleTileIfExists(const Rectangle& rectangle, std::function<void(const Tile*)> func);
 		static bool isValidRectangle(const Rectangle& rectangle);
 
 	private:
 		std::vector<Rectangle> m_rectangles;
-		std::set<Tile*> m_tiles;
+		std::set<const Tile*> m_tiles;
 		flat::video::Color m_color;
 		Map& m_map;
 };

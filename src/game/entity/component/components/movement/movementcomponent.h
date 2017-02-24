@@ -12,6 +12,7 @@ namespace map
 {
 class Map;
 class Tile;
+class Zone;
 }
 namespace entity
 {
@@ -44,6 +45,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		inline void setSpeed(float speed) { m_speed = speed; }
 		inline float getSpeed() const { return m_speed; }
 
+		inline void restrictToZone(const std::shared_ptr<const map::Zone>& zone) { m_restrictToZone = zone; }
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:
@@ -59,6 +62,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		static constexpr float RETURN_TO_DESTINATION_DURATION = 0.5f;
 		
 		std::deque<flat::Vector2> m_path; // TODO: use the right container like a traversable queue
+		std::weak_ptr<const map::Zone> m_restrictToZone;
 		flat::Vector2 m_destination;
 		float m_returnToDestinationTime;
 		float m_speed;

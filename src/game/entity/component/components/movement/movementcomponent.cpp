@@ -7,6 +7,7 @@
 #include "../../../../map/map.h"
 #include "../../../../map/tile.h"
 #include "../../../../map/pathfinder/pathfinder.h"
+#include "../../../../map/pathfinder/zonepathfinder.h"
 
 namespace game
 {
@@ -224,9 +225,21 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 	{
 		const map::Map& map = *m_owner->getMap();
 		const float jumpHeight = getTemplate()->getJumpMaxHeight();
-		map::pathfinder::Pathfinder pathfinder(map, jumpHeight);
+
+		map::pathfinder::Pathfinder* pathfinder = nullptr;
+		if (const map::Zone* zone = m_restrictToZone.lock().get())
+		{
+			pathfinder = static_cast<map::pathfinder::ZonePathfinder*>(alloca(sizeof(map::pathfinder::ZonePathfinder)));
+			new (pathfinder) map::pathfinder::ZonePathfinder(map, jumpHeight, zone);
+		}
+		else
+		{
+			pathfinder = static_cast<map::pathfinder::Pathfinder*>(alloca(sizeof(map::pathfinder::Pathfinder)));
+			new (pathfinder) map::pathfinder::Pathfinder(map, jumpHeight);
+		}
+
 		std::vector<flat::Vector2> path;
-		if (pathfinder.findPath(startingPoint, point, path))
+		if (pathfinder->findPath(startingPoint, point, path))
 		{
 			path.erase(path.begin());
 			for (const flat::Vector2& point : path)
@@ -238,6 +251,8 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 		{
 			m_path.push_back(point);
 		}
+
+		pathfinder->~Pathfinder();
 	}
 }
 

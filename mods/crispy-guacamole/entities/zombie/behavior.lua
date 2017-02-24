@@ -14,6 +14,7 @@ end
 local states = {}
 
 function states:init(zombie)
+	zombie:restrictToZone 'Cherry'
 	zombie:enterState 'wander'
 end
 

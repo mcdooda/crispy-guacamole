@@ -28,10 +28,11 @@ public:
 public:
 	Pathfinder() = delete;
 	Pathfinder(const Map& map, float jumpHeight);
+	virtual ~Pathfinder() {}
 
 	bool findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const;
 
-private:
+protected:
 	void reconstructPath(
 		const std::map<const map::Tile*, const map::Tile*>& previous,
 		const map::Tile* last,
@@ -42,7 +43,7 @@ private:
 	bool isStraightPath(const flat::Vector2& from, const flat::Vector2& to) const;
 	virtual void eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const;
 
-private:
+protected:
 	const Map& m_map;
 	float m_jumpHeight;
 };

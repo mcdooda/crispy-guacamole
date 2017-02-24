@@ -111,35 +111,32 @@ const flat::video::Color& Tile::getColor() const
 	return m_sprite.getColor();
 }
 
-void Tile::getWalkableNeighborTiles(const Map& map, float jumpHeight, std::vector<const Tile*>& neighborTiles) const
+void Tile::eachWalkableNeighborTiles(const Map & map, float jumpHeight, std::function<void(const Tile*)> func) const
 {
-	neighborTiles.clear();
-	neighborTiles.reserve(4);
-	
 	const float maxZ = m_z + jumpHeight;
-	
+
 	if (const Tile* tile = map.getTileIfWalkable(m_x - 1, m_y))
 	{
 		if (tile->getZ() <= maxZ)
-			neighborTiles.push_back(tile);
+			func(tile);
 	}
-		
+
 	if (const Tile* tile = map.getTileIfWalkable(m_x + 1, m_y))
 	{
 		if (tile->getZ() <= maxZ)
-			neighborTiles.push_back(tile);
+			func(tile);
 	}
-		
+
 	if (const Tile* tile = map.getTileIfWalkable(m_x, m_y - 1))
 	{
 		if (tile->getZ() <= maxZ)
-			neighborTiles.push_back(tile);
+			func(tile);
 	}
-		
+
 	if (const Tile* tile = map.getTileIfWalkable(m_x, m_y + 1))
 	{
 		if (tile->getZ() <= maxZ)
-			neighborTiles.push_back(tile);
+			func(tile);
 	}
 }
 

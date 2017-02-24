@@ -1,6 +1,7 @@
 #ifndef GAME_MAP_TILE_H
 #define GAME_MAP_TILE_H
 
+#include <functional>
 #include <memory>
 #include <flat.h>
 #include "mapobject.h"
@@ -52,7 +53,7 @@ class Tile final : public MapObject
 		void setColor(const flat::video::Color& color);
 		const flat::video::Color& getColor() const;
 		
-		void getWalkableNeighborTiles(const Map& map, float jumpHeight, std::vector<const Tile*>& neighborTiles) const;
+		void eachWalkableNeighborTiles(const Map& map, float jumpHeight, std::function<void(const Tile*)> func) const;
 	
 	private:
 		std::vector<entity::Entity*> m_entities;

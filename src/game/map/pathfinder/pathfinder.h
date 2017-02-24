@@ -1,6 +1,7 @@
 #ifndef GAME_MAP_PATHFINDER_H
 #define GAME_MAP_PATHFINDER_H
 
+#include <functional>
 #include <flat.h>
 
 namespace game
@@ -39,7 +40,7 @@ private:
 		std::vector<flat::Vector2>& path) const;
 	void simplifyPath(std::vector<flat::Vector2>& path) const;
 	bool isStraightPath(const flat::Vector2& from, const flat::Vector2& to) const;
-	virtual void getNeighborTiles(const Tile* tile, std::vector<const Tile*>& neighborTiles) const;
+	virtual void eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const;
 
 private:
 	const Map& m_map;

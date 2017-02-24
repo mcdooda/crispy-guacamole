@@ -40,8 +40,6 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 	
 	openList.push_back(firstNode);
 	
-	std::vector<const map::Tile*> neighborTiles;
-	
 	while (!openList.empty())
 	{
 		Node current = openList.front();
@@ -58,23 +56,19 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 		}
 		else
 		{
-			tile->getWalkableNeighborTiles(m_map, m_jumpHeight, neighborTiles);
-			for (const map::Tile* neighborTile : neighborTiles)
+			tile->eachWalkableNeighborTiles(m_map, m_jumpHeight, [&](const map::Tile* neighborTile)
 			{
-				// already in closedList
+				if (closedList.count(neighborTile) > 0)
 				{
-					if (closedList.count(neighborTile) > 0)
-					{
-						continue;
-					}
+					return;
 				}
-				
+
 				Node neighbor;
 				neighbor.tile = neighborTile;
 				neighbor.distance = current.distance + 1.f;
 				float estimatedDistance = flat::length(to - flat::Vector2(static_cast<float>(neighborTile->getX()), static_cast<float>(neighborTile->getY())));
 				neighbor.heuristic = neighbor.distance + estimatedDistance;
-				
+
 				std::vector<Node>::iterator it = std::find(openList.begin(), openList.end(), neighbor);
 				if (it == openList.end())
 				{
@@ -89,7 +83,7 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 					it->heuristic = neighbor.heuristic;
 					previous.emplace(neighborTile, tile);
 				}
-			}
+			});
 		}
 	}
 	
@@ -181,9 +175,9 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 	return true;
 }
 
-void Pathfinder::getNeighborTiles(const Tile* tile, std::vector<const Tile*>& neighborTiles) const
+void Pathfinder::eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const
 {
-	tile->getWalkableNeighborTiles(m_map, m_jumpHeight, neighborTiles);
+	tile->eachWalkableNeighborTiles(m_map, m_jumpHeight, func);
 }
 
 } // pathfinder

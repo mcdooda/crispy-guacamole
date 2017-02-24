@@ -45,6 +45,8 @@ class Zone
 
 		const Rectangle* selectRectangle(const flat::Vector2& position) const;
 
+		flat::Vector2 getCenter() const;
+
 	private:
 		void eachRectangleTileIfExists(const Rectangle& rectangle, std::function<void(const Tile*)> func);
 		static bool isValidRectangle(const Rectangle& rectangle);

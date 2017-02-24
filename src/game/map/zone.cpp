@@ -81,6 +81,16 @@ const Zone::Rectangle* Zone::selectRectangle(const flat::Vector2& position) cons
 	return smallestRectangle;
 }
 
+flat::Vector2 Zone::getCenter() const
+{
+	FLAT_ASSERT_MSG(m_rectangles.size() == 1, "Cannot get center of complex zones (it must have exactly 1 rectangle)");
+	flat::Vector2 center;
+	const Rectangle& rectangle = m_rectangles[0];
+	center.x = (rectangle.maxX - rectangle.minX) / 2.f;
+	center.y = (rectangle.maxY - rectangle.minY) / 2.f;
+	return center;
+}
+
 void Zone::eachRectangleTileIfExists(const Rectangle& rectangle, std::function<void(const Tile*)> func)
 {
 	FLAT_ASSERT(isValidRectangle(rectangle));

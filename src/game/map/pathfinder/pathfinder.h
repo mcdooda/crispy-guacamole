@@ -33,6 +33,7 @@ public:
 	bool findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const;
 
 protected:
+	virtual const Tile* getTileIfWalkable(float x, float y) const;
 	void reconstructPath(
 		const std::map<const map::Tile*, const map::Tile*>& previous,
 		const map::Tile* last,

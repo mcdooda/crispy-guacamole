@@ -19,6 +19,7 @@ public:
 	ZonePathfinder(const Map& map, float jumpHeight, const Zone* zone);
 
 protected:
+	const Tile* getTileIfWalkable(float x, float y) const override;
 	void eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const override;
 
 protected:

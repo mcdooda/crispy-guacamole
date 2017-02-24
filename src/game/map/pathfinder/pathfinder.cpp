@@ -20,7 +20,7 @@ Pathfinder::Pathfinder(const Map& map, float jumpHeight) :
 
 bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const
 {
-	const map::Tile* firstTile = m_map.getTileIfWalkable(from.x, from.y);
+	const map::Tile* firstTile = getTileIfWalkable(from.x, from.y);
 	if (!firstTile)
 	{
 		return false;
@@ -88,6 +88,11 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 	}
 	
 	return false;
+}
+
+const Tile* Pathfinder::getTileIfWalkable(float x, float y) const
+{
+	return m_map.getTileIfWalkable(x, y);
 }
 
 void Pathfinder::reconstructPath(
@@ -159,13 +164,13 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 	flat::Vector2 move = to - from;
 	flat::Vector2 segment = flat::normalize(move) * delta;
 	float numSegments = flat::length(move) / delta;
-	const map::Tile* fromTile = m_map.getTileIfWalkable(from.x, from.y);
+	const map::Tile* fromTile = getTileIfWalkable(from.x, from.y);
 	FLAT_ASSERT(fromTile != nullptr);
 	float previousZ = fromTile->getZ();
 	for (float f = 1.f; f <= numSegments; ++f)
 	{
 		flat::Vector2 point = from + segment * f;
-		const map::Tile* tile = m_map.getTileIfWalkable(point.x, point.y);
+		const map::Tile* tile = getTileIfWalkable(point.x, point.y);
 		if (!tile || tile->getZ() > previousZ + m_jumpHeight)
 			return false;
 		

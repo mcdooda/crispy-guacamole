@@ -1,4 +1,5 @@
 #include "map.h"
+#include "zone.h"
 #include "../../game.h"
 #include "../../states/editorstate.h"
 #include "../../entity/lua/entity.h"
@@ -8,6 +9,8 @@ namespace game
 namespace map
 {
 namespace lua
+{
+namespace map
 {
 
 int open(lua_State* L)
@@ -22,7 +25,9 @@ int open(lua_State* L)
 
 		{"getNumEntities",      l_Map_getNumEntities},
 
-		{"getEntitiesInRange", l_Map_getEntitiesInRange},
+		{"getEntitiesInRange",  l_Map_getEntitiesInRange},
+
+		{"getZone",             l_Map_getZone},
 
 		{nullptr, nullptr}
 	};
@@ -76,7 +81,7 @@ int l_Map_getEntitiesInRange(lua_State* L)
 	Game& game = flat::lua::getGame(L).to<Game>();
 	flat::state::State* state = game.getStateMachine().getState();
 	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
-	const map::Map& map = baseMapState.getMap();
+	const game::map::Map& map = baseMapState.getMap();
 	lua_newtable(L);
 	int i = 1;
 	map.eachEntityInRange(flat::Vector2(x, y), range, [L, &i](entity::Entity* entity)
@@ -88,6 +93,23 @@ int l_Map_getEntitiesInRange(lua_State* L)
 	return 1;
 }
 
+int l_Map_getZone(lua_State * L)
+{
+	const char* zoneName = luaL_checkstring(L, 1);
+	Game& game = flat::lua::getGame(L).to<Game>();
+	flat::state::State* state = game.getStateMachine().getState();
+	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
+	const game::map::Map& map = baseMapState.getMap();
+	std::shared_ptr<Zone> zone;
+	if (!map.getZone(zoneName, zone))
+	{
+		luaL_error(L, "No zone named %s", zoneName);
+	}
+	zone::pushZone(L, zone);
+	return 1;
+}
+
+} // map
 } // lua
 } // map
 } // game

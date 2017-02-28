@@ -10,6 +10,7 @@
 #include "../../states/basemapstate.h"
 #include "../../game.h"
 #include "../../map/map.h"
+#include "../../map/tile.h"
 
 namespace game
 {
@@ -216,9 +217,17 @@ int l_Entity_moveTo(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	float x = static_cast<float>(luaL_checknumber(L, 2));
 	float y = static_cast<float>(luaL_checknumber(L, 3));
+	bool yield = lua_isnone(L, 4) ? true : lua_toboolean(L, 4) == 1;
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	movementComponent.addPointOnPath(flat::Vector2(x, y));
-	return lua_yield(L, 0);
+	if (yield)
+	{
+		return lua_yield(L, 0);
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 int l_Entity_clearPath(lua_State* L)
@@ -466,19 +475,36 @@ int l_Entity_spawn(lua_State* L)
 	const char* entityTemplateName = luaL_checkstring(L, 1);
 	float x = static_cast<float>(luaL_checknumber(L, 2));
 	float y = static_cast<float>(luaL_checknumber(L, 3));
-	float z = static_cast<float>(luaL_checknumber(L, 4));
+
+	// if z is not present, snap to the ground
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	float z;
+	if (lua_isnoneornil(L, 4))
+	{
+		const map::Tile* tile = baseMapState.getMap().getTile(x, y);
+		if (tile == nullptr)
+		{
+			luaL_error(L, "Trying to spawn an entity outside the map (%f, %f)", x, y);
+		}
+		z = tile->getZ();
+	}
+	else
+	{
+		z = static_cast<float>(luaL_checknumber(L, 4));
+	}
+
 	flat::Vector3 position(x, y, z);
 	float heading = static_cast<float>(luaL_optnumber(L, 5, 0.f));
 	float elevation = static_cast<float>(luaL_optnumber(L, 6, 0.f));
-	Game& game = flat::lua::getGame(L).to<Game>();
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
 	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation);
 	pushEntity(L, entity);
 	return 1;
 }
 
-EntityHandle getEntityHandle(lua_State * L, int index)
+EntityHandle getEntityHandle(lua_State* L, int index)
 {
 	return *static_cast<EntityHandle*>(luaL_checkudata(L, index, "CG.Entity"));
 }

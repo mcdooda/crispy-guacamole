@@ -9,6 +9,7 @@
 #include "../map/tiletemplate.h"
 #include "../map/proptemplate.h"
 #include "../map/lua/map.h"
+#include "../map/lua/zone.h"
 #include "../entity/lua/entity.h"
 #include "../entity/component/lua/componentregistry.h"
 #include "../entity/faction/lua/faction.h"
@@ -37,7 +38,8 @@ void BaseMapState::enter(Game& game)
 		entity::component::lua::open(L);
 		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
 		mod::lua::open(L);
-		map::lua::open(L);
+		map::lua::map::open(L);
+		map::lua::zone::open(L);
 		editor::lua::open(L);
 	}
 	

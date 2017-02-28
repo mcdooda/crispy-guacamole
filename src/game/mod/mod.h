@@ -2,7 +2,7 @@
 #define GAME_MOD_MOD_H
 
 #include <iostream>
-#include <lua5.2/lua.hpp>
+#include <flat.h>
 
 namespace game
 {

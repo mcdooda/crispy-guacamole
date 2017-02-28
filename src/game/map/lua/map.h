@@ -7,7 +7,10 @@ namespace game
 {
 namespace map
 {
+class Zone;
 namespace lua
+{
+namespace map
 {
 
 int open(lua_State* L);
@@ -20,6 +23,9 @@ int l_Map_getNumEntities(lua_State* L);
 
 int l_Map_getEntitiesInRange(lua_State* L);
 
+int l_Map_getZone(lua_State* L);
+
+} // map
 } // lua
 } // map
 } // game

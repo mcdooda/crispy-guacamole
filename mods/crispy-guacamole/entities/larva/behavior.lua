@@ -13,6 +13,10 @@ end
 local states = {}
 
 function states:init(larva)
+	-- give them a chance to get an external order before wandering
+	coroutine.yield()
+    coroutine.yield()
+
     larva:enterState 'wander'
     --larva:playAnimation 'graze'
 end

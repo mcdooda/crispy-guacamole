@@ -35,12 +35,18 @@ void BehaviorComponent::init()
 
 void BehaviorComponent::update(float currentTime, float elapsedTime)
 {
+	if (!m_owner->isBusy())
+	{
+		m_behaviorRuntime.update();
+	}
+
+	/*
 	const int maxTicks = 2;
 	for (int numTicks = 0; !m_owner->isBusy() && numTicks < maxTicks; ++numTicks)
 	{
 		m_behaviorRuntime.update();
 	}
-	/*
+	
 	FLAT_DEBUG_ONLY(
 		const char* entityName = m_owner->getEntityTemplate()->getName().c_str();
 		const char* stateName = m_behaviorRuntime.getCurrentStateName().c_str();

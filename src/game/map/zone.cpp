@@ -86,8 +86,8 @@ flat::Vector2 Zone::getCenter() const
 	FLAT_ASSERT_MSG(m_rectangles.size() == 1, "Cannot get center of complex zones (it must have exactly 1 rectangle)");
 	flat::Vector2 center;
 	const Rectangle& rectangle = m_rectangles[0];
-	center.x = (rectangle.maxX - rectangle.minX) / 2.f;
-	center.y = (rectangle.maxY - rectangle.minY) / 2.f;
+	center.x = (rectangle.minX + rectangle.maxX) / 2.f;
+	center.y = (rectangle.minY + rectangle.maxY) / 2.f;
 	return center;
 }
 

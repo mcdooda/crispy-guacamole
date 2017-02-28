@@ -4,10 +4,6 @@ local random = math.random
 local states = {}
 
 function states:init(boar)
-	-- give them a chance to get an external order before wandering
-	coroutine.yield()
-	coroutine.yield()
-
 	boar:enterState 'wander'
 end
 

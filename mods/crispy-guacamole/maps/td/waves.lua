@@ -30,7 +30,12 @@ for i = 1, #waves do
     for j = 1, #wave do
         local entityTemplate = wave[i]
         --print('* spawning ' .. entityTemplate)
-        local entity = Entity.spawn(entityTemplate, startX, startY)
+        local entity = Entity.spawn(
+            entityTemplate,
+            startX, startY, nil,
+            nil, nil,
+            Components.allExcept(Component.behavior)
+        )
         entity:restrictToZone 'Cherry'
         entity:moveTo(endX, endY, false)
         sleep(0.3)

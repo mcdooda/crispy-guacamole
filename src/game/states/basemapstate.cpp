@@ -35,7 +35,7 @@ void BaseMapState::enter(Game& game)
 	{
 		timer::lua::open(L);
 		entity::lua::open(L);
-		entity::component::lua::open(L);
+		entity::component::lua::open(L, m_componentRegistry);
 		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
 		mod::lua::open(L);
 		map::lua::map::open(L);
@@ -200,9 +200,9 @@ std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Gam
 	return m_propTemplateManager.getResource(game, propTemplatePath);
 }
 
-entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position, float heading, float elevation)
+entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position, float heading, float elevation, entity::component::ComponentFlags componentFlags)
 {
-	entity::component::ComponentFlags componentsFilter = getComponentsFilter();
+	entity::component::ComponentFlags componentsFilter = getComponentsFilter() & componentFlags;
 	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
 	entity->setPosition(position);
 	entity->setHeading(heading);

@@ -55,7 +55,14 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		const entity::component::ComponentRegistry& getComponentRegistry() const { return m_componentRegistry; }
 
-		entity::Entity* spawnEntityAtPosition(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position, float heading, float elevation);
+		entity::Entity* spawnEntityAtPosition(
+			Game& game,
+			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate,
+			const flat::Vector3& position,
+			float heading = 0.f,
+			float elevation = 0.f,
+			entity::component::ComponentFlags componentFlags = entity::component::AllComponents
+		);
 		void despawnEntity(entity::Entity* entity);
 		void despawnEntities();
 

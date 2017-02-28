@@ -13,6 +13,7 @@ do
 end
 
 -- entities
+dump(Component)
 local entities = dofile(ModData.path .. '/entities/entities.lua')
 ModData.entities = {
 	names = entities
@@ -22,9 +23,7 @@ for i = 1, #entities do
 	local entityTemplate = {
 		name = entityName
 	}
-	local componentConfigNames = ComponentRegistry.getConfigNames()
-	for j = 1, #componentConfigNames do
-		local componentConfigName = componentConfigNames[j]
+	for componentConfigName, componentFlag in pairs(Component) do
 		local componentExists, componentTemplate = pcall(dofile, ModData.path .. '/entities/' .. entityName .. '/' .. componentConfigName .. '.lua')
 		if componentExists then
 			entityTemplate[componentConfigName] = componentTemplate

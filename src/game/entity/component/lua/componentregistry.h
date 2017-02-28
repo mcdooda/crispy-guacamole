@@ -9,12 +9,16 @@ namespace entity
 {
 namespace component
 {
+class ComponentRegistry;
 namespace lua
 {
 
-int open(lua_State* L);
+int open(lua_State* L, const ComponentRegistry& componentRegistry);
 
-int l_ComponentRegistry_getConfigNames(lua_State* L);
+int l_Components_allExcept(lua_State* L);
+
+// private
+int setComponentFlagsTable(lua_State* L, const ComponentRegistry& componentRegistry);
 
 } // lua
 } // component

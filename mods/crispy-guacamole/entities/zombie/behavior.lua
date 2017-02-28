@@ -14,9 +14,6 @@ end
 local states = {}
 
 function states:init(zombie)
-	-- give them a chance to get an external order before wandering
-	coroutine.yield()
-	
 	zombie:enterState 'wander'
 end
 

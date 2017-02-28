@@ -472,11 +472,16 @@ int l_Entity_dealDamage(lua_State* L)
 // static lua functions
 int l_Entity_spawn(lua_State* L)
 {
+	// entity template
 	const char* entityTemplateName = luaL_checkstring(L, 1);
+
+	// x
 	float x = static_cast<float>(luaL_checknumber(L, 2));
+
+	// y
 	float y = static_cast<float>(luaL_checknumber(L, 3));
 
-	// if z is not present, snap to the ground
+	// z, if not present, snap to the ground
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	float z;
@@ -494,12 +499,18 @@ int l_Entity_spawn(lua_State* L)
 		z = static_cast<float>(luaL_checknumber(L, 4));
 	}
 
-	flat::Vector3 position(x, y, z);
+	// heading
 	float heading = static_cast<float>(luaL_optnumber(L, 5, 0.f));
+
+	// elevation
 	float elevation = static_cast<float>(luaL_optnumber(L, 6, 0.f));
 
+	// components flags
+	component::ComponentFlags componentFlags = luaL_optint(L, 7, component::AllComponents);
+
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
-	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation);
+	flat::Vector3 position(x, y, z);
+	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation, componentFlags);
 	pushEntity(L, entity);
 	return 1;
 }

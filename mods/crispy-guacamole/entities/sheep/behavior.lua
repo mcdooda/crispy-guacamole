@@ -16,12 +16,7 @@ local states = {}
 local inputs = {}
 
 function states:init(sheep)
-	-- give them a chance to get an external order before wandering
-	coroutine.yield()
-	coroutine.yield()
-	
 	sheep:enterState 'wander'
-	--sheep:playAnimation 'graze'
 end
 
 function states:idle(sheep)

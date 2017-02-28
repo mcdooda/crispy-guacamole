@@ -225,7 +225,7 @@ void Reader::readEntities()
 		Tile* tile = m_map.getTile(x, y);
 		FLAT_ASSERT(tile != nullptr);
 		flat::Vector3 position(x, y, tile->getZ());
-		baseMapState.spawnEntityAtPosition(m_game, entityTemplate, position, 0.f, 0.f);
+		baseMapState.spawnEntityAtPosition(m_game, entityTemplate, position);
 	}
 }
 

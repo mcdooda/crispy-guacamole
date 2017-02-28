@@ -15,11 +15,11 @@ local function sleep(duration)
 end
 
 local waves = {
-    --{'larva', 'larva', 'larva'},
-    --{'sheep', 'sheep', 'sheep'},
-    --{'boar', 'boar', 'boar'},
-    --{'zombie', 'zombie', 'zombie'},
-    --{'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton'},
+    {'larva', 'larva', 'larva'},
+    {'sheep', 'sheep', 'sheep'},
+    {'boar', 'boar', 'boar'},
+    {'zombie', 'zombie', 'zombie'},
+    {'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton'},
     {'devil', 'devil', 'devil'},
     {'eye', 'eye', 'eye'},
 }

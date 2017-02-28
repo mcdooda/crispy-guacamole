@@ -15,11 +15,11 @@ local function sleep(duration)
 end
 
 local waves = {
-    {'larva', 'larva', 'larva'},
-    {'sheep', 'sheep', 'sheep'},
-    {'boar', 'boar', 'boar'},
-    {'zombie', 'zombie', 'zombie'},
-    {'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton'},
+    --{'larva', 'larva', 'larva'},
+    --{'sheep', 'sheep', 'sheep'},
+    --{'boar', 'boar', 'boar'},
+    --{'zombie', 'zombie', 'zombie'},
+    --{'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton'},
     {'devil', 'devil', 'devil'},
     {'eye', 'eye', 'eye'},
 }
@@ -28,7 +28,7 @@ for i = 1, #waves do
     --print('== wave ' .. i .. ' ==')
     local wave = waves[i]
     for j = 1, #wave do
-        local entityTemplate = wave[i]
+        local entityTemplate = wave[j]
         --print('* spawning ' .. entityTemplate)
         local entity = Entity.spawn(
             entityTemplate,

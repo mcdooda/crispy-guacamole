@@ -390,6 +390,12 @@ entity::component::ComponentFlags BaseMapState::getComponentsFilter() const
 
 void BaseMapState::updateMouseOverEntity(Game& game)
 {
+	if (isSelecting() && !isSmallSelection())
+	{
+		m_mouseOverEntity = nullptr;
+		return;
+	}
+
 	const flat::Vector2& windowSize = game.video->window->getSize();
 	const flat::Vector2& mousePosition = game.input->mouse->getPosition();
 	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition, windowSize);

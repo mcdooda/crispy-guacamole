@@ -388,6 +388,69 @@ entity::component::ComponentFlags BaseMapState::getComponentsFilter() const
 	return entity::component::AllComponents;
 }
 
+void BaseMapState::updateMouseOverEntity(Game& game)
+{
+	const flat::Vector2& windowSize = game.video->window->getSize();
+	const flat::Vector2& mousePosition = game.input->mouse->getPosition();
+	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition, windowSize);
+
+	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
+	entity::Entity* newMouseOverEntity = nullptr;
+	float mouseOverEntityDepth = FLT_MIN;
+
+	for (entity::Entity* entity : m_entities) // TODO: optimize this
+	{
+		if (!entity->canBeSelected())
+		{
+			continue;
+		}
+
+		const flat::render::Sprite& sprite = entity->getSprite(); // TODO: discard entities with no sprite
+		if (sprite.isInside(viewMousePosition))
+		{
+			flat::video::Color color;
+			sprite.getPixel(viewMousePosition, color);
+			if (color.a > 0.5f)
+			{
+				if (newMouseOverEntity != nullptr)
+				{
+					const flat::AABB3& entityAABB = entity->getAABB();
+					const float entityDepth = entityAABB.getCenter().x + entityAABB.getCenter().y;
+					if (entityDepth > mouseOverEntityDepth)
+					{
+						newMouseOverEntity = entity;
+						mouseOverEntityDepth = entityDepth;
+					}
+				}
+				else
+				{
+					newMouseOverEntity = entity;
+				}
+			}
+		}
+	}
+
+	if (previousMouseOverEntity != newMouseOverEntity)
+	{
+		if (previousMouseOverEntity != nullptr)
+		{
+			flat::video::Color color = flat::video::Color::WHITE;
+			if (previousMouseOverEntity->isSelected())
+			{
+				color = flat::video::Color::RED;
+			}
+			const_cast<flat::render::Sprite&>(previousMouseOverEntity->getSprite()).setColor(color);
+		}
+
+		if (newMouseOverEntity != nullptr)
+		{
+			const_cast<flat::render::Sprite&>(newMouseOverEntity->getSprite()).setColor(flat::video::Color::GREEN);
+		}
+
+		m_mouseOverEntity = newMouseOverEntity;
+	}
+}
+
 bool BaseMapState::updateSelectionWidget(Game& game)
 {
 	const flat::input::Mouse* mouse = game.input->mouse;
@@ -399,7 +462,7 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		m_mouseDownPosition = mousePosition;
 	}
 
-	if (mouse->isPressed(M(LEFT)) && mouse->justMoved())
+	if (mouse->isPressed(M(LEFT)))
 	{
 		if (!isSelecting())
 		{
@@ -432,7 +495,14 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 			flat::Vector2 topRight = bottomLeft + selectionWidget->getSize();
 
 			const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
-			updateSelectedEntities(game, bottomLeft, topRight, shiftPressed);
+			if (isSmallSelection())
+			{
+				selectClickedEntity(game, mousePosition, shiftPressed);
+			}
+			else
+			{
+				updateSelectedEntities(game, bottomLeft, topRight, shiftPressed);
+			}
 
 			selectionWidget->removeFromParent();
 			return true;
@@ -440,6 +510,23 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 	}
 
 	return false;
+}
+
+void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection)
+{
+	if (!addToSelection)
+	{
+		clearSelection(game);
+	}
+
+	if (entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity())
+	{
+		if (!mouseOverEntity->isSelected())
+		{
+			m_selectedEntities.push_back(mouseOverEntity);
+			mouseOverEntity->setSelected(true);
+		}
+	}
 }
 
 void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection)
@@ -489,6 +576,18 @@ void BaseMapState::clearSelection(Game& game)
 		entity->setSelected(false);
 	}
 	m_selectedEntities.clear();
+}
+
+bool BaseMapState::isSmallSelection() const
+{
+	if (isSelecting())
+	{
+		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
+		const flat::Vector2& selectionSize = selectionWidget->getSize();
+		const float smallSize = 3.f;
+		return selectionSize.x < smallSize && selectionSize.y < smallSize;
+	}
+	return false;
 }
 
 } // states

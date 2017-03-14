@@ -85,10 +85,13 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		virtual entity::component::ComponentFlags getComponentsFilter() const;
 
-		inline bool isSelecting() { return !m_selectionWidget->getParent().expired(); }
+		inline bool isSelecting() const { return !m_selectionWidget->getParent().expired(); }
+		void updateMouseOverEntity(Game& game);
 		bool updateSelectionWidget(Game& game);
+		void selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);
 		void clearSelection(Game& game);
+		bool isSmallSelection() const;
 		
 	protected:
 		// resource loading
@@ -114,6 +117,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		std::vector<entity::Entity*> m_entities;
 		std::vector<entity::Entity*> m_selectedEntities;
+		entity::EntityHandle m_mouseOverEntity;
 		
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;

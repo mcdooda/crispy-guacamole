@@ -82,6 +82,7 @@ void EditorState::applyBrush(Game& game)
 
 	if (!root->isMouseOver() || isSelecting())
 	{
+		updateMouseOverEntity(game);
 		if (!m_editorMode->canSelectEntities() || !updateSelectionWidget(game))
 		{
 			const flat::input::Mouse* mouse = input->mouse;

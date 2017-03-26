@@ -35,12 +35,12 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
 		
 	private:
-		void headingChanged(float heading);
-		void positionChanged(const flat::Vector3& position);
-		void movementStarted();
-		void movementStopped();
-		void selected();
-		void deselected();
+		bool headingChanged(float heading);
+		bool positionChanged(const flat::Vector3& position);
+		bool movementStarted();
+		bool movementStopped();
+		bool selected();
+		bool deselected();
 		
 	private:
 		flat::render::AnimatedSprite m_sprite;

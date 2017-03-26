@@ -26,9 +26,9 @@ class TextureComponent : public ComponentImpl<TextureComponentTemplate>
 		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
 
 	private:
-		void headingChanged(float heading);
-		void elevationChanged(float elevation);
-		void positionChanged(const flat::Vector3& position);
+		bool headingChanged(float heading);
+		bool elevationChanged(float elevation);
+		bool positionChanged(const flat::Vector3& position);
 
 	private:
 		flat::render::Sprite m_sprite;

@@ -26,6 +26,9 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
+	private:
+		bool visibleEntityRemovedFromMap(Entity* entity);
+
 	public:
 		flat::Slot<Entity*> entityEnteredVisionRange;
 		flat::Slot<Entity*> entityLeftVisionRange;

@@ -35,14 +35,14 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 
 	public:
 		flat::Slot<int> damageDealt;
-		flat::Slot<> spawn;
-		flat::Slot<> despawn;
+		flat::Slot<> live;
+		flat::Slot<> die;
 
 	private:
-		void addedToMap(map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map);
 
-		void onSpawn();
-		void onDespawn();
+		void onLive();
+		void onDie();
 		
 		void checkSpawnDespawnThreadFinished();
 

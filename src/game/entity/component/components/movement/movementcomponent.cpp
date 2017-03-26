@@ -175,8 +175,9 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	}
 }
 
-void MovementComponent::addedToMap(map::Map* map)
+bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
 {
+	FLAT_ASSERT(entity == m_owner);
 	const map::Tile* tile = m_owner->getTile();
 	flat::Vector3 position = m_owner->getPosition();
 	// m_isTouchingGround already set is init()
@@ -187,6 +188,7 @@ void MovementComponent::addedToMap(map::Map* map)
 		m_isTouchingGround = true; // in case the entity was below its tile
 	}
 	m_zSpeed = 0.f;
+	return true;
 }
 
 bool MovementComponent::isBusy() const

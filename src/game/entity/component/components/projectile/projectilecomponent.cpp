@@ -31,7 +31,7 @@ void ProjectileComponent::init()
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
 	{
-		collisionComponent->onCollidedWithMap.on([this]() { collided(nullptr); });
+		collisionComponent->onCollidedWithMap.on([this]() { return collided(nullptr); });
 		collisionComponent->onCollidedWithEntity.on(this, &ProjectileComponent::collided);
 	}
 }
@@ -49,17 +49,18 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	m_owner->setElevation(elevation);
 }
 
-void ProjectileComponent::headingChanged(float heading)
+bool ProjectileComponent::headingChanged(float heading)
 {
 	const float speedXY = getSpeedXY();
 	m_speed.x = std::cos(heading) * speedXY;
 	m_speed.y = std::sin(heading) * speedXY;
+	return true;
 }
 
-void ProjectileComponent::collided(Entity* collidedEntity)
+bool ProjectileComponent::collided(Entity* collidedEntity)
 {
 	if (!isEnabled())
-		return;
+		return true;
 
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& collidedCallback = getTemplate()->getCollidedCallback();
 
@@ -77,6 +78,8 @@ void ProjectileComponent::collided(Entity* collidedEntity)
 		}
 		lua_pop(L, 1);
 	}
+
+	return true;
 }
 
 float ProjectileComponent::getSpeedXY() const

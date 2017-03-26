@@ -33,9 +33,9 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		
 	private:
-		void addedToMap(map::Map* map);
-		void entityEnteredVisionRange(Entity* entity);
-		void entityLeftVisionRange(Entity* entity);
+		bool addedToMap(Entity* entity, map::Map* map);
+		bool entityEnteredVisionRange(Entity* entity);
+		bool entityLeftVisionRange(Entity* entity);
 		
 	private:
 		BehaviorRuntime m_behaviorRuntime;

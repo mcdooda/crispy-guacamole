@@ -138,7 +138,7 @@ void Entity::onAddedToMap(map::Map* map)
 	m_map = map;
 	m_tile = getTileFromPosition();
 	m_tile->addEntity(this);
-	addedToMap(map);
+	addedToMap(this, map);
 	positionChanged(m_position);
 	headingChanged(m_heading);
 	elevationChanged(m_elevation);
@@ -147,6 +147,7 @@ void Entity::onAddedToMap(map::Map* map)
 void Entity::onRemovedFromMap()
 {
 	FLAT_ASSERT(m_map && m_tile);
+	removedFromMap(this);
 	m_tile->removeEntity(this);
 	m_map = nullptr;
 	m_tile = nullptr;

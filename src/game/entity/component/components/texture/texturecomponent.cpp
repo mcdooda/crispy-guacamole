@@ -62,19 +62,22 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 	}
 }
 
-void TextureComponent::headingChanged(float heading)
+bool TextureComponent::headingChanged(float heading)
 {
 	m_headingChanged = true;
+	return true;
 }
 
-void TextureComponent::elevationChanged(float elevation)
+bool TextureComponent::elevationChanged(float elevation)
 {
 	m_elevationChanged = true;
+	return true;
 }
 
-void TextureComponent::positionChanged(const flat::Vector3 & position)
+bool TextureComponent::positionChanged(const flat::Vector3 & position)
 {
 	m_positionChanged = true;
+	return true;
 }
 
 } // texture

@@ -14,16 +14,18 @@ class EntityHandle
 	public:
 		EntityHandle();
 		EntityHandle(const EntityHandle& handle);
-		EntityHandle(Entity* entity);
+		EntityHandle(const Entity* entity);
 
 		void operator=(EntityHandle& handle);
 		void operator=(Entity* entity);
+
 
 		bool isValid() const;
 		inline Entity* getEntity() const { return isValid() ? m_entity : nullptr; }
 
 		inline bool operator==(const EntityHandle& other) const { return m_id == other.m_id; }
 		inline bool operator!=(const EntityHandle& other) const { return m_id != other.m_id; }
+		inline bool operator< (const EntityHandle& other) const { return m_id <  other.m_id; }
 
 	public:
 		static const EntityHandle InvalidHandle;

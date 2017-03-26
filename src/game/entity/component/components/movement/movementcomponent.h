@@ -30,7 +30,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 		void update(float currentTime, float elapsedTime) override;
 		
-		void addedToMap(map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map);
 		
 		bool isBusy() const override;
 		

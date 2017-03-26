@@ -190,34 +190,40 @@ bool SpriteComponent::isBusy() const
 	return m_sprite.isAnimated() && !m_sprite.hasInfiniteLoop();
 }
 
-void SpriteComponent::headingChanged(float heading)
+bool SpriteComponent::headingChanged(float heading)
 {
 	m_headingChanged = true;
+	return true;
 }
 
-void SpriteComponent::positionChanged(const flat::Vector3& position)
+bool SpriteComponent::positionChanged(const flat::Vector3& position)
 {
 	m_positionChanged = true;
+	return true;
 }
 
-void SpriteComponent::movementStarted()
+bool SpriteComponent::movementStarted()
 {
 	m_movementStarted = true;
+	return true;
 }
 
-void SpriteComponent::movementStopped()
+bool SpriteComponent::movementStopped()
 {
 	m_movementStopped = true;
+	return true;
 }
 
-void SpriteComponent::selected()
+bool SpriteComponent::selected()
 {
 	m_sprite.setColor(flat::video::Color::RED);
+	return true;
 }
 
-void SpriteComponent::deselected()
+bool SpriteComponent::deselected()
 {
 	m_sprite.setColor(flat::video::Color::WHITE);
+	return true;
 }
 
 } // sprite

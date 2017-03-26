@@ -60,19 +60,23 @@ void BehaviorComponent::enterState(const char* stateName)
 	m_behaviorRuntime.enterState(stateName);
 }
 
-void BehaviorComponent::addedToMap(map::Map* map)
+bool BehaviorComponent::addedToMap(Entity* entity, map::Map* map)
 {
+	FLAT_ASSERT(entity == m_owner);
 	enterState("init");
+	return true;
 }
 
-void BehaviorComponent::entityEnteredVisionRange(Entity* entity)
+bool BehaviorComponent::entityEnteredVisionRange(Entity* entity)
 {
 	m_behaviorRuntime.handleEvent<EntityEnteredVisionRangeBehaviorEvent>(entity);
+	return true;
 }
 
-void BehaviorComponent::entityLeftVisionRange(Entity* entity)
+bool BehaviorComponent::entityLeftVisionRange(Entity* entity)
 {
 	m_behaviorRuntime.handleEvent<EntityLeftVisionRangeBehaviorEvent>(entity);
+	return true;
 }
 
 #ifdef FLAT_DEBUG

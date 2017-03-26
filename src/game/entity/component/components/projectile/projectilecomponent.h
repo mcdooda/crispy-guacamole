@@ -32,8 +32,8 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
-		void headingChanged(float heading);
-		void collided(Entity* collidedEntity);
+		bool headingChanged(float heading);
+		bool collided(Entity* collidedEntity);
 
 		float getSpeedXY() const;
 		

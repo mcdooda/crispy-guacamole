@@ -31,6 +31,7 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 		if (flat::length2(entityPosition - position) > visionRange2)
 		{
 			it = m_visibleEntities.erase(it);
+			entity->removedFromMap.off(this);
 			entityLeftVisionRange(entity);
 		}
 		else
@@ -52,6 +53,15 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 		{
 			m_visibleEntities.insert(entity);
 			entityEnteredVisionRange(entity);
+			entity->removedFromMap.on(this, &DetectionComponent::visibleEntityRemovedFromMap);
+
+			// when the current entity is removed, unplug from the other entity
+			m_owner->removedFromMap.on([entity, this](Entity* e)
+			{
+				FLAT_ASSERT(e == m_owner);
+				entity->removedFromMap.off(this);
+				return false;
+			});
 		}
 	});
 }
@@ -61,13 +71,21 @@ bool DetectionComponent::isVisible(const Entity& target) const
 	return m_visibleEntities.find(const_cast<Entity*>(&target)) != m_visibleEntities.end();
 }
 
+bool DetectionComponent::visibleEntityRemovedFromMap(Entity* entity)
+{
+	std::set<Entity*>::iterator it = m_visibleEntities.find(entity);
+	m_visibleEntities.erase(it);
+	entityLeftVisionRange(entity);
+	return false;
+}
+
 #ifdef FLAT_DEBUG
 void DetectionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
 	flat::Vector3 ownerPosition = m_owner->getPosition() + flat::Vector3(0.f, 0.f, 0.5f);
-	for (Entity* entity : m_visibleEntities)
+	for (const EntityHandle& entityHandle : m_visibleEntities)
 	{
-		debugDisplay.addLine(ownerPosition, entity->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE, 2.5f);
+		debugDisplay.addLine(ownerPosition, entityHandle.getEntity()->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE, 2.5f);
 	}
 
 	debugDisplay.addCircle(m_owner->getPosition(), getTemplate()->getVisionRange(), flat::video::Color::BLUE, 0.5f);

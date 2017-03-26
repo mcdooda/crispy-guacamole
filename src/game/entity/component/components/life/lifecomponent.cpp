@@ -40,7 +40,7 @@ void LifeComponent::kill()
 	if (!m_spawning && !m_despawning)
 	{
 		m_health = 0;
-		onDespawn();
+		onDie();
 	}
 }
 
@@ -53,17 +53,19 @@ void LifeComponent::dealDamage(int damage)
 		damageDealt(damage);
 		if (m_health == 0)
 		{
-			onDespawn();
+			onDie();
 		}
 	}
 }
 
-void LifeComponent::addedToMap(map::Map* map)
+bool LifeComponent::addedToMap(Entity* entity, map::Map* map)
 {
-	onSpawn();
+	FLAT_ASSERT(entity == m_owner);
+	onLive();
+	return true;
 }
 
-void LifeComponent::onSpawn()
+void LifeComponent::onLive()
 {
 	FLAT_ASSERT(!m_spawning && !m_despawning);
 
@@ -72,7 +74,7 @@ void LifeComponent::onSpawn()
 	disableComponent<movement::MovementComponent>();
 	disableComponent<behavior::BehaviorComponent>();
 	
-	spawn();
+	live();
 	
 	const LifeComponentTemplate* lifeComponentTemplate = getTemplate();
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& spawnFunc = lifeComponentTemplate->getSpawnFunc();
@@ -91,7 +93,7 @@ void LifeComponent::onSpawn()
 	}
 }
 
-void LifeComponent::onDespawn()
+void LifeComponent::onDie()
 {
 	FLAT_ASSERT(!m_spawning && !m_despawning);
 
@@ -126,7 +128,7 @@ void LifeComponent::checkSpawnDespawnThreadFinished()
 		{
 			m_despawning = false;
 			m_owner->markForDelete();
-			despawn();
+			die();
 		}
 		else
 		{

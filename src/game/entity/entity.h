@@ -37,8 +37,8 @@ class Entity final : public map::MapObject
 		
 		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 
-		inline EntityId getId() { return m_id; }
-		inline EntityHandle getHandle() { return EntityHandle(this); }
+		inline EntityId getId() const { return m_id; }
+		inline EntityHandle getHandle() const { return EntityHandle(this); }
 		
 		void setPosition(const flat::Vector3& position);
 		void setXY(const flat::Vector2& xy);
@@ -111,7 +111,8 @@ class Entity final : public map::MapObject
 		flat::Slot<const flat::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;
 		flat::Slot<float> elevationChanged;
-		flat::Slot<map::Map*> addedToMap;
+		flat::Slot<Entity*, map::Map*> addedToMap;
+		flat::Slot<Entity*> removedFromMap;
 		flat::Slot<> selected;
 		flat::Slot<> deselected;
 		

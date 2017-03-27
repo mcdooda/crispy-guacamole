@@ -285,6 +285,26 @@ void Entity::initComponents()
 #endif
 }
 
+const component::Component* Entity::findComponent(component::ComponentFlags componentFlag) const
+{
+	for (const component::Component* component : m_components)
+	{
+		if (component->getComponentType().getComponentTypeFlag() == componentFlag)
+			return component;
+	}
+	return nullptr;
+}
+
+component::Component* Entity::findComponent(component::ComponentFlags componentFlag)
+{
+	for (component::Component* component : m_components)
+	{
+		if (component->getComponentType().getComponentTypeFlag() == componentFlag)
+			return component;
+	}
+	return nullptr;
+}
+
 } // entity
 } // game
 

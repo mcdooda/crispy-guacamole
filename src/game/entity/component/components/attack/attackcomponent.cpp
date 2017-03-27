@@ -38,6 +38,18 @@ void AttackComponent::attack(float currentTime)
 	beginAttack(currentTime);
 }
 
+bool AttackComponent::isInAttackRange(Entity * entity) const
+{
+	const float attackRange = getAttackRange();
+
+	const std::shared_ptr<const EntityTemplate>& targetEntityTemplate = entity->getEntityTemplate();
+	const collision::CollisionComponentTemplate* targetCollisionComponentTemplate = targetEntityTemplate->getComponentTemplate<collision::CollisionComponent>();
+	const float targetRadius = targetCollisionComponentTemplate ? targetCollisionComponentTemplate->getRadius() : 0.f;
+
+	float distance2 = flat::length2(entity->getPosition() - m_owner->getPosition());
+	return distance2 <= (attackRange + targetRadius) * (attackRange + targetRadius);
+}
+
 void AttackComponent::tryBeginAttack(float currentTime)
 {
 	const AttackComponentTemplate* attackComponentTemplate = getTemplate();
@@ -52,14 +64,7 @@ void AttackComponent::tryBeginAttack(float currentTime)
 	{
 		if (Entity* target = m_target.getEntity())
 		{
-			const float attackRange = getAttackRange();
-
-			const std::shared_ptr<const EntityTemplate>& targetEntityTemplate = target->getEntityTemplate();
-			const collision::CollisionComponentTemplate* targetCollisionComponentTemplate = targetEntityTemplate->getComponentTemplate<collision::CollisionComponent>();
-			const float targetRadius = targetCollisionComponentTemplate ? targetCollisionComponentTemplate->getRadius() : 0.f;
-
-			float distance2 = flat::length2(target->getPosition() - m_owner->getPosition());
-			if (distance2 <= (attackRange + targetRadius) * (attackRange + targetRadius))
+			if (isInAttackRange(target))
 			{
 				beginAttack(currentTime);
 			}

@@ -85,7 +85,7 @@ void DetectionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	flat::Vector3 ownerPosition = m_owner->getPosition() + flat::Vector3(0.f, 0.f, 0.5f);
 	for (const EntityHandle& entityHandle : m_visibleEntities)
 	{
-		debugDisplay.addLine(ownerPosition, entityHandle.getEntity()->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE, 2.5f);
+		debugDisplay.addLine(ownerPosition, entityHandle.getEntity()->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE, 1.f);
 	}
 
 	debugDisplay.addCircle(m_owner->getPosition(), getTemplate()->getVisionRange(), flat::video::Color::BLUE, 0.5f);

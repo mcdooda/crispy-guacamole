@@ -4,6 +4,7 @@
 #include <memory>
 #include "entityhandle.h"
 #include "../map/mapobject.h"
+#include "component/componenttype.h"
 #include "../debug/debugdisplay.h"
 
 namespace game
@@ -81,6 +82,8 @@ class Entity final : public map::MapObject
 		inline const ComponentType* findComponent() const;
 		template <class ComponentType>
 		inline ComponentType* findComponent();
+		const component::Component* findComponent(component::ComponentFlags componentFlag) const;
+		component::Component* findComponent(component::ComponentFlags componentFlag);
 
 		template <class ComponentType>
 		inline const ComponentType* getComponent() const;

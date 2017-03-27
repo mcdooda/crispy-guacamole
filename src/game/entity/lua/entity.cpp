@@ -36,6 +36,7 @@ int open(lua_State* L)
 		{"isValid",                 l_Entity_isValid},
 
 		{"getTemplateName",         l_Entity_getTemplateName},
+		{"hasComponent",            l_Entity_hasComponent},
 
 		{"despawn",                 l_Entity_despawn},
 
@@ -82,6 +83,7 @@ int open(lua_State* L)
 		// attack
 		{"setAttackTarget",         l_Entity_setAttackTarget},
 		{"getAttackTarget",         l_Entity_getAttackTarget},
+		{"isInAttackRange",         l_Entity_isInAttackRange},
 
 		// life
 		{"isLiving",                l_Entity_isLiving},
@@ -124,6 +126,16 @@ int l_Entity_getTemplateName(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	lua_pushstring(L, entity.getTemplateName().c_str());
+	return 1;
+}
+
+int l_Entity_hasComponent(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	component::ComponentFlags componentFlag = luaL_checkint(L, 2);
+	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
+	component::Component* component = entity.findComponent(componentFlag);
+	lua_pushboolean(L, component != nullptr);
 	return 1;
 }
 
@@ -444,6 +456,15 @@ int l_Entity_getAttackTarget(lua_State* L)
 	return 1;
 }
 
+int l_Entity_isInAttackRange(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity& target = getEntity(L, 2);
+	attack::AttackComponent& attackComponent = getComponent<attack::AttackComponent>(L, entity);
+	lua_pushboolean(L, attackComponent.isInAttackRange(&target));
+	return 1;
+}
+
 int l_Entity_isLiving(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -507,6 +528,7 @@ int l_Entity_spawn(lua_State* L)
 
 	// components flags
 	component::ComponentFlags componentFlags = luaL_optint(L, 7, component::AllComponents);
+	luaL_argcheck(L, 2, componentFlags != 0, "componentFlags must not be zero");
 
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
 	flat::Vector3 position(x, y, z);

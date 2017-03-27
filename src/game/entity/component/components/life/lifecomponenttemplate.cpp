@@ -20,7 +20,7 @@ void LifeComponentTemplate::load(Game& game, lua_State* L, const std::string& en
 	m_despawnFunc.set(L, -1);
 	
 	lua_getfield(L, -3, "maxHealth");
-	m_maxHealth = luaL_checkint(L, -1);
+	m_maxHealth = static_cast<int>(luaL_checkinteger(L, -1));
 	
 	lua_pop(L, 3);
 }

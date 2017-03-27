@@ -25,7 +25,11 @@ end
 
 function states:onEntityLeftVisionRange(archer, entity)
 	if entity == archer:getAttackTarget() then
-		-- TODO: find new target + remove archer:canSee(currentAttackTarget)
+		--[[ TODO: find new target + remove archer:canSee(currentAttackTarget)
+		for visibleEntity in entity:eachVisibleEntity() do
+			print(visibleEntity:getTemplateName())
+		end
+		]]
 	end
 end
 

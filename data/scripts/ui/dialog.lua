@@ -131,14 +131,14 @@ function Dialog:new(content, options)
     closeButton.container:click(cancel)
 
     if footerBtn.cancel then
-        local btnCancel = button:new(Widget.makeText("Cancel", unpack(font)))
+        local btnCancel = button:new(Widget.makeText("Cancel", table.unpack(font)))
         btnContainer:addChild(btnCancel.container)
         btnCancel.container:click(cancel)
     end
 
     if footerBtn.confirm then
         local btnText = Widget.makeLineFlow()
-        local ww = Widget.makeText("Ok", unpack(font))
+        local ww = Widget.makeText("Ok", table.unpack(font))
         local okIcon = icon:new("ok")
         ww:setTextColor(COLORS.white)
         okIcon.container:setMargin(0,5,0,0)

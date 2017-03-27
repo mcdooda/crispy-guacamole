@@ -34,7 +34,7 @@ int l_Components_allExcept(lua_State* L)
 	int top = lua_gettop(L);
 	for (int i = 1; i <= top; ++i)
 	{
-		ComponentFlags flag = luaL_checkint(L, i);
+		ComponentFlags flag = static_cast<ComponentFlags>(luaL_checkinteger(L, i));
 		componentFlags &= ~flag;
 	}
 	lua_pushinteger(L, componentFlags);

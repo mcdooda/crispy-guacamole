@@ -1,4 +1,4 @@
-local atan2 = math.atan2
+local atan2 = math.atan
 
 return {
 	attackRange = 5,

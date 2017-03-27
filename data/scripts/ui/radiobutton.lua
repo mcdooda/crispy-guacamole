@@ -29,7 +29,7 @@ function Radiobutton:new(value, text, state)
     container:setSizePolicy(Widget.SizePolicy.COMPRESS)
     container:addChild(checkMarkContainer)
 
-    local label = Widget.makeText(text, unpack(font))
+    local label = Widget.makeText(text, table.unpack(font))
     label:setMargin(0, 5, 1, 5)
 
     container:addChild(label)

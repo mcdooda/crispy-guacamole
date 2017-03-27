@@ -13,7 +13,7 @@ do
 
 	-- brush position
 	do
-		local label = Widget.makeText('X,Y', unpack(font))
+		local label = Widget.makeText('X,Y', table.unpack(font))
 		label:setTextColor(0x000000FF)
 		label:setMargin(5)
 		debugContainer:addChild(label)

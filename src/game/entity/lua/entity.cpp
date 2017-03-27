@@ -74,6 +74,7 @@ int open(lua_State* L)
 
 		// detection
 		{"canSee",                  l_Entity_canSee},
+		//{"eachVisibleEntity",       l_Entity_eachVisibleEntity},
 
 		// faction
 		{"isNeutral",               l_Entity_isNeutral},
@@ -132,7 +133,7 @@ int l_Entity_getTemplateName(lua_State* L)
 int l_Entity_hasComponent(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	component::ComponentFlags componentFlag = luaL_checkint(L, 2);
+	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
 	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
 	component::Component* component = entity.findComponent(componentFlag);
 	lua_pushboolean(L, component != nullptr);
@@ -324,7 +325,7 @@ static void locPlayAnimation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* animationName = luaL_checkstring(L, 2);
-	int numLoops = luaL_optint(L, 3, 1);
+	int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
 	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
 	bool animationExists = spriteComponent.playAnimationByName(animationName, numLoops);
 	if (!animationExists)
@@ -396,6 +397,22 @@ int l_Entity_canSee(lua_State* L)
 	lua_pushboolean(L, canSee);
 	return 1;
 }
+
+/*
+namespace
+{
+int k(lua_State *L, int status, lua_KContext ctx) {
+
+}
+}
+
+int l_Entity_eachVisibleEntity(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	detection::DetectionComponent& detectionComponent = getComponent<detection::DetectionComponent>(L, entity);
+	return 1;
+}
+*/
 
 namespace
 {
@@ -484,7 +501,7 @@ int l_Entity_kill(lua_State* L)
 int l_Entity_dealDamage(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	int damage = luaL_checkint(L, 2);
+	int damage = static_cast<int>(luaL_checkinteger(L, 2));
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lifeComponent.dealDamage(damage);
 	return 0;
@@ -527,7 +544,7 @@ int l_Entity_spawn(lua_State* L)
 	float elevation = static_cast<float>(luaL_optnumber(L, 6, 0.f));
 
 	// components flags
-	component::ComponentFlags componentFlags = luaL_optint(L, 7, component::AllComponents);
+	component::ComponentFlags componentFlags = static_cast<component::ComponentFlags>(luaL_optinteger(L, 7, component::AllComponents));
 	luaL_argcheck(L, 2, componentFlags != 0, "componentFlags must not be zero");
 
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);

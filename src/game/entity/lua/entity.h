@@ -57,6 +57,7 @@ int l_Entity_getAttachPoint(lua_State* L);
 
 // detection
 int l_Entity_canSee(lua_State* L);
+//int l_Entity_eachVisibleEntity(lua_State* L);
 
 // faction
 int l_Entity_isNeutral(lua_State* L);

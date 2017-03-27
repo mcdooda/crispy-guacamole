@@ -68,7 +68,7 @@ function Icon:new(icon, size)
     local fontIcon = { 'data/misc/fonts/Glyphter.ttf', size }
 
 
-    local container = Widget.makeText(icons[icon], unpack(fontIcon))
+    local container = Widget.makeText(icons[icon], table.unpack(fontIcon))
     local o = setmetatable({
         container             = container,
     }, self)

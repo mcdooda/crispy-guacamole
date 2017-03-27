@@ -13,7 +13,7 @@ do
 
 	-- fps
 	do
-		local label = Widget.makeText('X fps', unpack(font))
+		local label = Widget.makeText('X fps', table.unpack(font))
 		label:setTextColor(0x000000FF)
 		label:setMargin(5)
 		debugContainer:addChild(label)
@@ -41,7 +41,7 @@ do
 	
 	-- entity count
 	do
-		local label = Widget.makeText('X entities', unpack(font))
+		local label = Widget.makeText('X entities', table.unpack(font))
 		label:setTextColor(0x000000FF)
 		label:setMargin(5)
 		debugContainer:addChild(label)

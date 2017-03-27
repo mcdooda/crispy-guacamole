@@ -63,9 +63,9 @@ void Reader::readConfig()
 			m_minX = 0;
 			m_minY = 0;
 			lua_getfield(L, -1, "width");
-			m_maxX = luaL_checkint(L, -1) + 1;
+			m_maxX = static_cast<int>(luaL_checkinteger(L, -1) + 1);
 			lua_getfield(L, -2, "height");
-			m_maxY = luaL_checkint(L, -1) + 1;
+			m_maxY = static_cast<int>(luaL_checkinteger(L, -1) + 1);
 			lua_pop(L, 2);
 		}
 

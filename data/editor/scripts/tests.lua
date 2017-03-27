@@ -92,7 +92,7 @@ do
 			Editor.setEntity(ModData.entities.names[1])
 			for i = 1, #ModData.entities.names do
 				local entityName = ModData.entities.names[i]
-				local label = Widget.makeText(entityName, unpack(font))
+				local label = Widget.makeText(entityName, table.unpack(font))
 				label:setMargin(0, 0, 0, 7)
 				label:click(function()
 					Editor.setEntity(entityName)
@@ -109,7 +109,7 @@ do
 			end
 			for i = 1, #zoneNames do
 				local zoneName = zoneNames[i]
-				local label = Widget.makeText(zoneName, unpack(font))
+				local label = Widget.makeText(zoneName, table.unpack(font))
 				label:setMargin(0, 0, 0, 7)
 				label:click(function()
 					Editor.setZone(zoneName)
@@ -120,7 +120,7 @@ do
 				local addZoneButton = Widget.makeLineFlow()
 				local icon = Widget.makeImage 'data/editor/interface/icons/plus.png'
 				icon:setMargin(2)
-				local text = Widget.makeText('Add new zone', unpack(font))
+				local text = Widget.makeText('Add new zone', table.unpack(font))
 				addZoneButton:addChild(icon)
 				addZoneButton:addChild(text)
 				addZoneButton:setMargin(0, 0, 0, 7)

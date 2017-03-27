@@ -20,11 +20,11 @@ void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::string& 
 	// atlas size
 	lua_getfield(L, -1, "size");
 	lua_rawgeti(L, -1, 1);
-	int atlasWidth = luaL_checkint(L, -1);
+	int atlasWidth = static_cast<int>(luaL_checkinteger(L, -1));
 	m_spriteDescription.setAtlasWidth(atlasWidth);
 
 	lua_rawgeti(L, -2, 2);
-	int atlasHeight = luaL_checkint(L, -1);
+	int atlasHeight = static_cast<int>(luaL_checkinteger(L, -1));
 	m_spriteDescription.setAtlasHeight(atlasHeight);
 
 	lua_pop(L, 3);
@@ -51,13 +51,13 @@ void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::string& 
 
 		luaL_checktype(L, -1, LUA_TTABLE);
 		lua_getfield(L, -1, "line");
-		int line = luaL_checkint(L, -1);
+		int line = static_cast<int>(luaL_checkinteger(L, -1));
 		if (line > atlasHeight)
 		{
 			luaL_error(L, "Animation %s, line = %d is out of the atlas", animationName, line);
 		}
 		lua_getfield(L, -2, "numFrames");
-		int numFrames = luaL_checkint(L, -1);
+		int numFrames = static_cast<int>(luaL_checkinteger(L, -1));
 		if (numFrames > atlasWidth)
 		{
 			luaL_error(L, "Animation %s, numFrames = %d is out of the atlas", animationName, numFrames);

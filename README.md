@@ -27,7 +27,7 @@ Compile and run __Crispy guacamole__ linux-style:
 ### Compiling
 In order to compile __Crispy guacamole__, these softwares are required: cmake, make, g++.
 
-You also need to install these development libraries: lua5.2, SDL2, SDL2_image, SDL2_mixer, SDL2_ttf, GL, GLEW.
+You also need to install these development libraries: lua5.3, SDL2, SDL2_image, SDL2_mixer, SDL2_ttf, GL, GLEW.
 
 Then, open a terminal and type the following:
 ```Shell

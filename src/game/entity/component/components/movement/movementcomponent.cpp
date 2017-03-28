@@ -3,6 +3,7 @@
 #include "../collision/collisioncomponent.h"
 #include "../../componenttype.h"
 #include "../../../entity.h"
+#include "../../../entityhelper.h"
 #include "../../../entitytemplate.h"
 #include "../../../../map/map.h"
 #include "../../../../map/tile.h"
@@ -116,9 +117,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 
 				if (entityToAvoid != nullptr)
 				{
-					const std::shared_ptr<const EntityTemplate>& entityToAvoidTemplate = entityToAvoid->getEntityTemplate();
-					const collision::CollisionComponentTemplate* collisionComponentTemplate = entityToAvoidTemplate->getComponentTemplate<collision::CollisionComponent>();
-					const float entityToAvoidRadius = collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
+					const float entityToAvoidRadius = EntityHelper::getRadius(entityToAvoid);
 
 					flat::Vector2 relativeEntityPosition2d(transform2dInverse * flat::Vector4(entityToAvoid->getPosition(), 1.f));
 					const float avoidDistance = (radius + entityToAvoidRadius) * flat::SQRT2;

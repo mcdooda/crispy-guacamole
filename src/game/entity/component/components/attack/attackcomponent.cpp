@@ -1,9 +1,9 @@
 #include "attackcomponent.h"
 #include "attackcomponenttemplate.h"
 #include "../behavior/behaviorcomponent.h"
-#include "../collision/collisioncomponent.h"
 #include "../movement/movementcomponent.h"
 #include "../../../entity.h"
+#include "../../../entityhelper.h"
 #include "../../../lua/entity.h"
 
 namespace game
@@ -38,13 +38,11 @@ void AttackComponent::attack(float currentTime)
 	beginAttack(currentTime);
 }
 
-bool AttackComponent::isInAttackRange(Entity * entity) const
+bool AttackComponent::isInAttackRange(Entity* entity) const
 {
 	const float attackRange = getAttackRange();
 
-	const std::shared_ptr<const EntityTemplate>& targetEntityTemplate = entity->getEntityTemplate();
-	const collision::CollisionComponentTemplate* targetCollisionComponentTemplate = targetEntityTemplate->getComponentTemplate<collision::CollisionComponent>();
-	const float targetRadius = targetCollisionComponentTemplate ? targetCollisionComponentTemplate->getRadius() : 0.f;
+	const float targetRadius = EntityHelper::getRadius(entity);
 
 	float distance2 = flat::length2(entity->getPosition() - m_owner->getPosition());
 	return distance2 <= (attackRange + targetRadius) * (attackRange + targetRadius);
@@ -145,8 +143,7 @@ void AttackComponent::endAttack()
 
 float AttackComponent::getAttackRange() const
 {
-	const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();
-	return getTemplate()->getAttackRange() + (collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f);
+	return getTemplate()->getAttackRange() + EntityHelper::getRadius(m_owner);
 }
 
 #ifdef FLAT_DEBUG

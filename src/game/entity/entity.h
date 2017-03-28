@@ -1,5 +1,5 @@
-#ifndef GAME_MAP_ENTITY_H
-#define GAME_MAP_ENTITY_H
+#ifndef GAME_ENTITY_ENTITY_H
+#define GAME_ENTITY_ENTITY_H
 
 #include <memory>
 #include "entityhandle.h"
@@ -201,7 +201,7 @@ inline component::movement::MovementComponent* Entity::getComponent()
 } // entity
 } // game
 
-#endif // GAME_MAP_ENTITY_H
+#endif // GAME_ENTITY_ENTITY_H
 
 
 

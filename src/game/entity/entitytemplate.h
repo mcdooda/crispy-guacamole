@@ -1,5 +1,5 @@
-#ifndef GAME_MAP_ENTITYTEMPLATE_H
-#define GAME_MAP_ENTITYTEMPLATE_H
+#ifndef GAME_ENTITY_ENTITYTEMPLATE_H
+#define GAME_ENTITY_ENTITYTEMPLATE_H
 
 #include <memory>
 #include <flat.h>
@@ -57,7 +57,7 @@ inline const typename ComponentType::TemplateType* EntityTemplate::getComponentT
 } // entity
 } // game
 
-#endif // GAME_MAP_ENTITYTEMPLATE_H
+#endif // GAME_ENTITY_ENTITYTEMPLATE_H
 
 
 

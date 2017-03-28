@@ -24,6 +24,8 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 
 		bool isVisible(const Entity& target) const;
 
+		inline const std::set<Entity*>& getVisibleEntities() const { return m_visibleEntities; }
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:

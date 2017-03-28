@@ -1,3 +1,4 @@
+#include <iterator>
 #include "entity.h"
 #include "../entity.h"
 #include "../faction/faction.h"
@@ -74,7 +75,7 @@ int open(lua_State* L)
 
 		// detection
 		{"canSee",                  l_Entity_canSee},
-		//{"eachVisibleEntity",       l_Entity_eachVisibleEntity},
+		{"eachVisibleEntity",       l_Entity_eachVisibleEntity},
 
 		// faction
 		{"isNeutral",               l_Entity_isNeutral},
@@ -398,21 +399,36 @@ int l_Entity_canSee(lua_State* L)
 	return 1;
 }
 
-/*
 namespace
 {
-int k(lua_State *L, int status, lua_KContext ctx) {
+int locIterateOverVisibleEntities(lua_State *L)
+{
+	Entity& entity = getEntity(L, 1);
+	detection::DetectionComponent& detectionComponent = getComponent<detection::DetectionComponent>(L, entity);
+	const std::set<Entity*>& visibleEntities = detectionComponent.getVisibleEntities();
 
+	int index = static_cast<int>(luaL_checkinteger(L, 2));
+	if (index >= visibleEntities.size())
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, index + 1);
+	Entity* visibleEntity = *std::next(visibleEntities.begin(), index);
+	FLAT_ASSERT(visibleEntity != nullptr);
+	pushEntity(L, visibleEntity);
+	return 2;
 }
 }
 
 int l_Entity_eachVisibleEntity(lua_State* L)
 {
-	Entity& entity = getEntity(L, 1);
-	detection::DetectionComponent& detectionComponent = getComponent<detection::DetectionComponent>(L, entity);
-	return 1;
+	luaL_checkudata(L, 1, "CG.Entity");
+	lua_pushcfunction(L, locIterateOverVisibleEntities);
+	lua_pushvalue(L, 1);
+	lua_pushinteger(L, 0);
+	return 3;
 }
-*/
 
 namespace
 {

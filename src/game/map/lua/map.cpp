@@ -24,8 +24,8 @@ int open(lua_State* L)
 		{"save",                l_Map_save},
 
 		{"getNumEntities",      l_Map_getNumEntities},
-
 		{"getEntitiesInRange",  l_Map_getEntitiesInRange},
+		{"eachSelectedEntity",  l_Map_eachSelectedEntity},
 
 		{"getZone",             l_Map_getZone},
 
@@ -91,6 +91,39 @@ int l_Map_getEntitiesInRange(lua_State* L)
 		++i;
 	});
 	return 1;
+}
+
+namespace
+{
+static int locIterateOverSelectedEntities(lua_State *L)
+{
+	luaL_checktype(L, 1, LUA_TNIL);
+
+	Game& game = flat::lua::getGame(L).to<Game>();
+	flat::state::State* state = game.getStateMachine().getState();
+	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
+	const std::vector<entity::Entity*>& selectedEntities = baseMapState.getSelectedEntities();
+
+	int index = static_cast<int>(luaL_checkinteger(L, 2));
+	if (index >= selectedEntities.size())
+	{
+		return 0;
+	}
+
+	lua_pushinteger(L, index + 1);
+	entity::Entity* selectedEntity = *std::next(selectedEntities.begin(), index);
+	FLAT_ASSERT(selectedEntity != nullptr);
+	entity::lua::pushEntity(L, selectedEntity);
+	return 2;
+}
+}
+
+int l_Map_eachSelectedEntity(lua_State* L)
+{
+	lua_pushcfunction(L, locIterateOverSelectedEntities);
+	lua_pushnil(L);
+	lua_pushinteger(L, 0);
+	return 3;
 }
 
 int l_Map_getZone(lua_State * L)

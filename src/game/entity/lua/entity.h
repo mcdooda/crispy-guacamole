@@ -21,6 +21,13 @@ int l_Entity_isValid(lua_State* L);
 int l_Entity_getTemplateName(lua_State* L);
 int l_Entity_hasComponent(lua_State* L);
 
+#ifdef FLAT_DEBUG
+int l_Entity_setDebug(lua_State* L);
+int l_Entity_getDebug(lua_State* L);
+int l_Entity_setComponentDebug(lua_State* L);
+int l_Entity_getComponentDebug(lua_State* L);
+#endif
+
 int l_Entity_despawn(lua_State* L);
 
 int l_Entity_getExtraData(lua_State* L);

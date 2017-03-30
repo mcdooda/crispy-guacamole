@@ -14,9 +14,9 @@ local STATEPOSITION = {
     disabled =  {{0.5,0}, {0.5,0.5}},
 }
 
-local function clicked(checkBox)
-    if checkBox:getState() ~= 'disabled' then
-        checkBox:setValue(not checkBox:getValue())
+local function clicked(checkbox)
+    if checkbox:getState() ~= 'disabled' then
+        checkbox:toggleValue()
     end
     return true
 end
@@ -73,13 +73,20 @@ end
 function Checkbox:getValue()
     return self.value
 end
+
 function Checkbox:setValue(value)
     self.value = value
     self:setVisible(value)
+
+    for _, callback in ipairs(self.valueChangedCallbacks) do
+        callback(self, value)
+    end
 end
+
 function Checkbox:toggleValue()
     self:setValue(not self:getValue())
 end
+
 function Checkbox:getState()
     return self.state
 end
@@ -99,6 +106,10 @@ end
 
 function Checkbox:setVisible(visible)
     self.checkMark:setVisible(visible)
+end
+
+function Checkbox:onValueChanged(callback)
+    self.valueChangedCallbacks[#self.valueChangedCallbacks + 1] = callback
 end
 
 return Checkbox

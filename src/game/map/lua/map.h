@@ -20,8 +20,8 @@ int l_Map_load(lua_State* L);
 int l_Map_save(lua_State* L);
 
 int l_Map_getNumEntities(lua_State* L);
-
 int l_Map_getEntitiesInRange(lua_State* L);
+int l_Map_eachSelectedEntity(lua_State* L);
 
 int l_Map_getZone(lua_State* L);
 

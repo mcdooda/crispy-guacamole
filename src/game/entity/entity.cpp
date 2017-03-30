@@ -177,7 +177,10 @@ void Entity::debugDraw(debug::DebugDisplay& debugDisplay) const
 	{
 		for (component::Component* component : m_components)
 		{
-			component->debugDraw(debugDisplay);
+			if (component->getDebug())
+			{
+				component->debugDraw(debugDisplay);
+			}
 		}
 	}
 }
@@ -229,6 +232,14 @@ void Entity::setSelected(bool selected)
 	else
 	{
 		deselected();
+	}
+}
+
+void Entity::setDebugAllComponents(bool debug)
+{
+	for (component::Component* component : m_components)
+	{
+		component->setDebug(debug);
 	}
 }
 

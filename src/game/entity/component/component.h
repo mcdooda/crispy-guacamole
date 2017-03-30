@@ -33,7 +33,11 @@ class Component : public flat::util::Convertible<Component>
 		virtual void update(float currentTime, float elapsedTime) = 0;
 		virtual bool isBusy() const { return false; }
 
-		FLAT_DEBUG_ONLY(virtual void debugDraw(debug::DebugDisplay& debugDisplay) const {})
+#ifdef FLAT_DEBUG
+		virtual void debugDraw(debug::DebugDisplay& debugDisplay) const {}
+		inline void setDebug(bool debug) { m_debug = debug; }
+		inline bool getDebug() const { return m_debug; }
+#endif
 
 		virtual const ComponentType& getComponentType() const = 0;
 

@@ -14,7 +14,7 @@ Component::Component() :
 	m_owner(nullptr),
 	m_disableLevel(0)
 #ifdef FLAT_DEBUG
-	, m_debug(true)
+	, m_debug(false)
 #endif
 {
 

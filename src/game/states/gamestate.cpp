@@ -105,6 +105,7 @@ void GameState::execute(Game& game)
 		for (entity::Entity* entity : entitiesToDebug)
 		{
 			entity->setDebug(true);
+			entity->setDebugAllComponents(true);
 		}
 	}
 	else if (keyboard->isJustPressed(K(F2)))
@@ -112,6 +113,7 @@ void GameState::execute(Game& game)
 		for (entity::Entity* entity : entitiesToDebug)
 		{
 			entity->setDebug(false);
+			entity->setDebugAllComponents(false);
 		}
 	}
 

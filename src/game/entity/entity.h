@@ -107,7 +107,10 @@ class Entity final : public map::MapObject
 
 #ifdef FLAT_DEBUG
 		inline void setDebug(bool debug) { m_debug = debug; }
+		inline bool getDebug() const { return m_debug; }
 		inline void setDebugBreak(bool debugBreak) { m_debugBreak = debugBreak; }
+
+		void setDebugAllComponents(bool debug);
 #endif
 		
 	public:

@@ -1,22 +1,14 @@
-local format = string.format
+return function(addContainer, makeSeparator, font)
+	local format = string.format
 
-local root = Widget.getRoot()
-
--- top right debug info
-do
-	local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }
-	local debugContainer = Widget.makeColumnFlow()
-	debugContainer:setMargin(5)
-	debugContainer:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
-	debugContainer:setSizePolicy(Widget.SizePolicy.COMPRESS)
-	debugContainer:setBackgroundColor(0xFFFFFFAA)
+	local statsContainer = addContainer()
 
 	-- fps
 	do
 		local label = Widget.makeText('X fps', table.unpack(font))
 		label:setTextColor(0x000000FF)
 		label:setMargin(5)
-		debugContainer:addChild(label)
+		statsContainer:addChild(label)
 		
 		local getFrameRate = Time.getFrameRate
 		local medianNumFrames = 50
@@ -44,12 +36,10 @@ do
 		local label = Widget.makeText('X entities', table.unpack(font))
 		label:setTextColor(0x000000FF)
 		label:setMargin(5)
-		debugContainer:addChild(label)
+		statsContainer:addChild(label)
 		
 		Timer.start(0, function()
 			label:setText(format('%d entities', Map.getNumEntities()))
 		end)
 	end
-
-	root:addChild(debugContainer)
 end

@@ -1,1 +1,1 @@
-dofile 'data/scripts/stats.lua'
+dofile 'data/scripts/debug.lua'

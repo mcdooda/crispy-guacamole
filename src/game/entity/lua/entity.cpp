@@ -39,6 +39,13 @@ int open(lua_State* L)
 		{"getTemplateName",         l_Entity_getTemplateName},
 		{"hasComponent",            l_Entity_hasComponent},
 
+#ifdef FLAT_DEBUG
+		{"setDebug",                l_Entity_setDebug},
+		{"getDebug",                l_Entity_getDebug},
+		{"setComponentDebug",       l_Entity_setComponentDebug},
+		{"getComponentDebug",       l_Entity_getComponentDebug},
+#endif
+
 		{"despawn",                 l_Entity_despawn},
 
 		{"getExtraData",            l_Entity_getExtraData},
@@ -140,6 +147,44 @@ int l_Entity_hasComponent(lua_State* L)
 	lua_pushboolean(L, component != nullptr);
 	return 1;
 }
+
+#ifdef FLAT_DEBUG
+int l_Entity_setDebug(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	bool debug = lua_toboolean(L, 2) == 1;
+	entity.setDebug(debug);
+	return 0;
+}
+
+int l_Entity_getDebug(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	lua_pushboolean(L, entity.getDebug());
+	return 1;
+}
+
+int l_Entity_setComponentDebug(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
+	bool debug = lua_toboolean(L, 3) == 1;
+	component::Component* component = entity.findComponent(componentFlag);
+	luaL_argcheck(L, component != nullptr, 2, "component does not exist");
+	component->setDebug(debug);
+	return 0;
+}
+
+int l_Entity_getComponentDebug(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
+	component::Component* component = entity.findComponent(componentFlag);
+	luaL_argcheck(L, component != nullptr, 2, "component does not exist");
+	lua_pushboolean(L, component->getDebug());
+	return 1;
+}
+#endif // FLAT_DEBUG
 
 int l_Entity_despawn(lua_State* L)
 {
@@ -401,7 +446,7 @@ int l_Entity_canSee(lua_State* L)
 
 namespace
 {
-int locIterateOverVisibleEntities(lua_State *L)
+static int locIterateOverVisibleEntities(lua_State *L)
 {
 	Entity& entity = getEntity(L, 1);
 	detection::DetectionComponent& detectionComponent = getComponent<detection::DetectionComponent>(L, entity);

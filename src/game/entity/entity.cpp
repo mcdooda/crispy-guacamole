@@ -24,6 +24,7 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_map(nullptr),
 	m_tile(nullptr),
 	m_template(entityTemplate),
+	m_canBeSelected(false),
 	m_selected(false),
 	m_markedForDelete(false)
 #ifdef FLAT_DEBUG
@@ -214,11 +215,6 @@ void Entity::clearPath()
 const std::string& Entity::getTemplateName() const
 {
 	return m_template->getName();
-}
-
-bool Entity::canBeSelected() const
-{
-	return m_movementComponent != nullptr; // TODO: find a more generic method
 }
 
 void Entity::setSelected(bool selected)

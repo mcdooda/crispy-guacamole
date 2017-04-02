@@ -8,6 +8,7 @@ return {
 	'larva',
 	'sheep',
 	'soldier',
+	'tower',
 	'warlock',
 	'zombie'
 }

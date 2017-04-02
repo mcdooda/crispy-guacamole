@@ -29,6 +29,8 @@ class TextureComponent : public ComponentImpl<TextureComponentTemplate>
 		bool headingChanged(float heading);
 		bool elevationChanged(float elevation);
 		bool positionChanged(const flat::Vector3& position);
+		bool selected();
+		bool deselected();
 
 	private:
 		flat::render::Sprite m_sprite;

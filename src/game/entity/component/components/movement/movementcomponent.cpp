@@ -21,7 +21,7 @@ namespace movement
 
 void MovementComponent::init()
 {
-	m_destination = flat::Vector2(m_owner->getPosition());
+	m_owner->setCanBeSelected(true);
 
 	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
 	m_speed = movementComponentTemplate->getSpeed();
@@ -177,8 +177,12 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
+
 	const map::Tile* tile = m_owner->getTile();
-	flat::Vector3 position = m_owner->getPosition();
+	const flat::Vector3& position = m_owner->getPosition();
+
+	m_destination = flat::Vector2(position);
+
 	// m_isTouchingGround already set is init()
 	FLAT_ASSERT(m_isTouchingGround == getTemplate()->getSnapToGround());
 	if (m_isTouchingGround || tile->getZ() >= position.z)

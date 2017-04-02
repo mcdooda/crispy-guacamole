@@ -47,7 +47,9 @@ class Entity final : public map::MapObject
 		inline const flat::Vector3& getPosition() const { return m_position; }
 		
 		inline const map::Map* getMap() const { return m_map; }
+		inline map::Map* getMap() { return m_map; }
 		inline const map::Tile* getTile() const { return m_tile; }
+		inline map::Tile* getTile() { return m_tile; }
 		
 		void setHeading(float heading);
 		inline float getHeading() const { return m_heading; }
@@ -97,7 +99,8 @@ class Entity final : public map::MapObject
 
 		const std::string& getTemplateName() const;
 
-		bool canBeSelected() const;
+		inline void setCanBeSelected(bool canBeSelected) { m_canBeSelected = canBeSelected; }
+		inline bool getCanBeSelected() const { return m_canBeSelected; }
 
 		void setSelected(bool selected);
 		inline bool isSelected() const { return m_selected; }
@@ -146,6 +149,7 @@ class Entity final : public map::MapObject
 		
 		std::shared_ptr<const EntityTemplate> m_template;
 
+		bool m_canBeSelected : 1;
 		bool m_selected : 1;
 		bool m_markedForDelete : 1;
 #ifdef FLAT_DEBUG

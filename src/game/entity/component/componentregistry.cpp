@@ -7,6 +7,7 @@
 #include "components/life/lifecomponent.h"
 #include "components/movement/movementcomponent.h"
 #include "components/projectile/projectilecomponent.h"
+#include "components/prop/propcomponent.h"
 #include "components/sprite/spritecomponent.h"
 #include "components/texture/texturecomponent.h"
 
@@ -43,6 +44,7 @@ void ComponentRegistry::registerComponentTypes()
 
 	// order does not matter for these components
 	registerComponentType<faction::FactionComponent>();
+	registerComponentType<prop::PropComponent>();
 }
 
 } // component

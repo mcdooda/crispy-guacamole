@@ -22,6 +22,9 @@ void TextureComponent::init()
 	m_owner->headingChanged.on(this, &TextureComponent::headingChanged);
 	m_owner->elevationChanged.on(this, &TextureComponent::elevationChanged);
 	m_owner->positionChanged.on(this, &TextureComponent::positionChanged);
+
+	m_owner->selected.on(this, &TextureComponent::selected);
+	m_owner->deselected.on(this, &TextureComponent::deselected);
 }
 
 void TextureComponent::update(float currentTime, float elapsedTime)
@@ -77,6 +80,18 @@ bool TextureComponent::elevationChanged(float elevation)
 bool TextureComponent::positionChanged(const flat::Vector3 & position)
 {
 	m_positionChanged = true;
+	return true;
+}
+
+bool TextureComponent::selected()
+{
+	m_sprite.setColor(flat::video::Color::RED);
+	return true;
+}
+
+bool TextureComponent::deselected()
+{
+	m_sprite.setColor(flat::video::Color::WHITE);
 	return true;
 }
 

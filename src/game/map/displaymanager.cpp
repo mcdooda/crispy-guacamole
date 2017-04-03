@@ -57,8 +57,9 @@ inline bool spritesOverlap(const MapObject* a, const MapObject* b)
 	return a->getSprite().overlaps(b->getSprite());
 }
 
-void DisplayManager::add(const MapObject * mapObject)
+void DisplayManager::add(const MapObject* mapObject)
 {
+	FLAT_ASSERT(mapObject->getTextureHash() != 0);
 	m_objects.push_back(mapObject);
 }
 

@@ -1,0 +1,3 @@
+return {
+	visionRange = 5
+}

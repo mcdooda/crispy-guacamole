@@ -78,7 +78,7 @@ void LifeComponent::onLive()
 	
 	const LifeComponentTemplate* lifeComponentTemplate = getTemplate();
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& spawnFunc = lifeComponentTemplate->getSpawnFunc();
-	if (spawnFunc)
+	if (!spawnFunc.isEmpty())
 	{
 		lua_State* L = spawnFunc.getLuaState();
 		{
@@ -87,10 +87,10 @@ void LifeComponent::onLive()
 			m_spawnDespawnThread.set(L, -1);
 			lua_pop(L, 1);
 			m_spawnDespawnThread.start(m_owner);
-			
-			checkSpawnDespawnThreadFinished();
 		}
 	}
+
+	checkSpawnDespawnThreadFinished();
 }
 
 void LifeComponent::onDie()
@@ -104,7 +104,7 @@ void LifeComponent::onDie()
 	
 	const LifeComponentTemplate* lifeComponentTemplate = getTemplate();
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& despawnFunc = lifeComponentTemplate->getDespawnFunc();
-	if (despawnFunc)
+	if (!despawnFunc.isEmpty())
 	{
 		lua_State* L = despawnFunc.getLuaState();
 		{
@@ -113,10 +113,10 @@ void LifeComponent::onDie()
 			m_spawnDespawnThread.set(L, -1);
 			lua_pop(L, 1);
 			m_spawnDespawnThread.start(m_owner);
-			
-			checkSpawnDespawnThreadFinished();
 		}
 	}
+
+	checkSpawnDespawnThreadFinished();
 }
 
 void LifeComponent::checkSpawnDespawnThreadFinished()

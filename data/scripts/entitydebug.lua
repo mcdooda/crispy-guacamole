@@ -5,6 +5,8 @@ return function(addContainer, makeSeparator, font)
 
 	local entityDebugContainer = addContainer()
 
+    local checkboxes = {}
+
     -- entity debug
     do
         local label = Widget.makeText('Entity', table.unpack(font))
@@ -16,6 +18,13 @@ return function(addContainer, makeSeparator, font)
         checkbox:onValueChanged(function(_, value)
             for _, selectedEntity in Map.eachSelectedEntity() do
                 selectedEntity:setDebug(value)
+                if not value then
+                    for componentName, componentFlag in pairs(Component) do
+                        if selectedEntity:hasComponent(componentFlag) then
+                            selectedEntity:setComponentDebug(componentFlag, value)
+                        end
+                    end
+                end
             end
         end)
 
@@ -45,8 +54,6 @@ return function(addContainer, makeSeparator, font)
         label:setMargin(3)
         label:setTextColor(0x000000FF)
         entityDebugContainer:addChild(label)
-
-        local checkboxes = {}
 
         local componentsSorted = {}
         for componentName, componentFlag in pairs(Component) do

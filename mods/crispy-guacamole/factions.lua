@@ -6,3 +6,4 @@ faction 'wild life'
 factionRelation('player',  HOSTILE, 'wild life')
 factionRelation('player',  HOSTILE, 'scourge')
 factionRelation('scourge', HOSTILE, 'wild life')
+factionRelation('scourge', HOSTILE, 'player')

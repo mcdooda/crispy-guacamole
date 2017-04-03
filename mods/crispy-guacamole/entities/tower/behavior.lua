@@ -1,7 +1,8 @@
 local states = {}
 
 local function isValidAttackTarget(tower, target)
-	return target:isHostile(tower)
+	-- tower hostile towards target?
+	return target:hasComponent(Component.life) and target:isHostile(tower)
 end
 
 local function isBetterAttackTarget(tower, target)

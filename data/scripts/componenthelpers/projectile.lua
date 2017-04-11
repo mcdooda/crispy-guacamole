@@ -15,7 +15,7 @@ local function spawn(templateName, template, x, y, z, tx, ty, tz)
     local speedXY2 = speedXY * speedXY
     local speedXY4 = speedXY2 * speedXY2
     local elevation = atan(
-        (speedXY2 + sqrt(speedXY4 - weight * (weight * dXY * dXY + 2 * dZ * speedXY2)))
+        (speedXY2 - sqrt(speedXY4 - weight * (weight * dXY * dXY + 2 * dZ * speedXY2)))
         / (weight * dXY)
     )
 
@@ -27,13 +27,21 @@ local function spawn(templateName, template, x, y, z, tx, ty, tz)
     return Entity.spawn(templateName, x, y, z, heading, elevation)
 end
 
+local function createSpawner(templateName)
+    local template = Path.requireComponentTemplate(templateName, 'projectile')
+    return function(x, y, z, target)
+        local tx, ty, tz = target:getPosition()
+        return spawn(templateName, template, x, y, z, tx, ty, tz)
+    end
+end
+
 local function spawnFromEntity(templateName, template, entity, attachPoint, target)
     local x, y, z = entity:getAttachPoint(attachPoint)
     local tx, ty, tz = target:getPosition()
     return spawn(templateName, template, x, y, z, tx, ty, tz)
 end
 
-local function createProjectileSpawner(templateName)
+local function createSpawnerFromEntity(templateName)
     local template = Path.requireComponentTemplate(templateName, 'projectile')
     return function(entity, attachPoint, target)
         return spawnFromEntity(templateName, template, entity, attachPoint, target)
@@ -42,6 +50,8 @@ end
 
 return {
     spawn                   = spawn,
+    createSpawner           = createSpawner,
+
     spawnFromEntity         = spawnFromEntity,
-    createProjectileSpawner = createProjectileSpawner
+    createSpawnerFromEntity = createSpawnerFromEntity
 }

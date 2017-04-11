@@ -1,5 +1,5 @@
 local ProjectileHelper = require 'data/scripts/componenthelpers/projectile'
-local spawnArrow = ProjectileHelper.createProjectileSpawner 'arrow'
+local spawnArrow = ProjectileHelper.createSpawnerFromEntity 'arrow'
 
 return {
 	attackRange = 5,

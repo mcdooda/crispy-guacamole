@@ -1,3 +1,4 @@
+local Path = require 'data/scripts/path'
 local ModData = require 'data/editor/scripts/moddata'
 
 local Slider = require 'data/scripts/ui/slider'
@@ -62,7 +63,8 @@ do
 			Editor.setTile(ModData.tiles.names[1])
 			for i = 1, #ModData.tiles.names do
 				local tileName = ModData.tiles.names[i]
-				local preview = Widget.makeImage(ModData.tiles.getPath(tileName, ModData.tiles.getHighest(tileName)))
+				local tileTexturePath = Path.getTileFilePath(tileName, ModData.tiles.getHighest(tileName) .. '.png')
+				local preview = Widget.makeImage(tileTexturePath)
 				preview:setSize(40,30)
 				preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
 				preview:setMargin(10, 0, 0, 7)
@@ -78,7 +80,8 @@ do
 			Editor.setProp(ModData.props.names[1])
 			for i = 1,  #ModData.props.names do
 				local propName = ModData.props.names[i]
-				local preview = Widget.makeImage(ModData.props.getPath(propName, ModData.props.getHighest(propName)))
+				local propTexturePath = Path.getPropFilePath(propName, ModData.props.getHighest(propName) .. '.png')
+				local preview = Widget.makeImage(propTexturePath)
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()
 					Editor.setProp(propName)

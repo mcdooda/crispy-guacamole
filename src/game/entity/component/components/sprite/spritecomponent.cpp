@@ -23,6 +23,7 @@ void SpriteComponent::init()
 	m_owner->setTextureHash(spriteDescription.getAtlas().get()->getHash());
 	m_sprite.setOrigin(spriteDescription.getOrigin());
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
+	m_owner->setSprite(m_sprite);
 	
 	m_currentAnimationDescription = nullptr;
 

@@ -24,8 +24,6 @@ class Component;
 namespace behavior  { class BehaviorComponent; }
 namespace collision { class CollisionComponent; }
 namespace movement  { class MovementComponent; }
-namespace sprite    { class SpriteComponent; }
-namespace texture   { class TextureComponent; }
 }
 
 class Entity final : public map::MapObject
@@ -57,6 +55,7 @@ class Entity final : public map::MapObject
 		void setElevation(float elevation);
 		inline float getElevation() const { return m_elevation; }
 		
+		inline void setSprite(const flat::render::Sprite& sprite) { m_sprite = &sprite; }
 		const flat::render::Sprite& getSprite() const override;
 		void updateAABB();
 		
@@ -133,8 +132,8 @@ class Entity final : public map::MapObject
 		component::behavior::BehaviorComponent*   m_behaviorComponent;
 		component::collision::CollisionComponent* m_collisionComponent;
 		component::movement::MovementComponent*   m_movementComponent;
-		component::sprite::SpriteComponent*       m_spriteComponent;
-		component::texture::TextureComponent*     m_textureComponent;
+
+		const flat::render::Sprite* m_sprite;
 		
 		EntityId m_id;
 

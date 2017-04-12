@@ -3,8 +3,6 @@
 #include "component/components/behavior/behaviorcomponent.h"
 #include "component/components/collision/collisioncomponent.h"
 #include "component/components/movement/movementcomponent.h"
-#include "component/components/sprite/spritecomponent.h"
-#include "component/components/texture/texturecomponent.h"
 #include "../map/map.h"
 #include "../map/tile.h"
 
@@ -15,9 +13,9 @@ namespace entity
 
 Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, EntityId id) :
 	m_behaviorComponent(nullptr),
+	m_collisionComponent(nullptr),
 	m_movementComponent(nullptr),
-	m_spriteComponent(nullptr),
-	m_textureComponent(nullptr),
+	m_sprite(nullptr),
 	m_id(id),
 	m_heading(0.f),
 	m_elevation(0.f),
@@ -111,13 +109,8 @@ void Entity::setElevation(float elevation)
 
 const flat::render::Sprite& Entity::getSprite() const
 {
-	FLAT_ASSERT(m_spriteComponent != nullptr || m_textureComponent != nullptr);
-
-	if (m_spriteComponent != nullptr)
-		return m_spriteComponent->getSprite();
-
-	else
-		return m_textureComponent->getSprite();
+	FLAT_ASSERT(m_sprite != nullptr);
+	return *m_sprite;
 }
 
 void Entity::updateAABB()
@@ -265,8 +258,6 @@ void Entity::cacheComponents()
 	m_behaviorComponent = findComponent<component::behavior::BehaviorComponent>();
 	m_collisionComponent = findComponent<component::collision::CollisionComponent>();
 	m_movementComponent = findComponent<component::movement::MovementComponent>();
-	m_spriteComponent   = findComponent<component::sprite::SpriteComponent>();
-	m_textureComponent  = findComponent<component::texture::TextureComponent>();
 }
 
 void Entity::initComponents()

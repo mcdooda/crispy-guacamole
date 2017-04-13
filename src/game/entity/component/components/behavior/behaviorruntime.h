@@ -21,7 +21,6 @@ class BehaviorRuntime final
 		BehaviorRuntime();
 		BehaviorRuntime(const BehaviorRuntime&) = delete;
 		void operator=(const BehaviorRuntime&) = delete;
-		~BehaviorRuntime();
 		
 		inline void setEntity(Entity* entity) { m_entity = entity; }
 		
@@ -43,7 +42,7 @@ class BehaviorRuntime final
 		
 	private:
 		Entity* m_entity;
-		int m_coroutineRef; // TODO: replace by SharedLuaReference
+		flat::lua::Thread m_thread;
 		FLAT_DEBUG_ONLY(std::string m_currentStateName;)
 };
 

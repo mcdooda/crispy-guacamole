@@ -14,36 +14,24 @@ namespace behavior
 {
 
 BehaviorRuntime::BehaviorRuntime() :
-	m_entity(nullptr),
-	m_coroutineRef(LUA_NOREF)
+	m_entity(nullptr)
 {
 	
 }
 
-BehaviorRuntime::~BehaviorRuntime()
-{
-	if (m_coroutineRef != LUA_NOREF)
-	{
-		const Behavior& behavior = getBehavior();
-		lua_State* L = behavior.getLuaState();
-		luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
-		m_coroutineRef = LUA_NOREF;
-	}
-}
-
 void BehaviorRuntime::enterState(const char* stateName)
 {
+	if (!m_thread.isEmpty())
+	{
+		m_thread.stop();
+	}
+
 	FLAT_DEBUG_ONLY(m_currentStateName = stateName;)
 
 	const Behavior& behavior = getBehavior();
 	lua_State* L = behavior.getLuaState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-		// new thread
-		luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
-		lua_State* L1 = lua_newthread(L);
-		m_coroutineRef = luaL_ref(L, LUA_REGISTRYINDEX);
 
 		// states table
 		behavior.pushStates(L);
@@ -52,62 +40,31 @@ void BehaviorRuntime::enterState(const char* stateName)
 		lua_getfield(L, -1, stateName);
 		luaL_checktype(L, -1, LUA_TFUNCTION);
 
+		// set thread function
+		m_thread.set(L, -1);
+
 		// states table
-		lua_pushvalue(L, -2);
+		lua_pop(L, 1);
 
 		// entity
 		lua::pushEntity(L, m_entity);
 
-		// move the function and arguments to the new thread
-		lua_xmove(L, L1, 3);
-		int status = lua_resume(L1, nullptr, 2);
-		if (status == LUA_OK)
-		{
-			// TODO: ref only if the thread yields
-			luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
-			m_coroutineRef = LUA_NOREF;
-		}
-		else if (status != LUA_YIELD)
-		{
-			lua_error(L1);
-		}
-
-		lua_pop(L, 1);
+		// actually start the thread, with 2 arguments: the states table and the entity
+		m_thread.start(2);
 	}
 }
 
 void BehaviorRuntime::updateCurrentState()
 {
-	const Behavior& behavior = getBehavior();
-	FLAT_ASSERT(m_coroutineRef != LUA_NOREF);
-	
-	lua_State* L = behavior.getLuaState();
+	if (m_thread.isRunning())
 	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-		lua_rawgeti(L, LUA_REGISTRYINDEX, m_coroutineRef);
-		luaL_checktype(L, -1, LUA_TTHREAD);
-		lua_State* L1 = lua_tothread(L, -1);
-		FLAT_ASSERT(L1 != nullptr);
-
-		int status = lua_resume(L1, nullptr, 0);
-		if (status == LUA_OK)
-		{
-			luaL_unref(L, LUA_REGISTRYINDEX, m_coroutineRef);
-			m_coroutineRef = LUA_NOREF;
-		}
-		else if (status != LUA_YIELD)
-		{
-			lua_error(L1);
-		}
-
-		lua_pop(L, 1);
+		m_thread.update();
 	}
 }
 
 void BehaviorRuntime::update()
 {
-	if (m_coroutineRef == LUA_NOREF)
+	if (m_thread.isFinished())
 	{
 		enterState("idle");
 	}

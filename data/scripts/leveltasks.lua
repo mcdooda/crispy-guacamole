@@ -1,3 +1,5 @@
+local Path = require 'data/scripts/path'
+
 local coroutine = coroutine
 local cocreate = coroutine.create
 local coresume = coroutine.resume
@@ -46,6 +48,15 @@ function LevelTasks.removeTask(task)
         end
     end
     return false
+end
+
+function LevelTasks.run(...)
+    for i = 1, select('#', ...) do
+        local file = select(i, ...)
+        local task = assert(loadfile(Path.getMapFilePath(file .. '.lua')))
+        LevelTasks.addTask(task)
+    end
+    LevelTasks.loop()
 end
 
 return LevelTasks

@@ -1,8 +1,5 @@
-dump = require 'data/scripts/dump'
+local LevelTasks = require 'data/scripts/leveltasks'
 
-local LevelTasks = require 'mods/crispy-guacamole/leveltasks'
-
-local waves = assert(loadfile './mods/crispy-guacamole/maps/td/waves.lua')
-LevelTasks.addTask(waves)
-
-LevelTasks.loop()
+LevelTasks.run(
+    'waves'
+)

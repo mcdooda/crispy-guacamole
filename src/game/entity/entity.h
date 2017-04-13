@@ -56,6 +56,7 @@ class Entity final : public map::MapObject
 		inline float getElevation() const { return m_elevation; }
 		
 		inline void setSprite(const flat::render::Sprite& sprite) { m_sprite = &sprite; }
+		inline void clearSprite() { m_sprite = nullptr; }
 		const flat::render::Sprite& getSprite() const override;
 		void updateAABB();
 		
@@ -78,6 +79,7 @@ class Entity final : public map::MapObject
 		void addComponent(component::Component* component);
 		void cacheComponents();
 		void initComponents();
+		void deinitComponents();
 
 		template <class ComponentType>
 		inline const ComponentType* findComponent() const;

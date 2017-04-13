@@ -20,7 +20,8 @@ void BehaviorComponent::init()
 	m_behaviorRuntime.setEntity(m_owner);
 	m_owner->addedToMap.on(this, &BehaviorComponent::addedToMap);
 
-	if (detection::DetectionComponent* detectionComponent = m_owner->getComponent<detection::DetectionComponent>())
+	detection::DetectionComponent* detectionComponent = m_owner->getComponent<detection::DetectionComponent>();
+	if (detectionComponent != nullptr)
 	{
 		if (m_behaviorRuntime.isEventHandled<EntityEnteredVisionRangeBehaviorEvent>())
 		{
@@ -29,6 +30,24 @@ void BehaviorComponent::init()
 		if (m_behaviorRuntime.isEventHandled<EntityLeftVisionRangeBehaviorEvent>())
 		{
 			detectionComponent->entityLeftVisionRange.on(this, &BehaviorComponent::entityLeftVisionRange);
+		}
+	}
+}
+
+void BehaviorComponent::deinit()
+{
+	//m_behaviorRuntime.setEntity(nullptr); // TODO: uncomment this
+	m_owner->addedToMap.off(this);
+
+	if (detection::DetectionComponent* detectionComponent = m_owner->getComponent<detection::DetectionComponent>())
+	{
+		if (m_behaviorRuntime.isEventHandled<EntityEnteredVisionRangeBehaviorEvent>())
+		{
+			detectionComponent->entityEnteredVisionRange.off(this);
+		}
+		if (m_behaviorRuntime.isEventHandled<EntityLeftVisionRangeBehaviorEvent>())
+		{
+			detectionComponent->entityLeftVisionRange.off(this);
 		}
 	}
 }

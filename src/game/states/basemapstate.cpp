@@ -227,6 +227,7 @@ void BaseMapState::despawnEntity(entity::Entity* entity)
 		FLAT_ASSERT(it != m_selectedEntities.end());
 		m_selectedEntities.erase(it);
 	}
+	entity->deinitComponents();
 	m_entityPool.destroyEntity(entity);
 }
 

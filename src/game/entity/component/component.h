@@ -30,6 +30,7 @@ class Component : public flat::util::Convertible<Component>
 		inline const Entity* getOwner() const { return m_owner; }
 
 		virtual void init() {}
+		virtual void deinit() {}
 		virtual void update(float currentTime, float elapsedTime) = 0;
 		virtual bool isBusy() const { return false; }
 

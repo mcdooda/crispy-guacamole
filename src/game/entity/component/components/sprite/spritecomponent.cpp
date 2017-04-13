@@ -45,10 +45,32 @@ void SpriteComponent::init()
 
 	if (m_moveAnimationDescription)
 	{
-		if (movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>())
+		movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>();
+		if (movementComponent != nullptr)
 		{
 			movementComponent->movementStarted.on(this, &SpriteComponent::movementStarted);
 			movementComponent->movementStopped.on(this, &SpriteComponent::movementStopped);
+		}
+	}
+}
+
+void SpriteComponent::deinit()
+{
+	m_owner->clearSprite();
+
+	m_owner->headingChanged.off(this);
+	m_owner->positionChanged.off(this);
+
+	m_owner->selected.off(this);
+	m_owner->deselected.off(this);
+
+	if (m_moveAnimationDescription)
+	{
+		movement::MovementComponent* movementComponent = m_owner->getComponent<movement::MovementComponent>();
+		if (movementComponent != nullptr)
+		{
+			movementComponent->movementStarted.off(this);
+			movementComponent->movementStopped.off(this);
 		}
 	}
 }

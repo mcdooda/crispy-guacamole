@@ -25,6 +25,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		inline static bool enableInEditor() { return false; }
 
 		void init() override;
+		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
 		

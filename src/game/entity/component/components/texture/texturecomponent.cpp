@@ -29,6 +29,18 @@ void TextureComponent::init()
 	m_owner->deselected.on(this, &TextureComponent::deselected);
 }
 
+void TextureComponent::deinit()
+{
+	m_owner->clearSprite();
+
+	m_owner->headingChanged.off(this);
+	m_owner->elevationChanged.off(this);
+	m_owner->positionChanged.off(this);
+
+	m_owner->selected.off(this);
+	m_owner->deselected.off(this);
+}
+
 void TextureComponent::update(float currentTime, float elapsedTime)
 {
 	if (m_positionChanged)

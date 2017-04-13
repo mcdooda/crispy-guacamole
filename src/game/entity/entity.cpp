@@ -283,6 +283,14 @@ void Entity::initComponents()
 #endif
 }
 
+void Entity::deinitComponents()
+{
+	for (component::Component* component : m_components)
+	{
+		component->deinit();
+	}
+}
+
 const component::Component* Entity::findComponent(component::ComponentFlags componentFlag) const
 {
 	for (const component::Component* component : m_components)

@@ -31,8 +31,20 @@ void ProjectileComponent::init()
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
 	{
-		collisionComponent->onCollidedWithMap.on([this]() { return collided(nullptr); });
+		collisionComponent->onCollidedWithMap.on(this, &ProjectileComponent::collidedWithMap);
 		collisionComponent->onCollidedWithEntity.on(this, &ProjectileComponent::collided);
+	}
+}
+
+void ProjectileComponent::deinit()
+{
+	m_owner->headingChanged.off(this);
+
+	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
+	if (collisionComponent != nullptr)
+	{
+		collisionComponent->onCollidedWithMap.off(this);
+		collisionComponent->onCollidedWithEntity.off(this);
 	}
 }
 
@@ -80,6 +92,11 @@ bool ProjectileComponent::collided(Entity* collidedEntity)
 	}
 
 	return true;
+}
+
+bool ProjectileComponent::collidedWithMap()
+{
+	return collided(nullptr);
 }
 
 float ProjectileComponent::getSpeedXY() const

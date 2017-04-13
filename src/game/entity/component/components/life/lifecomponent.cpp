@@ -20,6 +20,11 @@ void LifeComponent::init()
 	m_despawning = false;
 }
 
+void LifeComponent::deinit()
+{
+	m_owner->addedToMap.off(this);
+}
+
 void LifeComponent::update(float currentTime, float elapsedTime)
 {
 	// wait for animations and business things to finish before updating the attack thread

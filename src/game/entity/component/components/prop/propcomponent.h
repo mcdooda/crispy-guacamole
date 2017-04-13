@@ -20,6 +20,7 @@ class PropComponent : public ComponentImpl<PropComponentTemplate>
 		inline static const char* getConfigName() { return "prop"; }
 
 		void init() override;
+		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
 

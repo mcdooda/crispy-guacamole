@@ -20,6 +20,13 @@ void PropComponent::init()
 	m_owner->removedFromMap.on(this, &PropComponent::removedFromMap);
 }
 
+void PropComponent::deinit()
+{
+	m_owner->setCanBeSelected(false);
+	m_owner->addedToMap.off(this);
+	m_owner->removedFromMap.off(this);
+}
+
 void PropComponent::update(float currentTime, float elapsedTime)
 {
 	// nothing to do

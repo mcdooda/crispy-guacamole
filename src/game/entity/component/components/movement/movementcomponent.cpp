@@ -31,6 +31,11 @@ void MovementComponent::init()
 	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
 }
 
+void MovementComponent::deinit()
+{
+	m_owner->addedToMap.off(this);
+}
+
 void MovementComponent::update(float currentTime, float elapsedTime)
 {
 	FLAT_DEBUG_ONLY(m_steering = flat::Vector2(0.f, 0.f);)

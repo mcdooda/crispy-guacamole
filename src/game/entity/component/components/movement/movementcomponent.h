@@ -27,6 +27,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		inline static const char* getConfigName() { return "movement"; }
 
 		void init() override;
+		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
 		

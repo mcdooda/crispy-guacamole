@@ -20,6 +20,7 @@ class TextureComponent : public ComponentImpl<TextureComponentTemplate>
 		inline static const char* getConfigName() { return "texture"; }
 
 		void init() override;
+		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
 

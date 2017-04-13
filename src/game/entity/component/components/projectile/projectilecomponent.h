@@ -26,6 +26,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		inline static bool enableInEditor() { return false; }
 
 		void init() override;
+		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
 
@@ -34,6 +35,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 	private:
 		bool headingChanged(float heading);
 		bool collided(Entity* collidedEntity);
+		bool collidedWithMap();
 
 		float getSpeedXY() const;
 		

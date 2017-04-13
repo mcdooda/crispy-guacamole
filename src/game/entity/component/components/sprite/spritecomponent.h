@@ -20,6 +20,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		inline static const char* getConfigName() { return "sprite"; }
 
 		void init() override;
+		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
 		

@@ -224,6 +224,7 @@ void Entity::setSelected(bool selected)
 	}
 }
 
+#ifdef FLAT_DEBUG
 void Entity::setDebugAllComponents(bool debug)
 {
 	for (component::Component* component : m_components)
@@ -231,6 +232,7 @@ void Entity::setDebugAllComponents(bool debug)
 		component->setDebug(debug);
 	}
 }
+#endif
 
 map::Tile* Entity::getTileFromPosition()
 {

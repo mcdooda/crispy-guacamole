@@ -16,7 +16,7 @@ EntityEditorMode::EntityEditorMode(Game& game) : Super(game)
 
 EntityEditorMode::~EntityEditorMode()
 {
-
+	getEditorState().clearGhostTemplate();
 }
 
 void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed)
@@ -47,6 +47,12 @@ void EntityEditorMode::handleShortcuts()
 			entity->markForDelete();
 		}
 	}
+}
+
+void EntityEditorMode::setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate)
+{
+	m_entityTemplate = entityTemplate;
+	getEditorState().setGhostTemplate(m_game, entityTemplate);
 }
 
 } // editor

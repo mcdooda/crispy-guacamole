@@ -80,6 +80,7 @@ class Entity final : public map::MapObject
 		void cacheComponents();
 		void initComponents();
 		void deinitComponents();
+		inline void resetComponents() { deinitComponents(); initComponents(); }
 
 		template <class ComponentType>
 		inline const ComponentType* findComponent() const;

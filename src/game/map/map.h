@@ -43,7 +43,7 @@ class Map
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		
 		// rendering
-		void drawTiles(DisplayManager& displayManager, const flat::video::View& view) const;
+		void drawTilesAndEntities(DisplayManager& displayManager, const flat::video::View& view) const;
 		
 		// get tiles
 		const Tile* getTile(int x, int y) const;

@@ -85,7 +85,7 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 	});
 }
 
-void Map::drawTiles(DisplayManager& displayManager, const flat::video::View& view) const
+void Map::drawTilesAndEntities(DisplayManager& displayManager, const flat::video::View& view) const
 {
 	eachTileIfExists([&displayManager](const Tile* tile)
 	{

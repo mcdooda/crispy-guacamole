@@ -67,9 +67,23 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		void despawnEntities();
 
 		inline const std::vector<entity::Entity*>& getSelectedEntities() const { return m_selectedEntities; }
+
+		void setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate);
+		void clearGhostTemplate();
+
+		entity::Entity* createEntity(
+			Game& game,
+			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate,
+			entity::component::ComponentFlags componentFlags = entity::component::AllComponents
+		);
+		void destroyEntity(entity::Entity* entity);
+
+		void addEntityToMap(entity::Entity* entity);
+		void removeEntityFromMap(entity::Entity* entity);
 		
 	protected:
 		void update(game::Game& game);
+		void drawGhostEntity(game::Game& game);
 		void updateGameView(game::Game& game);
 		void setCameraCenter(const flat::Vector3& cameraCenter);
 		void setCameraZoom(float cameraZoom);
@@ -118,6 +132,9 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		std::vector<entity::Entity*> m_entities;
 		std::vector<entity::Entity*> m_selectedEntities;
 		entity::EntityHandle m_mouseOverEntity;
+
+		std::shared_ptr<const entity::EntityTemplate> m_ghostTemplate;
+		entity::Entity* m_ghostEntity;
 		
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;

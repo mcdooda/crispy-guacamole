@@ -84,6 +84,10 @@ int l_Entity_dealDamage(lua_State* L);
 // static lua functions
 int l_Entity_spawn(lua_State* L);
 
+int l_Entity_setGhostTemplate(lua_State* L);
+int l_Entity_clearGhostTemplate(lua_State* L);
+
+
 // private
 EntityHandle getEntityHandle(lua_State* L, int index);
 Entity& getEntity(lua_State* L, int index);

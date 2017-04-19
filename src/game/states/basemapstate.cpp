@@ -12,6 +12,7 @@
 #include "../map/lua/zone.h"
 #include "../entity/lua/entity.h"
 #include "../entity/component/lua/componentregistry.h"
+#include "../entity/component/components/collision/collisioncomponent.h"
 #include "../entity/faction/lua/faction.h"
 #include "../entity/entitytemplate.h"
 #include "../mod/lua/mod.h"
@@ -86,6 +87,8 @@ void BaseMapState::enter(Game& game)
 	setCameraCenter(cameraCenter);
 
 	resetViews(game);
+
+	m_ghostEntity = nullptr;
 }
 
 void BaseMapState::execute(Game& game)
@@ -107,6 +110,7 @@ void BaseMapState::exit(Game& game)
 	{
 		m_entityPool.destroyEntity(entity);
 	}
+	clearGhostTemplate();
 	map.removeAllEntities();
 }
 
@@ -202,14 +206,11 @@ std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Gam
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position, float heading, float elevation, entity::component::ComponentFlags componentFlags)
 {
-	entity::component::ComponentFlags componentsFilter = getComponentsFilter() & componentFlags;
-	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
+	entity::Entity* entity = createEntity(game, entityTemplate, componentFlags);
 	entity->setPosition(position);
 	entity->setHeading(heading);
 	entity->setElevation(elevation);
-	entity->initComponents();
-	map::Map& map = getMap();
-	map.addEntity(entity);
+	addEntityToMap(entity);
 	m_entities.push_back(entity);
 	const float currentTime = game.time->getTime();
 	entity->update(currentTime, 0.f);
@@ -227,8 +228,7 @@ void BaseMapState::despawnEntity(entity::Entity* entity)
 		FLAT_ASSERT(it != m_selectedEntities.end());
 		m_selectedEntities.erase(it);
 	}
-	entity->deinitComponents();
-	m_entityPool.destroyEntity(entity);
+	destroyEntity(entity);
 }
 
 void BaseMapState::despawnEntities()
@@ -250,12 +250,94 @@ void BaseMapState::despawnEntities()
 	}
 }
 
+void BaseMapState::setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate)
+{
+	clearGhostTemplate();
+	m_ghostTemplate = ghostTemplate;
+	m_ghostEntity = createEntity(game, ghostTemplate, entity::component::AllComponents);
+}
+
+void BaseMapState::clearGhostTemplate()
+{
+	if (m_ghostEntity != nullptr)
+	{
+		destroyEntity(m_ghostEntity);
+	}
+	m_ghostTemplate.reset();
+	m_ghostEntity = nullptr;
+}
+
+entity::Entity* BaseMapState::createEntity(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, entity::component::ComponentFlags componentFlags)
+{
+	entity::component::ComponentFlags componentsFilter = getComponentsFilter() & componentFlags;
+	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
+	entity->initComponents();
+	return entity;
+}
+
+void BaseMapState::destroyEntity(entity::Entity* entity)
+{
+	FLAT_ASSERT(entity->getMap() == nullptr);
+	entity->deinitComponents();
+	m_entityPool.destroyEntity(entity);
+}
+
+void BaseMapState::addEntityToMap(entity::Entity* entity)
+{
+	map::Map& map = getMap();
+	map.addEntity(entity);
+}
+
+void BaseMapState::removeEntityFromMap(entity::Entity* entity)
+{
+	map::Map& map = getMap();
+	map.removeEntity(entity);
+}
+
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
 	updateUi(game);
 	float currentTime = game.time->getTime();
 	game.timerContainer.updateTimers(game.lua->state, currentTime);
+}
+
+void BaseMapState::drawGhostEntity(game::Game& game)
+{
+	if (m_ghostEntity != nullptr && !m_mouseOverEntity.isValid())
+	{
+		flat::Vector2 cursorPosition = getCursorMapPosition(game);
+		map::Tile* tile = getMap().getTileIfWalkable(cursorPosition.x, cursorPosition.y);
+		if (tile != nullptr)
+		{
+			entity::component::collision::CollisionComponent* collisionComponent = m_ghostEntity->getComponent<entity::component::collision::CollisionComponent>();
+			m_ghostEntity->resetComponents();
+			m_ghostEntity->setHeading(0.f);
+			m_ghostEntity->setElevation(0.f);
+			flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
+			m_ghostEntity->setPosition(ghostPosition);
+			addEntityToMap(m_ghostEntity);
+
+			if (collisionComponent != nullptr)
+			{
+				collisionComponent->incDisableLevel();
+			}
+			m_ghostEntity->update(game.time->getTime(), 0.f);
+			if (collisionComponent != nullptr)
+			{
+				collisionComponent->decDisableLevel();
+			}
+
+			// TODO: clean this shit
+			flat::render::Sprite& sprite = const_cast<flat::render::Sprite&>(m_ghostEntity->getSprite());
+			flat::video::Color color = sprite.getColor();
+			color.a = 0.6f;
+			sprite.setColor(color);
+
+			m_mapDisplayManager.add(m_ghostEntity);
+			removeEntityFromMap(m_ghostEntity);
+		}
+	}
 }
 
 void BaseMapState::updateGameView(game::Game& game)
@@ -335,7 +417,8 @@ void BaseMapState::draw(game::Game& game)
 	const map::Map& map = getMap();
 	m_mapDisplayManager.setMap(map);
 	m_mapDisplayManager.clearAll();
-	map.drawTiles(m_mapDisplayManager, m_gameView);
+	map.drawTilesAndEntities(m_mapDisplayManager, m_gameView);
+	drawGhostEntity(game);
 	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView.getViewProjectionMatrix());
 	
 #ifdef FLAT_DEBUG

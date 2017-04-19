@@ -21,7 +21,7 @@ EntityPool::EntityPool(const component::ComponentRegistry& componentRegistry)
 
 EntityPool::~EntityPool()
 {
-
+	FLAT_ASSERT(m_entityPool.getNumAllocatedObjects() == 0);
 }
 
 Entity* EntityPool::createEntity(

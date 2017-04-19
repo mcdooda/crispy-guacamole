@@ -22,7 +22,7 @@ public:
 	void handleShortcuts() override;
 	bool canSelectEntities() const override { return true; }
 
-	inline void setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate) { m_entityTemplate = entityTemplate; }
+	void setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate);
 
 private:
 	std::shared_ptr<const entity::EntityTemplate> m_entityTemplate;

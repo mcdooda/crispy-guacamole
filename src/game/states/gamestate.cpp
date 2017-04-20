@@ -51,7 +51,7 @@ void GameState::execute(Game& game)
 		{
 			if (mouse->isJustReleased(M(LEFT)))
 			{
-				clearSelection(game);
+				clearSelection();
 			}
 		}
 	}
@@ -98,7 +98,7 @@ void GameState::execute(Game& game)
 		m_pauseNextFrame = false;
 	}
 
-	std::vector<entity::Entity*>& entitiesToDebug = m_selectedEntities.empty() ? m_entities : m_selectedEntities;
+	std::vector<entity::Entity*>& entitiesToDebug = m_selectedEntities.empty() ? getMap().getEntities() : m_selectedEntities;
 
 	if (keyboard->isJustPressed(K(F1)))
 	{
@@ -243,7 +243,7 @@ void GameState::toggleGamePause(Game& game)
 #ifdef FLAT_DEBUG
 	if (!m_gamePaused)
 	{
-		for (entity::Entity* entity : m_entities)
+		for (entity::Entity* entity : getMap().getEntities())
 		{
 			entity->setDebugBreak(false);
 		}

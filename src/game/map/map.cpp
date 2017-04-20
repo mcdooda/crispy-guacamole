@@ -210,6 +210,16 @@ void Map::removeEntity(entity::Entity* entity)
 	entity->onRemovedFromMap();
 }
 
+entity::Entity* Map::removeEntityAtIndex(int index)
+{
+	FLAT_ASSERT(0 <= index && index < m_entities.size());
+	entity::Entity* entity = m_entities[index];
+	m_entities[index] = m_entities.back();
+	m_entities.pop_back();
+	entity->onRemovedFromMap();
+	return entity;
+}
+
 void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const
 {
 	const int tileMinX = static_cast<int>(std::round(center2d.x - range));

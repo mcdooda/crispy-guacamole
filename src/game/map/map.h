@@ -76,6 +76,7 @@ class Map
 		// entities
 		void addEntity(entity::Entity* entity);
 		void removeEntity(entity::Entity* entity);
+		entity::Entity* removeEntityAtIndex(int index);
 
 		inline void removeAllEntities() { m_entities.clear(); }
 

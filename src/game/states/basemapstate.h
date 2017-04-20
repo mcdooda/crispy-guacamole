@@ -64,6 +64,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 			entity::component::ComponentFlags componentFlags = entity::component::AllComponents
 		);
 		void despawnEntity(entity::Entity* entity);
+		void despawnEntityAtIndex(int index);
 		void despawnEntities();
 
 		inline const std::vector<entity::Entity*>& getSelectedEntities() const { return m_selectedEntities; }
@@ -80,6 +81,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		void addEntityToMap(entity::Entity* entity);
 		void removeEntityFromMap(entity::Entity* entity);
+		entity::Entity* removeEntityFromMapAtIndex(int index);
 		
 	protected:
 		void update(game::Game& game);
@@ -104,7 +106,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		bool updateSelectionWidget(Game& game);
 		void selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);
-		void clearSelection(Game& game);
+		void clearSelection();
+		void removeFromSelectedEntities(entity::Entity* entity);
 		bool isSmallSelection() const;
 		
 	protected:
@@ -129,7 +132,6 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		entity::component::ComponentRegistry m_componentRegistry;
 		entity::EntityPool m_entityPool;
 
-		std::vector<entity::Entity*> m_entities;
 		std::vector<entity::Entity*> m_selectedEntities;
 		entity::EntityHandle m_mouseOverEntity;
 

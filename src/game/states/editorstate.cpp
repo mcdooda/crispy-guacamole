@@ -88,7 +88,7 @@ void EditorState::applyBrush(Game& game)
 			const flat::input::Mouse* mouse = input->mouse;
 			if ((!m_editorMode->canSelectEntities() && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))
 			{
-				clearSelection(game);
+				clearSelection();
 				m_editorMode->applyBrushPrimaryEffect(mouse->isJustPressed(M(LEFT)));
 			}
 			else if (mouse->isPressed(M(RIGHT)))

@@ -211,7 +211,6 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::share
 	entity->setHeading(heading);
 	entity->setElevation(elevation);
 	addEntityToMap(entity);
-	m_entities.push_back(entity);
 	const float currentTime = game.time->getTime();
 	entity->update(currentTime, 0.f);
 	return entity;
@@ -219,33 +218,28 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::share
 
 void BaseMapState::despawnEntity(entity::Entity* entity)
 {
-	map::Map& map = getMap();
-	map.removeEntity(entity);
-	if (entity->isSelected())
-	{
-		// remove from selected entities
-		std::vector<entity::Entity*>::iterator it = std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity);
-		FLAT_ASSERT(it != m_selectedEntities.end());
-		m_selectedEntities.erase(it);
-	}
+	removeEntityFromMap(entity);
+	removeFromSelectedEntities(entity);
+	destroyEntity(entity);
+}
+
+void BaseMapState::despawnEntityAtIndex(int index)
+{
+	entity::Entity* entity = removeEntityFromMapAtIndex(index);
+	removeFromSelectedEntities(entity);
 	destroyEntity(entity);
 }
 
 void BaseMapState::despawnEntities()
 {
-	for (int i = static_cast<int>(m_entities.size()) - 1; i >= 0; --i)
+	map::Map& map = getMap();
+	std::vector<entity::Entity*>& entities = map.getEntities();
+	for (int i = static_cast<int>(entities.size() - 1); i >= 0; --i)
 	{
-		entity::Entity* entity = m_entities[i];
+		entity::Entity* entity = entities[i];
 		if (entity->isMarkedForDelete())
 		{
-			// swap the current and the last element (if current != last)
-			if (i < static_cast<int>(m_entities.size()) - 1)
-			{
-				entity::Entity* lastEntity = m_entities.back();
-				m_entities[i] = lastEntity;
-			}
-			m_entities.pop_back();
-			despawnEntity(entity);
+			despawnEntityAtIndex(i);
 		}
 	}
 }
@@ -284,14 +278,22 @@ void BaseMapState::destroyEntity(entity::Entity* entity)
 
 void BaseMapState::addEntityToMap(entity::Entity* entity)
 {
+	FLAT_ASSERT(entity->getMap() == nullptr);
 	map::Map& map = getMap();
 	map.addEntity(entity);
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)
 {
+	FLAT_ASSERT(entity->getMap() != nullptr);
 	map::Map& map = getMap();
 	map.removeEntity(entity);
+}
+
+entity::Entity* BaseMapState::removeEntityFromMapAtIndex(int index)
+{
+	map::Map& map = getMap();
+	return map.removeEntityAtIndex(index);
 }
 
 void BaseMapState::update(game::Game& game)
@@ -488,7 +490,8 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	entity::Entity* newMouseOverEntity = nullptr;
 	float mouseOverEntityDepth = FLT_MIN;
 
-	for (entity::Entity* entity : m_entities) // TODO: optimize this
+	map::Map& map = getMap();
+	for (entity::Entity* entity : map.getEntities()) // TODO: optimize this
 	{
 		if (!entity->getCanBeSelected())
 		{
@@ -606,7 +609,7 @@ void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePos
 {
 	if (!addToSelection)
 	{
-		clearSelection(game);
+		clearSelection();
 	}
 
 	if (entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity())
@@ -630,7 +633,8 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 		m_selectedEntities.clear();
 	}
 
-	for (entity::Entity* entity : m_entities) // TODO: optimize this
+	map::Map& map = getMap();
+	for (entity::Entity* entity : map.getEntities()) // TODO: optimize this
 	{
 		if (!entity->getCanBeSelected())
 		{
@@ -659,13 +663,24 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 	}
 }
 
-void BaseMapState::clearSelection(Game& game)
+void BaseMapState::clearSelection()
 {
 	for (entity::Entity* entity : m_selectedEntities)
 	{
 		entity->setSelected(false);
 	}
 	m_selectedEntities.clear();
+}
+
+void BaseMapState::removeFromSelectedEntities(entity::Entity * entity)
+{
+	if (entity->isSelected())
+	{
+		// remove from selected entities
+		std::vector<entity::Entity*>::iterator it = std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity);
+		FLAT_ASSERT(it != m_selectedEntities.end());
+		m_selectedEntities.erase(it);
+	}
 }
 
 bool BaseMapState::isSmallSelection() const

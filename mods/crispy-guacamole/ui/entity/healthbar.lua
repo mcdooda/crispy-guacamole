@@ -7,11 +7,12 @@ return {
 
         do
             local healthBarWidget = Widget.makeFixedSize(healthBarWidgetWidth, healthBarWidgetHeight)
-            healthBarWidget:setBackgroundColor(0xFF0000FF)
+            healthBarWidget:setBackground 'mods/crispy-guacamole/ui/entity/healthbarbg.png'
 
             do
                 local healthBarInnerWidget = Widget.makeFixedSize(healthBarWidgetWidth - 2, healthBarWidgetHeight - 2)
-                healthBarInnerWidget:setBackgroundColor(0x00FF00FF)
+                healthBarInnerWidget:setBackground 'mods/crispy-guacamole/ui/entity/healthbarfg.png'
+                healthBarInnerWidget:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
                 healthBarInnerWidget:setPosition(1, -1)
 
                 healthBarWidget:addChild(healthBarInnerWidget)

@@ -33,6 +33,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
+		bool addedToMap(Entity* entity, map::Map* map);
 		bool headingChanged(float heading);
 		bool collided(Entity* collidedEntity);
 		bool collidedWithMap();

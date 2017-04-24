@@ -15,18 +15,8 @@ namespace projectile
 
 void ProjectileComponent::init()
 {
+	m_owner->addedToMap.on(this, &ProjectileComponent::addedToMap);
 	m_owner->headingChanged.on(this, &ProjectileComponent::headingChanged);
-
-	const float projectileSpeed = getTemplate()->getSpeed();
-
-	const float heading = m_owner->getHeading();
-	const float elevation = m_owner->getElevation();
-
-	const float speedXY = std::cos(elevation) * projectileSpeed;
-
-	m_speed.x = std::cos(heading) * speedXY;
-	m_speed.y = std::sin(heading) * speedXY;
-	m_speed.z = std::sin(elevation) * projectileSpeed;
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
@@ -38,6 +28,7 @@ void ProjectileComponent::init()
 
 void ProjectileComponent::deinit()
 {
+	m_owner->addedToMap.off(this);
 	m_owner->headingChanged.off(this);
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
@@ -59,6 +50,22 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	const float speedXY = getSpeedXY();
 	float elevation = std::atan2(m_speed.z, speedXY);
 	m_owner->setElevation(elevation);
+}
+
+bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map)
+{
+	const float projectileSpeed = getTemplate()->getSpeed();
+
+	const float heading = m_owner->getHeading();
+	const float elevation = m_owner->getElevation();
+
+	const float speedXY = std::cos(elevation) * projectileSpeed;
+
+	m_speed.x = std::cos(heading) * speedXY;
+	m_speed.y = std::sin(heading) * speedXY;
+	m_speed.z = std::sin(elevation) * projectileSpeed;
+
+	return true;
 }
 
 bool ProjectileComponent::headingChanged(float heading)

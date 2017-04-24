@@ -68,17 +68,17 @@ void BaseMapState::enter(Game& game)
 
 	m_uiProgramRenderSettings.positionAttribute           = m_uiProgram.getAttribute("position");
 	m_uiProgramRenderSettings.uvAttribute                 = m_uiProgram.getAttribute("uv");
+
+	// reset view
+	m_gameView.setWindow(game.video->window);
+	m_gameView.updateProjection();
+	m_cameraZoom = 1.f;
 	
 	// level
 	loadMap(game, game.mapName);
 
 	// load debug display resources *after* the map is loaded!
 	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
-	
-	// reset view
-	const flat::Vector2& windowSize = game.video->window->getSize();
-	m_gameView.updateProjection(windowSize);
-	m_cameraZoom = 1.f;
 
 	const map::Map& map = getMap();
 	int minX, maxX, minY, maxY;
@@ -144,8 +144,7 @@ const map::Map& BaseMapState::getMap() const
 flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game)
 {
 	const flat::Vector2& cursorPosition = game.input->mouse->getPosition();
-	const flat::Vector2& windowSize = game.video->window->getSize();
-	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition, windowSize);
+	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition);
 
 	const map::Map& map = getMap();
 	const flat::Vector2& xAxis = map.getXAxis();
@@ -346,8 +345,6 @@ void BaseMapState::updateGameView(game::Game& game)
 {
 	const flat::input::Keyboard* keyboard = game.input->keyboard;
 	const flat::input::Mouse* mouse = game.input->mouse;
-
-	const flat::Vector2& windowSize = game.video->window->getSize();
 	
 	const map::Map& map = getMap();
 	const flat::Vector2& xAxis = map.getXAxis();
@@ -382,7 +379,7 @@ void BaseMapState::updateGameView(game::Game& game)
 	}
 	
 	if (game.input->window->isResized())
-		m_gameView.updateProjection(windowSize);
+		m_gameView.updateProjection();
 }
 
 void BaseMapState::setCameraCenter(const flat::Vector3& cameraCenter)
@@ -466,7 +463,7 @@ void BaseMapState::resetViews(game::Game& game)
 
 	game.interfaceView.reset();
 	game.interfaceView.move(windowSize / 2.0f);
-	game.interfaceView.updateProjection(windowSize);
+	game.interfaceView.updateProjection();
 }
 
 entity::component::ComponentFlags BaseMapState::getComponentsFilter() const
@@ -482,9 +479,8 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 		return;
 	}
 
-	const flat::Vector2& windowSize = game.video->window->getSize();
 	const flat::Vector2& mousePosition = game.input->mouse->getPosition();
-	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition, windowSize);
+	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition);
 
 	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
 	entity::Entity* newMouseOverEntity = nullptr;
@@ -624,9 +620,8 @@ void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePos
 
 void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection)
 {
-	const flat::Vector2& windowSize = game.video->window->getSize();
-	const flat::Vector2 viewBottomLeft = m_gameView.getRelativePosition(bottomLeft, windowSize);
-	const flat::Vector2 viewTopRight = m_gameView.getRelativePosition(topRight, windowSize);
+	const flat::Vector2 viewBottomLeft = m_gameView.getRelativePosition(bottomLeft);
+	const flat::Vector2 viewTopRight = m_gameView.getRelativePosition(topRight);
 
 	if (!addToSelection)
 	{

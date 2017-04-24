@@ -32,6 +32,9 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		void kill();
 		void dealDamage(int damage);
 
+		inline int getHealth() const { return m_health; }
+		inline int getMaxHealth() const { return getTemplate()->getMaxHealth(); }
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:

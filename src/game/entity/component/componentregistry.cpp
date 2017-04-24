@@ -10,6 +10,7 @@
 #include "components/prop/propcomponent.h"
 #include "components/sprite/spritecomponent.h"
 #include "components/texture/texturecomponent.h"
+#include "components/ui/uicomponent.h"
 
 namespace game
 {
@@ -41,6 +42,7 @@ void ComponentRegistry::registerComponentTypes()
 	registerComponentType<collision::CollisionComponent>();
 	registerComponentType<sprite::SpriteComponent>();
 	registerComponentType<texture::TextureComponent>();
+	registerComponentType<ui::UiComponent>();
 
 	// order does not matter for these components
 	registerComponentType<faction::FactionComponent>();

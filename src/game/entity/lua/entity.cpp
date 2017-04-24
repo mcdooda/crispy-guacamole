@@ -61,6 +61,8 @@ int open(lua_State* L)
 
 		{"lookAtEntity",            l_Entity_lookAtEntity},
 
+		{"getUiPosition",           l_Entity_getUiPosition},
+
 		// movement
 		{"moveTo",                  l_Entity_moveTo},
 		{"clearPath",               l_Entity_clearPath},
@@ -98,6 +100,8 @@ int open(lua_State* L)
 		{"isLiving",                l_Entity_isLiving},
 		{"kill",                    l_Entity_kill},
 		{"dealDamage",              l_Entity_dealDamage},
+		{"getHealth",               l_Entity_getHealth},
+		{"getMaxHealth",            l_Entity_getMaxHealth},
 		
 		{nullptr, nullptr}
 	};
@@ -273,6 +277,20 @@ int l_Entity_lookAtEntity(lua_State* L)
 	float heading = flat::vector2_angle(targetPosition2d - entityPosition2d);
 	entity.setHeading(heading);
 	return 0;
+}
+
+int l_Entity_getUiPosition(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	map::Map& map = baseMapState.getMap();
+	flat::Vector2 position2d(map.getTransform() * entity.getPosition());
+	const flat::video::View& gameView = baseMapState.getGameView();
+	position2d = gameView.getWindowPosition(position2d);
+	lua_pushnumber(L, position2d.x);
+	lua_pushnumber(L, position2d.y);
+	return 2;
 }
 
 int l_Entity_moveTo(lua_State* L)
@@ -570,6 +588,22 @@ int l_Entity_dealDamage(lua_State* L)
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lifeComponent.dealDamage(damage);
 	return 0;
+}
+
+int l_Entity_getHealth(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lua_pushinteger(L, lifeComponent.getHealth());
+	return 1;
+}
+
+int l_Entity_getMaxHealth(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lua_pushinteger(L, lifeComponent.getMaxHealth());
+	return 1;
 }
 
 // static lua functions

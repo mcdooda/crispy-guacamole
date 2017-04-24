@@ -82,6 +82,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		void addEntityToMap(entity::Entity* entity);
 		void removeEntityFromMap(entity::Entity* entity);
 		entity::Entity* removeEntityFromMapAtIndex(int index);
+
+		inline const flat::video::View& getGameView() const { return m_gameView; }
 		
 	protected:
 		void update(game::Game& game);

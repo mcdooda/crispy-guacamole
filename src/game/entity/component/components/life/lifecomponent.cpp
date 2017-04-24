@@ -14,7 +14,7 @@ namespace life
 
 void LifeComponent::init()
 {
-	m_health = getTemplate()->getMaxHealth();
+	m_health = getMaxHealth();
 	m_owner->addedToMap.on(this, &LifeComponent::addedToMap);
 	m_spawning = false;
 	m_despawning = false;

@@ -43,6 +43,8 @@ int l_Entity_getElevation(lua_State* L);
 
 int l_Entity_lookAtEntity(lua_State* L);
 
+int l_Entity_getUiPosition(lua_State* L);
+
 // movement
 int l_Entity_moveTo(lua_State* L);
 int l_Entity_clearPath(lua_State* L);
@@ -80,6 +82,8 @@ int l_Entity_isInAttackRange(lua_State* L);
 int l_Entity_isLiving(lua_State* L);
 int l_Entity_kill(lua_State* L);
 int l_Entity_dealDamage(lua_State* L);
+int l_Entity_getHealth(lua_State* L);
+int l_Entity_getMaxHealth(lua_State* L);
 
 // static lua functions
 int l_Entity_spawn(lua_State* L);

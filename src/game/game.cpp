@@ -6,6 +6,7 @@ namespace game
 {
 
 Game::Game(const std::vector<std::string>& args) : flat::Game(args),
+	interfaceView(video->window),
 	mode(Mode::GAME),
 	fullscreen(true)
 {

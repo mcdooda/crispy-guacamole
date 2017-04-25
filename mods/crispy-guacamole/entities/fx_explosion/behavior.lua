@@ -3,7 +3,6 @@ local yield = coroutine.yield
 local states = {}
 
 function states:init(explosion)
-    explosion:playAnimation 'explode'
     local x, y = explosion:getPosition()
     local nearbyEntities = Map.getEntitiesInRange(x, y, 1)
     for i = 1, #nearbyEntities do
@@ -12,6 +11,7 @@ function states:init(explosion)
             entity:dealDamage(25)
         end
     end
+    explosion:playAnimation 'explode'
     explosion:despawn()
     yield() -- avoid entering init()
 end

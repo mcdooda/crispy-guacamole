@@ -40,6 +40,12 @@ return {
 
         local healthBarInnerWidget = entity:getExtraData().healthBarExtraData.healthBarInnerWidget
         local healthBarInnerWidgetWidth = entity:getHealth() / entity:getMaxHealth() * (healthBarWidgetWidth - 2)
-        healthBarInnerWidget:setSize(healthBarInnerWidgetWidth, healthBarWidgetHeight - 2)
+
+        if healthBarInnerWidgetWidth > 0 then
+            widget:setVisible(true)
+            healthBarInnerWidget:setSize(healthBarInnerWidgetWidth, healthBarWidgetHeight - 2)
+        else
+            widget:setVisible(false)
+        end
     end
 }

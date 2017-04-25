@@ -1,6 +1,9 @@
 local healthBarWidgetWidth = 22
 local healthBarWidgetHeight = 6
 
+local healthBarInnerWidgetMaxWidth = healthBarWidgetWidth - 2
+local healthBarInnerWidgetHeight = healthBarWidgetHeight - 2
+
 return {
     addedToMap = function(entity, widget)
         local healthBarExtraData = {}
@@ -34,16 +37,16 @@ return {
     end,
 
     update = function(entity, widget, offsetY)
-        local x, y = entity:getUiPosition()
-        offsetY = offsetY or 0
-        widget:setPosition(x - healthBarWidgetWidth / 2, y + offsetY)
+        local healthRatio = entity:getHealth() / entity:getMaxHealth()
+        if healthRatio > 0 and healthRatio < 1 then
+            local x, y = entity:getUiPosition()
+            offsetY = offsetY or 0
+            widget:setPosition(x - healthBarWidgetWidth / 2, y + offsetY)
 
-        local healthBarInnerWidget = entity:getExtraData().healthBarExtraData.healthBarInnerWidget
-        local healthBarInnerWidgetWidth = entity:getHealth() / entity:getMaxHealth() * (healthBarWidgetWidth - 2)
-
-        if healthBarInnerWidgetWidth > 0 then
+            local healthBarInnerWidget = entity:getExtraData().healthBarExtraData.healthBarInnerWidget
+            local healthBarInnerWidgetWidth = healthRatio * healthBarInnerWidgetMaxWidth
             widget:setVisible(true)
-            healthBarInnerWidget:setSize(healthBarInnerWidgetWidth, healthBarWidgetHeight - 2)
+            healthBarInnerWidget:setSize(healthBarInnerWidgetWidth, healthBarInnerWidgetHeight)
         else
             widget:setVisible(false)
         end

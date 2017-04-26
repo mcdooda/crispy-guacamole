@@ -70,6 +70,7 @@ class Entity final : public map::MapObject
 #endif
 		
 		bool isBusy() const;
+		bool isBusy(component::ComponentFlags componentFlags) const;
 		
 		void addPointOnPath(const flat::Vector2& point);
 		void clearPath();

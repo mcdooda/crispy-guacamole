@@ -5,8 +5,9 @@ return {
 	attackRange = 5,
 	attackCooldown = 0.5,
 	autoAttack = true,
-	moveDuringAttack = false,
-	attackFunc = function(archer)
+	moveDuringAttack = true,
+	attackDuringMove = true,
+	attack = function(archer)
 		local target = archer:getAttackTarget()
 		archer:lookAtEntity(target)
 		archer:playAnimationAsync 'shoot'

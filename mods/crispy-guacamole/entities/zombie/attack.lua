@@ -3,7 +3,7 @@ return {
 	attackCooldown = 1,
 	autoAttack = true,
 	moveDuringAttack = false,
-	attackFunc = function(zombie)
+	attack = function(zombie)
 		local target = zombie:getAttackTarget()
 		zombie:lookAtEntity(target)
 		zombie:playAnimationAsync 'attack'

@@ -2,8 +2,8 @@
 #include "spritecomponent.h"
 #include "spritecomponenttemplate.h"
 #include "../../componenttype.h"
+#include "../../components/attack/attackcomponent.h"
 #include "../../components/movement/movementcomponent.h"
-#include "../../components/collision/collisioncomponent.h"
 #include "../../../entity.h"
 #include "../../../../map/map.h"
 
@@ -24,19 +24,16 @@ void SpriteComponent::init()
 	m_sprite.setOrigin(spriteDescription.getOrigin());
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
 	m_owner->setSprite(m_sprite);
-	
+
 	m_currentAnimationDescription = nullptr;
 
 	if (setDefaultMoveAnimation())
 	{
 		m_sprite.setLine(m_moveAnimationDescription->getLine());
 	}
-	
-	m_positionChanged = false;
-	m_headingChanged = false;
-	m_movementStarted = false;
-	m_movementStopped = false;
-	
+
+	m_owner->addedToMap.on(this, &SpriteComponent::addedToMap);
+
 	m_owner->headingChanged.on(this, &SpriteComponent::headingChanged);
 	m_owner->positionChanged.on(this, &SpriteComponent::positionChanged);
 
@@ -52,11 +49,20 @@ void SpriteComponent::init()
 			movementComponent->movementStopped.on(this, &SpriteComponent::movementStopped);
 		}
 	}
+
+	attack::AttackComponent* attackComponent = m_owner->getComponent<attack::AttackComponent>();
+	if (attackComponent != nullptr)
+	{
+		attackComponent->attackStopped.on(this, &SpriteComponent::attackStopped);
+	}
 }
 
 void SpriteComponent::deinit()
 {
 	m_owner->clearSprite();
+
+	m_owner->addedToMap.off(this);
+	m_owner->removedFromMap.off(this);
 
 	m_owner->headingChanged.off(this);
 	m_owner->positionChanged.off(this);
@@ -72,6 +78,12 @@ void SpriteComponent::deinit()
 			movementComponent->movementStarted.off(this);
 			movementComponent->movementStopped.off(this);
 		}
+	}
+
+	attack::AttackComponent* attackComponent = m_owner->getComponent<attack::AttackComponent>();
+	if (attackComponent != nullptr)
+	{
+		attackComponent->attackStopped.off(this);
 	}
 }
 
@@ -197,12 +209,25 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 		
 		m_movementStarted = false;
 	}
-	
-	if (m_movementStopped)
+	else if (m_movementStopped)
 	{
 		m_sprite.setAnimated(false);
 		
 		m_movementStopped = false;
+	}
+
+	if (m_attackStopped)
+	{
+		if (m_moveAnimationDescription && m_owner->getComponent<movement::MovementComponent>()->followsPath())
+		{
+			playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
+		}
+		else
+		{
+			m_sprite.setAnimated(false);
+		}
+
+		m_attackStopped = false;
 	}
 	
 	m_sprite.update(currentTime);
@@ -211,6 +236,17 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 bool SpriteComponent::isBusy() const
 {
 	return m_sprite.isAnimated() && !m_sprite.hasInfiniteLoop();
+}
+
+bool SpriteComponent::addedToMap(Entity * entity, map::Map * map)
+{
+	m_positionChanged = false;
+	m_headingChanged = false;
+	m_movementStarted = false;
+	m_movementStopped = false;
+	m_attackStopped = false;
+
+	return true;
 }
 
 bool SpriteComponent::headingChanged(float heading)
@@ -234,6 +270,12 @@ bool SpriteComponent::movementStarted()
 bool SpriteComponent::movementStopped()
 {
 	m_movementStopped = true;
+	return true;
+}
+
+bool SpriteComponent::attackStopped()
+{
+	m_attackStopped = true;
 	return true;
 }
 

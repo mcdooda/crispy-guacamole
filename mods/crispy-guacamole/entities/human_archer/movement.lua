@@ -1,5 +1,5 @@
 return {
-	speed = 1.5,
+	speed = 3,
 	jumpForce = 3,
 	weight = 7,
 	snapToGround = true

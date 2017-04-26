@@ -12,7 +12,7 @@ return {
 	attackCooldown = 0.5,
 	autoAttack = true,
 	moveDuringAttack = false,
-	attackFunc = function(tower)
+	attack = function(tower)
 		local target = tower:getAttackTarget()
 
 		if not target or not target:isValid() then

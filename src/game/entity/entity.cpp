@@ -193,6 +193,23 @@ bool Entity::isBusy() const
 	return false;
 }
 
+bool Entity::isBusy(component::ComponentFlags componentFlags) const
+{
+	for (component::Component* component : m_components)
+	{
+		if (component->isEnabled())
+		{
+			component::ComponentFlags componentFlag = component->getComponentType().getComponentTypeFlag();
+			if ((componentFlag & componentFlags) == componentFlag && component->isBusy())
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void Entity::addPointOnPath(const flat::Vector2& point)
 {
 	FLAT_ASSERT(m_movementComponent != nullptr);

@@ -44,6 +44,7 @@ Entity* EntityPool::createEntity(
 	});
 
 	entity->cacheComponents();
+	entity->initComponents();
 	return entity;
 }
 
@@ -51,6 +52,7 @@ void EntityPool::destroyEntity(Entity* entity)
 {
 	FLAT_ASSERT(entity != nullptr);
 	
+	entity->deinitComponents();
 	for (component::Component* component : entity->getComponents())
 	{
 		destroyComponent(component);

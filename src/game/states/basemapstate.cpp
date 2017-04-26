@@ -264,14 +264,12 @@ entity::Entity* BaseMapState::createEntity(Game& game, const std::shared_ptr<con
 {
 	entity::component::ComponentFlags componentsFilter = getComponentsFilter() & componentFlags;
 	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
-	entity->initComponents();
 	return entity;
 }
 
 void BaseMapState::destroyEntity(entity::Entity* entity)
 {
 	FLAT_ASSERT(entity->getMap() == nullptr);
-	entity->deinitComponents();
 	m_entityPool.destroyEntity(entity);
 }
 

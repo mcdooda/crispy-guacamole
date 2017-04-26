@@ -17,8 +17,12 @@ namespace attack
 
 void AttackComponent::init()
 {
-	m_lastAttackTime = 0.f;
-	m_attacking = false;
+	m_owner->addedToMap.on(this, &AttackComponent::addedToMap);
+}
+
+void AttackComponent::deinit()
+{
+	m_owner->addedToMap.off(this);
 }
 
 void AttackComponent::update(float currentTime, float elapsedTime)
@@ -72,7 +76,7 @@ void AttackComponent::tryBeginAttack(float currentTime)
 
 void AttackComponent::tryEndAttack()
 {
-	if (m_attackThread.isFinished() && !m_owner->isBusy())
+	if (m_attackThread.isFinished() && !isBusyForAttacking())
 	{
 		endAttack();
 	}
@@ -95,13 +99,15 @@ void AttackComponent::beginAttack(float currentTime)
 	
 	disableComponent<behavior::BehaviorComponent>();
 
-	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& attackFunc = attackComponentTemplate->getAttackFunc();
-	lua_State* L = attackFunc.getLuaState();
+	attackStarted();
+
+	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& attack = attackComponentTemplate->getAttack();
+	lua_State* L = attack.getLuaState();
 
 	{
 		// call attack function
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-		attackFunc.push(L);
+		attack.push(L);
 		m_attackThread.set(L, -1);
 		lua_pop(L, 1);
 		m_attackThread.start(m_owner);
@@ -113,7 +119,7 @@ void AttackComponent::beginAttack(float currentTime)
 void AttackComponent::updateAttack()
 {
 	// wait for animations and business things to finish before updating the attack thread
-	if (m_owner->isBusy())
+	if (isBusyForAttacking())
 	{
 		return;
 	}
@@ -139,11 +145,30 @@ void AttackComponent::endAttack()
 	}
 	
 	enableComponent<behavior::BehaviorComponent>();
+
+	attackStopped();
 }
 
 float AttackComponent::getAttackRange() const
 {
 	return getTemplate()->getAttackRange() + EntityHelper::getRadius(m_owner);
+}
+
+bool AttackComponent::addedToMap(Entity * entity, map::Map * map)
+{
+	m_lastAttackTime = 0.f;
+	m_attacking = false;
+	return true;
+}
+
+bool AttackComponent::isBusyForAttacking() const
+{
+	if (getTemplate()->getAttackDuringMove())
+	{
+		return m_owner->isBusy(AllComponents & ~movement::MovementComponent::getFlag());
+	}
+
+	return m_owner->isBusy();
 }
 
 #ifdef FLAT_DEBUG

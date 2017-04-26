@@ -23,6 +23,7 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 		inline static const char* getConfigName() { return "attack"; }
 
 		void init() override;
+		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
 
@@ -35,6 +36,10 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
+	public:
+		flat::Slot<> attackStarted;
+		flat::Slot<> attackStopped;
+
 	private:
 		void tryBeginAttack(float currentTime);
 		void tryEndAttack();
@@ -44,6 +49,10 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 		void endAttack();
 
 		float getAttackRange() const;
+
+		bool isBusyForAttacking() const;
+
+		bool addedToMap(Entity* entity, map::Map* map);
 
 	private:
 		EntityHandle m_target;

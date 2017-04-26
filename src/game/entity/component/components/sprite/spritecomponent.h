@@ -36,10 +36,12 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
 		
 	private:
+		bool addedToMap(Entity* entity, map::Map* map);
 		bool headingChanged(float heading);
 		bool positionChanged(const flat::Vector3& position);
 		bool movementStarted();
 		bool movementStopped();
+		bool attackStopped();
 		bool selected();
 		bool deselected();
 		
@@ -51,6 +53,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool m_headingChanged : 1;
 		bool m_movementStarted : 1;
 		bool m_movementStopped : 1;
+		bool m_attackStopped : 1;
 };
 
 } // sprite

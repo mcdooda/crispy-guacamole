@@ -18,18 +18,20 @@ class AttackComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
-		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getAttackFunc() const { return m_attackFunc; }
+		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getAttack() const { return m_attack; }
 		inline float getAttackRange() const { return m_attackRange; }
 		inline float getAttackCooldown() const { return m_attackCooldown; }
 		inline bool getAutoAttack() const { return m_autoAttack; }
 		inline bool getMoveDuringAttack() const { return m_moveDuringAttack; }
+		inline bool getAttackDuringMove() const { return m_attackDuringMove; }
 
 	private:
-		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_attackFunc;
+		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_attack;
 		float m_attackRange;
 		float m_attackCooldown;
 		bool m_autoAttack : 1;
 		bool m_moveDuringAttack : 1;
+		bool m_attackDuringMove : 1;
 };
 
 } // attack

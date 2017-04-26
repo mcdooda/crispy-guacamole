@@ -18,6 +18,7 @@ class UiComponent : public ComponentImpl<UiComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "ui"; }
+		inline static bool enableInEditor() { return false; }
 
 		void init() override;
 		void deinit() override;

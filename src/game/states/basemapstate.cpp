@@ -293,6 +293,12 @@ entity::Entity* BaseMapState::removeEntityFromMapAtIndex(int index)
 	return map.removeEntityAtIndex(index);
 }
 
+bool BaseMapState::isMouseOverUi(game::Game& game) const
+{
+	flat::sharp::ui::RootWidget* root = game.ui->root.get();
+	return root->isMouseOver() && root->getCurrentMouseOverWidget().lock() != m_selectionWidget;
+}
+
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
@@ -303,7 +309,7 @@ void BaseMapState::update(game::Game& game)
 
 void BaseMapState::drawGhostEntity(game::Game& game)
 {
-	if (m_ghostEntity != nullptr && !m_mouseOverEntity.isValid())
+	if (m_ghostEntity != nullptr && !isSelecting() && !m_mouseOverEntity.isValid())
 	{
 		flat::Vector2 cursorPosition = getCursorMapPosition(game);
 		map::Tile* tile = getMap().getTileIfWalkable(cursorPosition.x, cursorPosition.y);
@@ -469,9 +475,20 @@ entity::component::ComponentFlags BaseMapState::getComponentsFilter() const
 	return entity::component::AllComponents;
 }
 
+bool BaseMapState::isSelecting() const
+{
+	flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
+	FLAT_ASSERT(selectionWidget != nullptr);
+	if (!selectionWidget->getParent().expired())
+	{
+		return selectionWidget->getSize().x > 1 && selectionWidget->getSize().y > 1;
+	}
+	return false;
+}
+
 void BaseMapState::updateMouseOverEntity(Game& game)
 {
-	if (isSelecting() && !isSmallSelection())
+	if ((isSelecting() && !isSmallSelection()) || isMouseOverUi(game))
 	{
 		m_mouseOverEntity = nullptr;
 		return;
@@ -540,44 +557,20 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 
 bool BaseMapState::updateSelectionWidget(Game& game)
 {
+	if (isMouseOverUi(game))
+	{
+		return false;
+	}
+
 	const flat::input::Mouse* mouse = game.input->mouse;
 	const flat::input::Keyboard* keyboard = game.input->keyboard;
 	const flat::Vector2& mousePosition = mouse->getPosition();
 
-	if (mouse->isJustPressed(M(LEFT)))
+	if (mouse->isJustReleased(M(LEFT)))
 	{
-		m_mouseDownPosition = mousePosition;
-	}
-
-	if (mouse->isPressed(M(LEFT)))
-	{
-		if (!isSelecting())
-		{
-			// begin selection
-			flat::sharp::ui::RootWidget* root = game.ui->root.get();
-			root->addChild(m_selectionWidget);
-		}
-
-		// update selection bounds
-		flat::Vector2 bottomLeft;
-		bottomLeft.x = std::min(m_mouseDownPosition.x, mousePosition.x);
-		bottomLeft.y = std::min(m_mouseDownPosition.y, mousePosition.y);
-		flat::Vector2 topRight;
-		topRight.x = std::max(m_mouseDownPosition.x, mousePosition.x);
-		topRight.y = std::max(m_mouseDownPosition.y, mousePosition.y);
-		flat::Vector2 size = topRight - bottomLeft;
-
 		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
-		selectionWidget->setPosition(bottomLeft);
-		selectionWidget->setSize(size);
-		selectionWidget->setDirty();
-		return true;
-	}
-	else if (mouse->isJustReleased(M(LEFT)))
-	{
-		if (isSelecting())
+		if (!selectionWidget->getParent().expired())
 		{
-			flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
 			const flat::Vector2& bottomLeft = selectionWidget->getPosition();
 			flat::Vector2 topRight = bottomLeft + selectionWidget->getSize();
 
@@ -592,8 +585,34 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 			}
 
 			selectionWidget->removeFromParent();
-			return true;
+
+			return !m_selectedEntities.empty();
 		}
+	}
+	else if (mouse->isJustPressed(M(LEFT)))
+	{
+		m_mouseDownPosition = mousePosition;
+		flat::sharp::ui::RootWidget* root = game.ui->root.get();
+		root->addChild(m_selectionWidget);
+	}
+
+	if (mouse->isPressed(M(LEFT)))
+	{
+		// update selection bounds
+		flat::Vector2 bottomLeft;
+		bottomLeft.x = std::min(m_mouseDownPosition.x, mousePosition.x);
+		bottomLeft.y = std::min(m_mouseDownPosition.y, mousePosition.y);
+		flat::Vector2 topRight;
+		topRight.x = std::max(m_mouseDownPosition.x, mousePosition.x);
+		topRight.y = std::max(m_mouseDownPosition.y, mousePosition.y);
+		flat::Vector2 size = topRight - bottomLeft;
+
+		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
+		selectionWidget->setPosition(bottomLeft);
+		selectionWidget->setSize(size);
+		selectionWidget->setDirty();
+		
+		return true;
 	}
 
 	return false;
@@ -678,9 +697,9 @@ void BaseMapState::removeFromSelectedEntities(entity::Entity * entity)
 
 bool BaseMapState::isSmallSelection() const
 {
-	if (isSelecting())
+	flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
+	if (!selectionWidget->getParent().expired())
 	{
-		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
 		const flat::Vector2& selectionSize = selectionWidget->getSize();
 		const float smallSize = 3.f;
 		return selectionSize.x < smallSize && selectionSize.y < smallSize;

@@ -73,22 +73,20 @@ void EditorState::applyBrush(Game& game)
 {
 	const flat::input::Input* input = game.input;
 
-	flat::sharp::ui::RootWidget* root = game.ui->root.get();
-
 	if (!input->keyboard->isPressed(K(LCTRL)))
 	{
 		m_editorMode->handleShortcuts();
 	}
 
-	if (!root->isMouseOver() || isSelecting())
+	updateMouseOverEntity(game);
+	const bool canSelectEntities = m_editorMode->canSelectEntities();
+	if (!canSelectEntities || (canSelectEntities && !updateSelectionWidget(game)))
 	{
-		updateMouseOverEntity(game);
-		if (!m_editorMode->canSelectEntities() || input->keyboard->isPressed(K(LCTRL)) || !updateSelectionWidget(game))
+		if (!isMouseOverUi(game))
 		{
 			const flat::input::Mouse* mouse = input->mouse;
-			if ((!m_editorMode->canSelectEntities() && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))
+			if ((!canSelectEntities && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))
 			{
-				clearSelection();
 				m_editorMode->applyBrushPrimaryEffect(mouse->isJustPressed(M(LEFT)));
 			}
 			else if (mouse->isPressed(M(RIGHT)))

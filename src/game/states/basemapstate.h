@@ -84,6 +84,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		entity::Entity* removeEntityFromMapAtIndex(int index);
 
 		inline const flat::video::View& getGameView() const { return m_gameView; }
+
+		bool isMouseOverUi(game::Game& game) const;
 		
 	protected:
 		void update(game::Game& game);
@@ -103,7 +105,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		virtual entity::component::ComponentFlags getComponentsFilter() const;
 
-		inline bool isSelecting() const { return !m_selectionWidget->getParent().expired(); }
+		bool isSelecting() const;
 		void updateMouseOverEntity(Game& game);
 		bool updateSelectionWidget(Game& game);
 		void selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection);

@@ -38,12 +38,27 @@ local function getEntityPath(templateName)
     return modPath .. '/entities/' .. templateName
 end
 
+local function getEntityFilePath(entityTemplateName, file)
+    return getEntityPath(entityTemplateName) .. '/' .. file
+end
+
 local function getComponentPath(entityTemplateName, componentTemplateName)
-    return getEntityPath(entityTemplateName) .. '/' .. componentTemplateName
+    return getEntityFilePath(entityTemplateName, componentTemplateName)
 end
 
 local function requireComponentTemplate(entityTemplateName, componentTemplateName)
     return require(getComponentPath(entityTemplateName, componentTemplateName))
+end
+
+local function requireComponentTemplateIfExists(entityTemplateName, componentTemplateName)
+    local componentExists, componentTemplate = pcall(function()
+        return requireComponentTemplate(entityTemplateName, componentTemplateName)
+    end)
+    if componentExists then
+        return componentTemplate
+    else
+        return nil
+    end
 end
 
 -- props
@@ -81,26 +96,28 @@ local function requireTileConfig(tileName)
 end
 
 return {
-    getModPath               = getModPath,
-    getModFilePath           = getModFilePath,
-    requireModFile           = requireModFile,
+    getModPath                       = getModPath,
+    getModFilePath                   = getModFilePath,
+    requireModFile                   = requireModFile,
 
-    getMapPath               = getMapPath,
-    getMapFilePath           = getMapFilePath,
-    requireMapFile           = requireMapFile,
-    requireMapConfig         = requireMapConfig,
+    getMapPath                       = getMapPath,
+    getMapFilePath                   = getMapFilePath,
+    requireMapFile                   = requireMapFile,
+    requireMapConfig                 = requireMapConfig,
 
-    getEntityPath            = getEntityPath,
-    getComponentPath         = getComponentPath,
-    requireComponentTemplate = requireComponentTemplate,
+    getEntityPath                    = getEntityPath,
+    getEntityFilePath                = getEntityFilePath,
+    getComponentPath                 = getComponentPath,
+    requireComponentTemplate         = requireComponentTemplate,
+    requireComponentTemplateIfExists = requireComponentTemplateIfExists,
 
-    getPropPath              = getPropPath,
-    getPropFilePath          = getPropFilePath,
-    requirePropFile          = requirePropFile,
-    requirePropConfig        = requirePropConfig,
+    getPropPath                      = getPropPath,
+    getPropFilePath                  = getPropFilePath,
+    requirePropFile                  = requirePropFile,
+    requirePropConfig                = requirePropConfig,
 
-    getTilePath              = getTilePath,
-    getTileFilePath          = getTileFilePath,
-    requireTileFile          = requireTileFile,
-    requireTileConfig        = requireTileConfig
+    getTilePath                      = getTilePath,
+    getTileFilePath                  = getTileFilePath,
+    requireTileFile                  = requireTileFile,
+    requireTileConfig                = requireTileConfig
 }

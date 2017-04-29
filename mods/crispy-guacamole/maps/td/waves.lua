@@ -28,7 +28,7 @@ for i = 1, #waves do
     for j = 1, #wave do
         local entityTemplate = wave[j]
         --print('* spawning ' .. entityTemplate)
-        for k = 1, 100 do
+        for k = 1, 1 do
             local entity = Entity.spawn(
                 entityTemplate,
                 startX, startY, nil,

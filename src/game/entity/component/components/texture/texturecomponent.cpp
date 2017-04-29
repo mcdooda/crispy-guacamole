@@ -17,7 +17,6 @@ void TextureComponent::init()
 {
 	const TextureComponentTemplate* textureComponentTemplate = getTemplate();
 	m_sprite.setTexture(textureComponentTemplate->getTexture());
-	m_owner->setTextureHash(textureComponentTemplate->getTexture().get()->getHash());
 	m_sprite.setOrigin(textureComponentTemplate->getOrigin());
 	m_owner->setSprite(m_sprite);
 

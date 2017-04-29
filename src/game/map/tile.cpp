@@ -55,7 +55,6 @@ void Tile::setTexture(const std::shared_ptr<const flat::video::Texture>& tileTex
 {
 	FLAT_ASSERT(m_exists);
 	m_sprite.setTexture(tileTexture);
-	setTextureHash(tileTexture.get()->getHash());
 	const flat::Vector2& textureSize = tileTexture->getSize();
 	flat::Vector2 origin(textureSize.x / 2, textureSize.x / 4); // should depend on tile width/height instead
 	m_sprite.setOrigin(origin);
@@ -71,7 +70,6 @@ void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& pro
 		m_prop->setAABB(flat::Vector3(m_x, m_y, m_z));
 	}
 	m_prop->setSpriteTexture(propTexture);
-	m_prop->setTextureHash(propTexture.get()->getHash());
 	const flat::Vector2& textureSize = propTexture->getSize();
 	flat::Vector2 origin(textureSize.x / 2.f, textureSize.y - textureSize.x / 4.f);
 	m_prop->setSpriteOrigin(origin);

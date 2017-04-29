@@ -42,17 +42,12 @@ void GameState::execute(Game& game)
 	const flat::input::Mouse* mouse = game.input->mouse;
 	const flat::input::Keyboard* keyboard = game.input->keyboard;
 
-	flat::sharp::ui::RootWidget* root = game.ui->root.get();
-
-	if (!root->isMouseOver() || isSelecting())
+	updateMouseOverEntity(game);
+	if (!updateSelectionWidget(game))
 	{
-		updateMouseOverEntity(game);
-		if (!updateSelectionWidget(game))
+		if (mouse->isJustReleased(M(LEFT)))
 		{
-			if (mouse->isJustReleased(M(LEFT)))
-			{
-				clearSelection();
-			}
+			clearSelection();
 		}
 	}
 

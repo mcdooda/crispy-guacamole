@@ -9,22 +9,26 @@ namespace timer
 class Timer
 {
 	public:
-		Timer(float beginTime, float timeOut, int onUpdate, int onEnd);
+		Timer(float beginTime, float duration, int onUpdate, int onEnd, bool loop);
 		
+		inline void setBeginTime(float beginTime) const { m_beginTime = beginTime; }
 		inline float getBeginTime() const { return m_beginTime; }
-		inline float getTimeOut() const { return m_timeOut; }
+
+		inline float getDuration() const { return m_duration; }
+		inline float getTimeOut() const { return m_beginTime + m_duration; }
 		inline int getOnUpdate() const { return m_onUpdate; }
 		inline int getOnEnd() const { return m_onEnd; }
+		inline bool getLoop() const { return m_loop; }
 		
-		inline bool isInfinite() const { return m_timeOut <= m_beginTime; }
 		inline float getElapsedTime(float currentTime) const { return currentTime - m_beginTime; }
-		inline bool isFinished(float currentTime) const { return !isInfinite() && currentTime >= m_timeOut; }
+		inline bool isFinished(float currentTime) const { return currentTime >= getTimeOut(); }
 		
 	private:
-		float m_beginTime;
-		float m_timeOut;
+		mutable float m_beginTime;
+		float m_duration;
 		int m_onUpdate;
 		int m_onEnd;
+		bool m_loop;
 };
 
 } // timer

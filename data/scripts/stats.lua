@@ -17,7 +17,7 @@ return function(addContainer, makeSeparator, font)
 			medianFps[j] = getFrameRate()
 		end
 		local i = 1
-		Timer.start(0, function()
+		Timer.start(0, nil, function()
 			local fps = getFrameRate()
 			medianFps[i] = nil
 			medianFps[i + medianNumFrames] = fps
@@ -28,7 +28,7 @@ return function(addContainer, makeSeparator, font)
 			displayedFps = displayedFps / medianNumFrames
 			label:setText(format('%.1f fps', displayedFps))
 			i = i + 1
-		end)
+		end, true)
 	end
 	
 	-- entity count
@@ -38,8 +38,8 @@ return function(addContainer, makeSeparator, font)
 		label:setMargin(5)
 		statsContainer:addChild(label)
 		
-		Timer.start(0, function()
+		Timer.start(0, nil, function()
 			label:setText(format('%d entities', Map.getNumEntities()))
-		end)
+		end, true)
 	end
 end

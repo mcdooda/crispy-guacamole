@@ -59,14 +59,17 @@ int l_Timer_start(lua_State* L)
 		lua_pushvalue(L, 3);
 		onEnd = luaL_ref(L, LUA_REGISTRYINDEX);
 	}
+
+	bool loop = lua_toboolean(L, 4) == 1;
 	
 	flat::time::Time* time = flat::lua::getTime(L);
 	float currentTime = time->getTime();
 	TimerContainer& timerContainer = getTimerContainer(L);
-	const Timer* timer = new Timer(currentTime, currentTime + timerDuration, onUpdate, onEnd);
+	const Timer* timer = new Timer(currentTime, timerDuration, onUpdate, onEnd, loop);
 	timerContainer.add(timer);
 	callTimerUpdate(L, timer, currentTime);
-	return 0;
+	pushTimer(L, timer);
+	return 1;
 }
 
 int l_Timer_stop(lua_State* L)

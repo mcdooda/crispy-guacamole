@@ -1,5 +1,6 @@
 local Path = require 'data/scripts/path'
 local ModData = require 'data/editor/scripts/moddata'
+local Preview = require 'data/scripts/preview'
 
 local Slider = require 'data/scripts/ui/slider'
 
@@ -96,25 +97,7 @@ do
 			for i = 1, #ModData.entities.names do
 				local entityName = ModData.entities.names[i]
 
-				local spriteComponentTemplate = Path.requireComponentTemplateIfExists(entityName, 'sprite')
-				local preview
-				if spriteComponentTemplate then
-					local entityAtlasPath = Path.getEntityFilePath(entityName, 'atlas.png')
-					preview = Widget.makeImage(entityAtlasPath)
-					preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
-					local imageWidth, imageHeight = Image.getSize(entityAtlasPath)
-					preview:setSize(
-						imageWidth / spriteComponentTemplate.size[1],
-						imageHeight / spriteComponentTemplate.size[2]
-					)
-				else
-					local textureComponentTemplate = Path.requireComponentTemplateIfExists(entityName, 'texture')
-					if textureComponentTemplate then
-						local entityTexturePath = Path.getEntityFilePath(entityName, 'texture.png')
-						preview = Widget.makeImage(entityTexturePath)
-					end
-				end
-
+				local preview = Preview.entity(entityName)
 				if preview then
 					preview:setMargin(10, 0, 0, 7)
 					preview:click(function()

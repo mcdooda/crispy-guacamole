@@ -45,6 +45,7 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 {
 	std::deque<const Timer*>::iterator lastStoppedTimerIt = m_timers.begin();
 	std::deque<const Timer*>::iterator end = m_timers.end();
+	std::deque<const Timer*> loopingTimers;
 	for (std::deque<const Timer*>::iterator it = m_timers.begin(); it != end; ++it)
 	{
 		const Timer* timer = *it;
@@ -55,9 +56,13 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 			lua::callTimerUpdate(L, timer, timeOut);
 			lua::callTimerEnd(L, timer);
 			
-			if (!timer->isInfinite())
+			lastStoppedTimerIt = it + 1;
+			if (timer->getLoop())
 			{
-				lastStoppedTimerIt = it + 1;
+				loopingTimers.push_back(timer);
+			}
+			else
+			{
 				delete timer;
 			}
 		}
@@ -67,6 +72,11 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 		}
 	}
 	m_timers.erase(m_timers.begin(), lastStoppedTimerIt);
+	for (const Timer* timer : loopingTimers)
+	{
+		timer->setBeginTime(currentTime);
+		add(timer);
+	}
 }
 
 void TimerContainer::clearTimers()
@@ -76,15 +86,7 @@ void TimerContainer::clearTimers()
 
 bool TimerContainer::compareTimersByTimeout(const Timer* a, const Timer* b)
 {
-	// infinite timers go last
-	if (a->isInfinite())
-		return false;
-		
-	else if (b->isInfinite())
-		return true;
-		
-	else
-		return a->getTimeOut() < b->getTimeOut();
+	return a->getTimeOut() < b->getTimeOut();
 }
 
 } // timer

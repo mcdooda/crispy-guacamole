@@ -19,10 +19,10 @@ do
 		debugContainer:addChild(label)
 		
 		local getBrushPosition = Editor.getBrushPosition
-		Timer.start(0, function()
+		Timer.start(0, nil, function()
 			local x, y = getBrushPosition()
 			label:setText(format('%.1f,%.1f', x, y))
-		end)
+		end, true)
 	end
 
 	root:addChild(debugContainer)

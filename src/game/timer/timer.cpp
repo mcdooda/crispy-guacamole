@@ -5,11 +5,12 @@ namespace game
 namespace timer
 {
 
-Timer::Timer(float beginTime, float timeOut, int onUpdate, int onEnd) :
+Timer::Timer(float beginTime, float duration, int onUpdate, int onEnd, bool loop) :
 	m_beginTime(beginTime),
-	m_timeOut(timeOut),
+	m_duration(duration),
 	m_onUpdate(onUpdate),
-	m_onEnd(onEnd)
+	m_onEnd(onEnd),
+	m_loop(loop)
 {
 	
 }

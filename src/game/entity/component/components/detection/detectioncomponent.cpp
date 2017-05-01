@@ -13,6 +13,16 @@ namespace component
 namespace detection
 {
 
+void DetectionComponent::init()
+{
+	m_owner->removedFromMap.on(this, &DetectionComponent::removedFromMap);
+}
+
+void DetectionComponent::deinit()
+{
+	m_owner->removedFromMap.off(this);
+}
+
 void DetectionComponent::update(float currentTime, float elapsedTime)
 {
 	const map::Map* map = m_owner->getMap();
@@ -54,14 +64,6 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 			m_visibleEntities.insert(entity);
 			entityEnteredVisionRange(entity);
 			entity->removedFromMap.on(this, &DetectionComponent::visibleEntityRemovedFromMap);
-
-			// when the current entity is removed, unplug from the other entity
-			m_owner->removedFromMap.on([entity, this](Entity* e)
-			{
-				FLAT_ASSERT(e == m_owner);
-				entity->removedFromMap.off(this);
-				return false;
-			});
 		}
 	});
 }
@@ -69,6 +71,15 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 bool DetectionComponent::isVisible(const Entity& target) const
 {
 	return m_visibleEntities.find(const_cast<Entity*>(&target)) != m_visibleEntities.end();
+}
+
+bool DetectionComponent::removedFromMap(Entity* entity)
+{
+	for (Entity* visibleEntity : m_visibleEntities)
+	{
+		visibleEntity->removedFromMap.off(this);
+	}
+	return true;
 }
 
 bool DetectionComponent::visibleEntityRemovedFromMap(Entity* entity)

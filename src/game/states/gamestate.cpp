@@ -45,7 +45,7 @@ void GameState::execute(Game& game)
 	updateMouseOverEntity(game);
 	if (!updateSelectionWidget(game))
 	{
-		if (mouse->isJustReleased(M(LEFT)))
+		if (!isMouseOverUi(game) && mouse->isJustReleased(M(LEFT)))
 		{
 			clearSelection();
 		}

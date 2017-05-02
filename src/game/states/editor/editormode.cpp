@@ -55,12 +55,15 @@ void EditorMode::displayBrush() const
 		tile->setColor(color);
 	}
 
-	eachBrushTile([](map::Tile* tile, float effect)
+	if (!getEditorState().isMouseOverUi(m_game))
 	{
-		const flat::video::Color& currentColor = tile->getColor();
-		flat::video::Color color(currentColor.r, (1.f - effect) * currentColor.g, (1.f - effect) * currentColor.b, 1.f);
-		tile->setColor(color);
-	});
+		eachBrushTile([](map::Tile* tile, float effect)
+		{
+			const flat::video::Color& currentColor = tile->getColor();
+			flat::video::Color color(currentColor.r, (1.f - effect) * currentColor.g, (1.f - effect) * currentColor.b, 1.f);
+			tile->setColor(color);
+		});
+	}
 }
 
 void EditorMode::eachSelectedTile(std::function<void(map::Tile*, float)> func) const

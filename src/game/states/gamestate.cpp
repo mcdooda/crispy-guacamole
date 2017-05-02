@@ -42,32 +42,39 @@ void GameState::execute(Game& game)
 	const flat::input::Mouse* mouse = game.input->mouse;
 	const flat::input::Keyboard* keyboard = game.input->keyboard;
 
-	updateMouseOverEntity(game);
-	if (!updateSelectionWidget(game))
+	if (isMouseOverUi(game))
 	{
-		if (!isMouseOverUi(game) && mouse->isJustReleased(M(LEFT)))
-		{
-			clearSelection();
-		}
+		clearMouseOverEntity();
 	}
-
-	if (mouse->isJustPressed(M(RIGHT)))
+	else
 	{
-		flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
-		map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
-		if (clickedTile)
+		updateMouseOverEntity(game);
+		if (!updateSelectionWidget(game))
 		{
-			if (!keyboard->isPressed(K(LSHIFT)))
+			if (mouse->isJustReleased(M(LEFT)))
 			{
+				clearSelection();
+			}
+		}
+
+		if (mouse->isJustPressed(M(RIGHT)))
+		{
+			flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
+			map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
+			if (clickedTile)
+			{
+				if (!keyboard->isPressed(K(LSHIFT)))
+				{
+					for (entity::Entity* entity : m_selectedEntities)
+					{
+						entity->clearPath();
+					}
+				}
+
 				for (entity::Entity* entity : m_selectedEntities)
 				{
-					entity->clearPath();
+					entity->addPointOnPath(clickedTilePosition);
 				}
-			}
-
-			for (entity::Entity* entity : m_selectedEntities)
-			{
-				entity->addPointOnPath(clickedTilePosition);
 			}
 		}
 	}

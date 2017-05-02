@@ -309,7 +309,7 @@ void BaseMapState::update(game::Game& game)
 
 void BaseMapState::drawGhostEntity(game::Game& game)
 {
-	if (m_ghostEntity != nullptr && !isSelecting() && !m_mouseOverEntity.isValid())
+	if (m_ghostEntity != nullptr && !isMouseOverUi(game) && !isSelecting() && !m_mouseOverEntity.isValid())
 	{
 		flat::Vector2 cursorPosition = getCursorMapPosition(game);
 		map::Tile* tile = getMap().getTileIfWalkable(cursorPosition.x, cursorPosition.y);
@@ -538,21 +538,41 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	{
 		if (previousMouseOverEntity != nullptr)
 		{
-			flat::video::Color color = flat::video::Color::WHITE;
-			if (previousMouseOverEntity->isSelected())
-			{
-				color = flat::video::Color::RED;
-			}
-			const_cast<flat::render::Sprite&>(previousMouseOverEntity->getSprite()).setColor(color);
+			clearMouseOverColor(previousMouseOverEntity);
 		}
 
 		if (newMouseOverEntity != nullptr)
 		{
-			const_cast<flat::render::Sprite&>(newMouseOverEntity->getSprite()).setColor(flat::video::Color::GREEN);
+			setMouseOverColor(newMouseOverEntity);
 		}
 
 		m_mouseOverEntity = newMouseOverEntity;
 	}
+}
+
+void BaseMapState::clearMouseOverEntity()
+{
+	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
+	if (mouseOverEntity != nullptr)
+	{
+		clearMouseOverColor(mouseOverEntity);
+		m_mouseOverEntity = nullptr;
+	}
+}
+
+void BaseMapState::setMouseOverColor(entity::Entity* entity) const
+{
+	const_cast<flat::render::Sprite&>(entity->getSprite()).setColor(flat::video::Color::GREEN);
+}
+
+void BaseMapState::clearMouseOverColor(entity::Entity* entity) const
+{
+	flat::video::Color color = flat::video::Color::WHITE;
+	if (entity->isSelected())
+	{
+		color = flat::video::Color::RED;
+	}
+	const_cast<flat::render::Sprite&>(entity->getSprite()).setColor(color);
 }
 
 bool BaseMapState::updateSelectionWidget(Game& game)

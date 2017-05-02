@@ -78,11 +78,15 @@ void EditorState::applyBrush(Game& game)
 		m_editorMode->handleShortcuts();
 	}
 
-	updateMouseOverEntity(game);
-	const bool canSelectEntities = m_editorMode->canSelectEntities();
-	if (!canSelectEntities || (canSelectEntities && !updateSelectionWidget(game)))
+	if (isMouseOverUi(game))
 	{
-		if (!isMouseOverUi(game))
+		clearMouseOverEntity();
+	}
+	else
+	{
+		updateMouseOverEntity(game);
+		const bool canSelectEntities = m_editorMode->canSelectEntities();
+		if (!canSelectEntities || (canSelectEntities && !updateSelectionWidget(game)))
 		{
 			const flat::input::Mouse* mouse = input->mouse;
 			if ((!canSelectEntities && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))

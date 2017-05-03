@@ -83,7 +83,10 @@ local function entityPreview(entityTemplateName)
     end
 
     -- none of them
-    return nil
+    print('No preview for ' .. entityTemplateName)
+    local unavailablePreview = Widget.makeFixedSize(10, 10)
+    unavailablePreview:setBackgroundColor(0xFF00FFFF)
+    return unavailablePreview
 end
 
 return {

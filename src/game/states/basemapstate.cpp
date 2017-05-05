@@ -88,6 +88,8 @@ void BaseMapState::enter(Game& game)
 
 	resetViews(game);
 
+	map.drawTerrain(m_mapDisplayManager);
+
 	m_ghostEntity = nullptr;
 }
 
@@ -339,7 +341,7 @@ void BaseMapState::drawGhostEntity(game::Game& game)
 			color.a = 0.6f;
 			sprite.setColor(color);
 
-			m_mapDisplayManager.add(m_ghostEntity);
+			m_mapDisplayManager.addEntity(m_ghostEntity);
 			removeEntityFromMap(m_ghostEntity);
 		}
 	}
@@ -418,11 +420,10 @@ void BaseMapState::draw(game::Game& game)
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform.set(m_gameView.getViewProjectionMatrix());
 	
 	const map::Map& map = getMap();
-	m_mapDisplayManager.setMap(map);
-	m_mapDisplayManager.clearAll();
-	map.drawTilesAndEntities(m_mapDisplayManager, m_gameView);
+	m_mapDisplayManager.clearEntities();
+	map.drawEntities(m_mapDisplayManager);
 	drawGhostEntity(game);
-	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView.getViewProjectionMatrix());
+	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView);
 	
 #ifdef FLAT_DEBUG
 	map.debugDraw(m_debugDisplay);
@@ -518,7 +519,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 			{
 				if (newMouseOverEntity != nullptr)
 				{
-					const flat::AABB3& entityAABB = entity->getAABB();
+					const flat::AABB3& entityAABB = entity->getWorldSpaceAABB();
 					const float entityDepth = entityAABB.getCenter().x + entityAABB.getCenter().y;
 					if (entityDepth > mouseOverEntityDepth)
 					{

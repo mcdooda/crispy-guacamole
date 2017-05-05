@@ -117,12 +117,17 @@ void Entity::updateAABB()
 {
 	if (m_collisionComponent != nullptr)
 	{
-		m_collisionComponent->getAABB(m_AABB);
+		m_collisionComponent->getAABB(m_worldSpaceAABB);
 	}
 	else
 	{
-		m_AABB.min = m_position;
-		m_AABB.max = m_position;
+		m_worldSpaceAABB.min = m_position;
+		m_worldSpaceAABB.max = m_position;
+	}
+
+	if (m_sprite != nullptr)
+	{
+		m_sprite->getAABB(m_spriteAABB);
 	}
 }
 

@@ -13,19 +13,20 @@ class MapObject;
 
 class DisplayManager final
 {
+	using EntityQuadTree = flat::geometry::QuadTree<MapObject, 3>;
+	using TerrainQuadTree = flat::geometry::QuadTree<MapObject, 5>;
 	public:
 		DisplayManager();
-
-		inline void setMap(const Map& map) { m_map = &map; }
 		
-		inline void clearAll() { m_objects.clear(); }
-		void add(const MapObject* mapObject);
-		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::Matrix4& viewMatrix);
+		void clearEntities();
+		void addEntity(const MapObject* mapObject);
+		void addTerrainObject(const MapObject* mapObject);
+		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view);
 		
 	private:
-		std::vector<const MapObject*> m_objects;
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
-		const Map* m_map;
+		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
+		std::unique_ptr<TerrainQuadTree> m_terrainQuadtree;
 };
 
 } // map

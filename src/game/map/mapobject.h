@@ -16,7 +16,8 @@ class MapObject
 		
 		virtual const flat::render::Sprite& getSprite() const = 0;
 		
-		inline const flat::AABB3& getAABB() const { return m_AABB; }
+		inline const flat::AABB3& getWorldSpaceAABB() const { return m_worldSpaceAABB; }
+		inline const flat::AABB2& getAABB() const { return m_spriteAABB; }
 
 		std::uint32_t getTextureHash() const;
 
@@ -24,7 +25,8 @@ class MapObject
 		virtual bool isEntity() const { return false; }
 		
 	protected:
-		flat::AABB3 m_AABB;
+		flat::AABB3 m_worldSpaceAABB;
+		flat::AABB2 m_spriteAABB;
 };
 
 } // map

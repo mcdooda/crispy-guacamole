@@ -85,20 +85,24 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 	});
 }
 
-void Map::drawTilesAndEntities(DisplayManager& displayManager, const flat::video::View& view) const
+void Map::drawTerrain(DisplayManager& displayManager) const
 {
 	eachTileIfExists([&displayManager](const Tile* tile)
 	{
-		displayManager.add(tile);
+		displayManager.addTerrainObject(tile);
 		if (const Prop* prop = tile->getProp())
 		{
-			displayManager.add(prop);
-		}
-		for (entity::Entity* entity : tile->getEntities())
-		{
-			displayManager.add(entity);
+			displayManager.addTerrainObject(prop);
 		}
 	});
+}
+
+void Map::drawEntities(DisplayManager& displayManager) const
+{
+	for (entity::Entity* entity : m_entities)
+	{
+		displayManager.addEntity(entity);
+	}
 }
 
 const Tile* Map::getTile(int x, int y) const

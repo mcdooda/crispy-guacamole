@@ -26,10 +26,10 @@ const flat::render::Sprite& Tile::getSprite() const
 	return m_sprite;
 }
 
-void Tile::updateAABB()
+void Tile::updateWorldSpaceAABB()
 {
-	m_AABB.max = flat::Vector3(m_x + 0.5f, m_y + 0.5f, m_z);
-	m_AABB.min = flat::Vector3(m_x - 0.5f, m_y - 0.5f, m_z - 100.f);
+	m_worldSpaceAABB.max = flat::Vector3(m_x + 0.5f, m_y + 0.5f, m_z);
+	m_worldSpaceAABB.min = flat::Vector3(m_x - 0.5f, m_y - 0.5f, m_z - 100.f);
 }
 
 void Tile::setCoordinates(const Map& map, int x, int y, float z)
@@ -38,12 +38,14 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	m_x = x;
 	m_y = y;
 	m_z = z;
-	updateAABB();
+	updateWorldSpaceAABB();
 	
 	flat::Vector3 position(x, y, z);
 
 	flat::Vector2 position2d(map.getTransform() * position);
 	m_sprite.setPosition(position2d);
+	m_sprite.getAABB(m_spriteAABB);
+
 	if (m_prop)
 	{
 		m_prop->setSpritePosition(position2d);
@@ -58,6 +60,7 @@ void Tile::setTexture(const std::shared_ptr<const flat::video::Texture>& tileTex
 	const flat::Vector2& textureSize = tileTexture->getSize();
 	flat::Vector2 origin(textureSize.x / 2, textureSize.x / 4); // should depend on tile width/height instead
 	m_sprite.setOrigin(origin);
+	m_sprite.getAABB(m_spriteAABB);
 }
 
 void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& propTexture)

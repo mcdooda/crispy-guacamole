@@ -44,7 +44,6 @@ class Map
 		
 		// rendering
 		void drawTerrain(DisplayManager& displayManager) const;
-		void drawEntities(DisplayManager& displayManager) const;
 		
 		// get tiles
 		const Tile* getTile(int x, int y) const;

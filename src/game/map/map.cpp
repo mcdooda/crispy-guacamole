@@ -97,14 +97,6 @@ void Map::drawTerrain(DisplayManager& displayManager) const
 	});
 }
 
-void Map::drawEntities(DisplayManager& displayManager) const
-{
-	for (entity::Entity* entity : m_entities)
-	{
-		displayManager.addEntity(entity);
-	}
-}
-
 const Tile* Map::getTile(int x, int y) const
 {
 	return const_cast<Map*>(this)->getTile(x, y);

@@ -49,7 +49,7 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	if (m_prop)
 	{
 		m_prop->setSpritePosition(position2d);
-		m_prop->setAABB(position);
+		m_prop->updateWorldSpaceAABB(position);
 	}
 }
 
@@ -70,7 +70,7 @@ void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& pro
 	{
 		m_prop = new Prop();
 		m_prop->setSpritePosition(m_sprite.getPosition());
-		m_prop->setAABB(flat::Vector3(m_x, m_y, m_z));
+		m_prop->updateWorldSpaceAABB(flat::Vector3(m_x, m_y, m_z));
 	}
 	m_prop->setSpriteTexture(propTexture);
 	const flat::Vector2& textureSize = propTexture->getSize();

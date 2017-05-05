@@ -18,14 +18,17 @@ class DisplayManager final
 	public:
 		DisplayManager();
 		
-		void clearEntities();
+		void updateEntities();
 		void addEntity(const MapObject* mapObject);
+		void removeEntity(const MapObject* mapObject);
+		void updateEntity(const MapObject* mapObject);
 		void addTerrainObject(const MapObject* mapObject);
 		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view);
 		
 	private:
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
 		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
+		std::unordered_map<const MapObject*, int> m_entityCellIndices;
 		std::unique_ptr<TerrainQuadTree> m_terrainQuadtree;
 };
 

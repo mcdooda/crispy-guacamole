@@ -280,6 +280,7 @@ void BaseMapState::addEntityToMap(entity::Entity* entity)
 	FLAT_ASSERT(entity->getMap() == nullptr);
 	map::Map& map = getMap();
 	map.addEntity(entity);
+	m_mapDisplayManager.addEntity(entity);
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)
@@ -287,12 +288,15 @@ void BaseMapState::removeEntityFromMap(entity::Entity* entity)
 	FLAT_ASSERT(entity->getMap() != nullptr);
 	map::Map& map = getMap();
 	map.removeEntity(entity);
+	m_mapDisplayManager.removeEntity(entity);
 }
 
 entity::Entity* BaseMapState::removeEntityFromMapAtIndex(int index)
 {
 	map::Map& map = getMap();
-	return map.removeEntityAtIndex(index);
+	entity::Entity* entity = map.removeEntityAtIndex(index);
+	m_mapDisplayManager.removeEntity(entity);
+	return entity;
 }
 
 bool BaseMapState::isMouseOverUi(game::Game& game) const
@@ -420,8 +424,7 @@ void BaseMapState::draw(game::Game& game)
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform.set(m_gameView.getViewProjectionMatrix());
 	
 	const map::Map& map = getMap();
-	m_mapDisplayManager.clearEntities();
-	map.drawEntities(m_mapDisplayManager);
+	m_mapDisplayManager.updateEntities();
 	drawGhostEntity(game);
 	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView);
 	

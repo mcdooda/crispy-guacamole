@@ -70,16 +70,38 @@ inline bool spritesOverlap(const MapObject* a, const MapObject* b)
 	return a->getSprite().overlaps(b->getSprite());
 }
 
-void DisplayManager::clearEntities()
+void DisplayManager::updateEntities()
 {
-	m_entityQuadtree->clear();
+	m_entityQuadtree->updateAllObjects(m_entityCellIndices);
 }
 
 void DisplayManager::addEntity(const MapObject* mapObject)
 {
 	FLAT_ASSERT(mapObject->getTextureHash() != 0);
 	FLAT_ASSERT(mapObject->isEntity());
-	m_entityQuadtree->addObject(mapObject);
+	int cellIndex = m_entityQuadtree->addObject(mapObject);
+	m_entityCellIndices[mapObject] = cellIndex;
+}
+
+void DisplayManager::removeEntity(const MapObject* mapObject)
+{
+	FLAT_ASSERT(mapObject->getTextureHash() != 0);
+	FLAT_ASSERT(mapObject->isEntity());
+	int cellIndex = m_entityCellIndices[mapObject];
+	m_entityQuadtree->removeObject(mapObject, cellIndex);
+	m_entityCellIndices.erase(mapObject);
+}
+
+void DisplayManager::updateEntity(const MapObject* mapObject)
+{
+	FLAT_ASSERT(mapObject->getTextureHash() != 0);
+	FLAT_ASSERT(mapObject->isEntity());
+	int cellIndex = m_entityCellIndices[mapObject];
+	int newCellIndex = m_entityQuadtree->updateObject(mapObject, cellIndex);
+	if (cellIndex != newCellIndex)
+	{
+		m_entityCellIndices[mapObject] = newCellIndex;
+	}
 }
 
 void DisplayManager::addTerrainObject(const MapObject * mapObject)

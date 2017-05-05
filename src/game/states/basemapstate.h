@@ -91,7 +91,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		
 	protected:
 		void update(game::Game& game);
-		void drawGhostEntity(game::Game& game);
+		void addGhostEntity(game::Game& game);
+		void removeGhostEntity(game::Game& game);
 		void updateGameView(game::Game& game);
 		void setCameraCenter(const flat::Vector3& cameraCenter);
 		void setCameraZoom(float cameraZoom);

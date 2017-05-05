@@ -313,7 +313,7 @@ void BaseMapState::update(game::Game& game)
 	game.timerContainer.updateTimers(game.lua->state, currentTime);
 }
 
-void BaseMapState::drawGhostEntity(game::Game& game)
+void BaseMapState::addGhostEntity(game::Game& game)
 {
 	if (m_ghostEntity != nullptr && !isMouseOverUi(game) && !isSelecting() && !m_mouseOverEntity.isValid())
 	{
@@ -345,9 +345,16 @@ void BaseMapState::drawGhostEntity(game::Game& game)
 			color.a = 0.6f;
 			sprite.setColor(color);
 
-			m_mapDisplayManager.addEntity(m_ghostEntity);
-			removeEntityFromMap(m_ghostEntity);
+			m_mapDisplayManager.updateEntity(m_ghostEntity);
 		}
+	}
+}
+
+void BaseMapState::removeGhostEntity(game::Game & game)
+{
+	if (m_ghostEntity != nullptr && m_ghostEntity->getMap() != nullptr)
+	{
+		removeEntityFromMap(m_ghostEntity);
 	}
 }
 
@@ -425,8 +432,9 @@ void BaseMapState::draw(game::Game& game)
 	
 	const map::Map& map = getMap();
 	m_mapDisplayManager.updateEntities();
-	drawGhostEntity(game);
+	addGhostEntity(game);
 	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView);
+	removeGhostEntity(game);
 	
 #ifdef FLAT_DEBUG
 	map.debugDraw(m_debugDisplay);

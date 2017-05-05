@@ -2,6 +2,7 @@
 #include "../../game.h"
 #include "../editorstate.h"
 #include "../../map/tile.h"
+#include "../../map/prop.h"
 #include "../../map/tiletemplate.h"
 #include "../../map/brush/spherebrush.h"
 
@@ -134,12 +135,21 @@ void TileEditorMode::handleShortcuts()
 
 	if (keyboard->isJustPressed(K(DELETE)))
 	{
-		eachSelectedTileIfExists([](map::Tile* tile, float effect)
+		eachSelectedTileIfExists([this](map::Tile* tile, float effect)
 		{
-			tile->setExists(false);
-			for (entity::Entity* entity : tile->getEntities())
+			if (tile->exists())
 			{
-				entity->markForDelete();
+				const map::Prop* prop = tile->getProp();
+				if (prop != nullptr)
+				{
+					getEditorState().getDisplayManager().removeTerrainObject(prop);
+				}
+				getEditorState().getDisplayManager().removeTerrainObject(tile);
+				tile->setExists(false);
+				for (entity::Entity* entity : tile->getEntities())
+				{
+					entity->markForDelete();
+				}
 			}
 		});
 	}
@@ -148,14 +158,23 @@ void TileEditorMode::handleShortcuts()
 	{
 		eachBrushTile([this](map::Tile* tile, float effect)
 		{
-			float random = m_game.random->nextFloat(0.f, 1.f);
-			if (random <= effect)
+			if (!tile->exists())
 			{
-				tile->setExists(true);
-				if (!tile->hasSprite())
+				float random = m_game.random->nextFloat(0.f, 1.f);
+				if (random <= effect)
 				{
-					std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
-					tile->setTexture(texture);
+					tile->setExists(true);
+					if (!tile->hasSprite())
+					{
+						std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
+						tile->setTexture(texture);
+					}
+					getEditorState().getDisplayManager().addTerrainObject(tile);
+					const map::Prop* prop = tile->getProp();
+					if (prop != nullptr)
+					{
+						getEditorState().getDisplayManager().addTerrainObject(prop);
+					}
 				}
 			}
 		});

@@ -14,7 +14,7 @@ class MapObject;
 class DisplayManager final
 {
 	using EntityQuadTree = flat::geometry::QuadTree<MapObject, 3>;
-	using TerrainQuadTree = flat::geometry::QuadTree<MapObject, 5>;
+	using TerrainQuadTree = flat::geometry::QuadTree<MapObject, 6>;
 	public:
 		DisplayManager();
 		
@@ -23,6 +23,7 @@ class DisplayManager final
 		void removeEntity(const MapObject* mapObject);
 		void updateEntity(const MapObject* mapObject);
 		void addTerrainObject(const MapObject* mapObject);
+		void removeTerrainObject(const MapObject* mapObject);
 		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view);
 		
 	private:

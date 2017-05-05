@@ -111,6 +111,13 @@ void DisplayManager::addTerrainObject(const MapObject * mapObject)
 	m_terrainQuadtree->addObject(mapObject);
 }
 
+void DisplayManager::removeTerrainObject(const MapObject * mapObject)
+{
+	FLAT_ASSERT(mapObject->getTextureHash() != 0);
+	FLAT_ASSERT(!mapObject->isEntity());
+	m_terrainQuadtree->removeObject(mapObject);
+}
+
 void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;

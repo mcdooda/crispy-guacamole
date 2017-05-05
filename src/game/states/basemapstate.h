@@ -86,6 +86,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		inline const flat::video::View& getGameView() const { return m_gameView; }
 
 		bool isMouseOverUi(game::Game& game) const;
+
+		inline map::DisplayManager& getDisplayManager() { return m_mapDisplayManager; }
 		
 	protected:
 		void update(game::Game& game);

@@ -11,7 +11,14 @@ It comes with an easy to use map editor.
 ## Windows
 __Crispy guacamole__ can be compiled and ran using the dedicated [windows scripts](https://github.com/mcdooda/crispy-guacamole-env-windows).
 
-The only requirements are git and [Visual Studio 2017](https://www.visualstudio.com/vs/whatsnew/).
+The only requirements are [Visual Studio 2017](https://www.visualstudio.com/vs/whatsnew/), git and cmake.
+Hopefully, the latters come prepackaged along Visual Studio 2017.
+
+You will need to add them to the __PATH__ environment variable. They are located there by default:
+- C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE
+- C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\Extensions\eysyln0k.p1s\Git\mingw32\bin
+- C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin
+
 
 ### Compiling
 - Clone https://github.com/mcdooda/crispy-guacamole-env-windows.git somewhere on your computer.

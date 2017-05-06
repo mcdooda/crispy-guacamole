@@ -244,6 +244,13 @@ bool SpriteComponent::isBusy() const
 	return m_sprite.isAnimated() && !m_sprite.hasInfiniteLoop();
 }
 
+#ifdef FLAT_DEBUG
+void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	debugDisplay.add2dAABB(m_owner->getAABB());
+}
+#endif
+
 bool SpriteComponent::addedToMap(Entity * entity, map::Map * map)
 {
 	m_positionChanged = false;

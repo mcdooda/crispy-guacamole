@@ -33,7 +33,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 
 		bool getAttachPoint(const std::string& attachPointName, flat::Vector3& attachPoint) const;
 		
-		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		
 	private:
 		bool addedToMap(Entity* entity, map::Map* map);

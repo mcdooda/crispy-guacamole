@@ -61,6 +61,14 @@ void DebugDisplay::add2dLine(const flat::Vector2& fromPos, const flat::Vector2& 
 	m_lineElements.emplace_back(debugDisplayLine);
 }
 
+void DebugDisplay::add2dAABB(const flat::AABB2& aabb, const flat::video::Color& color)
+{
+	add2dLine(aabb.min, flat::Vector2(aabb.max.x, aabb.min.y), color);
+	add2dLine(flat::Vector2(aabb.max.x, aabb.min.y), aabb.max, color);
+	add2dLine(aabb.max, flat::Vector2(aabb.min.x, aabb.max.y), color);
+	add2dLine(flat::Vector2(aabb.min.x, aabb.max.y), aabb.min, color);
+}
+
 void DebugDisplay::add3dCircle(const flat::Vector3& center, float radius, const flat::video::Color& color, float lineWidth)
 {
 	const int numSegments = 32;

@@ -176,10 +176,10 @@ void AttackComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
 	if (Entity* target = m_target.getEntity())
 	{
-		debugDisplay.addLine(m_owner->getPosition(), target->getPosition(), flat::video::Color::GREEN);
+		debugDisplay.add3dLine(m_owner->getPosition(), target->getPosition(), flat::video::Color::GREEN);
 	}
 
-	debugDisplay.addCircle(m_owner->getPosition(), getAttackRange(), flat::video::Color::GREEN, 0.5f);
+	debugDisplay.add3dCircle(m_owner->getPosition(), getAttackRange(), flat::video::Color::GREEN, 0.5f);
 }
 #endif
 

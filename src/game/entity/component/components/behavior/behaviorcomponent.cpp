@@ -101,7 +101,7 @@ bool BehaviorComponent::entityLeftVisionRange(Entity* entity)
 #ifdef FLAT_DEBUG
 void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
-	debugDisplay.addText(m_owner->getPosition(), m_behaviorRuntime.getCurrentStateName(), flat::video::Color::BLACK);
+	debugDisplay.add3dText(m_owner->getPosition(), m_behaviorRuntime.getCurrentStateName(), flat::video::Color::BLACK);
 }
 #endif
 

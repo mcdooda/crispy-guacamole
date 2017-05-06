@@ -38,21 +38,30 @@ void DebugDisplay::loadResources(Game& game)
 	m_transform = baseMapState.getMap().getTransform();
 }
 
-void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color, float lineWidth)
+void DebugDisplay::add3dLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color, float lineWidth)
 {
-	addLine(fromPos, toPos, color, color, lineWidth);
+	add3dLine(fromPos, toPos, color, color, lineWidth);
 }
 
-void DebugDisplay::addLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth)
+void DebugDisplay::add3dLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth)
 {
-	flat::Vector3 from2d = m_transform * fromPos;
-	flat::Vector3 to2d = m_transform * toPos;
+	flat::Vector2 from2d = flat::Vector2(m_transform * fromPos);
+	flat::Vector2 to2d = flat::Vector2(m_transform * toPos);
+	add2dLine(from2d, to2d, fromColor, toColor, lineWidth);
+}
 
-	DebugDisplayLine* debugDisplayLine = new DebugDisplayLine(flat::Vector2(from2d), flat::Vector2(to2d), fromColor, toColor, lineWidth);
+void DebugDisplay::add2dLine(const flat::Vector2& fromPos, const flat::Vector2& toPos, const flat::video::Color& color, float lineWidth)
+{
+	add2dLine(fromPos, toPos, color, color, lineWidth);
+}
+
+void DebugDisplay::add2dLine(const flat::Vector2& fromPos, const flat::Vector2& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth)
+{
+	DebugDisplayLine* debugDisplayLine = new DebugDisplayLine(fromPos, toPos, fromColor, toColor, lineWidth);
 	m_lineElements.emplace_back(debugDisplayLine);
 }
 
-void DebugDisplay::addCircle(const flat::Vector3& center, float radius, const flat::video::Color& color, float lineWidth)
+void DebugDisplay::add3dCircle(const flat::Vector3& center, float radius, const flat::video::Color& color, float lineWidth)
 {
 	const int numSegments = 32;
 	flat::Vector3 previousPoint = center + flat::Vector3(radius, 0.f, 0.f);
@@ -60,12 +69,12 @@ void DebugDisplay::addCircle(const flat::Vector3& center, float radius, const fl
 	{
 		const float angle = static_cast<float>(i) / numSegments * flat::PI2;
 		flat::Vector3 point = center + flat::Vector3(cos(angle) * radius, sin(angle) * radius, 0.f);
-		addLine(previousPoint, point, color, lineWidth);
+		add3dLine(previousPoint, point, color, lineWidth);
 		previousPoint = point;
 	}
 }
 
-void DebugDisplay::addText(const flat::Vector3& pos, const std::string& text, const flat::video::Color& color, const flat::video::Color& backgroundColor)
+void DebugDisplay::add3dText(const flat::Vector3& pos, const std::string& text, const flat::video::Color& color, const flat::video::Color& backgroundColor)
 {
 	flat::Vector3 pos2d = m_transform * pos;
 	DebugDisplayText* debugDisplayText = new DebugDisplayText(flat::Vector2(pos2d), text, color, backgroundColor, m_font);

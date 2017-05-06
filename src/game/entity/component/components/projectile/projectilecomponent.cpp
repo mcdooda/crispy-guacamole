@@ -114,7 +114,7 @@ float ProjectileComponent::getSpeedXY() const
 #ifdef FLAT_DEBUG
 void ProjectileComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
-	debugDisplay.addLine(m_owner->getPosition(), flat::Vector3(m_owner->getPosition().x, m_owner->getPosition().y, 0.f), flat::video::Color::BLACK);
+	debugDisplay.add3dLine(m_owner->getPosition(), flat::Vector3(m_owner->getPosition().x, m_owner->getPosition().y, 0.f), flat::video::Color::BLACK);
 }
 #endif
 

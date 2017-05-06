@@ -310,11 +310,11 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 		const map::Tile* tile = map->getTileIfExists(point2d.x, point2d.y);
 		FLAT_ASSERT(tile != nullptr);
 		flat::Vector3 point(point2d, tile->getZ());
-		debugDisplay.addLine(previousPoint, point);
+		debugDisplay.add3dLine(previousPoint, point);
 		previousPoint = point;
 	}
 
-	debugDisplay.addLine(m_owner->getPosition(), m_owner->getPosition() + flat::Vector3(m_steering, 0.f), flat::video::Color::RED);
+	debugDisplay.add3dLine(m_owner->getPosition(), m_owner->getPosition() + flat::Vector3(m_steering, 0.f), flat::video::Color::RED);
 }
 #endif
 

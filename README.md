@@ -16,7 +16,7 @@ Hopefully, the latters come prepackaged along Visual Studio 2017.
 
 You will need to add them to the __PATH__ environment variable. They are located there by default:
 - C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE
-- C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\Extensions\eysyln0k.p1s\Git\mingw32\bin
+- C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\Extensions\eysyln0k.p1s\Git\mingw32\bin *(only if the git extension is installed, another installation of git works fine too)*
 - C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin
 
 

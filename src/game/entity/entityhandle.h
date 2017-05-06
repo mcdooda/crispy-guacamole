@@ -16,8 +16,8 @@ class EntityHandle
 		EntityHandle(const EntityHandle& handle);
 		EntityHandle(const Entity* entity);
 
-		void operator=(EntityHandle& handle);
-		void operator=(Entity* entity);
+		void operator=(const EntityHandle& handle);
+		void operator=(const Entity* entity);
 
 
 		bool isValid() const;

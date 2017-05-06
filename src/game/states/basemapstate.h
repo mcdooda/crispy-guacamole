@@ -111,8 +111,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		bool isSelecting() const;
 		void updateMouseOverEntity(Game& game);
 		void clearMouseOverEntity();
-		void setMouseOverColor(entity::Entity* entity) const;
-		void clearMouseOverColor(entity::Entity* entity) const;
+		void setMouseOverColor(const entity::Entity* entity) const;
+		void clearMouseOverColor(const entity::Entity* entity) const;
 		bool updateSelectionWidget(Game& game);
 		void selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);

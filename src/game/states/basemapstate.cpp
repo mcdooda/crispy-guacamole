@@ -430,13 +430,12 @@ void BaseMapState::draw(game::Game& game)
 	
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform.set(m_gameView.getViewProjectionMatrix());
 	
-	const map::Map& map = getMap();
-	m_mapDisplayManager.updateEntities();
 	addGhostEntity(game);
 	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView);
 	removeGhostEntity(game);
 	
 #ifdef FLAT_DEBUG
+	const map::Map& map = getMap();
 	map.debugDraw(m_debugDisplay);
 	m_debugDisplay.drawElements(game, m_gameView);
 #endif
@@ -509,39 +508,18 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	const flat::Vector2& mousePosition = game.input->mouse->getPosition();
 	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition);
 
-	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
-	entity::Entity* newMouseOverEntity = nullptr;
-	float mouseOverEntityDepth = FLT_MIN;
+	const entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
+	const entity::Entity* newMouseOverEntity = nullptr;
 
-	map::Map& map = getMap();
-	for (entity::Entity* entity : map.getEntities()) // TODO: optimize this
+	const map::MapObject* mouseOverObject = m_mapDisplayManager.getObjectAtPosition(viewMousePosition);
+	if (mouseOverObject != nullptr)
 	{
-		if (!entity->getCanBeSelected())
+		if (mouseOverObject->isEntity())
 		{
-			continue;
-		}
-
-		const flat::render::Sprite& sprite = entity->getSprite(); // TODO: discard entities with no sprite
-		if (sprite.isInside(viewMousePosition))
-		{
-			flat::video::Color color;
-			sprite.getPixel(viewMousePosition, color);
-			if (color.a > 0.5f)
+			const entity::Entity* entity = static_cast<const entity::Entity*>(mouseOverObject);
+			if (entity->getCanBeSelected())
 			{
-				if (newMouseOverEntity != nullptr)
-				{
-					const flat::AABB3& entityAABB = entity->getWorldSpaceAABB();
-					const float entityDepth = entityAABB.getCenter().x + entityAABB.getCenter().y;
-					if (entityDepth > mouseOverEntityDepth)
-					{
-						newMouseOverEntity = entity;
-						mouseOverEntityDepth = entityDepth;
-					}
-				}
-				else
-				{
-					newMouseOverEntity = entity;
-				}
+				newMouseOverEntity = entity;
 			}
 		}
 	}
@@ -572,12 +550,12 @@ void BaseMapState::clearMouseOverEntity()
 	}
 }
 
-void BaseMapState::setMouseOverColor(entity::Entity* entity) const
+void BaseMapState::setMouseOverColor(const entity::Entity* entity) const
 {
 	const_cast<flat::render::Sprite&>(entity->getSprite()).setColor(flat::video::Color::GREEN);
 }
 
-void BaseMapState::clearMouseOverColor(entity::Entity* entity) const
+void BaseMapState::clearMouseOverColor(const entity::Entity* entity) const
 {
 	flat::video::Color color = flat::video::Color::WHITE;
 	if (entity->isSelected())

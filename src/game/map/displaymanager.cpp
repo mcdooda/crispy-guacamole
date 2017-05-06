@@ -29,47 +29,6 @@ DisplayManager::DisplayManager()
 	);
 }
 
-inline bool sortMapObjects(const MapObject* a, const MapObject* b)
-{
-	const flat::Vector3 aCenter = a->getWorldSpaceAABB().getCenter();
-	const flat::Vector3 bCenter = b->getWorldSpaceAABB().getCenter();
-	const float aDepth = aCenter.x + aCenter.y;
-	const float bDepth = bCenter.x + bCenter.y;
-	if (aDepth == bDepth)
-	{
-		if (aCenter.z == bCenter.z)
-		{
-			if (a->getTextureHash() == b->getTextureHash())
-			{
-				return aCenter.x < bCenter.x;
-			}
-			return a->getTextureHash() < b->getTextureHash();
-		}
-		return aCenter.z < bCenter.z;
-	}
-	return aDepth < bDepth;
-}
-
-inline bool sortMapObjects2(const MapObject* a, const MapObject* b)
-{
-	const float aDepth = a->getWorldSpaceAABB().min.z + 0.01f;
-	const float bDepth = b->getWorldSpaceAABB().max.z;
-	if (aDepth == bDepth)
-	{
-		if (a->getTextureHash() == b->getTextureHash())
-		{
-			return a->getWorldSpaceAABB().getCenter().x < b->getWorldSpaceAABB().getCenter().x;
-		}
-		return a->getTextureHash() < b->getTextureHash();
-	}
-	return aDepth < bDepth;
-}
-
-inline bool spritesOverlap(const MapObject* a, const MapObject* b)
-{
-	return a->getSprite().overlaps(b->getSprite());
-}
-
 void DisplayManager::updateEntities()
 {
 	m_entityQuadtree->updateAllObjects(m_entityCellIndices);
@@ -135,6 +94,115 @@ void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& rend
 	int numTerrainObjects = static_cast<int>(objects.size()) - numEntities;
 #endif
 
+	sortObjectsByDepth(objects);
+
+	{
+#if DEBUG_DRAW
+		int numDrawCalls = 0;
+#endif
+
+		flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
+		const flat::Matrix4& viewMatrix = view.getViewProjectionMatrix();
+
+		std::vector<const MapObject*>::iterator it = objects.begin();
+		std::vector<const MapObject*>::iterator end = objects.end();
+		while (it != end)
+		{
+			spriteBatch->clear();
+
+			std::vector<const MapObject*>::iterator it2 = it;
+			while (it2 != end && (*it2)->getTextureHash() == (*it)->getTextureHash())
+			{
+				spriteBatch->add((*it2)->getSprite());
+				++it2;
+			}
+			it = it2;
+
+			spriteBatch->draw(renderSettings, viewMatrix);
+#if DEBUG_DRAW
+			++numDrawCalls;
+#endif
+		}
+
+#if DEBUG_DRAW
+		std::cout << "draw calls: " << numDrawCalls << std::endl
+			<< "terrain sprites: " << numTerrainObjects << std::endl
+			<< "entity sprites: " << numEntities << std::endl << std::endl;
+#endif
+	}
+}
+
+const MapObject* DisplayManager::getObjectAtPosition(const flat::Vector2& position) const
+{
+	std::vector<const MapObject*> objects;
+	objects.reserve(16);
+	m_entityQuadtree->getObjects(position, objects);
+	m_terrainQuadtree->getObjects(position, objects);
+	sortObjectsByDepth(objects);
+	
+	// look for a visible pixel in the objects' sprite
+	const MapObject* objectAtPosition = nullptr;
+	for (int i = static_cast<int>(objects.size()) - 1; objectAtPosition == nullptr && i >= 0; --i)
+	{
+		const MapObject* object = objects[i];
+		const flat::render::Sprite& sprite = object->getSprite();
+
+		flat::video::Color color;
+		sprite.getPixel(position, color);
+		if (color.a > 0.5f)
+		{
+			objectAtPosition = object;
+		}
+	}
+
+	return objectAtPosition;
+}
+
+// Object sorting
+
+inline bool sortMapObjects(const MapObject* a, const MapObject* b)
+{
+	const flat::Vector3 aCenter = a->getWorldSpaceAABB().getCenter();
+	const flat::Vector3 bCenter = b->getWorldSpaceAABB().getCenter();
+	const float aDepth = aCenter.x + aCenter.y;
+	const float bDepth = bCenter.x + bCenter.y;
+	if (aDepth == bDepth)
+	{
+		if (aCenter.z == bCenter.z)
+		{
+			if (a->getTextureHash() == b->getTextureHash())
+			{
+				return aCenter.x < bCenter.x;
+			}
+			return a->getTextureHash() < b->getTextureHash();
+		}
+		return aCenter.z < bCenter.z;
+	}
+	return aDepth < bDepth;
+}
+
+inline bool sortMapObjects2(const MapObject* a, const MapObject* b)
+{
+	const float aDepth = a->getWorldSpaceAABB().min.z + 0.01f;
+	const float bDepth = b->getWorldSpaceAABB().max.z;
+	if (aDepth == bDepth)
+	{
+		if (a->getTextureHash() == b->getTextureHash())
+		{
+			return a->getWorldSpaceAABB().getCenter().x < b->getWorldSpaceAABB().getCenter().x;
+		}
+		return a->getTextureHash() < b->getTextureHash();
+	}
+	return aDepth < bDepth;
+}
+
+inline bool spritesOverlap(const MapObject* a, const MapObject* b)
+{
+	return flat::AABB2::overlap(a->getAABB(), b->getAABB());
+}
+
+void DisplayManager::sortObjectsByDepth(std::vector<const MapObject*>& objects)
+{
 	std::sort(objects.begin(), objects.end(), sortMapObjects);
 	FLAT_ASSERT(std::is_sorted(objects.begin(), objects.end(), sortMapObjects));
 
@@ -151,10 +219,10 @@ void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& rend
 		for (int i = 0; i < size; ++i)
 		{
 			const MapObject* mapObject = objects[i];
-			const flat::Vector3 aCenter = mapObject->getWorldSpaceAABB().getCenter();
-			const float aDepth = aCenter.x + aCenter.y;
 			if (mapObject->isEntity())
 			{
+				const flat::Vector3 aCenter = mapObject->getWorldSpaceAABB().getCenter();
+				const float aDepth = aCenter.x + aCenter.y;
 				int k = 0;
 				for (int j = i + 1; j < size; ++j)
 				{
@@ -200,42 +268,6 @@ void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& rend
 
 #if DEBUG_DRAW
 		std::cout << "swaps: " << numSwaps << std::endl;
-#endif
-	}
-
-
-	{
-#if DEBUG_DRAW
-		int numDrawCalls = 0;
-#endif
-
-		flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
-		const flat::Matrix4& viewMatrix = view.getViewProjectionMatrix();
-
-		std::vector<const MapObject*>::iterator it = objects.begin();
-		std::vector<const MapObject*>::iterator end = objects.end();
-		while (it != end)
-		{
-			spriteBatch->clear();
-
-			std::vector<const MapObject*>::iterator it2 = it;
-			while (it2 != end && (*it2)->getTextureHash() == (*it)->getTextureHash())
-			{
-				spriteBatch->add((*it2)->getSprite());
-				++it2;
-			}
-			it = it2;
-
-			spriteBatch->draw(renderSettings, viewMatrix);
-#if DEBUG_DRAW
-			++numDrawCalls;
-#endif
-		}
-
-#if DEBUG_DRAW
-		std::cout << "draw calls: " << numDrawCalls << std::endl
-			<< "terrain sprites: " << numTerrainObjects << std::endl
-			<< "entity sprites: " << numEntities << std::endl << std::endl;
 #endif
 	}
 }

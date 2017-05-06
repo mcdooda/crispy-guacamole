@@ -11,7 +11,7 @@ It comes with an easy to use map editor.
 ## Windows
 __Crispy guacamole__ can be compiled and ran using the dedicated [windows scripts](https://github.com/mcdooda/crispy-guacamole-env-windows).
 
-The only requirements are git and [Visual Studio 2015](https://www.microsoft.com/france/visual-studio/essayez/telecharger/visual-studio.aspx).
+The only requirements are git and [Visual Studio 2017](https://www.visualstudio.com/vs/whatsnew/).
 
 ### Compiling
 - Clone https://github.com/mcdooda/crispy-guacamole-env-windows.git somewhere on your computer.

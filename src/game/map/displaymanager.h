@@ -18,7 +18,6 @@ class DisplayManager final
 	public:
 		DisplayManager();
 		
-		void updateEntities();
 		void addEntity(const MapObject* mapObject);
 		void removeEntity(const MapObject* mapObject);
 		void updateEntity(const MapObject* mapObject);

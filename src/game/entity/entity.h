@@ -58,7 +58,6 @@ class Entity final : public map::MapObject
 		inline void setSprite(const flat::render::Sprite& sprite) { m_sprite = &sprite; }
 		inline void clearSprite() { m_sprite = nullptr; }
 		const flat::render::Sprite& getSprite() const override;
-		void updateAABB();
 		
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
@@ -130,6 +129,7 @@ class Entity final : public map::MapObject
 		
 	protected:
 		map::Tile* getTileFromPosition();
+		void updateAABBIfDirty();
 		
 	protected:
 		std::vector<component::Component*> m_components;
@@ -155,6 +155,7 @@ class Entity final : public map::MapObject
 		bool m_canBeSelected : 1;
 		bool m_selected : 1;
 		bool m_markedForDelete : 1;
+		bool m_aabbDirty : 1;
 #ifdef FLAT_DEBUG
 		bool m_debug : 1;
 		bool m_debugBreak : 1;

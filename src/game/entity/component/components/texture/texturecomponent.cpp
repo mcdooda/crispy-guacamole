@@ -42,8 +42,6 @@ void TextureComponent::deinit()
 
 void TextureComponent::update(float currentTime, float elapsedTime)
 {
-	bool updateAABB = false;
-
 	if (m_positionChanged)
 	{
 		const map::Map* map = m_owner->getMap();
@@ -53,8 +51,6 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 
 		flat::Vector2 position2d(map->getTransform() * position);
 		m_sprite.setPosition(position2d);
-
-		updateAABB = true;
 
 		m_positionChanged = false;
 	}
@@ -75,15 +71,8 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 		flat::Vector2 direction2d(map->getTransform() * direction);
 		m_sprite.setRotationZ(flat::vector2_angle(direction2d));
 
-		updateAABB = true;
-
 		m_headingChanged = false;
 		m_elevationChanged = false;
-	}
-
-	if (updateAABB)
-	{
-		m_owner->updateAABB();
 	}
 }
 

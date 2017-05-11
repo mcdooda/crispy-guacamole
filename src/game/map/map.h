@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <flat.h>
+#include "displaymanager.h"
 #include "../debug/debugdisplay.h"
 
 namespace game
@@ -19,7 +20,6 @@ class Entity;
 namespace map
 {
 class Tile;
-class DisplayManager;
 class Zone;
 namespace io
 {
@@ -43,7 +43,7 @@ class Map
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		
 		// rendering
-		void drawTerrain(DisplayManager& displayManager) const;
+		void drawTerrain();
 		
 		// get tiles
 		const Tile* getTile(int x, int y) const;
@@ -92,6 +92,8 @@ class Map
 		bool getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) const;
 		inline const std::map<std::string, std::shared_ptr<Zone>>& getZones() const { return m_zones; }
 
+		inline DisplayManager& getDisplayManager() { return m_displayManager; }
+
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
 #endif
@@ -118,6 +120,8 @@ class Map
 		std::vector<entity::Entity*> m_entities;
 
 		std::map<std::string, std::shared_ptr<Zone>> m_zones;
+
+		DisplayManager m_displayManager;
 		
 	private:
 		friend class io::Reader;

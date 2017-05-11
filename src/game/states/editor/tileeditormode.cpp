@@ -85,6 +85,7 @@ void TileEditorMode::handleShortcuts()
 {
 	const float frameTime = m_game.time->getFrameTime();
 	map::Map& map = getMap();
+	map::DisplayManager& mapDisplayManager = map.getDisplayManager();
 
 	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
 
@@ -135,16 +136,16 @@ void TileEditorMode::handleShortcuts()
 
 	if (keyboard->isJustPressed(K(DELETE)))
 	{
-		eachSelectedTileIfExists([this](map::Tile* tile, float effect)
+		eachSelectedTileIfExists([this, &mapDisplayManager](map::Tile* tile, float effect)
 		{
 			if (tile->exists())
 			{
 				const map::Prop* prop = tile->getProp();
 				if (prop != nullptr)
 				{
-					getEditorState().getDisplayManager().removeTerrainObject(prop);
+					mapDisplayManager.removeTerrainObject(prop);
 				}
-				getEditorState().getDisplayManager().removeTerrainObject(tile);
+				mapDisplayManager.removeTerrainObject(tile);
 				tile->setExists(false);
 				for (entity::Entity* entity : tile->getEntities())
 				{
@@ -156,7 +157,7 @@ void TileEditorMode::handleShortcuts()
 
 	if (keyboard->isPressed(K(SPACE)))
 	{
-		eachBrushTile([this](map::Tile* tile, float effect)
+		eachBrushTile([this, &mapDisplayManager](map::Tile* tile, float effect)
 		{
 			if (!tile->exists())
 			{
@@ -169,11 +170,11 @@ void TileEditorMode::handleShortcuts()
 						std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
 						tile->setTexture(texture);
 					}
-					getEditorState().getDisplayManager().addTerrainObject(tile);
+					mapDisplayManager.addTerrainObject(tile);
 					const map::Prop* prop = tile->getProp();
 					if (prop != nullptr)
 					{
-						getEditorState().getDisplayManager().addTerrainObject(prop);
+						mapDisplayManager.addTerrainObject(prop);
 					}
 				}
 			}

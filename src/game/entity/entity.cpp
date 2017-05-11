@@ -24,7 +24,8 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_template(entityTemplate),
 	m_canBeSelected(false),
 	m_selected(false),
-	m_markedForDelete(false)
+	m_markedForDelete(false),
+	m_aabbDirty(false)
 #ifdef FLAT_DEBUG
 	, m_debug(false)
 	, m_debugBreak(false)
@@ -54,6 +55,8 @@ void Entity::setPosition(const flat::Vector3& position)
 		m_tile = newTile;
 		positionChanged(m_position);
 	}
+
+	m_aabbDirty = true;
 }
 
 void Entity::setXY(const flat::Vector2& xy)
@@ -71,6 +74,8 @@ void Entity::setXY(const flat::Vector2& xy)
 		m_tile = newTile;
 		positionChanged(m_position);
 	}
+
+	m_aabbDirty = true;
 }
 
 void Entity::setZ(float z)
@@ -80,6 +85,8 @@ void Entity::setZ(float z)
 	{
 		positionChanged(m_position);
 	}
+
+	m_aabbDirty = true;
 }
 
 void Entity::setHeading(float heading)
@@ -90,7 +97,12 @@ void Entity::setHeading(float heading)
 		heading += flat::PI2;
 	
 	m_heading = heading;
-	headingChanged(m_heading);
+	if (m_map != nullptr)
+	{
+		headingChanged(m_heading);
+	}
+
+	m_aabbDirty = true;
 }
 
 void Entity::setElevation(float elevation)
@@ -105,30 +117,14 @@ void Entity::setElevation(float elevation)
 
 	m_elevation = elevation;
 	elevationChanged(m_elevation);
+
+	m_aabbDirty = true;
 }
 
 const flat::render::Sprite& Entity::getSprite() const
 {
 	FLAT_ASSERT(m_sprite != nullptr);
 	return *m_sprite;
-}
-
-void Entity::updateAABB()
-{
-	if (m_collisionComponent != nullptr)
-	{
-		m_collisionComponent->getAABB(m_worldSpaceAABB);
-	}
-	else
-	{
-		m_worldSpaceAABB.min = m_position;
-		m_worldSpaceAABB.max = m_position;
-	}
-
-	if (m_sprite != nullptr)
-	{
-		m_sprite->getAABB(m_spriteAABB);
-	}
 }
 
 void Entity::onAddedToMap(map::Map* map)
@@ -160,6 +156,7 @@ void Entity::update(float currentTime, float elapsedTime)
 		FLAT_BREAK();
 	}
 #endif
+
 	for (component::Component* component : m_components)
 	{
 		if (component->isEnabled())
@@ -167,6 +164,8 @@ void Entity::update(float currentTime, float elapsedTime)
 			component->update(currentTime, elapsedTime);
 		}
 	}
+
+	updateAABBIfDirty();
 }
 
 #ifdef FLAT_DEBUG
@@ -262,6 +261,34 @@ map::Tile* Entity::getTileFromPosition()
 	map::Tile* tile = m_map->getTileIfExists(m_position.x, m_position.y);
 	FLAT_ASSERT_MSG(tile != nullptr, "Trying to get a tile that does not exist at position (%f, %f)", m_position.x, m_position.y);
 	return tile;
+}
+
+void Entity::updateAABBIfDirty()
+{
+	if (m_aabbDirty)
+	{
+		m_aabbDirty = false;
+
+		if (m_collisionComponent != nullptr)
+		{
+			m_collisionComponent->getAABB(m_worldSpaceAABB);
+		}
+		else
+		{
+			m_worldSpaceAABB.min = m_position;
+			m_worldSpaceAABB.max = m_position;
+		}
+
+		if (m_sprite != nullptr)
+		{
+			m_sprite->getAABB(m_spriteAABB);
+		}
+
+		if (m_map != nullptr)
+		{
+			m_map->getDisplayManager().updateEntity(this);
+		}
+	}
 }
 
 void Entity::enterState(const char* stateName)

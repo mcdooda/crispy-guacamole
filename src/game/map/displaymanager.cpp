@@ -29,11 +29,6 @@ DisplayManager::DisplayManager()
 	);
 }
 
-void DisplayManager::updateEntities()
-{
-	m_entityQuadtree->updateAllObjects(m_entityCellIndices);
-}
-
 void DisplayManager::addEntity(const MapObject* mapObject)
 {
 	FLAT_ASSERT(mapObject->getTextureHash() != 0);

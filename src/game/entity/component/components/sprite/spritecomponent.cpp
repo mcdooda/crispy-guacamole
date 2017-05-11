@@ -168,8 +168,6 @@ bool SpriteComponent::getAttachPoint(const std::string& attachPointName, flat::V
 
 void SpriteComponent::update(float currentTime, float elapsedTime)
 {
-	bool updateAABB = false;
-
 	if (m_positionChanged)
 	{
 		const map::Map* map = m_owner->getMap();
@@ -179,7 +177,6 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 	
 		flat::Vector2 position2d(map->getTransform() * position);
 		m_sprite.setPosition(position2d);
-		updateAABB = true;
 		
 		m_positionChanged = false;
 	}
@@ -196,7 +193,6 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 		{
 			m_sprite.setFlipX(true);
 		}
-		updateAABB = true;
 		
 		m_headingChanged = false;
 	}
@@ -232,11 +228,6 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 	}
 	
 	m_sprite.update(currentTime);
-
-	if (updateAABB)
-	{
-		m_owner->updateAABB();
-	}
 }
 
 bool SpriteComponent::isBusy() const

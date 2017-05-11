@@ -80,7 +80,7 @@ void BaseMapState::enter(Game& game)
 	// load debug display resources *after* the map is loaded!
 	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
 
-	const map::Map& map = getMap();
+	map::Map& map = getMap();
 	int minX, maxX, minY, maxY;
 	map.getBounds(minX, maxX, minY, maxY);
 	flat::Vector3 cameraCenter((maxX + minX) / 2.f, (maxY + minY) / 2.f, 0.f);
@@ -88,7 +88,7 @@ void BaseMapState::enter(Game& game)
 
 	resetViews(game);
 
-	map.drawTerrain(m_mapDisplayManager);
+	map.drawTerrain();
 
 	m_ghostEntity = nullptr;
 }
@@ -280,7 +280,6 @@ void BaseMapState::addEntityToMap(entity::Entity* entity)
 	FLAT_ASSERT(entity->getMap() == nullptr);
 	map::Map& map = getMap();
 	map.addEntity(entity);
-	m_mapDisplayManager.addEntity(entity);
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)
@@ -288,15 +287,12 @@ void BaseMapState::removeEntityFromMap(entity::Entity* entity)
 	FLAT_ASSERT(entity->getMap() != nullptr);
 	map::Map& map = getMap();
 	map.removeEntity(entity);
-	m_mapDisplayManager.removeEntity(entity);
 }
 
 entity::Entity* BaseMapState::removeEntityFromMapAtIndex(int index)
 {
 	map::Map& map = getMap();
-	entity::Entity* entity = map.removeEntityAtIndex(index);
-	m_mapDisplayManager.removeEntity(entity);
-	return entity;
+	return map.removeEntityAtIndex(index);
 }
 
 bool BaseMapState::isMouseOverUi(game::Game& game) const
@@ -344,8 +340,6 @@ void BaseMapState::addGhostEntity(game::Game& game)
 			flat::video::Color color = sprite.getColor();
 			color.a = 0.6f;
 			sprite.setColor(color);
-
-			m_mapDisplayManager.updateEntity(m_ghostEntity);
 		}
 	}
 }
@@ -431,7 +425,7 @@ void BaseMapState::draw(game::Game& game)
 	m_spriteProgramRenderSettings.viewProjectionMatrixUniform.set(m_gameView.getViewProjectionMatrix());
 	
 	addGhostEntity(game);
-	m_mapDisplayManager.sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView);
+	getMap().getDisplayManager().sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView);
 	removeGhostEntity(game);
 	
 #ifdef FLAT_DEBUG
@@ -511,7 +505,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	const entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
 	const entity::Entity* newMouseOverEntity = nullptr;
 
-	const map::MapObject* mouseOverObject = m_mapDisplayManager.getObjectAtPosition(viewMousePosition);
+	const map::MapObject* mouseOverObject = getMap().getDisplayManager().getObjectAtPosition(viewMousePosition);
 	if (mouseOverObject != nullptr)
 	{
 		if (mouseOverObject->isEntity())

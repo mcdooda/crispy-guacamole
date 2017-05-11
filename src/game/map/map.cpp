@@ -1,5 +1,4 @@
 #include "map.h"
-#include "displaymanager.h"
 #include "tile.h"
 #include "prop.h"
 #include "zone.h"
@@ -85,14 +84,14 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 	});
 }
 
-void Map::drawTerrain(DisplayManager& displayManager) const
+void Map::drawTerrain()
 {
-	eachTileIfExists([&displayManager](const Tile* tile)
+	eachTileIfExists([this](const Tile* tile)
 	{
-		displayManager.addTerrainObject(tile);
+		m_displayManager.addTerrainObject(tile);
 		if (const Prop* prop = tile->getProp())
 		{
-			displayManager.addTerrainObject(prop);
+			m_displayManager.addTerrainObject(prop);
 		}
 	});
 }
@@ -195,6 +194,8 @@ void Map::addEntity(entity::Entity* entity)
 	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
 	m_entities.push_back(entity);
 	entity->onAddedToMap(this);
+
+	m_displayManager.addEntity(entity);
 }
 
 void Map::removeEntity(entity::Entity* entity)
@@ -204,6 +205,8 @@ void Map::removeEntity(entity::Entity* entity)
 	FLAT_ASSERT(it != m_entities.end());
 	m_entities.erase(it);
 	entity->onRemovedFromMap();
+
+	m_displayManager.removeEntity(entity);
 }
 
 entity::Entity* Map::removeEntityAtIndex(int index)
@@ -213,6 +216,8 @@ entity::Entity* Map::removeEntityAtIndex(int index)
 	m_entities[index] = m_entities.back();
 	m_entities.pop_back();
 	entity->onRemovedFromMap();
+
+	m_displayManager.removeEntity(entity);
 	return entity;
 }
 

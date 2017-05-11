@@ -3,7 +3,6 @@
 
 #include <flat.h>
 #include "../mod/mod.h"
-#include "../map/displaymanager.h"
 #include "../entity/entitypool.h"
 #include "../entity/component/component.h"
 #include "../entity/component/componentregistry.h"
@@ -86,8 +85,6 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		inline const flat::video::View& getGameView() const { return m_gameView; }
 
 		bool isMouseOverUi(game::Game& game) const;
-
-		inline map::DisplayManager& getDisplayManager() { return m_mapDisplayManager; }
 		
 	protected:
 		void update(game::Game& game);
@@ -135,7 +132,6 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		
 		// level
 		mod::Mod m_mod;
-		map::DisplayManager m_mapDisplayManager;
 
 		std::map<std::string, entity::faction::Faction> m_factions;
 

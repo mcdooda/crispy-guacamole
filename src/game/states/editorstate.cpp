@@ -35,7 +35,6 @@ void EditorState::execute(Game& game)
 	despawnEntities();
 	flat::time::Time* time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
-	m_mapDisplayManager.updateEntities();
 
 	Super::execute(game);
 }

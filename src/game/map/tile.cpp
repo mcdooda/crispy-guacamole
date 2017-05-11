@@ -9,7 +9,7 @@ namespace map
 
 Tile::Tile() :
 	m_prop(nullptr),
-	m_exists(true),
+	m_exists(false),
 	m_walkable(true)
 {
 	m_sprite.setColor(flat::video::Color::WHITE);
@@ -18,6 +18,32 @@ Tile::Tile() :
 Tile::~Tile()
 {
 	FLAT_DELETE(m_prop);
+}
+
+void Tile::setExists(Map& map, bool exists)
+{
+	if (m_exists != exists)
+	{
+		DisplayManager& displayManager = map.getDisplayManager();
+		if (exists)
+		{
+			m_exists = true;
+			displayManager.addTerrainObject(this);
+			if (m_prop != nullptr)
+			{
+				displayManager.addTerrainObject(m_prop);
+			}
+		}
+		else
+		{
+			displayManager.removeTerrainObject(this);
+			m_exists = false;
+			if (m_prop != nullptr)
+			{
+				displayManager.removeTerrainObject(m_prop);
+			}
+		}
+	}
 }
 
 const flat::render::Sprite& Tile::getSprite() const
@@ -32,9 +58,8 @@ void Tile::updateWorldSpaceAABB()
 	m_worldSpaceAABB.min = flat::Vector3(m_x - 0.5f, m_y - 0.5f, m_z - 100.f);
 }
 
-void Tile::setCoordinates(const Map& map, int x, int y, float z)
+void Tile::setCoordinates(Map& map, int x, int y, float z)
 {
-	FLAT_ASSERT(m_exists);
 	m_x = x;
 	m_y = y;
 	m_z = z;
@@ -46,43 +71,87 @@ void Tile::setCoordinates(const Map& map, int x, int y, float z)
 	m_sprite.setPosition(position2d);
 	m_sprite.getAABB(m_spriteAABB);
 
+	if (m_exists)
+	{
+		DisplayManager& displayManager = map.getDisplayManager();
+		displayManager.updateTerrainObject(this);
+	}
+
 	if (m_prop)
 	{
 		m_prop->setSpritePosition(position2d);
 		m_prop->updateWorldSpaceAABB(position);
+
+		if (m_exists)
+		{
+			DisplayManager& displayManager = map.getDisplayManager();
+			displayManager.updateTerrainObject(m_prop);
+		}
 	}
+
 }
 
-void Tile::setTexture(const std::shared_ptr<const flat::video::Texture>& tileTexture)
+void Tile::setTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& tileTexture)
 {
-	FLAT_ASSERT(m_exists);
 	m_sprite.setTexture(tileTexture);
 	const flat::Vector2& textureSize = tileTexture->getSize();
 	flat::Vector2 origin(textureSize.x / 2, textureSize.x / 4); // should depend on tile width/height instead
 	m_sprite.setOrigin(origin);
 	m_sprite.getAABB(m_spriteAABB);
+
+	if (m_exists)
+	{
+		DisplayManager& displayManager = map.getDisplayManager();
+		displayManager.updateTerrainObject(this);
+	}
 }
 
-void Tile::setPropTexture(const std::shared_ptr<const flat::video::Texture>& propTexture)
+void Tile::setPropTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& propTexture)
 {
-	FLAT_ASSERT(m_exists);
-	if (!m_prop)
+	DisplayManager& displayManager = map.getDisplayManager();
+
+	Prop* prop = m_prop;
+	if (!prop)
 	{
-		m_prop = new Prop();
-		m_prop->setSpritePosition(m_sprite.getPosition());
-		m_prop->updateWorldSpaceAABB(flat::Vector3(m_x, m_y, m_z));
+		prop = new Prop();
+		prop->setSpritePosition(m_sprite.getPosition());
+		prop->updateWorldSpaceAABB(flat::Vector3(m_x, m_y, m_z));
 	}
-	m_prop->setSpriteTexture(propTexture);
+	prop->setSpriteTexture(propTexture);
 	const flat::Vector2& textureSize = propTexture->getSize();
 	flat::Vector2 origin(textureSize.x / 2.f, textureSize.y - textureSize.x / 4.f);
-	m_prop->setSpriteOrigin(origin);
+	prop->setSpriteOrigin(origin);
 	setWalkable(false);
+
+	if (m_exists)
+	{
+		if (m_prop != nullptr)
+		{
+			displayManager.updateTerrainObject(prop);
+		}
+		else
+		{
+			displayManager.addTerrainObject(prop);
+		}
+	}
+
+	m_prop = prop;
 }
 
-void Tile::removeProp()
+void Tile::removeProp(Map& map)
 {
-	FLAT_DELETE(m_prop);
 	setWalkable(true);
+
+	if (m_prop != nullptr)
+	{
+		if (m_exists)
+		{
+			DisplayManager& displayManager = map.getDisplayManager();
+			displayManager.removeTerrainObject(m_prop);
+		}
+
+		FLAT_DELETE(m_prop);
+	}
 }
 
 void Tile::addEntity(entity::Entity* entity)

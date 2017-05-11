@@ -84,18 +84,6 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 	});
 }
 
-void Map::drawTerrain()
-{
-	eachTileIfExists([this](const Tile* tile)
-	{
-		m_displayManager.addTerrainObject(tile);
-		if (const Prop* prop = tile->getProp())
-		{
-			m_displayManager.addTerrainObject(prop);
-		}
-	});
-}
-
 const Tile* Map::getTile(int x, int y) const
 {
 	return const_cast<Map*>(this)->getTile(x, y);

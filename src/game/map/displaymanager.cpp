@@ -29,47 +29,59 @@ DisplayManager::DisplayManager()
 	);
 }
 
-void DisplayManager::addEntity(const MapObject* mapObject)
+void DisplayManager::addEntity(const entity::Entity* entity)
 {
-	FLAT_ASSERT(mapObject->getTextureHash() != 0);
-	FLAT_ASSERT(mapObject->isEntity());
-	int cellIndex = m_entityQuadtree->addObject(mapObject);
-	m_entityCellIndices[mapObject] = cellIndex;
+	FLAT_ASSERT(entity->getTextureHash() != 0);
+	int cellIndex = m_entityQuadtree->addObject(entity);
+	m_entityCellIndices[entity] = cellIndex;
 }
 
-void DisplayManager::removeEntity(const MapObject* mapObject)
+void DisplayManager::removeEntity(const entity::Entity* entity)
 {
-	FLAT_ASSERT(mapObject->getTextureHash() != 0);
-	FLAT_ASSERT(mapObject->isEntity());
-	int cellIndex = m_entityCellIndices[mapObject];
-	m_entityQuadtree->removeObject(mapObject, cellIndex);
-	m_entityCellIndices.erase(mapObject);
+	FLAT_ASSERT(entity->getTextureHash() != 0);
+	int cellIndex = m_entityCellIndices[entity];
+	m_entityQuadtree->removeObject(entity, cellIndex);
+	m_entityCellIndices.erase(entity);
 }
 
-void DisplayManager::updateEntity(const MapObject* mapObject)
+void DisplayManager::updateEntity(const entity::Entity* entity)
 {
-	FLAT_ASSERT(mapObject->getTextureHash() != 0);
-	FLAT_ASSERT(mapObject->isEntity());
-	int cellIndex = m_entityCellIndices[mapObject];
-	int newCellIndex = m_entityQuadtree->updateObject(mapObject, cellIndex);
+	FLAT_ASSERT(entity->getTextureHash() != 0);
+	int cellIndex = m_entityCellIndices[entity];
+	int newCellIndex = m_entityQuadtree->updateObject(entity, cellIndex);
 	if (cellIndex != newCellIndex)
 	{
-		m_entityCellIndices[mapObject] = newCellIndex;
+		m_entityCellIndices[entity] = newCellIndex;
 	}
 }
 
-void DisplayManager::addTerrainObject(const MapObject * mapObject)
+void DisplayManager::addTerrainObject(const MapObject* mapObject)
 {
 	FLAT_ASSERT(mapObject->getTextureHash() != 0);
 	FLAT_ASSERT(!mapObject->isEntity());
-	m_terrainQuadtree->addObject(mapObject);
+	int cellIndex = m_terrainQuadtree->addObject(mapObject);
+	m_TerrainObjectCellIndices[mapObject] = cellIndex;
 }
 
-void DisplayManager::removeTerrainObject(const MapObject * mapObject)
+void DisplayManager::removeTerrainObject(const MapObject* mapObject)
 {
 	FLAT_ASSERT(mapObject->getTextureHash() != 0);
 	FLAT_ASSERT(!mapObject->isEntity());
-	m_terrainQuadtree->removeObject(mapObject);
+	int cellIndex = m_TerrainObjectCellIndices[mapObject];
+	m_terrainQuadtree->removeObject(mapObject, cellIndex);
+	m_TerrainObjectCellIndices.erase(mapObject);
+}
+
+void DisplayManager::updateTerrainObject(const MapObject* mapObject)
+{
+	FLAT_ASSERT(mapObject->getTextureHash() != 0);
+	FLAT_ASSERT(!mapObject->isEntity());
+	int cellIndex = m_TerrainObjectCellIndices[mapObject];
+	int newCellIndex = m_terrainQuadtree->updateObject(mapObject, cellIndex);
+	if (cellIndex != newCellIndex)
+	{
+		m_TerrainObjectCellIndices[mapObject] = newCellIndex;
+	}
 }
 
 void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view)

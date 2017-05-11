@@ -47,7 +47,8 @@ void PropEditorMode::updateBrushTiles()
 
 void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
-	eachBrushTileIfExists([this](map::Tile* tile, float effect)
+	map::Map& map = getMap();
+	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
 	{
 		if (tile->getEntities().empty())
 		{
@@ -55,7 +56,7 @@ void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)
 			if (random <= effect)
 			{
 				std::shared_ptr<const flat::video::Texture> texture = m_propTemplate->getRandomTexture(m_game);
-				tile->setPropTexture(texture);
+				tile->setPropTexture(map, texture);
 			}
 		}
 	});
@@ -63,14 +64,15 @@ void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)
 
 void PropEditorMode::applyBrushSecondaryEffect(bool justPressed)
 {
-	eachBrushTileIfExists([this](map::Tile* tile, float effect)
+	map::Map& map = getMap();
+	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
 			if (tile->getProp() != nullptr)
 			{
-				tile->removeProp();
+				tile->removeProp(map);
 			}
 		}
 	});

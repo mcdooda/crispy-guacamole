@@ -48,7 +48,6 @@ void GameMap::createTiles()
 		{
 			Tile* tile = getTile(x, y);
 			tile->setCoordinates(*this, x, y, 0.f);
-			tile->setExists(false);
 		}
 	}
 }

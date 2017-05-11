@@ -26,7 +26,7 @@ class Tile final : public MapObject
 		bool isTile() const override { return true; }
 		
 		inline bool exists() const { return m_exists; }
-		void setExists(bool exists) { m_exists = exists; }
+		void setExists(Map& map, bool exists);
 		
 		inline bool isWalkable() const { return m_walkable; }
 		inline void setWalkable(bool walkable) { m_walkable = walkable; }
@@ -35,15 +35,15 @@ class Tile final : public MapObject
 		const flat::render::Sprite& getSprite() const override;
 		void updateWorldSpaceAABB();
 		
-		void setCoordinates(const Map& map, int x, int y, float z);
+		void setCoordinates(Map& map, int x, int y, float z);
 		inline int getX() const { return m_x; }
 		inline int getY() const { return m_y; }
 		inline float getZ() const { return m_z; }
-		inline void setZ(const Map& map, float z) { setCoordinates(map, m_x, m_y, z); }
+		inline void setZ(Map& map, float z) { setCoordinates(map, m_x, m_y, z); }
 		
-		void setTexture(const std::shared_ptr<const flat::video::Texture>& tileTexture);
-		void setPropTexture(const std::shared_ptr<const flat::video::Texture>& propTexture);
-		void removeProp();
+		void setTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& tileTexture);
+		void setPropTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& propTexture);
+		void removeProp(Map& map);
 		inline const Prop* getProp() const { return m_prop; }
 		
 		void addEntity(entity::Entity* entity);

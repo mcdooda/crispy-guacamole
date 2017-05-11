@@ -88,8 +88,6 @@ void BaseMapState::enter(Game& game)
 
 	resetViews(game);
 
-	map.drawTerrain();
-
 	m_ghostEntity = nullptr;
 }
 

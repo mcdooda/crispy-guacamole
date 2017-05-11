@@ -42,9 +42,6 @@ class Map
 		void getBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		
-		// rendering
-		void drawTerrain();
-		
 		// get tiles
 		const Tile* getTile(int x, int y) const;
 		virtual Tile* getTile(int x, int y) = 0;

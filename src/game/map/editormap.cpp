@@ -27,7 +27,7 @@ Tile* EditorMap::getTile(int x, int y)
 	{
 		Tile& tile = m_tiles[tilePosition];
 		tile.setCoordinates(*this, x, y, 0.f);
-		tile.setExists(false);
+		tile.setExists(*this, false);
 		return &tile;
 	}
 	return &it->second;
@@ -44,16 +44,7 @@ void EditorMap::eachTile(std::function<void(Tile*)> func)
 void EditorMap::createTiles()
 {
 	FLAT_ASSERT(m_minX < m_maxX && m_minY < m_maxY);
-	for (int y = m_minY; y <= m_maxY; ++y)
-	{
-		for (int x = m_minX; x <= m_maxX; ++x)
-		{
-			TilePosition tilePosition{ x, y };
-			Tile& tile = m_tiles[tilePosition];
-			tile.setCoordinates(*this, x, y, 0.f);
-			tile.setExists(false);
-		}
-	}
+	// nothing to do as tiles are created on the fly
 }
 
 } // map

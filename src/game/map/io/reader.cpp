@@ -170,8 +170,6 @@ void Reader::readTiles()
 			read(exists);
 			if (exists)
 			{
-				tile->setExists(true);
-
 				float z;
 				read(z);
 				tile->setCoordinates(m_map, x, y, z);
@@ -179,7 +177,7 @@ void Reader::readTiles()
 				uint16_t tileIndex;
 				read(tileIndex);
 				const std::shared_ptr<const flat::video::FileTexture>& texture = m_tileTextures[tileIndex];
-				tile->setTexture(texture);
+				tile->setTexture(m_map, texture);
 				
 				bool hasProp;
 				read(hasProp);
@@ -188,8 +186,10 @@ void Reader::readTiles()
 					uint16_t propIndex;
 					read(propIndex);
 					const std::shared_ptr<const flat::video::FileTexture>& texture = m_propTextures[propIndex];
-					tile->setPropTexture(texture);
+					tile->setPropTexture(m_map, texture);
 				}
+
+				tile->setExists(m_map, true);
 			}
 		}
 	}

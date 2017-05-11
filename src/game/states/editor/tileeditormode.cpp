@@ -64,13 +64,14 @@ void TileEditorMode::updateBrushTiles()
 
 void TileEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
-	eachBrushTileIfExists([this](map::Tile* tile, float effect)
+	map::Map& map = getMap();
+	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
 			std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
-			tile->setTexture(texture);
+			tile->setTexture(map, texture);
 		}
 	});
 	clearSelectedTiles();
@@ -85,7 +86,6 @@ void TileEditorMode::handleShortcuts()
 {
 	const float frameTime = m_game.time->getFrameTime();
 	map::Map& map = getMap();
-	map::DisplayManager& mapDisplayManager = map.getDisplayManager();
 
 	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
 
@@ -136,46 +136,31 @@ void TileEditorMode::handleShortcuts()
 
 	if (keyboard->isJustPressed(K(DELETE)))
 	{
-		eachSelectedTileIfExists([this, &mapDisplayManager](map::Tile* tile, float effect)
+		eachSelectedTileIfExists([this, &map](map::Tile* tile, float effect)
 		{
-			if (tile->exists())
+			tile->setExists(map, false);
+			for (entity::Entity* entity : tile->getEntities())
 			{
-				const map::Prop* prop = tile->getProp();
-				if (prop != nullptr)
-				{
-					mapDisplayManager.removeTerrainObject(prop);
-				}
-				mapDisplayManager.removeTerrainObject(tile);
-				tile->setExists(false);
-				for (entity::Entity* entity : tile->getEntities())
-				{
-					entity->markForDelete();
-				}
+				entity->markForDelete();
 			}
 		});
 	}
 
 	if (keyboard->isPressed(K(SPACE)))
 	{
-		eachBrushTile([this, &mapDisplayManager](map::Tile* tile, float effect)
+		eachBrushTile([this, &map](map::Tile* tile, float effect)
 		{
 			if (!tile->exists())
 			{
 				float random = m_game.random->nextFloat(0.f, 1.f);
 				if (random <= effect)
 				{
-					tile->setExists(true);
 					if (!tile->hasSprite())
 					{
 						std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
-						tile->setTexture(texture);
+						tile->setTexture(map, texture);
 					}
-					mapDisplayManager.addTerrainObject(tile);
-					const map::Prop* prop = tile->getProp();
-					if (prop != nullptr)
-					{
-						mapDisplayManager.addTerrainObject(prop);
-					}
+					tile->setExists(map, true);
 				}
 			}
 		});

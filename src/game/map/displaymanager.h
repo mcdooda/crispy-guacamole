@@ -6,6 +6,10 @@
 
 namespace game
 {
+namespace entity
+{
+class Entity;
+}
 namespace map
 {
 class Map;
@@ -18,11 +22,14 @@ class DisplayManager final
 	public:
 		DisplayManager();
 		
-		void addEntity(const MapObject* mapObject);
-		void removeEntity(const MapObject* mapObject);
-		void updateEntity(const MapObject* mapObject);
+		void addEntity(const entity::Entity* mapObject);
+		void removeEntity(const entity::Entity* mapObject);
+		void updateEntity(const entity::Entity* mapObject);
+
 		void addTerrainObject(const MapObject* mapObject);
 		void removeTerrainObject(const MapObject* mapObject);
+		void updateTerrainObject(const MapObject* mapObject);
+
 		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view);
 
 		const MapObject* getObjectAtPosition(const flat::Vector2& position) const;
@@ -32,9 +39,12 @@ class DisplayManager final
 		
 	private:
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
+
 		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
 		std::unordered_map<const MapObject*, int> m_entityCellIndices;
+
 		std::unique_ptr<TerrainQuadTree> m_terrainQuadtree;
+		std::unordered_map<const MapObject*, int> m_TerrainObjectCellIndices;
 };
 
 } // map

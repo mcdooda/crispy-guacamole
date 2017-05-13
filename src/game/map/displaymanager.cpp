@@ -165,6 +165,11 @@ const MapObject* DisplayManager::getObjectAtPosition(const flat::Vector2& positi
 	return objectAtPosition;
 }
 
+void DisplayManager::getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const
+{
+	m_entityQuadtree->getObjects(aabb, entities);
+}
+
 #ifdef FLAT_DEBUG
 const flat::AABB2& DisplayManager::getEntityCellAABB(const entity::Entity* entity) const
 {

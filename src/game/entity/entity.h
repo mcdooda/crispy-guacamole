@@ -99,6 +99,7 @@ class Entity final : public map::MapObject
 
 		inline flat::lua::SharedLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
 
+		inline const std::shared_ptr<const EntityTemplate>& getTemplate() const { return m_template; }
 		const std::string& getTemplateName() const;
 
 		inline void setCanBeSelected(bool canBeSelected) { m_canBeSelected = canBeSelected; }

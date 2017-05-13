@@ -33,6 +33,7 @@ class DisplayManager final
 		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view);
 
 		const MapObject* getObjectAtPosition(const flat::Vector2& position) const;
+		void getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const;
 
 #ifdef FLAT_DEBUG
 		const flat::AABB2& getEntityCellAABB(const entity::Entity* entity) const;

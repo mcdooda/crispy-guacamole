@@ -577,11 +577,7 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 			flat::Vector2 topRight = bottomLeft + selectionWidget->getSize();
 
 			const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
-			if (isSmallSelection())
-			{
-				selectClickedEntity(game, mousePosition, shiftPressed);
-			}
-			else
+			if (!isSmallSelection())
 			{
 				updateSelectedEntities(game, bottomLeft, topRight, shiftPressed);
 			}
@@ -593,6 +589,9 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 	}
 	else if (mouse->isJustPressed(M(LEFT)))
 	{
+		const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
+		selectClickedEntity(game, mousePosition, shiftPressed);
+
 		m_mouseDownPosition = mousePosition;
 		flat::sharp::ui::RootWidget* root = game.ui->root.get();
 		root->addChild(m_selectionWidget);
@@ -629,50 +628,70 @@ void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePos
 
 	if (entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity())
 	{
-		if (!mouseOverEntity->isSelected())
+		addToSelectedEntities(mouseOverEntity);
+	}
+}
+
+void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection)
+{
+	if (!addToSelection)
+	{
+		clearSelection();
+	}
+
+	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
+	if (mouseOverEntity != nullptr && mouseOverEntity->getCanBeSelected())
+	{
+		const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getTemplate();
+
+		flat::AABB2 screenAABB;
+		m_gameView.getScreenAABB(screenAABB);
+
+		const map::DisplayManager& mapDisplayManager = getMap().getDisplayManager();
+		std::vector<const map::MapObject*> entitiesInScreen;
+		mapDisplayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
+
+		for (const map::MapObject* mapObject : entitiesInScreen)
 		{
-			m_selectedEntities.push_back(mouseOverEntity);
-			mouseOverEntity->setSelected(true);
+			// TODO: fix these casts
+			entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
+			if (entity->getTemplate() == entityTemplate)
+			{
+				addToSelectedEntities(entity);
+			}
 		}
 	}
 }
 
 void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection)
 {
-	const flat::Vector2 viewBottomLeft = m_gameView.getRelativePosition(bottomLeft);
-	const flat::Vector2 viewTopRight = m_gameView.getRelativePosition(topRight);
-
 	if (!addToSelection)
 	{
-		m_selectedEntities.clear();
+		clearSelection();
 	}
 
-	map::Map& map = getMap();
-	for (entity::Entity* entity : map.getEntities()) // TODO: optimize this
+	flat::AABB2 selectionAABB;
+	selectionAABB.min = m_gameView.getRelativePosition(bottomLeft);
+	selectionAABB.max = m_gameView.getRelativePosition(topRight);
+	std::swap(selectionAABB.min.y, selectionAABB.max.y);
+
+	const map::DisplayManager& mapDisplayManager = getMap().getDisplayManager();
+	std::vector<const map::MapObject*> entitiesInSelectionWidget;
+	mapDisplayManager.getEntitiesInAABB(selectionAABB, entitiesInSelectionWidget);
+
+	for (const map::MapObject* mapObject : entitiesInSelectionWidget)
 	{
+		// TODO: fix these casts
+		entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
 		if (!entity->getCanBeSelected())
 		{
 			continue;
 		}
 
-		const flat::render::Sprite& sprite = entity->getSprite();
-		const flat::Vector2& spritePosition = sprite.getPosition();
-		if (viewBottomLeft.x <= spritePosition.x && spritePosition.x <= viewTopRight.x
-			&& viewTopRight.y <= spritePosition.y && spritePosition.y <= viewBottomLeft.y) // y is flipped in the game view
+		// check that the sprite origin actually is in the AABB
+		if (selectionAABB.isInside(entity->getSprite().getPosition()))
 		{
-			if (!addToSelection || !entity->isSelected())
-			{
-				m_selectedEntities.push_back(entity);
-			}
-
-			if (!entity->isSelected())
-			{
-				entity->setSelected(true);
-			}
-		}
-		else if (!addToSelection && entity->isSelected())
-		{
-			entity->setSelected(false);
+			addToSelectedEntities(entity);
 		}
 	}
 }
@@ -686,7 +705,17 @@ void BaseMapState::clearSelection()
 	m_selectedEntities.clear();
 }
 
-void BaseMapState::removeFromSelectedEntities(entity::Entity * entity)
+void BaseMapState::addToSelectedEntities(entity::Entity * entity)
+{
+	if (!entity->isSelected())
+	{
+		entity->setSelected(true);
+		FLAT_ASSERT(std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity) == m_selectedEntities.end());
+		m_selectedEntities.push_back(entity);
+	}
+}
+
+void BaseMapState::removeFromSelectedEntities(entity::Entity* entity)
 {
 	if (entity->isSelected())
 	{

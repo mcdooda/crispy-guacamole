@@ -112,8 +112,10 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		void clearMouseOverColor(const entity::Entity* entity) const;
 		bool updateSelectionWidget(Game& game);
 		void selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
+		void selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);
 		void clearSelection();
+		void addToSelectedEntities(entity::Entity* entity);
 		void removeFromSelectedEntities(entity::Entity* entity);
 		bool isSmallSelection() const;
 		

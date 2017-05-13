@@ -49,12 +49,14 @@ void GameState::execute(Game& game)
 	else
 	{
 		updateMouseOverEntity(game);
-		if (!updateSelectionWidget(game))
+		if (mouse->isJustDoubleClicked(M(LEFT)))
 		{
-			if (mouse->isJustReleased(M(LEFT)))
-			{
-				clearSelection();
-			}
+			const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
+			selectEntitiesOfTypeInScreen(game, mouse->getPosition(), shiftPressed);
+		}
+		else
+		{
+			updateSelectionWidget(game);
 		}
 
 		if (mouse->isJustPressed(M(RIGHT)))

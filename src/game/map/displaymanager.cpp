@@ -165,6 +165,15 @@ const MapObject* DisplayManager::getObjectAtPosition(const flat::Vector2& positi
 	return objectAtPosition;
 }
 
+#ifdef FLAT_DEBUG
+const flat::AABB2& DisplayManager::getEntityCellAABB(const entity::Entity* entity) const
+{
+	int cellIndex = m_entityCellIndices.at(entity);
+	const EntityQuadTree::Cell& cell = m_entityQuadtree->getCell(cellIndex);
+	return cell.getAABB();
+}
+#endif
+
 // Object sorting
 
 inline bool sortMapObjects(const MapObject* a, const MapObject* b)

@@ -239,6 +239,11 @@ bool SpriteComponent::isBusy() const
 void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
 	debugDisplay.add2dAABB(m_owner->getAABB());
+
+	const map::Map* map = m_owner->getMap();
+	const map::DisplayManager& mapDisplayManager = map->getDisplayManager();
+	const flat::AABB2& quadtreeCellAABB = mapDisplayManager.getEntityCellAABB(m_owner);
+	debugDisplay.add2dAABB(quadtreeCellAABB, flat::video::Color::RED);
 }
 #endif
 

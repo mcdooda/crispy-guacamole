@@ -90,6 +90,7 @@ class Map
 		inline const std::map<std::string, std::shared_ptr<Zone>>& getZones() const { return m_zones; }
 
 		inline DisplayManager& getDisplayManager() { return m_displayManager; }
+		inline const DisplayManager& getDisplayManager() const { return m_displayManager; }
 
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;

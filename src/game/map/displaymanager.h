@@ -17,8 +17,8 @@ class MapObject;
 
 class DisplayManager final
 {
-	using EntityQuadTree = flat::geometry::QuadTree<MapObject, 8>;
-	using TerrainQuadTree = flat::geometry::QuadTree<MapObject, 8>;
+	using EntityQuadTree = flat::geometry::QuadTree<MapObject, 11>;
+	using TerrainQuadTree = flat::geometry::QuadTree<MapObject, 11>;
 	public:
 		DisplayManager();
 		
@@ -33,6 +33,10 @@ class DisplayManager final
 		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view);
 
 		const MapObject* getObjectAtPosition(const flat::Vector2& position) const;
+
+#ifdef FLAT_DEBUG
+		const flat::AABB2& getEntityCellAABB(const entity::Entity* entity) const;
+#endif
 
 	private:
 		static void sortObjectsByDepth(std::vector<const MapObject*>& objects);

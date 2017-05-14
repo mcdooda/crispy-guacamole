@@ -53,6 +53,7 @@ protected:
 	std::map<map::Tile*, float> m_selectedTiles;
 	std::map<map::Tile*, float> m_brushTiles;
 	flat::Vector2 m_brushPosition;
+	bool m_brushOnTile;
 	std::unique_ptr<map::brush::Brush> m_brush;
 };
 

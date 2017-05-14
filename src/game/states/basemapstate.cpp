@@ -1,4 +1,3 @@
-#include <iostream>
 #include <flat.h>
 #include "basemapstate.h"
 #include "editor/lua/editor.h"
@@ -88,6 +87,8 @@ void BaseMapState::enter(Game& game)
 
 	resetViews(game);
 
+	m_mouseOverEntity = nullptr;
+	m_mouseOverTile = nullptr;
 	m_ghostEntity = nullptr;
 }
 
@@ -141,7 +142,7 @@ const map::Map& BaseMapState::getMap() const
 	return const_cast<BaseMapState*>(this)->getMap();
 }
 
-flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game)
+flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTile) const
 {
 	const flat::Vector2& cursorPosition = game.input->mouse->getPosition();
 	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition);
@@ -150,10 +151,33 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game)
 	const flat::Vector2& xAxis = map.getXAxis();
 	const flat::Vector2& yAxis = map.getYAxis();
 
-	flat::Vector2 mapPosition;
+	auto gameViewToMap = [&xAxis, &yAxis](const flat::Vector2& screenPosition)
+	{
+		return flat::Vector2(
+			(screenPosition.x * yAxis.y - screenPosition.y * yAxis.x) / (xAxis.x * yAxis.y - xAxis.y * yAxis.x),
+			(screenPosition.y * xAxis.x - screenPosition.x * xAxis.y) / (yAxis.y * xAxis.x - yAxis.x * xAxis.y)
+		);
+	};
 
-	mapPosition.x = (gameViewPosition.x * yAxis.y - gameViewPosition.y * yAxis.x) / (xAxis.x * yAxis.y - xAxis.y * yAxis.x);
-	mapPosition.y = (gameViewPosition.y * xAxis.x - gameViewPosition.x * xAxis.y) / (yAxis.y * xAxis.x - yAxis.x * xAxis.y);
+	flat::Vector2 mapPosition = gameViewToMap(gameViewPosition);
+	isOnTile = false;
+
+	if (m_mouseOverTile != nullptr)
+	{
+		const flat::Vector2& spritePosition = m_mouseOverTile->getSprite().getPosition();
+		flat::Vector2 delta = gameViewToMap(gameViewPosition - spritePosition);
+
+		flat::Vector2 tileCenter = flat::Vector2(m_mouseOverTile->getX(), m_mouseOverTile->getY());
+		flat::AABB2 tileAABB(tileCenter - flat::Vector2(0.55f), tileCenter + flat::Vector2(0.55f));
+		flat::Vector2 mapPositionOnTile = tileCenter + delta;
+		if (tileAABB.isInside(mapPositionOnTile))
+		{
+			mapPosition = mapPositionOnTile;
+			mapPosition.x = glm::clamp(mapPosition.x, tileCenter.x - (0.5f - flat::EPSILON), tileCenter.x + (0.5f - flat::EPSILON));
+			mapPosition.y = glm::clamp(mapPosition.y, tileCenter.y - (0.5f - flat::EPSILON), tileCenter.y + (0.5f - flat::EPSILON));
+			isOnTile = true;
+		}
+	}
 
 	return mapPosition;
 }
@@ -311,33 +335,37 @@ void BaseMapState::addGhostEntity(game::Game& game)
 {
 	if (m_ghostEntity != nullptr && !isMouseOverUi(game) && !isSelecting() && !m_mouseOverEntity.isValid())
 	{
-		flat::Vector2 cursorPosition = getCursorMapPosition(game);
-		map::Tile* tile = getMap().getTileIfWalkable(cursorPosition.x, cursorPosition.y);
-		if (tile != nullptr)
+		bool isOnTile;
+		flat::Vector2 cursorPosition = getCursorMapPosition(game, isOnTile);
+		if (isOnTile)
 		{
-			entity::component::collision::CollisionComponent* collisionComponent = m_ghostEntity->getComponent<entity::component::collision::CollisionComponent>();
-			m_ghostEntity->resetComponents();
-			m_ghostEntity->setHeading(0.f);
-			m_ghostEntity->setElevation(0.f);
-			flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
-			m_ghostEntity->setPosition(ghostPosition);
-			addEntityToMap(m_ghostEntity);
-
-			if (collisionComponent != nullptr)
+			map::Tile* tile = getMap().getTileIfWalkable(cursorPosition.x, cursorPosition.y);
+			if (tile != nullptr)
 			{
-				collisionComponent->incDisableLevel();
-			}
-			m_ghostEntity->update(game.time->getTime(), 0.f);
-			if (collisionComponent != nullptr)
-			{
-				collisionComponent->decDisableLevel();
-			}
+				entity::component::collision::CollisionComponent* collisionComponent = m_ghostEntity->getComponent<entity::component::collision::CollisionComponent>();
+				m_ghostEntity->resetComponents();
+				m_ghostEntity->setHeading(0.f);
+				m_ghostEntity->setElevation(0.f);
+				flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
+				m_ghostEntity->setPosition(ghostPosition);
+				addEntityToMap(m_ghostEntity);
 
-			// TODO: clean this shit
-			flat::render::Sprite& sprite = const_cast<flat::render::Sprite&>(m_ghostEntity->getSprite());
-			flat::video::Color color = sprite.getColor();
-			color.a = 0.6f;
-			sprite.setColor(color);
+				if (collisionComponent != nullptr)
+				{
+					collisionComponent->incDisableLevel();
+				}
+				m_ghostEntity->update(game.time->getTime(), 0.f);
+				if (collisionComponent != nullptr)
+				{
+					collisionComponent->decDisableLevel();
+				}
+
+				// TODO: clean this shit
+				flat::render::Sprite& sprite = const_cast<flat::render::Sprite&>(m_ghostEntity->getSprite());
+				flat::video::Color color = sprite.getColor();
+				color.a = 0.6f;
+				sprite.setColor(color);
+			}
 		}
 	}
 }
@@ -491,6 +519,8 @@ bool BaseMapState::isSelecting() const
 
 void BaseMapState::updateMouseOverEntity(Game& game)
 {
+	m_mouseOverTile = nullptr;
+
 	if ((isSelecting() && !isSmallSelection()) || isMouseOverUi(game))
 	{
 		m_mouseOverEntity = nullptr;
@@ -513,6 +543,10 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 			{
 				newMouseOverEntity = entity;
 			}
+		}
+		else if (mouseOverObject->isTile())
+		{
+			m_mouseOverTile = static_cast<const map::Tile*>(mouseOverObject);
 		}
 	}
 

@@ -237,7 +237,8 @@ void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::fun
 
 void Map::updateEntities(float currentTime, float elapsedTime)
 {
-	for (entity::Entity* entity : m_entities)
+	auto entities = m_entities;
+	for (entity::Entity* entity : entities)
 	{
 		entity->update(currentTime, elapsedTime);
 

@@ -42,7 +42,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		virtual map::Map& getMap() = 0;
 		const map::Map& getMap() const;
 
-		flat::Vector2 getCursorMapPosition(game::Game& game);
+		flat::Vector2 getCursorMapPosition(game::Game& game, bool& isOnTile) const;
 
 		void addFaction(const std::string& factionName);
 		entity::faction::Faction* getFactionByName(const std::string& factionName);
@@ -142,6 +142,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		std::vector<entity::Entity*> m_selectedEntities;
 		entity::EntityHandle m_mouseOverEntity;
+		const map::Tile* m_mouseOverTile;
 
 		std::shared_ptr<const entity::EntityTemplate> m_ghostTemplate;
 		entity::Entity* m_ghostEntity;

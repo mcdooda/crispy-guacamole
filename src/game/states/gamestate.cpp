@@ -61,21 +61,25 @@ void GameState::execute(Game& game)
 
 		if (mouse->isJustPressed(M(RIGHT)))
 		{
-			flat::Vector2 clickedTilePosition = getCursorMapPosition(game);
-			map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
-			if (clickedTile)
+			bool clickedOnTile;
+			flat::Vector2 clickedTilePosition = getCursorMapPosition(game, clickedOnTile);
+			if (clickedOnTile)
 			{
-				if (!keyboard->isPressed(K(LSHIFT)))
+				map::Tile* clickedTile = m_map.getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
+				if (clickedTile)
 				{
+					if (!keyboard->isPressed(K(LSHIFT)))
+					{
+						for (entity::Entity* entity : m_selectedEntities)
+						{
+							entity->clearPath();
+						}
+					}
+
 					for (entity::Entity* entity : m_selectedEntities)
 					{
-						entity->clearPath();
+						entity->addPointOnPath(clickedTilePosition);
 					}
-				}
-
-				for (entity::Entity* entity : m_selectedEntities)
-				{
-					entity->addPointOnPath(clickedTilePosition);
 				}
 			}
 		}

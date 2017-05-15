@@ -46,7 +46,7 @@ entity::component::ComponentFlags EditorState::getComponentsFilter() const
 
 void EditorState::saveOnCtrlS(Game& game)
 {
-	const flat::input::Keyboard* keyboard = game.input->keyboard;
+	auto& keyboard = game.input->keyboard;
 	if (keyboard->isPressed(K(LCTRL)) && keyboard->isJustPressed(K(S)))
 	{
 		saveMap(game);
@@ -88,7 +88,7 @@ void EditorState::applyBrush(Game& game)
 		const bool canSelectEntities = m_editorMode->canSelectEntities();
 		if (!canSelectEntities || (canSelectEntities && !updateSelectionWidget(game)))
 		{
-			const flat::input::Mouse* mouse = input->mouse;
+			auto& mouse = input->mouse;
 			if ((!canSelectEntities && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))
 			{
 				m_editorMode->applyBrushPrimaryEffect(mouse->isJustPressed(M(LEFT)));

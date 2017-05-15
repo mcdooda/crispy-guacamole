@@ -39,8 +39,8 @@ void GameState::enter(Game& game)
 
 void GameState::execute(Game& game)
 {
-	const flat::input::Mouse* mouse = game.input->mouse;
-	const flat::input::Keyboard* keyboard = game.input->keyboard;
+	auto& mouse = game.input->mouse;
+	auto& keyboard = game.input->keyboard;
 
 	if (isMouseOverUi(game))
 	{

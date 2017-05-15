@@ -117,7 +117,7 @@ void ZoneEditorMode::updateBrushTiles()
 		return;
 	}
 
-	flat::input::Mouse* mouse = m_game.input->mouse;
+	auto& mouse = m_game.input->mouse;
 
 	if (mouse->isJustPressed(M(LEFT)))
 	{
@@ -165,7 +165,7 @@ void ZoneEditorMode::updateBrushTiles()
 
 void ZoneEditorMode::handleShortcuts()
 {
-	const flat::input::Keyboard* keyboard = m_game.input->keyboard;
+	auto& keyboard = m_game.input->keyboard;
 
 	if (keyboard->isJustPressed(K(DELETE)))
 	{

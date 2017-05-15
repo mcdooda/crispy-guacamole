@@ -380,8 +380,8 @@ void BaseMapState::removeGhostEntity(game::Game & game)
 
 void BaseMapState::updateGameView(game::Game& game)
 {
-	const flat::input::Keyboard* keyboard = game.input->keyboard;
-	const flat::input::Mouse* mouse = game.input->mouse;
+	auto& keyboard = game.input->keyboard;
+	auto& mouse = game.input->mouse;
 	
 	const map::Map& map = getMap();
 	const flat::Vector2& xAxis = map.getXAxis();
@@ -598,8 +598,8 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		return false;
 	}
 
-	const flat::input::Mouse* mouse = game.input->mouse;
-	const flat::input::Keyboard* keyboard = game.input->keyboard;
+	auto& mouse = game.input->mouse;
+	auto& keyboard = game.input->keyboard;
 	const flat::Vector2& mousePosition = mouse->getPosition();
 
 	if (mouse->isJustReleased(M(LEFT)))

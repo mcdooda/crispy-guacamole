@@ -39,8 +39,8 @@ void GameState::enter(Game& game)
 
 void GameState::execute(Game& game)
 {
-	auto& mouse = game.input->mouse;
-	auto& keyboard = game.input->keyboard;
+	const auto& mouse = game.input->mouse;
+	const auto& keyboard = game.input->keyboard;
 
 	if (isMouseOverUi(game))
 	{
@@ -141,7 +141,7 @@ void GameState::execute(Game& game)
 #endif
 
 	despawnEntities();
-	flat::time::Time* time = game.time;
+	const auto& time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
 
 #ifdef FLAT_DEBUG
@@ -234,7 +234,7 @@ void GameState::setGamePause(Game& game, bool pause)
 
 	m_gamePaused = pause;
 
-	flat::time::Time* time = game.time;
+	const auto& time = game.time;
 	if (pause)
 	{
 		time->pause();

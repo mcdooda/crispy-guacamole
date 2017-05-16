@@ -94,11 +94,17 @@ void BaseMapState::enter(Game& game)
 
 void BaseMapState::execute(Game& game)
 {
-	if (game.input->window->isResized())
-		resetViews(game);
+	const auto& input = game.input;
 
-	if (game.input->keyboard->isJustPressed(K(ESCAPE)))
+	if (input->window->isResized())
+	{
+		resetViews(game);
+	}
+
+	if (input->keyboard->isJustPressed(K(ESCAPE)))
+	{
 		game.stop();
+	}
 	
 	update(game);
 	draw(game);
@@ -380,8 +386,8 @@ void BaseMapState::removeGhostEntity(game::Game & game)
 
 void BaseMapState::updateGameView(game::Game& game)
 {
-	auto& keyboard = game.input->keyboard;
-	auto& mouse = game.input->mouse;
+	const auto& keyboard = game.input->keyboard;
+	const auto& mouse = game.input->mouse;
 	
 	const map::Map& map = getMap();
 	const flat::Vector2& xAxis = map.getXAxis();
@@ -416,7 +422,9 @@ void BaseMapState::updateGameView(game::Game& game)
 	}
 	
 	if (game.input->window->isResized())
+	{
 		m_gameView.updateProjection();
+	}
 }
 
 void BaseMapState::setCameraCenter(const flat::Vector3& cameraCenter)
@@ -598,8 +606,8 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		return false;
 	}
 
-	auto& mouse = game.input->mouse;
-	auto& keyboard = game.input->keyboard;
+	const auto& mouse = game.input->mouse;
+	const auto& keyboard = game.input->keyboard;
 	const flat::Vector2& mousePosition = mouse->getPosition();
 
 	if (mouse->isJustReleased(M(LEFT)))

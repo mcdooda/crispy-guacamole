@@ -17,7 +17,7 @@ class UiComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
-		inline flat::sharp::ui::Ui& getUi() const { return *m_ui; }
+		inline flat::sharp::ui::WidgetFactory& getWidgetFactory() const { return *m_widgetFactory; }
 
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getAddedToMap() const { return m_addedToMap; }
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getRemovedFromMap() const { return m_removedFromMap; }
@@ -26,7 +26,7 @@ class UiComponentTemplate : public ComponentTemplate
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getDeselected() const { return m_deselected; }
 
 	private:
-		flat::sharp::ui::Ui* m_ui; // give access to UiComponent
+		flat::sharp::ui::WidgetFactory* m_widgetFactory; // give access to UiComponent
 
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_addedToMap;
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_removedFromMap;

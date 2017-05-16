@@ -33,7 +33,7 @@ void EditorState::execute(Game& game)
 	saveOnCtrlS(game);
 
 	despawnEntities();
-	flat::time::Time* time = game.time;
+	const auto& time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
 
 	Super::execute(game);
@@ -71,7 +71,7 @@ void EditorState::displayBrush(Game& game)
 
 void EditorState::applyBrush(Game& game)
 {
-	const flat::input::Input* input = game.input;
+	const auto& input = game.input;
 
 	if (!input->keyboard->isPressed(K(LCTRL)))
 	{

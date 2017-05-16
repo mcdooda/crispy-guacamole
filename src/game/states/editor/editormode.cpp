@@ -26,7 +26,7 @@ EditorMode::~EditorMode()
 
 void EditorMode::updateBrushPosition()
 {
-	auto& keyboard = m_game.input->keyboard;
+	const auto& keyboard = m_game.input->keyboard;
 	m_brushPosition = getEditorState().getCursorMapPosition(m_game, m_brushOnTile);
 	if (keyboard->isPressed(K(LSHIFT)))
 	{

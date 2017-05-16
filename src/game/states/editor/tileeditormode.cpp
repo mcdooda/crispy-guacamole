@@ -27,8 +27,8 @@ TileEditorMode::~TileEditorMode()
 
 void TileEditorMode::updateBrushTiles()
 {
-	auto& keyboard = m_game.input->keyboard;
-	auto& mouse = m_game.input->mouse;
+	const auto& keyboard = m_game.input->keyboard;
+	const auto& mouse = m_game.input->mouse;
 
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush != nullptr);
@@ -87,7 +87,7 @@ void TileEditorMode::handleShortcuts()
 	const float frameTime = m_game.time->getFrameTime();
 	map::Map& map = getMap();
 
-	auto& keyboard = m_game.input->keyboard;
+	const auto& keyboard = m_game.input->keyboard;
 
 	const bool altPressed = keyboard->isPressed(K(LALT));
 	const bool upPressed   = altPressed ? keyboard->isJustPressed(K(W)) : keyboard->isPressed(K(W));

@@ -40,7 +40,7 @@ void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed)
 
 void EntityEditorMode::handleShortcuts()
 {
-	auto& keyboard = m_game.input->keyboard;
+	const auto& keyboard = m_game.input->keyboard;
 	const bool delPressed = keyboard->isJustPressed(K(DELETE));
 	if (delPressed)
 	{

@@ -14,7 +14,7 @@ void UiComponentTemplate::load(Game& game, lua_State* L, const std::string& enti
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	m_ui = game.ui;
+	m_widgetFactory = &game.ui->factory;
 
 	lua_getfield(L, -1, "addedToMap");
 	m_addedToMap.setIfNotNil(L, -1);

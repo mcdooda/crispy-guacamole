@@ -32,7 +32,6 @@ class UiComponent : public ComponentImpl<UiComponentTemplate>
 		bool deselected();
 
 		flat::sharp::ui::WidgetFactory& getWidgetFactory() const;
-		flat::sharp::ui::RootWidget* getRootWidget() const;
 
 		void triggerCallback(const flat::lua::SharedLuaReference<LUA_TFUNCTION>& function);
 

@@ -102,12 +102,7 @@ bool UiComponent::deselected()
 
 flat::sharp::ui::WidgetFactory& UiComponent::getWidgetFactory() const
 {
-	return getTemplate()->getUi().factory;
-}
-
-flat::sharp::ui::RootWidget* UiComponent::getRootWidget() const
-{
-	return getTemplate()->getUi().root.get();
+	return getTemplate()->getWidgetFactory();
 }
 
 void UiComponent::triggerCallback(const flat::lua::SharedLuaReference<LUA_TFUNCTION>& function)

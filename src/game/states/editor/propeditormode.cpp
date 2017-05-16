@@ -26,8 +26,8 @@ PropEditorMode::~PropEditorMode()
 
 void PropEditorMode::updateBrushTiles()
 {
-	auto& keyboard = m_game.input->keyboard;
-	auto& mouse = m_game.input->mouse;
+	const auto& keyboard = m_game.input->keyboard;
+	const auto& mouse = m_game.input->mouse;
 
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush != nullptr);

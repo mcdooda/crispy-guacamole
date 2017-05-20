@@ -32,7 +32,7 @@ function TextInput:new(value)
 end
 
 function TextInput:setValue(value)
-     self.textInputWidget:getText(value)
+     self.textInputWidget:setText(value)
 end
 
 function TextInput:getValue()

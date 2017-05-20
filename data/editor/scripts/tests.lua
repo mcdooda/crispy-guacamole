@@ -1,10 +1,9 @@
 local Path = require 'data/scripts/path'
 local ModData = require 'data/editor/scripts/moddata'
 local Preview = require 'data/scripts/preview'
+local UiSettings = require 'data/scripts/ui/uisettings'
 
 local Slider = require 'data/scripts/ui/slider'
-
-local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }
 
 local root = Widget.getRoot()
 do
@@ -116,7 +115,7 @@ do
 			end
 			for i = 1, #zoneNames do
 				local zoneName = zoneNames[i]
-				local label = Widget.makeText(zoneName, table.unpack(font))
+				local label = Widget.makeText(zoneName, table.unpack(UiSettings.defaultFont))
 				label:setMargin(0, 0, 0, 7)
 				label:click(function()
 					Editor.setZone(zoneName)
@@ -127,7 +126,7 @@ do
 				local addZoneButton = Widget.makeLineFlow()
 				local icon = Widget.makeImage 'data/editor/interface/icons/plus.png'
 				icon:setMargin(2)
-				local text = Widget.makeText('Add new zone', table.unpack(font))
+				local text = Widget.makeText('Add new zone', table.unpack(UiSettings.defaultFont))
 				addZoneButton:addChild(icon)
 				addZoneButton:addChild(text)
 				addZoneButton:setMargin(0, 0, 0, 7)

@@ -1,5 +1,6 @@
+local UiSettings = require 'data/scripts/ui/uisettings'
+
 local root = Widget.getRoot()
-local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }
 local debugContainer = Widget.makeColumnFlow()
 debugContainer:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
 
@@ -17,7 +18,7 @@ local function makeSeparator()
     return widget
 end
 
-dofile 'data/scripts/stats.lua' (addContainer, makeSeparator, font)
-dofile 'data/scripts/entitydebug.lua' (addContainer, makeSeparator, font)
+dofile 'data/scripts/stats.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
+dofile 'data/scripts/entitydebug.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 
 root:addChild(debugContainer)

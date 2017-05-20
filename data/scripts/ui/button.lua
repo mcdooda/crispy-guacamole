@@ -1,6 +1,3 @@
-
-local font = { 'data/misc/fonts/Lato-Medium.ttf', 14 }
-
 local Button = {}
 Button.__index = Button
 

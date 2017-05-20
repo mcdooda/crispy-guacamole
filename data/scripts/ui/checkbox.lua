@@ -1,5 +1,5 @@
 
-local font = { 'data/misc/fonts/Lato-Medium.ttf', 12 }
+local UiSettings = require 'data/scripts/ui/uisettings'
 
 local Checkbox = {}
 Checkbox.__index = Checkbox
@@ -37,7 +37,7 @@ function Checkbox:new(value, text, state)
     container:addChild(checkMarkContainer)
 
 
-    local label = Widget.makeText(text, table.unpack(font))
+    local label = Widget.makeText(text, table.unpack(UiSettings.defaultFont))
     label:setMargin(0, 5, 1, 5)
 
     container:addChild(label)

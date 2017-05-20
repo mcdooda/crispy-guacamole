@@ -1,3 +1,4 @@
+local UiSettings = require 'data/scripts/ui/uisettings'
 
 local Icon = {}
 Icon.__index = Icon
@@ -65,10 +66,7 @@ local icons = {
 function Icon:new(icon, size)
     size = size or 14
 
-    local fontIcon = { 'data/misc/fonts/Glyphter.ttf', size }
-
-
-    local container = Widget.makeText(icons[icon], table.unpack(fontIcon))
+    local container = Widget.makeText(icons[icon], UiSettings.glyphFont, size)
     local o = setmetatable({
         container             = container,
     }, self)

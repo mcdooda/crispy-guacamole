@@ -1,10 +1,11 @@
+local UiSettings = require 'data/scripts/ui/uisettings'
+
 local format = string.format
 
 local root = Widget.getRoot()
 
 -- top right debug info
 do
-	local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }
 	local debugContainer = Widget.makeColumnFlow()
 	debugContainer:setMargin(5)
 	debugContainer:setPositionPolicy(Widget.PositionPolicy.BOTTOM_RIGHT)
@@ -13,7 +14,7 @@ do
 
 	-- brush position
 	do
-		local label = Widget.makeText('X,Y', table.unpack(font))
+		local label = Widget.makeText('X,Y', table.unpack(UiSettings.defaultFont))
 		label:setTextColor(0x000000FF)
 		label:setMargin(5)
 		debugContainer:addChild(label)

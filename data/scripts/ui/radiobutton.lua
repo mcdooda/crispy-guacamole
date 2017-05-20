@@ -1,5 +1,4 @@
-
-local font = { 'data/misc/fonts/Lato-Medium.ttf', 12 }
+local UiSettings = require 'data/scripts/ui/uisettings'
 
 local Radiobutton = {}
 Radiobutton.__index = Radiobutton
@@ -29,7 +28,7 @@ function Radiobutton:new(value, text, state)
     container:setSizePolicy(Widget.SizePolicy.COMPRESS)
     container:addChild(checkMarkContainer)
 
-    local label = Widget.makeText(text, table.unpack(font))
+    local label = Widget.makeText(text, table.unpack(UiSettings.defaultFont))
     label:setMargin(0, 5, 1, 5)
 
     container:addChild(label)

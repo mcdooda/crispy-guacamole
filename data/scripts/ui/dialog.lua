@@ -1,3 +1,4 @@
+local UiSettings = require 'data/scripts/ui/uisettings'
 
 local root = Widget.getRoot()
 
@@ -5,9 +6,6 @@ local button = require 'data/scripts/ui/button'
 local loadingBar = require 'data/scripts/ui/loadingbar'
 local icon = require 'data/scripts/ui/icon'
 local dump = require 'data/scripts/dump'
-
-local font = { 'data/misc/fonts/LucidaSansRegular.ttf', 12 }
-local fontTitle = { 'data/misc/fonts/gnuolane rg.ttf', 25 }
 
 local Dialog = {}
 Dialog.__index = Dialog
@@ -131,14 +129,14 @@ function Dialog:new(content, options)
     closeButton.container:click(cancel)
 
     if footerBtn.cancel then
-        local btnCancel = button:new(Widget.makeText("Cancel", table.unpack(font)))
+        local btnCancel = button:new(Widget.makeText("Cancel", table.unpack(UiSettings.defaultFont)))
         btnContainer:addChild(btnCancel.container)
         btnCancel.container:click(cancel)
     end
 
     if footerBtn.confirm then
         local btnText = Widget.makeLineFlow()
-        local ww = Widget.makeText("Ok", table.unpack(font))
+        local ww = Widget.makeText("Ok", table.unpack(UiSettings.defaultFont))
         local okIcon = icon:new("ok")
         ww:setTextColor(COLORS.white)
         okIcon.container:setMargin(0,5,0,0)

@@ -4,6 +4,7 @@ local Preview = require 'data/scripts/preview'
 local UiSettings = require 'data/scripts/ui/uisettings'
 
 local Slider = require 'data/scripts/ui/slider'
+local TextInput = require 'data/scripts/ui/textinput'
 
 local root = Widget.getRoot()
 do
@@ -144,13 +145,15 @@ do
 			end
 			do
 				local addZoneButton = Widget.makeLineFlow()
+				
 				local icon = Widget.makeImage 'data/editor/interface/icons/plus.png'
 				icon:setMargin(2)
-				local text = Widget.makeTextInput(table.unpack(UiSettings.defaultFont))
 				addZoneButton:addChild(icon)
-				addZoneButton:addChild(text)
+
+				local text = TextInput:new('TEST')
+				addZoneButton:addChild(text.container)
+
 				addZoneButton:setMargin(0, 0, 0, 7)
-				text:setText('TEST')
 
 				addContent(addZoneButton)
 			end

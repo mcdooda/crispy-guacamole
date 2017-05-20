@@ -142,6 +142,18 @@ do
 				end)
 				addContent(addZoneButton)
 			end
+			do
+				local addZoneButton = Widget.makeLineFlow()
+				local icon = Widget.makeImage 'data/editor/interface/icons/plus.png'
+				icon:setMargin(2)
+				local text = Widget.makeTextInput(table.unpack(UiSettings.defaultFont))
+				addZoneButton:addChild(icon)
+				addZoneButton:addChild(text)
+				addZoneButton:setMargin(0, 0, 0, 7)
+				text:setText('TEST')
+
+				addContent(addZoneButton)
+			end
 		end
 
 		local function addTab(iconName, openTabFunc)

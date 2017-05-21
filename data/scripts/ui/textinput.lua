@@ -1,42 +1,50 @@
 local UiSettings = require 'data/scripts/ui/uisettings'
 
+local BORDER_COLOR = 0x848484FF
+local BORDER_COLOR_FOCUS = 0xA2A2A2FF
+local BACKGROUND_COLOR = 0x444444FF
+local BACKGROUND_COLOR_FOCUS = 0x555555FF
+
 local TextInput = {}
 TextInput.__index = TextInput
 
 function TextInput:new(value)
-    local textInputWidget = Widget.makeTextInput(table.unpack(UiSettings.defaultFont))
-    textInputWidget:setText(value)
-    textInputWidget:setMargin(2, 4, 2, 4)
+	local container = Widget.makeLineFlow()
+	container:setBackgroundColor(BORDER_COLOR)
 
-    local container = Widget.makeLineFlow()
-    container:setBackgroundColor(0x848484FF)
+	local background = Widget.makeLineFlow()
+	background:setBackgroundColor(BACKGROUND_COLOR)
+	background:setMargin(1)
+	container:addChild(background)
 
-    do
-        local background = Widget.makeLineFlow()
-        background:setBackgroundColor(0x444444FF)
-        background:setMargin(1)
-        container:addChild(background)
+	local textInputWidget = Widget.makeTextInput(table.unpack(UiSettings.defaultFont))
+	textInputWidget:setText(value)
+	textInputWidget:setMargin(2, 4, 2, 4)
+	background:addChild(textInputWidget)
 
-        do
-            background:addChild(textInputWidget)
-        end
-    end
+	textInputWidget:focus(function()
+		container:setBackgroundColor(BORDER_COLOR_FOCUS)
+		background:setBackgroundColor(BACKGROUND_COLOR_FOCUS)
+	end)
+	textInputWidget:blur(function()
+		container:setBackgroundColor(BORDER_COLOR)
+		background:setBackgroundColor(BACKGROUND_COLOR)
+	end)
 
+	local o = setmetatable({
+		textInputWidget = textInputWidget,
+		container = container
+	}, self)
 
-    local o = setmetatable({
-        textInputWidget = textInputWidget,
-        container = container
-    }, self)
-
-    return o
+	return o
 end
 
 function TextInput:setValue(value)
-     self.textInputWidget:setText(value)
+	 self.textInputWidget:setText(value)
 end
 
 function TextInput:getValue()
-    return self.textInputWidget:getText()
+	return self.textInputWidget:getText()
 end
 
 return TextInput

@@ -1,3 +1,5 @@
+local AttackHelper = require 'data/scripts/componenthelpers/attack'
+
 return {
 	attackRange = 0.05,
 	attackCooldown = 1,
@@ -7,10 +9,6 @@ return {
 		local target = zombie:getAttackTarget()
 		zombie:lookAtEntity(target)
 		zombie:playAnimationAsync 'attack'
-		Timer.start(0.08, nil, function()
-			if target:isValid() then
-				target:dealDamage(10)
-			end
-		end)
+		AttackHelper.dealDamageAfterDelay(target, 10, 0.08)
 	end
 }

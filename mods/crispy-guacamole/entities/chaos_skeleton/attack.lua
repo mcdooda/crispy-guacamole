@@ -1,3 +1,5 @@
+local AttackHelper = require 'data/scripts/componenthelpers/attack'
+
 return {
 	attackRange = 0.05,
 	attackCooldown = 1,
@@ -7,10 +9,6 @@ return {
 		local target = skeleton:getAttackTarget()
 		skeleton:lookAtEntity(target)
 		skeleton:playAnimationAsync 'attack'
-		Timer.start(0.06, nil, function()
-			if target:isValid() then
-				target:dealDamage(10)
-			end
-		end)
+		AttackHelper.dealDamageAfterDelay(target, 10, 0.06)
 	end
 }

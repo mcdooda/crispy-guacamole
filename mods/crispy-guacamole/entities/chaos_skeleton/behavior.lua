@@ -1,5 +1,6 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 
+local math = math
 local random = math.random
 local sqrt = math.sqrt
 

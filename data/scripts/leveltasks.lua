@@ -1,6 +1,5 @@
 local Path = require 'data/scripts/path'
 
-local coroutine = coroutine
 local cocreate = coroutine.create
 local coresume = coroutine.resume
 local costatus = coroutine.status

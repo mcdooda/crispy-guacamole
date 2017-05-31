@@ -1,14 +1,9 @@
-local math = math
-local random = math.random
+local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 
-local function sleep(duration)
-	local getTime = Time.getTime
-	local endTime = getTime() + duration
-	local yield = coroutine.yield
-	while getTime() < endTime do
-		yield()
-	end
-end
+local pi = math.pi
+local cos = math.cos
+local sin = math.sin
+local random = math.random
 
 local states = {}
 
@@ -23,17 +18,17 @@ function states:idle(warlock)
 		local distance = 0.5
 		local zombies = {}
 		for i = 1, numZombies do
-			local heading = (i - 1) * 2 * math.pi / numZombies
-			local zombie = Entity.spawn('zombie', x + math.cos(heading) * distance, y + math.sin(heading) * distance, z, heading)
+			local heading = (i - 1) * 2 * pi / numZombies
+			local zombie = Entity.spawn('zombie', x + cos(heading) * distance, y + sin(heading) * distance, z, heading)
 			zombies[#zombies + 1] = zombie
 		end
-		sleep(6)
+		BehaviorHelper.sleep(6)
 		for i = 1, numZombies do
 			if zombies[i]:isValid() then
 				zombies[i]:kill()
 			end
 		end
-		sleep(3)
+		BehaviorHelper.sleep(3)
 	end
 end
 

@@ -1,7 +1,6 @@
 local ProjectileHelper = require 'data/scripts/componenthelpers/projectile'
 local spawnArrow = ProjectileHelper.createSpawner 'arrow'
 
-local math = math
 local cos = math.cos
 local sin = math.sin
 local sqrt = math.sqrt

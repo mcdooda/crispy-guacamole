@@ -1,4 +1,3 @@
-local math = math
 local sqrt = math.sqrt
 local atan = math.atan
 local atan2 = atan

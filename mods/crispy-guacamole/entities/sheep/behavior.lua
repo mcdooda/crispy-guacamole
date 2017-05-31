@@ -1,16 +1,9 @@
-local math = math
+local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
+
+local sqrt = math.sqrt
 local random = math.random
 
 local movement = require 'mods/crispy-guacamole/entities/sheep/movement'
-
-local function sleep(duration)
-	local getTime = Time.getTime
-	local endTime = getTime() + duration
-	local yield = coroutine.yield
-	while getTime() < endTime do
-		yield()
-	end
-end
 
 local states = {}
 local inputs = {}
@@ -70,7 +63,7 @@ function states:flee(sheep)
 			fx, fy = lastKnownX, lastKnownY
 		end
 		local dx, dy = x - fx, y - fy
-		local d = math.sqrt(dx * dx + dy * dy)
+		local d = sqrt(dx * dx + dy * dy)
 		local rx, ry = x + (dx / d) * distance, y + (dy / d) * distance
 		sheep:moveTo(rx, ry)
 	end

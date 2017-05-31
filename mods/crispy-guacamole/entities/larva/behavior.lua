@@ -1,14 +1,6 @@
-local math = math
-local random = math.random
+local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 
-local function sleep(duration)
-    local getTime = Time.getTime
-    local endTime = getTime() + duration
-    local yield = coroutine.yield
-    while getTime() < endTime do
-        yield()
-    end
-end
+local random = math.random
 
 local states = {}
 

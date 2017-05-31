@@ -1,4 +1,3 @@
-local math = math
 local random = math.random
 
 local states = {}

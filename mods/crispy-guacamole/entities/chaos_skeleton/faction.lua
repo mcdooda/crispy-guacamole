@@ -1,3 +1,3 @@
 return {
-	faction = 'scourge'
+	faction = 'chaos'
 }

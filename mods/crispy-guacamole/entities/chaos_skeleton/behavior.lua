@@ -1,46 +1,45 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 
-local math = math
 local random = math.random
 local sqrt = math.sqrt
 
 local states = {}
 
-function states:init(zombie)
-	zombie:enterState 'wander'
+function states:init(skeleton)
+	skeleton:enterState 'wander'
 end
 
-function states:idle(zombie)
-	zombie:jump()
+function states:idle(skeleton)
+	skeleton:jump()
 end
 
-function states:wander(zombie)
-	local x, y = zombie:getPosition()
+function states:wander(skeleton)
+	local x, y = skeleton:getPosition()
 	while true do
 		
 		do
 			local rx = x + (random() * 2 - 1) * 2
 			local ry = y + (random() * 2 - 1) * 2
-			zombie:moveTo(rx, ry)
+			skeleton:moveTo(rx, ry)
 		end
 		
 	end
 end
 
-function states:followAttackTarget(zombie)
+function states:followAttackTarget(skeleton)
 	while true do
-		local currentAttackTarget = zombie:getAttackTarget()
+		local currentAttackTarget = skeleton:getAttackTarget()
 		if not currentAttackTarget then
-			zombie:enterState 'wander'
+			skeleton:enterState 'wander'
 		end
-		local x, y = zombie:getPosition()
+		local x, y = skeleton:getPosition()
 		local tx, ty = currentAttackTarget:getPosition()
 		local distance2 = (tx - x) * (tx - x) + (ty - y) * (ty - y)
 		
 		local maxDistance = 6
 		if distance2 > maxDistance * maxDistance then
-			zombie:setAttackTarget(nil)
-			zombie:enterState 'wander'
+			skeleton:setAttackTarget(nil)
+			skeleton:enterState 'wander'
 		end
 		
 		local newX, newY
@@ -51,22 +50,22 @@ function states:followAttackTarget(zombie)
 			local distance = sqrt(distance2)
 			newX, newY = x + (tx - x) / distance * followStepDistance, y + (ty - y) / distance * followStepDistance
 		end
-		zombie:moveTo(newX, newY)
+		skeleton:moveTo(newX, newY)
 	end
 end
 
-function states:onEntityEnteredVisionRange(zombie, entity)
-	local isHostile = zombie:isHostile(entity) or entity:isHostile(zombie) -- zombies are mean
-	if isHostile then
-		local currentAttackTarget = zombie:getAttackTarget()
+function states:onEntityEnteredVisionRange(skeleton, entity)
+	local isHostile = skeleton:isHostile(entity) or entity:isHostile(skeleton) -- skeletons are mean
+	if isHostile and entity:isLiving() then
+		local currentAttackTarget = skeleton:getAttackTarget()
 		if not currentAttackTarget then
 			-- no current target
-			zombie:setAttackTarget(entity)
+			skeleton:setAttackTarget(entity)
 			return 'followAttackTarget'
 		else
 			-- the entity is closer than the current target
-			local x, y = zombie:getPosition()
-			local currentAttackTarget = zombie:getAttackTarget()
+			local x, y = skeleton:getPosition()
+			local currentAttackTarget = skeleton:getAttackTarget()
 			
 			local tx, ty = currentAttackTarget:getPosition()
 			local distanceToCurrentTarget2 = (tx - x) * (tx - x) + (ty - y) * (ty - y)
@@ -75,7 +74,7 @@ function states:onEntityEnteredVisionRange(zombie, entity)
 			local distanceToEntity2 = (ex - x) * (ex - x) + (ey - y) * (ey - y)
 			
 			if distanceToEntity2 < distanceToCurrentTarget2 then
-				zombie:setAttackTarget(entity)
+				skeleton:setAttackTarget(entity)
 				return 'followAttackTarget'
 			end
 		end

@@ -56,7 +56,7 @@ end
 
 function states:onEntityEnteredVisionRange(zombie, entity)
 	local isHostile = zombie:isHostile(entity) or entity:isHostile(zombie) -- zombies are mean
-	if isHostile then
+	if isHostile and entity:isLiving() then
 		local currentAttackTarget = zombie:getAttackTarget()
 		if not currentAttackTarget then
 			-- no current target

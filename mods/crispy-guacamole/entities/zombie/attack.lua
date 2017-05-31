@@ -7,5 +7,10 @@ return {
 		local target = zombie:getAttackTarget()
 		zombie:lookAtEntity(target)
 		zombie:playAnimationAsync 'attack'
+		Timer.start(0.08, nil, function()
+			if target:isValid() then
+				target:dealDamage(10)
+			end
+		end)
 	end
 }

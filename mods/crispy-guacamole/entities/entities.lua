@@ -1,6 +1,7 @@
 return {
 	'arrow',
 	'boar',
+	'chaos_skeleton',
 	'devil',
 	'eye',
 	'fx_explosion',

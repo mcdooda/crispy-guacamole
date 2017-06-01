@@ -3,6 +3,7 @@ local getTime = Time.getTime
 local yield = coroutine.yield
 local huge = math.huge
 local random = math.random
+local sqrt = math.sqrt
 
 local function init(initialState)
 	return function(states, entity)
@@ -18,6 +19,11 @@ local function sleep(duration)
 	end
 end
 
+
+--[[
+	Wander
+]]
+
 local function wanderAround(entity, x, y)
 	while true do
 		local rx = x + (random() * 2 - 1) * 2
@@ -30,6 +36,10 @@ local function wander(states, entity)
 	local x, y = entity:getPosition()
 	wanderAround(entity, x, y)
 end
+
+--[[
+	Find target
+]]
 
 local function findClosestTarget(entity, isValidTarget)
 	local minDistance2 = huge
@@ -51,6 +61,10 @@ local function isValidHostileAttackTarget(entity, target)
 	local isLiving = target:isLiving()
 	return isHostile and isLiving
 end
+
+--[[
+	Detection
+]]
 
 local function onEntityEnteredVisionRangeAttack(isValidTarget, foundTargetState)
 	return function(states, entity, target)
@@ -80,6 +94,86 @@ local function onEntityEnteredVisionRangeAttack(isValidTarget, foundTargetState)
 	end
 end
 
+--[[
+	Common behaviors
+]]
+
+local function findAttackTargetOrFallback(findTarget, isValidTarget, targetFoundState, fallbackState)
+	return function(states, entity)
+		local newAttackTarget = findTarget(entity, isValidTarget)
+		if newAttackTarget then
+			entity:setAttackTarget(newAttackTarget)
+			entity:enterState(targetFoundState)
+		else
+			entity:enterState(fallbackState)
+		end
+	end
+end
+
+local function followAttackTarget(findTargetState)
+	return function(states, entity)
+		local visionRange2 = 6 * 6
+		while true do
+			local currentAttackTarget = entity:getAttackTarget()
+			if not currentAttackTarget then
+				entity:enterState(findTargetState)
+			else
+				-- current attack target is too far -> clear it
+				local x, y = entity:getPosition()
+				local tx, ty = currentAttackTarget:getPosition()
+				local distance2 = (tx - x) * (tx - x) + (ty - y) * (ty - y)
+				
+				if distance2 > visionRange2 then
+					entity:setAttackTarget(nil)
+					entity:enterState(findTargetState)
+				else
+					-- move closer to the current attack target
+					local newX, newY
+					local followStepDistance = 0.5
+					if distance2 < followStepDistance * followStepDistance then
+						newX, newY = tx, ty
+					else
+						local distance = sqrt(distance2)
+						newX, newY = x + (tx - x) / distance * followStepDistance, y + (ty - y) / distance * followStepDistance
+					end
+					entity:moveTo(newX, newY)
+				end
+			end
+		end
+	end
+end
+
+--[[
+	Basic states for rapid prototyping
+]]
+
+local function customAttacker(wander, findClosestTarget, isValidHostileAttackTarget)
+	local states = {}
+
+	states.init = init 'wander'
+	states.wander = wander
+
+	states.findAttackTargetOrWander = findAttackTargetOrFallback(
+		findClosestTarget,
+		isValidHostileAttackTarget,
+		'followAttackTarget',
+		'wander'
+	)
+
+	states.followAttackTarget = followAttackTarget 'findAttackTargetOrWander'
+
+	states.onEntityEnteredVisionRange = onEntityEnteredVisionRangeAttack(
+		isValidHostileAttackTarget,
+		'followAttackTarget'
+	)
+
+	return states
+end
+
+local function basicAttacker()
+	return customAttacker(wander, findClosestTarget, isValidHostileAttackTarget)
+end
+
 return {
 	init                             = init,
 
@@ -91,5 +185,11 @@ return {
 	findClosestTarget                = findClosestTarget,
 	isValidHostileAttackTarget       = isValidHostileAttackTarget,
 
-	onEntityEnteredVisionRangeAttack = onEntityEnteredVisionRangeAttack
+	onEntityEnteredVisionRangeAttack = onEntityEnteredVisionRangeAttack,
+
+	findAttackTargetOrFallback       = findAttackTargetOrFallback,
+	followAttackTarget               = followAttackTarget,
+
+	customAttacker                   = customAttacker,
+	basicAttacker                    = basicAttacker
 }

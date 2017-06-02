@@ -56,8 +56,6 @@ local function requireComponentTemplateIfExists(entityTemplateName, componentTem
     end)
     if componentExists then
         return componentTemplate
-    else
-        return nil
     end
 end
 

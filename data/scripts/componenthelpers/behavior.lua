@@ -1,4 +1,5 @@
-local Time = Time
+local CollisionHelper = require 'data/scripts/componenthelpers/collision'
+
 local getTime = Time.getTime
 local yield = coroutine.yield
 local huge = math.huge
@@ -127,16 +128,24 @@ local function followAttackTarget(findTargetState)
 					entity:setAttackTarget(nil)
 					entity:enterState(findTargetState)
 				else
-					-- move closer to the current attack target
-					local newX, newY
-					local followStepDistance = 0.5
-					if distance2 < followStepDistance * followStepDistance then
-						newX, newY = tx, ty
-					else
-						local distance = sqrt(distance2)
-						newX, newY = x + (tx - x) / distance * followStepDistance, y + (ty - y) / distance * followStepDistance
+					-- move closer to the current attack target but avoid collision
+					local followStepDistance = 0.2
+					local minFollowStepDistance = 0.01
+					local distanceMinusRadius = CollisionHelper.distanceMinusRadius(entity, currentAttackTarget)
+
+					if distanceMinusRadius < followStepDistance then
+						followStepDistance = distanceMinusRadius
 					end
-					entity:moveTo(newX, newY)
+
+					if followStepDistance > minFollowStepDistance then
+						-- normalize direction and multiply by the distance to travel
+						local distance = sqrt(distance2)
+						local newX, newY = x + (tx - x) / distance * followStepDistance, y + (ty - y) / distance * followStepDistance
+						entity:moveTo(newX, newY)
+					else
+						-- nothing to do for now
+						yield()
+					end
 				end
 			end
 		end

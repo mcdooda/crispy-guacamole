@@ -23,7 +23,11 @@ namespace states
 
 BaseMapState::BaseMapState() :
 	m_entityPool(m_componentRegistry)
+#ifdef FLAT_DEBUG
+	, m_isReloading(false)
+#endif
 {
+
 }
 
 void BaseMapState::enter(Game& game)
@@ -67,11 +71,6 @@ void BaseMapState::enter(Game& game)
 
 	m_uiProgramRenderSettings.positionAttribute           = m_uiProgram.getAttribute("position");
 	m_uiProgramRenderSettings.uvAttribute                 = m_uiProgram.getAttribute("uv");
-
-	// reset view
-	m_gameView.setWindow(game.video->window);
-	m_gameView.updateProjection();
-	m_cameraZoom = 1.f;
 	
 	// level
 	loadMap(game, game.mapName);
@@ -79,11 +78,23 @@ void BaseMapState::enter(Game& game)
 	// load debug display resources *after* the map is loaded!
 	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
 
-	map::Map& map = getMap();
-	int minX, maxX, minY, maxY;
-	map.getBounds(minX, maxX, minY, maxY);
-	flat::Vector3 cameraCenter((maxX + minX) / 2.f, (maxY + minY) / 2.f, 0.f);
-	setCameraCenter(cameraCenter);
+		// reset view
+#ifdef FLAT_DEBUG
+		if (!m_isReloading)
+		{
+#endif
+			m_gameView.setWindow(game.video->window);
+			m_gameView.updateProjection();
+			m_cameraZoom = 1.f;
+
+			map::Map& map = getMap();
+			int minX, maxX, minY, maxY;
+			map.getBounds(minX, maxX, minY, maxY);
+			flat::Vector3 cameraCenter((maxX + minX) / 2.f, (maxY + minY) / 2.f, 0.f);
+			setCameraCenter(cameraCenter);
+#ifdef FLAT_DEBUG
+		}
+#endif
 
 	resetViews(game);
 
@@ -334,7 +345,7 @@ void BaseMapState::update(game::Game& game)
 	updateGameView(game);
 	updateUi(game);
 	float currentTime = game.time->getTime();
-	game.timerContainer.updateTimers(game.lua->state, currentTime);
+	m_timerContainer.updateTimers(game.lua->state, currentTime);
 }
 
 void BaseMapState::addGhostEntity(game::Game& game)
@@ -779,6 +790,18 @@ bool BaseMapState::isSmallSelection() const
 	}
 	return false;
 }
+
+#ifdef FLAT_DEBUG
+void BaseMapState::copyStateBeforeReload(const BaseMapState& other)
+{
+	setModPath(other.m_mod.getPath());
+	m_gameView = other.m_gameView;
+	m_cameraCenter2d = other.m_cameraCenter2d;
+	m_cameraZoom = other.m_cameraZoom;
+
+	m_isReloading = true;
+}
+#endif
 
 } // states
 } // game

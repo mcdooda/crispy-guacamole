@@ -17,7 +17,14 @@ void GameState::enter(Game& game)
 
 	Super::enter(game);
 	
-	setCameraZoom(2.f);
+#ifdef FLAT_DEBUG
+	if (!m_isReloading)
+	{
+#endif
+		setCameraZoom(2.f);
+#ifdef FLAT_DEBUG
+	}
+#endif
 	
 	lua_State* L = game.lua->state;
 	{
@@ -99,6 +106,15 @@ void GameState::execute(Game& game)
 	{
 		setGamePause(game, false);
 		m_pauseNextFrame = true;
+	}
+	else if (keyboard->isJustPressed(K(F9)))
+	{
+		// create a whole new game state with the same mod path
+		GameState* newGameState = new GameState();
+		newGameState->copyStateBeforeReload(*this);
+		game.getStateMachine().setState(newGameState);
+		// we must return as the current state has been deleted
+		return;
 	}
 	else if (m_pauseNextFrame)
 	{

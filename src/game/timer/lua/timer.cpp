@@ -2,6 +2,7 @@
 #include "../timer.h"
 #include "../timercontainer.h"
 #include "../../game.h"
+#include "../../states/basemapstate.h"
 
 namespace game
 {
@@ -144,7 +145,8 @@ void pushTimer(lua_State* L, const Timer* timer)
 TimerContainer& getTimerContainer(lua_State* L)
 {
 	Game& game = flat::lua::getGame(L).to<Game>();
-	return game.timerContainer;
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	return baseMapState.getTimerContainer();
 }
 
 } // lua

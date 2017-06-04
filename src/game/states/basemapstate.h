@@ -8,6 +8,7 @@
 #include "../entity/component/componentregistry.h"
 #include "../entity/faction/faction.h"
 #include "../debug/debugdisplay.h"
+#include "../timer/timercontainer.h"
 
 namespace game
 {
@@ -85,6 +86,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		inline const flat::video::View& getGameView() const { return m_gameView; }
 
 		bool isMouseOverUi(game::Game& game) const;
+
+		inline timer::TimerContainer& getTimerContainer() { return m_timerContainer; }
 		
 	protected:
 		void update(game::Game& game);
@@ -118,6 +121,10 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		void addToSelectedEntities(entity::Entity* entity);
 		void removeFromSelectedEntities(entity::Entity* entity);
 		bool isSmallSelection() const;
+
+#ifdef FLAT_DEBUG
+		void copyStateBeforeReload(const BaseMapState& other);
+#endif
 		
 	protected:
 		// resource loading
@@ -155,7 +162,14 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		flat::Vector2 m_mouseDownPosition;
 		std::shared_ptr<flat::sharp::ui::Widget> m_selectionWidget;
 
-		FLAT_DEBUG_ONLY(debug::DebugDisplay m_debugDisplay;)
+		// timers
+		timer::TimerContainer m_timerContainer;
+
+#ifdef FLAT_DEBUG
+		debug::DebugDisplay m_debugDisplay;
+
+		bool m_isReloading;
+#endif
 };
 
 template <class MapType>

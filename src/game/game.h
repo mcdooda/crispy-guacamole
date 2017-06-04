@@ -2,7 +2,6 @@
 #define GAME_GAME_H
 
 #include <flat/game.h>
-#include "timer/timercontainer.h"
 
 namespace game
 {
@@ -30,9 +29,6 @@ class Game : public flat::Game
 		
 		// views
 		flat::video::View interfaceView;
-		
-		// timers
-		timer::TimerContainer timerContainer;
 		
 		// GAME -> GameState, EDITOR -> EditorState
 		enum class Mode : uint8_t

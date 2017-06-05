@@ -30,10 +30,13 @@ Tile* GameMap::getTile(int x, int y)
 
 void GameMap::eachTile(std::function<void(Tile*)> func)
 {
-	Tile* end = m_tiles + getNumTiles();
-	for (Tile* tile = m_tiles; tile < end; ++tile)
+	if (m_tiles != nullptr)
 	{
-		func(tile);
+		Tile* end = m_tiles + getNumTiles();
+		for (Tile* tile = m_tiles; tile < end; ++tile)
+		{
+			func(tile);
+		}
 	}
 }
 

@@ -16,7 +16,7 @@ EntityEditorMode::EntityEditorMode(Game& game) : Super(game)
 
 EntityEditorMode::~EntityEditorMode()
 {
-	getEditorState().clearGhostTemplate();
+	m_game.getStateMachine().getState()->as<states::EditorState>().clearGhostTemplate();
 }
 
 void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed)

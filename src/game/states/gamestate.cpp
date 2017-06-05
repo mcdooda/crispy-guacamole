@@ -3,6 +3,10 @@
 #include "../entity/entity.h"
 #include "../entity/entitytemplate.h"
 
+#ifdef FLAT_DEBUG
+#include "editorstate.h"
+#endif
+
 namespace game
 {
 namespace states
@@ -98,7 +102,15 @@ void GameState::execute(Game& game)
 	}
 
 #ifdef FLAT_DEBUG
-	if (keyboard->isJustPressed(K(F10)))
+	if (keyboard->isJustPressed(K(F8)))
+	{
+		return reloadToState<EditorState>(game);
+	}
+	if (keyboard->isJustPressed(K(F9)))
+	{
+		return reloadToState<GameState>(game);
+	}
+	else if (keyboard->isJustPressed(K(F10)))
 	{
 		toggleGamePause(game);
 	}
@@ -106,15 +118,6 @@ void GameState::execute(Game& game)
 	{
 		setGamePause(game, false);
 		m_pauseNextFrame = true;
-	}
-	else if (keyboard->isJustPressed(K(F9)))
-	{
-		// create a whole new game state with the same mod path
-		GameState* newGameState = new GameState();
-		newGameState->copyStateBeforeReload(*this);
-		game.getStateMachine().setState(newGameState);
-		// we must return as the current state has been deleted
-		return;
 	}
 	else if (m_pauseNextFrame)
 	{

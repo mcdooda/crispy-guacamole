@@ -8,6 +8,10 @@
 #include "../map/brush/spherebrush.h"
 #include "../entity/component/components/behavior/behaviorcomponent.h"
 
+#ifdef FLAT_DEBUG
+#include "gamestate.h"
+#endif
+
 namespace game
 {
 namespace states
@@ -17,7 +21,14 @@ void EditorState::enter(Game& game)
 {
 	Super::enter(game);
 	
-	setCameraZoom(0.5f);
+#ifdef FLAT_DEBUG
+	if (!m_isReloading)
+	{
+#endif
+		setCameraZoom(0.5f);
+#ifdef FLAT_DEBUG
+	}
+#endif
 
 	game.lua->doFile("data/editor/scripts/ui.lua");
 }
@@ -35,6 +46,15 @@ void EditorState::execute(Game& game)
 	despawnEntities();
 	const auto& time = game.time;
 	m_map.updateEntities(time->getTime(), time->getFrameTime());
+
+#ifdef FLAT_DEBUG
+	const auto& keyboard = game.input->keyboard;
+
+	if (keyboard->isJustPressed(K(F9)))
+	{
+		return reloadToState<GameState>(game);
+	}
+#endif
 
 	Super::execute(game);
 }

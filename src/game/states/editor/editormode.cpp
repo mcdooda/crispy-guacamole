@@ -17,7 +17,9 @@ EditorMode::EditorMode(Game& game) :
 
 EditorMode::~EditorMode()
 {
-	map::Map& map = getMap();
+	// do not use getMap() as the state may be being destroyed at the time
+	map::Map& map = m_game.getStateMachine().getState()->as<states::EditorState>().getMap();
+
 	map.eachTileIfExists([](map::Tile* tile)
 	{
 		tile->setColor(flat::video::Color::WHITE);

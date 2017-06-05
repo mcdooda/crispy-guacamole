@@ -124,6 +124,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 #ifdef FLAT_DEBUG
 		void copyStateBeforeReload(const BaseMapState& other);
+		template <class T>
+		void reloadToState(Game& game);
 #endif
 		
 	protected:
@@ -181,6 +183,22 @@ class BaseMapStateImpl : public BaseMapState
 	protected:
 		MapType m_map;
 };
+
+#ifdef FLAT_DEBUG
+template<class T>
+inline void BaseMapState::reloadToState(Game& game)
+{
+	flat::sharp::ui::RootWidget& rootWidget = *game.ui->root.get();
+	rootWidget.removeAllChildren();
+
+	T* newState = new T();
+	newState->copyStateBeforeReload(*this);
+	game.getStateMachine().setState(newState);
+
+	// TODO: this should not be necessary
+	rootWidget.setDirty();
+}
+#endif
 
 } // states
 } // game

@@ -10,6 +10,7 @@ return {
 	'projectile_purple_magic',
 	'sheep',
 	'soldier',
+	'orc_spearman',
 	'tower',
 	'warlock',
 	'zombie'

@@ -29,6 +29,8 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 
 		void getAABB(flat::AABB3& aabb) const;
 
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
+
 	public:
 		flat::Slot<Entity*> onCollidedWithEntity;
 		flat::Slot<> onCollidedWithMap;

@@ -4,6 +4,7 @@
 #include "../../componenttype.h"
 #include "../../../entity.h"
 #include "../../../entitytemplate.h"
+#include "../../../entityhelper.h"
 #include "../../../../map/map.h"
 #include "../../../../map/tile.h"
 
@@ -205,6 +206,17 @@ void CollisionComponent::separateFromAdjacentTiles()
 		onCollidedWithMap();
 	}
 }
+
+#ifdef FLAT_DEBUG
+void CollisionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
+	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
+	
+	debugDisplay.add3dCircle(m_owner->getPosition(), collisionBox.getRadius(), flat::video::Color::BLUE, 0.5f);
+
+}
+#endif
 
 } // collision
 } // component

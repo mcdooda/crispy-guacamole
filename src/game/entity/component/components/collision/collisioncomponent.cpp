@@ -213,8 +213,36 @@ void CollisionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
 	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
 	
-	debugDisplay.add3dCircle(m_owner->getPosition(), collisionBox.getRadius(), flat::video::Color::BLUE, 0.5f);
+	const float radius = collisionBox.getRadius();
+	debugDisplay.add3dCircle(m_owner->getPosition(), radius, flat::video::Color::BLUE, 0.5f);
 
+	if (collisionBox.type == CollisionType::CYLINDER)
+	{
+		debugDisplay.add3dCircle(
+			m_owner->getPosition() + flat::Vector3(0.f, 0.f, collisionBox.cylinder.height),
+			collisionBox.getRadius(),
+			flat::video::Color::BLUE,
+			0.5f
+		);
+
+		const float r = radius * flat::SQRT2 / 2.f;
+
+		// left
+		debugDisplay.add3dLine(
+			m_owner->getPosition() + flat::Vector3(-r, r, 0.f),
+			m_owner->getPosition() + flat::Vector3(-r, r, collisionBox.cylinder.height),
+			flat::video::Color::BLUE,
+			0.5f
+		);
+
+		// right
+		debugDisplay.add3dLine(
+			m_owner->getPosition() + flat::Vector3(r, -r, 0.f),
+			m_owner->getPosition() + flat::Vector3(r, -r, collisionBox.cylinder.height),
+			flat::video::Color::BLUE,
+			0.5f
+		);
+	}
 }
 #endif
 

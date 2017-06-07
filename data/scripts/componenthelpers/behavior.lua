@@ -113,6 +113,7 @@ end
 
 local function followAttackTarget(findTargetState)
 	return function(states, entity)
+		entity:clearPath()
 		local visionRange2 = 6 * 6
 		while true do
 			local currentAttackTarget = entity:getAttackTarget()

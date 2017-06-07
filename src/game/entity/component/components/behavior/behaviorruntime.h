@@ -36,6 +36,7 @@ class BehaviorRuntime final
 		void update();
 
 		FLAT_DEBUG_ONLY(inline const std::string& getCurrentStateName() const { return m_currentStateName; })
+		FLAT_DEBUG_ONLY(inline const flat::lua::Thread& getThread() const { return m_thread; })
 		
 	private:
 		const Behavior& getBehavior() const;

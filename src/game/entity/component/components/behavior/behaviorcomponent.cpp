@@ -101,7 +101,43 @@ bool BehaviorComponent::entityLeftVisionRange(Entity* entity)
 #ifdef FLAT_DEBUG
 void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
-	debugDisplay.add3dText(m_owner->getPosition(), m_behaviorRuntime.getCurrentStateName(), flat::video::Color::BLACK);
+	int currentLine = 0;
+	std::string currentFile;
+	const flat::lua::UniqueLuaReference<LUA_TTHREAD>& luaThreadRef = m_behaviorRuntime.getThread().getThread();
+	if (!luaThreadRef.isEmpty())
+	{
+		lua_State* L = luaThreadRef.getLuaState();
+		{
+			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+			luaThreadRef.push(L);
+			lua_State* L1 = lua_tothread(L, -1);
+
+			lua_Debug ar;
+			lua_getstack(L1, 1, &ar);
+			lua_getinfo(L1, "Sl", &ar);
+			currentLine = ar.currentline;
+			currentFile = ar.short_src + 2; // remove leading ".\"
+
+			lua_pop(L, 1);
+		}
+	}
+
+	if (currentLine != 0)
+	{
+		debugDisplay.add3dText(
+			m_owner->getPosition(),
+			m_behaviorRuntime.getCurrentStateName() + "\n" + currentFile + ":" + std::to_string(currentLine),
+			flat::video::Color::BLUE
+		);
+	}
+	else
+	{
+		debugDisplay.add3dText(
+			m_owner->getPosition(),
+			m_behaviorRuntime.getCurrentStateName(),
+			flat::video::Color::RED
+		);
+	}
 }
 #endif
 

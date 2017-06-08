@@ -44,7 +44,9 @@ void LifeComponent::kill()
 {
 	if (!m_spawning && !m_despawning)
 	{
+		int previousHealth = m_health;
 		m_health = 0;
+		healthChanged(previousHealth);
 		onDie();
 	}
 }
@@ -54,8 +56,9 @@ void LifeComponent::dealDamage(int damage)
 	if (!m_spawning && !m_despawning)
 	{
 		damage = std::min(damage, m_health);
+		int previousHealth = m_health;
 		m_health -= damage;
-		damageDealt(damage);
+		healthChanged(previousHealth);
 		if (m_health == 0)
 		{
 			onDie();

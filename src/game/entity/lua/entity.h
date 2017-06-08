@@ -84,6 +84,7 @@ int l_Entity_kill(lua_State* L);
 int l_Entity_dealDamage(lua_State* L);
 int l_Entity_getHealth(lua_State* L);
 int l_Entity_getMaxHealth(lua_State* L);
+int l_Entity_healthChanged(lua_State* L);
 
 // static lua functions
 int l_Entity_spawn(lua_State* L);

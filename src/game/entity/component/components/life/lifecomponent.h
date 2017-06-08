@@ -38,7 +38,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:
-		flat::Slot<int> damageDealt;
+		flat::Slot<int> healthChanged;
 		flat::Slot<> live;
 		flat::Slot<> die;
 

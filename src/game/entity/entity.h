@@ -29,8 +29,12 @@ namespace movement  { class MovementComponent; }
 class Entity final : public map::MapObject
 {
 	public:
+		Entity() = delete;
+		Entity(const Entity&) = delete;
+		Entity(Entity&&) = delete;
 		Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, EntityId id);
 		~Entity() override;
+		void operator=(const Entity&) = delete;
 
 		bool isEntity() const override { return true; }
 		

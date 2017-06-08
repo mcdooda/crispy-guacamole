@@ -102,6 +102,7 @@ int open(lua_State* L)
 		{"dealDamage",              l_Entity_dealDamage},
 		{"getHealth",               l_Entity_getHealth},
 		{"getMaxHealth",            l_Entity_getMaxHealth},
+		{"healthChanged",           l_Entity_healthChanged},
 		
 		{nullptr, nullptr}
 	};
@@ -604,6 +605,28 @@ int l_Entity_getMaxHealth(lua_State * L)
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lua_pushinteger(L, lifeComponent.getMaxHealth());
 	return 1;
+}
+
+int l_Entity_healthChanged(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	luaL_checktype(L, 2, LUA_TFUNCTION);
+	FLAT_ASSERT(L == flat::lua::getMainThread(L));
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> healthChangedCallbackRef(L, 2);
+	lifeComponent.healthChanged.on(
+		[L, healthChangedCallbackRef, &lifeComponent](int previousHealth)
+		{
+			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+			healthChangedCallbackRef.push(L);
+			lua_pushinteger(L, previousHealth);
+			lua_pushinteger(L, lifeComponent.getHealth());
+			lua_pushinteger(L, lifeComponent.getMaxHealth());
+			lua_call(L, 3, 0);
+			return true;
+		}
+	);
+	return 0;
 }
 
 // static lua functions

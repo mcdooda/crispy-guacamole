@@ -23,19 +23,22 @@ class Component : public flat::util::Convertible<Component>
 {
 	public:
 		Component();
+		Component(const Component&) = delete;
+		Component(Component&&) = delete;
 		virtual ~Component();
+		void operator=(const Component&) = delete;
 		
 		inline void setOwner(Entity* owner) { m_owner = owner; }
 		inline Entity* getOwner() { return m_owner; }
 		inline const Entity* getOwner() const { return m_owner; }
 
-		virtual void init() {}
-		virtual void deinit() {}
-		virtual void update(float currentTime, float elapsedTime) = 0;
-		virtual bool isBusy() const { return false; }
+		virtual void init();
+		virtual void deinit();
+		virtual void update(float currentTime, float elapsedTime);
+		virtual bool isBusy() const;
 
 #ifdef FLAT_DEBUG
-		virtual void debugDraw(debug::DebugDisplay& debugDisplay) const {}
+		virtual void debugDraw(debug::DebugDisplay& debugDisplay) const;
 		inline void setDebug(bool debug) { m_debug = debug; }
 		inline bool getDebug() const { return m_debug; }
 #endif

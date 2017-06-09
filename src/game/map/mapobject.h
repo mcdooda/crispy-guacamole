@@ -15,11 +15,13 @@ class MapObject
 		virtual ~MapObject() {}
 		
 		virtual const flat::render::Sprite& getSprite() const = 0;
+		virtual const flat::render::ProgramSettings& getProgramSettings() const = 0;
 		
 		inline const flat::AABB3& getWorldSpaceAABB() const { return m_worldSpaceAABB; }
 		inline const flat::AABB2& getAABB() const { return m_spriteAABB; }
 
-		std::uint32_t getTextureHash() const;
+		void updateRenderHash() const;
+		inline std::uint32_t getRenderHash() const { return m_renderHash; }
 
 		virtual bool isTile() const { return false; }
 		virtual bool isEntity() const { return false; }
@@ -27,6 +29,7 @@ class MapObject
 	protected:
 		flat::AABB3 m_worldSpaceAABB;
 		flat::AABB2 m_spriteAABB;
+		mutable std::uint32_t m_renderHash;
 };
 
 } // map

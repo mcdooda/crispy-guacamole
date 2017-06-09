@@ -62,6 +62,7 @@ class Entity final : public map::MapObject
 		inline void setSprite(const flat::render::Sprite& sprite) { m_sprite = &sprite; }
 		inline void clearSprite() { m_sprite = nullptr; }
 		const flat::render::Sprite& getSprite() const override;
+		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
@@ -122,6 +123,17 @@ class Entity final : public map::MapObject
 
 		void setDebugAllComponents(bool debug);
 #endif
+
+		inline static void setEntityProgramSettings(const flat::render::ProgramSettings& programSettings)
+		{
+			Entity::entityProgramSettings = &programSettings;
+		}
+
+		inline static const flat::render::ProgramSettings& getEntityProgramSettings()
+		{
+			FLAT_ASSERT(entityProgramSettings != nullptr);
+			return *entityProgramSettings;
+		}
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -137,6 +149,8 @@ class Entity final : public map::MapObject
 		void updateAABBIfDirty();
 		
 	protected:
+		static const flat::render::ProgramSettings* entityProgramSettings;
+
 		std::vector<component::Component*> m_components;
 		component::behavior::BehaviorComponent*   m_behaviorComponent;
 		component::collision::CollisionComponent* m_collisionComponent;

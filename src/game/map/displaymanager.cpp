@@ -3,6 +3,7 @@
 #include "map.h"
 #include "tile.h"
 #include "../entity/entity.h"
+#include "../game.h"
 
 #define DEBUG_DRAW 0
 
@@ -31,14 +32,13 @@ DisplayManager::DisplayManager()
 
 void DisplayManager::addEntity(const entity::Entity* entity)
 {
-	FLAT_ASSERT(entity->getTextureHash() != 0);
+	entity->updateRenderHash();
 	int cellIndex = m_entityQuadtree->addObject(entity);
 	m_entityCellIndices[entity] = cellIndex;
 }
 
 void DisplayManager::removeEntity(const entity::Entity* entity)
 {
-	FLAT_ASSERT(entity->getTextureHash() != 0);
 	int cellIndex = m_entityCellIndices[entity];
 	m_entityQuadtree->removeObject(entity, cellIndex);
 	m_entityCellIndices.erase(entity);
@@ -46,7 +46,6 @@ void DisplayManager::removeEntity(const entity::Entity* entity)
 
 void DisplayManager::updateEntity(const entity::Entity* entity)
 {
-	FLAT_ASSERT(entity->getTextureHash() != 0);
 	int cellIndex = m_entityCellIndices[entity];
 	int newCellIndex = m_entityQuadtree->updateObject(entity, cellIndex);
 	if (cellIndex != newCellIndex)
@@ -57,15 +56,14 @@ void DisplayManager::updateEntity(const entity::Entity* entity)
 
 void DisplayManager::addTerrainObject(const MapObject* mapObject)
 {
-	FLAT_ASSERT(mapObject->getTextureHash() != 0);
 	FLAT_ASSERT(!mapObject->isEntity());
+	mapObject->updateRenderHash();
 	int cellIndex = m_terrainQuadtree->addObject(mapObject);
 	m_TerrainObjectCellIndices[mapObject] = cellIndex;
 }
 
 void DisplayManager::removeTerrainObject(const MapObject* mapObject)
 {
-	FLAT_ASSERT(mapObject->getTextureHash() != 0);
 	FLAT_ASSERT(!mapObject->isEntity());
 	int cellIndex = m_TerrainObjectCellIndices[mapObject];
 	m_terrainQuadtree->removeObject(mapObject, cellIndex);
@@ -74,7 +72,6 @@ void DisplayManager::removeTerrainObject(const MapObject* mapObject)
 
 void DisplayManager::updateTerrainObject(const MapObject* mapObject)
 {
-	FLAT_ASSERT(mapObject->getTextureHash() != 0);
 	FLAT_ASSERT(!mapObject->isEntity());
 	int cellIndex = m_TerrainObjectCellIndices[mapObject];
 	int newCellIndex = m_terrainQuadtree->updateObject(mapObject, cellIndex);
@@ -84,7 +81,7 @@ void DisplayManager::updateTerrainObject(const MapObject* mapObject)
 	}
 }
 
-void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view)
+void DisplayManager::sortByDepthAndDraw(Game& game, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
@@ -108,6 +105,8 @@ void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& rend
 		int numDrawCalls = 0;
 #endif
 
+		flat::video::Window* window = game.video->window;
+
 		flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
 		const flat::Matrix4& viewMatrix = view.getViewProjectionMatrix();
 
@@ -118,14 +117,18 @@ void DisplayManager::sortByDepthAndDraw(const flat::render::RenderSettings& rend
 			spriteBatch->clear();
 
 			std::vector<const MapObject*>::iterator it2 = it;
-			while (it2 != end && (*it2)->getTextureHash() == (*it)->getTextureHash())
+			while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
 			{
 				spriteBatch->add((*it2)->getSprite());
 				++it2;
 			}
+
+			const flat::render::ProgramSettings& programSettings = (*it)->getProgramSettings();
 			it = it2;
 
-			spriteBatch->draw(renderSettings, viewMatrix);
+			programSettings.program.use(window);
+			programSettings.settings.viewProjectionMatrixUniform.set(view.getViewProjectionMatrix());
+			spriteBatch->draw(programSettings.settings, viewMatrix);
 #if DEBUG_DRAW
 			++numDrawCalls;
 #endif
@@ -191,11 +194,11 @@ inline bool sortMapObjects(const MapObject* a, const MapObject* b)
 	{
 		if (aCenter.z == bCenter.z)
 		{
-			if (a->getTextureHash() == b->getTextureHash())
+			if (a->getRenderHash() == b->getRenderHash())
 			{
 				return aCenter.x < bCenter.x;
 			}
-			return a->getTextureHash() < b->getTextureHash();
+			return a->getRenderHash() < b->getRenderHash();
 		}
 		return aCenter.z < bCenter.z;
 	}
@@ -208,11 +211,11 @@ inline bool sortMapObjects2(const MapObject* a, const MapObject* b)
 	const float bDepth = b->getWorldSpaceAABB().max.z;
 	if (aDepth == bDepth)
 	{
-		if (a->getTextureHash() == b->getTextureHash())
+		if (a->getRenderHash() == b->getRenderHash())
 		{
 			return a->getWorldSpaceAABB().getCenter().x < b->getWorldSpaceAABB().getCenter().x;
 		}
-		return a->getTextureHash() < b->getTextureHash();
+		return a->getRenderHash() < b->getRenderHash();
 	}
 	return aDepth < bDepth;
 }

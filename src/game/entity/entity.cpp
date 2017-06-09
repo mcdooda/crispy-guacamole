@@ -11,6 +11,8 @@ namespace game
 namespace entity
 {
 
+const flat::render::ProgramSettings* Entity::entityProgramSettings = nullptr;
+
 Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, EntityId id) :
 	m_behaviorComponent(nullptr),
 	m_collisionComponent(nullptr),
@@ -125,6 +127,11 @@ const flat::render::Sprite& Entity::getSprite() const
 {
 	FLAT_ASSERT(m_sprite != nullptr);
 	return *m_sprite;
+}
+
+const flat::render::ProgramSettings& Entity::getProgramSettings() const
+{
+	return getEntityProgramSettings();
 }
 
 void Entity::onAddedToMap(map::Map* map)

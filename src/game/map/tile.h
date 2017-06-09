@@ -33,6 +33,7 @@ class Tile final : public MapObject
 		
 		inline bool hasSprite() const { return static_cast<bool>(m_sprite.getTexture()); }
 		const flat::render::Sprite& getSprite() const override;
+		const flat::render::ProgramSettings& getProgramSettings() const override;
 		void updateWorldSpaceAABB();
 		
 		void setCoordinates(Map& map, int x, int y, float z);
@@ -54,8 +55,21 @@ class Tile final : public MapObject
 		const flat::video::Color& getColor() const;
 		
 		void eachWalkableNeighborTiles(const Map& map, float jumpHeight, std::function<void(const Tile*)> func) const;
+
+		inline static void setTileProgramSettings(const flat::render::ProgramSettings& programSettings)
+		{
+			tileProgramSettings = &programSettings;
+		}
+
+		inline static const flat::render::ProgramSettings& getTileProgramSettings()
+		{
+			FLAT_ASSERT(tileProgramSettings != nullptr);
+			return *tileProgramSettings;
+		}
 	
 	private:
+		static const flat::render::ProgramSettings* tileProgramSettings;
+
 		std::vector<entity::Entity*> m_entities;
 		flat::render::Sprite m_sprite;
 		Prop* m_prop;

@@ -6,6 +6,7 @@
 
 namespace game
 {
+class Game;
 namespace entity
 {
 class Entity;
@@ -30,7 +31,7 @@ class DisplayManager final
 		void removeTerrainObject(const MapObject* mapObject);
 		void updateTerrainObject(const MapObject* mapObject);
 
-		void sortByDepthAndDraw(const flat::render::RenderSettings& renderSettings, const flat::video::View& view);
+		void sortByDepthAndDraw(Game& game, const flat::video::View& view);
 
 		const MapObject* getObjectAtPosition(const flat::Vector2& position) const;
 		void getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const;

@@ -15,6 +15,7 @@ public:
 	Prop() {}
 
 	const flat::render::Sprite& getSprite() const override;
+	const flat::render::ProgramSettings& getProgramSettings() const override;
 
 	void updateWorldSpaceAABB(const flat::Vector3& position);
 

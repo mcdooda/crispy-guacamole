@@ -135,11 +135,9 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		flat::resource::ResourceManager<map::PropTemplate, Game&, std::string> m_propTemplateManager;
 		
 		// rendering settings
-		flat::video::Program m_spriteProgram;
-		flat::render::RenderSettings m_spriteProgramRenderSettings;
-		
-		flat::video::Program m_uiProgram;
-		flat::render::RenderSettings m_uiProgramRenderSettings;
+		flat::render::ProgramSettings m_entityRender;
+		flat::render::ProgramSettings m_terrainRender;
+		flat::render::ProgramSettings m_uiRender;
 		
 		// level
 		mod::Mod m_mod;

@@ -1,15 +1,16 @@
 #version 130
 
 uniform sampler2D objectTexture;
-uniform vec4 color;
 
 in vec2 uv2;
+in vec4 color2;
 
 out vec4 outColor;
 
 void main()
 {
-	outColor = texture(objectTexture, vec2(uv2.x, uv2.y)) * color;
+	vec4 pxColor = texture(objectTexture, uv2);
+	outColor = pxColor * color2;
 }
 
 

@@ -1,4 +1,5 @@
 #include "prop.h"
+#include "tile.h"
 
 namespace game
 {
@@ -8,6 +9,11 @@ namespace map
 const flat::render::Sprite& Prop::getSprite() const
 {
 	return m_sprite;
+}
+
+const flat::render::ProgramSettings& Prop::getProgramSettings() const
+{
+	return Tile::getTileProgramSettings();
 }
 
 void Prop::updateWorldSpaceAABB(const flat::Vector3& position)

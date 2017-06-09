@@ -51,26 +51,39 @@ void BaseMapState::enter(Game& game)
 	buildUi(game);
 	
 	// rendering settings
-	m_spriteProgram.load("data/shaders/sprite/spritebatch.frag", "data/shaders/sprite/spritebatch.vert");
+	m_entityRender.program.load("data/shaders/sprite/entityspritebatch.frag", "data/shaders/sprite/entityspritebatch.vert");
 	
-	m_spriteProgramRenderSettings.textureUniform              = m_spriteProgram.getUniform<flat::video::Texture>("objectTexture");
-	m_spriteProgramRenderSettings.viewProjectionMatrixUniform = m_spriteProgram.getUniform<flat::Matrix4>("vpMatrix");
+	m_entityRender.settings.textureUniform              = m_entityRender.program.getUniform<flat::video::Texture>("objectTexture");
+	m_entityRender.settings.viewProjectionMatrixUniform = m_entityRender.program.getUniform<flat::Matrix4>("vpMatrix");
 
-	m_spriteProgramRenderSettings.positionAttribute           = m_spriteProgram.getAttribute("position");
-	m_spriteProgramRenderSettings.uvAttribute                 = m_spriteProgram.getAttribute("uv");
-	m_spriteProgramRenderSettings.colorAttribute              = m_spriteProgram.getAttribute("color");
-	
-	m_uiProgram.load("data/shaders/ui/ui.frag", "data/shaders/ui/ui.vert");
-	
-	m_uiProgramRenderSettings.textureUniform              = m_uiProgram.getUniform<flat::video::Texture>("objectTexture");
-	m_uiProgramRenderSettings.textureGivenUniform         = m_uiProgram.getUniform<bool>("textureGiven");
-	m_uiProgramRenderSettings.colorUniform                = m_uiProgram.getUniform<flat::video::Color>("color");
-	m_uiProgramRenderSettings.secondaryColorUniform       = m_uiProgram.getUniform<flat::video::Color>("secondaryColor");
-	m_uiProgramRenderSettings.modelMatrixUniform          = m_uiProgram.getUniform<flat::Matrix4>("modelMatrix");
-	m_uiProgramRenderSettings.viewProjectionMatrixUniform = m_uiProgram.getUniform<flat::Matrix4>("vpMatrix");
+	m_entityRender.settings.positionAttribute           = m_entityRender.program.getAttribute("position");
+	m_entityRender.settings.uvAttribute                 = m_entityRender.program.getAttribute("uv");
+	m_entityRender.settings.colorAttribute              = m_entityRender.program.getAttribute("color");
 
-	m_uiProgramRenderSettings.positionAttribute           = m_uiProgram.getAttribute("position");
-	m_uiProgramRenderSettings.uvAttribute                 = m_uiProgram.getAttribute("uv");
+	entity::Entity::setEntityProgramSettings(m_entityRender);
+
+	m_terrainRender.program.load("data/shaders/sprite/terrainspritebatch.frag", "data/shaders/sprite/terrainspritebatch.vert");
+
+	m_terrainRender.settings.textureUniform              = m_terrainRender.program.getUniform<flat::video::Texture>("objectTexture");
+	m_terrainRender.settings.viewProjectionMatrixUniform = m_terrainRender.program.getUniform<flat::Matrix4>("vpMatrix");
+
+	m_terrainRender.settings.positionAttribute           = m_terrainRender.program.getAttribute("position");
+	m_terrainRender.settings.uvAttribute                 = m_terrainRender.program.getAttribute("uv");
+	m_terrainRender.settings.colorAttribute              = m_terrainRender.program.getAttribute("color");
+
+	map::Tile::setTileProgramSettings(m_terrainRender);
+	
+	m_uiRender.program.load("data/shaders/ui/ui.frag", "data/shaders/ui/ui.vert");
+	
+	m_uiRender.settings.textureUniform              = m_uiRender.program.getUniform<flat::video::Texture>("objectTexture");
+	m_uiRender.settings.textureGivenUniform         = m_uiRender.program.getUniform<bool>("textureGiven");
+	m_uiRender.settings.colorUniform                = m_uiRender.program.getUniform<flat::video::Color>("color");
+	m_uiRender.settings.secondaryColorUniform       = m_uiRender.program.getUniform<flat::video::Color>("secondaryColor");
+	m_uiRender.settings.modelMatrixUniform          = m_uiRender.program.getUniform<flat::Matrix4>("modelMatrix");
+	m_uiRender.settings.viewProjectionMatrixUniform = m_uiRender.program.getUniform<flat::Matrix4>("vpMatrix");
+
+	m_uiRender.settings.positionAttribute           = m_uiRender.program.getAttribute("position");
+	m_uiRender.settings.uvAttribute                 = m_uiRender.program.getAttribute("uv");
 	
 	// level
 	loadMap(game, game.mapName);
@@ -462,15 +475,12 @@ void BaseMapState::updateCameraView()
 void BaseMapState::draw(game::Game& game)
 {
 	// map
-	m_spriteProgram.use(game.video->window);
 	
 	game.video->setClearColor(flat::video::Color::BLACK);
 	game.video->clear();
 	
-	m_spriteProgramRenderSettings.viewProjectionMatrixUniform.set(m_gameView.getViewProjectionMatrix());
-	
 	addGhostEntity(game);
-	getMap().getDisplayManager().sortByDepthAndDraw(m_spriteProgramRenderSettings, m_gameView);
+	getMap().getDisplayManager().sortByDepthAndDraw(game, m_gameView);
 	removeGhostEntity(game);
 	
 #ifdef FLAT_DEBUG
@@ -500,15 +510,15 @@ void BaseMapState::updateUi(game::Game& game)
 
 void BaseMapState::drawUi(game::Game& game)
 {
-	m_uiProgram.use(game.video->window);
+	m_uiRender.program.use(game.video->window);
 	
-	m_uiProgramRenderSettings.viewProjectionMatrixUniform.set(game.interfaceView.getViewProjectionMatrix());
+	m_uiRender.settings.viewProjectionMatrixUniform.set(game.interfaceView.getViewProjectionMatrix());
 	
-	m_uiProgramRenderSettings.modelMatrixUniform.set(flat::Matrix4());
-	m_uiProgramRenderSettings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
+	m_uiRender.settings.modelMatrixUniform.set(flat::Matrix4());
+	m_uiRender.settings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
 	
 	flat::sharp::ui::RootWidget* root = game.ui->root.get();
-	root->draw(m_uiProgramRenderSettings);
+	root->draw(m_uiRender.settings);
 }
 
 void BaseMapState::resetViews(game::Game& game)

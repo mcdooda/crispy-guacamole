@@ -7,6 +7,8 @@ namespace game
 namespace map
 {
 
+const flat::render::ProgramSettings* Tile::tileProgramSettings = nullptr;
+
 Tile::Tile() :
 	m_prop(nullptr),
 	m_exists(false),
@@ -50,6 +52,11 @@ const flat::render::Sprite& Tile::getSprite() const
 {
 	FLAT_ASSERT(m_exists);
 	return m_sprite;
+}
+
+const flat::render::ProgramSettings& Tile::getProgramSettings() const
+{
+	return getTileProgramSettings();
 }
 
 void Tile::updateWorldSpaceAABB()

@@ -15,20 +15,20 @@ return {
         healthBarInnerWidget:setPosition(1, -1)
         healthBarWidget:addChild(healthBarInnerWidget)
 
-        widget:setVisible(false)
         widget:addChild(healthBarWidget)
 
         Widget.getRoot():addChild(widget)
 
+        entity:setUiVisible(false)
         entity:setUiOffset(-healthBarWidgetWidth / 2, offsetY)
         entity:healthChanged(function(previousHealth, currentHealth, maxHealth)
             local healthRatio = currentHealth / maxHealth
             if 0 < healthRatio and healthRatio < 1 then
                 local healthBarInnerWidgetWidth = healthRatio * healthBarInnerWidgetMaxWidth
-                widget:setVisible(true)
+                entity:setUiVisible(true)
                 healthBarInnerWidget:setSize(healthBarInnerWidgetWidth, healthBarInnerWidgetHeight)
             else
-                widget:setVisible(false)
+                entity:setUiVisible(false)
             end
         end)
     end,

@@ -62,7 +62,9 @@ int open(lua_State* L)
 
 		{"lookAtEntity",            l_Entity_lookAtEntity},
 
+		// ui
 		{"setUiOffset",             l_Entity_setUiOffset},
+		{"setUiVisible",            l_Entity_setUiVisible},
 
 		// movement
 		{"moveTo",                  l_Entity_moveTo},
@@ -284,10 +286,19 @@ int l_Entity_lookAtEntity(lua_State* L)
 int l_Entity_setUiOffset(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	float offsetX = luaL_checknumber(L, 2);
-	float offsetY = luaL_checknumber(L, 3);
+	float offsetX = static_cast<float>(luaL_checknumber(L, 2));
+	float offsetY = static_cast<float>(luaL_checknumber(L, 3));
 	ui::UiComponent& uiComponent = getComponent<ui::UiComponent>(L, entity);
 	uiComponent.setWidgetOffset(flat::Vector2(offsetX, offsetY));
+	return 0;
+}
+
+int l_Entity_setUiVisible(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	bool visible = lua_toboolean(L, 2) == 1;
+	ui::UiComponent& uiComponent = getComponent<ui::UiComponent>(L, entity);
+	uiComponent.setWidgetVisible(visible);
 	return 0;
 }
 

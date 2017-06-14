@@ -26,6 +26,7 @@ class UiComponent : public ComponentImpl<UiComponentTemplate>
 		void update(float currentTime, float elapsedTime) override;
 
 		inline void setWidgetOffset(const flat::Vector2& widgetOffset) { m_widgetOffset = widgetOffset; }
+		inline void setWidgetVisible(bool widgetVisible) { m_widgetVisible = widgetVisible; }
 
 	private:
 		bool addedToMap(Entity* entity, map::Map* map);
@@ -41,6 +42,7 @@ class UiComponent : public ComponentImpl<UiComponentTemplate>
 		std::shared_ptr<flat::sharp::ui::Widget> m_widget;
 		flat::Vector2 m_widgetOffset;
 		const flat::video::View* m_gameView;
+		bool m_widgetVisible : 1;
 		bool m_addedToMap : 1;
 		bool m_removedFromMap : 1;
 		bool m_selected : 1;

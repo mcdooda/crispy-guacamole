@@ -15,6 +15,7 @@ namespace ui
 
 void UiComponent::init()
 {
+	m_widgetVisible = true;
 	m_addedToMap = false;
 	m_removedFromMap = false;
 	m_selected = false;
@@ -77,10 +78,29 @@ void UiComponent::update(float currentTime, float elapsedTime)
 	}
 
 	// update widget position
+	flat::sharp::ui::Widget* widget = m_widget.get();
+	if (m_widgetVisible)
 	{
-		flat::Vector2 position2d = m_gameView->getWindowPosition(m_owner->getSprite().getPosition());
-		flat::sharp::ui::Widget::Position widgetPosition = position2d + m_widgetOffset;
-		m_widget->setPosition(widgetPosition);
+		flat::AABB2 screenAABB;
+		m_gameView->getScreenAABB(screenAABB);
+
+		const flat::AABB2& spriteAABB = m_owner->getAABB();
+
+		if (flat::AABB2::overlap(screenAABB, spriteAABB))
+		{
+			widget->setVisible(true);
+			flat::Vector2 position2d = m_gameView->getWindowPosition(m_owner->getSprite().getPosition());
+			flat::sharp::ui::Widget::Position widgetPosition = position2d + m_widgetOffset;
+			widget->setPosition(widgetPosition);
+		}
+		else
+		{
+			widget->setVisible(false);
+		}
+	}
+	else
+	{
+		widget->setVisible(false);
 	}
 
 	if (m_selected)

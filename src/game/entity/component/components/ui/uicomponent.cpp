@@ -1,5 +1,8 @@
 #include "uicomponent.h"
 #include "../../../lua/entity.h"
+#include "../../../../map/map.h"
+#include "../../../../game.h"
+#include "../../../../states/basemapstate.h"
 
 namespace game
 {
@@ -26,6 +29,13 @@ void UiComponent::init()
 
 	m_owner->selected.on(this, &UiComponent::selected);
 	m_owner->deselected.on(this, &UiComponent::deselected);
+
+	// TODO: clean this shit!
+	lua_State* L = getTemplate()->getAddedToMap().getLuaState();
+	FLAT_ASSERT(L != nullptr);
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	m_gameView = &baseMapState.getGameView();
 }
 
 void UiComponent::deinit()
@@ -47,31 +57,40 @@ void UiComponent::deinit()
 
 	m_owner->selected.off(this);
 	m_owner->deselected.off(this);
+
+	m_gameView = nullptr;
 }
 
 void UiComponent::update(float currentTime, float elapsedTime)
 {
+	const UiComponentTemplate* uiComponentTemplate = getTemplate();
+
 	if (m_addedToMap)
 	{
-		triggerCallback(getTemplate()->getAddedToMap());
+		triggerCallback(uiComponentTemplate->getAddedToMap());
 		m_addedToMap = false;
 	}
 	else if (m_removedFromMap)
 	{
-		triggerCallback(getTemplate()->getRemovedFromMap());
+		triggerCallback(uiComponentTemplate->getRemovedFromMap());
 		m_removedFromMap = false;
 	}
 
-	triggerCallback(getTemplate()->getUpdate());
+	// update widget position
+	{
+		flat::Vector2 position2d = m_gameView->getWindowPosition(m_owner->getSprite().getPosition());
+		flat::sharp::ui::Widget::Position widgetPosition = position2d + m_widgetOffset;
+		m_widget->setPosition(widgetPosition);
+	}
 
 	if (m_selected)
 	{
-		triggerCallback(getTemplate()->getSelected());
+		triggerCallback(uiComponentTemplate->getSelected());
 		m_selected = false;
 	}
 	else if (m_deselected)
 	{
-		triggerCallback(getTemplate()->getDeselected());
+		triggerCallback(uiComponentTemplate->getDeselected());
 		m_deselected = false;
 	}
 }

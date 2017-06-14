@@ -17,8 +17,13 @@ class ComponentRegistry;
 class EntityPool
 {
 	public:
+		EntityPool() = delete;
+		EntityPool(const EntityPool&) = delete;
+		EntityPool(EntityPool&&) = delete;
 		EntityPool(const component::ComponentRegistry& componentRegistry);
 		~EntityPool();
+
+		void operator=(const EntityPool&) = delete;
 
 		Entity* createEntity(
 			const std::shared_ptr<const EntityTemplate>& entityTemplate,

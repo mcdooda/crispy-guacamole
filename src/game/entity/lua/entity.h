@@ -43,7 +43,7 @@ int l_Entity_getElevation(lua_State* L);
 
 int l_Entity_lookAtEntity(lua_State* L);
 
-int l_Entity_getUiPosition(lua_State* L);
+int l_Entity_setUiOffset(lua_State* L);
 
 // movement
 int l_Entity_moveTo(lua_State* L);

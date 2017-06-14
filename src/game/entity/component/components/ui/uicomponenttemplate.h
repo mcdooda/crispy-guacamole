@@ -21,7 +21,6 @@ class UiComponentTemplate : public ComponentTemplate
 
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getAddedToMap() const { return m_addedToMap; }
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getRemovedFromMap() const { return m_removedFromMap; }
-		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getUpdate() const { return m_update; }
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelected() const { return m_selected; }
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getDeselected() const { return m_deselected; }
 
@@ -30,7 +29,6 @@ class UiComponentTemplate : public ComponentTemplate
 
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_addedToMap;
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_removedFromMap;
-		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_update;
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_selected;
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_deselected;
 };

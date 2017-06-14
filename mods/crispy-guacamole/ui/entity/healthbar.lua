@@ -5,50 +5,35 @@ local healthBarInnerWidgetMaxWidth = healthBarWidgetWidth - 2
 local healthBarInnerWidgetHeight = healthBarWidgetHeight - 2
 
 return {
-    addedToMap = function(entity, widget)
-        local healthBarExtraData = {}
+    addedToMap = function(entity, widget, offsetY)
+        local healthBarWidget = Widget.makeFixedSize(healthBarWidgetWidth, healthBarWidgetHeight)
+        healthBarWidget:setBackground 'mods/crispy-guacamole/ui/entity/healthbarbg.png'
 
-        do
-            local healthBarWidget = Widget.makeFixedSize(healthBarWidgetWidth, healthBarWidgetHeight)
-            healthBarWidget:setBackground 'mods/crispy-guacamole/ui/entity/healthbarbg.png'
+        local healthBarInnerWidget = Widget.makeFixedSize(healthBarWidgetWidth - 2, healthBarWidgetHeight - 2)
+        healthBarInnerWidget:setBackground 'mods/crispy-guacamole/ui/entity/healthbarfg.png'
+        healthBarInnerWidget:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
+        healthBarInnerWidget:setPosition(1, -1)
+        healthBarWidget:addChild(healthBarInnerWidget)
 
-            do
-                local healthBarInnerWidget = Widget.makeFixedSize(healthBarWidgetWidth - 2, healthBarWidgetHeight - 2)
-                healthBarInnerWidget:setBackground 'mods/crispy-guacamole/ui/entity/healthbarfg.png'
-                healthBarInnerWidget:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
-                healthBarInnerWidget:setPosition(1, -1)
+        widget:setVisible(false)
+        widget:addChild(healthBarWidget)
 
-                healthBarWidget:addChild(healthBarInnerWidget)
+        Widget.getRoot():addChild(widget)
 
-                healthBarExtraData.healthBarInnerWidget = healthBarInnerWidget
+        entity:setUiOffset(-healthBarWidgetWidth / 2, offsetY)
+        entity:healthChanged(function(previousHealth, currentHealth, maxHealth)
+            local healthRatio = currentHealth / maxHealth
+            if 0 < healthRatio and healthRatio < 1 then
+                local healthBarInnerWidgetWidth = healthRatio * healthBarInnerWidgetMaxWidth
+                widget:setVisible(true)
+                healthBarInnerWidget:setSize(healthBarInnerWidgetWidth, healthBarInnerWidgetHeight)
+            else
+                widget:setVisible(false)
             end
-
-            widget:addChild(healthBarWidget)
-        end
-
-        entity:getExtraData().healthBarExtraData = healthBarExtraData
-
-        local root = Widget.getRoot()
-        root:addChild(widget)
+        end)
     end,
 
     removedFromMap = function(entity, widget)
         widget:removeFromParent()
-    end,
-
-    update = function(entity, widget, offsetY)
-        local healthRatio = entity:getHealth() / entity:getMaxHealth()
-        if healthRatio > 0 and healthRatio < 1 then
-            local x, y = entity:getUiPosition()
-            offsetY = offsetY or 0
-            widget:setPosition(x - healthBarWidgetWidth / 2, y + offsetY)
-
-            local healthBarInnerWidget = entity:getExtraData().healthBarExtraData.healthBarInnerWidget
-            local healthBarInnerWidgetWidth = healthRatio * healthBarInnerWidgetMaxWidth
-            widget:setVisible(true)
-            healthBarInnerWidget:setSize(healthBarInnerWidgetWidth, healthBarInnerWidgetHeight)
-        else
-            widget:setVisible(false)
-        end
     end
 }

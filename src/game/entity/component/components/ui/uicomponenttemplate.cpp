@@ -22,16 +22,13 @@ void UiComponentTemplate::load(Game& game, lua_State* L, const std::string& enti
 	lua_getfield(L, -2, "removedFromMap");
 	m_removedFromMap.setIfNotNil(L, -1);
 
-	lua_getfield(L, -3, "update");
-	m_update.setIfNotNil(L, -1);
-
-	lua_getfield(L, -4, "selected");
+	lua_getfield(L, -3, "selected");
 	m_selected.setIfNotNil(L, -1);
 
-	lua_getfield(L, -5, "deselected");
+	lua_getfield(L, -4, "deselected");
 	m_deselected.setIfNotNil(L, -1);
 
-	lua_pop(L, 5);
+	lua_pop(L, 4);
 }
 
 } // ui

@@ -8,6 +8,7 @@
 #include "../component/components/detection/detectioncomponent.h"
 #include "../component/components/faction/factioncomponent.h"
 #include "../component/components/life/lifecomponent.h"
+#include "../component/components/ui/uicomponent.h"
 #include "../../states/basemapstate.h"
 #include "../../game.h"
 #include "../../map/map.h"
@@ -61,7 +62,7 @@ int open(lua_State* L)
 
 		{"lookAtEntity",            l_Entity_lookAtEntity},
 
-		{"getUiPosition",           l_Entity_getUiPosition},
+		{"setUiOffset",             l_Entity_setUiOffset},
 
 		// movement
 		{"moveTo",                  l_Entity_moveTo},
@@ -280,18 +281,14 @@ int l_Entity_lookAtEntity(lua_State* L)
 	return 0;
 }
 
-int l_Entity_getUiPosition(lua_State* L)
+int l_Entity_setUiOffset(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	Game& game = flat::lua::getGame(L).to<Game>();
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-	map::Map& map = baseMapState.getMap();
-	flat::Vector2 position2d(map.getTransform() * entity.getPosition());
-	const flat::video::View& gameView = baseMapState.getGameView();
-	position2d = gameView.getWindowPosition(position2d);
-	lua_pushnumber(L, position2d.x);
-	lua_pushnumber(L, position2d.y);
-	return 2;
+	float offsetX = luaL_checknumber(L, 2);
+	float offsetY = luaL_checknumber(L, 3);
+	ui::UiComponent& uiComponent = getComponent<ui::UiComponent>(L, entity);
+	uiComponent.setWidgetOffset(flat::Vector2(offsetX, offsetY));
+	return 0;
 }
 
 int l_Entity_moveTo(lua_State* L)

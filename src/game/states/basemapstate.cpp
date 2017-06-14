@@ -84,30 +84,30 @@ void BaseMapState::enter(Game& game)
 
 	m_uiRender.settings.positionAttribute           = m_uiRender.program.getAttribute("position");
 	m_uiRender.settings.uvAttribute                 = m_uiRender.program.getAttribute("uv");
+
+	// reset view
+#ifdef FLAT_DEBUG
+	if (!m_isReloading)
+	{
+#endif
+		m_gameView.setWindow(game.video->window);
+		m_gameView.updateProjection();
+		m_cameraZoom = 1.f;
+
+		map::Map& map = getMap();
+		int minX, maxX, minY, maxY;
+		map.getBounds(minX, maxX, minY, maxY);
+		flat::Vector3 cameraCenter((maxX + minX) / 2.f, (maxY + minY) / 2.f, 0.f);
+		setCameraCenter(cameraCenter);
+#ifdef FLAT_DEBUG
+	}
+#endif
 	
 	// level
 	loadMap(game, game.mapName);
 
 	// load debug display resources *after* the map is loaded!
 	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
-
-		// reset view
-#ifdef FLAT_DEBUG
-		if (!m_isReloading)
-		{
-#endif
-			m_gameView.setWindow(game.video->window);
-			m_gameView.updateProjection();
-			m_cameraZoom = 1.f;
-
-			map::Map& map = getMap();
-			int minX, maxX, minY, maxY;
-			map.getBounds(minX, maxX, minY, maxY);
-			flat::Vector3 cameraCenter((maxX + minX) / 2.f, (maxY + minY) / 2.f, 0.f);
-			setCameraCenter(cameraCenter);
-#ifdef FLAT_DEBUG
-		}
-#endif
 
 	resetViews(game);
 

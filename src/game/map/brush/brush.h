@@ -1,5 +1,5 @@
-#ifndef GAME_MAP_BRUSH_H
-#define GAME_MAP_BRUSH_H
+#ifndef GAME_MAP_BRUSH_BRUSH_H
+#define GAME_MAP_BRUSH_BRUSH_H
 
 #include <vector>
 #include <flat.h>
@@ -44,7 +44,7 @@ class Brush
 } // map
 } // game
 
-#endif // GAME_MAP_BRUSH_H
+#endif // GAME_MAP_BRUSH_BRUSH_H
 
 
 

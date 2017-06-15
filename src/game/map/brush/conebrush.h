@@ -1,5 +1,5 @@
-#ifndef GAME_MAP_BRUSH_SPHEREBRUSH_H
-#define GAME_MAP_BRUSH_SPHEREBRUSH_H
+#ifndef GAME_MAP_BRUSH_CONEBRUSH_H
+#define GAME_MAP_BRUSH_CONEBRUSH_H
 
 #include "brush.h"
 
@@ -10,7 +10,7 @@ namespace map
 namespace brush
 {
 
-class SphereBrush : public Brush
+class ConeBrush : public Brush
 {
 	public:
 		float getEffect(const flat::Vector2& positionFromCenter) const override;
@@ -20,7 +20,7 @@ class SphereBrush : public Brush
 } // map
 } // game
 
-#endif // GAME_MAP_BRUSH_SPHEREBRUSH_H
+#endif // GAME_MAP_BRUSH_CONEBRUSH_H
 
 
 

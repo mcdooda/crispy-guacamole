@@ -17,6 +17,16 @@ class Tile;
 namespace brush
 {
 
+struct TileEffect
+{
+	TileEffect(Tile* tile, float effect) : tile(tile), effect(effect) {}
+
+	Tile* tile;
+	float effect;
+};
+
+using TilesContainer = std::vector<TileEffect>;
+
 class Brush
 {
 	public:
@@ -30,7 +40,7 @@ class Brush
 		
 		virtual float getEffect(const flat::Vector2& positionFromCenter) const = 0;
 		
-		void getTiles(Map& map, const flat::Vector2& center, std::map<map::Tile*, float>& tiles, float minEffect = 0.f) const;
+		void getTiles(Map& map, const flat::Vector2& center, TilesContainer& tiles, float minEffect = 0.f) const;
 		float getTileEffect(const flat::Vector2& center, const map::Tile* tile) const;
 		
 		void getEntities(Map& map, const flat::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect = 0.f) const;

@@ -16,7 +16,7 @@ Brush::Brush() :
 	
 }
 
-void Brush::getTiles(Map& map, const flat::Vector2& center, std::map<map::Tile*, float>& tiles, float minEffect) const
+void Brush::getTiles(Map& map, const flat::Vector2& center, TilesContainer& tiles, float minEffect) const
 {
 	const int minX = static_cast<int>(std::floor(center.x - m_radius));
 	const int maxX = static_cast<int>(std::ceil(center.x + m_radius));
@@ -24,7 +24,7 @@ void Brush::getTiles(Map& map, const flat::Vector2& center, std::map<map::Tile*,
 	const int maxY = static_cast<int>(std::ceil(center.y + m_radius));
 	
 	tiles.clear();
-	//tiles.reserve((maxX - minX) * (maxY - minY));
+	tiles.reserve((maxX - minX) * (maxY - minY));
 	
 	flat::Vector2 positionFromCenter;
 	
@@ -39,7 +39,7 @@ void Brush::getTiles(Map& map, const flat::Vector2& center, std::map<map::Tile*,
 				float effect = getEffect(positionFromCenter);
 				if (effect > minEffect)
 				{
-					tiles[tile] = effect;
+					tiles.emplace_back(tile, effect);
 				}
 			}
 		}

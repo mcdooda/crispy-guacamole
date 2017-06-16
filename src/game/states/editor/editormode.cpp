@@ -49,12 +49,10 @@ void EditorMode::clearBrush() const
 
 void EditorMode::displayBrush() const
 {
-	for (const std::pair<map::Tile*, float>& pair : m_selectedTiles)
+	for (const map::brush::TileEffect& tileEffect : m_selectedTiles)
 	{
-		map::Tile* tile = pair.first;
-		float effect = pair.second;
-		flat::video::Color color(1.f - effect, 1.f - effect, 1.f, 1.f);
-		tile->setColor(color);
+		flat::video::Color color(1.f - tileEffect.effect, 1.f - tileEffect.effect, 1.f, 1.f);
+		tileEffect.tile->setColor(color);
 	}
 
 	if (!getEditorState().isMouseOverUi(m_game))
@@ -70,13 +68,12 @@ void EditorMode::displayBrush() const
 
 void EditorMode::eachSelectedTile(std::function<void(map::Tile*, float)> func) const
 {
-	std::map<map::Tile*, float> selectedTiles = !m_selectedTiles.empty() ? m_selectedTiles : m_brushTiles;
-	for (const std::pair<map::Tile*, float>& tile : selectedTiles)
+	const map::brush::TilesContainer& selectedTiles = !m_selectedTiles.empty() ? m_selectedTiles : m_brushTiles;
+	for (const map::brush::TileEffect& tileEffect : selectedTiles)
 	{
-		const float effect = tile.second;
-		if (effect > 0.f)
+		if (tileEffect.effect > 0.f)
 		{
-			func(tile.first, effect);
+			func(tileEffect.tile, tileEffect.effect);
 		}
 	}
 }
@@ -94,12 +91,11 @@ void EditorMode::eachSelectedTileIfExists(std::function<void(map::Tile*, float)>
 
 void EditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) const
 {
-	for (const std::pair<map::Tile*, float>& tile : m_brushTiles)
+	for (const map::brush::TileEffect& tileEffect : m_brushTiles)
 	{
-		const float effect = tile.second;
-		if (effect > 0.f)
+		if (tileEffect.effect > 0.f)
 		{
-			func(tile.first, effect);
+			func(tileEffect.tile, tileEffect.effect);
 		}
 	}
 }
@@ -117,9 +113,9 @@ void EditorMode::eachBrushTileIfExists(std::function<void(map::Tile*, float)> fu
 
 void EditorMode::clearSelectedTiles()
 {
-	for (const std::pair<map::Tile*, float>& pair : m_selectedTiles)
+	for (const map::brush::TileEffect& tileEffect : m_selectedTiles)
 	{
-		pair.first->setColor(flat::video::Color::WHITE);
+		tileEffect.tile->setColor(flat::video::Color::WHITE);
 	}
 	m_selectedTiles.clear();
 }

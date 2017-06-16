@@ -53,10 +53,17 @@ void TileEditorMode::updateBrushTiles()
 
 		eachBrushTile([this](map::Tile* tile, float effect)
 		{
-			std::map<map::Tile*, float>::iterator it = m_selectedTiles.find(tile);
-			if (it == m_selectedTiles.end() || effect > it->second)
+			map::brush::TilesContainer::iterator it = std::find_if(
+				m_selectedTiles.begin(),
+				m_selectedTiles.end(),
+				[tile](const map::brush::TileEffect& tileEffect)
+				{
+					return tileEffect.tile == tile;
+				}
+			);
+			if (it == m_selectedTiles.end() || effect > it->effect)
 			{
-				m_selectedTiles[tile] = effect;
+				m_selectedTiles.emplace_back(tile, effect);
 			}
 		});
 	}

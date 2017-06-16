@@ -50,8 +50,8 @@ protected:
 protected:
 	Game& m_game;
 
-	std::map<map::Tile*, float> m_selectedTiles;
-	std::map<map::Tile*, float> m_brushTiles;
+	map::brush::TilesContainer m_selectedTiles;
+	map::brush::TilesContainer m_brushTiles;
 	flat::Vector2 m_brushPosition;
 	bool m_brushOnTile;
 	std::unique_ptr<map::brush::Brush> m_brush;

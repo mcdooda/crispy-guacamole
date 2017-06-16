@@ -70,13 +70,13 @@ int l_Brush_getTiles(lua_State* L)
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	Map& map = baseMapState.getMap();
-	std::map<map::Tile*, float> tiles;
+	TilesContainer tiles;
 	brush.getTiles(map, center, tiles, minEffect);
 	lua_createtable(L, 0, static_cast<int>(tiles.size()));
-	for (const std::pair<map::Tile*, float>& tile : tiles)
+	for (const TileEffect& tileEffect : tiles)
 	{
-		lua_pushlightuserdata(L, tile.first);
-		lua_pushnumber(L, tile.second);
+		lua_pushlightuserdata(L, tileEffect.tile);
+		lua_pushnumber(L, tileEffect.effect);
 		lua_rawset(L, -3);
 	}
 	return 1;

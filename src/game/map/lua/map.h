@@ -25,6 +25,9 @@ int l_Map_eachSelectedEntity(lua_State* L);
 
 int l_Map_getZone(lua_State* L);
 
+int l_Map_getTileZ(lua_State* L);
+int l_Map_setTileZ(lua_State* L);
+
 } // map
 } // lua
 } // map

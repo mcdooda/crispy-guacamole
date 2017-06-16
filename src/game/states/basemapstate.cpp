@@ -9,6 +9,7 @@
 #include "../map/proptemplate.h"
 #include "../map/lua/map.h"
 #include "../map/lua/zone.h"
+#include "../map/brush/lua/brush.h"
 #include "../entity/lua/entity.h"
 #include "../entity/component/lua/componentregistry.h"
 #include "../entity/component/components/collision/collisioncomponent.h"
@@ -44,6 +45,7 @@ void BaseMapState::enter(Game& game)
 		mod::lua::open(L);
 		map::lua::map::open(L);
 		map::lua::zone::open(L);
+		map::brush::lua::open(L);
 		editor::lua::open(L);
 	}
 	

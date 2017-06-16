@@ -8,31 +8,26 @@ namespace game
 namespace timer
 {
 
-TimerContainer::TimerContainer()
-{
-	
-}
-
 TimerContainer::~TimerContainer()
 {
-	for (const Timer* timer : m_timers)
-	{
-		delete timer;
-	}
+	clearTimers();
 }
 
-void TimerContainer::add(const Timer* timer)
+Timer* TimerContainer::add(float beginTime, float duration, int onUpdate, int onEnd, bool loop)
 {
-	std::deque<const Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
-	m_timers.insert(it, timer);
+	Timer* timer = m_timerPool.create(beginTime, duration, onUpdate, onEnd, loop);
+	m_pendingTimers.push_back(timer);
+	return timer;
 }
 
-bool TimerContainer::stop(const Timer* timer)
+bool TimerContainer::stop(Timer*& timer)
 {
-	std::deque<const Timer*>::iterator it = std::find(m_timers.begin(), m_timers.end(), timer);
+	std::deque<Timer*>::iterator it = std::find(m_timers.begin(), m_timers.end(), timer);
 	if (it != m_timers.end())
 	{
-		m_timers.erase(it);
+		m_timerPool.destroy(timer);
+		*it = nullptr;
+		timer = nullptr;
 		return true;
 	}
 	else
@@ -43,12 +38,22 @@ bool TimerContainer::stop(const Timer* timer)
 
 void TimerContainer::updateTimers(lua_State* L, float currentTime)
 {
-	std::deque<const Timer*>::iterator lastStoppedTimerIt = m_timers.begin();
-	std::deque<const Timer*>::iterator end = m_timers.end();
-	std::deque<const Timer*> loopingTimers;
-	for (std::deque<const Timer*>::iterator it = m_timers.begin(); it != end; ++it)
+	// insert pending timers
+	for (Timer* timer : m_pendingTimers)
 	{
-		const Timer* timer = *it;
+		std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
+		m_timers.insert(it, timer);
+	}
+	m_pendingTimers.clear();
+
+	// update timers
+	std::deque<Timer*>::iterator lastStoppedTimerIt = m_timers.begin();
+	std::deque<Timer*>::iterator end = m_timers.end();
+	std::vector<Timer*> loopingTimers;
+	for (std::deque<Timer*>::iterator it = m_timers.begin(); it != end; ++it)
+	{
+		Timer* timer = *it;
+		FLAT_ASSERT(timer != nullptr);
 		float timeOut = timer->getTimeOut();
 		if (currentTime >= timeOut)
 		{
@@ -63,7 +68,7 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 			}
 			else
 			{
-				delete timer;
+				m_timerPool.destroy(timer);
 			}
 		}
 		else
@@ -72,16 +77,29 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 		}
 	}
 	m_timers.erase(m_timers.begin(), lastStoppedTimerIt);
-	for (const Timer* timer : loopingTimers)
+
+	// push looping timers back
+	for (Timer* timer : loopingTimers)
 	{
 		timer->setBeginTime(currentTime);
-		add(timer);
+		std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
+		m_timers.insert(it, timer);
 	}
 }
 
 void TimerContainer::clearTimers()
 {
+	for (Timer* timer : m_timers)
+	{
+		m_timerPool.destroy(timer);
+	}
 	m_timers.clear();
+
+	for (Timer* timer : m_pendingTimers)
+	{
+		m_timerPool.destroy(timer);
+	}
+	m_pendingTimers.clear();
 }
 
 bool TimerContainer::compareTimersByTimeout(const Timer* a, const Timer* b)

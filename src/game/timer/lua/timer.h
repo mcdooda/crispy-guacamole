@@ -18,12 +18,12 @@ int l_Timer_start(lua_State* L);
 int l_Timer_stop(lua_State* L);
 int l_Timer_getElapsedTime(lua_State* L);
 
-void callTimerUpdate(lua_State* L, const Timer* timer, float currentTime);
-void callTimerEnd(lua_State* L, const Timer* timer);
+void callTimerUpdate(lua_State* L, Timer* timer, float currentTime);
+void callTimerEnd(lua_State* L, Timer* timer);
 
 // private
-const Timer* getTimer(lua_State* L, int index);
-void pushTimer(lua_State* L, const Timer* timer);
+Timer* getTimer(lua_State* L, int index);
+void pushTimer(lua_State* L, Timer* timer);
 
 TimerContainer& getTimerContainer(lua_State* L);
 

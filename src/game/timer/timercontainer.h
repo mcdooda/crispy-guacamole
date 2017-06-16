@@ -2,22 +2,27 @@
 #define GAME_TIMER_TIMERCONTAINER_H
 
 #include <deque>
+#include <vector>
 #include <flat.h>
+#include "timer.h"
 
 namespace game
 {
 namespace timer
 {
-class Timer;
 
 class TimerContainer
 {
 	public:
-		TimerContainer();
+		TimerContainer() = default;
+		TimerContainer(const TimerContainer&) = delete;
+		TimerContainer(TimerContainer&&) = delete;
 		~TimerContainer();
+
+		void operator=(const TimerContainer&) = delete;
 		
-		void add(const Timer* timer);
-		bool stop(const Timer* timer);
+		Timer* add(float beginTime, float duration, int onUpdate, int onEnd, bool loop);
+		bool stop(Timer*& timer);
 		
 		void updateTimers(lua_State* L, float currentTime);
 		
@@ -26,7 +31,9 @@ class TimerContainer
 	private:
 		static bool compareTimersByTimeout(const Timer* a, const Timer* b);
 		
-		std::deque<const Timer*> m_timers;
+		flat::containers::Pool<Timer, 256> m_timerPool;
+		std::vector<Timer*> m_pendingTimers;
+		std::deque<Timer*> m_timers;
 };
 
 } // timer

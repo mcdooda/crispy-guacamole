@@ -66,8 +66,7 @@ int l_Timer_start(lua_State* L)
 	const auto& time = flat::lua::getGame(L).time;
 	float currentTime = time->getTime();
 	TimerContainer& timerContainer = getTimerContainer(L);
-	const Timer* timer = new Timer(currentTime, timerDuration, onUpdate, onEnd, loop);
-	timerContainer.add(timer);
+	Timer* timer = timerContainer.add(currentTime, timerDuration, onUpdate, onEnd, loop);
 	callTimerUpdate(L, timer, currentTime);
 	pushTimer(L, timer);
 	return 1;
@@ -76,7 +75,7 @@ int l_Timer_start(lua_State* L)
 int l_Timer_stop(lua_State* L)
 {
 	TimerContainer& timerContainer = getTimerContainer(L);
-	const Timer* timer = getTimer(L, 1);
+	Timer* timer = getTimer(L, 1);
 	if (timerContainer.stop(timer))
 	{
 		delete timer;
@@ -93,12 +92,12 @@ int l_Timer_getElapsedTime(lua_State* L)
 {
 	const auto& time = flat::lua::getGame(L).time;
 	float currentTime = time->getTime();
-	const Timer* timer = getTimer(L, 1);
+	Timer* timer = getTimer(L, 1);
 	lua_pushnumber(L, timer->getElapsedTime(currentTime));
 	return 1;
 }
 
-void callTimerUpdate(lua_State* L, const Timer* timer, float currentTime)
+void callTimerUpdate(lua_State* L, Timer* timer, float currentTime)
 {
 	int onUpdate = timer->getOnUpdate();
 	if (onUpdate != LUA_NOREF)
@@ -111,7 +110,7 @@ void callTimerUpdate(lua_State* L, const Timer* timer, float currentTime)
 	}
 }
 
-void callTimerEnd(lua_State* L, const Timer* timer)
+void callTimerEnd(lua_State* L, Timer* timer)
 {
 	int onEnd = timer->getOnEnd();
 	if (onEnd != LUA_NOREF)
@@ -122,16 +121,16 @@ void callTimerEnd(lua_State* L, const Timer* timer)
 	}
 }
 
-const Timer* getTimer(lua_State* L, int index)
+Timer* getTimer(lua_State* L, int index)
 {
-	return *static_cast<const Timer**>(luaL_checkudata(L, index, "CG.Timer"));
+	return *static_cast<Timer**>(luaL_checkudata(L, index, "CG.Timer"));
 }
 
-void pushTimer(lua_State* L, const Timer* timer)
+void pushTimer(lua_State* L, Timer* timer)
 {
 	if (timer != nullptr)
 	{
-		const Timer** timerPointer = static_cast<const Timer**>(lua_newuserdata(L, sizeof(const Timer*)));
+		Timer** timerPointer = static_cast<Timer**>(lua_newuserdata(L, sizeof(Timer*)));
 		*timerPointer = timer;
 		luaL_getmetatable(L, "CG.Timer");
 		lua_setmetatable(L, -2);

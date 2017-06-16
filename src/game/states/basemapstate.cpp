@@ -200,7 +200,7 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 		flat::Vector2 delta = gameViewToMap(gameViewPosition - spritePosition);
 
 		flat::Vector2 tileCenter = flat::Vector2(m_mouseOverTile->getX(), m_mouseOverTile->getY());
-		flat::AABB2 tileAABB(tileCenter - flat::Vector2(0.55f), tileCenter + flat::Vector2(0.55f));
+		flat::AABB2 tileAABB(tileCenter - flat::Vector2(0.5f), tileCenter + flat::Vector2(0.5f));
 		flat::Vector2 mapPositionOnTile = tileCenter + delta;
 		if (tileAABB.isInside(mapPositionOnTile))
 		{
@@ -208,6 +208,11 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 			mapPosition.x = glm::clamp(mapPosition.x, tileCenter.x - (0.5f - flat::EPSILON), tileCenter.x + (0.5f - flat::EPSILON));
 			mapPosition.y = glm::clamp(mapPosition.y, tileCenter.y - (0.5f - flat::EPSILON), tileCenter.y + (0.5f - flat::EPSILON));
 			isOnTile = true;
+		}
+		else
+		{
+			mapPosition.x = std::min(mapPositionOnTile.x, tileCenter.x + 0.5f + flat::EPSILON);
+			mapPosition.y = std::min(mapPositionOnTile.y, tileCenter.y + 0.5f + flat::EPSILON);
 		}
 	}
 

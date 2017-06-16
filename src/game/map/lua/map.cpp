@@ -31,6 +31,7 @@ int open(lua_State* L)
 
 		{"getTileZ",            l_Map_getTileZ},
 		{"setTileZ",            l_Map_setTileZ},
+		{"moveTileZBy",         l_Map_moveTileZBy},
 
 		{nullptr, nullptr}
 	};
@@ -159,6 +160,17 @@ int l_Map_setTileZ(lua_State* L)
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
 	game::map::Map& map = baseMapState.getMap();
 	tile->setZ(map, z);
+	return 0;
+}
+
+int l_Map_moveTileZBy(lua_State * L)
+{
+	Tile* tile = static_cast<Tile*>(lua_touserdata(L, 1));
+	float dz = static_cast<float>(luaL_checknumber(L, 2));
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
+	game::map::Map& map = baseMapState.getMap();
+	tile->setZ(map, tile->getZ() + dz);
 	return 0;
 }
 

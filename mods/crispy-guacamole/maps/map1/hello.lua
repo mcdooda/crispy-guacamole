@@ -19,42 +19,42 @@ local function wave(x, y, radius)
         nil,
         function()
             local tilesDz = {}
-                for tile in pairs(tiles) do
-                    tilesDz[tile] = 0
-                end
-                Timer.start(
-                    waveDuration,
-                    coroutine.wrap(function(timer, duration)
-                        local _
-                        local progression, prevProgression = 0, 0
-                        local prevDuration = duration
-                        while true do
-                            for tile, effect in pairs(tiles) do
-                                local distance = effect * radius
-                                local dz = ((-sin(    duration * 10 + distance) * progression    )
-                                          - (-sin(prevDuration * 10 + distance) * prevProgression))
-                                          * waveHeight * effect
-                                tilesDz[tile] = tilesDz[tile] + dz
-                                local tileZ = Map.getTileZ(tile)
-                                Map.setTileZ(tile, tileZ + dz)
-                            end
-                            prevDuration = duration
-                            _, duration = coroutine.yield()
-                            prevProgression = progression
-                            progression = duration / waveDuration
-                            if progression > 0.5 then
-                                progression = 1 - progression
-                            end
-                        end
-                    end),
-                    function()
-                        -- reset tiles to their initial position
-                        for tile, tileDz in pairs(tilesDz) do
+            tiles:eachTile(function(tile)
+                tilesDz[tile] = 0
+            end)
+            Timer.start(
+                waveDuration,
+                coroutine.wrap(function(timer, duration)
+                    local _
+                    local progression, prevProgression = 0, 0
+                    local prevDuration = duration
+                    while true do
+                        tiles:eachTile(function(tile, effect)
+                            local distance = effect * radius
+                            local dz = ((-sin(    duration * 10 + distance) * progression    )
+                                        - (-sin(prevDuration * 10 + distance) * prevProgression))
+                                        * waveHeight * effect
+                            tilesDz[tile] = tilesDz[tile] + dz
                             local tileZ = Map.getTileZ(tile)
-                            Map.setTileZ(tile, tileZ - tileDz)
+                            Map.setTileZ(tile, tileZ + dz)
+                        end)
+                        prevDuration = duration
+                        _, duration = coroutine.yield()
+                        prevProgression = progression
+                        progression = duration / waveDuration
+                        if progression > 0.5 then
+                            progression = 1 - progression
                         end
                     end
-                )
+                end),
+                function()
+                    -- reset tiles to their initial position
+                    for tile, tileDz in pairs(tilesDz) do
+                        local tileZ = Map.getTileZ(tile)
+                        Map.setTileZ(tile, tileZ - tileDz)
+                    end
+                end
+            )
         end,
         true
     )

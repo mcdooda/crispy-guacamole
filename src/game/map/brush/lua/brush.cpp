@@ -1,5 +1,6 @@
 #include <flat.h>
 #include "brush.h"
+#include "tilescontainer.h"
 #include "../conebrush.h"
 #include "../spherebrush.h"
 #include "../../../game.h"
@@ -41,6 +42,8 @@ int open(lua_State* L)
 	luaL_newlib(L, Brush_lib_s);
 	lua_setglobal(L, "Brush");
 
+	openTilesContainer(L);
+
 	return 0;
 }
 
@@ -70,15 +73,9 @@ int l_Brush_getTiles(lua_State* L)
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	Map& map = baseMapState.getMap();
-	TilesContainer tiles;
-	brush.getTiles(map, center, tiles, minEffect);
-	lua_createtable(L, 0, static_cast<int>(tiles.size()));
-	for (const TileEffect& tileEffect : tiles)
-	{
-		lua_pushlightuserdata(L, tileEffect.tile);
-		lua_pushnumber(L, tileEffect.effect);
-		lua_rawset(L, -3);
-	}
+	TilesContainer* tilesContainer = new TilesContainer();
+	brush.getTiles(map, center, *tilesContainer, minEffect);
+	pushTilesContainer(L, tilesContainer);
 	return 1;
 }
 

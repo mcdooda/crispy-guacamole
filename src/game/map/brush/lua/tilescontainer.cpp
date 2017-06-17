@@ -45,7 +45,7 @@ int l_TilesContainer_eachTile(lua_State* L)
 TilesContainer& getTilesContainer(lua_State* L, int index)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-	return *flat::lua::SharedCppReference<TilesContainer>::getSharedPointer(L, index).get();
+	return flat::lua::SharedCppReference<TilesContainer>::get(L, index);
 }
 
 void pushTilesContainer(lua_State* L, TilesContainer* tilesContainer)

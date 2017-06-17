@@ -95,7 +95,7 @@ int l_Brush_sphere(lua_State* L)
 Brush& getBrush(lua_State* L, int index)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-	return *flat::lua::SharedCppReference<Brush>::getSharedPointer(L, index).get();
+	return flat::lua::SharedCppReference<Brush>::get(L, index);
 }
 
 } // lua

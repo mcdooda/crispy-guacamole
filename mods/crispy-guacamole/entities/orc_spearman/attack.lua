@@ -11,15 +11,7 @@ return {
 	moveDuringAttack = false,
 	attack = function(spearman)
 		local target = spearman:getAttackTarget()
-		local extraData = spearman:getExtraData()
-		local spearmanState = extraData.spearmanState
-		local firstAttack = false
-		if not spearmanState then
-			firstAttack = true
-			spearmanState = {}
-			extraData.spearmanState = spearmanState
-			spearmanState.lastAttackPosition = { spearman:getPosition() }
-		end
+		local spearmanState, firstAttack = spearman:getExtraData 'spearmanState'
 		spearman:lookAtEntity(target)
 		local position = { spearman:getPosition() }
 		if firstAttack or distance2(spearmanState.lastAttackPosition, position) > 0.05 then

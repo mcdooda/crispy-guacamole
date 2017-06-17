@@ -208,16 +208,49 @@ int l_Entity_despawn(lua_State* L)
 int l_Entity_getExtraData(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
+	const char* key = luaL_optstring(L, 2, nullptr);
+
 	flat::lua::SharedLuaReference<LUA_TTABLE>& extraData = entity.getExtraData();
 	if (!extraData)
 	{
 		lua_createtable(L, 0, 1);
 		extraData.set(L, -1);
+
+		if (key != nullptr)
+		{
+			lua_createtable(L, 0, 1);
+			lua_pushstring(L, key); // push key
+			lua_pushvalue(L, -2); // just created value
+			lua_rawset(L, -4);
+			lua_pushboolean(L, true);
+			return 2;
+		}
 	}
 	else
 	{
 		extraData.push(L);
+
+		if (key != nullptr)
+		{
+			lua_pushstring(L, key);
+			lua_rawget(L, -2);
+			if (lua_isnil(L, -1))
+			{
+				lua_createtable(L, 0, 1);
+				lua_pushvalue(L, -3); // key already on the stack
+				lua_pushvalue(L, -2); // just created value
+				lua_rawset(L, -6);
+				lua_pushboolean(L, true);
+			}
+			else
+			{
+				lua_pushboolean(L, false);
+			}
+			
+			return 2;
+		}
 	}
+
 	return 1;
 }
 

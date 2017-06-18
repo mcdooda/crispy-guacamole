@@ -12,15 +12,11 @@ namespace lua
 namespace zone
 {
 
+using LuaZone = flat::lua::SharedCppValue<std::weak_ptr<Zone>>;
+
 int open(lua_State* L)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-	// Zone metatable
-	luaL_newmetatable(L, "CG.Zone");
-	// mt.__index = mt
-	lua_pushvalue(L, -1);
-	lua_setfield(L, -2, "__index");
 
 	static const luaL_Reg Zone_lib_m[] = {
 		{"__eq",             l_Zone_eq},
@@ -32,10 +28,7 @@ int open(lua_State* L)
 
 		{nullptr, nullptr}
 	};
-
-	luaL_setfuncs(L, Zone_lib_m, 0);
-
-	lua_pop(L, 1);
+	LuaZone::registerClass("CG.Zone", L, Zone_lib_m);
 
 	return 0;
 }
@@ -89,17 +82,14 @@ int l_Zone_getCenter(lua_State * L)
 
 Zone* getZone(lua_State* L, int index)
 {
-	return (*static_cast<std::weak_ptr<Zone>*>(luaL_checkudata(L, index, "CG.Zone"))).lock().get();
+	return LuaZone::get(L, index).lock().get();
 }
 
 void pushZone(lua_State* L, const std::shared_ptr<Zone>& zone)
 {
 	if (zone != nullptr)
 	{
-		std::weak_ptr<Zone>* zoneWeakPtr = static_cast<std::weak_ptr<Zone>*>(lua_newuserdata(L, sizeof(std::weak_ptr<Zone>*)));
-		new (zoneWeakPtr) std::weak_ptr<Zone>(zone);
-		luaL_getmetatable(L, "CG.Zone");
-		lua_setmetatable(L, -2);
+		LuaZone::pushNew(L, zone);
 	}
 	else
 	{

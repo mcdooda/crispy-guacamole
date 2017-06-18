@@ -15,6 +15,8 @@ namespace brush
 namespace lua
 {
 
+using LuaBrush = flat::lua::SharedCppReference<Brush>;
+
 int open(lua_State* L)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -29,7 +31,7 @@ int open(lua_State* L)
 		{ nullptr, nullptr }
 	};
 
-	flat::lua::ClassRegistry::registerClass<Brush>("CG.Brush", L, Brush_lib_m);
+	LuaBrush::registerClass("CG.Brush", L, Brush_lib_m);
 
 	// Brush static methods
 	static const luaL_Reg Brush_lib_s[] = {
@@ -81,13 +83,13 @@ int l_Brush_getTiles(lua_State* L)
 
 int l_Brush_cone(lua_State* L)
 {
-	flat::lua::SharedCppReference<Brush>::pushNew(L, new ConeBrush());
+	LuaBrush::pushNew(L, new ConeBrush());
 	return 1;
 }
 
 int l_Brush_sphere(lua_State* L)
 {
-	flat::lua::SharedCppReference<Brush>::pushNew(L, new SphereBrush());
+	LuaBrush::pushNew(L, new SphereBrush());
 	return 1;
 }
 
@@ -95,7 +97,7 @@ int l_Brush_sphere(lua_State* L)
 Brush& getBrush(lua_State* L, int index)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-	return flat::lua::SharedCppReference<Brush>::get(L, index);
+	return LuaBrush::get(L, index);
 }
 
 } // lua

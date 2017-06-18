@@ -11,6 +11,8 @@ namespace brush
 namespace lua
 {
 
+using LuaTilesContainer = flat::lua::SharedCppReference<TilesContainer>;
+
 int openTilesContainer(lua_State* L)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -22,7 +24,7 @@ int openTilesContainer(lua_State* L)
 		{ nullptr, nullptr }
 	};
 
-	flat::lua::ClassRegistry::registerClass<TilesContainer>("CG.TilesContainer", L, TilesContainer_lib_m);
+	LuaTilesContainer::registerClass("CG.TilesContainer", L, TilesContainer_lib_m);
 
 	return 0;
 }
@@ -45,12 +47,12 @@ int l_TilesContainer_eachTile(lua_State* L)
 TilesContainer& getTilesContainer(lua_State* L, int index)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-	return flat::lua::SharedCppReference<TilesContainer>::get(L, index);
+	return LuaTilesContainer::get(L, index);
 }
 
 void pushTilesContainer(lua_State* L, TilesContainer* tilesContainer)
 {
-	flat::lua::SharedCppReference<TilesContainer>::pushNew(L, tilesContainer);
+	LuaTilesContainer::pushNew(L, tilesContainer);
 }
 
 } // lua

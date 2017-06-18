@@ -11,24 +11,19 @@ namespace timer
 namespace lua
 {
 
+using LuaTimer = flat::lua::SharedCppValue<Timer*>;
+
 int open(lua_State* L)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	// Timer metatable
-	luaL_newmetatable(L, "CG.Timer");
-	// mt.__index = mt
-	lua_pushvalue(L, -1);
-	lua_setfield(L, -2, "__index");
-	
 	static const luaL_Reg Timer_lib_m[] = {
 		{"stop",           l_Timer_stop},
 		{"getElapsedTime", l_Timer_getElapsedTime},
 		
 		{nullptr, nullptr}
 	};
-	luaL_setfuncs(L, Timer_lib_m, 0);
-	lua_pop(L, 1);
+	LuaTimer::registerClass("CT.Timer", L, Timer_lib_m);
 	
 	static const luaL_Reg Timer_lib_s[] = {
 		{"start", l_Timer_start},
@@ -123,17 +118,14 @@ void callTimerEnd(lua_State* L, Timer* timer)
 
 Timer* getTimer(lua_State* L, int index)
 {
-	return *static_cast<Timer**>(luaL_checkudata(L, index, "CG.Timer"));
+	return LuaTimer::get(L, index);
 }
 
 void pushTimer(lua_State* L, Timer* timer)
 {
 	if (timer != nullptr)
 	{
-		Timer** timerPointer = static_cast<Timer**>(lua_newuserdata(L, sizeof(Timer*)));
-		*timerPointer = timer;
-		luaL_getmetatable(L, "CG.Timer");
-		lua_setmetatable(L, -2);
+		LuaTimer::pushNew(L, timer);
 	}
 	else
 	{

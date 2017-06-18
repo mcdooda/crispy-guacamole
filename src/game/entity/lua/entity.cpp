@@ -22,6 +22,8 @@ using namespace component;
 namespace lua
 {
 
+using LuaEntityHandle = flat::lua::SharedCppValue<EntityHandle>;
+
 int open(lua_State* L)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -109,7 +111,8 @@ int open(lua_State* L)
 		
 		{nullptr, nullptr}
 	};
-	luaL_setfuncs(L, Entity_lib_m, 0);
+
+	LuaEntityHandle::registerClass("CG.Entity", L, Entity_lib_m);
 	
 	lua_createtable(L, 0, 1);
 	static const luaL_Reg Entity_lib_f[] = {
@@ -734,26 +737,25 @@ int l_Entity_clearGhostTemplate(lua_State * L)
 {
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-
 	baseMapState.clearGhostTemplate();
-
 	return 0;
 }
 
 EntityHandle getEntityHandle(lua_State* L, int index)
 {
-	return *static_cast<EntityHandle*>(luaL_checkudata(L, index, "CG.Entity"));
+	return LuaEntityHandle::get(L, index);
 }
 
 // private
 Entity& getEntity(lua_State* L, int index)
 {
 	EntityHandle entityHandle = getEntityHandle(L, index);
-	if (!entityHandle.isValid())
+	Entity* entity = entityHandle.getEntity();
+	if (entity == nullptr)
 	{
 		luaL_argerror(L, index, "The entity is not valid anymore");
 	}
-	return *entityHandle.getEntity();
+	return *entity;
 }
 
 Entity* getEntityPtr(lua_State* L, int index)
@@ -771,10 +773,7 @@ void pushEntity(lua_State* L, Entity* entity)
 {
 	if (entity != nullptr)
 	{
-		EntityHandle* entityHandle = static_cast<EntityHandle*>(lua_newuserdata(L, sizeof(EntityHandle)));
-		new (entityHandle) EntityHandle(entity);
-		luaL_getmetatable(L, "CG.Entity");
-		lua_setmetatable(L, -2);
+		LuaEntityHandle::pushNew(L, entity);
 	}
 	else
 	{

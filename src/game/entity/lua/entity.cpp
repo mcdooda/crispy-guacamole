@@ -27,12 +27,6 @@ using LuaEntityHandle = flat::lua::SharedCppValue<EntityHandle>;
 int open(lua_State* L)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-	// Entity metatable
-	luaL_newmetatable(L, "CG.Entity");
-	// mt.__index = mt
-	lua_pushvalue(L, -1);
-	lua_setfield(L, -2, "__index");
 	
 	static const luaL_Reg Entity_lib_m[] = {
 		{"__eq",                    l_Entity_eq},
@@ -125,8 +119,6 @@ int open(lua_State* L)
 	};
 	luaL_setfuncs(L, Entity_lib_f, 0);
 	lua_setglobal(L, "Entity");
-
-	lua_pop(L, 1);
 	
 	return 0;
 }

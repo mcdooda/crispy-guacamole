@@ -41,7 +41,7 @@ int open(lua_State* L)
 	return 0;
 }
 
-int l_Map_getName(lua_State * L)
+int l_Map_getName(lua_State* L)
 {
 	lua_pushstring(L, "map1");
 	return 1;
@@ -79,16 +79,15 @@ int l_Map_getNumEntities(lua_State* L)
 
 int l_Map_getEntitiesInRange(lua_State* L)
 {
-	float x = static_cast<float>(luaL_checknumber(L, 1));
-	float y = static_cast<float>(luaL_checknumber(L, 2));
-	float range = static_cast<float>(luaL_checknumber(L, 3));
+	flat::Vector2& position = flat::lua::getVector2(L, 1);
+	float range = static_cast<float>(luaL_checknumber(L, 2));
 	Game& game = flat::lua::getGame(L).to<Game>();
 	flat::state::State* state = game.getStateMachine().getState();
 	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
 	const game::map::Map& map = baseMapState.getMap();
 	lua_newtable(L);
 	int i = 1;
-	map.eachEntityInRange(flat::Vector2(x, y), range, [L, &i](entity::Entity* entity)
+	map.eachEntityInRange(position, range, [L, &i](entity::Entity* entity)
 	{
 		entity::lua::pushEntity(L, entity);
 		lua_rawseti(L, -2, i);
@@ -99,7 +98,7 @@ int l_Map_getEntitiesInRange(lua_State* L)
 
 namespace
 {
-static int locIterateOverSelectedEntities(lua_State *L)
+static int locIterateOverSelectedEntities(lua_State*L)
 {
 	luaL_checktype(L, 1, LUA_TNIL);
 
@@ -130,7 +129,7 @@ int l_Map_eachSelectedEntity(lua_State* L)
 	return 3;
 }
 
-int l_Map_getZone(lua_State * L)
+int l_Map_getZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getGame(L).to<Game>();
@@ -163,7 +162,7 @@ int l_Map_setTileZ(lua_State* L)
 	return 0;
 }
 
-int l_Map_moveTileZBy(lua_State * L)
+int l_Map_moveTileZBy(lua_State* L)
 {
 	Tile* tile = static_cast<Tile*>(lua_touserdata(L, 1));
 	float dz = static_cast<float>(luaL_checknumber(L, 2));

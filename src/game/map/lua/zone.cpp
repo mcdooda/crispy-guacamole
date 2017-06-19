@@ -34,7 +34,7 @@ int open(lua_State* L)
 }
 
 
-int l_Zone_eq(lua_State * L)
+int l_Zone_eq(lua_State* L)
 {
 	Zone* zone1 = getZone(L, 1);
 	Zone* zone2 = getZone(L, 2);
@@ -42,7 +42,7 @@ int l_Zone_eq(lua_State * L)
 	return 1;
 }
 
-int l_Zone_getEntities(lua_State * L)
+int l_Zone_getEntities(lua_State* L)
 {
 	Zone* zone = getZone(L, 1);
 	lua_newtable(L);
@@ -59,7 +59,7 @@ int l_Zone_getEntities(lua_State * L)
 	return 1;
 }
 
-int l_Zone_getEntitiesCount(lua_State * L)
+int l_Zone_getEntitiesCount(lua_State* L)
 {
 	Zone* zone = getZone(L, 1);
 	lua_Integer count = 0;
@@ -71,13 +71,11 @@ int l_Zone_getEntitiesCount(lua_State * L)
 	return 1;
 }
 
-int l_Zone_getCenter(lua_State * L)
+int l_Zone_getCenter(lua_State* L)
 {
 	Zone* zone = getZone(L, 1);
-	flat::Vector2 center = zone->getCenter();
-	lua_pushnumber(L, center.x);
-	lua_pushnumber(L, center.y);
-	return 2;
+	flat::lua::pushVector2(L, zone->getCenter());
+	return 1;
 }
 
 Zone* getZone(lua_State* L, int index)

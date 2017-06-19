@@ -18,9 +18,9 @@ end
 local function distanceMinusRadius(a, b)
     local _, aRadius = getRadius(a)
     local _, bRadius = getRadius(b)
-    local aX, aY = a:getPosition()
-    local bX, bY = b:getPosition()
-    return sqrt((aX - bX) * (aX - bX) + (aY - bY) * (aY - bY)) - aRadius - bRadius
+    local aPos = a:getPosition()
+    local bPos = b:getPosition()
+    return (aPos - bPos):length() - aRadius - bRadius
 end
 
 return {

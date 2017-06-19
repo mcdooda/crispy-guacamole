@@ -11,15 +11,11 @@ function states:idle(boar)
 end
 
 function states:wander(boar)
-	local x, y = boar:getPosition()
+	local initialPosition = boar:getPosition()
+	local initialPosition2d = initialPosition:toVector2()
 	while true do
-		
-		do
-			local rx = x + (random() * 2 - 1) * 2
-			local ry = y + (random() * 2 - 1) * 2
-			boar:moveTo(rx, ry)
-		end
-		
+		local pathPoint = initialPosition2d + Flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
+		boar:moveTo(pathPoint)
 	end
 end
 

@@ -4,11 +4,11 @@ local atan2 = atan
 
 local Path = require 'data/scripts/path'
 
-local function spawn(templateName, template, x, y, z, tx, ty, tz)
+local function spawn(templateName, template, position, targetPosition)
     -- compute initial heading and elevation
-    local heading = atan2(ty - y, tx - x)
-    local dXY = sqrt((tx - x) * (tx - x) + (ty - y) * (ty - y))
-    local dZ = tz - z
+    local heading = atan2(targetPosition:y() - position:y(), targetPosition:x() - position:x())
+    local dXY = (targetPosition - position):toVector2():length()
+    local dZ = targetPosition:z() - position:z()
     local speedXY = template.speed
     local weight = template.weight
     local speedXY2 = speedXY * speedXY
@@ -23,21 +23,18 @@ local function spawn(templateName, template, x, y, z, tx, ty, tz)
         return
     end
 
-    return Entity.spawn(templateName, x, y, z, heading, elevation)
+    return Entity.spawn(templateName, position, heading, elevation)
 end
 
 local function createSpawner(templateName)
     local template = Path.requireComponentTemplate(templateName, 'projectile')
-    return function(x, y, z, target)
-        local tx, ty, tz = target:getPosition()
-        return spawn(templateName, template, x, y, z, tx, ty, tz)
+    return function(position, target)
+        return spawn(templateName, template, position, target:getPosition())
     end
 end
 
 local function spawnFromEntity(templateName, template, entity, attachPoint, target)
-    local x, y, z = entity:getAttachPoint(attachPoint)
-    local tx, ty, tz = target:getPosition()
-    return spawn(templateName, template, x, y, z, tx, ty, tz)
+    return spawn(templateName, template, entity:getAttachPoint(attachPoint), target:getPosition())
 end
 
 local function createSpawnerFromEntity(templateName)

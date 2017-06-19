@@ -6,7 +6,6 @@ local random = math.random
 local movement = require 'mods/crispy-guacamole/entities/sheep/movement'
 
 local states = {}
-local inputs = {}
 
 function states:init(sheep)
 	sheep:enterState 'wander'
@@ -19,13 +18,13 @@ end
 function states:wander(sheep)
 	sheep:setDefaultMoveAnimation()
 	sheep:setSpeed(movement.speed)
-	local x, y = sheep:getPosition()
+	local initialPosition = sheep:getPosition()
+	local initialPosition2d = initialPosition:toVector2()
 	while true do
 
 		do
-			local rx = x + (random() * 2 - 1) * 2
-			local ry = y + (random() * 2 - 1) * 2
-			sheep:moveTo(rx, ry)
+			local pathPoint = initialPosition2d + Flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
+			sheep:moveTo(pathPoint)
 		end
 
 		do
@@ -52,20 +51,18 @@ function states:flee(sheep)
 	local fleeTarget = data.fleeTarget
 	local endFleeTime = data.endFleeTime
 	local distance = 0.5
-	local lastKnownX, lastKnownY = fleeTarget:getPosition()
+	local lastKnownPosition2d = fleeTarget:getPosition():toVector2()
 	while Time.getTime() < endFleeTime or fleeTarget:isValid() and sheep:canSee(fleeTarget) do
-		local x, y = sheep:getPosition()
-		local fx, fy
+		local position2d = sheep:getPosition():toVector2()
+		local fleeTargetPosition2d
 		if fleeTarget:isValid() then
-			fx, fy = fleeTarget:getPosition()
-			lastKnownX, lastKnownY = fx, fy
+			fleeTargetPosition2d = fleeTarget:getPosition():toVector2()
+			lastKnownPosition2d = fleeTargetPosition2d
 		else
-			fx, fy = lastKnownX, lastKnownY
+			fleeTargetPosition2d = lastKnownPosition2d
 		end
-		local dx, dy = x - fx, y - fy
-		local d = sqrt(dx * dx + dy * dy)
-		local rx, ry = x + (dx / d) * distance, y + (dy / d) * distance
-		sheep:moveTo(rx, ry)
+		local pathPoint = position2d + (position2d - fleeTargetPosition2d):getNormalized() * distance
+		sheep:moveTo(pathPoint)
 	end
 	data.fleeTarget = nil
 	sheep:enterState 'wander'
@@ -78,11 +75,11 @@ function states:onEntityEnteredVisionRange(sheep, entity)
 		if not data.fleeTarget or not data.fleeTarget:isValid() then
 			data.fleeTarget = entity
 		elseif data.fleeTarget ~= entity then
-			local x, y = sheep:getPosition()
-			local ex, ey = entity:getPosition()
-			local tx, ty = data.fleeTarget:getPosition()
-			local entityDistance2 = (ex - x) * (ex - x) + (ey - y) * (ey - y)
-			local targetDistance2 = (tx - x) * (tx - x) + (ty - y) * (ty - y)
+			local sheepPosition2d = sheep:getPosition():toVector2()
+			local entityPositon2d = entity:getPosition():toVector2()
+			local fleeTargetPosition2d = data.fleeTarget:getPosition():toVector2()
+			local entityDistance2 = (entityPositon2d - sheepPosition2d):length2()
+			local targetDistance2 = (entityPositon2d - fleeTargetPosition2d):length2()
 			if entityDistance2 < targetDistance2 then
 				data.fleeTarget = entity
 			end

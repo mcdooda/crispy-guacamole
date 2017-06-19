@@ -2,11 +2,11 @@ local sin = math.sin
 local yield = coroutine.yield
 local moveTileZBy = Map.moveTileZBy
 
-local function new(x, y, radius, height, duration, onEnd)
+local function new(position2d, radius, height, duration, onEnd)
     local brush = Brush.cone()
     brush:setRadius(radius)
 
-    local tiles = brush:getTiles(x, y)
+    local tiles = brush:getTiles(position2d)
     local tilesDz = {}
     tiles:eachTile(function(tile)
         tilesDz[tile] = 0

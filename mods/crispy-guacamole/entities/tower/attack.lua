@@ -18,16 +18,17 @@ return {
 			return
 		end
 
-		local x, y, z = tower:getPosition()
-		local tx, ty, tz = target:getPosition()
+		local towerPosition = tower:getPosition()
+		local targetPosition = target:getPosition()
 		
-		local heading = atan2(ty - y, tx - x)
+		local heading = atan2(targetPosition:y() - towerPosition:y(), targetPosition:x() - towerPosition:x())
+
+		local spawnPosition = Flat.Vector3(
+			towerPosition:x() + cos(heading) * sqrt(2.0) / 2,
+			towerPosition:y() + sin(heading) * sqrt(2.0) / 2,
+			towerPosition:z() + 1.5
+		)
 		
-		local x, y, z = tower:getPosition()
-		x = x + cos(heading) * sqrt(2.0) / 2
-		y = y + sin(heading) * sqrt(2.0) / 2
-		z = z + 1.5
-		
-		spawnArrow(x, y, z, target)
+		spawnArrow(spawnPosition, target)
 	end
 }

@@ -252,10 +252,7 @@ int l_Entity_getExtraData(lua_State* L)
 int l_Entity_setPosition(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	float x = static_cast<float>(luaL_checknumber(L, 2));
-	float y = static_cast<float>(luaL_checknumber(L, 3));
-	float z = static_cast<float>(luaL_checknumber(L, 4));
-	flat::Vector3 position(x, y, z);
+	flat::Vector3 position = flat::lua::getVector3(L, 2);
 	entity.setPosition(position);
 	return 0;
 }
@@ -263,11 +260,8 @@ int l_Entity_setPosition(lua_State* L)
 int l_Entity_getPosition(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	const flat::Vector3& position = entity.getPosition();
-	lua_pushnumber(L, position.x);
-	lua_pushnumber(L, position.y);
-	lua_pushnumber(L, position.z);
-	return 3;
+	flat::lua::pushVector3(L, entity.getPosition());
+	return 1;
 }
 
 int l_Entity_setHeading(lua_State* L)
@@ -285,7 +279,7 @@ int l_Entity_getHeading(lua_State* L)
 	return 1;
 }
 
-int l_Entity_setElevation(lua_State * L)
+int l_Entity_setElevation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	float elevation = static_cast<float>(luaL_checknumber(L, 2));
@@ -293,7 +287,7 @@ int l_Entity_setElevation(lua_State * L)
 	return 0;
 }
 
-int l_Entity_getElevation(lua_State * L)
+int l_Entity_getElevation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	lua_pushnumber(L, entity.getElevation());
@@ -314,10 +308,9 @@ int l_Entity_lookAtEntity(lua_State* L)
 int l_Entity_setUiOffset(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	float offsetX = static_cast<float>(luaL_checknumber(L, 2));
-	float offsetY = static_cast<float>(luaL_checknumber(L, 3));
+	flat::Vector2 offset = flat::lua::getVector2(L, 2);
 	ui::UiComponent& uiComponent = getComponent<ui::UiComponent>(L, entity);
-	uiComponent.setWidgetOffset(flat::Vector2(offsetX, offsetY));
+	uiComponent.setWidgetOffset(offset);
 	return 0;
 }
 
@@ -333,11 +326,10 @@ int l_Entity_setUiVisible(lua_State* L)
 int l_Entity_moveTo(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	float x = static_cast<float>(luaL_checknumber(L, 2));
-	float y = static_cast<float>(luaL_checknumber(L, 3));
+	flat::Vector2 pathPoint = flat::lua::getVector2(L, 2);
 	bool yield = lua_isnone(L, 4) ? true : lua_toboolean(L, 4) == 1;
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	movementComponent.addPointOnPath(flat::Vector2(x, y));
+	movementComponent.addPointOnPath(pathPoint);
 	if (yield)
 	{
 		return lua_yield(L, 0);
@@ -356,7 +348,7 @@ int l_Entity_clearPath(lua_State* L)
 	return 0;
 }
 
-int l_Entity_setSpeed(lua_State * L)
+int l_Entity_setSpeed(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	float speed = static_cast<float>(luaL_checknumber(L, 2));
@@ -365,7 +357,7 @@ int l_Entity_setSpeed(lua_State * L)
 	return 0;
 }
 
-int l_Entity_getSpeed(lua_State * L)
+int l_Entity_getSpeed(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
@@ -418,7 +410,7 @@ int l_Entity_enterState(lua_State* L)
 	return lua_yield(L, 0);
 }
 
-int l_Entity_enterStateAsync(lua_State * L)
+int l_Entity_enterStateAsync(lua_State* L)
 {
 	locEnterState(L);
 	return 0;
@@ -446,7 +438,7 @@ int l_Entity_playAnimation(lua_State* L)
 	return lua_yield(L, 0);
 }
 
-int l_Entity_playAnimationAsync(lua_State * L)
+int l_Entity_playAnimationAsync(lua_State* L)
 {
 	locPlayAnimation(L);
 	return 0;
@@ -465,7 +457,7 @@ int l_Entity_setMoveAnimation(lua_State* L)
 	return 0;
 }
 
-int l_Entity_setDefaultMoveAnimation(lua_State * L)
+int l_Entity_setDefaultMoveAnimation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
@@ -477,7 +469,7 @@ int l_Entity_setDefaultMoveAnimation(lua_State * L)
 	return 0;
 }
 
-int l_Entity_getAttachPoint(lua_State * L)
+int l_Entity_getAttachPoint(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* attachPointName = luaL_checkstring(L, 2);
@@ -485,10 +477,8 @@ int l_Entity_getAttachPoint(lua_State * L)
 	flat::Vector3 attachPoint;
 	if (spriteComponent.getAttachPoint(attachPointName, attachPoint))
 	{
-		lua_pushnumber(L, attachPoint.x);
-		lua_pushnumber(L, attachPoint.y);
-		lua_pushnumber(L, attachPoint.z);
-		return 3;
+		flat::lua::pushVector3(L, attachPoint);
+		return 1;
 	}
 	return 0;
 }
@@ -505,7 +495,7 @@ int l_Entity_canSee(lua_State* L)
 
 namespace
 {
-static int locIterateOverVisibleEntities(lua_State *L)
+static int locIterateOverVisibleEntities(lua_State*L)
 {
 	Entity& entity = getEntity(L, 1);
 	detection::DetectionComponent& detectionComponent = getComponent<detection::DetectionComponent>(L, entity);
@@ -627,7 +617,7 @@ int l_Entity_dealDamage(lua_State* L)
 	return 0;
 }
 
-int l_Entity_getHealth(lua_State * L)
+int l_Entity_getHealth(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
@@ -635,7 +625,7 @@ int l_Entity_getHealth(lua_State * L)
 	return 1;
 }
 
-int l_Entity_getMaxHealth(lua_State * L)
+int l_Entity_getMaxHealth(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
@@ -643,7 +633,7 @@ int l_Entity_getMaxHealth(lua_State * L)
 	return 1;
 }
 
-int l_Entity_healthChanged(lua_State * L)
+int l_Entity_healthChanged(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
@@ -671,48 +661,43 @@ int l_Entity_spawn(lua_State* L)
 	// entity template
 	const char* entityTemplateName = luaL_checkstring(L, 1);
 
-	// x
-	float x = static_cast<float>(luaL_checknumber(L, 2));
-
-	// y
-	float y = static_cast<float>(luaL_checknumber(L, 3));
-
-	// z, if not present, snap to the ground
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-	float z;
-	if (lua_isnoneornil(L, 4))
+
+	// position (Vector2 or Vector3)
+	flat::Vector3 position;
+	if (luaL_testudata(L, 2, "Flat.Vector3") != nullptr) // TODO: add flat::lua::isVector2/3()
 	{
-		const map::Tile* tile = baseMapState.getMap().getTile(x, y);
-		if (tile == nullptr)
-		{
-			luaL_error(L, "Trying to spawn an entity outside the map (%f, %f)", x, y);
-		}
-		z = tile->getZ();
+		position = flat::lua::getVector3(L, 2);
 	}
 	else
 	{
-		z = static_cast<float>(luaL_checknumber(L, 4));
+		position = flat::Vector3(flat::lua::getVector2(L, 2), 0.f);
+		const map::Tile* tile = baseMapState.getMap().getTile(position.x, position.y);
+		if (tile == nullptr)
+		{
+			luaL_error(L, "Trying to spawn an entity outside the map (%f, %f)", position.x, position.y);
+		}
+		position.z = tile->getZ();
 	}
 
 	// heading
-	float heading = static_cast<float>(luaL_optnumber(L, 5, 0.f));
+	float heading = static_cast<float>(luaL_optnumber(L, 3, 0.f));
 
 	// elevation
-	float elevation = static_cast<float>(luaL_optnumber(L, 6, 0.f));
+	float elevation = static_cast<float>(luaL_optnumber(L, 4, 0.f));
 
 	// components flags
-	component::ComponentFlags componentFlags = static_cast<component::ComponentFlags>(luaL_optinteger(L, 7, component::AllComponents));
+	component::ComponentFlags componentFlags = static_cast<component::ComponentFlags>(luaL_optinteger(L, 5, component::AllComponents));
 	luaL_argcheck(L, 2, componentFlags != 0, "componentFlags must not be zero");
 
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
-	flat::Vector3 position(x, y, z);
 	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation, componentFlags);
 	pushEntity(L, entity);
 	return 1;
 }
 
-int l_Entity_setGhostTemplate(lua_State * L)
+int l_Entity_setGhostTemplate(lua_State* L)
 {
 	const char* ghostTemplateName = luaL_checkstring(L, 1);
 
@@ -725,7 +710,7 @@ int l_Entity_setGhostTemplate(lua_State * L)
 	return 0;
 }
 
-int l_Entity_clearGhostTemplate(lua_State * L)
+int l_Entity_clearGhostTemplate(lua_State* L)
 {
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();

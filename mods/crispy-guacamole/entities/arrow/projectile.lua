@@ -3,9 +3,9 @@ return {
 	speed = 12,
 	collidedCallback = function(projectile, collidedEntity)
 		if not collidedEntity then
-			local x, y, z = projectile:getPosition()
+			local position = projectile:getPosition()
 			local heading = projectile:getHeading()
-			Entity.spawn('fx_explosion', x, y, z, heading)
+			Entity.spawn('fx_explosion', position, heading)
 
 			projectile:despawn()
 			return false

@@ -2,8 +2,8 @@ local mazeZone  = Map.getZone 'Cherry'
 local startZone = Map.getZone 'Apple'
 local endZone   = Map.getZone 'Lemon'
 
-local startX, startY = startZone:getCenter()
-local endX, endY = endZone:getCenter()
+local startZonePosition = startZone:getCenter()
+local endZonePosition = endZone:getCenter()
 
 local waves = {
     {'larva', 'larva', 'larva'},
@@ -31,12 +31,12 @@ for i = 1, #waves do
         for k = 1, 1 do
             local entity = Entity.spawn(
                 entityTemplate,
-                startX, startY, nil,
+                startZonePosition,
                 nil, nil,
                 Components.allExcept(Component.behavior)
             )
             entity:restrictToZone 'Cherry'
-            entity:moveTo(endX, endY, false)
+            entity:moveTo(endZonePosition, false)
         
             local delay = 0.3
             local endTime = Time.getTime() + delay

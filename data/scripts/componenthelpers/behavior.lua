@@ -25,17 +25,16 @@ end
 	Wander
 ]]
 
-local function wanderAround(entity, x, y)
+local function wanderAround(entity, initialPosition)
 	while true do
-		local rx = x + (random() * 2 - 1) * 2
-		local ry = y + (random() * 2 - 1) * 2
-		entity:moveTo(rx, ry)
+		local randomPosition = initialPosition + Flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
+		entity:moveTo(randomPosition)
 	end
 end
 
 local function wander(states, entity)
-	local x, y = entity:getPosition()
-	wanderAround(entity, x, y)
+	local position = entity:getPosition()
+	wanderAround(entity, position:toVector2())
 end
 
 --[[
@@ -45,10 +44,10 @@ end
 local function findClosestTarget(entity, isValidTarget)
 	local minDistance2 = huge
 	local closestTarget
-	local x, y = entity:getPosition()
+	local position2d = entity:getPosition():toVector2()
 	for _, visibleEntity in entity:eachVisibleEntity() do
-		local vx, vy = visibleEntity:getPosition()
-		local distanceToVisibleEntity2 = (vx - x) * (vx - x) + (vy - y) * (vy - y)
+		local visibleEntityPosition2d = visibleEntity:getPosition():toVector2()
+		local distanceToVisibleEntity2 = (visibleEntityPosition2d - position2d):length2()
 		if distanceToVisibleEntity2 < minDistance2 and isValidTarget(entity, visibleEntity) then
 			minDistance2 = distanceToVisibleEntity2
 			closestTarget = visibleEntity
@@ -77,14 +76,14 @@ local function onEntityEnteredVisionRangeAttack(isValidTarget, foundTargetState)
 				return foundTargetState
 			else
 				-- the entity is closer than the current target
-				local x, y = entity:getPosition()
+				local position = entity:getPosition()
 				local currentAttackTarget = entity:getAttackTarget()
 				
-				local tx, ty = currentAttackTarget:getPosition()
-				local distanceToCurrentTarget2 = (tx - x) * (tx - x) + (ty - y) * (ty - y)
+				local attackTargetPosition = currentAttackTarget:getPosition()
+				local distanceToCurrentTarget2 = (attackTargetPosition - position):length2()
 				
-				local ex, ey = target:getPosition()
-				local distanceToNewTarget2 = (ex - x) * (ex - x) + (ey - y) * (ey - y)
+				local targetPosition = target:getPosition()
+				local distanceToNewTarget2 = (targetPosition - position):length2()
 				
 				if distanceToNewTarget2 < distanceToCurrentTarget2 then
 					entity:setAttackTarget(target)
@@ -121,9 +120,12 @@ local function followAttackTarget(findTargetState)
 				entity:enterState(findTargetState)
 			else
 				-- current attack target is too far -> clear it
-				local x, y = entity:getPosition()
-				local tx, ty = currentAttackTarget:getPosition()
-				local distance2 = (tx - x) * (tx - x) + (ty - y) * (ty - y)
+				local position = entity:getPosition()
+				local position2d = position:toVector2()
+				local targetPosition = currentAttackTarget:getPosition()
+				local targetPosition2d = targetPosition:toVector2()
+				local move = targetPosition2d - position2d
+				local distance2 = move:length2()
 				
 				if distance2 > visionRange2 then
 					entity:setAttackTarget(nil)
@@ -141,8 +143,8 @@ local function followAttackTarget(findTargetState)
 					if followStepDistance > minFollowStepDistance then
 						-- normalize direction and multiply by the distance to travel
 						local distance = sqrt(distance2)
-						local newX, newY = x + (tx - x) / distance * followStepDistance, y + (ty - y) / distance * followStepDistance
-						entity:moveTo(newX, newY)
+						local destination = position2d + move:getNormalized() * followStepDistance
+						entity:moveTo(destination)
 					else
 						-- nothing to do for now
 						yield()

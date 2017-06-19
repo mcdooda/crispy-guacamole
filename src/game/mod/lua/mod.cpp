@@ -24,7 +24,7 @@ int open(lua_State* L)
 	return 0;
 }
 
-int l_Mod_getPath(lua_State * L)
+int l_Mod_getPath(lua_State* L)
 {
 	Game& game = flat::lua::getGame(L).to<Game>();
 	lua_pushstring(L, game.modPath.c_str());

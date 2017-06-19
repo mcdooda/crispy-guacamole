@@ -13,13 +13,14 @@ end
 
 function states:idle(warlock)
 	while true do
-		local x, y, z = warlock:getPosition()
+		local position = warlock:getPosition()
 		local numZombies = 5
 		local distance = 0.5
 		local zombies = {}
 		for i = 1, numZombies do
 			local heading = (i - 1) * 2 * pi / numZombies
-			local zombie = Entity.spawn('zombie', x + cos(heading) * distance, y + sin(heading) * distance, z, heading)
+			local zombiePosition = position + Flat.Vector3(cos(heading) * distance, sin(heading) * distance, 0)
+			local zombie = Entity.spawn('zombie', zombiePosition, heading)
 			zombies[#zombies + 1] = zombie
 		end
 		BehaviorHelper.sleep(6)

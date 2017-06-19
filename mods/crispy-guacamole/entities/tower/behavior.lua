@@ -39,15 +39,15 @@ end
 
 function states:onEntityLeftVisionRange(tower, entity)
 	if entity == tower:getAttackTarget() then
-		local towerX, towerY = tower:getPosition()
+		local towerPosition2d = tower:getPosition():toVector2()
 		local closestEntity
 		local closestEntityDistance2 = math.huge
 
 		-- find closest visible valid attack target
 		for _, visibleEntity in tower:eachVisibleEntity() do
 			if isValidAttackTarget(tower, visibleEntity) then
-				local visibleEntityX, visibleEntityY = visibleEntity:getPosition()
-				local distance2 = (visibleEntityX - towerX) * (visibleEntityX - towerX) + (visibleEntityY - towerY) * (visibleEntityY - towerY)
+				local visibleEntityPosition2d = visibleEntity:getPosition():toVector2()
+				local distance2 = (visibleEntityPosition2d - towerPosition2d):length2()
 				if distance2 < closestEntityDistance2 then
 					closestEntityDistance2 = distance2
 					closestEntity = visibleEntity

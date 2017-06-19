@@ -39,15 +39,15 @@ end
 
 function states:onEntityLeftVisionRange(archer, entity)
 	if entity == archer:getAttackTarget() then
-		local archerX, archerY = archer:getPosition()
+		local archerPosition2d = archer:getPosition():toVector2()
 		local closestEntity
 		local closestEntityDistance2 = math.huge
 
 		-- find closest visible valid attack target
 		for _, visibleEntity in archer:eachVisibleEntity() do
 			if isValidAttackTarget(archer, visibleEntity) then
-				local visibleEntityX, visibleEntityY = visibleEntity:getPosition()
-				local distance2 = (visibleEntityX - archerX) * (visibleEntityX - archerX) + (visibleEntityY - archerY) * (visibleEntityY - archerY)
+				local visibleEntityPosition2d = visibleEntity:getPosition():toVector2()
+				local distance2 = (visibleEntityPosition2d - archerPosition2d):length2()
 				if distance2 < closestEntityDistance2 then
 					closestEntityDistance2 = distance2
 					closestEntity = visibleEntity

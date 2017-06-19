@@ -49,7 +49,7 @@ int open(lua_State* L)
 	return 0;
 }
 
-int l_Brush_setRadius(lua_State * L)
+int l_Brush_setRadius(lua_State* L)
 {
 	Brush& brush = getBrush(L, 1);
 	float radius = static_cast<float>(luaL_checknumber(L, 2));
@@ -57,7 +57,7 @@ int l_Brush_setRadius(lua_State * L)
 	return 0;
 }
 
-int l_Brush_setEdgeWidth(lua_State * L)
+int l_Brush_setEdgeWidth(lua_State* L)
 {
 	Brush& brush = getBrush(L, 1);
 	float edgeWidth = static_cast<float>(luaL_checknumber(L, 2));
@@ -68,10 +68,8 @@ int l_Brush_setEdgeWidth(lua_State * L)
 int l_Brush_getTiles(lua_State* L)
 {
 	Brush& brush = getBrush(L, 1);
-	float x = static_cast<float>(luaL_checknumber(L, 2));
-	float y = static_cast<float>(luaL_checknumber(L, 3));
-	flat::Vector2 center(x, y);
-	float minEffect = static_cast<float>(luaL_optnumber(L, 4, 0.f));
+	flat::Vector2& center = flat::lua::getVector2(L, 2);
+	float minEffect = static_cast<float>(luaL_optnumber(L, 3, 0.f));
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	Map& map = baseMapState.getMap();

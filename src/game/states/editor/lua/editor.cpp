@@ -45,13 +45,13 @@ int open(lua_State* L)
 	return 0;
 }
 
-int l_Editor_setEntityMode(lua_State * L)
+int l_Editor_setEntityMode(lua_State* L)
 {
 	setEditorMode<editor::EntityEditorMode>(L);
 	return 0;
 }
 
-int l_Editor_setEntity(lua_State * L)
+int l_Editor_setEntity(lua_State* L)
 {
 	const char* entityTemplateName = luaL_checkstring(L, 1);
 	editor::EntityEditorMode& entityEditorMode = getEditorMode(L).to<editor::EntityEditorMode>();
@@ -62,13 +62,13 @@ int l_Editor_setEntity(lua_State * L)
 	return 0;
 }
 
-int l_Editor_setTileMode(lua_State * L)
+int l_Editor_setTileMode(lua_State* L)
 {
 	setEditorMode<editor::TileEditorMode>(L);
 	return 0;
 }
 
-int l_Editor_setTile(lua_State * L)
+int l_Editor_setTile(lua_State* L)
 {
 	const char* tileTemplateName = luaL_checkstring(L, 1);
 	editor::TileEditorMode& tileEditorMode = getEditorMode(L).to<editor::TileEditorMode>();
@@ -79,13 +79,13 @@ int l_Editor_setTile(lua_State * L)
 	return 0;
 }
 
-int l_Editor_setPropMode(lua_State * L)
+int l_Editor_setPropMode(lua_State* L)
 {
 	setEditorMode<editor::PropEditorMode>(L);
 	return 0;
 }
 
-int l_Editor_setProp(lua_State * L)
+int l_Editor_setProp(lua_State* L)
 {
 	const char* propTemplateName = luaL_checkstring(L, 1);
 	editor::PropEditorMode& propEditorMode = getEditorMode(L).to<editor::PropEditorMode>();
@@ -96,7 +96,7 @@ int l_Editor_setProp(lua_State * L)
 	return 0;
 }
 
-int l_Editor_setZoneMode(lua_State * L)
+int l_Editor_setZoneMode(lua_State* L)
 {
 	setEditorMode<editor::ZoneEditorMode>(L);
 	return 0;
@@ -146,7 +146,7 @@ int l_Editor_getZoneNames(lua_State* L)
 	return 1;
 }
 
-int l_Editor_getBrushPosition(lua_State * L)
+int l_Editor_getBrushPosition(lua_State* L)
 {
 	states::EditorState& editorState = getEditorState(L);
 	editor::EditorMode* editorMode = editorState.getEditorMode();
@@ -165,7 +165,7 @@ int l_Editor_getBrushPosition(lua_State * L)
 }
 
 // private
-states::EditorState& getEditorState(lua_State * L)
+states::EditorState& getEditorState(lua_State* L)
 {
 	Game& game = flat::lua::getGame(L).to<Game>();
 	flat::state::State* state = game.getStateMachine().getState();

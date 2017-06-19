@@ -20,7 +20,7 @@ return {
         Widget.getRoot():addChild(widget)
 
         entity:setUiVisible(false)
-        entity:setUiOffset(-healthBarWidgetWidth / 2, offsetY)
+        entity:setUiOffset(Flat.Vector2(-healthBarWidgetWidth / 2, offsetY))
         entity:healthChanged(function(previousHealth, currentHealth, maxHealth)
             local healthRatio = currentHealth / maxHealth
             if 0 < healthRatio and healthRatio < 1 then

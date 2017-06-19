@@ -142,7 +142,6 @@ local function followAttackTarget(findTargetState)
 
 					if followStepDistance > minFollowStepDistance then
 						-- normalize direction and multiply by the distance to travel
-						local distance = sqrt(distance2)
 						local destination = position2d + move:getNormalized() * followStepDistance
 						entity:moveTo(destination)
 					else

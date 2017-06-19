@@ -16,6 +16,7 @@ TimerContainer::~TimerContainer()
 Timer* TimerContainer::add(float beginTime, float duration, int onUpdate, int onEnd, bool loop)
 {
 	Timer* timer = m_timerPool.create(beginTime, duration, onUpdate, onEnd, loop);
+	FLAT_ASSERT(timer != nullptr);
 	m_pendingTimers.push_back(timer);
 	return timer;
 }
@@ -38,6 +39,17 @@ bool TimerContainer::stop(Timer*& timer)
 
 void TimerContainer::updateTimers(lua_State* L, float currentTime)
 {
+	// remove stopped timers
+	m_timers.erase(
+		std::remove_if(
+			m_timers.begin(),
+			m_timers.end(),
+			[](Timer* timer) { return timer == nullptr; }
+		),
+		m_timers.end()
+	);
+	FLAT_ASSERT(std::is_sorted(m_timers.begin(), m_timers.end(), &TimerContainer::compareTimersByTimeout));
+
 	// insert pending timers
 	for (Timer* timer : m_pendingTimers)
 	{

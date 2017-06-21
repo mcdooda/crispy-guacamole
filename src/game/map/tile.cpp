@@ -31,6 +31,7 @@ void Tile::setExists(Map& map, bool exists)
 		{
 			m_exists = true;
 			displayManager.addTerrainObject(this);
+			setNearbyTilesDirty(map);
 			if (m_prop != nullptr)
 			{
 				displayManager.addTerrainObject(m_prop);
@@ -82,6 +83,7 @@ void Tile::setCoordinates(Map& map, int x, int y, float z)
 	{
 		DisplayManager& displayManager = map.getDisplayManager();
 		displayManager.updateTerrainObject(this);
+		setNearbyTilesDirty(map);
 	}
 
 	if (m_prop)
@@ -215,6 +217,83 @@ void Tile::eachWalkableNeighborTiles(const Map & map, float jumpHeight, std::fun
 		if (tile->getZ() <= maxZ)
 			func(tile);
 	}
+}
+
+void Tile::setNearbyTilesDirty(Map& map)
+{
+	map.setTileNormalDirty(*this);
+
+	Tile* topLeftTile = map.getTileIfExists(m_x, m_y - 1);
+	if (topLeftTile != nullptr)
+	{
+		map.setTileNormalDirty(*topLeftTile);
+	}
+
+	Tile* topRightTile = map.getTileIfExists(m_x - 1, m_y);
+	if (topRightTile != nullptr)
+	{
+		map.setTileNormalDirty(*topRightTile);
+	}
+
+	Tile* bottomLeftTile = map.getTileIfExists(m_x + 1, m_y);
+	if (bottomLeftTile != nullptr)
+	{
+		map.setTileNormalDirty(*bottomLeftTile);
+	}
+
+	Tile* bottomRightTile = map.getTileIfExists(m_x, m_y + 1);
+	if (bottomRightTile != nullptr)
+	{
+		map.setTileNormalDirty(*bottomRightTile);
+	}
+}
+
+void Tile::updateNormal(Map& map)
+{
+	FLAT_ASSERT(m_normalDirty);
+	m_normalDirty = false;
+
+	flat::Vector3 dx(1.f, 0.f, 0.f);
+	flat::Vector3 dy(0.f, 1.f, 0.f);
+
+	Tile* bottomLeftTile = map.getTileIfExists(m_x + 1, m_y);
+	if (bottomLeftTile != nullptr)
+	{
+		dx.x = 1.f;
+		dx.y = 0.f;
+		dx.z = bottomLeftTile->m_z - m_z;
+	}
+	else
+	{
+		Tile* topRightTile = map.getTileIfExists(m_x - 1, m_y);
+		if (topRightTile != nullptr)
+		{
+			dx.x = 1.f;
+			dx.y = 0.f;
+			dx.z = m_z - topRightTile->m_z;
+		}
+	}
+
+	Tile* bottomRightTile = map.getTileIfExists(m_x, m_y + 1);
+	if (bottomRightTile != nullptr)
+	{
+		dy.x = 0.f;
+		dy.y = 1.f;
+		dy.z = bottomRightTile->m_z - m_z;
+	}
+	else
+	{
+		Tile* topLeftTile = map.getTileIfExists(m_x, m_y - 1);
+		if (topLeftTile != nullptr)
+		{
+			dy.x = 0.f;
+			dy.y = 1.f;
+			dy.z = m_z - topLeftTile->m_z;
+		}
+	}
+
+	flat::Vector3 normal = flat::cross(flat::normalize(dx), flat::normalize(dy));
+	m_sprite.setNormal(normal);
 }
 
 } // map

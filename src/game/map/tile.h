@@ -67,7 +67,13 @@ class Tile final : public MapObject
 			return *tileProgramSettings;
 		}
 	
+		void updateNormal(Map& map);
+		inline void setNormalDirty() { m_normalDirty = true; }
+		inline bool isNormalDirty() const { return m_normalDirty; }
+
 	private:
+		void setNearbyTilesDirty(Map& map);
+
 		static const flat::render::ProgramSettings* tileProgramSettings;
 
 		std::vector<entity::Entity*> m_entities;
@@ -80,6 +86,8 @@ class Tile final : public MapObject
 		
 		bool m_exists : 1;
 		bool m_walkable : 1;
+
+		bool m_normalDirty : 1;
 };
 
 } // map

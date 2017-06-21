@@ -84,6 +84,9 @@ class Map
 		
 		void updateEntities(float currentTime, float elapsedTime);
 
+		void setTileNormalDirty(Tile& tile);
+		void updateTilesNormals();
+
 		std::shared_ptr<Zone>& addZone(const std::string& zoneName);
 		bool removeZone(const std::string& zoneName);
 		bool getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) const;
@@ -116,6 +119,8 @@ class Map
 		int m_maxY;
 		
 		std::vector<entity::Entity*> m_entities;
+
+		std::vector<Tile*> m_dirtyNormalTiles;
 
 		std::map<std::string, std::shared_ptr<Zone>> m_zones;
 

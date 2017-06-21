@@ -237,7 +237,7 @@ void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::fun
 
 void Map::updateEntities(float currentTime, float elapsedTime)
 {
-	auto entities = m_entities;
+	std::vector<entity::Entity*> entities = m_entities;
 	for (entity::Entity* entity : entities)
 	{
 		entity->update(currentTime, elapsedTime);
@@ -249,6 +249,24 @@ void Map::updateEntities(float currentTime, float elapsedTime)
 		FLAT_ASSERT(spriteAABB == entity->getAABB());
 #endif
 	}
+}
+
+void Map::setTileNormalDirty(Tile& tile)
+{
+	if (!tile.isNormalDirty())
+	{
+		tile.setNormalDirty();
+		m_dirtyNormalTiles.push_back(&tile);
+	}
+}
+
+void Map::updateTilesNormals()
+{
+	for (Tile* tile : m_dirtyNormalTiles)
+	{
+		tile->updateNormal(*this);
+	}
+	m_dirtyNormalTiles.clear();
 }
 
 std::shared_ptr<Zone>& Map::addZone(const std::string& zoneName)

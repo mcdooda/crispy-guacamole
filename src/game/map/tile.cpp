@@ -110,8 +110,11 @@ void Tile::setTexture(Map& map, const std::shared_ptr<const flat::video::Texture
 	m_sprite.setOrigin(origin);
 	m_sprite.getAABB(m_spriteAABB);
 
+
 	if (m_exists)
 	{
+		updateRenderHash();
+
 		DisplayManager& displayManager = map.getDisplayManager();
 		displayManager.updateTerrainObject(this);
 	}
@@ -136,6 +139,8 @@ void Tile::setPropTexture(Map& map, const std::shared_ptr<const flat::video::Tex
 
 	if (m_exists)
 	{
+		prop->updateRenderHash();
+
 		if (m_prop != nullptr)
 		{
 			displayManager.updateTerrainObject(prop);

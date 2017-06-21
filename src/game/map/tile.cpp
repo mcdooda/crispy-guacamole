@@ -34,6 +34,8 @@ void Tile::setExists(Map& map, bool exists)
 			setNearbyTilesDirty(map);
 			if (m_prop != nullptr)
 			{
+				// TODO: fix this const_cast
+				const_cast<flat::render::Sprite&>(m_prop->getSprite()).setNormal(flat::Vector3(0.f, 0.f, 1.f));
 				displayManager.addTerrainObject(m_prop);
 			}
 		}

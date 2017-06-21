@@ -34,35 +34,18 @@ BaseMapState::BaseMapState() :
 void BaseMapState::enter(Game& game)
 {
 	game.video->window->setTitle("Crispy guacamole");
+
+#ifdef FLAT_DEBUG
+	if (m_isReloading)
+	{
+		game.lua->clearLoadedPackages();
+	}
+#endif
 	
 	// init lua first
 	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-#ifdef FLAT_DEBUG
-		// clear packages loaded through require
-		if (m_isReloading)
-		{
-			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-			lua_getglobal(L, "package");
-			lua_getfield(L, -1, "loaded");
-			
-			lua_pushnil(L);
-			while (lua_next(L, -2) != 0)
-			{
-				const char* modname = luaL_checkstring(L, -2);
-				lua_pop(L, 1); // pop value
-				lua_pushnil(L);
-				lua_setfield(L, -3, modname); // clear field
-				lua_pop(L, 1);
-				lua_pushnil(L);
-			}
-
-			lua_pop(L, 2);
-		}
-#endif
 
 		timer::lua::open(L);
 		entity::lua::open(L);

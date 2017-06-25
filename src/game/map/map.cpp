@@ -32,6 +32,7 @@ bool Map::load(Game& game, const mod::Mod& mod, const std::string& mapName)
 	if (reader.canRead())
 	{
 		reader.read();
+		updateAllTilesNormals();
 		return true;
 	}
 	FLAT_ASSERT(false);
@@ -253,6 +254,7 @@ void Map::updateEntities(float currentTime, float elapsedTime)
 
 void Map::setTileNormalDirty(Tile& tile)
 {
+	FLAT_ASSERT(tile.exists());
 	if (!tile.isNormalDirty())
 	{
 		tile.setNormalDirty();
@@ -267,6 +269,15 @@ void Map::updateTilesNormals()
 		tile->updateNormal(*this);
 	}
 	m_dirtyNormalTiles.clear();
+}
+
+void Map::updateAllTilesNormals()
+{
+	m_dirtyNormalTiles.clear();
+	eachTileIfExists([this](Tile* tile)
+	{
+		tile->updateNormal(*this);
+	});
 }
 
 std::shared_ptr<Zone>& Map::addZone(const std::string& zoneName)

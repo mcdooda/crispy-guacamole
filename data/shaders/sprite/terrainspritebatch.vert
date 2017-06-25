@@ -1,5 +1,7 @@
 #version 130
 
+#define DEBUG_NORMALS 0
+
 uniform mat4 vpMatrix;
 
 in vec4 position;
@@ -25,6 +27,9 @@ void main()
 	vec4 normalColor = mix(black, white, clamp(1.25 - v, 0.0, 1.0));
 
 	color2 = color * normalColor;
+#if DEBUG_NORMALS
+	color2 = vec4(normal / 2.0 + vec3(0.5, 0.5, 0.5), 1.0);
+#endif
 }
 
 

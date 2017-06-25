@@ -68,7 +68,7 @@ class Tile final : public MapObject
 		}
 	
 		void updateNormal(Map& map);
-		inline void setNormalDirty() { m_normalDirty = true; }
+		inline void setNormalDirty() { FLAT_ASSERT(!m_normalDirty); m_normalDirty = true; }
 		inline bool isNormalDirty() const { return m_normalDirty; }
 
 	private:

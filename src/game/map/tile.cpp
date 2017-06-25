@@ -257,45 +257,78 @@ void Tile::setNearbyTilesDirty(Map& map)
 
 void Tile::updateNormal(Map& map)
 {
-	FLAT_ASSERT(m_normalDirty);
 	m_normalDirty = false;
 
 	flat::Vector3 dx(1.f, 0.f, 0.f);
 	flat::Vector3 dy(0.f, 1.f, 0.f);
 
-	Tile* bottomLeftTile = map.getTileIfExists(m_x + 1, m_y);
-	if (bottomLeftTile != nullptr)
+	constexpr float minZDifference = 0.05f;
+
+	// compute dx
 	{
-		dx.x = 1.f;
-		dx.y = 0.f;
-		dx.z = bottomLeftTile->m_z - m_z;
-	}
-	else
-	{
+		Tile* bottomLeftTile = map.getTileIfExists(m_x + 1, m_y);
 		Tile* topRightTile = map.getTileIfExists(m_x - 1, m_y);
-		if (topRightTile != nullptr)
+		if (bottomLeftTile != nullptr && topRightTile != nullptr)
 		{
-			dx.x = 1.f;
-			dx.y = 0.f;
-			dx.z = m_z - topRightTile->m_z;
+			if (std::abs(m_z - bottomLeftTile->m_z) > minZDifference
+				&& std::abs(m_z - topRightTile->m_z) > minZDifference)
+			{
+				dx.x = 2.f;
+				dx.y = 0.f;
+				dx.z = bottomLeftTile->m_z - topRightTile->m_z;
+			}
+		}
+		else if (bottomLeftTile != nullptr)
+		{
+			if (std::abs(m_z - bottomLeftTile->m_z) > minZDifference)
+			{
+				dx.x = 1.f;
+				dx.y = 0.f;
+				dx.z = bottomLeftTile->m_z - m_z;
+			}
+		}
+		else if (topRightTile != nullptr)
+		{
+			if (std::abs(m_z - topRightTile->m_z) > minZDifference)
+			{
+				dx.x = 1.f;
+				dx.y = 0.f;
+				dx.z = m_z - topRightTile->m_z;
+			}
 		}
 	}
 
-	Tile* bottomRightTile = map.getTileIfExists(m_x, m_y + 1);
-	if (bottomRightTile != nullptr)
+	// compute dy
 	{
-		dy.x = 0.f;
-		dy.y = 1.f;
-		dy.z = bottomRightTile->m_z - m_z;
-	}
-	else
-	{
+		Tile* bottomRightTile = map.getTileIfExists(m_x, m_y + 1);
 		Tile* topLeftTile = map.getTileIfExists(m_x, m_y - 1);
-		if (topLeftTile != nullptr)
+		if (bottomRightTile != nullptr && topLeftTile != nullptr)
 		{
-			dy.x = 0.f;
-			dy.y = 1.f;
-			dy.z = m_z - topLeftTile->m_z;
+			if (std::abs(m_z - bottomRightTile->m_z) > minZDifference
+			 && std::abs(m_z - topLeftTile->m_z) > minZDifference)
+			{
+				dy.x = 0.f;
+				dy.y = 2.f;
+				dy.z = bottomRightTile->m_z - topLeftTile->m_z;
+			}
+		}
+		else if (bottomRightTile != nullptr)
+		{
+			if (std::abs(m_z - bottomRightTile->m_z) > minZDifference)
+			{
+				dy.x = 0.f;
+				dy.y = 1.f;
+				dy.z = bottomRightTile->m_z - m_z;
+			}
+		}
+		else if (topLeftTile != nullptr)
+		{
+			if (std::abs(m_z - topLeftTile->m_z) > minZDifference)
+			{
+				dy.x = 0.f;
+				dy.y = 1.f;
+				dy.z = m_z - topLeftTile->m_z;
+			}
 		}
 	}
 

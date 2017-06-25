@@ -86,6 +86,7 @@ class Map
 
 		void setTileNormalDirty(Tile& tile);
 		void updateTilesNormals();
+		void updateAllTilesNormals();
 
 		std::shared_ptr<Zone>& addZone(const std::string& zoneName);
 		bool removeZone(const std::string& zoneName);

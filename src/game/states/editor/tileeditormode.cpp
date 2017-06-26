@@ -91,7 +91,7 @@ void TileEditorMode::applyBrushSecondaryEffect(bool justPressed)
 
 void TileEditorMode::handleShortcuts()
 {
-	const float frameTime = m_game.time->getFrameTime();
+	const float dt = getClock().getDT();
 	map::Map& map = getMap();
 
 	const auto& keyboard = m_game.input->keyboard;
@@ -104,7 +104,7 @@ void TileEditorMode::handleShortcuts()
 		float displacement = upPressed ? 1.f : -1.f;
 		if (!altPressed)
 		{
-			displacement *= 10.f * frameTime;
+			displacement *= 10.f * dt;
 		}
 		else
 		{
@@ -126,10 +126,10 @@ void TileEditorMode::handleShortcuts()
 			n += effect;
 		});
 		mean /= n;
-		eachSelectedTileIfExists([this, &map, mean, frameTime](map::Tile* tile, float effect)
+		eachSelectedTileIfExists([this, &map, mean, dt](map::Tile* tile, float effect)
 		{
 			float z = tile->getZ();
-			tile->setZ(map, z + (mean - z) * effect * frameTime * 5.f);
+			tile->setZ(map, z + (mean - z) * effect * dt * 5.f);
 		});
 	}
 

@@ -26,14 +26,16 @@ class BehaviorRuntime final
 		
 		void enterState(const char* stateName);
 
+		void sleep(float time, float duration);
+
 		template <class EventType, class... T>
 		void handleEvent(T... params);
 
 		template <class EventType>
 		bool isEventHandled();
 
-		void updateCurrentState();
-		void update();
+		void updateCurrentState(float time);
+		void update(float time);
 
 		FLAT_DEBUG_ONLY(inline const std::string& getCurrentStateName() const { return m_currentStateName; })
 		FLAT_DEBUG_ONLY(inline const flat::lua::Thread& getThread() const { return m_thread; })
@@ -44,6 +46,7 @@ class BehaviorRuntime final
 	private:
 		Entity* m_entity;
 		flat::lua::Thread m_thread;
+		float m_endSleepTime;
 		FLAT_DEBUG_ONLY(std::string m_currentStateName;)
 };
 

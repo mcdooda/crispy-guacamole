@@ -44,8 +44,8 @@ void EditorState::execute(Game& game)
 	saveOnCtrlS(game);
 
 	despawnEntities();
-	const auto& time = game.time;
-	m_map.updateEntities(time->getTime(), time->getFrameTime());
+	const flat::time::Clock& clock = getClock();
+	m_map.updateEntities(clock.getTime(), clock.getDT());
 
 #ifdef FLAT_DEBUG
 	const auto& keyboard = game.input->keyboard;

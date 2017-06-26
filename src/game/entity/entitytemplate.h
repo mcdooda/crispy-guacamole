@@ -15,10 +15,6 @@ namespace component
 class ComponentRegistry;
 class ComponentTemplate;
 }
-namespace behavior
-{
-class Behavior;
-}
 
 class EntityTemplate final
 {

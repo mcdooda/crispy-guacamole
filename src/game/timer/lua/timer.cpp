@@ -58,11 +58,9 @@ int l_Timer_start(lua_State* L)
 
 	bool loop = lua_toboolean(L, 4) == 1;
 	
-	const auto& time = flat::lua::getGame(L).time;
-	float currentTime = time->getTime();
 	TimerContainer& timerContainer = getTimerContainer(L);
-	Timer* timer = timerContainer.add(currentTime, timerDuration, onUpdate, onEnd, loop);
-	callTimerUpdate(L, timer, currentTime);
+	Timer* timer = timerContainer.add(timerDuration, onUpdate, onEnd, loop);
+	callTimerUpdate(L, timer, timerContainer.getClock().getTime());
 	pushTimer(L, timer);
 	return 1;
 }
@@ -85,10 +83,9 @@ int l_Timer_stop(lua_State* L)
 
 int l_Timer_getElapsedTime(lua_State* L)
 {
-	const auto& time = flat::lua::getGame(L).time;
-	float currentTime = time->getTime();
+	const float time = getTimerContainer(L).getClock().getTime();
 	Timer* timer = getTimer(L, 1);
-	lua_pushnumber(L, timer->getElapsedTime(currentTime));
+	lua_pushnumber(L, timer->getElapsedTime(time));
 	return 1;
 }
 

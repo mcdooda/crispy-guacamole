@@ -35,7 +35,7 @@ void Component::deinit()
 
 }
 
-void Component::update(float currentTime, float elapsedTime)
+void Component::update(float time, float dt)
 {
 
 }

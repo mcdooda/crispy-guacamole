@@ -67,7 +67,7 @@ class Entity final : public map::MapObject
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
 		
-		void update(float currentTime, float elapsedTime);
+		void update(float time, float dt);
 
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;

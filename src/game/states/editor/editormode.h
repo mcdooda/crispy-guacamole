@@ -46,6 +46,7 @@ protected:
 	void clearSelectedTiles();
 	states::EditorState& getEditorState() const;
 	map::Map& getMap() const;
+	const flat::time::Clock& getClock() const;
 
 protected:
 	Game& m_game;

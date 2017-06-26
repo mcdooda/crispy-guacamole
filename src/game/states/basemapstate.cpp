@@ -35,6 +35,10 @@ void BaseMapState::enter(Game& game)
 {
 	game.video->window->setTitle("Crispy guacamole");
 
+	// init time first
+	m_clock = game.time->newClock();
+	m_timerContainer.setClock(m_clock);
+
 #ifdef FLAT_DEBUG
 	if (m_isReloading)
 	{
@@ -42,7 +46,7 @@ void BaseMapState::enter(Game& game)
 	}
 #endif
 	
-	// init lua first
+	// init lua then
 	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -282,7 +286,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::share
 	entity->setHeading(heading);
 	entity->setElevation(elevation);
 	addEntityToMap(entity);
-	const float currentTime = game.time->getTime();
+	const float currentTime = m_clock->getTime();
 	entity->update(currentTime, 0.f);
 	return entity;
 }
@@ -375,8 +379,7 @@ void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
 	updateUi(game);
-	float currentTime = game.time->getTime();
-	m_timerContainer.updateTimers(game.lua->state, currentTime);
+	m_timerContainer.updateTimers(game.lua->state);
 }
 
 void BaseMapState::addGhostEntity(game::Game& game)
@@ -402,7 +405,7 @@ void BaseMapState::addGhostEntity(game::Game& game)
 				{
 					collisionComponent->incDisableLevel();
 				}
-				m_ghostEntity->update(game.time->getTime(), 0.f);
+				m_ghostEntity->update(m_clock->getTime(), 0.f);
 				if (collisionComponent != nullptr)
 				{
 					collisionComponent->decDisableLevel();
@@ -454,7 +457,7 @@ void BaseMapState::updateGameView(game::Game& game)
 		move.y = speed.y;
 	
 	const float cameraSpeed = 40.f;
-	m_cameraCenter2d += move * game.time->getActualFrameTime() * cameraSpeed;
+	m_cameraCenter2d += move * m_clock->getDT() * cameraSpeed;
 	updateCameraView();
 
 	if (mouse->wheelJustMoved() && keyboard->isPressed(K(LCTRL)))

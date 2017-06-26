@@ -28,6 +28,8 @@ void BehaviorRuntime::enterState(const char* stateName)
 
 	FLAT_DEBUG_ONLY(m_currentStateName = stateName;)
 
+	m_endSleepTime = -1.f;
+
 	const Behavior& behavior = getBehavior();
 	lua_State* L = behavior.getLuaState();
 	{
@@ -54,15 +56,20 @@ void BehaviorRuntime::enterState(const char* stateName)
 	}
 }
 
-void BehaviorRuntime::updateCurrentState()
+void BehaviorRuntime::sleep(float time, float duration)
 {
-	if (m_thread.isRunning())
+	m_endSleepTime = time + duration;
+}
+
+void BehaviorRuntime::updateCurrentState(float time)
+{
+	if (m_thread.isRunning() && time >= m_endSleepTime)
 	{
 		m_thread.update();
 	}
 }
 
-void BehaviorRuntime::update()
+void BehaviorRuntime::update(float time)
 {
 	if (m_thread.isFinished())
 	{
@@ -70,7 +77,7 @@ void BehaviorRuntime::update()
 	}
 	else
 	{
-		updateCurrentState();
+		updateCurrentState(time);
 	}
 }
 

@@ -3,6 +3,7 @@
 #include "../entity.h"
 #include "../faction/faction.h"
 #include "../component/components/attack/attackcomponent.h"
+#include "../component/components/behavior/behaviorcomponent.h"
 #include "../component/components/movement/movementcomponent.h"
 #include "../component/components/sprite/spritecomponent.h"
 #include "../component/components/detection/detectioncomponent.h"
@@ -73,6 +74,7 @@ int open(lua_State* L)
 		// behavior
 		{"enterState",              l_Entity_enterState},
 		{"enterStateAsync",         l_Entity_enterStateAsync},
+		{"sleep",                   l_Entity_sleep},
 
 		// sprite
 		{"playAnimation",           l_Entity_playAnimation},
@@ -414,6 +416,22 @@ int l_Entity_enterStateAsync(lua_State* L)
 {
 	locEnterState(L);
 	return 0;
+}
+
+int l_Entity_sleep(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	float duration = static_cast<float>(luaL_checknumber(L, 2));
+
+	Game& game = flat::lua::getGame(L).to<Game>();
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	const flat::time::Clock& clock = baseMapState.getClock();
+	const float time = clock.getTime();
+
+	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
+	behaviorComponent.sleep(time, duration);
+
+	return lua_yield(L, 0);
 }
 
 namespace

@@ -87,6 +87,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		bool isMouseOverUi(game::Game& game) const;
 
+		inline const flat::time::Clock& getClock() const { FLAT_ASSERT(m_clock != nullptr); return *m_clock.get(); }
+		inline flat::time::Clock& getClock() { FLAT_ASSERT(m_clock != nullptr); return *m_clock.get(); }
 		inline timer::TimerContainer& getTimerContainer() { return m_timerContainer; }
 		
 	protected:
@@ -162,7 +164,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		flat::Vector2 m_mouseDownPosition;
 		std::shared_ptr<flat::sharp::ui::Widget> m_selectionWidget;
 
-		// timers
+		// time
+		std::shared_ptr<flat::time::Clock> m_clock;
 		timer::TimerContainer m_timerContainer;
 
 #ifdef FLAT_DEBUG

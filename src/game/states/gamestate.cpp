@@ -160,8 +160,8 @@ void GameState::execute(Game& game)
 #endif
 
 	despawnEntities();
-	const auto& time = game.time;
-	m_map.updateEntities(time->getTime(), time->getFrameTime());
+	const flat::time::Clock& clock = getClock();
+	m_map.updateEntities(clock.getTime(), clock.getDT());
 
 #ifdef FLAT_DEBUG
 	}
@@ -253,14 +253,14 @@ void GameState::setGamePause(Game& game, bool pause)
 
 	m_gamePaused = pause;
 
-	const auto& time = game.time;
+	flat::time::Clock& clock = getClock();
 	if (pause)
 	{
-		time->pause();
+		clock.pause();
 	}
 	else
 	{
-		time->resume();
+		clock.resume();
 	}
 }
 

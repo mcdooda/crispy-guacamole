@@ -23,13 +23,13 @@ function states:idle(warlock)
 			local zombie = Entity.spawn('zombie', zombiePosition, heading)
 			zombies[#zombies + 1] = zombie
 		end
-		BehaviorHelper.sleep(6)
+		warlock:sleep(6)
 		for i = 1, numZombies do
 			if zombies[i]:isValid() then
 				zombies[i]:kill()
 			end
 		end
-		BehaviorHelper.sleep(3)
+		warlock:sleep(3)
 	end
 end
 

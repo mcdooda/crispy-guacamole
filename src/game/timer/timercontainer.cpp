@@ -13,8 +13,9 @@ TimerContainer::~TimerContainer()
 	clearTimers();
 }
 
-Timer* TimerContainer::add(float beginTime, float duration, int onUpdate, int onEnd, bool loop)
+Timer* TimerContainer::add(float duration, int onUpdate, int onEnd, bool loop)
 {
+	const float beginTime = m_clock->getTime();
 	Timer* timer = m_timerPool.create(beginTime, duration, onUpdate, onEnd, loop);
 	FLAT_ASSERT(timer != nullptr);
 	m_pendingTimers.push_back(timer);
@@ -37,8 +38,10 @@ bool TimerContainer::stop(Timer*& timer)
 	}
 }
 
-void TimerContainer::updateTimers(lua_State* L, float currentTime)
+void TimerContainer::updateTimers(lua_State* L)
 {
+	FLAT_ASSERT(m_clock != nullptr);
+
 	// remove stopped timers
 	m_timers.erase(
 		std::remove_if(
@@ -59,6 +62,7 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 	m_pendingTimers.clear();
 
 	// update timers
+	const float time = m_clock->getTime();
 	std::deque<Timer*>::iterator lastStoppedTimerIt = m_timers.begin();
 	std::deque<Timer*>::iterator end = m_timers.end();
 	std::vector<Timer*> loopingTimers;
@@ -68,7 +72,7 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 		if (timer != nullptr)
 		{
 			float timeOut = timer->getTimeOut();
-			if (currentTime >= timeOut)
+			if (time >= timeOut)
 			{
 				// update one last time before dying
 				lua::callTimerUpdate(L, timer, timeOut);
@@ -86,7 +90,7 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 			}
 			else
 			{
-				lua::callTimerUpdate(L, timer, currentTime);
+				lua::callTimerUpdate(L, timer, time);
 			}
 			++it;
 		}
@@ -100,7 +104,7 @@ void TimerContainer::updateTimers(lua_State* L, float currentTime)
 	// push looping timers back
 	for (Timer* timer : loopingTimers)
 	{
-		timer->setBeginTime(currentTime);
+		timer->setBeginTime(time);
 		std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
 		m_timers.insert(it, timer);
 	}

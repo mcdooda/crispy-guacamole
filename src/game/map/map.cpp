@@ -236,12 +236,12 @@ void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::fun
 	}
 }
 
-void Map::updateEntities(float currentTime, float elapsedTime)
+void Map::updateEntities(float time, float dt)
 {
 	std::vector<entity::Entity*> entities = m_entities;
 	for (entity::Entity* entity : entities)
 	{
-		entity->update(currentTime, elapsedTime);
+		entity->update(time, dt);
 
 		// ensure all AABBs are up to date
 #ifdef FLAT_DEBUG

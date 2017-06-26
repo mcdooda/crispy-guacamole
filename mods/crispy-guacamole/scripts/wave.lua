@@ -2,8 +2,18 @@ local sin = math.sin
 local yield = coroutine.yield
 local moveTileZBy = Map.moveTileZBy
 
-local function new(position2d, radius, height, duration, onEnd)
-    local brush = Brush.cone()
+local function waveShape(age, distance, progression, effect)
+    return -sin(age * 10 + distance) * progression * effect
+end
+
+local function craterShape(age, distance, progression, effect)
+    return age * 3 * (
+        effect ^ 2
+    )
+end
+
+local function new(position2d, radius, height, duration, onEnd, shape)
+    local brush = Brush.sphere()
     brush:setRadius(radius)
 
     local tiles = brush:getTiles(position2d)
@@ -11,6 +21,8 @@ local function new(position2d, radius, height, duration, onEnd)
     tiles:eachTile(function(tile)
         tilesDz[tile] = 0
     end)
+
+    shape = shape or waveShape
     
     Timer.start(
         duration,
@@ -21,9 +33,9 @@ local function new(position2d, radius, height, duration, onEnd)
             while true do
                 tiles:eachTile(function(tile, effect)
                     local distance = effect * radius
-                    local dz = ((-sin(    age * 10 + distance) * progression    )
-                              - (-sin(prevAge * 10 + distance) * prevProgression))
-                             * height * effect
+                    local dz = (shape(age, distance, progression, effect)
+                              - shape(prevAge, distance, prevProgression, effect))
+                              * height
                     tilesDz[tile] = tilesDz[tile] + dz
                     moveTileZBy(tile, dz)
                 end)

@@ -27,11 +27,16 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		void init() override;
 		void deinit() override;
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(float time, float dt) override;
 		
 		void enterState(const char* stateName);
 
-		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
+		void sleep(float time, float duration);
+
+#ifdef FLAT_DEBUG
+		void getThreadDebugInfo(std::string& file, int& line) const;
+		void debugDraw(debug::DebugDisplay& debugDisplay) const override;
+#endif
 		
 	private:
 		bool addedToMap(Entity* entity, map::Map* map);

@@ -38,12 +38,14 @@ for i = 1, #waves do
             entity:restrictToZone 'Cherry'
             entity:moveTo(endZonePosition, false)
         
+            --[[
             local delay = 0.3
             local endTime = Time.getTime() + delay
             while Time.getTime() < endTime do
                 despawnEntities()
                 coroutine.yield()
             end
+            ]]
         end
     end
 

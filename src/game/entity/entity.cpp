@@ -155,7 +155,7 @@ void Entity::onRemovedFromMap()
 	m_tile = nullptr;
 }
 
-void Entity::update(float currentTime, float elapsedTime)
+void Entity::update(float time, float dt)
 {
 #ifdef FLAT_DEBUG
 	if (m_debugBreak)
@@ -168,7 +168,7 @@ void Entity::update(float currentTime, float elapsedTime)
 	{
 		if (component->isEnabled())
 		{
-			component->update(currentTime, elapsedTime);
+			component->update(time, dt);
 		}
 	}
 

@@ -1,6 +1,5 @@
 local CollisionHelper = require 'data/scripts/componenthelpers/collision'
 
-local getTime = Time.getTime
 local yield = coroutine.yield
 local huge = math.huge
 local random = math.random
@@ -11,15 +10,6 @@ local function init(initialState)
 		entity:enterState(initialState)
 	end
 end
-
-local function sleep(duration)
-	local endTime = getTime() + duration
-	local yield = coroutine.yield
-	while getTime() < endTime do
-		yield()
-	end
-end
-
 
 --[[
 	Wander
@@ -187,8 +177,6 @@ end
 
 return {
 	init                             = init,
-
-    sleep                            = sleep,
 
 	wanderAround                     = wanderAround,
 	wander                           = wander,

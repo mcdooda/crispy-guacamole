@@ -58,6 +58,7 @@ int l_Entity_restrictToZone(lua_State* L);
 // behavior
 int l_Entity_enterState(lua_State* L);
 int l_Entity_enterStateAsync(lua_State* L);
+int l_Entity_sleep(lua_State* L);
 
 // sprite
 int l_Entity_playAnimation(lua_State* L);

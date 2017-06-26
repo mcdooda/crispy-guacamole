@@ -34,7 +34,7 @@ class Component : public flat::util::Convertible<Component>
 
 		virtual void init();
 		virtual void deinit();
-		virtual void update(float currentTime, float elapsedTime);
+		virtual void update(float time, float dt);
 		virtual bool isBusy() const;
 
 #ifdef FLAT_DEBUG

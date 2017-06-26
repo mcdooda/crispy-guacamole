@@ -82,7 +82,7 @@ class Map
 
 		void eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const;
 		
-		void updateEntities(float currentTime, float elapsedTime);
+		void updateEntities(float time, float dt);
 
 		void setTileNormalDirty(Tile& tile);
 		void updateTilesNormals();

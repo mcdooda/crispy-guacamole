@@ -130,6 +130,11 @@ map::Map& EditorMode::getMap() const
 	return getEditorState().getMap();
 }
 
+const flat::time::Clock& EditorMode::getClock() const
+{
+	return getEditorState().getClock();
+}
+
 } // editor
 } // states
 } // game

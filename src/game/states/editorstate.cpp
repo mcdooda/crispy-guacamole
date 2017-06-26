@@ -9,6 +9,7 @@
 #include "../entity/component/components/behavior/behaviorcomponent.h"
 
 #ifdef FLAT_DEBUG
+// needed for reloadToState<GameState>
 #include "gamestate.h"
 #endif
 
@@ -50,7 +51,7 @@ void EditorState::execute(Game& game)
 #ifdef FLAT_DEBUG
 	const auto& keyboard = game.input->keyboard;
 
-	if (keyboard->isJustPressed(K(F9)))
+	if (keyboard->isJustPressed(K(F7)))
 	{
 		return reloadToState<GameState>(game);
 	}

@@ -102,13 +102,23 @@ void GameState::execute(Game& game)
 	}
 
 #ifdef FLAT_DEBUG
-	if (keyboard->isJustPressed(K(F8)))
+	if (keyboard->isJustPressed(K(F6)))
 	{
 		return reloadToState<EditorState>(game);
 	}
-	if (keyboard->isJustPressed(K(F9)))
+	else if (keyboard->isJustPressed(K(F7)))
 	{
 		return reloadToState<GameState>(game);
+	}
+	else if (keyboard->isJustPressed(K(F8)))
+	{
+		flat::time::Clock& clock = getClock();
+		clock.setDTModifier(clock.getDTModifier() * 0.5f);
+	}
+	else if (keyboard->isJustPressed(K(F9)))
+	{
+		flat::time::Clock& clock = getClock();
+		clock.setDTModifier(clock.getDTModifier() * 2.f);
 	}
 	else if (keyboard->isJustPressed(K(F10)))
 	{

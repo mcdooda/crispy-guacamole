@@ -1,6 +1,9 @@
 local Path = require 'data/scripts/path'
 
-local function getPreviewAnimation(spriteComponentTemplate)
+local function getPreviewAnimation(spriteComponentTemplate, animationName)
+    if animationName and spriteComponentTemplate.animations[animationName] then
+        return spriteComponentTemplate.animations[animationName]
+    end
     if spriteComponentTemplate.animations.move then
         return spriteComponentTemplate.animations.move
     end
@@ -11,16 +14,16 @@ local function getPreviewAnimation(spriteComponentTemplate)
     end
 end
 
-local function setInitBackgroundPosition(preview, spriteComponentTemplate)
-    local animation = getPreviewAnimation(spriteComponentTemplate)
+local function setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
+    local animation = getPreviewAnimation(spriteComponentTemplate, animationName)
     preview:setBackgroundPosition(
         0,
         (animation.line - 1) / spriteComponentTemplate.size[2]
     )
 end
 
-local function startEntitySpriteAnimation(preview, imageWidth, spriteComponentTemplate)
-    local animation = getPreviewAnimation(spriteComponentTemplate)
+local function startEntitySpriteAnimation(preview, imageWidth, spriteComponentTemplate, animationName)
+    local animation = getPreviewAnimation(spriteComponentTemplate, animationName)
     if animation then
         local frameIndex = 0
         local y = (animation.line - 1) / spriteComponentTemplate.size[2]
@@ -37,14 +40,14 @@ local function startEntitySpriteAnimation(preview, imageWidth, spriteComponentTe
 
         local function stopAnimation()
             timer:stop()
-            setInitBackgroundPosition(preview, spriteComponentTemplate)
+            setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
         end
 
         return stopAnimation
     end
 end
 
-local function entitySpritePreview(entityTemplateName, spriteComponentTemplate)
+local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, animationName, loopForever)
     local entityAtlasPath = Path.getEntityFilePath(entityTemplateName, 'atlas.png')
     local preview = Widget.makeImage(entityAtlasPath)
     preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
@@ -53,14 +56,18 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate)
         imageWidth / spriteComponentTemplate.size[1],
         imageHeight / spriteComponentTemplate.size[2]
     )
-    setInitBackgroundPosition(preview, spriteComponentTemplate)
+    setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
     local stopAnimation
-    preview:mouseEnter(function()
-        stopAnimation = startEntitySpriteAnimation(preview, imageWidth, spriteComponentTemplate)
-    end)
-    preview:mouseLeave(function()
-        stopAnimation()
-    end)
+    if loopForever then
+        startEntitySpriteAnimation(preview, imageWidth, spriteComponentTemplate, animationName)
+    else
+        preview:mouseEnter(function()
+            stopAnimation = startEntitySpriteAnimation(preview, imageWidth, spriteComponentTemplate, animationName)
+        end)
+        preview:mouseLeave(function()
+            stopAnimation()
+        end)
+    end
     return preview
 end
 
@@ -69,11 +76,11 @@ local function entityTexturePreview(entityTemplateName)
     return Widget.makeImage(entityTexturePath)
 end
 
-local function entityPreview(entityTemplateName)
+local function entityPreview(entityTemplateName, animationName, loopForever)
     -- try sprite component first
     local spriteComponentTemplate = Path.requireComponentTemplateIfExists(entityTemplateName, 'sprite')
     if spriteComponentTemplate then
-       return entitySpritePreview(entityTemplateName, spriteComponentTemplate)
+       return entitySpritePreview(entityTemplateName, spriteComponentTemplate, animationName, loopForever)
     end
 
     -- then texture component

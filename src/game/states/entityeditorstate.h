@@ -15,6 +15,12 @@ class EntityEditorState : public BaseMapStateImpl<map::EditorMap>
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
+
+	protected:
+		entity::component::ComponentFlags getComponentsFilter() const override;
+
+	private:
+		entity::EntityHandle m_entity;
 };
 
 } // states

@@ -30,7 +30,7 @@ class Game : public flat::Game
 		// views
 		flat::video::View interfaceView;
 		
-		// GAME -> GameState, EDITOR -> EditorState
+		// GAME -> GameState, EDITOR -> MapEditorState
 		enum class Mode : uint8_t
 		{
 			GAME,

@@ -1,6 +1,6 @@
 #include "editor.h"
 #include "../../../game.h"
-#include "../../editorstate.h"
+#include "../../mapeditorstate.h"
 #include "../entityeditormode.h"
 #include "../propeditormode.h"
 #include "../tileeditormode.h"
@@ -56,7 +56,7 @@ int l_Editor_setEntity(lua_State* L)
 	const char* entityTemplateName = luaL_checkstring(L, 1);
 	editor::EntityEditorMode& entityEditorMode = getEditorMode(L).to<editor::EntityEditorMode>();
 	Game& game = flat::lua::getGame(L).to<Game>();
-	states::EditorState& editorState = getEditorState(L);
+	states::MapEditorState& editorState = getEditorState(L);
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = editorState.getEntityTemplate(game, entityTemplateName);
 	entityEditorMode.setEntityTemplate(entityTemplate);
 	return 0;
@@ -73,7 +73,7 @@ int l_Editor_setTile(lua_State* L)
 	const char* tileTemplateName = luaL_checkstring(L, 1);
 	editor::TileEditorMode& tileEditorMode = getEditorMode(L).to<editor::TileEditorMode>();
 	Game& game = flat::lua::getGame(L).to<Game>();
-	states::EditorState& editorState = getEditorState(L);
+	states::MapEditorState& editorState = getEditorState(L);
 	std::shared_ptr<const map::TileTemplate> tileTemplate = editorState.getTileTemplate(game, tileTemplateName);
 	tileEditorMode.setTileTemplate(tileTemplate);
 	return 0;
@@ -90,7 +90,7 @@ int l_Editor_setProp(lua_State* L)
 	const char* propTemplateName = luaL_checkstring(L, 1);
 	editor::PropEditorMode& propEditorMode = getEditorMode(L).to<editor::PropEditorMode>();
 	Game& game = flat::lua::getGame(L).to<Game>();
-	states::EditorState& editorState = getEditorState(L);
+	states::MapEditorState& editorState = getEditorState(L);
 	std::shared_ptr<const map::PropTemplate> propTemplate = editorState.getPropTemplate(game, propTemplateName);
 	propEditorMode.setPropTemplate(propTemplate);
 	return 0;
@@ -106,7 +106,7 @@ int l_Editor_setZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
 	editor::ZoneEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneEditorMode>();
-	states::EditorState& editorState = getEditorState(L);
+	states::MapEditorState& editorState = getEditorState(L);
 	const map::Map& map = editorState.getMap();
 	std::shared_ptr<map::Zone> zone;
 	if (map.getZone(zoneName, zone))
@@ -131,7 +131,7 @@ int l_Editor_addZone(lua_State* L)
 
 int l_Editor_getZoneNames(lua_State* L)
 {
-	states::EditorState& editorState = getEditorState(L);
+	states::MapEditorState& editorState = getEditorState(L);
 	const map::Map& map = editorState.getMap();
 	const std::map<std::string, std::shared_ptr<map::Zone>>& zones = map.getZones();
 	int numZones = static_cast<int>(zones.size());
@@ -148,7 +148,7 @@ int l_Editor_getZoneNames(lua_State* L)
 
 int l_Editor_getBrushPosition(lua_State* L)
 {
-	states::EditorState& editorState = getEditorState(L);
+	states::MapEditorState& editorState = getEditorState(L);
 	editor::EditorMode* editorMode = editorState.getEditorMode();
 	if (editorMode != nullptr) // editorMode not ready yet? TODO: fix this
 	{
@@ -165,16 +165,16 @@ int l_Editor_getBrushPosition(lua_State* L)
 }
 
 // private
-states::EditorState& getEditorState(lua_State* L)
+states::MapEditorState& getEditorState(lua_State* L)
 {
 	Game& game = flat::lua::getGame(L).to<Game>();
 	flat::state::State* state = game.getStateMachine().getState();
-	return state->as<states::EditorState>();
+	return state->as<states::MapEditorState>();
 }
 
 editor::EditorMode& getEditorMode(lua_State* L)
 {
-	states::EditorState& editorState = getEditorState(L);
+	states::MapEditorState& editorState = getEditorState(L);
 	return *editorState.getEditorMode();
 }
 

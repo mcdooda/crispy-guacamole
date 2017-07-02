@@ -15,7 +15,7 @@ class Map;
 }
 namespace states
 {
-class EditorState;
+class MapEditorState;
 namespace editor
 {
 
@@ -44,7 +44,7 @@ protected:
 	void eachBrushTile(std::function<void(map::Tile*, float)> func) const;
 	void eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const;
 	void clearSelectedTiles();
-	states::EditorState& getEditorState() const;
+	states::MapEditorState& getEditorState() const;
 	map::Map& getMap() const;
 	const flat::time::Clock& getClock() const;
 

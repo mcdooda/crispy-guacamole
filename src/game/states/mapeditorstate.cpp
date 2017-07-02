@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <iostream>
-#include "editorstate.h"
+#include "mapeditorstate.h"
 #include "editor/tileeditormode.h"
 #include "editor/entityeditormode.h"
 #include "../game.h"
@@ -18,7 +18,7 @@ namespace game
 namespace states
 {
 
-void EditorState::enter(Game& game)
+void MapEditorState::enter(Game& game)
 {
 	Super::enter(game);
 	
@@ -34,7 +34,7 @@ void EditorState::enter(Game& game)
 	game.lua->doFile("data/editor/scripts/ui.lua");
 }
 
-void EditorState::execute(Game& game)
+void MapEditorState::execute(Game& game)
 {
 	FLAT_ASSERT(m_editorMode.get() != nullptr);
 
@@ -60,12 +60,12 @@ void EditorState::execute(Game& game)
 	Super::execute(game);
 }
 
-entity::component::ComponentFlags EditorState::getComponentsFilter() const
+entity::component::ComponentFlags MapEditorState::getComponentsFilter() const
 {
 	return m_componentRegistry.getEditorComponentsFilter();
 }
 
-void EditorState::saveOnCtrlS(Game& game)
+void MapEditorState::saveOnCtrlS(Game& game)
 {
 	auto& keyboard = game.input->keyboard;
 	if (keyboard->isPressed(K(LCTRL)) && keyboard->isJustPressed(K(S)))
@@ -74,23 +74,23 @@ void EditorState::saveOnCtrlS(Game& game)
 	}
 }
 
-void EditorState::updateBrush(Game& game)
+void MapEditorState::updateBrush(Game& game)
 {
 	m_editorMode->updateBrushPosition();
 	m_editorMode->updateBrushTiles();
 }
 
-void EditorState::clearBrush(Game& game)
+void MapEditorState::clearBrush(Game& game)
 {
 	m_editorMode->clearBrush();
 }
 
-void EditorState::displayBrush(Game& game)
+void MapEditorState::displayBrush(Game& game)
 {
 	m_editorMode->displayBrush();
 }
 
-void EditorState::applyBrush(Game& game)
+void MapEditorState::applyBrush(Game& game)
 {
 	const auto& input = game.input;
 

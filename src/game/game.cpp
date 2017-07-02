@@ -1,6 +1,6 @@
 #include "game.h"
 #include "states/gamestate.h"
-#include "states/editorstate.h"
+#include "states/mapeditorstate.h"
 
 namespace game
 {
@@ -29,7 +29,7 @@ void Game::setStates()
 		break;
 		
 		case Mode::EDITOR:
-		state = new states::EditorState();
+		state = new states::MapEditorState();
 		break;
 		
 		default:

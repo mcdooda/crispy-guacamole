@@ -1,5 +1,5 @@
 #include "entityeditormode.h"
-#include "../editorstate.h"
+#include "../mapeditorstate.h"
 #include "../../game.h"
 
 namespace game
@@ -16,7 +16,7 @@ EntityEditorMode::EntityEditorMode(Game& game) : Super(game)
 
 EntityEditorMode::~EntityEditorMode()
 {
-	m_game.getStateMachine().getState()->as<states::EditorState>().clearGhostTemplate();
+	m_game.getStateMachine().getState()->as<states::MapEditorState>().clearGhostTemplate();
 }
 
 void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed)
@@ -44,7 +44,7 @@ void EntityEditorMode::handleShortcuts()
 	const bool delPressed = keyboard->isJustPressed(K(DELETE));
 	if (delPressed)
 	{
-		states::EditorState& editorState = getEditorState();
+		states::MapEditorState& editorState = getEditorState();
 		for (entity::Entity* entity : editorState.getSelectedEntities())
 		{
 			entity->markForDelete();

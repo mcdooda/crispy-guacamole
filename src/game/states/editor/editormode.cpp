@@ -1,5 +1,5 @@
 #include "editormode.h"
-#include "../editorstate.h"
+#include "../mapeditorstate.h"
 #include "../../game.h"
 
 namespace game
@@ -18,7 +18,7 @@ EditorMode::EditorMode(Game& game) :
 EditorMode::~EditorMode()
 {
 	// do not use getMap() as the state may be being destroyed at the time
-	map::Map& map = m_game.getStateMachine().getState()->as<states::EditorState>().getMap();
+	map::Map& map = m_game.getStateMachine().getState()->as<states::MapEditorState>().getMap();
 
 	map.eachTileIfExists([](map::Tile* tile)
 	{
@@ -120,9 +120,9 @@ void EditorMode::clearSelectedTiles()
 	m_selectedTiles.clear();
 }
 
-states::EditorState& EditorMode::getEditorState() const
+states::MapEditorState& EditorMode::getEditorState() const
 {
-	return m_game.getStateMachine().getState()->to<states::EditorState>();
+	return m_game.getStateMachine().getState()->to<states::MapEditorState>();
 }
 
 map::Map& EditorMode::getMap() const

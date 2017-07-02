@@ -1,7 +1,7 @@
 #include "map.h"
 #include "zone.h"
 #include "../../game.h"
-#include "../../states/editorstate.h"
+#include "../../states/mapeditorstate.h"
 #include "../../entity/lua/entity.h"
 
 namespace game
@@ -62,7 +62,7 @@ int l_Map_save(lua_State* L)
 {
 	Game& game = flat::lua::getGame(L).to<Game>();
 	flat::state::State* state = game.getStateMachine().getState();
-	states::EditorState& editorState = state->as<states::EditorState>();
+	states::MapEditorState& editorState = state->as<states::MapEditorState>();
 	bool mapSaved = editorState.saveMap(game);
 	lua_pushboolean(L, mapSaved);
 	return 1;

@@ -3,7 +3,7 @@
 
 #include <flat.h>
 #include "../../../game.h"
-#include "../../editorstate.h"
+#include "../../mapeditorstate.h"
 
 namespace game
 {
@@ -34,7 +34,7 @@ int l_Editor_getZoneNames(lua_State* L);
 int l_Editor_getBrushPosition(lua_State* L);
 
 // private
-states::EditorState& getEditorState(lua_State* L);
+states::MapEditorState& getEditorState(lua_State* L);
 
 template <class T>
 void setEditorMode(lua_State* L)
@@ -42,7 +42,7 @@ void setEditorMode(lua_State* L)
 	static_assert(std::is_base_of<editor::EditorMode, T>::value, "T must inherit from editor::EditorMode");
 	Game& game = flat::lua::getGame(L).to<Game>();
 	editor::EditorMode* editorMode = new T(game);
-	states::EditorState& editorState = getEditorState(L);
+	states::MapEditorState& editorState = getEditorState(L);
 	editorState.setEditorMode(editorMode);
 }
 

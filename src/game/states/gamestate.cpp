@@ -4,7 +4,7 @@
 #include "../entity/entitytemplate.h"
 
 #ifdef FLAT_DEBUG
-#include "editorstate.h"
+#include "mapeditorstate.h"
 #endif
 
 namespace game
@@ -104,7 +104,7 @@ void GameState::execute(Game& game)
 #ifdef FLAT_DEBUG
 	if (keyboard->isJustPressed(K(F6)))
 	{
-		return reloadToState<EditorState>(game);
+		return reloadToState<MapEditorState>(game);
 	}
 	else if (keyboard->isJustPressed(K(F7)))
 	{

@@ -1,6 +1,6 @@
 #include "propeditormode.h"
+#include "../mapeditorstate.h"
 #include "../../game.h"
-#include "../editorstate.h"
 #include "../../map/prop.h"
 #include "../../map/proptemplate.h"
 #include "../../map/brush/spherebrush.h"

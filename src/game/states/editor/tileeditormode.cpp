@@ -1,6 +1,6 @@
 #include "tileeditormode.h"
+#include "../mapeditorstate.h"
 #include "../../game.h"
-#include "../editorstate.h"
 #include "../../map/tile.h"
 #include "../../map/prop.h"
 #include "../../map/tiletemplate.h"

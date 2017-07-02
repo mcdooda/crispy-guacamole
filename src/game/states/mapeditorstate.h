@@ -1,5 +1,5 @@
-#ifndef GAME_STATES_EDITORSTATE_H
-#define GAME_STATES_EDITORSTATE_H
+#ifndef GAME_STATES_MAPEDITORSTATE_H
+#define GAME_STATES_MAPEDITORSTATE_H
 
 #include "basemapstate.h"
 #include "editor/editormode.h"
@@ -15,7 +15,7 @@ class Tile;
 namespace states
 {
 
-class EditorState : public BaseMapStateImpl<map::EditorMap>
+class MapEditorState : public BaseMapStateImpl<map::EditorMap>
 {
 	typedef BaseMapStateImpl<map::EditorMap> Super;
 	public:
@@ -42,6 +42,6 @@ class EditorState : public BaseMapStateImpl<map::EditorMap>
 } // states
 } // game
 
-#endif // GAME_STATES_EDITORSTATE_H
+#endif // GAME_STATES_MAPEDITORSTATE_H
 
 

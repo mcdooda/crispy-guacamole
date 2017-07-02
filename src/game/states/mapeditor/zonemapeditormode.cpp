@@ -207,6 +207,12 @@ const std::shared_ptr<map::Zone>& ZoneMapEditorMode::addZone(const std::string& 
 	return zone;
 }
 
+bool ZoneMapEditorMode::removeZone(const std::string& zoneName)
+{
+	map::Map& map = getMap();
+	return map.removeZone(zoneName);
+}
+
 } // editor
 } // states
 } // game

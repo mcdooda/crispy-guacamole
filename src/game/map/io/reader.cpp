@@ -245,11 +245,11 @@ void Reader::readZones()
 		read<uint8_t>(numRectangles);
 		for (uint8_t j = 0; j < numRectangles; ++j)
 		{
-			uint16_t minX, minY, maxX, maxY;
-			read<uint16_t>(minX);
-			read<uint16_t>(minY);
-			read<uint16_t>(maxX);
-			read<uint16_t>(maxY);
+			int16_t minX, minY, maxX, maxY;
+			read<int16_t>(minX);
+			read<int16_t>(minY);
+			read<int16_t>(maxX);
+			read<int16_t>(maxY);
 			Zone::Rectangle rectangle;
 			rectangle.minX = minX;
 			rectangle.minY = minY;

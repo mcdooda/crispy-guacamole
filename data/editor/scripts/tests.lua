@@ -116,12 +116,20 @@ do
 			end
 			for i = 1, #zoneNames do
 				local zoneName = zoneNames[i]
-				local label = Widget.makeText(zoneName, table.unpack(UiSettings.defaultFont))
-				label:setMargin(0, 0, 0, 7)
-				label:click(function()
+				local zoneLine = Widget.makeLineFlow()
+				local icon = Widget.makeImage 'data/editor/interface/icons/cross.png'
+				icon:setMargin(3, 3, 1, 5)
+				icon:click(function()
+					Editor.removeZone(zoneName)
+					refreshCurrentTab()
+				end)
+				zoneLine:addChild(icon)
+				local text = Widget.makeText(zoneName, table.unpack(UiSettings.defaultFont))
+				text:click(function()
 					Editor.setZone(zoneName)
 				end)
-				addContent(label)
+				zoneLine:addChild(text)
+				addContent(zoneLine)
 			end
 			do
 				local addZoneButton = Widget.makeLineFlow()
@@ -130,7 +138,7 @@ do
 				local text = Widget.makeText('Add new zone', table.unpack(UiSettings.defaultFont))
 				addZoneButton:addChild(icon)
 				addZoneButton:addChild(text)
-				addZoneButton:setMargin(0, 0, 0, 7)
+				addZoneButton:setMargin(7, 0, 0, 7)
 				addZoneButton:click(function()
 					local newZoneNames = {
 						'Cherry', 'Apple', 'Lemon', 'Blueberry', 'Jam', 'Cream', 'Rhubarb', 'Lime',

@@ -33,6 +33,7 @@ int open(lua_State* L)
 		{"setZoneMode",      l_Editor_setZoneMode},
 		{"setZone",          l_Editor_setZone},
 		{"addZone",          l_Editor_addZone},
+		{"removeZone",       l_Editor_removeZone},
 		{"getZoneNames",     l_Editor_getZoneNames},
 
 		{"getBrushPosition", l_Editor_getBrushPosition},
@@ -126,6 +127,14 @@ int l_Editor_addZone(lua_State* L)
 	const char* zoneName = luaL_checkstring(L, 1);
 	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
 	zoneEditorMode.addZone(zoneName);
+	return 0;
+}
+
+int l_Editor_removeZone(lua_State * L)
+{
+	const char* zoneName = luaL_checkstring(L, 1);
+	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
+	zoneEditorMode.removeZone(zoneName);
 	return 0;
 }
 

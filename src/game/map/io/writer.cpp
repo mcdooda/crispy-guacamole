@@ -109,10 +109,10 @@ void Writer::writeHeaders()
 
 	int minX, maxX, minY, maxY;
 	m_map.getActualBounds(minX, maxX, minY, maxY);
-	write<uint16_t>(minX);
-	write<uint16_t>(maxX);
-	write<uint16_t>(minY);
-	write<uint16_t>(maxY);
+	write<int16_t>(minX);
+	write<int16_t>(maxX);
+	write<int16_t>(minY);
+	write<int16_t>(maxY);
 }
 
 void Writer::writeTiles()

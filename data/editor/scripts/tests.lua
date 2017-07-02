@@ -132,37 +132,23 @@ do
 				addContent(zoneLine)
 			end
 			do
+				local textInput = TextInput:new ''
+				addContent(textInput.container)
+
 				local addZoneButton = Widget.makeLineFlow()
 				local icon = Widget.makeImage 'data/editor/interface/icons/plus.png'
 				icon:setMargin(2)
-				local text = Widget.makeText('Add new zone', table.unpack(UiSettings.defaultFont))
 				addZoneButton:addChild(icon)
+				local text = Widget.makeText('Add zone', table.unpack(UiSettings.defaultFont))
 				addZoneButton:addChild(text)
-				addZoneButton:setMargin(7, 0, 0, 7)
+				addZoneButton:setMargin(0, 0, 0, 7)
 				addZoneButton:click(function()
-					local newZoneNames = {
-						'Cherry', 'Apple', 'Lemon', 'Blueberry', 'Jam', 'Cream', 'Rhubarb', 'Lime',
-						'Butter', 'Grape', 'Pomegranate', 'Sugar', 'Cinnamon', 'Avocado', 'Honey'
-					}
-					local newZoneName = assert(newZoneNames[#zoneNames + 1])
+					local newZoneName = textInput:getValue()
+					textInput:setValue ''
 					Editor.addZone(newZoneName)
 					refreshCurrentTab()
 					Editor.setZone(newZoneName)
 				end)
-				addContent(addZoneButton)
-			end
-			do
-				local addZoneButton = Widget.makeLineFlow()
-				
-				local icon = Widget.makeImage 'data/editor/interface/icons/plus.png'
-				icon:setMargin(2)
-				addZoneButton:addChild(icon)
-
-				local text = TextInput:new('TEST')
-				addZoneButton:addChild(text.container)
-
-				addZoneButton:setMargin(0, 0, 0, 7)
-
 				addContent(addZoneButton)
 			end
 		end

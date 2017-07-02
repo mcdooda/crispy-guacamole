@@ -1,4 +1,4 @@
-#include "entityeditormode.h"
+#include "entitymapeditormode.h"
 #include "../mapeditorstate.h"
 #include "../../game.h"
 
@@ -9,17 +9,17 @@ namespace states
 namespace editor
 {
 
-EntityEditorMode::EntityEditorMode(Game& game) : Super(game)
+EntityMapEditorMode::EntityMapEditorMode(Game& game) : Super(game)
 {
 	
 }
 
-EntityEditorMode::~EntityEditorMode()
+EntityMapEditorMode::~EntityMapEditorMode()
 {
 	m_game.getStateMachine().getState()->as<states::MapEditorState>().clearGhostTemplate();
 }
 
-void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed)
+void EntityMapEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
 	FLAT_ASSERT_MSG(m_entityTemplate != nullptr, "Trying to put an entity without calling Editor.setEntity first");
 	if (m_brushOnTile)
@@ -38,7 +38,7 @@ void EntityEditorMode::applyBrushPrimaryEffect(bool justPressed)
 	}
 }
 
-void EntityEditorMode::handleShortcuts()
+void EntityMapEditorMode::handleShortcuts()
 {
 	const auto& keyboard = m_game.input->keyboard;
 	const bool delPressed = keyboard->isJustPressed(K(DELETE));
@@ -52,7 +52,7 @@ void EntityEditorMode::handleShortcuts()
 	}
 }
 
-void EntityEditorMode::setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate)
+void EntityMapEditorMode::setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate)
 {
 	m_entityTemplate = entityTemplate;
 	getEditorState().setGhostTemplate(m_game, entityTemplate);

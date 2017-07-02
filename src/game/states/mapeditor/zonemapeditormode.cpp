@@ -1,4 +1,4 @@
-#include "zoneeditormode.h"
+#include "zonemapeditormode.h"
 #include "../../map/map.h"
 #include "../../game.h"
 
@@ -9,19 +9,19 @@ namespace states
 namespace editor
 {
 
-ZoneEditorMode::ZoneEditorMode(Game& game) : Super(game),
+ZoneMapEditorMode::ZoneMapEditorMode(Game& game) : Super(game),
 	m_drawingRectangle(false),
 	m_selectedRectangle(nullptr)
 {
 
 }
 
-ZoneEditorMode::~ZoneEditorMode()
+ZoneMapEditorMode::~ZoneMapEditorMode()
 {
 
 }
 
-void ZoneEditorMode::clearBrush() const
+void ZoneMapEditorMode::clearBrush() const
 {
 	map::Zone* previousZone = m_currentZone.lock().get();
 
@@ -66,7 +66,7 @@ void ZoneEditorMode::clearBrush() const
 	}
 }
 
-void ZoneEditorMode::displayBrush() const
+void ZoneMapEditorMode::displayBrush() const
 {
 	map::Zone* currentZone = m_currentZone.lock().get();
 	if (currentZone != nullptr)
@@ -110,7 +110,7 @@ void ZoneEditorMode::displayBrush() const
 	}
 }
 
-void ZoneEditorMode::updateBrushTiles()
+void ZoneMapEditorMode::updateBrushTiles()
 {
 	if (m_currentZone.expired())
 	{
@@ -163,7 +163,7 @@ void ZoneEditorMode::updateBrushTiles()
 	
 }
 
-void ZoneEditorMode::handleShortcuts()
+void ZoneMapEditorMode::handleShortcuts()
 {
 	const auto& keyboard = m_game.input->keyboard;
 
@@ -193,14 +193,14 @@ void ZoneEditorMode::handleShortcuts()
 	}
 }
 
-void ZoneEditorMode::setCurrentZone(const std::shared_ptr<map::Zone>& currentZone)
+void ZoneMapEditorMode::setCurrentZone(const std::shared_ptr<map::Zone>& currentZone)
 {
 	clearBrush();
 	m_selectedRectangle = nullptr;
 	m_currentZone = currentZone;
 }
 
-const std::shared_ptr<map::Zone>& ZoneEditorMode::addZone(const std::string& zoneName)
+const std::shared_ptr<map::Zone>& ZoneMapEditorMode::addZone(const std::string& zoneName)
 {
 	map::Map& map = getMap();
 	const std::shared_ptr<map::Zone>& zone = map.addZone(zoneName);

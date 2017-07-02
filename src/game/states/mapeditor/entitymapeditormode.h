@@ -1,7 +1,7 @@
-#ifndef GAME_STATES_EDITOR_ENTITYEDITORMODE_H
-#define GAME_STATES_EDITOR_ENTITYEDITORMODE_H
+#ifndef GAME_STATES_EDITOR_ENTITYMAPEDITORMODE_H
+#define GAME_STATES_EDITOR_ENTITYMAPEDITORMODE_H
 
-#include "editormode.h"
+#include "mapeditormode.h"
 #include "../../entity/entitytemplate.h"
 
 namespace game
@@ -11,12 +11,12 @@ namespace states
 namespace editor
 {
 
-class EntityEditorMode : public EditorMode
+class EntityMapEditorMode : public MapEditorMode
 {
-	typedef EditorMode Super;
+	typedef MapEditorMode Super;
 public:
-	EntityEditorMode(Game& game);
-	~EntityEditorMode() override;
+	EntityMapEditorMode(Game& game);
+	~EntityMapEditorMode() override;
 
 	void applyBrushPrimaryEffect(bool justPressed) override;
 	void handleShortcuts() override;
@@ -32,6 +32,6 @@ private:
 } // states
 } // game
 
-#endif // GAME_STATES_EDITOR_ENTITYEDITORMODE_H
+#endif // GAME_STATES_EDITOR_ENTITYMAPEDITORMODE_H
 
 

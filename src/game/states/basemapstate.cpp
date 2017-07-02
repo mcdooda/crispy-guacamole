@@ -1,6 +1,6 @@
 #include <flat.h>
 #include "basemapstate.h"
-#include "editor/lua/editor.h"
+#include "mapeditor/lua/editor.h"
 #include "../game.h"
 #include "../timer/lua/timer.h"
 #include "../map/map.h"

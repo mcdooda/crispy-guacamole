@@ -1,7 +1,7 @@
-#ifndef GAME_STATES_EDITOR_PROPEDITORMODE_H
-#define GAME_STATES_EDITOR_PROPEDITORMODE_H
+#ifndef GAME_STATES_EDITOR_PROPMAPEDITORMODE_H
+#define GAME_STATES_EDITOR_PROPMAPEDITORMODE_H
 
-#include "editormode.h"
+#include "mapeditormode.h"
 
 namespace game
 {
@@ -14,12 +14,12 @@ namespace states
 namespace editor
 {
 
-class PropEditorMode : public EditorMode
+class PropMapEditorMode : public MapEditorMode
 {
-	typedef EditorMode Super;
+	typedef MapEditorMode Super;
 	public:
-		PropEditorMode(Game& game);
-		~PropEditorMode() override;
+		PropMapEditorMode(Game& game);
+		~PropMapEditorMode() override;
 
 		void updateBrushTiles() override;
 		void applyBrushPrimaryEffect(bool justPressed) override;
@@ -35,6 +35,6 @@ class PropEditorMode : public EditorMode
 } // states
 } // game
 
-#endif // GAME_STATES_EDITOR_PROPEDITORMODE_H
+#endif // GAME_STATES_EDITOR_PROPMAPEDITORMODE_H
 
 

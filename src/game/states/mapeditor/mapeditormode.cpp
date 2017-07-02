@@ -1,4 +1,4 @@
-#include "editormode.h"
+#include "mapeditormode.h"
 #include "../mapeditorstate.h"
 #include "../../game.h"
 
@@ -9,13 +9,13 @@ namespace states
 namespace editor
 {
 
-EditorMode::EditorMode(Game& game) :
+MapEditorMode::MapEditorMode(Game& game) :
 	m_game(game)
 {
 
 }
 
-EditorMode::~EditorMode()
+MapEditorMode::~MapEditorMode()
 {
 	// do not use getMap() as the state may be being destroyed at the time
 	map::Map& map = m_game.getStateMachine().getState()->as<states::MapEditorState>().getMap();
@@ -26,7 +26,7 @@ EditorMode::~EditorMode()
 	});
 }
 
-void EditorMode::updateBrushPosition()
+void MapEditorMode::updateBrushPosition()
 {
 	const auto& keyboard = m_game.input->keyboard;
 	m_brushPosition = getEditorState().getCursorMapPosition(m_game, m_brushOnTile);
@@ -37,7 +37,7 @@ void EditorMode::updateBrushPosition()
 	}
 }
 
-void EditorMode::clearBrush() const
+void MapEditorMode::clearBrush() const
 {
 	auto clearTiles = [](map::Tile* tile, float effect)
 	{
@@ -47,7 +47,7 @@ void EditorMode::clearBrush() const
 	eachBrushTile(clearTiles);
 }
 
-void EditorMode::displayBrush() const
+void MapEditorMode::displayBrush() const
 {
 	for (const map::brush::TileEffect& tileEffect : m_selectedTiles)
 	{
@@ -66,7 +66,7 @@ void EditorMode::displayBrush() const
 	}
 }
 
-void EditorMode::eachSelectedTile(std::function<void(map::Tile*, float)> func) const
+void MapEditorMode::eachSelectedTile(std::function<void(map::Tile*, float)> func) const
 {
 	const map::brush::TilesContainer& selectedTiles = !m_selectedTiles.empty() ? m_selectedTiles : m_brushTiles;
 	for (const map::brush::TileEffect& tileEffect : selectedTiles)
@@ -78,7 +78,7 @@ void EditorMode::eachSelectedTile(std::function<void(map::Tile*, float)> func) c
 	}
 }
 
-void EditorMode::eachSelectedTileIfExists(std::function<void(map::Tile*, float)> func) const
+void MapEditorMode::eachSelectedTileIfExists(std::function<void(map::Tile*, float)> func) const
 {
 	eachSelectedTile([func](map::Tile* tile, float effect)
 	{
@@ -89,7 +89,7 @@ void EditorMode::eachSelectedTileIfExists(std::function<void(map::Tile*, float)>
 	});
 }
 
-void EditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) const
+void MapEditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) const
 {
 	for (const map::brush::TileEffect& tileEffect : m_brushTiles)
 	{
@@ -100,7 +100,7 @@ void EditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) cons
 	}
 }
 
-void EditorMode::eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const
+void MapEditorMode::eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const
 {
 	eachBrushTile([func](map::Tile* tile, float effect)
 	{
@@ -111,7 +111,7 @@ void EditorMode::eachBrushTileIfExists(std::function<void(map::Tile*, float)> fu
 	});
 }
 
-void EditorMode::clearSelectedTiles()
+void MapEditorMode::clearSelectedTiles()
 {
 	for (const map::brush::TileEffect& tileEffect : m_selectedTiles)
 	{
@@ -120,17 +120,17 @@ void EditorMode::clearSelectedTiles()
 	m_selectedTiles.clear();
 }
 
-states::MapEditorState& EditorMode::getEditorState() const
+states::MapEditorState& MapEditorMode::getEditorState() const
 {
 	return m_game.getStateMachine().getState()->to<states::MapEditorState>();
 }
 
-map::Map& EditorMode::getMap() const
+map::Map& MapEditorMode::getMap() const
 {
 	return getEditorState().getMap();
 }
 
-const flat::time::Clock& EditorMode::getClock() const
+const flat::time::Clock& MapEditorMode::getClock() const
 {
 	return getEditorState().getClock();
 }

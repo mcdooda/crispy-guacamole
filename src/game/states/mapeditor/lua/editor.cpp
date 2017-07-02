@@ -1,10 +1,10 @@
 #include "editor.h"
 #include "../../../game.h"
 #include "../../mapeditorstate.h"
-#include "../entityeditormode.h"
-#include "../propeditormode.h"
-#include "../tileeditormode.h"
-#include "../zoneeditormode.h"
+#include "../entitymapeditormode.h"
+#include "../propmapeditormode.h"
+#include "../tilemapeditormode.h"
+#include "../zonemapeditormode.h"
 
 namespace game
 {
@@ -47,14 +47,14 @@ int open(lua_State* L)
 
 int l_Editor_setEntityMode(lua_State* L)
 {
-	setEditorMode<editor::EntityEditorMode>(L);
+	setEditorMode<editor::EntityMapEditorMode>(L);
 	return 0;
 }
 
 int l_Editor_setEntity(lua_State* L)
 {
 	const char* entityTemplateName = luaL_checkstring(L, 1);
-	editor::EntityEditorMode& entityEditorMode = getEditorMode(L).to<editor::EntityEditorMode>();
+	editor::EntityMapEditorMode& entityEditorMode = getEditorMode(L).to<editor::EntityMapEditorMode>();
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::MapEditorState& editorState = getEditorState(L);
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = editorState.getEntityTemplate(game, entityTemplateName);
@@ -64,14 +64,14 @@ int l_Editor_setEntity(lua_State* L)
 
 int l_Editor_setTileMode(lua_State* L)
 {
-	setEditorMode<editor::TileEditorMode>(L);
+	setEditorMode<editor::TileMapEditorMode>(L);
 	return 0;
 }
 
 int l_Editor_setTile(lua_State* L)
 {
 	const char* tileTemplateName = luaL_checkstring(L, 1);
-	editor::TileEditorMode& tileEditorMode = getEditorMode(L).to<editor::TileEditorMode>();
+	editor::TileMapEditorMode& tileEditorMode = getEditorMode(L).to<editor::TileMapEditorMode>();
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::MapEditorState& editorState = getEditorState(L);
 	std::shared_ptr<const map::TileTemplate> tileTemplate = editorState.getTileTemplate(game, tileTemplateName);
@@ -81,14 +81,14 @@ int l_Editor_setTile(lua_State* L)
 
 int l_Editor_setPropMode(lua_State* L)
 {
-	setEditorMode<editor::PropEditorMode>(L);
+	setEditorMode<editor::PropMapEditorMode>(L);
 	return 0;
 }
 
 int l_Editor_setProp(lua_State* L)
 {
 	const char* propTemplateName = luaL_checkstring(L, 1);
-	editor::PropEditorMode& propEditorMode = getEditorMode(L).to<editor::PropEditorMode>();
+	editor::PropMapEditorMode& propEditorMode = getEditorMode(L).to<editor::PropMapEditorMode>();
 	Game& game = flat::lua::getGame(L).to<Game>();
 	states::MapEditorState& editorState = getEditorState(L);
 	std::shared_ptr<const map::PropTemplate> propTemplate = editorState.getPropTemplate(game, propTemplateName);
@@ -98,14 +98,14 @@ int l_Editor_setProp(lua_State* L)
 
 int l_Editor_setZoneMode(lua_State* L)
 {
-	setEditorMode<editor::ZoneEditorMode>(L);
+	setEditorMode<editor::ZoneMapEditorMode>(L);
 	return 0;
 }
 
 int l_Editor_setZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
-	editor::ZoneEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneEditorMode>();
+	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
 	states::MapEditorState& editorState = getEditorState(L);
 	const map::Map& map = editorState.getMap();
 	std::shared_ptr<map::Zone> zone;
@@ -124,7 +124,7 @@ int l_Editor_setZone(lua_State* L)
 int l_Editor_addZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
-	editor::ZoneEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneEditorMode>();
+	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
 	zoneEditorMode.addZone(zoneName);
 	return 0;
 }
@@ -149,7 +149,7 @@ int l_Editor_getZoneNames(lua_State* L)
 int l_Editor_getBrushPosition(lua_State* L)
 {
 	states::MapEditorState& editorState = getEditorState(L);
-	editor::EditorMode* editorMode = editorState.getEditorMode();
+	editor::MapEditorMode* editorMode = editorState.getEditorMode();
 	if (editorMode != nullptr) // editorMode not ready yet? TODO: fix this
 	{
 		flat::Vector2 brushPosition = editorMode->getBrushPosition();
@@ -172,7 +172,7 @@ states::MapEditorState& getEditorState(lua_State* L)
 	return state->as<states::MapEditorState>();
 }
 
-editor::EditorMode& getEditorMode(lua_State* L)
+editor::MapEditorMode& getEditorMode(lua_State* L)
 {
 	states::MapEditorState& editorState = getEditorState(L);
 	return *editorState.getEditorMode();

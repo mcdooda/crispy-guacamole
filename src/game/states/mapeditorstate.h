@@ -2,7 +2,7 @@
 #define GAME_STATES_MAPEDITORSTATE_H
 
 #include "basemapstate.h"
-#include "editor/editormode.h"
+#include "mapeditor/mapeditormode.h"
 #include "../map/brush/brush.h"
 #include "../map/editormap.h"
 
@@ -22,8 +22,8 @@ class MapEditorState : public BaseMapStateImpl<map::EditorMap>
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
 
-		inline void setEditorMode(editor::EditorMode* editorMode) { m_editorMode.reset(editorMode); }
-		inline editor::EditorMode* getEditorMode() { return m_editorMode.get(); }
+		inline void setEditorMode(editor::MapEditorMode* editorMode) { m_editorMode.reset(editorMode); }
+		inline editor::MapEditorMode* getEditorMode() { return m_editorMode.get(); }
 
 	protected:
 		entity::component::ComponentFlags getComponentsFilter() const override;
@@ -36,7 +36,7 @@ class MapEditorState : public BaseMapStateImpl<map::EditorMap>
 		void applyBrush(Game& game);
 
 	private:
-		std::unique_ptr<editor::EditorMode> m_editorMode;
+		std::unique_ptr<editor::MapEditorMode> m_editorMode;
 };
 
 } // states

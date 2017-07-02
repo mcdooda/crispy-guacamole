@@ -1,7 +1,7 @@
-#ifndef GAME_STATES_EDITOR_TILEEDITORMODE_H
-#define GAME_STATES_EDITOR_TILEEDITORMODE_H
+#ifndef GAME_STATES_EDITOR_TILEMAPEDITORMODE_H
+#define GAME_STATES_EDITOR_TILEMAPEDITORMODE_H
 
-#include "editormode.h"
+#include "mapeditormode.h"
 
 namespace game
 {
@@ -14,12 +14,12 @@ namespace states
 namespace editor
 {
 
-class TileEditorMode : public EditorMode
+class TileMapEditorMode : public MapEditorMode
 {
-	typedef EditorMode Super;
+	typedef MapEditorMode Super;
 	public:
-		TileEditorMode(Game& game);
-		~TileEditorMode() override;
+		TileMapEditorMode(Game& game);
+		~TileMapEditorMode() override;
 
 		void updateBrushTiles() override;
 		void applyBrushPrimaryEffect(bool justPressed) override;
@@ -36,6 +36,6 @@ class TileEditorMode : public EditorMode
 } // states
 } // game
 
-#endif // GAME_STATES_EDITOR_TILEEDITORMODE_H
+#endif // GAME_STATES_EDITOR_TILEMAPEDITORMODE_H
 
 

@@ -1,5 +1,5 @@
-#ifndef GAME_STATES_EDITOR_EDITORMODE_H
-#define GAME_STATES_EDITOR_EDITORMODE_H
+#ifndef GAME_STATES_EDITOR_MAPEDITORMODE_H
+#define GAME_STATES_EDITOR_MAPEDITORMODE_H
 
 #include <vector>
 #include <functional>
@@ -19,11 +19,11 @@ class MapEditorState;
 namespace editor
 {
 
-class EditorMode : public flat::util::Convertible<EditorMode>
+class MapEditorMode : public flat::util::Convertible<MapEditorMode>
 {
 public:
-	EditorMode(Game& game);
-	virtual ~EditorMode();
+	MapEditorMode(Game& game);
+	virtual ~MapEditorMode();
 
 	inline const flat::Vector2& getBrushPosition() const { return m_brushPosition; }
 
@@ -62,6 +62,6 @@ protected:
 } // states
 } // game
 
-#endif // GAME_STATES_EDITOR_EDITORMODE_H
+#endif // GAME_STATES_EDITOR_MAPEDITORMODE_H
 
 

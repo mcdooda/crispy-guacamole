@@ -1,8 +1,6 @@
 #include <algorithm>
 #include <iostream>
 #include "mapeditorstate.h"
-#include "editor/tileeditormode.h"
-#include "editor/entityeditormode.h"
 #include "../game.h"
 #include "../map/tile.h"
 #include "../map/brush/spherebrush.h"

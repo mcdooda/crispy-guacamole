@@ -1,7 +1,7 @@
-#ifndef GAME_STATES_EDITOR_ZONEMODE_H
-#define GAME_STATES_EDITOR_ZONEMODE_H
+#ifndef GAME_STATES_EDITOR_ZONEMAPEDITORMODE_H
+#define GAME_STATES_EDITOR_ZONEMAPEDITORMODE_H
 
-#include "editormode.h"
+#include "mapeditormode.h"
 #include "../../map/zone.h"
 
 namespace game
@@ -15,12 +15,12 @@ namespace states
 namespace editor
 {
 
-class ZoneEditorMode : public EditorMode
+class ZoneMapEditorMode : public MapEditorMode
 {
-	typedef EditorMode Super;
+	typedef MapEditorMode Super;
 	public:
-		ZoneEditorMode(Game& game);
-		~ZoneEditorMode() override;
+		ZoneMapEditorMode(Game& game);
+		~ZoneMapEditorMode() override;
 
 		void clearBrush() const override;
 		void displayBrush() const override;
@@ -43,6 +43,6 @@ class ZoneEditorMode : public EditorMode
 } // states
 } // game
 
-#endif // GAME_STATES_EDITOR_ZONEMODE_H
+#endif // GAME_STATES_EDITOR_ZONEMAPEDITORMODE_H
 
 

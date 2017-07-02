@@ -1,4 +1,4 @@
-#include "tileeditormode.h"
+#include "tilemapeditormode.h"
 #include "../mapeditorstate.h"
 #include "../../game.h"
 #include "../../map/tile.h"
@@ -13,19 +13,19 @@ namespace states
 namespace editor
 {
 
-TileEditorMode::TileEditorMode(Game& game) : Super(game)
+TileMapEditorMode::TileMapEditorMode(Game& game) : Super(game)
 {
 	map::brush::Brush* brush = new map::brush::SphereBrush();
 	brush->setRadius(3.f);
 	m_brush.reset(brush);
 }
 
-TileEditorMode::~TileEditorMode()
+TileMapEditorMode::~TileMapEditorMode()
 {
 
 }
 
-void TileEditorMode::updateBrushTiles()
+void TileMapEditorMode::updateBrushTiles()
 {
 	const auto& keyboard = m_game.input->keyboard;
 	const auto& mouse = m_game.input->mouse;
@@ -69,7 +69,7 @@ void TileEditorMode::updateBrushTiles()
 	}
 }
 
-void TileEditorMode::applyBrushPrimaryEffect(bool justPressed)
+void TileMapEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
 	map::Map& map = getMap();
 	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
@@ -84,12 +84,12 @@ void TileEditorMode::applyBrushPrimaryEffect(bool justPressed)
 	clearSelectedTiles();
 }
 
-void TileEditorMode::applyBrushSecondaryEffect(bool justPressed)
+void TileMapEditorMode::applyBrushSecondaryEffect(bool justPressed)
 {
 	// nothing to do
 }
 
-void TileEditorMode::handleShortcuts()
+void TileMapEditorMode::handleShortcuts()
 {
 	const float dt = getClock().getDT();
 	map::Map& map = getMap();

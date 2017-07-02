@@ -11,7 +11,7 @@ namespace states
 {
 namespace editor
 {
-class EditorMode;
+class MapEditorMode;
 namespace lua
 {
 
@@ -39,14 +39,14 @@ states::MapEditorState& getEditorState(lua_State* L);
 template <class T>
 void setEditorMode(lua_State* L)
 {
-	static_assert(std::is_base_of<editor::EditorMode, T>::value, "T must inherit from editor::EditorMode");
+	static_assert(std::is_base_of<editor::MapEditorMode, T>::value, "T must inherit from editor::MapEditorMode");
 	Game& game = flat::lua::getGame(L).to<Game>();
-	editor::EditorMode* editorMode = new T(game);
+	editor::MapEditorMode* editorMode = new T(game);
 	states::MapEditorState& editorState = getEditorState(L);
 	editorState.setEditorMode(editorMode);
 }
 
-editor::EditorMode& getEditorMode(lua_State* L);
+editor::MapEditorMode& getEditorMode(lua_State* L);
 
 } // lua
 } // editor

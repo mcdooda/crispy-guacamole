@@ -1,4 +1,4 @@
-#include "propeditormode.h"
+#include "propmapeditormode.h"
 #include "../mapeditorstate.h"
 #include "../../game.h"
 #include "../../map/prop.h"
@@ -12,19 +12,19 @@ namespace states
 namespace editor
 {
 
-PropEditorMode::PropEditorMode(Game& game) : Super(game)
+PropMapEditorMode::PropMapEditorMode(Game& game) : Super(game)
 {
 	map::brush::Brush* brush = new map::brush::SphereBrush();
 	brush->setRadius(3.f);
 	m_brush.reset(brush);
 }
 
-PropEditorMode::~PropEditorMode()
+PropMapEditorMode::~PropMapEditorMode()
 {
 	
 }
 
-void PropEditorMode::updateBrushTiles()
+void PropMapEditorMode::updateBrushTiles()
 {
 	const auto& keyboard = m_game.input->keyboard;
 	const auto& mouse = m_game.input->mouse;
@@ -45,7 +45,7 @@ void PropEditorMode::updateBrushTiles()
 	brush->getTiles(getMap(), m_brushPosition, m_brushTiles);
 }
 
-void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)
+void PropMapEditorMode::applyBrushPrimaryEffect(bool justPressed)
 {
 	map::Map& map = getMap();
 	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
@@ -62,7 +62,7 @@ void PropEditorMode::applyBrushPrimaryEffect(bool justPressed)
 	});
 }
 
-void PropEditorMode::applyBrushSecondaryEffect(bool justPressed)
+void PropMapEditorMode::applyBrushSecondaryEffect(bool justPressed)
 {
 	map::Map& map = getMap();
 	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)

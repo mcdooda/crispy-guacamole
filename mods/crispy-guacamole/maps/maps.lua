@@ -1,4 +1,5 @@
 return {
 	'map1',
-	'td'
+	'td',
+	'sandbox'
 }

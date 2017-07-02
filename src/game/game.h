@@ -26,19 +26,24 @@ class Game : public flat::Game
 		// mod
 		std::string modPath;
 		std::string mapName;
+		std::string entityName;
 		
 		// views
 		flat::video::View interfaceView;
 		
-		// GAME -> GameState, EDITOR -> MapEditorState
+		// GAME -> GameState, MAPEDITOR -> MapEditorState, ENTITYEDITOR -> EntityEditorState
 		enum class Mode : uint8_t
 		{
 			GAME,
-			EDITOR
+			MAPEDITOR,
+			ENTITYEDITOR,
 		};
 		Mode mode;
 		
 		bool fullscreen;
+
+	private:
+		static void wrongArguments();
 };
 
 } // game

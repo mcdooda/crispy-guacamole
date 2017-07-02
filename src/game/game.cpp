@@ -1,6 +1,7 @@
 #include "game.h"
 #include "states/gamestate.h"
 #include "states/mapeditorstate.h"
+#include "states/entityeditorstate.h"
 
 namespace game
 {
@@ -28,8 +29,20 @@ void Game::setStates()
 		state = new states::GameState();
 		break;
 		
-		case Mode::EDITOR:
+		case Mode::MAPEDITOR:
+		if (mapName.empty())
+		{
+			wrongArguments();
+		}
 		state = new states::MapEditorState();
+		break;
+
+		case Mode::ENTITYEDITOR:
+		if (entityName.empty() || mapName.empty())
+		{
+			wrongArguments();
+		}
+		state = new states::EntityEditorState();
 		break;
 		
 		default:
@@ -55,8 +68,15 @@ void Game::checkArgs()
 					fullscreen = false;
 					break;
 					
+					case 'm':
+					mode = Mode::MAPEDITOR;
+					mapName = argGetString(++i);
+					break;
+
 					case 'e':
-					mode = Mode::EDITOR;
+					mode = Mode::ENTITYEDITOR;
+					entityName = argGetString(++i);
+					mapName = argGetString(++i);
 					break;
 					
 					default:
@@ -72,10 +92,6 @@ void Game::checkArgs()
 				{
 					modPath = arg;
 				}
-				else if (mapName.empty())
-				{
-					mapName = arg;
-				}
 				else
 				{
 					std::cerr << "Unhandled argument '" << arg << "' (mod path already given)" << std::endl;
@@ -86,12 +102,7 @@ void Game::checkArgs()
 	
 	if (modPath.empty())
 	{
-		std::cerr << "You must specify a mod path" << std::endl
-		          << "Other options:" << std::endl
-		          << "\t-w\twindowed" << std::endl
-		          << "\t-e\teditor mode" << std::endl;
-		FLAT_BREAK();
-		exit(1);
+		wrongArguments();
 	}
 }
 
@@ -105,6 +116,17 @@ void Game::openWindow()
 	{
 		Super::openWindow();
 	}
+}
+
+void Game::wrongArguments()
+{
+	std::cerr << "You must specify a mod path" << std::endl
+		<< "Other options:" << std::endl
+		<< "\t-w\t\t\twindowed" << std::endl
+		<< "\t-m <map>\t\tmap editor mode" << std::endl
+		<< "\t-e <entity> <map>\tentity editor mode" << std::endl;
+	FLAT_BREAK();
+	exit(1);
 }
 
 } // game

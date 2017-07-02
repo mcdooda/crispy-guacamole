@@ -37,6 +37,7 @@ void BaseMapState::enter(Game& game)
 
 	// init time first
 	m_clock = game.time->newClock();
+	m_uiClock = game.time->newClock();
 	m_timerContainer.setClock(m_clock);
 
 #ifdef FLAT_DEBUG
@@ -457,7 +458,7 @@ void BaseMapState::updateGameView(game::Game& game)
 		move.y = speed.y;
 	
 	const float cameraSpeed = 40.f;
-	m_cameraCenter2d += move * m_clock->getDT() * cameraSpeed;
+	m_cameraCenter2d += move * m_uiClock->getDT() * cameraSpeed;
 	updateCameraView();
 
 	if (mouse->wheelJustMoved() && keyboard->isPressed(K(LCTRL)))

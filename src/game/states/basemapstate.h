@@ -166,6 +166,7 @@ class BaseMapState : public flat::state::StateImpl<Game>
 
 		// time
 		std::shared_ptr<flat::time::Clock> m_clock;
+		std::shared_ptr<flat::time::Clock> m_uiClock;
 		timer::TimerContainer m_timerContainer;
 
 #ifdef FLAT_DEBUG

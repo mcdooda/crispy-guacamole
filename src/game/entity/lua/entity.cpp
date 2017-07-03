@@ -30,81 +30,83 @@ int open(lua_State* L)
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
 	static const luaL_Reg Entity_lib_m[] = {
-		{"__eq",                    l_Entity_eq},
+		{"__eq",                     l_Entity_eq},
 
-		{"isValid",                 l_Entity_isValid},
+		{"isValid",                  l_Entity_isValid},
 
-		{"getTemplateName",         l_Entity_getTemplateName},
-		{"hasComponent",            l_Entity_hasComponent},
-		{"isComponentEnabled",      l_Entity_isComponentEnabled},
+		{"getTemplateName",          l_Entity_getTemplateName},
+		{"hasComponent",             l_Entity_hasComponent},
+		{"decComponentDisableLevel", l_Entity_decComponentDisableLevel},
+		{"incComponentDisableLevel", l_Entity_incComponentDisableLevel},
+		{"isComponentEnabled",       l_Entity_isComponentEnabled},
 
 #ifdef FLAT_DEBUG
-		{"setDebug",                l_Entity_setDebug},
-		{"getDebug",                l_Entity_getDebug},
-		{"setComponentDebug",       l_Entity_setComponentDebug},
-		{"getComponentDebug",       l_Entity_getComponentDebug},
+		{"setDebug",                 l_Entity_setDebug},
+		{"getDebug",                 l_Entity_getDebug},
+		{"setComponentDebug",        l_Entity_setComponentDebug},
+		{"getComponentDebug",        l_Entity_getComponentDebug},
 #endif
 
-		{"despawn",                 l_Entity_despawn},
+		{"despawn",                  l_Entity_despawn},
 
-		{"getExtraData",            l_Entity_getExtraData},
+		{"getExtraData",             l_Entity_getExtraData},
 
-		{"setPosition",             l_Entity_setPosition},
-		{"getPosition",             l_Entity_getPosition},
+		{"setPosition",              l_Entity_setPosition},
+		{"getPosition",              l_Entity_getPosition},
 
-		{"setHeading",              l_Entity_setHeading},
-		{"getHeading",              l_Entity_getHeading},
+		{"setHeading",               l_Entity_setHeading},
+		{"getHeading",               l_Entity_getHeading},
 
-		{"setElevation",            l_Entity_setElevation},
-		{"getElevation",            l_Entity_getElevation},
+		{"setElevation",             l_Entity_setElevation},
+		{"getElevation",             l_Entity_getElevation},
 
-		{"lookAtEntity",            l_Entity_lookAtEntity},
+		{"lookAtEntity",             l_Entity_lookAtEntity},
 
 		// ui
-		{"setUiOffset",             l_Entity_setUiOffset},
-		{"setUiVisible",            l_Entity_setUiVisible},
+		{"setUiOffset",              l_Entity_setUiOffset},
+		{"setUiVisible",             l_Entity_setUiVisible},
 
 		// movement
-		{"moveTo",                  l_Entity_moveTo},
-		{"clearPath",               l_Entity_clearPath},
-		{"setSpeed",                l_Entity_setSpeed},
-		{"getSpeed",                l_Entity_getSpeed},
-		{"jump",                    l_Entity_jump},
-		{"restrictToZone",          l_Entity_restrictToZone},
+		{"moveTo",                   l_Entity_moveTo},
+		{"clearPath",                l_Entity_clearPath},
+		{"setSpeed",                 l_Entity_setSpeed},
+		{"getSpeed",                 l_Entity_getSpeed},
+		{"jump",                     l_Entity_jump},
+		{"restrictToZone",           l_Entity_restrictToZone},
 
 		// behavior
-		{"enterState",              l_Entity_enterState},
-		{"enterStateAsync",         l_Entity_enterStateAsync},
-		{"sleep",                   l_Entity_sleep},
+		{"enterState",               l_Entity_enterState},
+		{"enterStateAsync",          l_Entity_enterStateAsync},
+		{"sleep",                    l_Entity_sleep},
 
 		// sprite
-		{"playAnimation",           l_Entity_playAnimation},
-		{"playAnimationAsync",      l_Entity_playAnimationAsync},
-		{"setMoveAnimation",        l_Entity_setMoveAnimation},
-		{"setDefaultMoveAnimation", l_Entity_setDefaultMoveAnimation},
-		{"getAttachPoint",          l_Entity_getAttachPoint},
+		{"playAnimation",            l_Entity_playAnimation},
+		{"playAnimationAsync",       l_Entity_playAnimationAsync},
+		{"setMoveAnimation",         l_Entity_setMoveAnimation},
+		{"setDefaultMoveAnimation",  l_Entity_setDefaultMoveAnimation},
+		{"getAttachPoint",           l_Entity_getAttachPoint},
 
 		// detection
-		{"canSee",                  l_Entity_canSee},
-		{"eachVisibleEntity",       l_Entity_eachVisibleEntity},
+		{"canSee",                   l_Entity_canSee},
+		{"eachVisibleEntity",        l_Entity_eachVisibleEntity},
 
 		// faction
-		{"isNeutral",               l_Entity_isNeutral},
-		{"isFriendly",              l_Entity_isFriendly},
-		{"isHostile",               l_Entity_isHostile},
+		{"isNeutral",                l_Entity_isNeutral},
+		{"isFriendly",               l_Entity_isFriendly},
+		{"isHostile",                l_Entity_isHostile},
 
 		// attack
-		{"setAttackTarget",         l_Entity_setAttackTarget},
-		{"getAttackTarget",         l_Entity_getAttackTarget},
-		{"isInAttackRange",         l_Entity_isInAttackRange},
+		{"setAttackTarget",          l_Entity_setAttackTarget},
+		{"getAttackTarget",          l_Entity_getAttackTarget},
+		{"isInAttackRange",          l_Entity_isInAttackRange},
 
 		// life
-		{"isLiving",                l_Entity_isLiving},
-		{"kill",                    l_Entity_kill},
-		{"dealDamage",              l_Entity_dealDamage},
-		{"getHealth",               l_Entity_getHealth},
-		{"getMaxHealth",            l_Entity_getMaxHealth},
-		{"healthChanged",           l_Entity_healthChanged},
+		{"isLiving",                 l_Entity_isLiving},
+		{"kill",                     l_Entity_kill},
+		{"dealDamage",               l_Entity_dealDamage},
+		{"getHealth",                l_Entity_getHealth},
+		{"getMaxHealth",             l_Entity_getMaxHealth},
+		{"healthChanged",            l_Entity_healthChanged},
 		
 		{nullptr, nullptr}
 	};
@@ -156,6 +158,28 @@ int l_Entity_hasComponent(lua_State* L)
 	component::Component* component = entity.findComponent(componentFlag);
 	lua_pushboolean(L, component != nullptr);
 	return 1;
+}
+
+int l_Entity_decComponentDisableLevel(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
+	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
+	component::Component* component = entity.findComponent(componentFlag);
+	luaL_argcheck(L, component != nullptr, 2, "entity does not have this component");
+	component->decDisableLevel();
+	return 0;
+}
+
+int l_Entity_incComponentDisableLevel(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
+	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
+	component::Component* component = entity.findComponent(componentFlag);
+	luaL_argcheck(L, component != nullptr, 2, "entity does not have this component");
+	component->decDisableLevel();
+	return 0;
 }
 
 int l_Entity_isComponentEnabled(lua_State * L)

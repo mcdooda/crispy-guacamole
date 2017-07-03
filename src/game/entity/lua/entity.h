@@ -20,6 +20,8 @@ int l_Entity_isValid(lua_State* L);
 
 int l_Entity_getTemplateName(lua_State* L);
 int l_Entity_hasComponent(lua_State* L);
+int l_Entity_decComponentDisableLevel(lua_State* L);
+int l_Entity_incComponentDisableLevel(lua_State* L);
 int l_Entity_isComponentEnabled(lua_State* L);
 
 #ifdef FLAT_DEBUG

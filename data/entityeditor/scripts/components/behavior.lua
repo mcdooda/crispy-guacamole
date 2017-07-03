@@ -27,12 +27,40 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, en
         end
 
         for i = 1, #states do
-            local stateLabel = Widget.makeText(
-                states[i],
-                table.unpack(UiSettings.defaultFont)
-            )
-            stateLabel:setMargin(0, 0, 0, 8)
-            componentDetailsPanel:addChild(stateLabel)
+            local stateName = states[i]
+
+            local stateLine = Widget.makeLineFlow()
+
+            do
+                local stateLabel = Widget.makeText(
+                    stateName,
+                    table.unpack(UiSettings.defaultFont)
+                )
+                stateLabel:setMargin(0, 0, 0, 8)
+                stateLine:addChild(stateLabel)
+            end
+
+            do
+                local playIcon = Icon:new('play', 10)
+                playIcon.container:setMargin(0, 0, 1, 3)
+                playIcon.container:click(function()
+                    if not entity:isComponentEnabled(Component.behavior) then
+                        entity:decComponentDisableLevel(Component.behavior)
+                    end
+                    local enteredState, errorMessage = pcall(function()
+                        entity:enterStateAsync(stateName)
+                    end)
+                    if not enteredState then
+                        pcall(function()
+                            entity:enterStateAsync 'init'
+                        end)
+                        entity:incComponentDisableLevel(Component.behavior)
+                    end
+                end)
+                stateLine:addChild(playIcon.container)
+            end
+
+            componentDetailsPanel:addChild(stateLine)
         end
     end
 

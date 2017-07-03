@@ -280,9 +280,31 @@ std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Gam
 	return m_propTemplateManager.getResource(game, propTemplatePath);
 }
 
-entity::Entity* BaseMapState::spawnEntityAtPosition(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, const flat::Vector3& position, float heading, float elevation, entity::component::ComponentFlags componentFlags)
+entity::Entity* BaseMapState::spawnEntityAtPosition(
+	Game& game,
+	const std::shared_ptr<const entity::EntityTemplate>& entityTemplate,
+	const flat::Vector3& position,
+	float heading,
+	float elevation,
+	entity::component::ComponentFlags componentFlags,
+	entity::component::ComponentFlags enabledComponentFlags
+)
 {
 	entity::Entity* entity = createEntity(game, entityTemplate, componentFlags);
+
+	// disable components not in enabledComponentFlags
+	if (enabledComponentFlags != entity::component::AllComponents)
+	{
+		for (entity::component::Component* component : entity->getComponents())
+		{
+			entity::component::ComponentFlags componentFlag = component->getComponentType().getComponentTypeFlag();
+			if ((enabledComponentFlags & componentFlag) == 0)
+			{
+				component->incDisableLevel();
+			}
+		}
+	}
+
 	entity->setPosition(position);
 	entity->setHeading(heading);
 	entity->setElevation(elevation);

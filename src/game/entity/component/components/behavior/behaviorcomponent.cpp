@@ -90,7 +90,10 @@ void BehaviorComponent::sleep(float time, float duration)
 bool BehaviorComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
-	enterState("init");
+	if (isEnabled())
+	{
+		enterState("init");
+	}
 	return true;
 }
 

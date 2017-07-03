@@ -74,10 +74,25 @@ do
             selectedComponentPanel:setSize(128, 0)
 
             if selectedComponentName and #selectedComponentName > 0 then
-                local title = selectedComponentName:sub(1, 1):upper() .. selectedComponentName:sub(2)
-                local titleLabel = Widget.makeText(title, table.unpack(UiSettings.titleFont))
-                titleLabel:setMargin(2, 5, 2, 5)
-                selectedComponentPanel:addChild(titleLabel)
+                do
+                    local titleLine = Widget.makeLineFlow()
+
+                    local title = selectedComponentName:sub(1, 1):upper() .. selectedComponentName:sub(2)
+                    local titleLabel = Widget.makeText(title, table.unpack(UiSettings.titleFont))
+                    titleLabel:setMargin(2, 0, 0, 5)
+                    titleLine:addChild(titleLabel)
+
+                    local componentEnabled = entity:isComponentEnabled(Component[selectedComponentName])
+                    local enabledLabel = Widget.makeText('(on)', table.unpack(UiSettings.defaultFont))
+                    enabledLabel:setTextColor(0xCCCCCCFF)
+                    enabledLabel:setMargin(0, 0, 5, 5)
+                    if not componentEnabled then
+                        enabledLabel:setText('(off)')
+                    end
+                    titleLine:addChild(enabledLabel)
+
+                    selectedComponentPanel:addChild(titleLine)
+                end
 
                 local componentDetailsPanel = Widget.makeColumnFlow()
                 componentDetailsPanel:setPadding(5)

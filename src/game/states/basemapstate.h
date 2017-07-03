@@ -61,7 +61,8 @@ class BaseMapState : public flat::state::StateImpl<Game>
 			const flat::Vector3& position,
 			float heading = 0.f,
 			float elevation = 0.f,
-			entity::component::ComponentFlags componentFlags = entity::component::AllComponents
+			entity::component::ComponentFlags componentFlags = entity::component::AllComponents,
+			entity::component::ComponentFlags enabledComponentFlags = entity::component::AllComponents
 		);
 		void despawnEntity(entity::Entity* entity);
 		void despawnEntityAtIndex(int index);

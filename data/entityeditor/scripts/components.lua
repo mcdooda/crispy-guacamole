@@ -101,7 +101,7 @@ do
                 end)
                 if hasDetails then
                     local componentTemplate = Path.requireComponentTemplate(entityTemplateName, selectedComponentName)
-                    showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate)
+                    showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate, entity)
                 end
                 selectedComponentPanel:addChild(componentDetailsPanel)
             end

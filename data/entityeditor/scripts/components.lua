@@ -71,7 +71,7 @@ do
             local selectedComponentPanel = Widget.makeColumnFlow()
             selectedComponentPanel:setBackgroundColor(selectedBackgroundColor)
             selectedComponentPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
-            selectedComponentPanel:setSize(128, 0)
+            selectedComponentPanel:setSize(200, 0)
 
             if selectedComponentName and #selectedComponentName > 0 then
                 do

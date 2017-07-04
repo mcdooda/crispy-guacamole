@@ -1,3 +1,7 @@
+#ifdef FLAT_DEBUG
+#include <sstream>
+#endif
+
 #include "lifecomponent.h"
 #include "../../../entity.h"
 #include "../movement/movementcomponent.h"
@@ -151,7 +155,17 @@ void LifeComponent::checkSpawnDespawnThreadFinished()
 #ifdef FLAT_DEBUG
 void LifeComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
-	
+	std::stringstream debugString;
+	debugString << m_health << "/" << getMaxHealth() << "hp";
+	if (m_spawning)
+	{
+		debugString << "\n(spawning)";
+	}
+	else if (m_despawning)
+	{
+		debugString << "\n(despawning)";
+	}
+	debugDisplay.add3dText(m_owner->getPosition(), debugString.str());
 }
 #endif
 

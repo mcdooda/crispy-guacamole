@@ -20,58 +20,91 @@ do
     local startZone = Map.getZone 'Start'
     local zoneCenter = startZone:getCenter()
     local entity = startZone:getEntities()[1]
+    entity:setDebug(true)
     local entityTemplateName = entity:getTemplateName()
 
-    local function updatePanel(selectedComponentName)
-        leftPanel:removeAllChildren()
+    local setComponentTab
+    local currentComponentName = ''
+
+    -- component names
+    local componentTabs = {}
+    do
+        local componentsPanel = Widget.makeColumnFlow()
+        componentsPanel:setBackgroundColor(0x444444FF)
+        componentsPanel:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
 
         do
-            local componentsPanel = Widget.makeColumnFlow()
-            componentsPanel:setBackgroundColor(0x444444FF)
-            componentsPanel:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
-
-            do
-                local titleLabel = Widget.makeText('Components', table.unpack(UiSettings.titleFont))
-                titleLabel:setMargin(2, 5, 2, 5)
-                componentsPanel:addChild(titleLabel)
-            end
-
-            for i, componentName in pairs(componentsSorted) do
-                local componentFlag = Component[componentName]
-                local hasComponent = entity:hasComponent(componentFlag)
-
-                local componentPanel = Widget.makeColumnFlow()
-                componentPanel:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
-                local componentNameLabel = Widget.makeText(componentName, table.unpack(UiSettings.defaultFont))
-                if hasComponent then
-                    componentNameLabel:setTextColor(componentEnabledColor)
-                    if selectedComponentName ~= componentName then
-                        componentPanel:click(function()
-                            updatePanel(componentName)
-                        end)
-                    end
-                else
-                    componentNameLabel:setTextColor(componentDisabledColor)
-                end
-
-                if selectedComponentName == componentName then
-                    componentPanel:setBackgroundColor(selectedBackgroundColor)
-                end
-
-                componentPanel:setPadding(1, 5, 1, 5)
-                componentPanel:addChild(componentNameLabel)
-
-                componentsPanel:addChild(componentPanel)
-            end
-
-            leftPanel:addChild(componentsPanel)
+            local titleLabel = Widget.makeText('Components', table.unpack(UiSettings.titleFont))
+            titleLabel:setMargin(2, 5, 2, 5)
+            componentsPanel:addChild(titleLabel)
         end
 
+        for i, componentName in pairs(componentsSorted) do
+            local componentFlag = Component[componentName]
+            local hasComponent = entity:hasComponent(componentFlag)
+
+            local componentTab = Widget.makeColumnFlow()
+            componentTab:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
+            local componentNameLabel = Widget.makeText(componentName, table.unpack(UiSettings.defaultFont))
+            if hasComponent then
+                componentNameLabel:setTextColor(componentEnabledColor)
+                if selectedComponentName ~= componentName then
+                    componentTab:click(function()
+                        if currentComponentName ~= componentName then
+                            setComponentTab(currentComponentName, componentName)
+                        end
+                    end)
+                end
+            else
+                componentNameLabel:setTextColor(componentDisabledColor)
+            end
+
+            componentTab:setPadding(1, 5, 1, 5)
+            componentTab:addChild(componentNameLabel)
+
+            componentsPanel:addChild(componentTab)
+            componentTabs[componentName] = componentTab
+        end
+
+        leftPanel:addChild(componentsPanel)
+    end
+
+    -- component details
+    local selectedComponentPanel
+    do
+        selectedComponentPanel = Widget.makeColumnFlow()
+        selectedComponentPanel:setBackgroundColor(selectedBackgroundColor)
+        selectedComponentPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
+        selectedComponentPanel:setSize(200, 0)
+        leftPanel:addChild(selectedComponentPanel)
+    end
+
+    local function disableTab(componentName)
+        componentTabs[componentName]:setBackgroundColor(0x00000000)
+
+        entity:setComponentDebug(Component[componentName], false)
+    end
+
+    local function enableTab(componentName)
+        componentTabs[componentName]:setBackgroundColor(selectedBackgroundColor)
+
+        entity:setComponentDebug(Component[componentName], true)
+    end
+
+    function setComponentTab(previousSelectedComponentName, selectedComponentName)
+        currentComponentName = selectedComponentName
+
+        -- disable previous component debug
+        if previousSelectedComponentName then
+            disableTab(previousSelectedComponentName)
+        end
+
+        -- enable current component debug
+        enableTab(selectedComponentName)
+
+        -- update common information then load custom information from components/<componentName>
         do
-            local selectedComponentPanel = Widget.makeColumnFlow()
-            selectedComponentPanel:setBackgroundColor(selectedBackgroundColor)
-            selectedComponentPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
-            selectedComponentPanel:setSize(200, 0)
+            selectedComponentPanel:removeAllChildren()
 
             if selectedComponentName and #selectedComponentName > 0 then
                 do
@@ -105,8 +138,6 @@ do
                 end
                 selectedComponentPanel:addChild(componentDetailsPanel)
             end
-
-            leftPanel:addChild(selectedComponentPanel)
         end
     end
 
@@ -119,7 +150,7 @@ do
         end
     end
 
-    updatePanel(findFirstEnabledComponent())
+    setComponentTab(nil, findFirstEnabledComponent())
 
     root:addChild(leftPanel)
 end

@@ -35,7 +35,6 @@ void EntityEditorState::enter(Game& game)
 
 	FLAT_ASSERT(entity != nullptr);
 	m_entity = entity->getHandle();
-	addToSelectedEntities(entity);
 
 	setCameraCenter(position);
 	setCameraZoom(2.f);

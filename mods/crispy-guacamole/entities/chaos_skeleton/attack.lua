@@ -8,7 +8,7 @@ return {
 	attack = function(skeleton)
 		local target = skeleton:getAttackTarget()
 		skeleton:lookAtEntity(target)
-		skeleton:playAnimation('attack', false)
+		skeleton:playAnimation('attack', 1, false)
 		AttackHelper.dealDamageAfterDelay(target, 10, 0.06)
 	end
 }

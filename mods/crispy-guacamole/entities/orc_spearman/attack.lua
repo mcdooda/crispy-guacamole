@@ -12,7 +12,7 @@ return {
 			spearman:playAnimation 'lowerSpear'
 			spearmanState.lastAttackPosition = position2d
 		end
-		spearman:playAnimation('attack', false)
+		spearman:playAnimation('attack', 1, false)
 		Timer.start(0.06, nil, function()
 			if target:isValid() then
 				target:dealDamage(10)

@@ -76,12 +76,10 @@ int open(lua_State* L)
 
 		// behavior
 		{"enterState",               l_Entity_enterState},
-		{"enterStateAsync",          l_Entity_enterStateAsync},
 		{"sleep",                    l_Entity_sleep},
 
 		// sprite
 		{"playAnimation",            l_Entity_playAnimation},
-		{"playAnimationAsync",       l_Entity_playAnimationAsync},
 		{"setMoveAnimation",         l_Entity_setMoveAnimation},
 		{"setDefaultMoveAnimation",  l_Entity_setDefaultMoveAnimation},
 		{"getAttachPoint",           l_Entity_getAttachPoint},
@@ -126,6 +124,19 @@ int open(lua_State* L)
 	lua_setglobal(L, "Entity");
 	
 	return 0;
+}
+
+namespace
+{
+static int locYieldIf(lua_State* L, bool yield, int numReturnValues)
+{
+	return yield ? lua_yield(L, numReturnValues) : numReturnValues;
+}
+
+static bool locGetOptionalYield(lua_State* L, int index)
+{
+	return lua_isnone(L, index) ? true : lua_toboolean(L, index) == 1;
+}
 }
 
 int l_Entity_eq(lua_State* L)
@@ -365,17 +376,10 @@ int l_Entity_moveTo(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	flat::Vector2 pathPoint = flat::lua::getVector2(L, 2);
-	bool yield = lua_isnone(L, 4) ? true : lua_toboolean(L, 4) == 1;
+	bool yield = locGetOptionalYield(L, 3);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	movementComponent.addPointOnPath(pathPoint);
-	if (yield)
-	{
-		return lua_yield(L, 0);
-	}
-	else
-	{
-		return 0;
-	}
+	return locYieldIf(L, yield, 0);
 }
 
 int l_Entity_clearPath(lua_State* L)
@@ -406,13 +410,14 @@ int l_Entity_getSpeed(lua_State* L)
 int l_Entity_jump(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
+	bool yield = locGetOptionalYield(L, 2);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	if (!movementComponent.isTouchingGround())
 	{
 		luaL_error(L, "Cannot jump midair");
 	}
 	movementComponent.jump();
-	return lua_yield(L, 0);
+	return locYieldIf(L, yield, 0);
 }
 
 int l_Entity_restrictToZone(lua_State* L)
@@ -432,26 +437,13 @@ int l_Entity_restrictToZone(lua_State* L)
 	return 0;
 }
 
-namespace
-{
-static void locEnterState(lua_State* L)
+int l_Entity_enterState(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* stateName = luaL_checkstring(L, 2);
+	bool yield = locGetOptionalYield(L, 3);
 	entity.enterState(stateName);
-}
-}
-
-int l_Entity_enterState(lua_State* L)
-{
-	locEnterState(L);
-	return lua_yield(L, 0);
-}
-
-int l_Entity_enterStateAsync(lua_State* L)
-{
-	locEnterState(L);
-	return 0;
+	return locYieldIf(L, yield, 0);
 }
 
 int l_Entity_sleep(lua_State* L)
@@ -470,32 +462,19 @@ int l_Entity_sleep(lua_State* L)
 	return lua_yield(L, 0);
 }
 
-namespace
-{
-static void locPlayAnimation(lua_State* L)
+int l_Entity_playAnimation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* animationName = luaL_checkstring(L, 2);
 	int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
+	bool yield = locGetOptionalYield(L, 4);
 	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
 	bool animationExists = spriteComponent.playAnimationByName(animationName, numLoops);
 	if (!animationExists)
 	{
 		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
 	}
-}
-}
-
-int l_Entity_playAnimation(lua_State* L)
-{
-	locPlayAnimation(L);
-	return lua_yield(L, 0);
-}
-
-int l_Entity_playAnimationAsync(lua_State* L)
-{
-	locPlayAnimation(L);
-	return 0;
+	return locYieldIf(L, yield, 0);
 }
 
 int l_Entity_setMoveAnimation(lua_State* L)

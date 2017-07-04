@@ -71,7 +71,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, en
                 local playIcon = Icon:new 'play'
                 playIcon.container:setMargin(0, 0, 7, 0)
                 playIcon.container:click(function()
-                    entity:playAnimationAsync(animationName)
+                    entity:playAnimation(animationName, false)
                 end)
 
                 animationLine:addChild(playIcon.container)

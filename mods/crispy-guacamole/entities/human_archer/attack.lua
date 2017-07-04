@@ -10,7 +10,7 @@ return {
 	attack = function(archer)
 		local target = archer:getAttackTarget()
 		archer:lookAtEntity(target)
-		archer:playAnimationAsync 'shoot'
+		archer:playAnimation('shoot', false)
 		
 		Timer.start(0.3, nil, function()
 			local target = archer:getAttackTarget()

@@ -48,11 +48,11 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, en
                         entity:decComponentDisableLevel(Component.behavior)
                     end
                     local enteredState, errorMessage = pcall(function()
-                        entity:enterStateAsync(stateName)
+                        entity:enterState(stateName, false)
                     end)
                     if not enteredState then
                         pcall(function()
-                            entity:enterStateAsync 'init'
+                            entity:enterState('init', false)
                         end)
                         entity:incComponentDisableLevel(Component.behavior)
                     end

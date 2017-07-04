@@ -8,7 +8,7 @@ return {
 	attack = function(zombie)
 		local target = zombie:getAttackTarget()
 		zombie:lookAtEntity(target)
-		zombie:playAnimationAsync 'attack'
+		zombie:playAnimation('attack', false)
 		AttackHelper.dealDamageAfterDelay(target, 10, 0.08)
 	end
 }

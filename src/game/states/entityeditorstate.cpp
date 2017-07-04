@@ -12,6 +12,29 @@ void EntityEditorState::enter(Game& game)
 {
 	Super::enter(game);
 
+	spawnEntity(game);
+
+	setCameraCenter(m_entity.getEntity()->getPosition());
+	setCameraZoom(2.f);
+
+	game.lua->doFile("data/entityeditor/scripts/ui.lua");
+}
+
+void EntityEditorState::execute(Game& game)
+{
+	Super::execute(game);
+
+	despawnEntities();
+	if (!m_entity.isValid())
+	{
+		spawnEntity(game);
+	}
+	const flat::time::Clock& clock = getClock();
+	m_map.updateEntities(clock.getTime(), clock.getDT());
+}
+
+void EntityEditorState::spawnEntity(Game& game)
+{
 	// spawn the edited entity at the center of the Start zone
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, game.entityName);
 	const map::Map& map = getMap();
@@ -35,20 +58,6 @@ void EntityEditorState::enter(Game& game)
 
 	FLAT_ASSERT(entity != nullptr);
 	m_entity = entity->getHandle();
-
-	setCameraCenter(position);
-	setCameraZoom(2.f);
-
-	game.lua->doFile("data/entityeditor/scripts/ui.lua");
-}
-
-void EntityEditorState::execute(Game& game)
-{
-	Super::execute(game);
-
-	despawnEntities();
-	const flat::time::Clock& clock = getClock();
-	m_map.updateEntities(clock.getTime(), clock.getDT());
 }
 
 } // states

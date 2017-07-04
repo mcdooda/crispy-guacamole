@@ -2,7 +2,7 @@ local UiSettings = require 'data/scripts/ui/uisettings'
 local Preview = require 'data/scripts/preview'
 local Icon = require 'data/scripts/ui/icon'
 
-return function(componentDetailsPanel, entityTemplateName, componentTemplate, entity)
+return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
     do
         local label = Widget.makeText(
             'Origin: ' .. componentTemplate.origin[1] .. ', ' .. componentTemplate.origin[2],
@@ -71,6 +71,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, en
                 local playIcon = Icon:new 'play'
                 playIcon.container:setMargin(0, 0, 7, 0)
                 playIcon.container:click(function()
+                    local entity = getEntity()
                     entity:playAnimation(animationName, 1, false)
                 end)
 

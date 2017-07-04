@@ -1,7 +1,7 @@
 local UiSettings = require 'data/scripts/ui/uisettings'
 local Icon = require 'data/scripts/ui/icon'
 
-return function(componentDetailsPanel, entityTemplateName, componentTemplate, entity)
+return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
     local states = {}
     local inputs = {}
 
@@ -44,6 +44,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, en
                 local playIcon = Icon:new('play', 10)
                 playIcon.container:setMargin(0, 0, 1, 3)
                 playIcon.container:click(function()
+                    local entity = getEntity()
                     if not entity:isComponentEnabled(Component.behavior) then
                         entity:decComponentDisableLevel(Component.behavior)
                     end

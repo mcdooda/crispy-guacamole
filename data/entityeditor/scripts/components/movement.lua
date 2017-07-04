@@ -2,7 +2,7 @@ local UiSettings = require 'data/scripts/ui/uisettings'
 local Preview = require 'data/scripts/preview'
 local Icon = require 'data/scripts/ui/icon'
 
-return function(componentDetailsPanel, entityTemplateName, componentTemplate, entity)
+return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
     do
         local label = Widget.makeText(
             'Spped: ' .. componentTemplate.speed,
@@ -43,6 +43,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, en
             local playIcon = Icon:new('play', 10)
             playIcon.container:setMargin(0, 0, 1, 3)
             playIcon.container:click(function()
+                local entity = getEntity()
                 local jumped, errorMessage = pcall(function()
                     entity:jump(false)
                 end)

@@ -17,13 +17,36 @@ do
     end
     table.sort(componentsSorted)
 
-    local startZone = Map.getZone 'Start'
-    local zoneCenter = startZone:getCenter()
-    local entity = startZone:getEntities()[1]
-    entity:setDebug(true)
-    local entityTemplateName = entity:getTemplateName()
+    local function findFirstEnabledComponent(entity)
+        for i, componentName in pairs(componentsSorted) do
+            local componentFlag = Component[componentName]
+            if entity:hasComponent(componentFlag) then
+                return componentName
+            end
+        end
+    end
+
+    local getEntity
+    do
+        local entity
+        function getEntity()
+            if entity and entity:isValid() then
+                return entity
+            end
+
+            -- the entity might have been killed, find a new one (spawned by EntityEditorState)
+            local startZone = Map.getZone 'Start'
+            local zoneCenter = startZone:getCenter()
+            entity = startZone:getEntities()[1]
+            entity:setDebug(true)
+            return entity
+        end
+    end
+
+    local entityTemplateName = getEntity():getTemplateName()
 
     local setComponentTab
+
     local currentComponentName = ''
 
     -- component names
@@ -39,6 +62,7 @@ do
             componentsPanel:addChild(titleLabel)
         end
 
+        local entity = getEntity()
         for i, componentName in pairs(componentsSorted) do
             local componentFlag = Component[componentName]
             local hasComponent = entity:hasComponent(componentFlag)
@@ -82,13 +106,13 @@ do
     local function disableTab(componentName)
         componentTabs[componentName]:setBackgroundColor(0x00000000)
 
-        entity:setComponentDebug(Component[componentName], false)
+        getEntity():setComponentDebug(Component[componentName], false)
     end
 
     local function enableTab(componentName)
         componentTabs[componentName]:setBackgroundColor(selectedBackgroundColor)
 
-        entity:setComponentDebug(Component[componentName], true)
+        getEntity():setComponentDebug(Component[componentName], true)
     end
 
     function setComponentTab(previousSelectedComponentName, selectedComponentName)
@@ -103,6 +127,7 @@ do
         enableTab(selectedComponentName)
 
         -- update common information then load custom information from components/<componentName>
+        local entity = getEntity()
         do
             selectedComponentPanel:removeAllChildren()
 
@@ -134,23 +159,14 @@ do
                 end)
                 if hasDetails then
                     local componentTemplate = Path.requireComponentTemplate(entityTemplateName, selectedComponentName)
-                    showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate, entity)
+                    showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
                 end
                 selectedComponentPanel:addChild(componentDetailsPanel)
             end
         end
     end
 
-    local function findFirstEnabledComponent()
-        for i, componentName in pairs(componentsSorted) do
-            local componentFlag = Component[componentName]
-            if entity:hasComponent(componentFlag) then
-                return componentName
-            end
-        end
-    end
-
-    setComponentTab(nil, findFirstEnabledComponent())
+    setComponentTab(nil, findFirstEnabledComponent(getEntity()))
 
     root:addChild(leftPanel)
 end

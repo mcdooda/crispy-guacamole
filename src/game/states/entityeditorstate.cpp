@@ -24,10 +24,18 @@ void EntityEditorState::execute(Game& game)
 {
 	Super::execute(game);
 
+#ifdef FLAT_DEBUG
+	entity::component::ComponentFlags debuggedComponentFlags = m_entity.getEntity()->getDebuggedComponentFlags();
+#endif
 	despawnEntities();
 	if (!m_entity.isValid())
 	{
 		spawnEntity(game);
+#ifdef FLAT_DEBUG
+		entity::Entity* entity = m_entity.getEntity();
+		entity->setDebug(debuggedComponentFlags != 0);
+		entity->setDebuggedComponentFlags(debuggedComponentFlags);
+#endif
 	}
 	const flat::time::Clock& clock = getClock();
 	m_map.updateEntities(clock.getTime(), clock.getDT());

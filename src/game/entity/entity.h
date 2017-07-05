@@ -122,6 +122,8 @@ class Entity final : public map::MapObject
 		inline void setDebugBreak(bool debugBreak) { m_debugBreak = debugBreak; }
 
 		void setDebugAllComponents(bool debug);
+		component::ComponentFlags getDebuggedComponentFlags() const;
+		void setDebuggedComponentFlags(component::ComponentFlags debuggedComponentFlags);
 #endif
 
 		inline static void setEntityProgramSettings(const flat::render::ProgramSettings& programSettings)

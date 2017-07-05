@@ -260,6 +260,28 @@ void Entity::setDebugAllComponents(bool debug)
 		component->setDebug(debug);
 	}
 }
+
+component::ComponentFlags Entity::getDebuggedComponentFlags() const
+{
+	component::ComponentFlags debuggedComponentFlags = 0;
+	for (component::Component* component : m_components)
+	{
+		if (component->getDebug())
+		{
+			debuggedComponentFlags |= component->getComponentType().getComponentTypeFlag();
+		}
+	}
+	return debuggedComponentFlags;
+}
+
+void Entity::setDebuggedComponentFlags(component::ComponentFlags debuggedComponentFlags)
+{
+	for (component::Component* component : m_components)
+	{
+		component::ComponentFlags componentFlag = component->getComponentType().getComponentTypeFlag();
+		component->setDebug((debuggedComponentFlags & componentFlag) == componentFlag);
+	}
+}
 #endif
 
 map::Tile* Entity::getTileFromPosition()

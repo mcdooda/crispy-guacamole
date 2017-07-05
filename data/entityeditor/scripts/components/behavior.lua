@@ -3,18 +3,18 @@ local Icon = require 'data/scripts/ui/icon'
 
 return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
     local states = {}
-    local inputs = {}
+    local events = {}
 
     for stateName, state in pairs(componentTemplate) do
-        local isInput = stateName:sub(1, 2) == 'on'
-        if isInput then
-            inputs[#inputs + 1] = stateName
+        local isEvent = stateName:sub(1, 2) == 'on'
+        if isEvent then
+            events[#events + 1] = stateName
         else
             states[#states + 1] = stateName
         end
     end
     table.sort(states)
-    table.sort(inputs)
+    table.sort(events)
 
     do
         do
@@ -68,20 +68,20 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
     do
         do
             local label = Widget.makeText(
-                'Inputs',
+                'Events',
                 table.unpack(UiSettings.defaultFont)
             )
             label:setMargin(7, 2, 2, 2)
             componentDetailsPanel:addChild(label)
         end
 
-        for i = 1, #inputs do
-            local inputLabel = Widget.makeText(
-                inputs[i],
+        for i = 1, #events do
+            local eventLabel = Widget.makeText(
+                events[i],
                 table.unpack(UiSettings.defaultFont)
             )
-            inputLabel:setMargin(0, 0, 0, 8)
-            componentDetailsPanel:addChild(inputLabel)
+            eventLabel:setMargin(0, 0, 0, 8)
+            componentDetailsPanel:addChild(eventLabel)
         end
     end
 end

@@ -160,6 +160,9 @@ do
                 if hasDetails then
                     local componentTemplate = Path.requireComponentTemplate(entityTemplateName, selectedComponentName)
                     showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
+                else
+                    local errorMessage = showComponentDetails
+                    print(errorMessage)
                 end
                 selectedComponentPanel:addChild(componentDetailsPanel)
             end

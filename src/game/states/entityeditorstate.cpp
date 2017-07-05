@@ -41,11 +41,6 @@ void EntityEditorState::execute(Game& game)
 	m_map.updateEntities(clock.getTime(), clock.getDT());
 }
 
-entity::component::ComponentFlags EntityEditorState::getComponentsFilter() const
-{
-	return m_componentRegistry.getEntityEditorComponentsFilter();
-}
-
 void EntityEditorState::spawnEntity(Game& game)
 {
 	// spawn the edited entity at the center of the Start zone
@@ -62,7 +57,11 @@ void EntityEditorState::spawnEntity(Game& game)
 	entity::Entity* entity = spawnEntityAtPosition(
 		game,
 		entityTemplate,
-		position
+		position,
+		0.f,
+		0.f,
+		entity::component::AllComponents,
+		m_componentRegistry.getEntityEditorComponentsFilter()
 	);
 
 	FLAT_ASSERT(entity != nullptr);

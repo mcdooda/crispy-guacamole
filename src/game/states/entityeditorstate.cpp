@@ -33,6 +33,11 @@ void EntityEditorState::execute(Game& game)
 	m_map.updateEntities(clock.getTime(), clock.getDT());
 }
 
+entity::component::ComponentFlags EntityEditorState::getComponentsFilter() const
+{
+	return m_componentRegistry.getEntityEditorComponentsFilter();
+}
+
 void EntityEditorState::spawnEntity(Game& game)
 {
 	// spawn the edited entity at the center of the Start zone
@@ -40,7 +45,7 @@ void EntityEditorState::spawnEntity(Game& game)
 	const map::Map& map = getMap();
 	std::shared_ptr<map::Zone> zone;
 	map.getZone("Start", zone);
-	FLAT_ASSERT(zone != nullptr);
+	FLAT_ASSERT_MSG(zone != nullptr, "The entity editor map must have a 'Start' zone on a walkable tile");
 	flat::Vector2 zoneCenter = zone->getCenter();
 	const map::Tile* centerTile = map.getTileIfWalkable(zoneCenter.x, zoneCenter.y);
 	FLAT_ASSERT_MSG(centerTile != nullptr, "The entity editor map must have a 'Start' zone on a walkable tile");
@@ -49,11 +54,7 @@ void EntityEditorState::spawnEntity(Game& game)
 	entity::Entity* entity = spawnEntityAtPosition(
 		game,
 		entityTemplate,
-		position,
-		0.f,
-		0.f,
-		entity::component::AllComponents,
-		m_componentRegistry.getEditorComponentsFilter()
+		position
 	);
 
 	FLAT_ASSERT(entity != nullptr);

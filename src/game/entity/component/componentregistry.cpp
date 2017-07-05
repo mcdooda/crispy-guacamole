@@ -20,7 +20,8 @@ namespace component
 {
 
 ComponentRegistry::ComponentRegistry() :
-	m_editorComponentsFilter(0)
+	m_mapEditorComponentsFilter(0),
+	m_entityEditorComponentsFilter(0)
 {
 	registerComponentTypes();
 }

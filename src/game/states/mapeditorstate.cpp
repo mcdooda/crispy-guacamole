@@ -60,7 +60,7 @@ void MapEditorState::execute(Game& game)
 
 entity::component::ComponentFlags MapEditorState::getComponentsFilter() const
 {
-	return m_componentRegistry.getEditorComponentsFilter();
+	return m_componentRegistry.getMapEditorComponentsFilter();
 }
 
 void MapEditorState::saveOnCtrlS(Game& game)

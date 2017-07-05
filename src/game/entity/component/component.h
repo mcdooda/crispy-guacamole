@@ -70,7 +70,8 @@ class ComponentImpl : public Component
 
 	public:
 		inline static const char* getConfigName() { FLAT_ASSERT_MSG(false, "ComponentTemplateType::getConfigName() missing"); return nullptr; }
-		inline static bool enableInEditor() { return true; }
+		inline static bool enableInMapEditor() { return true; }
+		inline static bool enableInEntityEditor() { return true; }
 		inline static bool allowEntityInEditor() { return true; }
 		inline static void setType(const std::shared_ptr<const ComponentType>& type) { ComponentImpl::type = type; }
 		inline static ComponentFlags getFlag() { return getType().getComponentTypeFlag(); }

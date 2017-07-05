@@ -28,7 +28,7 @@ public:
 
 	virtual size_t getComponentSize() const = 0;
 	virtual const char* getConfigName() const = 0;
-	virtual bool enableInEditor() const = 0;
+	virtual bool enableInMapEditor() const = 0;
 	virtual bool allowEntityInEditor() const = 0;
 	virtual ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const = 0;
 
@@ -47,7 +47,7 @@ public:
 
 	size_t getComponentSize() const override;
 	const char* getConfigName() const override;
-	bool enableInEditor() const override;
+	bool enableInMapEditor() const override;
 	bool allowEntityInEditor() const override;
 	ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const override;
 
@@ -68,9 +68,9 @@ const char* ComponentTypeImpl<T>::getConfigName() const
 }
 
 template <class T>
-bool ComponentTypeImpl<T>::enableInEditor() const
+bool ComponentTypeImpl<T>::enableInMapEditor() const
 {
-	return T::enableInEditor();
+	return T::enableInMapEditor();
 }
 
 template <class T>

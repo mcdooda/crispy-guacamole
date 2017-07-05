@@ -22,7 +22,8 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "behavior"; }
-		inline static bool enableInEditor() { return false; }
+		inline static bool enableInMapEditor() { return false; }
+		inline static bool enableInEntityEditor() { return false; }
 
 		void init() override;
 		void deinit() override;

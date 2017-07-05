@@ -28,9 +28,6 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
             playIcon.container:setMargin(0, 0, 1, 3)
             playIcon.container:click(function()
                 local entity = getEntity()
-                if not entity:isComponentEnabled(Component.life) then
-                    entity:decComponentDisableLevel(Component.life)
-                end
                 local killed, errorMessage = pcall(function()
                     entity:kill()
                 end)

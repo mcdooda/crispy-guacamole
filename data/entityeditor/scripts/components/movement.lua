@@ -5,7 +5,7 @@ local Icon = require 'data/scripts/ui/icon'
 return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
     do
         local label = Widget.makeText(
-            'Spped: ' .. componentTemplate.speed,
+            'Speed: ' .. componentTemplate.speed,
             table.unpack(UiSettings.defaultFont)
         )
         label:setMargin(2)

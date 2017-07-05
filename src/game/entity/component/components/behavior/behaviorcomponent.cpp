@@ -128,7 +128,7 @@ void BehaviorComponent::getThreadDebugInfo(std::string& file, int& line) const
 			lua_getstack(L1, 1, &ar);
 			lua_getinfo(L1, "Sl", &ar);
 			line = ar.currentline;
-			file = ar.short_src + 2; // remove leading ".\"
+			file = ar.short_src;
 
 			lua_pop(L, 1);
 		}

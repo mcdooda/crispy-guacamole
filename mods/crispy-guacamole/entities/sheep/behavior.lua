@@ -53,7 +53,7 @@ function states:flee(sheep)
 	local endFleeTime = data.endFleeTime
 	local distance = 0.5
 	local lastKnownPosition2d = fleeTarget:getPosition():toVector2()
-	while Time.getTime() < endFleeTime or fleeTarget:isValid() and sheep:canSee(fleeTarget) do
+	while Game.getTime() < endFleeTime or fleeTarget:isValid() and sheep:canSee(fleeTarget) do
 		local position2d = sheep:getPosition():toVector2()
 		local fleeTargetPosition2d
 		if fleeTarget:isValid() then
@@ -85,7 +85,7 @@ function states:onEntityEnteredVisionRange(sheep, entity)
 				data.fleeTarget = entity
 			end
 		end
-		data.endFleeTime = Time.getTime() + 5
+		data.endFleeTime = Game.getTime() + 5
 		sheep:clearPath()
 		return 'flee'
 	else

@@ -35,4 +35,33 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
         label:setMargin(2)
         componentDetailsPanel:addChild(label)
     end
+    do
+        local attackLine = Widget.makeLineFlow()
+        attackLine:setMargin(2)
+
+        do
+            local attackLabel = Widget.makeText(
+                'Spawn attack target',
+                table.unpack(UiSettings.defaultFont)
+            )
+            attackLine:addChild(attackLabel)
+        end
+
+        do
+            local playIcon = Icon:new('play', 10)
+            playIcon.container:setMargin(0, 0, 1, 3)
+            playIcon.container:click(function()
+                local entity = getEntity()
+                
+                local targetZone = Map.getZone 'Target'
+                local zoneCenter = targetZone:getCenter()
+
+                local target = Entity.spawn('sheep', zoneCenter)
+                entity:setAttackTarget(target)
+            end)
+            attackLine:addChild(playIcon.container)
+        end
+
+        componentDetailsPanel:addChild(attackLine)
+    end
 end

@@ -1,5 +1,6 @@
 #include <flat.h>
 #include "basemapstate.h"
+#include "lua/game.h"
 #include "mapeditor/lua/editor.h"
 #include "../game.h"
 #include "../timer/lua/timer.h"
@@ -61,6 +62,7 @@ void BaseMapState::enter(Game& game)
 		map::lua::zone::open(L);
 		map::brush::lua::open(L);
 		editor::lua::open(L);
+		states::lua::game::open(L);
 	}
 	
 	// ui

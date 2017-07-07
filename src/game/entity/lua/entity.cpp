@@ -111,7 +111,7 @@ int open(lua_State* L)
 
 	LuaEntityHandle::registerClass("CG.Entity", L, Entity_lib_m);
 	
-	lua_createtable(L, 0, 1);
+	lua_createtable(L, 0, 3);
 	static const luaL_Reg Entity_lib_f[] = {
 		{"spawn",              l_Entity_spawn},
 

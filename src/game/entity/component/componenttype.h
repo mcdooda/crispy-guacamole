@@ -13,9 +13,9 @@ namespace component
 class Component;
 class ComponentTemplate;
 
-typedef uint8_t ComponentTypeId;
+using ComponentTypeId = uint8_t;
 
-typedef uint32_t ComponentFlags;
+using ComponentFlags = uint32_t;
 enum { AllComponents = 0xFFFFFFFF };
 
 class ComponentType
@@ -41,7 +41,7 @@ private:
 template <class T>
 class ComponentTypeImpl : public ComponentType
 {
-	typedef ComponentType Super;
+	using Super = ComponentType;
 public:
 	ComponentTypeImpl(ComponentTypeId typeId) : Super(typeId) {}
 

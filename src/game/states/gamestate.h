@@ -12,7 +12,7 @@ namespace states
 
 class GameState : public BaseMapStateImpl<map::GameMap>
 {
-	typedef BaseMapStateImpl<map::GameMap> Super;
+	using Super = BaseMapStateImpl<map::GameMap>;
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;

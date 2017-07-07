@@ -11,7 +11,7 @@ class Entity;
 
 class EntityThread : public flat::lua::Thread
 {
-	typedef flat::lua::Thread Super;
+	using Super = flat::lua::Thread;
 	public:
 		EntityThread() = default;
 		~EntityThread() = default;

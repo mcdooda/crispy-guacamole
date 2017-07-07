@@ -13,7 +13,7 @@ namespace editor
 
 class EntityMapEditorMode : public MapEditorMode
 {
-	typedef MapEditorMode Super;
+	using Super = MapEditorMode;
 public:
 	EntityMapEditorMode(Game& game);
 	~EntityMapEditorMode() override;

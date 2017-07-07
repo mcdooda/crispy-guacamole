@@ -13,7 +13,7 @@ namespace pathfinder
 
 class ZonePathfinder : public Pathfinder
 {
-	typedef Pathfinder Super;
+	using Super = Pathfinder;
 public:
 	ZonePathfinder() = delete;
 	ZonePathfinder(const Map& map, float jumpHeight, const Zone* zone);

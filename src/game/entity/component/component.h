@@ -64,9 +64,9 @@ class Component : public flat::util::Convertible<Component>
 template <class ComponentTemplateType>
 class ComponentImpl : public Component
 {
-	typedef Component Super;
+	using Super = Component;
 	public:
-		typedef ComponentTemplateType TemplateType;
+		using TemplateType = ComponentTemplateType;
 
 	public:
 		inline static const char* getConfigName() { FLAT_ASSERT_MSG(false, "ComponentTemplateType::getConfigName() missing"); return nullptr; }

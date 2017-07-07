@@ -17,7 +17,7 @@ namespace editor
 
 class ZoneMapEditorMode : public MapEditorMode
 {
-	typedef MapEditorMode Super;
+	using Super = MapEditorMode;
 	public:
 		ZoneMapEditorMode(Game& game);
 		~ZoneMapEditorMode() override;

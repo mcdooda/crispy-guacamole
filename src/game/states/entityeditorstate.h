@@ -11,7 +11,7 @@ namespace states
 
 class EntityEditorState : public BaseMapStateImpl<map::EditorMap>
 {
-	typedef BaseMapStateImpl<map::EditorMap> Super;
+	using Super = BaseMapStateImpl<map::EditorMap>;
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;

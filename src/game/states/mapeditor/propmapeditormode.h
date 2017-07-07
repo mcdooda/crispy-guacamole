@@ -16,7 +16,7 @@ namespace editor
 
 class PropMapEditorMode : public MapEditorMode
 {
-	typedef MapEditorMode Super;
+	using Super = MapEditorMode;
 	public:
 		PropMapEditorMode(Game& game);
 		~PropMapEditorMode() override;

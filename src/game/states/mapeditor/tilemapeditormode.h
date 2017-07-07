@@ -16,7 +16,7 @@ namespace editor
 
 class TileMapEditorMode : public MapEditorMode
 {
-	typedef MapEditorMode Super;
+	using Super = MapEditorMode;
 	public:
 		TileMapEditorMode(Game& game);
 		~TileMapEditorMode() override;

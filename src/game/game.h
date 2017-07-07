@@ -8,7 +8,7 @@ namespace game
 
 class Game : public flat::Game
 {
-	typedef flat::Game Super;
+	using Super = flat::Game;
 	public:
 		Game(const std::vector<std::string>& args);
 		Game(const Game&) = delete;

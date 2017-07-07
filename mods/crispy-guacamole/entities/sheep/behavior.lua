@@ -49,6 +49,7 @@ function states:flee(sheep)
 	sheep:setSpeed(movement.runSpeed)
 	local data = sheep:getExtraData()
 	local fleeTarget = data.fleeTarget
+	assert(fleeTarget)
 	local endFleeTime = data.endFleeTime
 	local distance = 0.5
 	local lastKnownPosition2d = fleeTarget:getPosition():toVector2()

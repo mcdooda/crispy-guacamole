@@ -189,7 +189,7 @@ int l_Entity_incComponentDisableLevel(lua_State* L)
 	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
 	component::Component* component = entity.findComponent(componentFlag);
 	luaL_argcheck(L, component != nullptr, 2, "entity does not have this component");
-	component->decDisableLevel();
+	component->incDisableLevel();
 	return 0;
 }
 

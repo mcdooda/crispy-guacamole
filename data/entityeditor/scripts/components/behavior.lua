@@ -52,9 +52,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                         entity:enterState(stateName, false)
                     end)
                     if not enteredState then
-                        pcall(function()
-                            entity:enterState('init', false)
-                        end)
+                        print(errorMessage)
                         entity:incComponentDisableLevel(Component.behavior)
                     end
                 end)

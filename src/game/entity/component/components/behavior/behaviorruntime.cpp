@@ -14,9 +14,34 @@ namespace behavior
 {
 
 BehaviorRuntime::BehaviorRuntime() :
-	m_entity(nullptr)
+	m_entity(nullptr),
+	m_hasIdle(false)
 {
-	
+
+}
+
+void BehaviorRuntime::setEntity(Entity* entity)
+{
+	m_entity = entity;
+
+	const Behavior& behavior = getBehavior();
+	lua_State* L = behavior.getLuaState();
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		// states table
+		behavior.pushStates(L);
+
+		//function
+		lua_getfield(L, -1, "idle");
+		if (!lua_isnil(L, -1))
+		{
+			luaL_checktype(L, -1, LUA_TFUNCTION);
+			m_hasIdle = true;
+		}
+
+		lua_pop(L, 2);
+	}
 }
 
 void BehaviorRuntime::enterState(const char* stateName)
@@ -40,6 +65,11 @@ void BehaviorRuntime::enterState(const char* stateName)
 
 		//function
 		lua_getfield(L, -1, stateName);
+		if (lua_isnil(L, -1))
+		{
+			luaL_error(L, "'%s' has no '%s' state", m_entity->getTemplateName().c_str(), stateName);
+		}
+
 		luaL_checktype(L, -1, LUA_TFUNCTION);
 
 		// set thread function
@@ -73,7 +103,10 @@ void BehaviorRuntime::update(float time)
 {
 	if (m_thread.isFinished())
 	{
-		enterState("idle");
+		if (m_hasIdle)
+		{
+			enterState("idle");
+		}
 	}
 	else
 	{

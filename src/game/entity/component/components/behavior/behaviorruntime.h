@@ -22,7 +22,7 @@ class BehaviorRuntime final
 		BehaviorRuntime(const BehaviorRuntime&) = delete;
 		void operator=(const BehaviorRuntime&) = delete;
 		
-		inline void setEntity(Entity* entity) { m_entity = entity; }
+		void setEntity(Entity* entity);
 		
 		void enterState(const char* stateName);
 
@@ -47,6 +47,7 @@ class BehaviorRuntime final
 		Entity* m_entity;
 		flat::lua::Thread m_thread;
 		float m_endSleepTime;
+		bool m_hasIdle;
 		FLAT_DEBUG_ONLY(std::string m_currentStateName;)
 };
 

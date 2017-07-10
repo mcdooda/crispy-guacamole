@@ -35,8 +35,8 @@ void ComponentRegistry::registerComponentTypes()
 {
 	// components are updated in the order they are declared
 	registerComponentType<detection::DetectionComponent>();
-	registerComponentType<life::LifeComponent>();
 	registerComponentType<behavior::BehaviorComponent>();
+	registerComponentType<life::LifeComponent>();
 	registerComponentType<attack::AttackComponent>();
 	registerComponentType<movement::MovementComponent>();
 	registerComponentType<projectile::ProjectileComponent>();

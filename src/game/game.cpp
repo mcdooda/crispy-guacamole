@@ -67,16 +67,24 @@ void Game::checkArgs()
 					case 'w':
 					fullscreen = false;
 					break;
+
+					case 'g':
+					mode = Mode::GAME;
+					modPath = argGetString(++i);
+					mapName = argGetString(++i);
+					break;
 					
 					case 'm':
 					mode = Mode::MAPEDITOR;
+					modPath = argGetString(++i);
 					mapName = argGetString(++i);
 					break;
 
 					case 'e':
 					mode = Mode::ENTITYEDITOR;
-					entityName = argGetString(++i);
+					modPath = argGetString(++i);
 					mapName = argGetString(++i);
+					entityName = argGetString(++i);
 					break;
 					
 					default:
@@ -87,16 +95,7 @@ void Game::checkArgs()
 			break;
 			
 			default:
-			{
-				if (modPath.empty())
-				{
-					modPath = arg;
-				}
-				else
-				{
-					std::cerr << "Unhandled argument '" << arg << "' (mod path already given)" << std::endl;
-				}
-			}
+				std::cerr << "Unhandled argument '" << arg << "'" << std::endl;
 		}
 	}
 	
@@ -123,6 +122,7 @@ void Game::wrongArguments()
 	std::cerr << "You must specify a mod path" << std::endl
 		<< "Other options:" << std::endl
 		<< "\t-w\t\t\twindowed" << std::endl
+		<< "\t-g <map>\t\tgame mode" << std::endl
 		<< "\t-m <map>\t\tmap editor mode" << std::endl
 		<< "\t-e <entity> <map>\tentity editor mode" << std::endl;
 	FLAT_BREAK();

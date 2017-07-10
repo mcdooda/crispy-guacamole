@@ -31,9 +31,13 @@ class Game : public flat::Game
 		// views
 		flat::video::View interfaceView;
 		
-		// GAME -> GameState, MAPEDITOR -> MapEditorState, ENTITYEDITOR -> EntityEditorState
+		// NONE -> ModeSelectionState
+		// GAME -> GameState
+		// MAPEDITOR -> MapEditorState
+		// ENTITYEDITOR -> EntityEditorState
 		enum class Mode : uint8_t
 		{
+			NONE,
 			GAME,
 			MAPEDITOR,
 			ENTITYEDITOR,

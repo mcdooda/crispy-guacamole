@@ -8,7 +8,7 @@ namespace game
 
 Game::Game(const std::vector<std::string>& args) : flat::Game(args),
 	interfaceView(video->window),
-	mode(Mode::GAME),
+	mode(Mode::NONE),
 	fullscreen(true)
 {
 	
@@ -25,12 +25,20 @@ void Game::setStates()
 	
 	switch (mode)
 	{
+		case Mode::NONE:
+		wrongArguments();
+		break;
+
 		case Mode::GAME:
+		if (modPath.empty() || mapName.empty())
+		{
+			wrongArguments();
+		}
 		state = new states::GameState();
 		break;
 		
 		case Mode::MAPEDITOR:
-		if (mapName.empty())
+		if (modPath.empty() || mapName.empty())
 		{
 			wrongArguments();
 		}
@@ -38,7 +46,7 @@ void Game::setStates()
 		break;
 
 		case Mode::ENTITYEDITOR:
-		if (entityName.empty() || mapName.empty())
+		if (modPath.empty() || mapName.empty() || entityName.empty())
 		{
 			wrongArguments();
 		}
@@ -121,10 +129,10 @@ void Game::wrongArguments()
 {
 	std::cerr << "You must specify a mod path" << std::endl
 		<< "Other options:" << std::endl
-		<< "\t-w\t\t\twindowed" << std::endl
-		<< "\t-g <map>\t\tgame mode" << std::endl
-		<< "\t-m <map>\t\tmap editor mode" << std::endl
-		<< "\t-e <entity> <map>\tentity editor mode" << std::endl;
+		<< "\t-w\t\t\t\twindowed" << std::endl
+		<< "\t-g <mod path> <map>\t\tgame mode" << std::endl
+		<< "\t-m <mod path> <map>\t\tmap editor mode" << std::endl
+		<< "\t-e <mod path> <map> <entity>\tentity editor mode" << std::endl;
 	FLAT_BREAK();
 	exit(1);
 }

@@ -1,6 +1,5 @@
 #include <flat.h>
 #include "basemapstate.h"
-#include "lua/game.h"
 #include "mapeditor/lua/editor.h"
 #include "../game.h"
 #include "../timer/lua/timer.h"
@@ -34,12 +33,7 @@ BaseMapState::BaseMapState() :
 
 void BaseMapState::enter(Game& game)
 {
-	game.video->window->setTitle("Crispy guacamole");
-
-	// init time first
-	m_clock = game.time->newClock();
-	m_uiClock = game.time->newClock();
-	m_timerContainer.setClock(m_clock);
+	Super::enter(game);
 
 #ifdef FLAT_DEBUG
 	if (m_isReloading)
@@ -49,11 +43,11 @@ void BaseMapState::enter(Game& game)
 #endif
 	
 	// init lua then
+	initLua(game);
 	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-		timer::lua::open(L);
 		entity::lua::open(L);
 		entity::component::lua::open(L, m_componentRegistry);
 		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
@@ -62,7 +56,6 @@ void BaseMapState::enter(Game& game)
 		map::lua::zone::open(L);
 		map::brush::lua::open(L);
 		editor::lua::open(L);
-		states::lua::game::open(L);
 	}
 	
 	// ui
@@ -93,17 +86,7 @@ void BaseMapState::enter(Game& game)
 
 	map::Tile::setTileProgramSettings(m_terrainRender);
 	
-	m_uiRender.program.load("data/shaders/ui/ui.frag", "data/shaders/ui/ui.vert");
-	
-	m_uiRender.settings.textureUniform              = m_uiRender.program.getUniform<flat::video::Texture>("objectTexture");
-	m_uiRender.settings.textureGivenUniform         = m_uiRender.program.getUniform<bool>("textureGiven");
-	m_uiRender.settings.colorUniform                = m_uiRender.program.getUniform<flat::video::Color>("color");
-	m_uiRender.settings.secondaryColorUniform       = m_uiRender.program.getUniform<flat::video::Color>("secondaryColor");
-	m_uiRender.settings.modelMatrixUniform          = m_uiRender.program.getUniform<flat::Matrix4>("modelMatrix");
-	m_uiRender.settings.viewProjectionMatrixUniform = m_uiRender.program.getUniform<flat::Matrix4>("vpMatrix");
-
-	m_uiRender.settings.positionAttribute           = m_uiRender.program.getAttribute("position");
-	m_uiRender.settings.uvAttribute                 = m_uiRender.program.getAttribute("uv");
+	initRender(game);
 
 	// reset view
 #ifdef FLAT_DEBUG
@@ -403,8 +386,7 @@ bool BaseMapState::isMouseOverUi(game::Game& game) const
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
-	updateUi(game);
-	m_timerContainer.updateTimers(game.lua->state);
+	Super::update(game);
 }
 
 void BaseMapState::addGhostEntity(game::Game& game)
@@ -536,8 +518,7 @@ void BaseMapState::draw(game::Game& game)
 	m_debugDisplay.drawElements(game, m_gameView);
 #endif
 	
-	// ui
-	drawUi(game);
+	Super::draw(game);
 }
 
 void BaseMapState::buildUi(game::Game& game)
@@ -547,34 +528,6 @@ void BaseMapState::buildUi(game::Game& game)
 	m_selectionWidget = widgetFactory.makeFixedSize(flat::Vector2(1.f, 1.f));
 	m_selectionWidget->setPositionPolicy(flat::sharp::ui::Widget::PositionPolicy::BOTTOM_LEFT);
 	m_selectionWidget->setBackgroundColor(flat::video::Color(0.f, 8.f, 0.f, 0.3f));
-}
-
-void BaseMapState::updateUi(game::Game& game)
-{
-	flat::sharp::ui::RootWidget* root = game.ui->root.get();
-	root->update();
-}
-
-void BaseMapState::drawUi(game::Game& game)
-{
-	m_uiRender.program.use(game.video->window);
-	
-	m_uiRender.settings.viewProjectionMatrixUniform.set(game.interfaceView.getViewProjectionMatrix());
-	
-	m_uiRender.settings.modelMatrixUniform.set(flat::Matrix4());
-	m_uiRender.settings.colorUniform.set(flat::video::Color(1.0f, 0.0f, 0.0f, 1.0f));
-	
-	flat::sharp::ui::RootWidget* root = game.ui->root.get();
-	root->draw(m_uiRender.settings);
-}
-
-void BaseMapState::resetViews(game::Game& game)
-{
-	const flat::Vector2 windowSize = game.video->window->getSize();
-
-	game.interfaceView.reset();
-	game.interfaceView.move(windowSize / 2.0f);
-	game.interfaceView.updateProjection();
 }
 
 entity::component::ComponentFlags BaseMapState::getComponentsFilter() const

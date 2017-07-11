@@ -7,7 +7,7 @@ namespace game
 {
 namespace states
 {
-class BaseMapState;
+class BaseState;
 namespace lua
 {
 namespace game
@@ -17,8 +17,10 @@ int open(lua_State* L);
 
 int l_Game_getTime(lua_State* L);
 
+int l_Game_openMap(lua_State* L);
+
 // private
-BaseMapState& getBaseMapState(lua_State* L);
+BaseState& getBaseState(lua_State* L);
 
 } // game
 } // lua

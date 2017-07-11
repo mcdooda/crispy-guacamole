@@ -1,4 +1,5 @@
 #include "game.h"
+#include "states/selectmapstate.h"
 #include "states/gamestate.h"
 #include "states/mapeditorstate.h"
 #include "states/entityeditorstate.h"
@@ -21,44 +22,55 @@ Game::~Game()
 
 void Game::setStates()
 {
-	states::BaseMapState* state = nullptr;
+	std::unique_ptr<states::BaseState> state = nullptr;
 	
 	switch (mode)
 	{
 		case Mode::NONE:
-		wrongArguments();
+		state.reset(new states::SelectMapState());
 		break;
 
 		case Mode::GAME:
-		if (modPath.empty() || mapName.empty())
 		{
-			wrongArguments();
+			if (modPath.empty() || mapName.empty())
+			{
+				wrongArguments();
+			}
+			states::GameState* gameState = new states::GameState();
+			gameState->setModPath(modPath);
+			state.reset(gameState);
 		}
-		state = new states::GameState();
 		break;
 		
 		case Mode::MAPEDITOR:
-		if (modPath.empty() || mapName.empty())
 		{
-			wrongArguments();
+			if (modPath.empty() || mapName.empty())
+			{
+				wrongArguments();
+			}
+			states::MapEditorState* mapEditorState = new states::MapEditorState();
+			mapEditorState->setModPath(modPath);
+			state.reset(mapEditorState);
 		}
-		state = new states::MapEditorState();
 		break;
 
 		case Mode::ENTITYEDITOR:
-		if (modPath.empty() || mapName.empty() || entityName.empty())
 		{
-			wrongArguments();
+			if (modPath.empty() || mapName.empty() || entityName.empty())
+			{
+				wrongArguments();
+			}
+			states::EntityEditorState* entityEditorState = new states::EntityEditorState();
+			entityEditorState->setModPath(modPath);
+			state.reset(entityEditorState);
 		}
-		state = new states::EntityEditorState();
 		break;
 		
 		default:
 		FLAT_ASSERT_MSG(false, "Unknown mode %u", mode);
 	}
 	
-	state->setModPath(modPath);
-	getStateMachine().setState(state);
+	getStateMachine().setState(std::move(state));
 }
 
 void Game::checkArgs()
@@ -105,11 +117,6 @@ void Game::checkArgs()
 			default:
 				std::cerr << "Unhandled argument '" << arg << "'" << std::endl;
 		}
-	}
-	
-	if (modPath.empty())
-	{
-		wrongArguments();
 	}
 }
 

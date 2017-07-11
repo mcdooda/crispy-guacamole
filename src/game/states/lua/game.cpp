@@ -1,5 +1,5 @@
 #include "game.h"
-#include "../basemapstate.h"
+#include "../gamestate.h"
 #include "../../game.h"
 
 namespace game
@@ -19,6 +19,8 @@ int open(lua_State* L)
 	static const luaL_Reg Game_lib_f[] = {
 		{"getTime", l_Game_getTime},
 
+		{"openMap", l_Game_openMap},
+
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Game_lib_f, 0);
@@ -29,16 +31,29 @@ int open(lua_State* L)
 
 int l_Game_getTime(lua_State* L)
 {
-	BaseMapState& baseMapState = getBaseMapState(L);
-	flat::time::Clock& clock = baseMapState.getClock();
+	BaseState& baseState = getBaseState(L);
+	flat::time::Clock& clock = baseState.getClock();
 	lua_pushnumber(L, clock.getTime());
 	return 1;
 }
 
-BaseMapState& getBaseMapState(lua_State* L)
+int l_Game_openMap(lua_State* L)
+{
+	const char* modPath = luaL_checkstring(L, 1);
+	const char* mapName = luaL_checkstring(L, 2);
+	Game& game = flat::lua::getGame(L).to<Game>();
+	game.modPath = modPath;
+	game.mapName = mapName;
+	std::unique_ptr<GameState> gameState = std::make_unique<GameState>();
+	gameState->setModPath(modPath);
+	game.getStateMachine().setNextState(std::move(gameState));
+	return 1;
+}
+
+BaseState& getBaseState(lua_State* L)
 {
 	Game& game = flat::lua::getGame(L).to<Game>();
-	return game.getStateMachine().getState()->to<BaseMapState>();
+	return game.getStateMachine().getState()->to<BaseState>();
 }
 
 // private

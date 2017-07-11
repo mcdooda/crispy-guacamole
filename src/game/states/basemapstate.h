@@ -2,6 +2,7 @@
 #define GAME_STATES_BASEMAPSTATE_H
 
 #include <flat.h>
+#include "basestate.h"
 #include "../mod/mod.h"
 #include "../entity/entitypool.h"
 #include "../entity/component/component.h"
@@ -12,7 +13,6 @@
 
 namespace game
 {
-class Game;
 namespace entity
 {
 class EntityTemplate;
@@ -26,8 +26,9 @@ class PropTemplate;
 namespace states
 {
 
-class BaseMapState : public flat::state::StateImpl<Game>
+class BaseMapState : public BaseState
 {
+	using Super = BaseState;
 	public:
 		BaseMapState();
 
@@ -87,13 +88,9 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		inline const flat::video::View& getGameView() const { return m_gameView; }
 
 		bool isMouseOverUi(game::Game& game) const;
-
-		inline const flat::time::Clock& getClock() const { FLAT_ASSERT(m_clock != nullptr); return *m_clock.get(); }
-		inline flat::time::Clock& getClock() { FLAT_ASSERT(m_clock != nullptr); return *m_clock.get(); }
-		inline timer::TimerContainer& getTimerContainer() { return m_timerContainer; }
 		
 	protected:
-		void update(game::Game& game);
+		void update(game::Game& game) override;
 		void addGhostEntity(game::Game& game);
 		void removeGhostEntity(game::Game& game);
 		void updateGameView(game::Game& game);
@@ -101,13 +98,9 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		void setCameraZoom(float cameraZoom);
 		void updateCameraView();
 		
-		void draw(game::Game& game);
+		void draw(game::Game& game) override;
 		
 		void buildUi(game::Game& game);
-		void updateUi(game::Game& game);
-		void drawUi(game::Game& game);
-
-		void resetViews(game::Game& game);
 
 		virtual entity::component::ComponentFlags getComponentsFilter() const;
 
@@ -140,7 +133,6 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		// rendering settings
 		flat::render::ProgramSettings m_entityRender;
 		flat::render::ProgramSettings m_terrainRender;
-		flat::render::ProgramSettings m_uiRender;
 		
 		// level
 		mod::Mod m_mod;
@@ -165,11 +157,6 @@ class BaseMapState : public flat::state::StateImpl<Game>
 		flat::Vector2 m_mouseDownPosition;
 		std::shared_ptr<flat::sharp::ui::Widget> m_selectionWidget;
 
-		// time
-		std::shared_ptr<flat::time::Clock> m_clock;
-		std::shared_ptr<flat::time::Clock> m_uiClock;
-		timer::TimerContainer m_timerContainer;
-
 #ifdef FLAT_DEBUG
 		debug::DebugDisplay m_debugDisplay;
 
@@ -191,15 +178,9 @@ class BaseMapStateImpl : public BaseMapState
 template<class T>
 inline void BaseMapState::reloadToState(Game& game)
 {
-	flat::sharp::ui::RootWidget& rootWidget = *game.ui->root.get();
-	rootWidget.removeAllChildren();
-
-	T* newState = new T();
+	std::unique_ptr<T> newState = std::make_unique<T>();
 	newState->copyStateBeforeReload(*this);
-	game.getStateMachine().setState(newState);
-
-	// TODO: this should not be necessary
-	rootWidget.setDirty();
+	game.getStateMachine().setNextState(std::move(newState));
 }
 #endif
 

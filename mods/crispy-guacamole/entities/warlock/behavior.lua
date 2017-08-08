@@ -19,7 +19,7 @@ function states:idle(warlock)
 		local zombies = {}
 		for i = 1, numZombies do
 			local heading = (i - 1) * 2 * pi / numZombies
-			local zombiePosition = position + Flat.Vector3(cos(heading) * distance, sin(heading) * distance, 0)
+			local zombiePosition = position + flat.Vector3(cos(heading) * distance, sin(heading) * distance, 0)
 			local zombie = Entity.spawn('zombie', zombiePosition, heading)
 			zombies[#zombies + 1] = zombie
 		end

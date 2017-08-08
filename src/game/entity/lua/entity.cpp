@@ -699,7 +699,7 @@ int l_Entity_spawn(lua_State* L)
 
 	// position (Vector2 or Vector3)
 	flat::Vector3 position;
-	if (luaL_testudata(L, 2, "Flat.Vector3") != nullptr) // TODO: add flat::lua::isVector2/3()
+	if (luaL_testudata(L, 2, "flat.Vector3") != nullptr) // TODO: add flat::lua::isVector2/3()
 	{
 		position = flat::lua::getVector3(L, 2);
 	}

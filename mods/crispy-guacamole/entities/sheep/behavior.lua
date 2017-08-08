@@ -23,7 +23,7 @@ function states:wander(sheep)
 	while true do
 
 		do
-			local pathPoint = initialPosition2d + Flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
+			local pathPoint = initialPosition2d + flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
 			sheep:moveTo(pathPoint)
 		end
 

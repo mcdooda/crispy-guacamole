@@ -17,7 +17,7 @@ end
 
 local function wanderAround(entity, initialPosition)
 	while true do
-		local randomPosition = initialPosition + Flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
+		local randomPosition = initialPosition + flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
 		entity:moveTo(randomPosition)
 	end
 end

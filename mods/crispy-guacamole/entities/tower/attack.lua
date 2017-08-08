@@ -23,7 +23,7 @@ return {
 		
 		local heading = atan2(targetPosition:y() - towerPosition:y(), targetPosition:x() - towerPosition:x())
 
-		local spawnPosition = Flat.Vector3(
+		local spawnPosition = flat.Vector3(
 			towerPosition:x() + cos(heading) * sqrt(2.0) / 2,
 			towerPosition:y() + sin(heading) * sqrt(2.0) / 2,
 			towerPosition:z() + 1.5

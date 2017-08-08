@@ -14,7 +14,7 @@ function states:wander(boar)
 	local initialPosition = boar:getPosition()
 	local initialPosition2d = initialPosition:toVector2()
 	while true do
-		local pathPoint = initialPosition2d + Flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
+		local pathPoint = initialPosition2d + flat.Vector2((random() * 2 - 1) * 2, (random() * 2 - 1) * 2)
 		boar:moveTo(pathPoint)
 	end
 end

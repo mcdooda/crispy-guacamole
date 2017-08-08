@@ -1,3 +1,7 @@
+if not flat.debug then
+    return
+end
+
 local UiSettings = require 'data/scripts/ui/uisettings'
 
 local root = Widget.getRoot()

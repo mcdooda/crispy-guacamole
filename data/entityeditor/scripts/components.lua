@@ -1,5 +1,6 @@
 local UiSettings = require 'data/scripts/ui/uisettings'
 local Path = require 'data/scripts/path'
+local Icon = require 'data/scripts/ui/icon'
 
 local root = Widget.getRoot()
 
@@ -148,6 +149,13 @@ do
                         enabledLabel:setText('(off)')
                     end
                     titleLine:addChild(enabledLabel)
+
+                    local editComponentIcon = Icon:new('brush', 10)
+                    editComponentIcon.container:setMargin(0, 0, 5, 5)
+                    editComponentIcon.container:click(function()
+                        flat.node.editor.open '<PATH>'
+                    end)
+                    titleLine:addChild(editComponentIcon.container)
 
                     selectedComponentPanel:addChild(titleLine)
                 end

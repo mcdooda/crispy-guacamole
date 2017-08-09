@@ -153,7 +153,7 @@ do
                     local editComponentIcon = Icon:new('brush', 10)
                     editComponentIcon.container:setMargin(0, 0, 5, 5)
                     editComponentIcon.container:click(function()
-                        flat.node.editor.open '<PATH>'
+                        flat.node.editor.open(Widget.getRoot(), Path.getComponentPath(entityTemplateName, selectedComponentName))
                     end)
                     titleLine:addChild(editComponentIcon.container)
 

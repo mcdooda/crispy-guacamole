@@ -143,6 +143,7 @@ do
 
                     local componentEnabled = entity:isComponentEnabled(Component[selectedComponentName])
                     local enabledLabel = Widget.makeText('(on)', table.unpack(UiSettings.defaultFont))
+                    enabledLabel:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
                     enabledLabel:setTextColor(0xCCCCCCFF)
                     enabledLabel:setMargin(0, 0, 5, 5)
                     if not componentEnabled then
@@ -152,6 +153,7 @@ do
 
                     local editComponentIcon = Icon:new('brush', 10)
                     editComponentIcon.container:setMargin(0, 0, 5, 5)
+                    editComponentIcon.container:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
                     editComponentIcon.container:click(function()
                         flat.node.editor.open(Widget.getRoot(), Path.getComponentPath(entityTemplateName, selectedComponentName))
                     end)

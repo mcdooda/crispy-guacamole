@@ -69,7 +69,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
 
             do
                 local playIcon = Icon:new 'play'
-                playIcon.container:setMargin(0, 0, 7, 0)
+                playIcon.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
                 playIcon.container:click(function()
                     local entity = getEntity()
                     entity:playAnimation(animationName, 1, false)

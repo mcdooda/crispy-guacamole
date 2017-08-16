@@ -49,7 +49,8 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
 
         do
             local playIcon = Icon:new('play', 10)
-            playIcon.container:setMargin(0, 0, 1, 3)
+            playIcon.container:setMargin(0, 0, 0, 3)
+            playIcon.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
             playIcon.container:click(function()
                 local entity = getEntity()
                 

@@ -1,6 +1,6 @@
 script {
     nodes = {
-        {'scriptInput', PinTypes.NUMBER, PinTypes.STRING},  -- 1
+        {'scriptInput', {PinTypes.NUMBER, 'Number'}, {PinTypes.STRING, 'String'}},  -- 1
         'init',                                             -- 2
         'test',                                             -- 3
         {'string', 'Hello world from saved script'},        -- 4

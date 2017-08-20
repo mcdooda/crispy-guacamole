@@ -15,6 +15,7 @@ do
 
 	local content = Widget.makeColumnFlow()
 	content:setSizePolicy(Widget.SizePolicy.EXPAND)
+	content:setAllowScrollY(true)
 
 	local contentChildren = {}
 

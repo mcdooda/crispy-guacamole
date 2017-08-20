@@ -86,7 +86,7 @@ void BaseState::initLua(Game& game)
 void BaseState::updateUi(Game& game)
 {
 	flat::sharp::ui::RootWidget* root = game.ui->root.get();
-	root->update();
+	root->update(m_uiClock->getDT());
 }
 
 void BaseState::drawUi(Game & game)

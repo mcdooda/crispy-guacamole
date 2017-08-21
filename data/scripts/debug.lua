@@ -10,9 +10,10 @@ debugContainer:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
 
 local function addContainer()
     local widget = Widget.makeColumnFlow()
-	widget:setMargin(5, 5, 0, 5)
+    widget:setMargin(5, 5, 0, 5)
+	widget:setPadding(10, 10, 10, 10)
     widget:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
-	widget:setBackgroundColor(0xFFFFFFAA)
+	widget:setBackgroundColor(0xFFFFFFFF)
     debugContainer:addChild(widget)
     return widget
 end

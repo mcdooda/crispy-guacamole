@@ -89,9 +89,9 @@ void BaseState::updateUi(Game& game)
 	root->update(m_uiClock->getDT());
 }
 
-void BaseState::drawUi(Game & game)
+void BaseState::drawUi(Game& game)
 {
-	m_uiRender.program.use(game.video->window);
+	m_uiRender.program.use(*game.video->window);
 
 	m_uiRender.settings.viewProjectionMatrixUniform.set(game.interfaceView.getViewProjectionMatrix());
 

@@ -105,7 +105,7 @@ void DisplayManager::sortByDepthAndDraw(Game& game, const flat::video::View& vie
 		int numDrawCalls = 0;
 #endif
 
-		flat::video::Window* window = game.video->window;
+		flat::video::Window& window = *game.video->window;
 
 		flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
 		const flat::Matrix4& viewMatrix = view.getViewProjectionMatrix();

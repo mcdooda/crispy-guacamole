@@ -97,7 +97,7 @@ void DebugDisplay::drawElements(Game& game, const flat::video::View& view)
 
 void DebugDisplay::drawElementList(Game& game, const flat::video::View& view, flat::video::Program& program, flat::render::RenderSettings& renderSettings, std::vector<std::unique_ptr<DebugDisplayElement>>& elements)
 {
-	program.use(game.video->window);
+	program.use(*game.video->window);
 	renderSettings.viewProjectionMatrixUniform.set(view.getViewProjectionMatrix());
 
 	for (const std::unique_ptr<DebugDisplayElement>& element : elements)

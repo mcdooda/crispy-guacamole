@@ -12,3 +12,5 @@ return {
 		AttackHelper.dealDamageAfterDelay(target, 10, 0.08)
 	end
 }
+
+--return flat.node.runScript 'crispy-guacamole/entities/zombie/attack'

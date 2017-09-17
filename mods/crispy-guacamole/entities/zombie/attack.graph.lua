@@ -1,12 +1,12 @@
 script {
     nodes = {
-        {'scriptInput', {PinTypes.NUMBER, 'Number'}, {PinTypes.STRING, 'String'}},  -- 1
-        'init',                                             -- 2
-        'test',                                             -- 3
-        {'string', 'Hello world from saved script'},        -- 4
-        'multiply',                                         -- 5
-        {'number', 2},                                      -- 6
-        'test'                                              -- 7
+        {name = 'script/scriptinput', initArguments = {{PinTypes.NUMBER, 'Number'}, {PinTypes.STRING, 'String'}}},  -- 1
+        {name = 'init'},                                                                                     -- 2
+        {name = 'test'},                                                                                     -- 3
+        {name = 'string', initArguments = {'Hello world from saved script'}},                                -- 4
+        {name = 'math/multiply'},                                                                                 -- 5
+        {name = 'number', initArguments = {2}},                                                              -- 6
+        {name = 'test'}                                                                                      -- 7
     },
     links = {
         {1, 1, 3, 2}, -- scriptInput number -> test1 number

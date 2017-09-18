@@ -12,6 +12,7 @@ do
 	leftPanel:setBackgroundColor(0x444444FF)
 	leftPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
 	leftPanel:setSize(128,0)
+	leftPanel:setPadding(0,0,0,0)
 
 	local content = Widget.makeColumnFlow()
 	content:setSizePolicy(Widget.SizePolicy.EXPAND)
@@ -29,6 +30,13 @@ do
 			contentChildren[i]:removeFromParent()
 		end
 		contentChildren = {}
+	end
+
+	do
+		local padding = Widget.makeLineFlow()
+		padding:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.FIXED_Y)
+		padding:setSize(128, 0)
+		leftPanel:addChild(padding)
 	end
 
 	do
@@ -67,8 +75,9 @@ do
 				local tileName = ModData.tiles.names[i]
 				local tileTexturePath = Path.getTileFilePath(tileName, ModData.tiles.getHighest(tileName) .. '.png')
 				local preview = Widget.makeImage(tileTexturePath)
-				preview:setSize(40,30)
-				preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
+				local w, h = preview:getSize()
+				preview:setSize(w*1.5, h*1.5)
+				-- preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()
 					Editor.setTile(tileName)
@@ -84,6 +93,8 @@ do
 				local propName = ModData.props.names[i]
 				local propTexturePath = Path.getPropFilePath(propName, ModData.props.getHighest(propName) .. '.png')
 				local preview = Widget.makeImage(propTexturePath)
+				local w, h = preview:getSize()
+				preview:setSize(w*1.5, h*1.5)
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()
 					Editor.setProp(propName)
@@ -101,6 +112,8 @@ do
 				local preview = Preview.entity(entityName)
 				if preview then
 					preview:setMargin(10, 0, 0, 7)
+					local w, h = preview:getSize()
+					preview:setSize(w*1.5, h*1.5)
 					preview:click(function()
 						Editor.setEntity(entityName)
 					end)

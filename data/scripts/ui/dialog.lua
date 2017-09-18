@@ -5,7 +5,6 @@ local root = Widget.getRoot()
 local button = require 'data/scripts/ui/button'
 local loadingBar = require 'data/scripts/ui/loadingbar'
 local icon = require 'data/scripts/ui/icon'
-local dump = require 'data/scripts/dump'
 
 local Dialog = {}
 Dialog.__index = Dialog
@@ -22,6 +21,7 @@ COLORS = {
     orange     = 0xC1732DFF,
     blue       = 0x133EC8FF,
     lightBlue  = 0x7C81E5FF,
+    clearBlue  = 0xC7E5FAFF,
     darkBlue   = 0x232896FF,
     cyan       = 0x37BFB7FF,
     green      = 0x2AA920FF,
@@ -31,6 +31,7 @@ COLORS = {
     grey       = 0x626262FF,
     darkGrey   = 0x3D3D3DFF,
     lightGrey  = 0x545454FF,
+    transparent= 0x00000000
 }
 
 function Dialog:cancel()
@@ -70,10 +71,8 @@ end
 
 function Dialog:new(content, options)
 
-    local background = Widget.makeColumnFlow()
-    background:setSizePolicy(Widget.SizePolicy.EXPAND)
+    local background = Widget.makeExpand()
     background:setBackgroundColor(0x000000AA)
-
 
     local footerBtn = options.footer    or {confirm = false, cancel = true}
     local onCancel  = options.onCancel
@@ -143,7 +142,7 @@ function Dialog:new(content, options)
         okIcon.container:setTextColor(COLORS.white)
         btnText:addChild(okIcon.container)
         btnText:addChild(ww)
-        local btnConfirm = button:new(btnText, "blue")
+        local btnConfirm = button:new(btnText, {color="blue"})
         btnContainer:addChild(btnConfirm.container)
 
         local confirm = function(c, x, y)
@@ -170,7 +169,7 @@ function Dialog:new(content, options)
            dialogContainer:setPosition(0, ((maxTimer - elapsedTime) / maxTimer) * rootH)
         end,
         function(timer)
-         print 'End'
+         -- print 'End'
         end
     )
 

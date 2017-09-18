@@ -12,7 +12,7 @@ do
 	leftPanel:setBackgroundColor(0x444444FF)
 	leftPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
 	leftPanel:setSize(128,0)
-	leftPanel:setPadding(20,0,0,0)
+	leftPanel:setPadding(0,0,0,0)
 
 	local content = Widget.makeColumnFlow()
 	content:setSizePolicy(Widget.SizePolicy.EXPAND)

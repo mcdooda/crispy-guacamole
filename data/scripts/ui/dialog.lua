@@ -5,7 +5,6 @@ local root = Widget.getRoot()
 local button = require 'data/scripts/ui/button'
 local loadingBar = require 'data/scripts/ui/loadingbar'
 local icon = require 'data/scripts/ui/icon'
-local dump = require 'data/scripts/dump'
 
 local Dialog = {}
 Dialog.__index = Dialog
@@ -72,9 +71,8 @@ end
 
 function Dialog:new(content, options)
 
-    local background = Widget.makeColumnFlow()
+    local background = Widget.makeExpand()
     background:setBackgroundColor(0x000000AA)
-    background:setSizePolicy(Widget.SizePolicy.EXPAND)
 
     local footerBtn = options.footer    or {confirm = false, cancel = true}
     local onCancel  = options.onCancel

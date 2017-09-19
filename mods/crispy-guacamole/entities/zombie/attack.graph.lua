@@ -39,12 +39,18 @@ script {
     },
     {
       name = 'bool',
+      initArguments = {
+        false,
+      },
     },
     {
       name = 'test',
     },
     {
       name = 'bool',
+      initArguments = {
+        true,
+      },
     },
     {
       name = 'number',

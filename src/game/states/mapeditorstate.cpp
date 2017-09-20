@@ -29,7 +29,7 @@ void MapEditorState::enter(Game& game)
 	}
 #endif
 
-	game.lua->doFile("data/editor/scripts/ui.lua");
+	game.lua->doFile("data/editor/scripts/init.lua");
 }
 
 void MapEditorState::execute(Game& game)

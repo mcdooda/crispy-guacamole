@@ -34,7 +34,7 @@ void GameState::enter(Game& game)
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-		flat::lua::doFile(L, "data/game/scripts/ui.lua");
+		flat::lua::doFile(L, "data/game/scripts/init.lua");
 
 		flat::lua::loadFile(L, m_mod.getMapPath(game.mapName, "setup.lua"));
 		if (!lua_isnil(L, -1))

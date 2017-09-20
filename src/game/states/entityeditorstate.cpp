@@ -17,7 +17,7 @@ void EntityEditorState::enter(Game& game)
 	setCameraCenter(m_entity.getEntity()->getPosition());
 	setCameraZoom(2.f);
 
-	game.lua->doFile("data/entityeditor/scripts/ui.lua");
+	game.lua->doFile("data/entityeditor/scripts/init.lua");
 }
 
 void EntityEditorState::execute(Game& game)

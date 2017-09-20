@@ -155,7 +155,7 @@ do
                     editComponentIcon.container:setMargin(0, 0, 5, 5)
                     editComponentIcon.container:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
                     editComponentIcon.container:click(function()
-                        flat.node.editor.open(
+                        flat.graph.editor.open(
                             Widget.getRoot(),
                             Path.getComponentPath(entityTemplateName, selectedComponentName),
                             'script'

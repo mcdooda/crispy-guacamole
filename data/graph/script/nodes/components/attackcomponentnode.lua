@@ -1,13 +1,13 @@
-local ScriptNode = flat.require 'graph/script/scriptnode'
+local FunctionalScriptNode = flat.require 'graph/script/functionalscriptnode'
 local PinTypes = flat.require 'graph/pintypes'
 
-local AttackComponentNode = ScriptNode:inherit 'Attack Component'
+local AttackComponentNode = FunctionalScriptNode:inherit 'Attack Component'
 
 function AttackComponentNode:buildPins()
     self.rangeInPin = self:addInputPin(PinTypes.NUMBER, 'Range')
     self.cooldownInPin = self:addInputPin(PinTypes.NUMBER, 'Cooldown')
-    self.autoAttackInPin = self:addInputPin(PinTypes.BOOL, 'Auto Attack')
-    self.allowMoveInPin = self:addInputPin(PinTypes.BOOL, 'Allow Move')
+    self.autoAttackInPin = self:addInputPin(PinTypes.BOOLEAN, 'Auto Attack')
+    self.allowMoveInPin = self:addInputPin(PinTypes.BOOLEAN, 'Allow Move')
 
     self.componentOutPin = self:addOutputPin(PinTypes.TABLE, 'Component')
 end

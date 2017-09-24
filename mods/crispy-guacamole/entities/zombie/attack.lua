@@ -1,3 +1,4 @@
+--[[
 local AttackHelper = require 'data/scripts/componenthelpers/attack'
 
 return {
@@ -12,9 +13,10 @@ return {
 		AttackHelper.dealDamageAfterDelay(target, 10, 0.08)
 	end
 }
+--]]
 
---[[
-local component = flat.graph.script.run 'crispy-guacamole/entities/zombie/attack'
+--[[]]
+local component = flat.graph.script.run 'mods/crispy-guacamole/entities/zombie/attack'
 
 function component.attack(zombie)
 	local target = zombie:getAttackTarget()
@@ -24,4 +26,4 @@ function component.attack(zombie)
 end
 
 return component
-]]
+--]]

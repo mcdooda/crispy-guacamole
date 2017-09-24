@@ -12,12 +12,14 @@ void EntityEditorState::enter(Game& game)
 {
 	Super::enter(game);
 
+	game.lua->doFile("data/entityeditor/scripts/init.lua");
+
 	spawnEntity(game);
 
 	setCameraCenter(m_entity.getEntity()->getPosition());
 	setCameraZoom(2.f);
 
-	game.lua->doFile("data/entityeditor/scripts/init.lua");
+	game.lua->doFile("data/entityeditor/scripts/ui.lua");
 }
 
 void EntityEditorState::execute(Game& game)

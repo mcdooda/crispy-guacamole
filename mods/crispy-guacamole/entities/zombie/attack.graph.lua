@@ -1,6 +1,12 @@
 script {
   links = {
     {
+      1,
+      1,
+      6,
+      1,
+    },
+    {
       2,
       1,
       1,
@@ -30,28 +36,37 @@ script {
       name = 'components/attackcomponent',
     },
     {
+      name = 'number',
+      loadArguments = {
+        2,
+      },
+    },
+    {
+      name = 'number',
       loadArguments = {
         1,
       },
-      name = 'number',
     },
     {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
+      name = 'bool',
       loadArguments = {
         true,
       },
-      name = 'bool',
     },
     {
+      name = 'bool',
       loadArguments = {
         false,
       },
-      name = 'bool',
+    },
+    {
+      name = 'script/scriptoutput',
+      loadArguments = {
+        {
+          7,
+          'Table',
+        },
+      },
     },
   },
 }

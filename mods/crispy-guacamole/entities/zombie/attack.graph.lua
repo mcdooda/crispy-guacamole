@@ -1,33 +1,4 @@
 script {
-  nodes = {
-    {
-      name = 'components/attackcomponent',
-    },
-    {
-      initArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      initArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      initArguments = {
-        true,
-      },
-      name = 'bool',
-    },
-    {
-      initArguments = {
-        false,
-      },
-      name = 'bool',
-    },
-  },
   links = {
     {
       2,
@@ -52,6 +23,35 @@ script {
       1,
       1,
       4,
+    },
+  },
+  nodes = {
+    {
+      name = 'components/attackcomponent',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'bool',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'bool',
     },
   },
 }

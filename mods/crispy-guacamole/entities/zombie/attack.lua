@@ -13,4 +13,15 @@ return {
 	end
 }
 
---return flat.node.runScript 'crispy-guacamole/entities/zombie/attack'
+--[[
+local component = flat.graph.script.run 'crispy-guacamole/entities/zombie/attack'
+
+function component.attack(zombie)
+	local target = zombie:getAttackTarget()
+	zombie:lookAtEntity(target)
+	zombie:playAnimation('attack', 1, false)
+	AttackHelper.dealDamageAfterDelay(target, 10, 0.08)
+end
+
+return component
+]]

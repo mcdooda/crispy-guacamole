@@ -8,6 +8,7 @@ function AttackComponentNode:buildPins()
     self.cooldownInPin = self:addInputPin(PinTypes.NUMBER, 'Cooldown')
     self.autoAttackInPin = self:addInputPin(PinTypes.BOOLEAN, 'Auto Attack')
     self.allowMoveInPin = self:addInputPin(PinTypes.BOOLEAN, 'Allow Move')
+    self.attackInPin = self:addInputPin(PinTypes.FUNCTION, 'Attack')
 
     self.componentOutPin = self:addOutputPin(PinTypes.TABLE, 'Component')
 end
@@ -17,12 +18,14 @@ function AttackComponentNode:execute(runtime)
     local attackCooldown = runtime:readPin(self.cooldownInPin)
     local autoAttack = runtime:readPin(self.autoAttackInPin)
     local moveDuringAttack = runtime:readPin(self.allowMoveInPin)
+    local attackFunction = runtime:readPin(self.attackInPin)
 
     local component = {
         attackRange = attackRange,
         attackCooldown = attackCooldown,
         autoAttack = autoAttack,
-        moveDuringAttack = moveDuringAttack
+        moveDuringAttack = moveDuringAttack,
+        attack = attackFunction
     }
 
     runtime:writePin(self.componentOutPin, component)

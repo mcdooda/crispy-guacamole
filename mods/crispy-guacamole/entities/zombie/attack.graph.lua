@@ -30,6 +30,36 @@ script {
       1,
       4,
     },
+    {
+      7,
+      1,
+      1,
+      5,
+    },
+    {
+      7,
+      2,
+      8,
+      4,
+    },
+    {
+      9,
+      1,
+      8,
+      1,
+    },
+    {
+      10,
+      1,
+      8,
+      2,
+    },
+    {
+      11,
+      1,
+      8,
+      3,
+    },
   },
   nodes = {
     {
@@ -66,6 +96,30 @@ script {
           7,
           'Table',
         },
+      },
+    },
+    {
+      name = 'script/function',
+    },
+    {
+      name = 'test',
+    },
+    {
+      name = 'bool',
+      loadArguments = {
+        false,
+      },
+    },
+    {
+      name = 'number',
+      loadArguments = {
+        45,
+      },
+    },
+    {
+      name = 'string',
+      loadArguments = {
+        'Hello World',
       },
     },
   },

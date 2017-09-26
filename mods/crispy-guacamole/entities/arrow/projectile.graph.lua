@@ -1,4 +1,57 @@
 script {
+  nodes = {
+    {
+      name = 'components/projectilecomponent',
+    },
+    {
+      name = 'number',
+      loadArguments = {
+        30,
+      },
+    },
+    {
+      name = 'number',
+      loadArguments = {
+        12,
+      },
+    },
+    {
+      name = 'script/scriptoutput',
+      loadArguments = {
+        {
+          7,
+          'Table',
+        },
+      },
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'entity/spawnentity',
+    },
+    {
+      name = 'string',
+      loadArguments = {
+        'fx_explosion',
+      },
+    },
+    {
+      name = 'script/function',
+    },
+    {
+      name = 'entity/getposition',
+    },
+    {
+      name = 'entity/getheading',
+    },
+    {
+      name = 'entity/despawnentity',
+    },
+    {
+      name = 'entity/isvalidentity',
+    },
+  },
   links = {
     {
       1,
@@ -51,26 +104,26 @@ script {
     {
       8,
       3,
-      9,
-      1,
-    },
-    {
-      8,
-      3,
-      10,
-      1,
-    },
-    {
-      8,
-      3,
       11,
       2,
     },
     {
       8,
+      3,
+      9,
+      1,
+    },
+    {
+      8,
+      3,
+      10,
+      1,
+    },
+    {
+      8,
       4,
-      5,
-      2,
+      12,
+      1,
     },
     {
       9,
@@ -84,55 +137,11 @@ script {
       6,
       4,
     },
-  },
-  nodes = {
     {
-      name = 'components/projectilecomponent',
-    },
-    {
-      loadArguments = {
-        30,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        12,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        {
-          7,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
-    },
-    {
-      name = 'script/condition',
-    },
-    {
-      name = 'entity/spawnentity',
-    },
-    {
-      loadArguments = {
-        'fx_explosion',
-      },
-      name = 'string',
-    },
-    {
-      name = 'script/function',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'entity/getheading',
-    },
-    {
-      name = 'entity/despawnentity',
+      12,
+      1,
+      5,
+      2,
     },
   },
 }

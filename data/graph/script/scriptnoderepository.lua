@@ -10,6 +10,7 @@ return {
     'entity/getattacktarget',
     'entity/getheading',
     'entity/getposition',
+    'entity/isvalidentity',
     'entity/lookatentity',
     'entity/playanimation',
     'entity/spawnentity',

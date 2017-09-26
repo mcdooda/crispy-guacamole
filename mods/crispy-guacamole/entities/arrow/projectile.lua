@@ -1,3 +1,4 @@
+--[[
 return {
 	weight = 30,
 	speed = 12,
@@ -13,3 +14,6 @@ return {
 		return true
 	end
 }
+]]
+
+return flat.graph.script.run 'mods/crispy-guacamole/entities/arrow/projectile'

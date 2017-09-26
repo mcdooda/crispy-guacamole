@@ -8,7 +8,7 @@ function AttackComponentNode:buildPins()
     self.cooldownInPin = self:addInputPin(PinTypes.NUMBER, 'Cooldown')
     self.autoAttackInPin = self:addInputPin(PinTypes.BOOLEAN, 'Auto Attack')
     self.allowMoveInPin = self:addInputPin(PinTypes.BOOLEAN, 'Allow Move')
-    self.attackInPin = self:addInputPin(PinTypes.FUNCTION, 'Attack')
+    self.attackInPin = self:addInputPin(PinTypes.FUNCTION, 'On Attack')
 
     self.componentOutPin = self:addOutputPin(PinTypes.TABLE, 'Component')
 end

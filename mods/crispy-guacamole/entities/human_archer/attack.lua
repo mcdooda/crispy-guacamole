@@ -1,3 +1,4 @@
+--[[
 local ProjectileHelper = require 'data/scripts/componenthelpers/projectile'
 local spawnArrow = ProjectileHelper.createSpawnerFromEntity 'arrow'
 
@@ -23,3 +24,6 @@ return {
 		end)
 	end
 }
+--]]
+
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human_archer/attack'

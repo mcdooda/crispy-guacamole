@@ -41,7 +41,7 @@ template <class T>
 void setEditorMode(lua_State* L)
 {
 	static_assert(std::is_base_of<editor::MapEditorMode, T>::value, "T must inherit from editor::MapEditorMode");
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	editor::MapEditorMode* editorMode = new T(game);
 	states::MapEditorState& editorState = getEditorState(L);
 	editorState.setEditorMode(editorMode);

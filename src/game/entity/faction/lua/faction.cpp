@@ -59,7 +59,7 @@ int open(lua_State* L, const std::string& factionsConfigPath)
 int l_faction(lua_State* L)
 {
 	const char* factionName = luaL_checkstring(L, 1);
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	baseMapState.addFaction(factionName);
 	return 0;
@@ -70,7 +70,7 @@ int l_factionRelation(lua_State* L)
 	const char* faction1Name = luaL_checkstring(L, 1);
 	FactionRelation factionRelation = static_cast<FactionRelation>(luaL_checkinteger(L, 2));
 	const char* faction2Name = luaL_checkstring(L, 3);
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	Faction* faction1 = baseMapState.getFactionByName(faction1Name);
 	luaL_argcheck(L, faction1 != nullptr, 1, "Faction does not exist");

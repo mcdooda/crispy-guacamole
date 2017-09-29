@@ -11,8 +11,7 @@ namespace brush
 {
 namespace lua
 {
-
-int openTilesContainer(lua_State* L);
+int openTilesContainer(flat::Flat& flat);
 
 int l_TilesContainer_eachTile(lua_State* L);
 

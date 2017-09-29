@@ -78,7 +78,7 @@ void BaseState::initLua(Game& game)
 	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-		timer::lua::open(L);
+		timer::lua::open(game);
 		states::lua::game::open(L);
 	}
 }

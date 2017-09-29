@@ -13,8 +13,9 @@ namespace lua
 
 using LuaTimer = flat::lua::SharedCppValue<Timer*>;
 
-int open(lua_State* L)
+int open(Game& game)
 {
+	lua_State* L = game.lua->state;
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	static const luaL_Reg Timer_lib_m[] = {
@@ -23,7 +24,7 @@ int open(lua_State* L)
 		
 		{nullptr, nullptr}
 	};
-	LuaTimer::registerClass("CT.Timer", L, Timer_lib_m);
+	game.lua->registerClass<LuaTimer>("CT.Timer", Timer_lib_m);
 	
 	static const luaL_Reg Timer_lib_s[] = {
 		{"start", l_Timer_start},
@@ -132,7 +133,7 @@ void pushTimer(lua_State* L, Timer* timer)
 
 TimerContainer& getTimerContainer(lua_State* L)
 {
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseState& baseState = game.getStateMachine().getState()->to<states::BaseState>();
 	return baseState.getTimerContainer();
 }

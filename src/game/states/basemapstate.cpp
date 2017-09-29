@@ -48,13 +48,13 @@ void BaseMapState::enter(Game& game)
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-		entity::lua::open(L);
+		entity::lua::open(game);
 		entity::component::lua::open(L, m_componentRegistry);
 		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
 		mod::lua::open(L);
 		map::lua::map::open(L);
-		map::lua::zone::open(L);
-		map::brush::lua::open(L);
+		map::lua::zone::open(game);
+		map::brush::lua::open(game);
 		editor::lua::open(L);
 	}
 	

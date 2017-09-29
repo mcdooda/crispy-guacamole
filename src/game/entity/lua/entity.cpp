@@ -25,8 +25,9 @@ namespace lua
 
 using LuaEntityHandle = flat::lua::SharedCppValue<EntityHandle>;
 
-int open(lua_State* L)
+int open(Game& game)
 {
+	lua_State* L = game.lua->state;
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
 	static const luaL_Reg Entity_lib_m[] = {
@@ -108,8 +109,7 @@ int open(lua_State* L)
 		
 		{nullptr, nullptr}
 	};
-
-	LuaEntityHandle::registerClass("CG.Entity", L, Entity_lib_m);
+	game.lua->registerClass<LuaEntityHandle>("CG.Entity", Entity_lib_m);
 	
 	lua_createtable(L, 0, 3);
 	static const luaL_Reg Entity_lib_f[] = {
@@ -425,7 +425,7 @@ int l_Entity_restrictToZone(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	const char* zoneName = luaL_checkstring(L, 2);
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	map::Map& map = baseMapState.getMap();
 	std::shared_ptr<map::Zone> zone;
@@ -451,7 +451,7 @@ int l_Entity_sleep(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	float duration = static_cast<float>(luaL_checknumber(L, 2));
 
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	const flat::time::Clock& clock = baseMapState.getClock();
 	const float time = clock.getTime();
@@ -694,7 +694,7 @@ int l_Entity_spawn(lua_State* L)
 	// entity template
 	const char* entityTemplateName = luaL_checkstring(L, 1);
 
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 
 	// position (Vector2 or Vector3)
@@ -734,7 +734,7 @@ int l_Entity_setGhostTemplate(lua_State* L)
 {
 	const char* ghostTemplateName = luaL_checkstring(L, 1);
 
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 
 	const std::shared_ptr<const EntityTemplate>& ghostTemplate = baseMapState.getEntityTemplate(game, ghostTemplateName);
@@ -745,7 +745,7 @@ int l_Entity_setGhostTemplate(lua_State* L)
 
 int l_Entity_clearGhostTemplate(lua_State* L)
 {
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	baseMapState.clearGhostTemplate();
 	return 0;

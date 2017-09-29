@@ -50,7 +50,7 @@ int l_Map_getName(lua_State* L)
 int l_Map_load(lua_State* L)
 {
 	std::string mapName = luaL_checkstring(L, 1);
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
 	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
 	bool mapLoaded = baseMapState.loadMap(game, mapName);
@@ -60,7 +60,7 @@ int l_Map_load(lua_State* L)
 
 int l_Map_save(lua_State* L)
 {
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
 	states::MapEditorState& editorState = state->as<states::MapEditorState>();
 	bool mapSaved = editorState.saveMap(game);
@@ -70,7 +70,7 @@ int l_Map_save(lua_State* L)
 
 int l_Map_getNumEntities(lua_State* L)
 {
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
 	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
 	lua_pushinteger(L, baseMapState.getMap().getEntities().size());
@@ -81,7 +81,7 @@ int l_Map_getEntitiesInRange(lua_State* L)
 {
 	flat::Vector2& position = flat::lua::getVector2(L, 1);
 	float range = static_cast<float>(luaL_checknumber(L, 2));
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
 	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
 	const game::map::Map& map = baseMapState.getMap();
@@ -102,7 +102,7 @@ static int locIterateOverSelectedEntities(lua_State*L)
 {
 	luaL_checktype(L, 1, LUA_TNIL);
 
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
 	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
 	const std::vector<entity::Entity*>& selectedEntities = baseMapState.getSelectedEntities();
@@ -132,7 +132,7 @@ int l_Map_eachSelectedEntity(lua_State* L)
 int l_Map_getZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
 	const game::map::Map& map = baseMapState.getMap();
 	std::shared_ptr<Zone> zone;
@@ -155,7 +155,7 @@ int l_Map_setTileZ(lua_State* L)
 {
 	Tile* tile = static_cast<Tile*>(lua_touserdata(L, 1));
 	float z = static_cast<float>(luaL_checknumber(L, 2));
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
 	game::map::Map& map = baseMapState.getMap();
 	tile->setZ(map, z);
@@ -166,7 +166,7 @@ int l_Map_moveTileZBy(lua_State* L)
 {
 	Tile* tile = static_cast<Tile*>(lua_touserdata(L, 1));
 	float dz = static_cast<float>(luaL_checknumber(L, 2));
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
 	game::map::Map& map = baseMapState.getMap();
 	tile->setZ(map, tile->getZ() + dz);

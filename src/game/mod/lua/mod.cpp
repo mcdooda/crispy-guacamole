@@ -26,14 +26,14 @@ int open(lua_State* L)
 
 int l_Mod_getPath(lua_State* L)
 {
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	lua_pushstring(L, game.modPath.c_str());
 	return 1;
 }
 
 int l_Mod_getCurrentMapName(lua_State* L)
 {
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	lua_pushstring(L, game.mapName.c_str());
 	return 1;
 }

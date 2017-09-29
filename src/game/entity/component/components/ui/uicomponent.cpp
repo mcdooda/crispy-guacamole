@@ -34,7 +34,7 @@ void UiComponent::init()
 	// TODO: clean this shit!
 	lua_State* L = getTemplate()->getAddedToMap().getLuaState();
 	FLAT_ASSERT(L != nullptr);
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	m_gameView = &baseMapState.getGameView();
 }

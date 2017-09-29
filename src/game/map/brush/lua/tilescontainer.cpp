@@ -13,18 +13,18 @@ namespace lua
 
 using LuaTilesContainer = flat::lua::SharedCppReference<TilesContainer>;
 
-int openTilesContainer(lua_State* L)
+int openTilesContainer(flat::Flat& flat)
 {
+	lua_State* L = flat.lua->state;
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	// TilesContainer metatable
 	static const luaL_Reg TilesContainer_lib_m[] = {
-		{ "eachTile",    l_TilesContainer_eachTile },
+		{ "eachTile", l_TilesContainer_eachTile },
 
 		{ nullptr, nullptr }
 	};
-
-	LuaTilesContainer::registerClass("CG.TilesContainer", L, TilesContainer_lib_m);
+	flat.lua->registerClass<LuaTilesContainer>("CG.TilesContainer", TilesContainer_lib_m);
 
 	return 0;
 }

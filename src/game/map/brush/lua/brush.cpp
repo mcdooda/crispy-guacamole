@@ -17,8 +17,9 @@ namespace lua
 
 using LuaBrush = flat::lua::SharedCppReference<Brush>;
 
-int open(lua_State* L)
+int open(Game& game)
 {
+	lua_State* L = game.lua->state;
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	// Brush metatable
@@ -30,8 +31,7 @@ int open(lua_State* L)
 
 		{ nullptr, nullptr }
 	};
-
-	LuaBrush::registerClass("CG.Brush", L, Brush_lib_m);
+	game.lua->registerClass<LuaBrush>("CG.Brush", Brush_lib_m);
 
 	// Brush static methods
 	static const luaL_Reg Brush_lib_s[] = {
@@ -44,7 +44,7 @@ int open(lua_State* L)
 	luaL_newlib(L, Brush_lib_s);
 	lua_setglobal(L, "Brush");
 
-	openTilesContainer(L);
+	openTilesContainer(game);
 
 	return 0;
 }
@@ -70,7 +70,7 @@ int l_Brush_getTiles(lua_State* L)
 	Brush& brush = getBrush(L, 1);
 	flat::Vector2& center = flat::lua::getVector2(L, 2);
 	float minEffect = static_cast<float>(luaL_optnumber(L, 3, 0.f));
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	Map& map = baseMapState.getMap();
 	TilesContainer* tilesContainer = new TilesContainer();

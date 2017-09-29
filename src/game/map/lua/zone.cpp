@@ -2,6 +2,7 @@
 #include "../zone.h"
 #include "../tile.h"
 #include "../../entity/lua/entity.h"
+#include "../../game.h"
 
 namespace game
 {
@@ -14,8 +15,9 @@ namespace zone
 
 using LuaZone = flat::lua::SharedCppValue<std::weak_ptr<Zone>>;
 
-int open(lua_State* L)
+int open(Game& game)
 {
+	lua_State* L = game.lua->state;
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	static const luaL_Reg Zone_lib_m[] = {
@@ -28,7 +30,7 @@ int open(lua_State* L)
 
 		{nullptr, nullptr}
 	};
-	LuaZone::registerClass("CG.Zone", L, Zone_lib_m);
+	game.lua->registerClass<LuaZone>("CG.Zone", Zone_lib_m);
 
 	return 0;
 }

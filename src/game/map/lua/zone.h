@@ -5,6 +5,7 @@
 
 namespace game
 {
+class Game;
 namespace map
 {
 class Zone;
@@ -13,7 +14,7 @@ namespace lua
 namespace zone
 {
 
-int open(lua_State* L);
+int open(Game& game);
 
 int l_Zone_eq(lua_State* L);
 

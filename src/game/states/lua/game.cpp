@@ -41,7 +41,7 @@ int l_Game_openMap(lua_State* L)
 {
 	const char* modPath = luaL_checkstring(L, 1);
 	const char* mapName = luaL_checkstring(L, 2);
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	game.modPath = modPath;
 	game.mapName = mapName;
 	std::unique_ptr<GameState> gameState = std::make_unique<GameState>();
@@ -52,7 +52,7 @@ int l_Game_openMap(lua_State* L)
 
 BaseState& getBaseState(lua_State* L)
 {
-	Game& game = flat::lua::getGame(L).to<Game>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
 	return game.getStateMachine().getState()->to<BaseState>();
 }
 

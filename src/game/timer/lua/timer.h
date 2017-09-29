@@ -5,6 +5,7 @@
 
 namespace game
 {
+class Game;
 namespace timer
 {
 class Timer;
@@ -12,7 +13,7 @@ class TimerContainer;
 namespace lua
 {
 
-int open(lua_State* L);
+int open(Game& game);
 
 int l_Timer_start(lua_State* L);
 int l_Timer_stop(lua_State* L);

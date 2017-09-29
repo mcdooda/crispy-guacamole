@@ -5,6 +5,7 @@ struct lua_State;
 
 namespace game
 {
+class Game;
 namespace map
 {
 namespace brush
@@ -13,7 +14,7 @@ class Brush;
 namespace lua
 {
 
-int open(lua_State* L);
+int open(Game& game);
 
 int l_Brush_setRadius(lua_State* L);
 int l_Brush_setEdgeWidth(lua_State* L);

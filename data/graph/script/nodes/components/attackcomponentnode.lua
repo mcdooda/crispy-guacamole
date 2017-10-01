@@ -4,13 +4,13 @@ local PinTypes = flat.require 'graph/pintypes'
 local AttackComponentNode = FunctionalScriptNode:inherit 'Attack Component'
 
 function AttackComponentNode:buildPins()
-    self.rangeInPin = self:addInputPin(PinTypes.NUMBER, 'Range')
-    self.cooldownInPin = self:addInputPin(PinTypes.NUMBER, 'Cooldown')
-    self.autoAttackInPin = self:addInputPin(PinTypes.BOOLEAN, 'Auto Attack')
-    self.allowMoveInPin = self:addInputPin(PinTypes.BOOLEAN, 'Allow Move')
-    self.attackInPin = self:addInputPin(PinTypes.FUNCTION, 'On Attack')
+    self.rangeInPin = self:addInputPin(flat.types.NUMBER, 'Range')
+    self.cooldownInPin = self:addInputPin(flat.types.NUMBER, 'Cooldown')
+    self.autoAttackInPin = self:addInputPin(flat.types.BOOLEAN, 'Auto Attack')
+    self.allowMoveInPin = self:addInputPin(flat.types.BOOLEAN, 'Allow Move')
+    self.attackInPin = self:addInputPin(flat.types.FUNCTION, 'On Attack')
 
-    self.componentOutPin = self:addOutputPin(PinTypes.TABLE, 'Component')
+    self.componentOutPin = self:addOutputPin(flat.types.TABLE, 'Component')
 end
 
 function AttackComponentNode:execute(runtime)

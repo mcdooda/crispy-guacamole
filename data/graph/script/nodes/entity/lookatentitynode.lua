@@ -5,8 +5,8 @@ local LookAtEntityNode = ScriptNode:inherit 'Look At Entity'
 
 function LookAtEntityNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')
-    self.entityInPin = self:addInputPin(PinTypes.USERDATA, 'Entity')
-    self.targetInPin = self:addInputPin(PinTypes.USERDATA, 'Target')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
+    self.targetInPin = self:addInputPin(flat.types['CG.Entity'], 'Target')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
 end

@@ -5,10 +5,10 @@ local PlayAnimationNode = ScriptNode:inherit 'Play Animation'
 
 function PlayAnimationNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')
-    self.entityInPin = self:addInputPin(PinTypes.USERDATA, 'Entity')
-    self.animationNameInPin = self:addInputPin(PinTypes.STRING, 'Animation Name')
-    self.loopCountInPin = self:addInputPin(PinTypes.NUMBER, 'Loop Count')
-    self.yieldInPin = self:addInputPin(PinTypes.BOOLEAN, 'Yield')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
+    self.animationNameInPin = self:addInputPin(flat.types.STRING, 'Animation Name')
+    self.loopCountInPin = self:addInputPin(flat.types.NUMBER, 'Loop Count')
+    self.yieldInPin = self:addInputPin(flat.types.BOOLEAN, 'Yield')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
 end

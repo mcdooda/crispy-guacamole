@@ -24,7 +24,7 @@ int open(Game& game)
 		
 		{nullptr, nullptr}
 	};
-	game.lua->registerClass<LuaTimer>("CT.Timer", Timer_lib_m);
+	game.lua->registerClass<LuaTimer>("CG.Timer", Timer_lib_m);
 	
 	static const luaL_Reg Timer_lib_s[] = {
 		{"start", l_Timer_start},

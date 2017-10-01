@@ -4,9 +4,9 @@ local PinTypes = flat.require 'graph/pintypes'
 local IsValidEntityNode = FunctionalScriptNode:inherit 'Is Valid Entity'
 
 function IsValidEntityNode:buildPins()
-    self.entityInPin = self:addInputPin(PinTypes.USERDATA, 'Entity')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
 
-    self.isValidOutPin = self:addOutputPin(PinTypes.BOOLEAN, 'Is Valid')
+    self.isValidOutPin = self:addOutputPin(flat.types.BOOLEAN, 'Is Valid')
 end
 
 function IsValidEntityNode:execute(runtime)

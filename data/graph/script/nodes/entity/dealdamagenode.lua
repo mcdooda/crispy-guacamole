@@ -7,9 +7,9 @@ local DealDamageNode = ScriptNode:inherit 'Deal Damage'
 
 function DealDamageNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')
-    self.entityInPin = self:addInputPin(PinTypes.USERDATA, 'Entity')
-    self.amountInPin = self:addInputPin(PinTypes.NUMBER, 'Amount')
-    self.delayInPin = self:addInputPin(PinTypes.NUMBER, 'Delay')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
+    self.amountInPin = self:addInputPin(flat.types.NUMBER, 'Amount')
+    self.delayInPin = self:addInputPin(flat.types.NUMBER, 'Delay')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
 end

@@ -5,12 +5,12 @@ local SpawnEntityNode = ScriptNode:inherit 'Spawn Entity'
 
 function SpawnEntityNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')
-    self.entityNameInPin = self:addInputPin(PinTypes.STRING, 'Entity Name')
-    self.positionInPin = self:addInputPin(PinTypes.USERDATA, 'Position')
-    self.headingInPin = self:addInputPin(PinTypes.NUMBER, 'Heading')
+    self.entityNameInPin = self:addInputPin(flat.types.STRING, 'Entity Name')
+    self.positionInPin = self:addInputPin(flat.types['flat.Vector3'], 'Position')
+    self.headingInPin = self:addInputPin(flat.types.NUMBER, 'Heading')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
-    self.entityOutPin = self:addOutputPin(PinTypes.USERDATA, 'Entity')
+    self.entityOutPin = self:addOutputPin(flat.types['CG.Entity'], 'Entity')
 end
 
 function SpawnEntityNode:execute(runtime, inputPin)

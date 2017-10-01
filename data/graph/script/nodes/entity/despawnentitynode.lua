@@ -5,7 +5,7 @@ local DespawnEntityNode = ScriptNode:inherit 'Despawn Entity'
 
 function DespawnEntityNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')
-    self.entityInPin = self:addInputPin(PinTypes.USERDATA, 'Entity')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
 end

@@ -7,11 +7,11 @@ local FireProjectileNode = ScriptNode:inherit 'Fire Projectile'
 
 function FireProjectileNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')
-    self.entityInPin = self:addInputPin(PinTypes.USERDATA, 'Entity')
-    self.targetInPin = self:addInputPin(PinTypes.USERDATA, 'Target')
-    self.projectileNameInPin = self:addInputPin(PinTypes.STRING, 'Projectile')
-    self.attachPointPin = self:addInputPin(PinTypes.STRING, 'Attach Point')
-    self.delayInPin = self:addInputPin(PinTypes.NUMBER, 'Delay')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
+    self.targetInPin = self:addInputPin(flat.types['CG.Entity'], 'Target')
+    self.projectileNameInPin = self:addInputPin(flat.types.STRING, 'Projectile')
+    self.attachPointPin = self:addInputPin(flat.types.STRING, 'Attach Point')
+    self.delayInPin = self:addInputPin(flat.types.NUMBER, 'Delay')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
 end

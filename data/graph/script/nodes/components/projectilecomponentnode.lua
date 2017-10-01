@@ -4,11 +4,11 @@ local PinTypes = flat.require 'graph/pintypes'
 local ProjectileComponentNode = FunctionalScriptNode:inherit 'Projectile Component'
 
 function ProjectileComponentNode:buildPins()
-    self.weightInPin = self:addInputPin(PinTypes.NUMBER, 'Weight')
-    self.speedInPin = self:addInputPin(PinTypes.NUMBER, 'Speed')
-    self.onCollideInPin = self:addInputPin(PinTypes.FUNCTION, 'On Collide')
+    self.weightInPin = self:addInputPin(flat.types.NUMBER, 'Weight')
+    self.speedInPin = self:addInputPin(flat.types.NUMBER, 'Speed')
+    self.onCollideInPin = self:addInputPin(flat.types.FUNCTION, 'On Collide')
 
-    self.componentOutPin = self:addOutputPin(PinTypes.TABLE, 'Component')
+    self.componentOutPin = self:addOutputPin(flat.types.TABLE, 'Component')
 end
 
 function ProjectileComponentNode:execute(runtime)

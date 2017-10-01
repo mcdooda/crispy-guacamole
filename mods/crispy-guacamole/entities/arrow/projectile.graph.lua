@@ -110,7 +110,7 @@ script {
     {
       loadArguments = {
         {
-          7,
+          5,
           'Table',
         },
       },

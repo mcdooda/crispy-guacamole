@@ -4,9 +4,9 @@ local PinTypes = flat.require 'graph/pintypes'
 local GetAttackTargetNode = FunctionalScriptNode:inherit 'Get Attack Target'
 
 function GetAttackTargetNode:buildPins()
-    self.entityInPin = self:addInputPin(PinTypes.USERDATA, 'Entity')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
 
-    self.attackTargetOutPin = self:addOutputPin(PinTypes.USERDATA, 'Attack Target')
+    self.attackTargetOutPin = self:addOutputPin(flat.types['CG.Entity'], 'Attack Target')
 end
 
 function GetAttackTargetNode:execute(runtime)

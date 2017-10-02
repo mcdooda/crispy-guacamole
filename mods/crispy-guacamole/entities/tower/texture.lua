@@ -1,3 +1,3 @@
 return {
-	origin = {17, 57}
+	origin = flat.Vector2(17, 57)
 }

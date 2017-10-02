@@ -17,12 +17,9 @@ void TextureComponentTemplate::load(Game& game, lua_State* L, const std::string&
 	m_texture = game.video->getTexture(entityTemplatePath + "texture.png");
 
 	lua_getfield(L, -1, "origin");
-	lua_rawgeti(L, -1, 1);
-	m_origin.x = static_cast<float>(luaL_checknumber(L, -1));
-	lua_rawgeti(L, -2, 2);
-	m_origin.y = static_cast<float>(luaL_checknumber(L, -1));
+	m_origin = flat::lua::getVector2(L, -1);
 
-	lua_pop(L, 3);
+	lua_pop(L, 1);
 }
 
 } // texture

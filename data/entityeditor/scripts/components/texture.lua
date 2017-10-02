@@ -4,7 +4,7 @@ local Preview = require 'data/scripts/preview'
 return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
     do
         local label = Widget.makeText(
-            'Origin: ' .. componentTemplate.origin[1] .. ', ' .. componentTemplate.origin[2],
+            'Origin: ' .. componentTemplate.origin:x() .. ', ' .. componentTemplate.origin:y(),
             table.unpack(UiSettings.defaultFont)
         )
         label:setMargin(2)

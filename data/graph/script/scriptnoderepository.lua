@@ -3,6 +3,7 @@ return {
     'components/attackcomponent',
     'components/collisioncomponent',
     'components/projectilecomponent',
+    'components/texturecomponent',
 
     -- entity
     'entity/dealdamage',

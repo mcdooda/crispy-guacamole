@@ -1,6 +1,7 @@
 return {
     -- component
     'components/attackcomponent',
+    'components/collisioncomponent',
     'components/projectilecomponent',
 
     -- entity

@@ -162,7 +162,7 @@ script {
       name = 'script/scriptoutput',
       loadArguments = {
         {
-          7,
+          5,
           'Table',
         },
       },

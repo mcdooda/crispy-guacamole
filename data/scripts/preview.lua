@@ -18,7 +18,7 @@ local function setInitBackgroundPosition(preview, spriteComponentTemplate, anima
     local animation = getPreviewAnimation(spriteComponentTemplate, animationName)
     preview:setBackgroundPosition(
         0,
-        (animation.line - 1) / spriteComponentTemplate.size[2]
+        (animation.line - 1) / spriteComponentTemplate.size:y()
     )
 end
 
@@ -26,13 +26,13 @@ local function startEntitySpriteAnimation(preview, imageWidth, spriteComponentTe
     local animation = getPreviewAnimation(spriteComponentTemplate, animationName)
     if animation then
         local frameIndex = 0
-        local y = (animation.line - 1) / spriteComponentTemplate.size[2]
+        local y = (animation.line - 1) / spriteComponentTemplate.size:y()
         local timer = Timer.start(
             animation.frameDuration,
             nil,
             function()
                 frameIndex = (frameIndex + 1) % animation.numFrames
-                local x = frameIndex / spriteComponentTemplate.size[1]
+                local x = frameIndex / spriteComponentTemplate.size:x()
                 preview:setBackgroundPosition(x, y)
             end,
             true
@@ -53,8 +53,8 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, 
     preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
     local imageWidth, imageHeight = Image.getSize(entityAtlasPath)
     preview:setSize(
-        imageWidth / spriteComponentTemplate.size[1],
-        imageHeight / spriteComponentTemplate.size[2]
+        imageWidth / spriteComponentTemplate.size:x(),
+        imageHeight / spriteComponentTemplate.size:y()
     )
     setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
     local stopAnimation

@@ -4,6 +4,9 @@ return {
     'components/collisioncomponent',
     'components/factioncomponent',
     'components/projectilecomponent',
+    'components/spriteanimation',
+    'components/spriteattachpoint',
+    'components/spritecomponent',
     'components/texturecomponent',
 
     -- entity

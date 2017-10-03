@@ -1,6 +1,6 @@
 return {
-	origin = {11, 20},
-	size = {8, 2},
+	origin = flat.Vector2(11, 20),
+	size = flat.Vector2(8, 2),
 	animations = {
 		move = {
 			line = 1,
@@ -14,7 +14,7 @@ return {
 		}
 	},
 	attachPoints = {
-		crossbow = {22, 11}
+		crossbow = flat.Vector2(22, 11)
 	}
 }
 

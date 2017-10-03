@@ -5,7 +5,7 @@ local Icon = require 'data/scripts/ui/icon'
 return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
     do
         local label = Widget.makeText(
-            'Origin: ' .. componentTemplate.origin[1] .. ', ' .. componentTemplate.origin[2],
+            'Origin: ' .. componentTemplate.origin:x() .. ', ' .. componentTemplate.origin:x(),
             table.unpack(UiSettings.defaultFont)
         )
         label:setMargin(2)
@@ -13,7 +13,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
     end
     do
         local label = Widget.makeText(
-            'Size: ' .. componentTemplate.size[1] .. ', ' .. componentTemplate.size[2],
+            'Size: ' .. componentTemplate.size:x() .. ', ' .. componentTemplate.size:y(),
             table.unpack(UiSettings.defaultFont)
         )
         label:setMargin(2)

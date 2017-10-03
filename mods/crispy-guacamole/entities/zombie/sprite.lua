@@ -1,6 +1,7 @@
+--[[
 return {
-	origin = {10.5, 17},
-	size = {10, 4},
+	origin = flat.Vector2(10.5, 17),
+	size = flat.Vector2(10, 4),
 	animations = {
 		spawn = {
 			line = 1,
@@ -24,4 +25,6 @@ return {
 		}
 	}
 }
+]]
 
+return flat.graph.script.run 'mods/crispy-guacamole/entities/zombie/sprite'

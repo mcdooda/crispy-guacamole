@@ -2,6 +2,7 @@ return {
     -- component
     'components/attackcomponent',
     'components/collisioncomponent',
+    'components/factioncomponent',
     'components/projectilecomponent',
     'components/texturecomponent',
 

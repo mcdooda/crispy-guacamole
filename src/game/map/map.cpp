@@ -245,9 +245,12 @@ void Map::updateEntities(float time, float dt)
 
 		// ensure all AABBs are up to date
 #ifdef FLAT_DEBUG
-		flat::AABB2 spriteAABB;
-		entity->getSprite().getAABB(spriteAABB);
-		FLAT_ASSERT(spriteAABB == entity->getAABB());
+		if (entity->hasSprite())
+		{
+			flat::AABB2 spriteAABB;
+			entity->getSprite().getAABB(spriteAABB);
+			FLAT_ASSERT(spriteAABB == entity->getAABB());
+		}
 #endif
 	}
 }

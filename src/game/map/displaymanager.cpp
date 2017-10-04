@@ -32,25 +32,34 @@ DisplayManager::DisplayManager()
 
 void DisplayManager::addEntity(const entity::Entity* entity)
 {
-	entity->updateRenderHash();
-	int cellIndex = m_entityQuadtree->addObject(entity);
-	m_entityCellIndices[entity] = cellIndex;
+	if (entity->hasSprite())
+	{
+		entity->updateRenderHash();
+		int cellIndex = m_entityQuadtree->addObject(entity);
+		m_entityCellIndices[entity] = cellIndex;
+	}
 }
 
 void DisplayManager::removeEntity(const entity::Entity* entity)
 {
-	int cellIndex = m_entityCellIndices[entity];
-	m_entityQuadtree->removeObject(entity, cellIndex);
-	m_entityCellIndices.erase(entity);
+	if (entity->hasSprite())
+	{
+		int cellIndex = m_entityCellIndices[entity];
+		m_entityQuadtree->removeObject(entity, cellIndex);
+		m_entityCellIndices.erase(entity);
+	}
 }
 
 void DisplayManager::updateEntity(const entity::Entity* entity)
 {
-	int cellIndex = m_entityCellIndices[entity];
-	int newCellIndex = m_entityQuadtree->updateObject(entity, cellIndex);
-	if (cellIndex != newCellIndex)
+	if (entity->hasSprite())
 	{
-		m_entityCellIndices[entity] = newCellIndex;
+		int cellIndex = m_entityCellIndices[entity];
+		int newCellIndex = m_entityQuadtree->updateObject(entity, cellIndex);
+		if (cellIndex != newCellIndex)
+		{
+			m_entityCellIndices[entity] = newCellIndex;
+		}
 	}
 }
 

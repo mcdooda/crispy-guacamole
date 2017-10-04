@@ -103,12 +103,6 @@ script {
       1,
     },
     {
-      19,
-      1,
-      1,
-      3,
-    },
-    {
       20,
       1,
       19,
@@ -177,37 +171,37 @@ script {
       name = 'vector2',
     },
     {
+      name = 'number',
       loadArguments = {
         10,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         17,
       },
-      name = 'number',
     },
     {
       name = 'vector2',
     },
     {
+      name = 'number',
       loadArguments = {
         10,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         4,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         10,
       },
-      name = 'number',
     },
     {
       name = 'components/spriteanimation',
@@ -216,57 +210,58 @@ script {
       name = 'components/spriteanimation',
     },
     {
+      name = 'number',
       loadArguments = {
         1,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         1,
       },
-      name = 'number',
     },
     {
+      name = 'string',
       loadArguments = {
         'attack',
       },
-      name = 'string',
     },
     {
+      name = 'number',
       loadArguments = {
         3,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         6,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         1,
       },
-      name = 'number',
     },
     {
+      name = 'script/scriptoutput',
       loadArguments = {
         {
           5,
           'Table',
         },
       },
-      name = 'script/scriptoutput',
     },
     {
+      name = 'string',
       loadArguments = {
         'spawn',
       },
-      name = 'string',
     },
     {
+      name = 'script/array',
       loadArguments = {
         {
           5,
@@ -285,7 +280,6 @@ script {
           'Table',
         },
       },
-      name = 'script/array',
     },
     {
       name = 'components/spriteanimation',
@@ -294,52 +288,52 @@ script {
       name = 'components/spriteanimation',
     },
     {
+      name = 'string',
       loadArguments = {
         'despawn',
       },
-      name = 'string',
     },
     {
+      name = 'string',
       loadArguments = {
         'move',
       },
-      name = 'string',
     },
     {
+      name = 'number',
       loadArguments = {
         4,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         6,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         1,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         2,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         4,
       },
-      name = 'number',
     },
     {
+      name = 'number',
       loadArguments = {
         1,
       },
-      name = 'number',
     },
   },
 }

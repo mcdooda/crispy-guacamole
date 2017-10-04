@@ -9,7 +9,7 @@ function SpriteAnimationNode:buildPins()
     self.numFramesInPin = self:addInputPin(flat.types.NUMBER, 'Frame Count')
     self.frameDurationInPin = self:addInputPin(flat.types.NUMBER, 'Frame Duration')
 
-    self.animationOutPin = self:addOutputPin(flat.types.TABLE, 'Animation')
+    self.animationOutPin = self:addOutputPin(flat.types.TABLE, '')
 end
 
 function SpriteAnimationNode:execute(runtime)

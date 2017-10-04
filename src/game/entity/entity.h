@@ -61,6 +61,7 @@ class Entity final : public map::MapObject
 		
 		inline void setSprite(const flat::render::Sprite& sprite) { m_sprite = &sprite; }
 		inline void clearSprite() { m_sprite = nullptr; }
+		inline bool hasSprite() const { return m_sprite != nullptr; }
 		const flat::render::Sprite& getSprite() const override;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		

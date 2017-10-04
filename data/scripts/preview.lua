@@ -22,28 +22,32 @@ local function setInitBackgroundPosition(preview, spriteComponentTemplate, anima
     )
 end
 
-local function startEntitySpriteAnimation(preview, imageWidth, spriteComponentTemplate, animationName)
+local function startEntitySpriteAnimation(preview, spriteComponentTemplate, animation)
+    local frameIndex = 0
+    local y = (animation.line - 1) / spriteComponentTemplate.size:y()
+    local timer = Timer.start(
+        animation.frameDuration,
+        nil,
+        function()
+            frameIndex = (frameIndex + 1) % animation.numFrames
+            local x = frameIndex / spriteComponentTemplate.size:x()
+            preview:setBackgroundPosition(x, y)
+        end,
+        true
+    )
+
+    local function stopAnimation()
+        timer:stop()
+        setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
+    end
+
+    return stopAnimation
+end
+
+local function startEntitySpriteAnimationByName(preview, spriteComponentTemplate, animationName)
     local animation = getPreviewAnimation(spriteComponentTemplate, animationName)
     if animation then
-        local frameIndex = 0
-        local y = (animation.line - 1) / spriteComponentTemplate.size:y()
-        local timer = Timer.start(
-            animation.frameDuration,
-            nil,
-            function()
-                frameIndex = (frameIndex + 1) % animation.numFrames
-                local x = frameIndex / spriteComponentTemplate.size:x()
-                preview:setBackgroundPosition(x, y)
-            end,
-            true
-        )
-
-        local function stopAnimation()
-            timer:stop()
-            setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
-        end
-
-        return stopAnimation
+        return startEntitySpriteAnimation(preview, spriteComponentTemplate, animation)
     end
 end
 
@@ -59,10 +63,10 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, 
     setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
     local stopAnimation
     if loopForever then
-        startEntitySpriteAnimation(preview, imageWidth, spriteComponentTemplate, animationName)
+        startEntitySpriteAnimationByName(preview, spriteComponentTemplate, animationName)
     else
         preview:mouseEnter(function()
-            stopAnimation = startEntitySpriteAnimation(preview, imageWidth, spriteComponentTemplate, animationName)
+            stopAnimation = startEntitySpriteAnimationByName(preview, spriteComponentTemplate, animationName)
         end)
         preview:mouseLeave(function()
             stopAnimation()
@@ -107,5 +111,6 @@ local function entityPreview(entityTemplateName, animationName, loopForever, sca
 end
 
 return {
-    entity = entityPreview
+    entity = entityPreview,
+    sprite = entitySpritePreview
 }

@@ -158,7 +158,8 @@ do
                         flat.graph.editor.open(
                             Widget.getRoot(),
                             Path.getComponentPath(entityTemplateName, selectedComponentName),
-                            'script'
+                            'script',
+                            { entityTemplateName = entityTemplateName }
                         )
                     end)
                     titleLine:addChild(editComponentIcon.container)

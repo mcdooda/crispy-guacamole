@@ -24,13 +24,16 @@ EntityTemplate::EntityTemplate(Game& game, const component::ComponentRegistry& c
 			int code = luaL_loadfile(L, configPath.c_str());
 			if (code == LUA_OK)
 			{
-				lua_call(L, 0, 1);
-				component::ComponentTemplate* componentTemplate = componentType.loadConfigFile(game, L, path);
-				if (componentTemplate)
+				code = lua_pcall(L, 0, 1, 0);
+				if (code == LUA_OK)
 				{
-					int index = componentType.getComponentTypeId() - 1;
-					m_componentTemplates[index].reset(componentTemplate);
-					m_componentFlags |= componentType.getComponentTypeFlag();
+					component::ComponentTemplate* componentTemplate = componentType.loadConfigFile(game, L, path);
+					if (componentTemplate)
+					{
+						int index = componentType.getComponentTypeId() - 1;
+						m_componentTemplates[index].reset(componentTemplate);
+						m_componentFlags |= componentType.getComponentTypeFlag();
+					}
 				}
 				lua_pop(L, 1); // pop config table
 			}

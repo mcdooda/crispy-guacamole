@@ -1,9 +1,9 @@
 return {
 	maxHealth = 100,
 	spawn = function(zombie)
-		zombie:playAnimation 'spawn'
+		--zombie:playAnimation 'spawn'
 	end,
 	despawn = function(zombie)
-		zombie:playAnimation 'despawn'
+		--zombie:playAnimation 'despawn'
 	end
 }

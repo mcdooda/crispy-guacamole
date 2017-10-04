@@ -24,8 +24,8 @@ end
 function SpriteAnimationNode.update(spriteAnimationNode, nodeWidget, pinsWidget)
     nodeWidget.previewContainer:removeAllChildren()
 
-    -- do not crash but if an error occured while running the graph
-    print(pcall(function()
+    -- do not crash if an error occured while running the graph
+    pcall(function()
         local mainWindow = nodeWidget.mainWindow
         local script = mainWindow.graph
         local scriptRuntime = ScriptRuntime:new(script)
@@ -34,7 +34,6 @@ function SpriteAnimationNode.update(spriteAnimationNode, nodeWidget, pinsWidget)
             local spriteComponentNodeRuntime = scriptRuntime:getNodeRuntime(spriteComponentNode)
             local spriteComponentTemplate = spriteComponentNodeRuntime:tryReadFromOutputPin(spriteComponentNode.componentOutPin)
             if spriteComponentTemplate then
-                flat.dump(spriteComponentTemplate)
                 local spriteAnimationNodeRuntime = scriptRuntime:getNodeRuntime(spriteAnimationNode)
                 local spriteAnimationName = spriteAnimationNodeRuntime:readOptionalPin(spriteAnimationNode.nameInPin)
                 if spriteAnimationName then
@@ -45,7 +44,8 @@ function SpriteAnimationNode.update(spriteAnimationNode, nodeWidget, pinsWidget)
                 end
             end
         end
-    end))
+    end)
+    return true
 end
 
 return SpriteAnimationNode

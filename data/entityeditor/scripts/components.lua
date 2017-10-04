@@ -71,17 +71,19 @@ do
             local componentTab = Widget.makeColumnFlow()
             componentTab:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
             local componentNameLabel = Widget.makeText(componentName, table.unpack(UiSettings.defaultFont))
+            
             if hasComponent then
                 componentNameLabel:setTextColor(componentEnabledColor)
-                if selectedComponentName ~= componentName then
-                    componentTab:click(function()
-                        if currentComponentName ~= componentName then
-                            setComponentTab(currentComponentName, componentName)
-                        end
-                    end)
-                end
             else
                 componentNameLabel:setTextColor(componentDisabledColor)
+            end
+
+            if selectedComponentName ~= componentName then
+                componentTab:click(function()
+                    if currentComponentName ~= componentName then
+                        setComponentTab(currentComponentName, componentName)
+                    end
+                end)
             end
 
             componentTab:setPadding(1, 5, 1, 5)
@@ -107,13 +109,21 @@ do
     local function disableTab(componentName)
         componentTabs[componentName]:setBackgroundColor(0x00000000)
 
-        getEntity():setComponentDebug(Component[componentName], false)
+        local entity = getEntity()
+        local componentFlag = Component[componentName]
+        if entity:hasComponent(componentFlag) then
+            entity:setComponentDebug(componentFlag, false)
+        end
     end
 
     local function enableTab(componentName)
         componentTabs[componentName]:setBackgroundColor(selectedBackgroundColor)
 
-        getEntity():setComponentDebug(Component[componentName], true)
+        local entity = getEntity()
+        local componentFlag = Component[componentName]
+        if entity:hasComponent(componentFlag) then
+            entity:setComponentDebug(componentFlag, true)
+        end
     end
 
     function setComponentTab(previousSelectedComponentName, selectedComponentName)
@@ -129,6 +139,7 @@ do
 
         -- update common information then load custom information from components/<componentName>
         local entity = getEntity()
+        local hasComponent = entity:hasComponent(Component[selectedComponentName])
         do
             selectedComponentPanel:removeAllChildren()
 
@@ -141,7 +152,7 @@ do
                     titleLabel:setMargin(2, 0, 0, 5)
                     titleLine:addChild(titleLabel)
 
-                    local componentEnabled = entity:isComponentEnabled(Component[selectedComponentName])
+                    local componentEnabled = hasComponent and entity:isComponentEnabled(Component[selectedComponentName])
                     local enabledLabel = Widget.makeText('(on)', table.unpack(UiSettings.defaultFont))
                     enabledLabel:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
                     enabledLabel:setTextColor(0xCCCCCCFF)
@@ -167,19 +178,21 @@ do
                     selectedComponentPanel:addChild(titleLine)
                 end
 
-                local componentDetailsPanel = Widget.makeColumnFlow()
-                componentDetailsPanel:setPadding(5)
-                local hasDetails, showComponentDetails = pcall(function()
-                    return require('data/entityeditor/scripts/components/' .. selectedComponentName)
-                end)
-                if hasDetails then
-                    local componentTemplate = Path.requireComponentTemplate(entityTemplateName, selectedComponentName)
-                    showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
-                else
-                    local errorMessage = showComponentDetails
-                    print(errorMessage)
+                if hasComponent then
+                    local componentDetailsPanel = Widget.makeColumnFlow()
+                    componentDetailsPanel:setPadding(5)
+                    local hasDetails, showComponentDetails = pcall(function()
+                        return require('data/entityeditor/scripts/components/' .. selectedComponentName)
+                    end)
+                    if hasDetails then
+                        local componentTemplate = Path.requireComponentTemplate(entityTemplateName, selectedComponentName)
+                        showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
+                    else
+                        local errorMessage = showComponentDetails
+                        print(errorMessage)
+                    end
+                    selectedComponentPanel:addChild(componentDetailsPanel)
                 end
-                selectedComponentPanel:addChild(componentDetailsPanel)
             end
         end
     end

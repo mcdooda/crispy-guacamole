@@ -16,7 +16,7 @@ EntityTemplate::EntityTemplate(Game& game, const component::ComponentRegistry& c
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 		m_componentTemplates.resize(componentRegistry.getNumComponentTypes());
-		componentRegistry.eachComponentType([this, &game, L, &path](const component::ComponentType& componentType)
+		componentRegistry.eachComponentType([this, &game, L, &path, &name](const component::ComponentType& componentType)
 		{
 			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
@@ -34,6 +34,11 @@ EntityTemplate::EntityTemplate(Game& game, const component::ComponentRegistry& c
 						m_componentTemplates[index].reset(componentTemplate);
 						m_componentFlags |= componentType.getComponentTypeFlag();
 					}
+				}
+				else
+				{
+					std::cerr << "Error while loading " << componentType.getConfigName() << " component on " << name << ":" << std::endl
+						<< luaL_checkstring(L, -1) << std::endl << std::endl;
 				}
 				lua_pop(L, 1); // pop config table
 			}

@@ -56,6 +56,8 @@ void BaseMapState::enter(Game& game)
 		map::lua::zone::open(game);
 		map::brush::lua::open(game);
 		editor::lua::open(L);
+
+		flat::lua::doFile(L, "data/common/init.lua");
 	}
 	
 	// ui

@@ -1,1 +1,1 @@
-flat.graph.loadNodeClasses('script', 'data')
+print 'Entity editor mode'

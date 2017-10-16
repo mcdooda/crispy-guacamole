@@ -1,6 +1,6 @@
 return {
-	origin = {9, 21},
-	size = {3, 1},
+	origin = flat.Vector2(9, 21),
+	size = flat.Vector2(3, 1),
 	animations = {
 		move = {
 			line = 1,

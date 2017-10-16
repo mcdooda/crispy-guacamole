@@ -1,3 +1,3 @@
-dofile 'data/game/scripts/init.lua'
+print 'Game mode'
 
-flat.graph.loadNodeClasses('script', 'data')
+dofile 'data/game/scripts/ui.lua'

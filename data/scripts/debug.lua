@@ -25,5 +25,6 @@ end
 
 dofile 'data/scripts/stats.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 dofile 'data/scripts/entitydebug.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
+dofile 'data/scripts/memorysnapshot.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 
 root:addChild(debugContainer)

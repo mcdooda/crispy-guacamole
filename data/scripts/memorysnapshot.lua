@@ -1,0 +1,32 @@
+local Checkbox = require 'data/scripts/ui/checkbox'
+local format = string.format
+
+return function(addContainer, makeSeparator, font)
+	local memorySnapshotContainer = addContainer()
+
+    local snapshot
+
+    local snapshotButton = Widget.makeText('Lua mem snapshot', table.unpack(font))
+    snapshotButton:setTextColor(0x000000FF)
+    snapshotButton:click(function()
+        collectgarbage 'collect'
+        snapshot = flat.lua.snapshot.snapshot()
+        print 'Lua memory snapshot taken'
+    end)
+    memorySnapshotContainer:addChild(snapshotButton)
+
+    local diffButton = Widget.makeText('Diff', table.unpack(font))
+    diffButton:setTextColor(0x000000FF)
+    local diffNumber = 1
+    diffButton:click(function()
+        if snapshot then
+            collectgarbage 'collect'
+            local snapshot2 = flat.lua.snapshot.snapshot()
+            local diffFile = 'snapshotdiff-' .. diffNumber .. '.txt'
+            flat.lua.snapshot.diff(snapshot, snapshot2, diffFile)
+            diffNumber = diffNumber + 1
+            print('Snapshot diff saved to ' .. diffFile)
+        end
+    end)
+    memorySnapshotContainer:addChild(diffButton)
+end

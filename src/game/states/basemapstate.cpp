@@ -107,6 +107,8 @@ void BaseMapState::enter(Game& game)
 #ifdef FLAT_DEBUG
 	}
 #endif
+
+	m_entityTemplateManager.init(game);
 	
 	// level
 	loadMap(game, game.mapName);
@@ -252,7 +254,7 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(game, m_componentRegistry, entityTemplatePath, entityTemplateName);
+	return m_entityTemplateManager.getResource(30.f, game, m_componentRegistry, entityTemplatePath, entityTemplateName);
 }
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
@@ -388,6 +390,7 @@ bool BaseMapState::isMouseOverUi(game::Game& game) const
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
+	m_entityTemplateManager.update();
 	Super::update(game);
 }
 

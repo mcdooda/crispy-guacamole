@@ -1,36 +1,4 @@
 script {
-  nodes = {
-    {
-      name = 'components/collisioncomponent',
-    },
-    {
-      loadArguments = {
-        'sphere',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'bool',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
-    },
-  },
   links = {
     {
       1,
@@ -55,6 +23,38 @@ script {
       1,
       1,
       4,
+    },
+  },
+  nodes = {
+    {
+      name = 'components/collisioncomponent',
+    },
+    {
+      loadArguments = {
+        'sphere',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.01,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'bool',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          'Table',
+        },
+      },
+      name = 'script/scriptoutput',
     },
   },
 }

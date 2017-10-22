@@ -1,4 +1,87 @@
 script {
+  nodes = {
+    {
+      name = 'components/attackcomponent',
+    },
+    {
+      loadArguments = {
+        0.05,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'bool',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'bool',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          'Table',
+        },
+      },
+      name = 'script/scriptoutput',
+    },
+    {
+      name = 'script/function',
+    },
+    {
+      name = 'entity/getattacktarget',
+    },
+    {
+      name = 'entity/lookatentity',
+    },
+    {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        'attack',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'bool',
+    },
+    {
+      name = 'entity/dealdamage',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+  },
   links = {
     {
       1,
@@ -113,89 +196,6 @@ script {
       1,
       14,
       4,
-    },
-  },
-  nodes = {
-    {
-      name = 'components/attackcomponent',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'bool',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'bool',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
-    },
-    {
-      name = 'script/function',
-    },
-    {
-      name = 'entity/getattacktarget',
-    },
-    {
-      name = 'entity/lookatentity',
-    },
-    {
-      name = 'entity/playanimation',
-    },
-    {
-      loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'bool',
-    },
-    {
-      name = 'entity/dealdamage',
-    },
-    {
-      loadArguments = {
-        10,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
     },
   },
 }

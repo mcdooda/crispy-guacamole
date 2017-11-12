@@ -41,21 +41,11 @@ int l_Timer_start(lua_State* L)
 {
 	float timerDuration = static_cast<float>(luaL_checknumber(L, 1));
 	
-	int onUpdate = LUA_NOREF;
-	if (!lua_isnoneornil(L, 2))
-	{
-		luaL_checktype(L, 2, LUA_TFUNCTION);
-		lua_pushvalue(L, 2);
-		onUpdate = luaL_ref(L, LUA_REGISTRYINDEX);
-	}
-	
-	int onEnd = LUA_NOREF;
-	if (!lua_isnoneornil(L, 3))
-	{
-		luaL_checktype(L, 3, LUA_TFUNCTION);
-		lua_pushvalue(L, 3);
-		onEnd = luaL_ref(L, LUA_REGISTRYINDEX);
-	}
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onUpdate;
+	onUpdate.setIfNotNil(L, 2);
+
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onEnd;
+	onEnd.setIfNotNil(L, 3);
 
 	bool loop = lua_toboolean(L, 4) == 1;
 	
@@ -92,10 +82,11 @@ int l_Timer_getElapsedTime(lua_State* L)
 
 void callTimerUpdate(lua_State* L, Timer* timer, float currentTime)
 {
-	int onUpdate = timer->getOnUpdate();
-	if (onUpdate != LUA_NOREF)
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onUpdate = timer->getOnUpdate();
+	if (!onUpdate.isEmpty())
 	{
-		lua_rawgeti(L, LUA_REGISTRYINDEX, onUpdate);
+		onUpdate.push(L);
 		pushTimer(L, timer);
 		float elapsedTime = timer->getElapsedTime(currentTime);
 		lua_pushnumber(L, elapsedTime);
@@ -105,10 +96,11 @@ void callTimerUpdate(lua_State* L, Timer* timer, float currentTime)
 
 void callTimerEnd(lua_State* L, Timer* timer)
 {
-	int onEnd = timer->getOnEnd();
-	if (onEnd != LUA_NOREF)
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onEnd = timer->getOnEnd();
+	if (!onEnd.isEmpty())
 	{
-		lua_rawgeti(L, LUA_REGISTRYINDEX, onEnd);
+		onEnd.push(L);
 		pushTimer(L, timer);
 		lua_call(L, 1, 0);
 	}

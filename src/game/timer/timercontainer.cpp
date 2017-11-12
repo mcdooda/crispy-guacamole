@@ -13,7 +13,7 @@ TimerContainer::~TimerContainer()
 	clearTimers();
 }
 
-Timer* TimerContainer::add(float duration, int onUpdate, int onEnd, bool loop)
+Timer* TimerContainer::add(float duration, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onUpdate, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onEnd, bool loop)
 {
 	const float beginTime = m_clock->getTime();
 	Timer* timer = m_timerPool.create(beginTime, duration, onUpdate, onEnd, loop);

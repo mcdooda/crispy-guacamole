@@ -5,7 +5,7 @@ namespace game
 namespace timer
 {
 
-Timer::Timer(float beginTime, float duration, int onUpdate, int onEnd, bool loop) :
+Timer::Timer(float beginTime, float duration, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onUpdate, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onEnd, bool loop) :
 	m_beginTime(beginTime),
 	m_duration(duration),
 	m_onUpdate(onUpdate),

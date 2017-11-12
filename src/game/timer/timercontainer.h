@@ -24,7 +24,7 @@ class TimerContainer
 		inline void setClock(const std::shared_ptr<flat::time::Clock>& clock) { m_clock = clock; }
 		inline const flat::time::Clock& getClock() const { FLAT_ASSERT(m_clock != nullptr); return *m_clock; }
 		
-		Timer* add(float duration, int onUpdate, int onEnd, bool loop);
+		Timer* add(float duration, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onUpdate, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onEnd, bool loop);
 		bool stop(Timer*& timer);
 		
 		void updateTimers(lua_State* L);

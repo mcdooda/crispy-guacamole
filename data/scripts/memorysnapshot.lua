@@ -22,7 +22,7 @@ return function(addContainer, makeSeparator, font)
         if snapshot then
             collectgarbage 'collect'
             local snapshot2 = flat.lua.snapshot.snapshot()
-            local diffFile = 'snapshotdiff-' .. diffNumber .. '.txt'
+            local diffFile = 'snapshotdiff-' .. diffNumber
             flat.lua.snapshot.diff(snapshot, snapshot2, diffFile)
             diffNumber = diffNumber + 1
             print('Snapshot diff saved to ' .. diffFile)

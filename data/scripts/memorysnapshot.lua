@@ -2,11 +2,11 @@ local Checkbox = require 'data/scripts/ui/checkbox'
 local format = string.format
 
 return function(addContainer, makeSeparator, font)
-	local memorySnapshotContainer = addContainer()
+	local memorySnapshotContainer = addContainer 'Lua Memory'
 
     local snapshot
 
-    local snapshotButton = Widget.makeText('Lua mem snapshot', table.unpack(font))
+    local snapshotButton = Widget.makeText('Take snapshot', table.unpack(font))
     snapshotButton:setTextColor(0x000000FF)
     snapshotButton:click(function()
         collectgarbage 'collect'
@@ -15,7 +15,7 @@ return function(addContainer, makeSeparator, font)
     end)
     memorySnapshotContainer:addChild(snapshotButton)
 
-    local diffButton = Widget.makeText('Diff', table.unpack(font))
+    local diffButton = Widget.makeText('Save diff file', table.unpack(font))
     diffButton:setTextColor(0x000000FF)
     local diffNumber = 1
     diffButton:click(function()

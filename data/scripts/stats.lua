@@ -1,13 +1,12 @@
 return function(addContainer, makeSeparator, font)
 	local format = string.format
 
-	local statsContainer = addContainer()
+	local statsContainer = addContainer 'Stats'
 
 	-- fps
 	do
 		local label = Widget.makeText('X fps', table.unpack(font))
 		label:setTextColor(0x000000FF)
-		label:setMargin(5)
 		statsContainer:addChild(label)
 		
 		local getFrameRate = Time.getFrameRate
@@ -35,7 +34,6 @@ return function(addContainer, makeSeparator, font)
 	do
 		local label = Widget.makeText('X entities', table.unpack(font))
 		label:setTextColor(0x000000FF)
-		label:setMargin(5)
 		statsContainer:addChild(label)
 		
 		Timer.start(0, nil, function()

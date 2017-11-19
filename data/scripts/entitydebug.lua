@@ -3,17 +3,12 @@ local format = string.format
 
 return function(addContainer, makeSeparator, font)
 
-	local entityDebugContainer = addContainer()
+	local entityDebugContainer = addContainer 'Entity'
 
     local checkboxes = {}
 
     -- entity debug
     do
-        local label = Widget.makeText('Entity', table.unpack(font))
-        label:setMargin(3)
-        label:setTextColor(0x000000FF)
-        entityDebugContainer:addChild(label)
-
         local checkbox = Checkbox:new(true, 'Enable debug')
         checkbox:onValueChanged(function(_, value)
             for _, selectedEntity in Map.eachSelectedEntity() do
@@ -51,7 +46,6 @@ return function(addContainer, makeSeparator, font)
     -- component debug
     do
         local label = Widget.makeText('Component', table.unpack(font))
-        label:setMargin(3)
         label:setTextColor(0x000000FF)
         entityDebugContainer:addChild(label)
 

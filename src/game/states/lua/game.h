@@ -17,6 +17,13 @@ int open(lua_State* L);
 
 int l_Game_getTime(lua_State* L);
 
+#ifdef FLAT_DEBUG
+int l_Game_debug_setTimeSpeed(lua_State* L);
+int l_Game_debug_pause(lua_State* L);
+int l_Game_debug_resume(lua_State* L);
+int l_Game_debug_pauseNextFrame(lua_State* L);
+#endif // FLAT_DEBUG
+
 int l_Game_openMap(lua_State* L);
 
 // private

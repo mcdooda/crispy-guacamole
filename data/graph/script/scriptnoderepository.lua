@@ -7,6 +7,7 @@ return {
     'components/lifecomponent',
     'components/movementcomponent',
     'components/projectilecomponent',
+    'components/propcomponent',
     'components/spriteanimation',
     'components/spriteattachpoint',
     'components/spritecomponent',

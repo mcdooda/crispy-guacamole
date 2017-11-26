@@ -5,6 +5,7 @@ return {
     'components/detectioncomponent',
     'components/factioncomponent',
     'components/lifecomponent',
+    'components/movementcomponent',
     'components/projectilecomponent',
     'components/spriteanimation',
     'components/spriteattachpoint',

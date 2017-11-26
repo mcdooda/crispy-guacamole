@@ -170,7 +170,14 @@ do
                             Widget.getRoot(),
                             Path.getComponentPath(entityTemplateName, selectedComponentName),
                             'script',
-                            { entityTemplateName = entityTemplateName }
+                            { entityTemplateName = entityTemplateName },
+                            function()
+                                Game.debug_reloadComponent(entityTemplateName, Component[selectedComponentName])
+                                -- force reload component template
+                                Path.requireComponentTemplate(entityTemplateName, selectedComponentName, true)
+
+                                setComponentTab(selectedComponentName, selectedComponentName)
+                            end
                         )
                     end)
                     titleLine:addChild(editComponentIcon.container)

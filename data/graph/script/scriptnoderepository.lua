@@ -3,6 +3,7 @@ return {
     'components/attackcomponent',
     'components/collisioncomponent',
     'components/factioncomponent',
+    'components/lifecomponent',
     'components/projectilecomponent',
     'components/spriteanimation',
     'components/spriteattachpoint',

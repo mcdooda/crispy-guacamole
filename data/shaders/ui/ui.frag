@@ -2,10 +2,12 @@
 
 uniform sampler2D objectTexture;
 uniform bool textureGiven;
-uniform vec4 color;
 uniform vec4 secondaryColor;
+uniform vec4 globalColor;
+uniform bool vertexColorGiven;
 
 in vec2 uv2;
+in vec4 vertexColor2;
 
 out vec4 outColor;
 
@@ -39,7 +41,11 @@ vec3 lighten(vec3 color)
 
 void main()
 {
-	vec4 inputColor = color;
+	vec4 inputColor = globalColor;
+	if (vertexColorGiven)
+	{
+		inputColor = vertexColor2;
+	}
 	if (textureGiven)
 	{
 		inputColor *= texture(objectTexture, vec2(uv2.x, uv2.y));

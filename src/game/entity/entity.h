@@ -103,6 +103,8 @@ class Entity final : public map::MapObject
 		inline const std::vector<component::Component*>& getComponents() const { return m_components; }
 		inline void removeAllComponents() { m_components.clear(); }
 
+		inline flat::lua::SharedLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
+
 		inline const std::shared_ptr<const EntityTemplate>& getTemplate() const { return m_template; }
 		const std::string& getTemplateName() const;
 

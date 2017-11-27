@@ -32,6 +32,8 @@ public:
 	template <class Func>
 	void eachComponentType(Func func) const;
 
+	const ComponentType& getComponentType(ComponentFlags componentFlag) const;
+
 	// make ComponentRegistry& usable as a Resource constructor parameter
 	bool operator<(const ComponentRegistry& other) const { return this < &other; }
 

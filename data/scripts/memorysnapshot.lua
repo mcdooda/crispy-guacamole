@@ -1,6 +1,3 @@
-local Checkbox = require 'data/scripts/ui/checkbox'
-local format = string.format
-
 return function(addContainer, makeSeparator, font)
 	local memorySnapshotContainer = addContainer 'Lua Memory'
 

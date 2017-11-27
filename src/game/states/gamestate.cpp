@@ -110,29 +110,9 @@ void GameState::execute(Game& game)
 	{
 		return reloadToState<GameState>(game);
 	}
-	else if (keyboard->isJustPressed(K(F8)))
-	{
-		flat::time::Clock& clock = getClock();
-		clock.setDTModifier(clock.getDTModifier() * 0.5f);
-	}
-	else if (keyboard->isJustPressed(K(F9)))
-	{
-		flat::time::Clock& clock = getClock();
-		clock.setDTModifier(clock.getDTModifier() * 2.f);
-	}
-	else if (keyboard->isJustPressed(K(F10)))
-	{
-		toggleGamePause(game);
-	}
-	else if (keyboard->isJustPressed(K(F11)))
-	{
-		setGamePause(game, false);
-		m_pauseNextFrame = true;
-	}
 	else if (m_pauseNextFrame)
 	{
-		setGamePause(game, true);
-		m_pauseNextFrame = false;
+		setGamePause(game, true, false);
 	}
 
 	std::vector<entity::Entity*>& entitiesToDebug = m_selectedEntities.empty() ? getMap().getEntities() : m_selectedEntities;
@@ -254,8 +234,10 @@ void GameState::moveToFormation(Game& game)
 }
 
 #ifdef FLAT_DEBUG
-void GameState::setGamePause(Game& game, bool pause)
+void GameState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 {
+	m_pauseNextFrame = pauseNextFrame;
+
 	if (m_gamePaused == pause)
 	{
 		return;
@@ -272,20 +254,6 @@ void GameState::setGamePause(Game& game, bool pause)
 	{
 		clock.resume();
 	}
-}
-
-void GameState::toggleGamePause(Game& game)
-{
-	setGamePause(game, !m_gamePaused);
-#ifdef FLAT_DEBUG
-	if (!m_gamePaused)
-	{
-		for (entity::Entity* entity : getMap().getEntities())
-		{
-			entity->setDebugBreak(false);
-		}
-	}
-#endif
 }
 #endif
 

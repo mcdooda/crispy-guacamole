@@ -50,6 +50,12 @@ void ComponentRegistry::registerComponentTypes()
 	registerComponentType<prop::PropComponent>();
 }
 
+const ComponentType& ComponentRegistry::getComponentType(ComponentFlags componentFlag) const
+{
+	ComponentTypeId componentTypeId = log2(componentFlag);
+	return *m_componentTypes[componentTypeId - 1].get();
+}
+
 } // component
 } // entity
 } // game

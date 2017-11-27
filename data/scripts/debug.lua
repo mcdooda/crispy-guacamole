@@ -2,8 +2,6 @@ if not flat.debug then
     return
 end
 
-print 'Debug Enabled'
-
 local UiSettings = require 'data/scripts/ui/uisettings'
 
 local root = Widget.getRoot()
@@ -26,16 +24,16 @@ local function addContainer(title)
         local collapseButton = Widget.makeText(title, table.unpack(UiSettings.defaultFont))
         collapseButton:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP)
         collapseButton:setTextColor(0x000000FF)
-        collapseButton:click(function()
-            if visible then
-                widget:removeChild(container)
-            else
-                widget:addChild(container)
-            end
-            visible = not visible
-        end)
         collapseButtonContainer:addChild(collapseButton)
     end
+    collapseButtonContainer:click(function()
+        if visible then
+            widget:removeChild(container)
+        else
+            widget:addChild(container)
+        end
+        visible = not visible
+    end)
     widget:addChild(collapseButtonContainer)
 
     debugContainer:addChild(widget)
@@ -50,5 +48,6 @@ end
 dofile 'data/scripts/stats.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 dofile 'data/scripts/entitydebug.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 dofile 'data/scripts/memorysnapshot.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
+dofile 'data/scripts/gamespeed.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 
 root:addChild(debugContainer)

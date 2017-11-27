@@ -46,7 +46,6 @@ class BaseState : public flat::state::StateImpl<Game>
 	protected:
 		// rendering
 		flat::render::ProgramSettings m_uiRender;
-		flat::render::ProgramSettings m_textRender;
 
 		// time
 		std::shared_ptr<flat::time::Clock> m_clock;

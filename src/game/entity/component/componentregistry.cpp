@@ -52,7 +52,7 @@ void ComponentRegistry::registerComponentTypes()
 
 const ComponentType& ComponentRegistry::getComponentType(ComponentFlags componentFlag) const
 {
-	ComponentTypeId componentTypeId = log2(componentFlag);
+	ComponentTypeId componentTypeId = static_cast<ComponentTypeId>(std::log2(componentFlag));
 	return *m_componentTypes[componentTypeId - 1].get();
 }
 

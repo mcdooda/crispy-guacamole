@@ -87,7 +87,7 @@ FLAT_OPTIMIZE_OFF()
 int l_Game_debug_reloadComponent(lua_State* L)
 {
 	std::string entityTemplateName = luaL_checkstring(L, 1);
-	entity::component::ComponentFlags componentFlag = luaL_checkinteger(L, 2);
+	entity::component::ComponentFlags componentFlag = static_cast<entity::component::ComponentFlags>(luaL_checkinteger(L, 2));
 	GameState& gameState = getBaseState(L).as<GameState>();
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = gameState.getEntityTemplate(game, entityTemplateName);

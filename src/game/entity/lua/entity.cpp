@@ -254,7 +254,7 @@ int l_Entity_getExtraData(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	const char* key = luaL_optstring(L, 2, nullptr);
 
-	flat::lua::SharedLuaReference<LUA_TTABLE>& extraData = entity.getExtraData();
+	flat::lua::UniqueLuaReference<LUA_TTABLE>& extraData = entity.getExtraData();
 	if (!extraData)
 	{
 		lua_createtable(L, 0, 1);
@@ -672,12 +672,12 @@ int l_Entity_healthChanged(lua_State* L)
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	luaL_checktype(L, 2, LUA_TFUNCTION);
 	FLAT_ASSERT(L == flat::lua::getMainThread(L));
-	flat::lua::SharedLuaReference<LUA_TFUNCTION> healthChangedCallbackRef(L, 2);
+	int callbackIndex = lifeComponent.addHealthChangedCallback(L, 2);
 	lifeComponent.healthChanged.on(
-		[L, healthChangedCallbackRef, &lifeComponent](int previousHealth)
+		[L, &lifeComponent, callbackIndex](int previousHealth)
 		{
 			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-			healthChangedCallbackRef.push(L);
+			lifeComponent.pushHealthChangedCallback(L, callbackIndex);
 			lua_pushinteger(L, previousHealth);
 			lua_pushinteger(L, lifeComponent.getHealth());
 			lua_pushinteger(L, lifeComponent.getMaxHealth());

@@ -36,7 +36,7 @@ class UiComponent : public ComponentImpl<UiComponentTemplate>
 
 		flat::sharp::ui::WidgetFactory& getWidgetFactory() const;
 
-		void triggerCallback(const flat::lua::SharedLuaReference<LUA_TFUNCTION>& function);
+		void triggerCallback(const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& function);
 
 	private:
 		std::shared_ptr<flat::sharp::ui::Widget> m_widget;

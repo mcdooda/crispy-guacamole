@@ -144,7 +144,7 @@ flat::sharp::ui::WidgetFactory& UiComponent::getWidgetFactory() const
 	return getTemplate()->getWidgetFactory();
 }
 
-void UiComponent::triggerCallback(const flat::lua::SharedLuaReference<LUA_TFUNCTION>& function)
+void UiComponent::triggerCallback(const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& function)
 {
 	if (function.isEmpty())
 	{

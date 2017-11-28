@@ -103,7 +103,7 @@ class Entity final : public map::MapObject
 		inline const std::vector<component::Component*>& getComponents() const { return m_components; }
 		inline void removeAllComponents() { m_components.clear(); }
 
-		inline flat::lua::SharedLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
+		inline flat::lua::UniqueLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
 
 		inline const std::shared_ptr<const EntityTemplate>& getTemplate() const { return m_template; }
 		const std::string& getTemplateName() const;
@@ -167,7 +167,7 @@ class Entity final : public map::MapObject
 		float m_heading;
 		float m_elevation;
 
-		flat::lua::SharedLuaReference<LUA_TTABLE> m_extraData;
+		flat::lua::UniqueLuaReference<LUA_TTABLE> m_extraData;
 		
 		map::Map* m_map;
 		map::Tile* m_tile;

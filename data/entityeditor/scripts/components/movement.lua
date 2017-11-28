@@ -28,6 +28,14 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
         componentDetailsPanel:addChild(label)
     end
     do
+        local label = Widget.makeText(
+            'Snap to ground: ' .. (componentTemplate.snapToGround and 'true' or 'false'),
+            table.unpack(UiSettings.defaultFont)
+        )
+        label:setMargin(2)
+        componentDetailsPanel:addChild(label)
+    end
+    do
         local jumpLine = Widget.makeLineFlow()
         jumpLine:setMargin(2)
 

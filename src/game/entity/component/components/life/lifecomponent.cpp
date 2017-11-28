@@ -70,6 +70,19 @@ void LifeComponent::dealDamage(int damage)
 	}
 }
 
+int LifeComponent::addHealthChangedCallback(lua_State* L, int index)
+{
+	int callbackIndex = static_cast<int>(m_healthChangedRefs.size());
+	m_healthChangedRefs.emplace_back();
+	m_healthChangedRefs.back().set(L, index);
+	return callbackIndex;
+}
+
+void LifeComponent::pushHealthChangedCallback(lua_State* L, int callbackIndex) const
+{
+	m_healthChangedRefs[callbackIndex].push(L);
+}
+
 bool LifeComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);

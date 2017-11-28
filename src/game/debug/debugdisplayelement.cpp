@@ -61,7 +61,7 @@ void DebugDisplayText::draw(const flat::render::RenderSettings& renderSettings) 
 	renderSettings.secondaryColorUniform.set(m_backgroundColor);
 
 	glEnableVertexAttribArray(renderSettings.positionAttribute);
-	glVertexAttribPointer(renderSettings.positionAttribute, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const float*>(&(getVertices()[0])));
+	glVertexAttribPointer(renderSettings.positionAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(flat::video::Color), reinterpret_cast<const float*>(&(getVertices()[0])));
 
 	glEnableVertexAttribArray(renderSettings.uvAttribute);
 	glVertexAttribPointer(renderSettings.uvAttribute, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const float*>(&(getUv()[0])));

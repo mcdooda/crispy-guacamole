@@ -28,8 +28,16 @@ class EntityTemplate final
 
 		template <class ComponentType>
 		inline const typename ComponentType::TemplateType* getComponentTemplate() const;
+
+#ifdef FLAT_DEBUG
+		void reloadComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag) const;
+#endif
+
+	private:
+		component::ComponentTemplate* loadComponentTemplate(Game& game, const component::ComponentType& componentType) const;
 	
 	private:
+		std::string m_path;
 		std::string m_name;
 		std::vector<std::unique_ptr<component::ComponentTemplate>> m_componentTemplates;
 		component::ComponentFlags m_componentFlags;

@@ -46,13 +46,17 @@ local function getComponentPath(entityTemplateName, componentTemplateName)
     return getEntityFilePath(entityTemplateName, componentTemplateName)
 end
 
-local function requireComponentTemplate(entityTemplateName, componentTemplateName)
-    return require(getComponentPath(entityTemplateName, componentTemplateName))
+local function requireComponentTemplate(entityTemplateName, componentTemplateName, forceReload)
+    local componentPath = getComponentPath(entityTemplateName, componentTemplateName)
+    if forceReload then
+        package.loaded[componentPath] = nil
+    end
+    return require(componentPath)
 end
 
-local function requireComponentTemplateIfExists(entityTemplateName, componentTemplateName)
+local function requireComponentTemplateIfExists(entityTemplateName, componentTemplateName, forceReload)
     local componentExists, componentTemplate = pcall(function()
-        return requireComponentTemplate(entityTemplateName, componentTemplateName)
+        return requireComponentTemplate(entityTemplateName, componentTemplateName, forceReload)
     end)
     if componentExists then
         return componentTemplate

@@ -19,18 +19,18 @@ class UiComponentTemplate : public ComponentTemplate
 
 		inline flat::sharp::ui::WidgetFactory& getWidgetFactory() const { return *m_widgetFactory; }
 
-		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getAddedToMap() const { return m_addedToMap; }
-		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getRemovedFromMap() const { return m_removedFromMap; }
-		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelected() const { return m_selected; }
-		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getDeselected() const { return m_deselected; }
+		inline const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& getAddedToMap() const { return m_addedToMap; }
+		inline const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& getRemovedFromMap() const { return m_removedFromMap; }
+		inline const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& getSelected() const { return m_selected; }
+		inline const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& getDeselected() const { return m_deselected; }
 
 	private:
 		flat::sharp::ui::WidgetFactory* m_widgetFactory; // give access to UiComponent
 
-		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_addedToMap;
-		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_removedFromMap;
-		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_selected;
-		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_deselected;
+		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_addedToMap;
+		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_removedFromMap;
+		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_selected;
+		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_deselected;
 };
 
 } // ui

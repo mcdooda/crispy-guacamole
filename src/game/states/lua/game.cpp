@@ -1,6 +1,8 @@
 #include "game.h"
 #include "../gamestate.h"
 #include "../../game.h"
+#include "../../entity/component/componenttype.h"
+#include "../../entity/entitytemplate.h"
 
 namespace game
 {
@@ -20,13 +22,15 @@ int open(lua_State* L)
 		{"getTime",      l_Game_getTime},
 
 #ifdef FLAT_DEBUG
-		{"debug_setTimeSpeed",   l_Game_debug_setTimeSpeed},
-		{"debug_pause",          l_Game_debug_pause},
-		{"debug_resume",         l_Game_debug_resume},
-		{"debug_pauseNextFrame", l_Game_debug_pauseNextFrame},
+		{"debug_setTimeSpeed",    l_Game_debug_setTimeSpeed},
+		{"debug_pause",           l_Game_debug_pause},
+		{"debug_resume",          l_Game_debug_resume},
+		{"debug_pauseNextFrame",  l_Game_debug_pauseNextFrame},
+
+		{"debug_reloadComponent", l_Game_debug_reloadComponent},
 #endif
 
-		{"openMap",      l_Game_openMap},
+		{"openMap",               l_Game_openMap},
 
 		{nullptr, nullptr}
 	};
@@ -78,6 +82,19 @@ int l_Game_debug_pauseNextFrame(lua_State* L)
 	gameState.setGamePause(game, false, true);
 	return 0;
 }
+
+FLAT_OPTIMIZE_OFF()
+int l_Game_debug_reloadComponent(lua_State* L)
+{
+	std::string entityTemplateName = luaL_checkstring(L, 1);
+	entity::component::ComponentFlags componentFlag = static_cast<entity::component::ComponentFlags>(luaL_checkinteger(L, 2));
+	GameState& gameState = getBaseState(L).as<GameState>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	std::shared_ptr<const entity::EntityTemplate> entityTemplate = gameState.getEntityTemplate(game, entityTemplateName);
+	entityTemplate->reloadComponent(game, gameState.getComponentRegistry(), componentFlag);
+	return 0;
+}
+FLAT_OPTIMIZE_ON()
 #endif // FLAT_DEBUG
 
 int l_Game_openMap(lua_State* L)

@@ -2,8 +2,12 @@ return {
     -- component
     'components/attackcomponent',
     'components/collisioncomponent',
+    'components/detectioncomponent',
     'components/factioncomponent',
+    'components/lifecomponent',
+    'components/movementcomponent',
     'components/projectilecomponent',
+    'components/propcomponent',
     'components/spriteanimation',
     'components/spriteattachpoint',
     'components/spritecomponent',

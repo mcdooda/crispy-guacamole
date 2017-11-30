@@ -5,8 +5,6 @@ local LifeComponentNode = FunctionalScriptNode:inherit 'Life Component'
 
 function LifeComponentNode:buildPins()
     self.maxHealthInPin = self:addInputPin(flat.types.NUMBER, 'Max Health')
-    self.spawnInPin = self:addInputPin(flat.types.FUNCTION, 'On Spawn')
-    self.despawnInPin = self:addInputPin(flat.types.FUNCTION, 'On Despawn')
 
     self.componentOutPin = self:addOutputPin(flat.types.TABLE, 'Component')
     self.onSpawnOutPin = self:addOutputPin(PinTypes.IMPULSE, 'On Spawn')

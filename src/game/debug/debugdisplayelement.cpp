@@ -49,7 +49,7 @@ DebugDisplayText::DebugDisplayText(const flat::Vector2& pos, const std::string& 
 {
 	flat::translateBy(m_transform, pos);
 	flat::scaleBy(m_transform, 0.5f);
-	setText(text);
+	setText(text, m_color);
 }
 
 void DebugDisplayText::draw(const flat::render::RenderSettings& renderSettings) const
@@ -57,19 +57,22 @@ void DebugDisplayText::draw(const flat::render::RenderSettings& renderSettings) 
 	renderSettings.textureUniform.set(getFont()->getAtlasId());
 	renderSettings.modelMatrixUniform.set(m_transform);
 
-	renderSettings.colorUniform.set(m_color);
 	renderSettings.secondaryColorUniform.set(m_backgroundColor);
 
 	glEnableVertexAttribArray(renderSettings.positionAttribute);
-	glVertexAttribPointer(renderSettings.positionAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(flat::video::Color), reinterpret_cast<const float*>(&(getVertices()[0])));
+	glVertexAttribPointer(renderSettings.positionAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(CharacterVertex), reinterpret_cast<const float*>(&(getVertices()[0])));
 
 	glEnableVertexAttribArray(renderSettings.uvAttribute);
 	glVertexAttribPointer(renderSettings.uvAttribute, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const float*>(&(getUv()[0])));
+
+	glEnableVertexAttribArray(renderSettings.colorAttribute);
+	glVertexAttribPointer(renderSettings.colorAttribute, 4, GL_FLOAT, GL_FALSE, sizeof(CharacterVertex), reinterpret_cast<const float*>(&(getVertices()[0].color)));
 
 	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(getUv().size()));
 
 	glDisableVertexAttribArray(renderSettings.positionAttribute);
 	glDisableVertexAttribArray(renderSettings.uvAttribute);
+	glDisableVertexAttribArray(renderSettings.colorAttribute);
 }
 
 } // debug

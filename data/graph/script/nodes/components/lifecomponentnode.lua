@@ -9,17 +9,24 @@ function LifeComponentNode:buildPins()
     self.despawnInPin = self:addInputPin(flat.types.FUNCTION, 'On Despawn')
 
     self.componentOutPin = self:addOutputPin(flat.types.TABLE, 'Component')
+    self.onSpawnOutPin = self:addOutputPin(PinTypes.IMPULSE, 'On Spawn')
+    self.onDespawnOutPin = self:addOutputPin(PinTypes.IMPULSE, 'On Despawn')
+    self.entityOutPin = self:addOutputPin(flat.types['CG.Entity'], 'Entity')
 end
 
 function LifeComponentNode:execute(runtime)
     local maxHealth = runtime:readPin(self.maxHealthInPin)
-    local spawn = runtime:readPin(self.spawnInPin)
-    local despawn = runtime:readPin(self.despawnInPin)
 
     local component = {
         maxHealth = maxHealth,
-        spawn = spawn,
-        despawn = despawn
+        spawn = function(entity)
+            runtime:writePin(self.entityOutPin, entity)
+            runtime:impulse(self.onSpawnOutPin)
+        end,
+        despawn = function(entity)
+            runtime:writePin(self.entityOutPin, entity)
+            runtime:impulse(self.onDespawnOutPin)
+        end
     }
 
     runtime:writePin(self.componentOutPin, component)

@@ -83,7 +83,6 @@ int l_Game_debug_pauseNextFrame(lua_State* L)
 	return 0;
 }
 
-FLAT_OPTIMIZE_OFF()
 int l_Game_debug_reloadComponent(lua_State* L)
 {
 	std::string entityTemplateName = luaL_checkstring(L, 1);
@@ -94,7 +93,6 @@ int l_Game_debug_reloadComponent(lua_State* L)
 	entityTemplate->reloadComponent(game, gameState.getComponentRegistry(), componentFlag);
 	return 0;
 }
-FLAT_OPTIMIZE_ON()
 #endif // FLAT_DEBUG
 
 int l_Game_openMap(lua_State* L)

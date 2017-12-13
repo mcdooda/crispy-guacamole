@@ -7,6 +7,30 @@ script {
       1,
     },
     {
+      1,
+      2,
+      5,
+      1,
+    },
+    {
+      1,
+      3,
+      10,
+      1,
+    },
+    {
+      1,
+      4,
+      5,
+      2,
+    },
+    {
+      1,
+      4,
+      10,
+      2,
+    },
+    {
       3,
       1,
       1,
@@ -15,20 +39,8 @@ script {
     {
       4,
       1,
-      1,
-      2,
-    },
-    {
-      4,
-      2,
+      10,
       5,
-      1,
-    },
-    {
-      4,
-      3,
-      5,
-      2,
     },
     {
       6,
@@ -51,20 +63,8 @@ script {
     {
       9,
       1,
-      1,
-      3,
-    },
-    {
-      9,
-      2,
       10,
-      1,
-    },
-    {
-      9,
-      3,
-      10,
-      2,
+      4,
     },
     {
       11,
@@ -72,85 +72,67 @@ script {
       10,
       3,
     },
-    {
-      12,
-      1,
-      10,
-      4,
-    },
-    {
-      13,
-      1,
-      10,
-      5,
-    },
   },
   nodes = {
     {
       name = 'components/lifecomponent',
     },
     {
-      name = 'script/scriptoutput',
       loadArguments = {
         {
           5,
           'Table',
         },
       },
+      name = 'script/scriptoutput',
     },
     {
-      name = 'number',
       loadArguments = {
         100,
       },
+      name = 'number',
     },
     {
-      name = 'script/function',
+      loadArguments = {
+        true,
+      },
+      name = 'bool',
     },
     {
       name = 'entity/playanimation',
     },
     {
-      name = 'string',
       loadArguments = {
         'spawn',
       },
+      name = 'string',
     },
     {
-      name = 'number',
       loadArguments = {
         1,
       },
+      name = 'number',
     },
     {
-      name = 'bool',
       loadArguments = {
         true,
       },
+      name = 'bool',
     },
     {
-      name = 'script/function',
+      loadArguments = {
+        1,
+      },
+      name = 'number',
     },
     {
       name = 'entity/playanimation',
     },
     {
-      name = 'string',
       loadArguments = {
         'despawn',
       },
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        1,
-      },
-    },
-    {
-      name = 'bool',
-      loadArguments = {
-        true,
-      },
+      name = 'string',
     },
   },
 }

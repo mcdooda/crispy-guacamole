@@ -15,19 +15,19 @@ DebugDisplay::DebugDisplay()
 	// line shader
 	m_lineProgram.load("data/shaders/debug/debugline.frag", "data/shaders/debug/debugline.vert");
 	m_lineProgramRenderSettings.viewProjectionMatrixUniform = m_lineProgram.getUniform<flat::Matrix4>("vpMatrix");
-	m_lineProgramRenderSettings.positionAttribute = m_lineProgram.getAttribute("position");
-	m_lineProgramRenderSettings.colorAttribute = m_lineProgram.getAttribute("color");
+	m_lineProgramRenderSettings.positionAttribute           = m_lineProgram.getAttribute("position");
+	m_lineProgramRenderSettings.colorAttribute              = m_lineProgram.getAttribute("color");
 
 	// text shader
 	m_textProgram.load("data/shaders/debug/debugtext.frag", "data/shaders/debug/debugtext.vert");
 	m_textProgramRenderSettings.viewProjectionMatrixUniform = m_textProgram.getUniform<flat::Matrix4>("vpMatrix");
 	m_textProgramRenderSettings.modelMatrixUniform          = m_textProgram.getUniform<flat::Matrix4>("modelMatrix");
 	m_textProgramRenderSettings.textureUniform              = m_textProgram.getUniform<flat::video::Texture>("fontTexture");
-	m_textProgramRenderSettings.colorUniform                = m_textProgram.getUniform<flat::video::Color>("color");
 	m_textProgramRenderSettings.secondaryColorUniform       = m_textProgram.getUniform<flat::video::Color>("backgroundColor");
 
 	m_textProgramRenderSettings.positionAttribute = m_textProgram.getAttribute("position");
 	m_textProgramRenderSettings.uvAttribute       = m_textProgram.getAttribute("uv");
+	m_textProgramRenderSettings.colorAttribute    = m_textProgram.getAttribute("color");
 }
 
 void DebugDisplay::loadResources(Game& game)

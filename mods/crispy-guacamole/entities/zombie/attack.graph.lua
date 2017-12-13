@@ -4,40 +4,43 @@ script {
       name = 'components/attackcomponent',
     },
     {
-      loadArguments = {
-        0.05,
-      },
       name = 'number',
+      loadArguments = {
+        0.050000000745058,
+      },
     },
     {
+      name = 'number',
       loadArguments = {
         1,
       },
-      name = 'number',
     },
     {
+      name = 'bool',
       loadArguments = {
         true,
       },
-      name = 'bool',
     },
     {
+      name = 'bool',
       loadArguments = {
         false,
       },
-      name = 'bool',
     },
     {
+      name = 'script/scriptoutput',
       loadArguments = {
         {
           5,
           'Table',
         },
       },
-      name = 'script/scriptoutput',
     },
     {
-      name = 'script/function',
+      name = 'number',
+      loadArguments = {
+        0,
+      },
     },
     {
       name = 'entity/getattacktarget',
@@ -49,37 +52,31 @@ script {
       name = 'entity/playanimation',
     },
     {
+      name = 'string',
       loadArguments = {
         'attack',
       },
-      name = 'string',
     },
     {
+      name = 'number',
       loadArguments = {
         1,
       },
-      name = 'number',
     },
     {
+      name = 'bool',
       loadArguments = {
         false,
       },
-      name = 'bool',
     },
     {
       name = 'entity/dealdamage',
     },
     {
+      name = 'number',
       loadArguments = {
         10,
       },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
     },
   },
   links = {
@@ -90,70 +87,70 @@ script {
       1,
     },
     {
-      2,
       1,
-      1,
-      1,
-    },
-    {
-      3,
-      1,
-      1,
-      2,
-    },
-    {
-      4,
-      1,
-      1,
-      3,
-    },
-    {
-      5,
-      1,
-      1,
-      4,
-    },
-    {
-      7,
-      1,
-      1,
-      5,
-    },
-    {
-      7,
       2,
       9,
       1,
     },
     {
-      7,
+      1,
+      3,
+      9,
+      2,
+    },
+    {
+      1,
       3,
       8,
       1,
     },
     {
-      7,
-      3,
-      9,
-      2,
-    },
-    {
-      7,
+      1,
       3,
       10,
       2,
     },
     {
-      8,
+      2,
       1,
-      9,
+      1,
+      1,
+    },
+    {
       3,
+      1,
+      1,
+      2,
+    },
+    {
+      4,
+      1,
+      1,
+      3,
+    },
+    {
+      5,
+      1,
+      1,
+      4,
+    },
+    {
+      7,
+      1,
+      14,
+      4,
     },
     {
       8,
       1,
       14,
       2,
+    },
+    {
+      8,
+      1,
+      9,
+      3,
     },
     {
       9,
@@ -190,12 +187,6 @@ script {
       1,
       14,
       3,
-    },
-    {
-      16,
-      1,
-      14,
-      4,
     },
   },
 }

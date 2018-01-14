@@ -1,4 +1,5 @@
 #include "game.h"
+#include "base.h"
 #include "../gamestate.h"
 #include "../../game.h"
 #include "../../entity/component/componenttype.h"
@@ -42,7 +43,7 @@ int open(lua_State* L)
 
 int l_Game_getTime(lua_State* L)
 {
-	BaseState& baseState = getBaseState(L);
+	BaseState& baseState = base::getBaseState(L);
 	flat::time::Clock& clock = baseState.getClock();
 	lua_pushnumber(L, clock.getTime());
 	return 1;
@@ -52,7 +53,7 @@ int l_Game_getTime(lua_State* L)
 int l_Game_debug_setTimeSpeed(lua_State* L)
 {
 	float timeSpeed = static_cast<float>(luaL_checknumber(L, 1));
-	BaseState& baseState = getBaseState(L);
+	BaseState& baseState = base::getBaseState(L);
 	flat::time::Clock& clock = baseState.getClock();
 	clock.setDTModifier(timeSpeed);
 	return 0;
@@ -60,7 +61,7 @@ int l_Game_debug_setTimeSpeed(lua_State* L)
 
 int l_Game_debug_pause(lua_State* L)
 {
-	GameState& gameState = getBaseState(L).as<GameState>();
+	GameState& gameState = base::getBaseState(L).as<GameState>();
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	gameState.setGamePause(game, true, false);
 	return 0;
@@ -68,7 +69,7 @@ int l_Game_debug_pause(lua_State* L)
 
 int l_Game_debug_resume(lua_State* L)
 {
-	GameState& gameState = getBaseState(L).as<GameState>();
+	GameState& gameState = base::getBaseState(L).as<GameState>();
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	gameState.setGamePause(game, false, false);
 	return 0;
@@ -77,24 +78,22 @@ int l_Game_debug_resume(lua_State* L)
 
 int l_Game_debug_pauseNextFrame(lua_State* L)
 {
-	GameState& gameState = getBaseState(L).as<GameState>();
+	GameState& gameState = base::getBaseState(L).as<GameState>();
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	gameState.setGamePause(game, false, true);
 	return 0;
 }
 
-FLAT_OPTIMIZE_OFF()
 int l_Game_debug_reloadComponent(lua_State* L)
 {
 	std::string entityTemplateName = luaL_checkstring(L, 1);
 	entity::component::ComponentFlags componentFlag = static_cast<entity::component::ComponentFlags>(luaL_checkinteger(L, 2));
-	GameState& gameState = getBaseState(L).as<GameState>();
+	GameState& gameState = base::getBaseState(L).as<GameState>();
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = gameState.getEntityTemplate(game, entityTemplateName);
 	entityTemplate->reloadComponent(game, gameState.getComponentRegistry(), componentFlag);
 	return 0;
 }
-FLAT_OPTIMIZE_ON()
 #endif // FLAT_DEBUG
 
 int l_Game_openMap(lua_State* L)
@@ -109,15 +108,6 @@ int l_Game_openMap(lua_State* L)
 	game.getStateMachine().setNextState(std::move(gameState));
 	return 1;
 }
-
-BaseState& getBaseState(lua_State* L)
-{
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	return game.getStateMachine().getState()->to<BaseState>();
-}
-
-// private
-
 
 } // game
 } // lua

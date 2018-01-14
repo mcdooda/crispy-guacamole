@@ -24,6 +24,8 @@ class BaseState : public flat::state::StateImpl<Game>
 
 	protected:
 		virtual void update(Game& game);
+
+		void clearScreen(Game& game);
 		virtual void draw(Game& game);
 
 		void resetViews(Game& game);

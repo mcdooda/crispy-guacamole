@@ -1,5 +1,6 @@
 #include <flat.h>
 #include "basemapstate.h"
+#include "selectmapstate.h"
 #include "mapeditor/lua/editor.h"
 #include "../game.h"
 #include "../timer/lua/timer.h"
@@ -134,10 +135,13 @@ void BaseMapState::execute(Game& game)
 
 	if (input->keyboard->isJustPressed(K(ESCAPE)))
 	{
-		game.stop();
+		std::unique_ptr<SelectMapState> selectMapState = std::make_unique<SelectMapState>();
+		game.getStateMachine().setNextState(std::move(selectMapState));
 	}
 	
 	update(game);
+
+	clearScreen(game);
 	draw(game);
 }
 
@@ -508,10 +512,6 @@ void BaseMapState::updateCameraView()
 void BaseMapState::draw(game::Game& game)
 {
 	// map
-	
-	game.video->setClearColor(flat::video::Color::BLACK);
-	game.video->clear();
-	
 	map::Map& map = getMap();
 	map.updateTilesNormals();
 	addGhostEntity(game);

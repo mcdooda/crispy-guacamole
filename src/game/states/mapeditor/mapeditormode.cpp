@@ -17,13 +17,16 @@ MapEditorMode::MapEditorMode(Game& game) :
 
 MapEditorMode::~MapEditorMode()
 {
-	// do not use getMap() as the state may be being destroyed at the time
-	map::Map& map = m_game.getStateMachine().getState()->as<states::MapEditorState>().getMap();
-
-	map.eachTileIfExists([](map::Tile* tile)
+	states::BaseState& state = m_game.getStateMachine().getState()->to<states::BaseState>();
+	if (state.is<states::MapEditorState>())
 	{
-		tile->setColor(flat::video::Color::WHITE);
-	});
+		map::Map& map = getMap();
+
+		map.eachTileIfExists([](map::Tile* tile)
+		{
+			tile->setColor(flat::video::Color::WHITE);
+		});
+	}
 }
 
 void MapEditorMode::updateBrushPosition()

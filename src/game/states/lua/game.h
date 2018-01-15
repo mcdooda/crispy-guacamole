@@ -28,9 +28,6 @@ int l_Game_debug_reloadComponent(lua_State* L);
 
 int l_Game_openMap(lua_State* L);
 
-// private
-BaseState& getBaseState(lua_State* L);
-
 } // game
 } // lua
 } // states

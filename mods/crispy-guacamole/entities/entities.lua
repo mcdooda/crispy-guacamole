@@ -11,6 +11,7 @@ return {
 	'sheep',
 	'soldier',
 	'orc_spearman',
+	'orc_warrior',
 	'tower',
 	'warlock',
 	'zombie'

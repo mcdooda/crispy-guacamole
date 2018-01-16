@@ -21,9 +21,9 @@ class PropMapEditorMode : public MapEditorMode
 		PropMapEditorMode(Game& game);
 		~PropMapEditorMode() override;
 
-		void updateBrushTiles() override;
-		void applyBrushPrimaryEffect(bool justPressed) override;
-		void applyBrushSecondaryEffect(bool justPressed) override;
+		void updateBrushTiles(MapEditorState& mapEditorState) override;
+		void applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed) override;
+		void applyBrushSecondaryEffect(MapEditorState& mapEditorState, bool justPressed) override;
 
 		inline void setPropTemplate(const std::shared_ptr<const map::PropTemplate>& propTemplate) { m_propTemplate = propTemplate; }
 

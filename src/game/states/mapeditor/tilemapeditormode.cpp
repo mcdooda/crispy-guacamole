@@ -25,7 +25,7 @@ TileMapEditorMode::~TileMapEditorMode()
 
 }
 
-void TileMapEditorMode::updateBrushTiles()
+void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 {
 	const auto& keyboard = m_game.input->keyboard;
 	const auto& mouse = m_game.input->mouse;
@@ -42,7 +42,7 @@ void TileMapEditorMode::updateBrushTiles()
 	}
 
 	m_brushTiles.clear();
-	brush->getTiles(getMap(), m_brushPosition, m_brushTiles);
+	brush->getTiles(mapEditorState.getMap(), m_brushPosition, m_brushTiles);
 
 	if (mouse->isPressed(M(RIGHT)))
 	{
@@ -69,9 +69,11 @@ void TileMapEditorMode::updateBrushTiles()
 	}
 }
 
-void TileMapEditorMode::applyBrushPrimaryEffect(bool justPressed)
+void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {
-	map::Map& map = getMap();
+	FLAT_ASSERT(m_tileTemplate != nullptr);
+
+	map::Map& map = mapEditorState.getMap();
 	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
@@ -84,15 +86,15 @@ void TileMapEditorMode::applyBrushPrimaryEffect(bool justPressed)
 	clearSelectedTiles();
 }
 
-void TileMapEditorMode::applyBrushSecondaryEffect(bool justPressed)
+void TileMapEditorMode::applyBrushSecondaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {
 	// nothing to do
 }
 
-void TileMapEditorMode::handleShortcuts()
+void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 {
-	const float dt = getClock().getDT();
-	map::Map& map = getMap();
+	const float dt = mapEditorState.getClock().getDT();
+	map::Map& map = mapEditorState.getMap();
 
 	const auto& keyboard = m_game.input->keyboard;
 

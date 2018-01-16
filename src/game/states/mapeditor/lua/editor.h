@@ -42,9 +42,9 @@ void setEditorMode(lua_State* L)
 {
 	static_assert(std::is_base_of<editor::MapEditorMode, T>::value, "T must inherit from editor::MapEditorMode");
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	editor::MapEditorMode* editorMode = new T(game);
-	states::MapEditorState& editorState = getEditorState(L);
-	editorState.setEditorMode(editorMode);
+	states::MapEditorState& mapEditorState = getEditorState(L);
+	std::unique_ptr<editor::MapEditorMode> editorMode = std::make_unique<T>(game);
+	mapEditorState.setEditorMode(std::move(editorMode));
 }
 
 editor::MapEditorMode& getEditorMode(lua_State* L);

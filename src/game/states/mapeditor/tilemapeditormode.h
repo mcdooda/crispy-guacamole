@@ -21,10 +21,10 @@ class TileMapEditorMode : public MapEditorMode
 		TileMapEditorMode(Game& game);
 		~TileMapEditorMode() override;
 
-		void updateBrushTiles() override;
-		void applyBrushPrimaryEffect(bool justPressed) override;
-		void applyBrushSecondaryEffect(bool justPressed) override;
-		void handleShortcuts() override;
+		void updateBrushTiles(MapEditorState& mapEditorState) override;
+		void applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed) override;
+		void applyBrushSecondaryEffect(MapEditorState& mapEditorState, bool justPressed) override;
+		void handleShortcuts(MapEditorState& mapEditorState) override;
 
 		inline void setTileTemplate(const std::shared_ptr<const map::TileTemplate>& tileTemplate) { m_tileTemplate = tileTemplate; }
 

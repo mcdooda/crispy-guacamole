@@ -57,9 +57,9 @@ int l_Editor_setEntity(lua_State* L)
 	const char* entityTemplateName = luaL_checkstring(L, 1);
 	editor::EntityMapEditorMode& entityEditorMode = getEditorMode(L).to<editor::EntityMapEditorMode>();
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::MapEditorState& editorState = getEditorState(L);
-	std::shared_ptr<const entity::EntityTemplate> entityTemplate = editorState.getEntityTemplate(game, entityTemplateName);
-	entityEditorMode.setEntityTemplate(entityTemplate);
+	states::MapEditorState& mapEditorState = getEditorState(L);
+	std::shared_ptr<const entity::EntityTemplate> entityTemplate = mapEditorState.getEntityTemplate(game, entityTemplateName);
+	entityEditorMode.setEntityTemplate(mapEditorState, entityTemplate);
 	return 0;
 }
 
@@ -107,12 +107,12 @@ int l_Editor_setZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
 	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
-	states::MapEditorState& editorState = getEditorState(L);
-	const map::Map& map = editorState.getMap();
+	states::MapEditorState& mapEditorState = getEditorState(L);
+	const map::Map& map = mapEditorState.getMap();
 	std::shared_ptr<map::Zone> zone;
 	if (map.getZone(zoneName, zone))
 	{
-		zoneEditorMode.setCurrentZone(zone);
+		zoneEditorMode.setCurrentZone(mapEditorState, zone);
 		lua_pushboolean(L, 1);
 	}
 	else
@@ -126,7 +126,8 @@ int l_Editor_addZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
 	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
-	zoneEditorMode.addZone(zoneName);
+	states::MapEditorState& mapEditorState = getEditorState(L);
+	zoneEditorMode.addZone(mapEditorState, zoneName);
 	return 0;
 }
 
@@ -134,7 +135,8 @@ int l_Editor_removeZone(lua_State * L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
 	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
-	zoneEditorMode.removeZone(zoneName);
+	states::MapEditorState& mapEditorState = getEditorState(L);
+	zoneEditorMode.removeZone(mapEditorState, zoneName);
 	return 0;
 }
 

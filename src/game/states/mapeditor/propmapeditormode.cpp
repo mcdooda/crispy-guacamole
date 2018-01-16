@@ -24,7 +24,7 @@ PropMapEditorMode::~PropMapEditorMode()
 	
 }
 
-void PropMapEditorMode::updateBrushTiles()
+void PropMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 {
 	const auto& keyboard = m_game.input->keyboard;
 	const auto& mouse = m_game.input->mouse;
@@ -42,12 +42,12 @@ void PropMapEditorMode::updateBrushTiles()
 
 
 	m_brushTiles.clear();
-	brush->getTiles(getMap(), m_brushPosition, m_brushTiles);
+	brush->getTiles(mapEditorState.getMap(), m_brushPosition, m_brushTiles);
 }
 
-void PropMapEditorMode::applyBrushPrimaryEffect(bool justPressed)
+void PropMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {
-	map::Map& map = getMap();
+	map::Map& map = mapEditorState.getMap();
 	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
 	{
 		if (tile->getEntities().empty())
@@ -62,9 +62,9 @@ void PropMapEditorMode::applyBrushPrimaryEffect(bool justPressed)
 	});
 }
 
-void PropMapEditorMode::applyBrushSecondaryEffect(bool justPressed)
+void PropMapEditorMode::applyBrushSecondaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {
-	map::Map& map = getMap();
+	map::Map& map = mapEditorState.getMap();
 	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);

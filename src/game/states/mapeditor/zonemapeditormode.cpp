@@ -21,7 +21,7 @@ ZoneMapEditorMode::~ZoneMapEditorMode()
 
 }
 
-void ZoneMapEditorMode::clearBrush() const
+void ZoneMapEditorMode::clearBrush(MapEditorState& mapEditorState) const
 {
 	map::Zone* previousZone = m_currentZone.lock().get();
 
@@ -37,7 +37,7 @@ void ZoneMapEditorMode::clearBrush() const
 	if (m_drawingRectangle
 		&& (m_currentRectangle.minX < m_currentRectangle.maxX || m_currentRectangle.minY < m_currentRectangle.maxY))
 	{
-		map::Map& map = getMap();
+		map::Map& map = mapEditorState.getMap();
 		for (int x = m_currentRectangle.minX; x <= m_currentRectangle.maxX; ++x)
 		{
 			for (int y = m_currentRectangle.minY; y <= m_currentRectangle.maxY; ++y)
@@ -52,7 +52,7 @@ void ZoneMapEditorMode::clearBrush() const
 
 	if (m_selectedRectangle != nullptr)
 	{
-		map::Map& map = getMap();
+		map::Map& map = mapEditorState.getMap();
 		for (int x = m_selectedRectangle->minX; x <= m_selectedRectangle->maxX; ++x)
 		{
 			for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
@@ -66,7 +66,7 @@ void ZoneMapEditorMode::clearBrush() const
 	}
 }
 
-void ZoneMapEditorMode::displayBrush() const
+void ZoneMapEditorMode::displayBrush(MapEditorState& mapEditorState) const
 {
 	map::Zone* currentZone = m_currentZone.lock().get();
 	if (currentZone != nullptr)
@@ -81,7 +81,7 @@ void ZoneMapEditorMode::displayBrush() const
 	if (m_drawingRectangle
 		&& (m_currentRectangle.minX < m_currentRectangle.maxX || m_currentRectangle.minY < m_currentRectangle.maxY))
 	{
-		map::Map& map = getMap();
+		map::Map& map = mapEditorState.getMap();
 		for (int x = m_currentRectangle.minX; x <= m_currentRectangle.maxX; ++x)
 		{
 			for (int y = m_currentRectangle.minY; y <= m_currentRectangle.maxY; ++y)
@@ -96,7 +96,7 @@ void ZoneMapEditorMode::displayBrush() const
 
 	if (m_selectedRectangle != nullptr)
 	{
-		map::Map& map = getMap();
+		map::Map& map = mapEditorState.getMap();
 		for (int x = m_selectedRectangle->minX; x <= m_selectedRectangle->maxX; ++x)
 		{
 			for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
@@ -110,7 +110,7 @@ void ZoneMapEditorMode::displayBrush() const
 	}
 }
 
-void ZoneMapEditorMode::updateBrushTiles()
+void ZoneMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 {
 	if (m_currentZone.expired())
 	{
@@ -163,7 +163,7 @@ void ZoneMapEditorMode::updateBrushTiles()
 	
 }
 
-void ZoneMapEditorMode::handleShortcuts()
+void ZoneMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 {
 	const auto& keyboard = m_game.input->keyboard;
 
@@ -171,7 +171,7 @@ void ZoneMapEditorMode::handleShortcuts()
 	{
 		if (m_selectedRectangle != nullptr)
 		{
-			map::Map& map = getMap();
+			map::Map& map = mapEditorState.getMap();
 			for (int x = m_selectedRectangle->minX; x <= m_selectedRectangle->maxX; ++x)
 			{
 				for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
@@ -193,23 +193,23 @@ void ZoneMapEditorMode::handleShortcuts()
 	}
 }
 
-void ZoneMapEditorMode::setCurrentZone(const std::shared_ptr<map::Zone>& currentZone)
+void ZoneMapEditorMode::setCurrentZone(MapEditorState& mapEditorState, const std::shared_ptr<map::Zone>& currentZone)
 {
-	clearBrush();
+	clearBrush(mapEditorState);
 	m_selectedRectangle = nullptr;
 	m_currentZone = currentZone;
 }
 
-const std::shared_ptr<map::Zone>& ZoneMapEditorMode::addZone(const std::string& zoneName)
+const std::shared_ptr<map::Zone>& ZoneMapEditorMode::addZone(MapEditorState& mapEditorState, const std::string& zoneName)
 {
-	map::Map& map = getMap();
+	map::Map& map = mapEditorState.getMap();
 	const std::shared_ptr<map::Zone>& zone = map.addZone(zoneName);
 	return zone;
 }
 
-bool ZoneMapEditorMode::removeZone(const std::string& zoneName)
+bool ZoneMapEditorMode::removeZone(MapEditorState& mapEditorState, const std::string& zoneName)
 {
-	map::Map& map = getMap();
+	map::Map& map = mapEditorState.getMap();
 	return map.removeZone(zoneName);
 }
 

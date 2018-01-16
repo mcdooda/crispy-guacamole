@@ -17,22 +17,35 @@ MapEditorMode::MapEditorMode(Game& game) :
 
 MapEditorMode::~MapEditorMode()
 {
-	states::BaseState& state = m_game.getStateMachine().getState()->to<states::BaseState>();
-	if (state.is<states::MapEditorState>())
-	{
-		map::Map& map = getMap();
-
-		map.eachTileIfExists([](map::Tile* tile)
-		{
-			tile->setColor(flat::video::Color::WHITE);
-		});
-	}
 }
 
-void MapEditorMode::updateBrushPosition()
+void MapEditorMode::enter(MapEditorState& mapEditorState)
+{
+}
+
+void MapEditorMode::execute(MapEditorState& mapEditorState)
+{
+	clearBrush(mapEditorState);
+	updateBrushPosition(mapEditorState);
+	updateBrushTiles(mapEditorState);
+	displayBrush(mapEditorState);
+	applyBrush(mapEditorState);
+}
+
+void MapEditorMode::exit(MapEditorState& mapEditorState)
+{
+	map::Map& map = mapEditorState.getMap();
+
+	map.eachTileIfExists([](map::Tile* tile)
+	{
+		tile->setColor(flat::video::Color::WHITE);
+	});
+}
+
+void MapEditorMode::updateBrushPosition(MapEditorState& mapEditorState)
 {
 	const auto& keyboard = m_game.input->keyboard;
-	m_brushPosition = getEditorState().getCursorMapPosition(m_game, m_brushOnTile);
+	m_brushPosition = mapEditorState.getCursorMapPosition(m_game, m_brushOnTile);
 	if (keyboard->isPressed(K(LSHIFT)))
 	{
 		m_brushPosition.x = std::round(m_brushPosition.x);
@@ -40,7 +53,7 @@ void MapEditorMode::updateBrushPosition()
 	}
 }
 
-void MapEditorMode::clearBrush() const
+void MapEditorMode::clearBrush(MapEditorState& mapEditorState) const
 {
 	auto clearTiles = [](map::Tile* tile, float effect)
 	{
@@ -50,7 +63,7 @@ void MapEditorMode::clearBrush() const
 	eachBrushTile(clearTiles);
 }
 
-void MapEditorMode::displayBrush() const
+void MapEditorMode::displayBrush(MapEditorState& mapEditorState) const
 {
 	for (const map::brush::TileEffect& tileEffect : m_selectedTiles)
 	{
@@ -58,7 +71,7 @@ void MapEditorMode::displayBrush() const
 		tileEffect.tile->setColor(color);
 	}
 
-	if (!getEditorState().isMouseOverUi(m_game))
+	if (!mapEditorState.isMouseOverUi(m_game))
 	{
 		eachBrushTile([](map::Tile* tile, float effect)
 		{
@@ -123,19 +136,36 @@ void MapEditorMode::clearSelectedTiles()
 	m_selectedTiles.clear();
 }
 
-states::MapEditorState& MapEditorMode::getEditorState() const
+void MapEditorMode::applyBrush(MapEditorState& mapEditorState)
 {
-	return m_game.getStateMachine().getState()->to<states::MapEditorState>();
-}
+	const auto& input = m_game.input;
 
-map::Map& MapEditorMode::getMap() const
-{
-	return getEditorState().getMap();
-}
+	if (!input->keyboard->isPressed(K(LCTRL)))
+	{
+		handleShortcuts(mapEditorState);
+	}
 
-const flat::time::Clock& MapEditorMode::getClock() const
-{
-	return getEditorState().getClock();
+	if (mapEditorState.isMouseOverUi(m_game))
+	{
+		mapEditorState.clearMouseOverEntity();
+	}
+	else
+	{
+		mapEditorState.updateMouseOverEntity(m_game);
+		const bool modeCanSelectEntities = canSelectEntities();
+		if (!modeCanSelectEntities || (modeCanSelectEntities && !mapEditorState.updateSelectionWidget(m_game)))
+		{
+			auto& mouse = input->mouse;
+			if ((!modeCanSelectEntities && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))
+			{
+				applyBrushPrimaryEffect(mapEditorState, mouse->isJustPressed(M(LEFT)));
+			}
+			else if (mouse->isPressed(M(RIGHT)))
+			{
+				applyBrushSecondaryEffect(mapEditorState, mouse->isJustPressed(M(RIGHT)));
+			}
+		}
+	}
 }
 
 } // editor

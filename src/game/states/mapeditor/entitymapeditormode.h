@@ -18,11 +18,11 @@ public:
 	EntityMapEditorMode(Game& game);
 	~EntityMapEditorMode() override;
 
-	void applyBrushPrimaryEffect(bool justPressed) override;
-	void handleShortcuts() override;
+	void applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed) override;
+	void handleShortcuts(MapEditorState& mapEditorState) override;
 	bool canSelectEntities() const override { return true; }
 
-	void setEntityTemplate(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate);
+	void setEntityTemplate(MapEditorState& mapEditorState, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate);
 
 private:
 	std::shared_ptr<const entity::EntityTemplate> m_entityTemplate;

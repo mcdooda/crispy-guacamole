@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <functional>
+#include "../mapeditorstate.h"
 #include "../../map/tile.h"
 #include "../../map/brush/brush.h"
 
@@ -15,25 +16,28 @@ class Map;
 }
 namespace states
 {
-class MapEditorState;
 namespace editor
 {
 
-class MapEditorMode : public flat::util::Convertible<MapEditorMode>
+class MapEditorMode : public flat::state::StateImpl<MapEditorState>
 {
 public:
 	MapEditorMode(Game& game);
 	virtual ~MapEditorMode();
 
+	void enter(MapEditorState& mapEditorState) override;
+	void execute(MapEditorState& mapEditorState) override;
+	void exit(MapEditorState& mapEditorState) override;
+
 	inline const flat::Vector2& getBrushPosition() const { return m_brushPosition; }
 
-	void updateBrushPosition();
-	virtual void updateBrushTiles() {}
-	virtual void clearBrush() const;
-	virtual void displayBrush() const;
-	virtual void applyBrushPrimaryEffect(bool justPressed) {}
-	virtual void applyBrushSecondaryEffect(bool justPressed) {}
-	virtual void handleShortcuts() {}
+	void updateBrushPosition(MapEditorState& mapEditorState);
+	virtual void updateBrushTiles(MapEditorState& mapEditorState) {}
+	virtual void clearBrush(MapEditorState& mapEditorState) const;
+	virtual void displayBrush(MapEditorState& mapEditorState) const;
+	virtual void applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed) {}
+	virtual void applyBrushSecondaryEffect(MapEditorState& mapEditorState, bool justPressed) {}
+	virtual void handleShortcuts(MapEditorState& mapEditorState) {}
 	virtual bool canSelectEntities() const { return false; }
 
 	virtual void draw() const {}
@@ -44,9 +48,7 @@ protected:
 	void eachBrushTile(std::function<void(map::Tile*, float)> func) const;
 	void eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const;
 	void clearSelectedTiles();
-	states::MapEditorState& getEditorState() const;
-	map::Map& getMap() const;
-	const flat::time::Clock& getClock() const;
+	void applyBrush(MapEditorState& mapEditorState);
 
 protected:
 	Game& m_game;

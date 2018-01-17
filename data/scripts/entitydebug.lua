@@ -45,7 +45,7 @@ return function(addContainer, makeSeparator, font)
 
     -- component debug
     do
-        local label = Widget.makeText('Component', table.unpack(font))
+        local label = Widget.makeText('Components', table.unpack(font))
         label:setTextColor(0x000000FF)
         entityDebugContainer:addChild(label)
 
@@ -100,6 +100,47 @@ return function(addContainer, makeSeparator, font)
                 local state = hasComponent and 'default' or 'disabled'
                 checkbox:setState(state)
                 checkbox:setValue(debugEnabled)
+            end
+        end, true)
+    end
+
+    entityDebugContainer:addChild(makeSeparator())
+
+    -- open in editor
+    do
+        local label = Widget.makeText('Open in editor', table.unpack(font))
+        label:setTextColor(0x000000FF)
+        entityDebugContainer:addChild(label)
+
+        local entityTemplateNamesContainer = Widget.makeColumnFlow()
+        entityDebugContainer:addChild(entityTemplateNamesContainer)
+
+        local entityTemplateLabels = {}
+
+        Timer.start(0, nil, function()
+            local selectedEntityTemplates = {}
+            for _, selectedEntity in Map.eachSelectedEntity() do
+                selectedEntityTemplates[selectedEntity:getTemplateName()] = true
+            end
+
+            for entityTemplateName in pairs(selectedEntityTemplates) do
+                if not entityTemplateLabels[entityTemplateName] then
+                    local entityTemplateLabel = Widget.makeText(entityTemplateName, table.unpack(font))
+                    entityTemplateLabel:setTextColor(0x000000FF)
+                    entityTemplateLabel:click(function()
+                        EntityEditor.openEntity(Mod.getPath(), 'sandbox', entityTemplateName)
+                        return true
+                    end)
+                    entityTemplateNamesContainer:addChild(entityTemplateLabel)
+                    entityTemplateLabels[entityTemplateName] = entityTemplateLabel
+                end
+            end
+
+            for entityTemplateName, entityTemplateLabel in pairs(entityTemplateLabels) do
+                if not selectedEntityTemplates[entityTemplateName] then
+                    entityTemplateLabels[entityTemplateName]:removeFromParent()
+                    entityTemplateLabels[entityTemplateName] = nil
+                end
             end
         end, true)
     end

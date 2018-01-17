@@ -41,7 +41,7 @@ local function addContainer(title)
 end
 
 local function makeSeparator()
-    local widget = Widget.makeFixedSize(4, 1)
+    local widget = Widget.makeFixedSize(1, 4)
     return widget
 end
 

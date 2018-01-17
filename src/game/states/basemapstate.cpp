@@ -478,7 +478,7 @@ void BaseMapState::updateGameView(game::Game& game)
 
 	if (mouse->wheelJustMoved() && keyboard->isPressed(K(LCTRL)))
 	{
-		float zoom = m_cameraZoom * (1.f + mouse->getWheelMove().y / 5.f);
+		float zoom = m_cameraZoom * std::pow(2, mouse->getWheelMove().y);
 		setCameraZoom(zoom);
 	}
 	

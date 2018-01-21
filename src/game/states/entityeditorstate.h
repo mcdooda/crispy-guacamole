@@ -16,6 +16,9 @@ class EntityEditorState : public BaseMapStateImpl<map::EditorMap>
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
 
+	public:
+		flat::Slot<entity::Entity*> entitySpawned;
+
 	private:
 		void spawnEntity(Game& game);
 

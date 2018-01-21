@@ -38,18 +38,24 @@ EntityTemplate::~EntityTemplate()
 }
 
 #ifdef FLAT_DEBUG
-void EntityTemplate::reloadComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag) const
+void EntityTemplate::reloadComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag, bool addComponent)
 {
 	const component::ComponentType& componentType = componentRegistry.getComponentType(componentFlag);
-	FLAT_ASSERT((m_componentFlags & componentType.getComponentTypeFlag()) != 0);
+	FLAT_ASSERT(addComponent || (m_componentFlags & componentType.getComponentTypeFlag()) != 0);
 
 	component::ComponentTemplate* componentTemplate = loadComponentTemplate(game, componentType);
 	if (componentTemplate != nullptr)
 	{
 		int index = componentType.getComponentTypeId() - 1;
-		FLAT_ASSERT(m_componentTemplates[index] != nullptr);
-		const_cast<std::unique_ptr<component::ComponentTemplate>&>(m_componentTemplates[index]).reset(componentTemplate);
+		FLAT_ASSERT(addComponent != (m_componentTemplates[index] != nullptr));
+		m_componentTemplates[index].reset(componentTemplate);
+
+		if (addComponent)
+		{
+			m_componentFlags |= componentType.getComponentTypeFlag();
+		}
 	}
+
 }
 #endif
 

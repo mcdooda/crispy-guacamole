@@ -52,6 +52,7 @@ do
 
     -- component names
     local componentTabs = {}
+    local componentNameLabels = {}
     do
         local componentsPanel = Widget.makeColumnFlow()
         componentsPanel:setBackgroundColor(0x444444FF)
@@ -77,6 +78,7 @@ do
             else
                 componentNameLabel:setTextColor(componentDisabledColor)
             end
+            componentNameLabels[componentName] = componentNameLabel
 
             if selectedComponentName ~= componentName then
                 componentTab:click(function()
@@ -171,12 +173,23 @@ do
                             Path.getComponentPath(entityTemplateName, selectedComponentName),
                             'script',
                             { entityTemplateName = entityTemplateName },
-                            function()
-                                Game.debug_reloadComponent(entityTemplateName, Component[selectedComponentName])
+                            function(isNew)
+                                Game.debug_reloadComponent(entityTemplateName, Component[selectedComponentName], isNew)
+                                
                                 -- force reload component template
                                 Path.requireComponentTemplate(entityTemplateName, selectedComponentName, true)
+                                
+                                -- kill the entity to respawn a new one with the right components
+                                getEntity():kill()
+                                EntityEditor.entitySpawned(function(entity)
+                                    -- update current tab
+                                    setComponentTab(selectedComponentName, selectedComponentName)
+                                    return false
+                                end)
 
-                                setComponentTab(selectedComponentName, selectedComponentName)
+                                if isNew then
+                                    componentNameLabels[selectedComponentName]:setTextColor(componentEnabledColor)
+                                end
                             end
                         )
                     end)

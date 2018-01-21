@@ -68,6 +68,7 @@ void EntityEditorState::spawnEntity(Game& game)
 
 	FLAT_ASSERT(entity != nullptr);
 	m_entity = entity->getHandle();
+	entitySpawned(entity);
 }
 
 } // states

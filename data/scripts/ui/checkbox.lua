@@ -24,7 +24,7 @@ end
 function Checkbox:new(value, text, state)
     text  = text or ""
     value = value or false
-    path  = 'data/editor/interface/controls/'
+    local path  = 'data/editor/interface/controls/'
     state = state or "default"
     local checkMarkContainer = Widget.makeFixedSize(20,20)
     local checkMark = Widget.makeFixedSize(20,20)

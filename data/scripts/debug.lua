@@ -2,6 +2,22 @@ if not flat.debug then
     return
 end
 
+--flat.debug.debugbreak()
+
+setmetatable(
+    _ENV,
+    {
+        __index = function()
+            --debug.traceback('Trying to access a global that does not exist', 2)
+            error(debug.traceback('Trying to access a global that does not exist', 2))
+        end,
+        __newindex = function()
+            --debug.traceback('Trying to declare a global variable', 2)
+            error(debug.traceback('Trying to declare a global variable', 2))
+        end
+    }
+)
+
 local UiSettings = require 'data/scripts/ui/uisettings'
 
 local root = Widget.getRoot()

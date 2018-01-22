@@ -80,13 +80,11 @@ do
             end
             componentNameLabels[componentName] = componentNameLabel
 
-            if selectedComponentName ~= componentName then
-                componentTab:click(function()
-                    if currentComponentName ~= componentName then
-                        setComponentTab(currentComponentName, componentName)
-                    end
-                end)
-            end
+            componentTab:click(function()
+                if currentComponentName ~= componentName then
+                    setComponentTab(currentComponentName, componentName)
+                end
+            end)
 
             componentTab:setPadding(1, 5, 1, 5)
             componentTab:addChild(componentNameLabel)

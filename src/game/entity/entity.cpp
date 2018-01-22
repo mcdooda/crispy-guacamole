@@ -178,7 +178,7 @@ void Entity::update(float time, float dt)
 #ifdef FLAT_DEBUG
 void Entity::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
-	if (m_debug)
+	if (m_debug && !m_markedForDelete)
 	{
 		for (component::Component* component : m_components)
 		{

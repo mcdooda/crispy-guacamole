@@ -24,6 +24,9 @@ class EntityEditorState : public BaseMapStateImpl<map::EditorMap>
 
 	private:
 		entity::EntityHandle m_entity;
+#ifdef FLAT_DEBUG
+		entity::component::ComponentFlags m_debuggedComponentFlags;
+#endif
 };
 
 } // states

@@ -29,6 +29,7 @@ int open(lua_State* L)
 		{"debug_pauseNextFrame",  l_Game_debug_pauseNextFrame},
 
 		{"debug_reloadComponent", l_Game_debug_reloadComponent},
+		{"debug_removeComponent", l_Game_debug_removeComponent },
 #endif
 
 		{"openMap",               l_Game_openMap},
@@ -93,6 +94,17 @@ int l_Game_debug_reloadComponent(lua_State* L)
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = gameState.getEntityTemplate(game, entityTemplateName);
 	const_cast<entity::EntityTemplate*>(entityTemplate.get())->reloadComponent(game, gameState.getComponentRegistry(), componentFlag, isNew);
+	return 0;
+}
+
+int l_Game_debug_removeComponent(lua_State* L)
+{
+	std::string entityTemplateName = luaL_checkstring(L, 1);
+	entity::component::ComponentFlags componentFlag = static_cast<entity::component::ComponentFlags>(luaL_checkinteger(L, 2));
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	std::shared_ptr<const entity::EntityTemplate> entityTemplate = gameState.getEntityTemplate(game, entityTemplateName);
+	const_cast<entity::EntityTemplate*>(entityTemplate.get())->removeComponent(game, gameState.getComponentRegistry(), componentFlag);
 	return 0;
 }
 #endif // FLAT_DEBUG

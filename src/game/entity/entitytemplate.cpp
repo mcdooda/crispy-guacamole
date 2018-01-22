@@ -57,6 +57,17 @@ void EntityTemplate::reloadComponent(Game& game, const component::ComponentRegis
 	}
 
 }
+
+void EntityTemplate::removeComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag)
+{
+	const component::ComponentType& componentType = componentRegistry.getComponentType(componentFlag);
+	FLAT_ASSERT((m_componentFlags & componentType.getComponentTypeFlag()) != 0);
+
+	int index = componentType.getComponentTypeId() - 1;
+	FLAT_ASSERT(m_componentTemplates[index] != nullptr);
+	m_componentTemplates[index].reset();
+	m_componentFlags &= ~componentType.getComponentTypeFlag();
+}
 #endif
 
 component::ComponentTemplate* EntityTemplate::loadComponentTemplate(Game& game, const component::ComponentType& componentType) const

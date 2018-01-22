@@ -31,6 +31,7 @@ class EntityTemplate final
 
 #ifdef FLAT_DEBUG
 		void reloadComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag, bool addComponent);
+		void removeComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag);
 #endif
 
 	private:

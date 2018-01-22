@@ -172,13 +172,13 @@ do
                             'script',
                             { entityTemplateName = entityTemplateName },
                             function(isNew)
+                                getEntity():delete()
                                 Game.debug_reloadComponent(entityTemplateName, Component[selectedComponentName], isNew)
                                 
                                 -- force reload component template
                                 Path.requireComponentTemplate(entityTemplateName, selectedComponentName, true)
                                 
                                 -- kill the entity to respawn a new one with the right components
-                                getEntity():kill()
                                 EntityEditor.entitySpawned(function(entity)
                                     -- update current tab
                                     setComponentTab(selectedComponentName, selectedComponentName)
@@ -192,6 +192,34 @@ do
                         )
                     end)
                     titleLine:addChild(editComponentIcon.container)
+
+                    if hasComponent then
+                        local deleteComponentIcon = Icon:new('remove', 10)
+                        deleteComponentIcon.container:setMargin(0, 0, 5, 5)
+                        deleteComponentIcon.container:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
+                        deleteComponentIcon.container:click(function()
+                            Game.debug_removeComponent(entityTemplateName, Component[selectedComponentName])
+
+                            local componentPath = Path.getComponentPath(entityTemplateName, selectedComponentName)
+                            os.remove(componentPath .. '.graph.lua')
+                            os.remove(componentPath .. '.layout.lua')
+                            os.remove(componentPath .. '.lua')
+                                
+                            -- force reload component template
+                            Path.requireComponentTemplateIfExists(entityTemplateName, selectedComponentName, true)
+                            
+                            -- kill the entity to respawn a new one with the right components
+                            getEntity():delete()
+                            EntityEditor.entitySpawned(function(entity)
+                                -- update current tab
+                                setComponentTab(selectedComponentName, selectedComponentName)
+                                return false
+                            end)
+
+                            componentNameLabels[selectedComponentName]:setTextColor(componentDisabledColor)
+                        end)
+                        titleLine:addChild(deleteComponentIcon.container)
+                    end
 
                     selectedComponentPanel:addChild(titleLine)
                 end

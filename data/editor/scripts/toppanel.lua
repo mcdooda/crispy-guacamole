@@ -5,6 +5,29 @@ local UiSettings = require 'data/scripts/ui/uisettings'
 local icon = require 'data/scripts/ui/icon'
 local Path = require 'data/scripts/path'
 
+local COLORS = {
+    white      = 0xFFFFFFFF,
+    black      = 0x000000FF,
+    lightBlack = 0x1A1A1AFF,
+    red        = 0xA72C2CFF,
+    lightRed   = 0xEA6565FF,
+    orange     = 0xC1732DFF,
+    blue       = 0x133EC8FF,
+    lightBlue  = 0x7C81E5FF,
+    clearBlue  = 0xC7E5FAFF,
+    darkBlue   = 0x232896FF,
+    cyan       = 0x37BFB7FF,
+    green      = 0x2AA920FF,
+    lightGreen = 0x7EB86CFF,
+    darkGreen  = 0x357B3AFF,
+    yellow     = 0xC1AC36FF,
+    grey       = 0x626262FF,
+    darkGrey   = 0x3D3D3DFF,
+    lightGrey  = 0x545454FF,
+    transparent= 0x00000000
+}
+
+
 local root = Widget.getRoot()
 do
 

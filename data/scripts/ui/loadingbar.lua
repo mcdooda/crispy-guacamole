@@ -3,7 +3,7 @@ local LoadingBar = {}
 LoadingBar.__index = LoadingBar
 
 
-COLORS = {
+local COLORS = {
     white      = 0xFFFFFFFF,
     black      = 0x000000FF,
     lightBlack = 0x1A1A1AFF,

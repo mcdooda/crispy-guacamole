@@ -7,13 +7,13 @@ end
 setmetatable(
     _ENV,
     {
-        __index = function()
+        __index = function(t, name)
             --debug.traceback('Trying to access a global that does not exist', 2)
-            error(debug.traceback('Trying to access a global that does not exist', 2))
+            error(debug.traceback('Trying to access a global variable \'' .. tostring(name) .. '\' that does not exist', 2))
         end,
-        __newindex = function()
+        __newindex = function(t, name, value)
             --debug.traceback('Trying to declare a global variable', 2)
-            error(debug.traceback('Trying to declare a global variable', 2))
+            error(debug.traceback('Trying to declare a global variable \'' .. tostring(name) .. '\' to \'' .. tostring(value) .. '\' ', 2))
         end
     }
 )

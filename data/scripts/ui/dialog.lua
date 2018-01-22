@@ -12,7 +12,7 @@ Dialog.__index = Dialog
 local root = Widget.getRoot()
 
 
-COLORS = {
+local COLORS = {
     white      = 0xFFFFFFFF,
     black      = 0x000000FF,
     lightBlack = 0x1A1A1AFF,

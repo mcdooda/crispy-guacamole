@@ -684,6 +684,7 @@ int l_Entity_healthChanged(lua_State* L)
 	lifeComponent.healthChanged.on(
 		[L, &lifeComponent, callbackIndex](int previousHealth)
 		{
+			// TODO: use callFunction()
 			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 			lifeComponent.pushHealthChangedCallback(L, callbackIndex);
 			lua_pushinteger(L, previousHealth);

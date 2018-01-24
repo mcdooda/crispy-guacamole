@@ -61,14 +61,18 @@ int l_EntityEditor_entitySpawned(lua_State* L)
 	EntityEditorState& entityEditorState = base::getBaseState(L).to<EntityEditorState>();
 	entityEditorState.entitySpawned.on([L, onEntitySpawned](entity::Entity* entity)
 	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-		onEntitySpawned.push(L);
-		luaL_checktype(L, -1, LUA_TFUNCTION);
-		entity::lua::pushEntity(L, entity);
-		lua_call(L, 1, 1);
-		luaL_checktype(L, -1, LUA_TBOOLEAN);
-		bool keepCallback = lua_toboolean(L, -1);
-		lua_pop(L, 1);
+		bool keepCallback = true;
+		onEntitySpawned.callFunction(
+			[entity](lua_State* L)
+			{
+				entity::lua::pushEntity(L, entity);
+			},
+			1,
+			[&keepCallback](lua_State* L)
+			{
+				keepCallback = lua_toboolean(L, -1);
+			}
+		);
 		return keepCallback;
 	});
 	return 0;

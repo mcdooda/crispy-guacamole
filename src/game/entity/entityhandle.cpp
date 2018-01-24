@@ -23,7 +23,7 @@ EntityHandle::EntityHandle(const Entity* entity) :
 	m_entity(const_cast<Entity*>(entity)),
 	m_id(entity->getId())
 {
-	FLAT_ASSERT(isValid());
+	
 }
 
 void EntityHandle::operator=(const EntityHandle& handle)

@@ -35,8 +35,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		inline int getHealth() const { return m_health; }
 		inline int getMaxHealth() const { return getTemplate()->getMaxHealth(); }
 
-		int addHealthChangedCallback(lua_State* L, int index);
-		void pushHealthChangedCallback(lua_State* L, int callbackIndex) const;
+		void addHealthChangedCallback(lua_State* L, int index);
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
@@ -53,8 +52,10 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		
 		void checkSpawnDespawnThreadFinished();
 
+		bool onHealthChange(int previousHealth);
+
 	private:
-		std::vector<flat::lua::UniqueLuaReference<LUA_TFUNCTION>> m_healthChangedRefs;
+		std::vector<flat::lua::UniqueLuaReference<LUA_TFUNCTION>> m_healthChangedCallbacks;
 		EntityThread m_spawnDespawnThread;
 		int m_health;
 		bool m_spawning : 1;

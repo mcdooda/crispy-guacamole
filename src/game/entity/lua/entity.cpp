@@ -678,22 +678,7 @@ int l_Entity_healthChanged(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
-	luaL_checktype(L, 2, LUA_TFUNCTION);
-	FLAT_ASSERT(L == flat::lua::getMainThread(L));
-	int callbackIndex = lifeComponent.addHealthChangedCallback(L, 2);
-	lifeComponent.healthChanged.on(
-		[L, &lifeComponent, callbackIndex](int previousHealth)
-		{
-			// TODO: use callFunction()
-			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-			lifeComponent.pushHealthChangedCallback(L, callbackIndex);
-			lua_pushinteger(L, previousHealth);
-			lua_pushinteger(L, lifeComponent.getHealth());
-			lua_pushinteger(L, lifeComponent.getMaxHealth());
-			lua_call(L, 3, 0);
-			return true;
-		}
-	);
+	lifeComponent.addHealthChangedCallback(L, 2);
 	return 0;
 }
 

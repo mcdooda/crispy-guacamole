@@ -3,7 +3,7 @@ Button.__index = Button
 
 
 
-COLORS = {
+local COLORS = {
     white      = 0xFFFFFFFF,
     black      = 0x000000FF,
     lightBlack = 0x1A1A1AFF,
@@ -29,7 +29,7 @@ COLORS = {
 local function triggerClick(button)
     local callbacks = button.callbacks
     for i = 1, #callbacks do
-        callbacks[i](button, value)
+        callbacks[i](button)
     end
 end
 
@@ -40,7 +40,7 @@ end
 
 local function mouseDownContainer(button)
     button.container:setBackgroundColor(button.clickColor)
-    triggerClick(button, value)
+    triggerClick(button)
     return true
 end
 local function mouseEnter(button)

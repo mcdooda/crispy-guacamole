@@ -52,6 +52,7 @@ do
 
     -- component names
     local componentTabs = {}
+    local componentNameLabels = {}
     do
         local componentsPanel = Widget.makeColumnFlow()
         componentsPanel:setBackgroundColor(0x444444FF)
@@ -77,14 +78,13 @@ do
             else
                 componentNameLabel:setTextColor(componentDisabledColor)
             end
+            componentNameLabels[componentName] = componentNameLabel
 
-            if selectedComponentName ~= componentName then
-                componentTab:click(function()
-                    if currentComponentName ~= componentName then
-                        setComponentTab(currentComponentName, componentName)
-                    end
-                end)
-            end
+            componentTab:click(function()
+                if currentComponentName ~= componentName then
+                    setComponentTab(currentComponentName, componentName)
+                end
+            end)
 
             componentTab:setPadding(1, 5, 1, 5)
             componentTab:addChild(componentNameLabel)
@@ -171,16 +171,55 @@ do
                             Path.getComponentPath(entityTemplateName, selectedComponentName),
                             'script',
                             { entityTemplateName = entityTemplateName },
-                            function()
-                                Game.debug_reloadComponent(entityTemplateName, Component[selectedComponentName])
+                            function(isNew)
+                                getEntity():delete()
+                                Game.debug_reloadComponent(entityTemplateName, Component[selectedComponentName], isNew)
+                                
                                 -- force reload component template
                                 Path.requireComponentTemplate(entityTemplateName, selectedComponentName, true)
+                                
+                                -- kill the entity to respawn a new one with the right components
+                                EntityEditor.entitySpawned(function(entity)
+                                    -- update current tab
+                                    setComponentTab(selectedComponentName, selectedComponentName)
+                                    return false
+                                end)
 
-                                setComponentTab(selectedComponentName, selectedComponentName)
+                                if isNew then
+                                    componentNameLabels[selectedComponentName]:setTextColor(componentEnabledColor)
+                                end
                             end
                         )
                     end)
                     titleLine:addChild(editComponentIcon.container)
+
+                    if hasComponent then
+                        local deleteComponentIcon = Icon:new('remove', 10)
+                        deleteComponentIcon.container:setMargin(0, 0, 5, 5)
+                        deleteComponentIcon.container:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
+                        deleteComponentIcon.container:click(function()
+                            Game.debug_removeComponent(entityTemplateName, Component[selectedComponentName])
+
+                            local componentPath = Path.getComponentPath(entityTemplateName, selectedComponentName)
+                            os.remove(componentPath .. '.graph.lua')
+                            os.remove(componentPath .. '.layout.lua')
+                            os.remove(componentPath .. '.lua')
+                                
+                            -- force reload component template
+                            Path.requireComponentTemplateIfExists(entityTemplateName, selectedComponentName, true)
+                            
+                            -- kill the entity to respawn a new one with the right components
+                            getEntity():delete()
+                            EntityEditor.entitySpawned(function(entity)
+                                -- update current tab
+                                setComponentTab(selectedComponentName, selectedComponentName)
+                                return false
+                            end)
+
+                            componentNameLabels[selectedComponentName]:setTextColor(componentDisabledColor)
+                        end)
+                        titleLine:addChild(deleteComponentIcon.container)
+                    end
 
                     selectedComponentPanel:addChild(titleLine)
                 end

@@ -241,6 +241,11 @@ void Map::updateEntities(float time, float dt)
 	std::vector<entity::Entity*> entities = m_entities;
 	for (entity::Entity* entity : entities)
 	{
+		if (entity->isMarkedForDelete())
+		{
+			continue;
+		}
+
 		entity->update(time, dt);
 
 		// ensure all AABBs are up to date

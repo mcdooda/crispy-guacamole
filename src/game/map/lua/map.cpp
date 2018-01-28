@@ -1,5 +1,6 @@
 #include "map.h"
 #include "zone.h"
+#include "../tile.h"
 #include "../../game.h"
 #include "../../states/mapeditorstate.h"
 #include "../../entity/lua/entity.h"

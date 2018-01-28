@@ -1,7 +1,16 @@
 return {
 	'house',
     'tower',
-	'cactus',
+    'cactus',
+    'towerbis',
+    'towertest',
+    'towercanon',
+    'flag',
+    'door',
+    'rock',
+    'gold',
+    'coal',
+    'crate',
 	'pine',
 	'snow_pine'
 }

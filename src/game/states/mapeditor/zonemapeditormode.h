@@ -22,14 +22,14 @@ class ZoneMapEditorMode : public MapEditorMode
 		ZoneMapEditorMode(Game& game);
 		~ZoneMapEditorMode() override;
 
-		void clearBrush() const override;
-		void displayBrush() const override;
-		void updateBrushTiles() override;
-		void handleShortcuts() override;
+		void clearBrush(MapEditorState& mapEditorState) const override;
+		void displayBrush(MapEditorState& mapEditorState) const override;
+		void updateBrushTiles(MapEditorState& mapEditorState) override;
+		void handleShortcuts(MapEditorState& mapEditorState) override;
 
-		void setCurrentZone(const std::shared_ptr<map::Zone>& currentZone);
-		const std::shared_ptr<map::Zone>& addZone(const std::string& zoneName);
-		bool removeZone(const std::string& zoneName);
+		void setCurrentZone(MapEditorState& mapEditorState, const std::shared_ptr<map::Zone>& currentZone);
+		const std::shared_ptr<map::Zone>& addZone(MapEditorState& mapEditorState, const std::string& zoneName);
+		bool removeZone(MapEditorState& mapEditorState, const std::string& zoneName);
 		inline const map::Zone* getCurrentZone() const { return m_currentZone.lock().get(); }
 
 	private:

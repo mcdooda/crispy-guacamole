@@ -2,6 +2,18 @@ if not flat.debug then
     return
 end
 
+setmetatable(
+    _ENV,
+    {
+        __index = function(t, name)
+            error(debug.traceback('Trying to access a global variable \'' .. tostring(name) .. '\' that does not exist', 2))
+        end,
+        __newindex = function(t, name, value)
+            error(debug.traceback('Trying to declare a global variable \'' .. tostring(name) .. '\' to \'' .. tostring(value) .. '\' ', 2))
+        end
+    }
+)
+
 local UiSettings = require 'data/scripts/ui/uisettings'
 
 local root = Widget.getRoot()
@@ -41,7 +53,7 @@ local function addContainer(title)
 end
 
 local function makeSeparator()
-    local widget = Widget.makeFixedSize(4, 1)
+    local widget = Widget.makeFixedSize(1, 4)
     return widget
 end
 

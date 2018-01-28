@@ -10,7 +10,7 @@ namespace game
 Game::Game(const std::vector<std::string>& args) : flat::Game(args),
 	interfaceView(video->window),
 	mode(Mode::NONE),
-	fullscreen(true)
+	fullscreen(false)
 {
 	
 }
@@ -84,8 +84,8 @@ void Game::checkArgs()
 			{
 				switch (arg[1])
 				{
-					case 'w':
-					fullscreen = false;
+					case 'f':
+					fullscreen = true;
 					break;
 
 					case 'g':

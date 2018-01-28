@@ -34,6 +34,7 @@ int open(Game& game)
 		{"__eq",                     l_Entity_eq},
 
 		{"isValid",                  l_Entity_isValid},
+		{"delete",                   l_Entity_delete},
 
 		{"getTemplateName",          l_Entity_getTemplateName},
 		{"hasComponent",             l_Entity_hasComponent},
@@ -152,6 +153,13 @@ int l_Entity_isValid(lua_State* L)
 	EntityHandle entityHandle = getEntityHandle(L, 1);
 	lua_pushboolean(L, entityHandle.isValid());
 	return 1;
+}
+
+int l_Entity_delete(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	entity.markForDelete();
+	return 0;
 }
 
 int l_Entity_getTemplateName(lua_State* L)
@@ -676,6 +684,7 @@ int l_Entity_healthChanged(lua_State* L)
 	lifeComponent.healthChanged.on(
 		[L, &lifeComponent, callbackIndex](int previousHealth)
 		{
+			// TODO: use callFunction()
 			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 			lifeComponent.pushHealthChangedCallback(L, callbackIndex);
 			lua_pushinteger(L, previousHealth);

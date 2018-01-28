@@ -30,7 +30,8 @@ class EntityTemplate final
 		inline const typename ComponentType::TemplateType* getComponentTemplate() const;
 
 #ifdef FLAT_DEBUG
-		void reloadComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag) const;
+		void reloadComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag, bool addComponent);
+		void removeComponent(Game& game, const component::ComponentRegistry& componentRegistry, component::ComponentFlags componentFlag);
 #endif
 
 	private:

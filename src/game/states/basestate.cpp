@@ -1,5 +1,7 @@
 #include "basestate.h"
 #include "lua/game.h"
+#include "lua/mapeditor.h"
+#include "lua/entityeditor.h"
 #include "../game.h"
 #include "../timer/lua/timer.h"
 
@@ -35,6 +37,8 @@ void BaseState::execute(Game& game)
 	}
 
 	update(game);
+
+	clearScreen(game);
 	draw(game);
 }
 
@@ -46,6 +50,12 @@ void BaseState::update(Game& game)
 {
 	updateUi(game);
 	updateTimers(game);
+}
+
+void BaseState::clearScreen(Game& game)
+{
+	game.video->setClearColor(flat::video::Color::BLACK);
+	game.video->clear();
 }
 
 void BaseState::draw(Game& game)
@@ -80,6 +90,8 @@ void BaseState::initLua(Game& game)
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 		timer::lua::open(game);
 		states::lua::game::open(L);
+		states::lua::mapeditor::open(L);
+		states::lua::entityeditor::open(L);
 	}
 }
 

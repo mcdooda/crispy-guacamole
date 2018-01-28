@@ -153,12 +153,13 @@ void UiComponent::triggerCallback(const flat::lua::UniqueLuaReference<LUA_TFUNCT
 	
 	lua_State* L = function.getLuaState();
 	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-		function.push(L);
-		lua::pushEntity(L, m_owner);
-		flat::sharp::ui::lua::pushWidget(L, m_widget);
-		lua_call(L, 2, 0);
+		function.callFunction(
+			[this](lua_State* L)
+			{
+				lua::pushEntity(L, m_owner);
+				flat::sharp::ui::lua::pushWidget(L, m_widget);
+			}
+		);
 	}
 }
 

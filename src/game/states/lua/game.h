@@ -24,12 +24,10 @@ int l_Game_debug_resume(lua_State* L);
 int l_Game_debug_pauseNextFrame(lua_State* L);
 
 int l_Game_debug_reloadComponent(lua_State* L);
+int l_Game_debug_removeComponent(lua_State* L);
 #endif // FLAT_DEBUG
 
 int l_Game_openMap(lua_State* L);
-
-// private
-BaseState& getBaseState(lua_State* L);
 
 } // game
 } // lua

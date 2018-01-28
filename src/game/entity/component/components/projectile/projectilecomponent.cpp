@@ -81,22 +81,22 @@ bool ProjectileComponent::collided(Entity* collidedEntity)
 	if (!isEnabled())
 		return true;
 
-	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& collidedCallback = getTemplate()->getCollidedCallback();
-
-	lua_State* L = collidedCallback.getLuaState();
-	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-		collidedCallback.push(L);
-		lua::pushEntity(L, m_owner);
-		lua::pushEntity(L, collidedEntity);
-		lua_call(L, 2, 1);
-		bool keepEnabled = lua_toboolean(L, -1) == 1;
-		if (!keepEnabled)
+	getTemplate()->getCollidedCallback().callFunction(
+		[this, collidedEntity](lua_State* L)
 		{
-			incDisableLevel();
+			lua::pushEntity(L, m_owner);
+			lua::pushEntity(L, collidedEntity);
+		},
+		1,
+		[this](lua_State* L)
+		{
+			bool keepEnabled = lua_toboolean(L, -1) == 1;
+			if (!keepEnabled)
+			{
+				incDisableLevel();
+			}
 		}
-		lua_pop(L, 1);
-	}
+	);
 
 	return true;
 }

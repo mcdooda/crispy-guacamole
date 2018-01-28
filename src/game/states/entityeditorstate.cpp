@@ -15,6 +15,9 @@ void EntityEditorState::enter(Game& game)
 	game.lua->doFile("data/entityeditor/scripts/init.lua");
 
 	spawnEntity(game);
+#ifdef FLAT_DEBUG
+	m_debuggedComponentFlags = 0;
+#endif
 
 	setCameraCenter(m_entity.getEntity()->getPosition());
 	setCameraZoom(2.f);
@@ -26,21 +29,32 @@ void EntityEditorState::execute(Game& game)
 {
 	Super::execute(game);
 
-#ifdef FLAT_DEBUG
-	entity::component::ComponentFlags debuggedComponentFlags = m_entity.getEntity()->getDebuggedComponentFlags();
-#endif
 	despawnEntities();
 	if (!m_entity.isValid())
 	{
 		spawnEntity(game);
+
 #ifdef FLAT_DEBUG
 		entity::Entity* entity = m_entity.getEntity();
-		entity->setDebug(debuggedComponentFlags != 0);
-		entity->setDebuggedComponentFlags(debuggedComponentFlags);
+		entity->setDebug(m_debuggedComponentFlags != 0);
+		entity->setDebuggedComponentFlags(m_debuggedComponentFlags);
 #endif
 	}
+
 	const flat::time::Clock& clock = getClock();
 	m_map.updateEntities(clock.getTime(), clock.getDT());
+
+#ifdef FLAT_DEBUG
+	entity::Entity* entity = m_entity.getEntity();
+	if (entity != nullptr)
+	{
+		entity::component::ComponentFlags debuggedComponentFlags = entity->getDebuggedComponentFlags();
+		if (debuggedComponentFlags != 0)
+		{
+			m_debuggedComponentFlags = debuggedComponentFlags;
+		}
+	}
+#endif
 }
 
 void EntityEditorState::spawnEntity(Game& game)
@@ -68,6 +82,7 @@ void EntityEditorState::spawnEntity(Game& game)
 
 	FLAT_ASSERT(entity != nullptr);
 	m_entity = entity->getHandle();
+	entitySpawned(entity);
 }
 
 } // states

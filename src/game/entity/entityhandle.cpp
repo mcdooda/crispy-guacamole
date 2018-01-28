@@ -23,7 +23,7 @@ EntityHandle::EntityHandle(const Entity* entity) :
 	m_entity(const_cast<Entity*>(entity)),
 	m_id(entity->getId())
 {
-	FLAT_ASSERT(isValid());
+	
 }
 
 void EntityHandle::operator=(const EntityHandle& handle)
@@ -40,7 +40,7 @@ void EntityHandle::operator=(const Entity* entity)
 
 bool EntityHandle::isValid() const
 {
-	return m_entity != nullptr && m_id != EntityIdFactory::InvalidId && m_entity->getId() == m_id;
+	return m_entity != nullptr && m_id != EntityIdFactory::InvalidId && m_entity->getId() == m_id && !m_entity->isMarkedForDelete();
 }
 
 } // entity

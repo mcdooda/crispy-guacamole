@@ -1,15 +1,11 @@
 local require = require
 
-local modPath = Mod.getPath()
-local mapPath = modPath .. '/maps/' .. Mod.getCurrentMapName()
-
 -- mod
-local function getModPath()
-    return modPath
-end
+local getModPath = Mod.getPath
+local getCurrentMapName = Mod.getCurrentMapName
 
 local function getModFilePath(file)
-    return modPath .. '/' .. file
+    return getModPath() .. '/' .. file
 end
 
 local function requireModFile(file)
@@ -18,11 +14,11 @@ end
 
 -- map
 local function getMapPath()
-    return mapPath
+    return getModPath() .. '/maps/' .. getCurrentMapName()
 end
 
 local function getMapFilePath(file)
-    return mapPath .. '/' .. file
+    return getMapPath() .. '/' .. file
 end
 
 local function requireMapFile(file)
@@ -35,7 +31,7 @@ end
 
 -- entity
 local function getEntityPath(templateName)
-    return modPath .. '/entities/' .. templateName
+    return getModPath() .. '/entities/' .. templateName
 end
 
 local function getEntityFilePath(entityTemplateName, file)
@@ -65,7 +61,7 @@ end
 
 -- props
 local function getPropPath(propName)
-    return modPath .. '/props/' .. propName
+    return getModPath() .. '/props/' .. propName
 end
 
 local function getPropFilePath(propName, propFile)
@@ -82,7 +78,7 @@ end
 
 -- tiles
 local function getTilePath(tileName)
-    return modPath .. '/tiles/' .. tileName
+    return getModPath() .. '/tiles/' .. tileName
 end
 
 local function getTileFilePath(tileName, tileFile)

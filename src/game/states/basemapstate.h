@@ -33,7 +33,6 @@ class BaseMapState : public BaseState
 		BaseMapState();
 
 		void enter(Game& game) override;
-		void execute(Game& game) override;
 		void exit(Game& game) override;
 		
 		void setModPath(const std::string& modPath);
@@ -65,25 +64,25 @@ class BaseMapState : public BaseState
 			entity::component::ComponentFlags componentFlags = entity::component::AllComponents,
 			entity::component::ComponentFlags enabledComponentFlags = entity::component::AllComponents
 		);
-		void despawnEntity(entity::Entity* entity);
-		void despawnEntityAtIndex(int index);
-		void despawnEntities();
+		void despawnEntity(Game& game, entity::Entity* entity);
+		void despawnEntityAtIndex(Game& game, int index);
+		void despawnEntities(Game& game);
 
 		inline const std::vector<entity::Entity*>& getSelectedEntities() const { return m_selectedEntities; }
 
 		void setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate);
-		void clearGhostTemplate();
+		void clearGhostTemplate(Game& game);
 
 		entity::Entity* createEntity(
 			Game& game,
 			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate,
 			entity::component::ComponentFlags componentFlags = entity::component::AllComponents
 		);
-		void destroyEntity(entity::Entity* entity);
+		void destroyEntity(Game& game, entity::Entity* entity);
 
-		void addEntityToMap(entity::Entity* entity);
-		void removeEntityFromMap(entity::Entity* entity);
-		entity::Entity* removeEntityFromMapAtIndex(int index);
+		void addEntityToMap(lua_State* L, entity::Entity* entity);
+		void removeEntityFromMap(lua_State* L, entity::Entity* entity);
+		entity::Entity* removeEntityFromMapAtIndex(lua_State* L, int index);
 
 		inline const flat::video::View& getGameView() const { return m_gameView; }
 
@@ -143,6 +142,8 @@ class BaseMapState : public BaseState
 		entity::EntityPool m_entityPool;
 
 		std::vector<entity::Entity*> m_selectedEntities;
+		std::mutex m_selectedEntitiesMutex;
+
 		entity::EntityHandle m_mouseOverEntity;
 		const map::Tile* m_mouseOverTile;
 

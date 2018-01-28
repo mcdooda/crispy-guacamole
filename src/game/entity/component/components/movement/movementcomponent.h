@@ -26,12 +26,10 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "movement"; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float currentTime, float elapsedTime) override;
-		
-		bool addedToMap(Entity* entity, map::Map* map);
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 		
 		bool isBusy() const override;
 		
@@ -56,6 +54,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		
 	private:
 		void fall(float elapsedTime);
+
+		bool addedToMap(lua_State* L, Entity* entity, map::Map* map);
 		
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;

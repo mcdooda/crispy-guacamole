@@ -20,10 +20,10 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "detection"; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 
 		bool isVisible(const Entity& target) const;
 
@@ -32,12 +32,12 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
-		bool removedFromMap(Entity* entity);
-		bool visibleEntityRemovedFromMap(Entity* entity);
+		bool removedFromMap(lua_State* L, Entity* entity);
+		bool visibleEntityRemovedFromMap(lua_State* L, Entity* entity);
 
 	public:
-		flat::Slot<Entity*> entityEnteredVisionRange;
-		flat::Slot<Entity*> entityLeftVisionRange;
+		flat::Slot<lua_State*, Entity*> entityEnteredVisionRange;
+		flat::Slot<lua_State*, Entity*> entityLeftVisionRange;
 
 	private:
 		std::set<Entity*> m_visibleEntities;

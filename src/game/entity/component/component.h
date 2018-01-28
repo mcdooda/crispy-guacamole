@@ -32,9 +32,9 @@ class Component : public flat::util::Convertible<Component>
 		inline Entity* getOwner() { return m_owner; }
 		inline const Entity* getOwner() const { return m_owner; }
 
-		virtual void init();
-		virtual void deinit();
-		virtual void update(float time, float dt);
+		virtual void init(lua_State* L);
+		virtual void deinit(lua_State* L);
+		virtual void update(lua_State* L, float time, float dt);
 		virtual bool isBusy() const;
 
 #ifdef FLAT_DEBUG

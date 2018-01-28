@@ -15,5 +15,11 @@ Timer::Timer(float beginTime, float duration, const flat::lua::SharedLuaReferenc
 	
 }
 
+void Timer::reset(lua_State* L)
+{
+	m_onUpdate.reset(L);
+	m_onEnd.reset(L);
+}
+
 } // timer
 } // game

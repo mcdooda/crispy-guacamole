@@ -5,6 +5,7 @@
 #include "component/components/movement/movementcomponent.h"
 #include "../map/map.h"
 #include "../map/tile.h"
+#include "../game.h"
 
 namespace game
 {
@@ -134,28 +135,28 @@ const flat::render::ProgramSettings& Entity::getProgramSettings() const
 	return getEntityProgramSettings();
 }
 
-void Entity::onAddedToMap(map::Map* map)
+void Entity::onAddedToMap(lua_State* L, map::Map* map)
 {
 	FLAT_ASSERT(map && !m_map && !m_tile);
 	m_map = map;
 	m_tile = getTileFromPosition();
 	m_tile->addEntity(this);
-	addedToMap(this, map);
+	addedToMap(L, this, map);
 	positionChanged(m_position);
 	headingChanged(m_heading);
 	elevationChanged(m_elevation);
 }
 
-void Entity::onRemovedFromMap()
+void Entity::onRemovedFromMap(lua_State* L)
 {
 	FLAT_ASSERT(m_map && m_tile);
-	removedFromMap(this);
+	removedFromMap(L, this);
 	m_tile->removeEntity(this);
 	m_map = nullptr;
 	m_tile = nullptr;
 }
 
-void Entity::update(float time, float dt)
+void Entity::update(Game* game, float time, float dt)
 {
 #ifdef FLAT_DEBUG
 	if (m_debugBreak)
@@ -164,11 +165,16 @@ void Entity::update(float time, float dt)
 	}
 #endif
 
-	for (component::Component* component : m_components)
+	lua_State* L = game->lua->getCurrentState();
 	{
-		if (component->isEnabled())
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		for (component::Component* component : m_components)
 		{
-			component->update(time, dt);
+			if (component->isEnabled())
+			{
+				component->update(L, time, dt);
+			}
 		}
 	}
 
@@ -318,12 +324,22 @@ void Entity::updateAABBIfDirty()
 			m_map->getDisplayManager().updateEntity(this);
 		}
 	}
+
+#ifdef FLAT_DEBUG
+	// ensure the AABB is up to date
+	if (hasSprite())
+	{
+		flat::AABB2 spriteAABB;
+		getSprite().getAABB(spriteAABB);
+		FLAT_ASSERT(spriteAABB == getAABB());
+	}
+#endif
 }
 
-void Entity::enterState(const char* stateName)
+void Entity::enterState(lua_State* L, const char* stateName)
 {
 	FLAT_ASSERT(m_behaviorComponent != nullptr);
-	m_behaviorComponent->enterState(stateName);
+	m_behaviorComponent->enterState(L, stateName);
 }
 
 void Entity::addComponent(component::Component* component)
@@ -340,12 +356,12 @@ void Entity::cacheComponents()
 	m_movementComponent = findComponent<component::movement::MovementComponent>();
 }
 
-void Entity::initComponents()
+void Entity::initComponents(lua_State* L)
 {
 	for (component::Component* component : m_components)
 	{
 		FLAT_ASSERT(component->isEnabled());
-		component->init();
+		component->init(L);
 	}
 
 #ifdef FLAT_DEBUG
@@ -363,12 +379,15 @@ void Entity::initComponents()
 #endif
 }
 
-void Entity::deinitComponents()
+void Entity::deinitComponents(lua_State* L)
 {
 	for (component::Component* component : m_components)
 	{
-		component->deinit();
+		component->deinit(L);
 	}
+
+	// TODO: this should be somewhere else? or deinitComponents should be deinit
+	m_extraData.reset(L);
 }
 
 const component::Component* Entity::findComponent(component::ComponentFlags componentFlag) const

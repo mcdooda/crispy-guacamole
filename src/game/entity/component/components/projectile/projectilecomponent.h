@@ -26,18 +26,18 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		inline static bool enableInMapEditor() { return false; }
 		inline static bool enableInEntityEditor() { return false; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(lua_State* L, Entity* entity, map::Map* map);
 		bool headingChanged(float heading);
-		bool collided(Entity* collidedEntity);
-		bool collidedWithMap();
+		bool collided(lua_State* L, Entity* collidedEntity);
+		bool collidedWithMap(lua_State* L);
 
 		float getSpeedXY() const;
 		

@@ -27,7 +27,7 @@ using LuaEntityHandle = flat::lua::SharedCppValue<EntityHandle>;
 
 int open(Game& game)
 {
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getMainState();
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	
 	static const luaL_Reg Entity_lib_m[] = {
@@ -442,7 +442,7 @@ int l_Entity_enterState(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	const char* stateName = luaL_checkstring(L, 2);
 	bool yield = locGetOptionalYield(L, 3);
-	entity.enterState(stateName);
+	entity.enterState(L, stateName);
 	return locYieldIf(L, yield, 0);
 }
 
@@ -637,7 +637,7 @@ int l_Entity_kill(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
-	lifeComponent.kill();
+	lifeComponent.kill(L);
 	return 0;
 }
 
@@ -646,7 +646,7 @@ int l_Entity_dealDamage(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	int damage = static_cast<int>(luaL_checkinteger(L, 2));
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
-	lifeComponent.dealDamage(damage);
+	lifeComponent.dealDamage(L, damage);
 	return 0;
 }
 
@@ -671,7 +671,6 @@ int l_Entity_healthChanged(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	luaL_checktype(L, 2, LUA_TFUNCTION);
-	FLAT_ASSERT(L == flat::lua::getMainThread(L));
 	int callbackIndex = lifeComponent.addHealthChangedCallback(L, 2);
 	lifeComponent.healthChanged.on(
 		[L, &lifeComponent, callbackIndex](int previousHealth)
@@ -747,7 +746,7 @@ int l_Entity_clearGhostTemplate(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-	baseMapState.clearGhostTemplate();
+	baseMapState.clearGhostTemplate(game);
 	return 0;
 }
 

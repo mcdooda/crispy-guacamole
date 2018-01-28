@@ -17,7 +17,6 @@ class TimerContainer
 		TimerContainer() = default;
 		TimerContainer(const TimerContainer&) = delete;
 		TimerContainer(TimerContainer&&) = delete;
-		~TimerContainer();
 
 		void operator=(const TimerContainer&) = delete;
 
@@ -29,7 +28,7 @@ class TimerContainer
 		
 		void updateTimers(lua_State* L);
 		
-		void clearTimers();
+		void clearTimers(lua_State* L);
 		
 	private:
 		static bool compareTimersByTimeout(const Timer* a, const Timer* b);

@@ -13,7 +13,7 @@ namespace component
 namespace texture
 {
 
-void TextureComponent::init()
+void TextureComponent::init(lua_State* L)
 {
 	const TextureComponentTemplate* textureComponentTemplate = getTemplate();
 	m_sprite.setTexture(textureComponentTemplate->getTexture());
@@ -28,7 +28,7 @@ void TextureComponent::init()
 	m_owner->deselected.on(this, &TextureComponent::deselected);
 }
 
-void TextureComponent::deinit()
+void TextureComponent::deinit(lua_State* L)
 {
 	m_owner->clearSprite();
 
@@ -40,7 +40,7 @@ void TextureComponent::deinit()
 	m_owner->deselected.off(this);
 }
 
-void TextureComponent::update(float currentTime, float elapsedTime)
+void TextureComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
 	if (m_positionChanged)
 	{

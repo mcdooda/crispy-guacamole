@@ -19,10 +19,10 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "sprite"; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 		
 		bool isBusy() const override;
 		
@@ -36,7 +36,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(lua_State* L, Entity* entity, map::Map* map);
 		bool headingChanged(float heading);
 		bool positionChanged(const flat::Vector3& position);
 		bool movementStarted();

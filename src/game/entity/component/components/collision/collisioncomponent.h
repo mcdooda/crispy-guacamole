@@ -25,19 +25,19 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "collision"; }
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 
 		void getAABB(flat::AABB3& aabb) const;
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:
-		flat::Slot<Entity*> onCollidedWithEntity;
-		flat::Slot<> onCollidedWithMap;
+		flat::Slot<lua_State*, Entity*> onCollidedWithEntity;
+		flat::Slot<lua_State*> onCollidedWithMap;
 
 	private:
-		void separateFromNearbyEntities();
-		void separateFromAdjacentTiles();
+		void separateFromNearbyEntities(lua_State* L);
+		void separateFromAdjacentTiles(lua_State* L);
 
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;

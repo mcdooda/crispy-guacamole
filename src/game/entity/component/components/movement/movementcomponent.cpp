@@ -19,7 +19,7 @@ namespace component
 namespace movement
 {
 
-void MovementComponent::init()
+void MovementComponent::init(lua_State* L)
 {
 	m_owner->setCanBeSelected(true);
 
@@ -31,12 +31,12 @@ void MovementComponent::init()
 	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
 }
 
-void MovementComponent::deinit()
+void MovementComponent::deinit(lua_State* L)
 {
 	m_owner->addedToMap.off(this);
 }
 
-void MovementComponent::update(float currentTime, float elapsedTime)
+void MovementComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
 	FLAT_DEBUG_ONLY(m_steering = flat::Vector2(0.f, 0.f);)
 
@@ -179,7 +179,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	}
 }
 
-bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
+bool MovementComponent::addedToMap(lua_State* L, Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 

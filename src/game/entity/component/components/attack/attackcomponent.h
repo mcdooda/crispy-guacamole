@@ -22,12 +22,12 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "attack"; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 
-		void attack(float currentTime);
+		void attack(lua_State* L, float currentTime);
 
 		inline void setAttackTarget(Entity* entity) { m_target = entity; }
 		inline Entity* getAttackTarget() { return m_target.getEntity(); }
@@ -41,18 +41,18 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 		flat::Slot<> attackStopped;
 
 	private:
-		void tryBeginAttack(float currentTime);
+		void tryBeginAttack(lua_State* L, float currentTime);
 		void tryEndAttack();
 
-		void beginAttack(float currentTime);
-		void updateAttack();
+		void beginAttack(lua_State* L, float currentTime);
+		void updateAttack(lua_State* L);
 		void endAttack();
 
 		float getAttackRange() const;
 
 		bool isBusyForAttacking() const;
 
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(lua_State* L, Entity* entity, map::Map* map);
 
 	private:
 		EntityHandle m_target;

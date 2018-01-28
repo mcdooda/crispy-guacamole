@@ -29,7 +29,7 @@ void EntityEditorState::execute(Game& game)
 #ifdef FLAT_DEBUG
 	entity::component::ComponentFlags debuggedComponentFlags = m_entity.getEntity()->getDebuggedComponentFlags();
 #endif
-	despawnEntities();
+	despawnEntities(game);
 	if (!m_entity.isValid())
 	{
 		spawnEntity(game);
@@ -40,7 +40,7 @@ void EntityEditorState::execute(Game& game)
 #endif
 	}
 	const flat::time::Clock& clock = getClock();
-	m_map.updateEntities(clock.getTime(), clock.getDT());
+	m_map.updateEntities(game, clock.getTime(), clock.getDT());
 }
 
 void EntityEditorState::spawnEntity(Game& game)

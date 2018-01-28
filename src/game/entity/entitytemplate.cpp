@@ -12,7 +12,7 @@ EntityTemplate::EntityTemplate(Game& game, const component::ComponentRegistry& c
 	m_name(name),
 	m_componentFlags(0)
 {
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getCurrentState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
@@ -55,7 +55,7 @@ void EntityTemplate::reloadComponent(Game& game, const component::ComponentRegis
 
 component::ComponentTemplate* EntityTemplate::loadComponentTemplate(Game& game, const component::ComponentType& componentType) const
 {
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getCurrentState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 

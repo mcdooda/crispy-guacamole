@@ -13,7 +13,7 @@ namespace component
 namespace projectile
 {
 
-void ProjectileComponent::init()
+void ProjectileComponent::init(lua_State* L)
 {
 	m_owner->addedToMap.on(this, &ProjectileComponent::addedToMap);
 	m_owner->headingChanged.on(this, &ProjectileComponent::headingChanged);
@@ -26,7 +26,7 @@ void ProjectileComponent::init()
 	}
 }
 
-void ProjectileComponent::deinit()
+void ProjectileComponent::deinit(lua_State* L)
 {
 	m_owner->addedToMap.off(this);
 	m_owner->headingChanged.off(this);
@@ -39,7 +39,7 @@ void ProjectileComponent::deinit()
 	}
 }
 
-void ProjectileComponent::update(float currentTime, float elapsedTime)
+void ProjectileComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
 	const float weight = getTemplate()->getWeight();
 	const flat::Vector3 oldSpeed = m_speed;
@@ -52,7 +52,7 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	m_owner->setElevation(elevation);
 }
 
-bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map)
+bool ProjectileComponent::addedToMap(lua_State* L, Entity* entity, map::Map* map)
 {
 	const float projectileSpeed = getTemplate()->getSpeed();
 
@@ -76,16 +76,14 @@ bool ProjectileComponent::headingChanged(float heading)
 	return true;
 }
 
-bool ProjectileComponent::collided(Entity* collidedEntity)
+bool ProjectileComponent::collided(lua_State* L, Entity* collidedEntity)
 {
 	if (!isEnabled())
 		return true;
 
-	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& collidedCallback = getTemplate()->getCollidedCallback();
-
-	lua_State* L = collidedCallback.getLuaState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& collidedCallback = getTemplate()->getCollidedCallback();
 		collidedCallback.push(L);
 		lua::pushEntity(L, m_owner);
 		lua::pushEntity(L, collidedEntity);
@@ -101,9 +99,9 @@ bool ProjectileComponent::collided(Entity* collidedEntity)
 	return true;
 }
 
-bool ProjectileComponent::collidedWithMap()
+bool ProjectileComponent::collidedWithMap(lua_State* L)
 {
-	return collided(nullptr);
+	return collided(L, nullptr);
 }
 
 float ProjectileComponent::getSpeedXY() const

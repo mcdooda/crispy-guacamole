@@ -26,11 +26,12 @@ class EntityPool
 		void operator=(const EntityPool&) = delete;
 
 		Entity* createEntity(
+			Game& game,
 			const std::shared_ptr<const EntityTemplate>& entityTemplate,
 			const component::ComponentRegistry& componentRegistry,
 			component::ComponentFlags componentsFilter = component::AllComponents
 		);
-		void destroyEntity(Entity* entity);
+		void destroyEntity(Game& game, Entity* entity);
 
 	private:
 		component::Component* createComponent(const component::ComponentType& componentType);

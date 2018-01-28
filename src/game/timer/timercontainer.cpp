@@ -8,11 +8,6 @@ namespace game
 namespace timer
 {
 
-TimerContainer::~TimerContainer()
-{
-	clearTimers();
-}
-
 Timer* TimerContainer::add(float duration, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onUpdate, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onEnd, bool loop)
 {
 	const float beginTime = m_clock->getTime();
@@ -85,6 +80,7 @@ void TimerContainer::updateTimers(lua_State* L)
 				}
 				else
 				{
+					timer->reset(L);
 					m_timerPool.destroy(timer);
 				}
 			}
@@ -110,10 +106,11 @@ void TimerContainer::updateTimers(lua_State* L)
 	}
 }
 
-void TimerContainer::clearTimers()
+void TimerContainer::clearTimers(lua_State* L)
 {
 	for (Timer* timer : m_timers)
 	{
+		timer->reset(L);
 		m_timerPool.destroy(timer);
 	}
 	m_timers.clear();

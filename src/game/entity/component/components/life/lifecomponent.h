@@ -24,13 +24,13 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		inline static const char* getConfigName() { return "life"; }
 		inline static bool enableInMapEditor() { return false; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 
-		void kill();
-		void dealDamage(int damage);
+		void kill(lua_State* L);
+		void dealDamage(lua_State* L, int damage);
 
 		inline int getHealth() const { return m_health; }
 		inline int getMaxHealth() const { return getTemplate()->getMaxHealth(); }
@@ -46,10 +46,10 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		flat::Slot<> die;
 
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(lua_State* L, Entity* entity, map::Map* map);
 
-		void onLive();
-		void onDie();
+		void onLive(lua_State* L);
+		void onDie(lua_State* L);
 		
 		void checkSpawnDespawnThreadFinished();
 

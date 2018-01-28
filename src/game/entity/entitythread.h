@@ -16,7 +16,7 @@ class EntityThread : public flat::lua::Thread
 		EntityThread() = default;
 		~EntityThread() = default;
 		
-		void start(Entity* entity);
+		void start(lua_State* L, Entity* entity);
 };
 
 } // entity

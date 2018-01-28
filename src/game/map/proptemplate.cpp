@@ -19,7 +19,7 @@ PropTemplate::~PropTemplate()
 
 void PropTemplate::loadPropConfig(Game& game, const std::string& path)
 {
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getMainState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 

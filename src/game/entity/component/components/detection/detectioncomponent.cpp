@@ -13,17 +13,17 @@ namespace component
 namespace detection
 {
 
-void DetectionComponent::init()
+void DetectionComponent::init(lua_State* L)
 {
 	m_owner->removedFromMap.on(this, &DetectionComponent::removedFromMap);
 }
 
-void DetectionComponent::deinit()
+void DetectionComponent::deinit(lua_State* L)
 {
 	m_owner->removedFromMap.off(this);
 }
 
-void DetectionComponent::update(float currentTime, float elapsedTime)
+void DetectionComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
@@ -42,7 +42,7 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 		{
 			it = m_visibleEntities.erase(it);
 			entity->removedFromMap.off(this);
-			entityLeftVisionRange(entity);
+			entityLeftVisionRange(L, entity);
 		}
 		else
 		{
@@ -51,7 +51,7 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 	}
 
 	// add entities in vision range
-	map->eachEntityInRange(position, visionRange, [this](Entity* entity)
+	map->eachEntityInRange(position, visionRange, [this, L](Entity* entity)
 	{
 		if (entity == m_owner)
 		{
@@ -62,7 +62,7 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 		if (it == m_visibleEntities.end())
 		{
 			m_visibleEntities.insert(entity);
-			entityEnteredVisionRange(entity);
+			entityEnteredVisionRange(L, entity);
 			entity->removedFromMap.on(this, &DetectionComponent::visibleEntityRemovedFromMap);
 		}
 	});
@@ -73,7 +73,7 @@ bool DetectionComponent::isVisible(const Entity& target) const
 	return m_visibleEntities.find(const_cast<Entity*>(&target)) != m_visibleEntities.end();
 }
 
-bool DetectionComponent::removedFromMap(Entity* entity)
+bool DetectionComponent::removedFromMap(lua_State* L, Entity* entity)
 {
 	for (Entity* visibleEntity : m_visibleEntities)
 	{
@@ -82,11 +82,11 @@ bool DetectionComponent::removedFromMap(Entity* entity)
 	return true;
 }
 
-bool DetectionComponent::visibleEntityRemovedFromMap(Entity* entity)
+bool DetectionComponent::visibleEntityRemovedFromMap(lua_State* L, Entity* entity)
 {
 	std::set<Entity*>::iterator it = m_visibleEntities.find(entity);
 	m_visibleEntities.erase(it);
-	entityLeftVisionRange(entity);
+	entityLeftVisionRange(L, entity);
 	return false;
 }
 

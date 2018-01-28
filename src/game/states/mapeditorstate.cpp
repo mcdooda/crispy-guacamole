@@ -42,9 +42,9 @@ void MapEditorState::execute(Game& game)
 	applyBrush(game);
 	saveOnCtrlS(game);
 
-	despawnEntities();
+	despawnEntities(game);
 	const flat::time::Clock& clock = getClock();
-	m_map.updateEntities(clock.getTime(), clock.getDT());
+	m_map.updateEntities(game, clock.getTime(), clock.getDT());
 
 #ifdef FLAT_DEBUG
 	const auto& keyboard = game.input->keyboard;

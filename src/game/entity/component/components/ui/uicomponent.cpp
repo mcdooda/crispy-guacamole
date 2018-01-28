@@ -13,7 +13,7 @@ namespace component
 namespace ui
 {
 
-void UiComponent::init()
+void UiComponent::init(lua_State* L)
 {
 	m_widgetVisible = true;
 	m_addedToMap = false;
@@ -31,15 +31,12 @@ void UiComponent::init()
 	m_owner->selected.on(this, &UiComponent::selected);
 	m_owner->deselected.on(this, &UiComponent::deselected);
 
-	// TODO: clean this shit!
-	lua_State* L = getTemplate()->getAddedToMap().getLuaState();
-	FLAT_ASSERT(L != nullptr);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	m_gameView = &baseMapState.getGameView();
 }
 
-void UiComponent::deinit()
+void UiComponent::deinit(lua_State* L)
 {
 	flat::sharp::ui::Widget* widget = m_widget.get();
 	if (widget != nullptr)
@@ -62,18 +59,18 @@ void UiComponent::deinit()
 	m_gameView = nullptr;
 }
 
-void UiComponent::update(float currentTime, float elapsedTime)
+void UiComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
 	const UiComponentTemplate* uiComponentTemplate = getTemplate();
 
 	if (m_addedToMap)
 	{
-		triggerCallback(uiComponentTemplate->getAddedToMap());
+		triggerCallback(L, uiComponentTemplate->getAddedToMap());
 		m_addedToMap = false;
 	}
 	else if (m_removedFromMap)
 	{
-		triggerCallback(uiComponentTemplate->getRemovedFromMap());
+		triggerCallback(L, uiComponentTemplate->getRemovedFromMap());
 		m_removedFromMap = false;
 	}
 
@@ -105,23 +102,23 @@ void UiComponent::update(float currentTime, float elapsedTime)
 
 	if (m_selected)
 	{
-		triggerCallback(uiComponentTemplate->getSelected());
+		triggerCallback(L, uiComponentTemplate->getSelected());
 		m_selected = false;
 	}
 	else if (m_deselected)
 	{
-		triggerCallback(uiComponentTemplate->getDeselected());
+		triggerCallback(L, uiComponentTemplate->getDeselected());
 		m_deselected = false;
 	}
 }
 
-bool UiComponent::addedToMap(Entity * entity, map::Map * map)
+bool UiComponent::addedToMap(lua_State* L, Entity* entity, map::Map* map)
 {
 	m_addedToMap = true;
 	return true;
 }
 
-bool UiComponent::removedFromMap(Entity * entity)
+bool UiComponent::removedFromMap(lua_State* L, Entity* entity)
 {
 	m_removedFromMap = true;
 	return true;
@@ -144,14 +141,13 @@ flat::sharp::ui::WidgetFactory& UiComponent::getWidgetFactory() const
 	return getTemplate()->getWidgetFactory();
 }
 
-void UiComponent::triggerCallback(const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& function)
+void UiComponent::triggerCallback(lua_State* L, const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& function)
 {
 	if (function.isEmpty())
 	{
 		return;
 	}
 	
-	lua_State* L = function.getLuaState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 

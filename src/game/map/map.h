@@ -71,9 +71,9 @@ class Map
 		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
 		
 		// entities
-		void addEntity(entity::Entity* entity);
-		void removeEntity(entity::Entity* entity);
-		entity::Entity* removeEntityAtIndex(int index);
+		void addEntity(lua_State* L, entity::Entity* entity);
+		void removeEntity(lua_State* L, entity::Entity* entity);
+		entity::Entity* removeEntityAtIndex(lua_State* L, int index);
 
 		inline void removeAllEntities() { m_entities.clear(); }
 
@@ -82,7 +82,7 @@ class Map
 
 		void eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const;
 		
-		void updateEntities(float time, float dt);
+		void updateEntities(Game& game, float time, float dt);
 
 		void setTileNormalDirty(Tile& tile);
 		void updateTilesNormals();
@@ -129,6 +129,8 @@ class Map
 		
 	private:
 		friend class io::Reader;
+
+		std::mutex m_entitiesMutex;
 };
 
 } // map

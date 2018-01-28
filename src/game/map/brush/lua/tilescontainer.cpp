@@ -15,7 +15,7 @@ using LuaTilesContainer = flat::lua::SharedCppReference<TilesContainer>;
 
 int openTilesContainer(flat::Flat& flat)
 {
-	lua_State* L = flat.lua->state;
+	lua_State* L = flat.lua->getMainState();
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	// TilesContainer metatable

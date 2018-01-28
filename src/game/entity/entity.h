@@ -65,10 +65,10 @@ class Entity final : public map::MapObject
 		const flat::render::Sprite& getSprite() const override;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
-		void onAddedToMap(map::Map* map);
-		void onRemovedFromMap();
+		void onAddedToMap(lua_State* L, map::Map* map);
+		void onRemovedFromMap(lua_State* L);
 		
-		void update(float time, float dt);
+		void update(Game* game, float time, float dt);
 
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
@@ -80,13 +80,13 @@ class Entity final : public map::MapObject
 		void addPointOnPath(const flat::Vector2& point);
 		void clearPath();
 		
-		void enterState(const char* stateName);
+		void enterState(lua_State* L, const char* stateName);
 
 		void addComponent(component::Component* component);
 		void cacheComponents();
-		void initComponents();
-		void deinitComponents();
-		inline void resetComponents() { deinitComponents(); initComponents(); }
+		void initComponents(lua_State* L);
+		void deinitComponents(lua_State* L);
+		inline void resetComponents(lua_State* L) { deinitComponents(L); initComponents(L); }
 
 		template <class ComponentType>
 		inline const ComponentType* findComponent() const;
@@ -142,8 +142,8 @@ class Entity final : public map::MapObject
 		flat::Slot<const flat::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;
 		flat::Slot<float> elevationChanged;
-		flat::Slot<Entity*, map::Map*> addedToMap;
-		flat::Slot<Entity*> removedFromMap;
+		flat::Slot<lua_State*, Entity*, map::Map*> addedToMap;
+		flat::Slot<lua_State*, Entity*> removedFromMap;
 		flat::Slot<> selected;
 		flat::Slot<> deselected;
 		

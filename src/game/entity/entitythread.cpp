@@ -6,14 +6,11 @@ namespace game
 namespace entity
 {
 
-void EntityThread::start(Entity* entity)
+void EntityThread::start(lua_State* L, Entity* entity)
 {
-	lua_State* L = m_function.getLuaState();
-	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-		lua::pushEntity(L, entity);
-		Super::start(1);
-	}
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+	lua::pushEntity(L, entity);
+	Super::start(L, 1);
 }
 
 } // entity

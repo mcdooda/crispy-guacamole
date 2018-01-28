@@ -13,26 +13,21 @@ namespace component
 namespace prop
 {
 
-void PropComponent::init()
+void PropComponent::init(lua_State* L)
 {
 	m_owner->setCanBeSelected(true);
 	m_owner->addedToMap.on(this, &PropComponent::addedToMap);
 	m_owner->removedFromMap.on(this, &PropComponent::removedFromMap);
 }
 
-void PropComponent::deinit()
+void PropComponent::deinit(lua_State* L)
 {
 	m_owner->setCanBeSelected(false);
 	m_owner->addedToMap.off(this);
 	m_owner->removedFromMap.off(this);
 }
 
-void PropComponent::update(float currentTime, float elapsedTime)
-{
-	// nothing to do
-}
-
-bool PropComponent::addedToMap(Entity* entity, map::Map* map)
+bool PropComponent::addedToMap(lua_State* L, Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 
@@ -52,7 +47,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	return true;
 }
 
-bool PropComponent::removedFromMap(Entity* entity)
+bool PropComponent::removedFromMap(lua_State* L, Entity* entity)
 {
 	map::Tile* tile = m_owner->getTile();
 	tile->setWalkable(true);

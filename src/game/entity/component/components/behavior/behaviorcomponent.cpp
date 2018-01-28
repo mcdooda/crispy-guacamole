@@ -15,48 +15,50 @@ namespace component
 namespace behavior
 {
 
-void BehaviorComponent::init()
+void BehaviorComponent::init(lua_State* L)
 {
-	m_behaviorRuntime.setEntity(m_owner);
+	m_behaviorRuntime.setEntity(L, m_owner);
 	m_owner->addedToMap.on(this, &BehaviorComponent::addedToMap);
 
 	detection::DetectionComponent* detectionComponent = m_owner->getComponent<detection::DetectionComponent>();
 	if (detectionComponent != nullptr)
 	{
-		if (m_behaviorRuntime.isEventHandled<EntityEnteredVisionRangeBehaviorEvent>())
+		if (m_behaviorRuntime.isEventHandled<EntityEnteredVisionRangeBehaviorEvent>(L))
 		{
 			detectionComponent->entityEnteredVisionRange.on(this, &BehaviorComponent::entityEnteredVisionRange);
 		}
-		if (m_behaviorRuntime.isEventHandled<EntityLeftVisionRangeBehaviorEvent>())
+		if (m_behaviorRuntime.isEventHandled<EntityLeftVisionRangeBehaviorEvent>(L))
 		{
 			detectionComponent->entityLeftVisionRange.on(this, &BehaviorComponent::entityLeftVisionRange);
 		}
 	}
 }
 
-void BehaviorComponent::deinit()
+void BehaviorComponent::deinit(lua_State* L)
 {
 	//m_behaviorRuntime.setEntity(nullptr); // TODO: uncomment this
+	m_behaviorRuntime.reset(L);
 	m_owner->addedToMap.off(this);
 
 	if (detection::DetectionComponent* detectionComponent = m_owner->getComponent<detection::DetectionComponent>())
 	{
-		if (m_behaviorRuntime.isEventHandled<EntityEnteredVisionRangeBehaviorEvent>())
+		if (m_behaviorRuntime.isEventHandled<EntityEnteredVisionRangeBehaviorEvent>(L))
 		{
 			detectionComponent->entityEnteredVisionRange.off(this);
 		}
-		if (m_behaviorRuntime.isEventHandled<EntityLeftVisionRangeBehaviorEvent>())
+		if (m_behaviorRuntime.isEventHandled<EntityLeftVisionRangeBehaviorEvent>(L))
 		{
 			detectionComponent->entityLeftVisionRange.off(this);
 		}
 	}
+
 }
 
-void BehaviorComponent::update(float time, float dt)
+void BehaviorComponent::update(lua_State* L, float time, float dt)
 {
 	if (!m_owner->isBusy())
 	{
-		m_behaviorRuntime.update(time);
+		m_behaviorRuntime.update(L, time);
 	}
 
 	/*
@@ -77,9 +79,9 @@ void BehaviorComponent::update(float time, float dt)
 	*/
 }
 
-void BehaviorComponent::enterState(const char* stateName)
+void BehaviorComponent::enterState(lua_State* L, const char* stateName)
 {
-	m_behaviorRuntime.enterState(stateName);
+	m_behaviorRuntime.enterState(L, stateName);
 }
 
 void BehaviorComponent::sleep(float time, float duration)
@@ -87,32 +89,33 @@ void BehaviorComponent::sleep(float time, float duration)
 	m_behaviorRuntime.sleep(time, duration);
 }
 
-bool BehaviorComponent::addedToMap(Entity* entity, map::Map* map)
+bool BehaviorComponent::addedToMap(lua_State* L, Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 	if (isEnabled())
 	{
-		enterState("init");
+		enterState(L, "init");
 	}
 	return true;
 }
 
-bool BehaviorComponent::entityEnteredVisionRange(Entity* entity)
+bool BehaviorComponent::entityEnteredVisionRange(lua_State* L, Entity* entity)
 {
-	m_behaviorRuntime.handleEvent<EntityEnteredVisionRangeBehaviorEvent>(entity);
+	m_behaviorRuntime.handleEvent<EntityEnteredVisionRangeBehaviorEvent>(L, entity);
 	return true;
 }
 
-bool BehaviorComponent::entityLeftVisionRange(Entity* entity)
+bool BehaviorComponent::entityLeftVisionRange(lua_State* L, Entity* entity)
 {
-	m_behaviorRuntime.handleEvent<EntityLeftVisionRangeBehaviorEvent>(entity);
+	m_behaviorRuntime.handleEvent<EntityLeftVisionRangeBehaviorEvent>(L, entity);
 	return true;
 }
 
 #ifdef FLAT_DEBUG
 void BehaviorComponent::getThreadDebugInfo(std::string& file, int& line) const
 {
-	file.clear();
+	FLAT_ASSERT_MSG(false, "not implemented");
+	/*file.clear();
 	line = 0;
 
 	const flat::lua::UniqueLuaReference<LUA_TTHREAD>& luaThreadRef = m_behaviorRuntime.getThread().getThread();
@@ -132,7 +135,7 @@ void BehaviorComponent::getThreadDebugInfo(std::string& file, int& line) const
 
 			lua_pop(L, 1);
 		}
-	}
+	}*/
 }
 
 void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const

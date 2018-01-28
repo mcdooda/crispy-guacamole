@@ -19,10 +19,10 @@ class TextureComponent : public ComponentImpl<TextureComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "texture"; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 
 		inline const flat::render::Sprite& getSprite() const { return m_sprite; }
 

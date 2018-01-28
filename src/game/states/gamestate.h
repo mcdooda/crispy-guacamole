@@ -16,6 +16,7 @@ class GameState : public BaseMapStateImpl<map::GameMap>
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
+		void exit(Game& game) override final;
 
 #ifdef FLAT_DEBUG
 		void setGamePause(Game& game, bool pause, bool pauseNextFrame);

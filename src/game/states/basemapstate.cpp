@@ -44,7 +44,7 @@ void BaseMapState::enter(Game& game)
 	
 	// init lua then
 	initLua(game);
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getMainState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
@@ -123,32 +123,15 @@ void BaseMapState::enter(Game& game)
 	m_ghostEntity = nullptr;
 }
 
-void BaseMapState::execute(Game& game)
-{
-	const auto& input = game.input;
-
-	if (input->window->isResized())
-	{
-		resetViews(game);
-	}
-
-	if (input->keyboard->isJustPressed(K(ESCAPE)))
-	{
-		game.stop();
-	}
-	
-	update(game);
-	draw(game);
-}
-
 void BaseMapState::exit(Game& game)
 {
+	Super::exit(game);
 	map::Map& map = getMap();
 	for (entity::Entity* entity : map.getEntities())
 	{
-		m_entityPool.destroyEntity(entity);
+		m_entityPool.destroyEntity(game, entity);
 	}
-	clearGhostTemplate();
+	clearGhostTemplate(game);
 	map.removeAllEntities();
 }
 
@@ -294,30 +277,34 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 		}
 	}
 
-	entity->setPosition(position);
-	entity->setHeading(heading);
-	entity->setElevation(elevation);
-	addEntityToMap(entity);
-	const float currentTime = m_clock->getTime();
-	entity->update(currentTime, 0.f);
+	lua_State* L = game.lua->getCurrentState();
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+		entity->setPosition(position);
+		entity->setHeading(heading);
+		entity->setElevation(elevation);
+		addEntityToMap(L, entity);
+		const float currentTime = m_clock->getTime();
+		entity->update(&game, currentTime, 0.f);
+	}
 	return entity;
 }
 
-void BaseMapState::despawnEntity(entity::Entity* entity)
+void BaseMapState::despawnEntity(Game& game, entity::Entity* entity)
 {
-	removeEntityFromMap(entity);
+	removeEntityFromMap(game.lua->getMainState(), entity);
 	removeFromSelectedEntities(entity);
-	destroyEntity(entity);
+	destroyEntity(game, entity);
 }
 
-void BaseMapState::despawnEntityAtIndex(int index)
+void BaseMapState::despawnEntityAtIndex(Game& game, int index)
 {
-	entity::Entity* entity = removeEntityFromMapAtIndex(index);
+	entity::Entity* entity = removeEntityFromMapAtIndex(game.lua->getMainState(), index);
 	removeFromSelectedEntities(entity);
-	destroyEntity(entity);
+	destroyEntity(game, entity);
 }
 
-void BaseMapState::despawnEntities()
+void BaseMapState::despawnEntities(Game& game)
 {
 	map::Map& map = getMap();
 	std::vector<entity::Entity*>& entities = map.getEntities();
@@ -326,23 +313,23 @@ void BaseMapState::despawnEntities()
 		entity::Entity* entity = entities[i];
 		if (entity->isMarkedForDelete())
 		{
-			despawnEntityAtIndex(i);
+			despawnEntityAtIndex(game, i);
 		}
 	}
 }
 
 void BaseMapState::setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate)
 {
-	clearGhostTemplate();
+	clearGhostTemplate(game);
 	m_ghostTemplate = ghostTemplate;
 	m_ghostEntity = createEntity(game, ghostTemplate, entity::component::AllComponents);
 }
 
-void BaseMapState::clearGhostTemplate()
+void BaseMapState::clearGhostTemplate(Game& game)
 {
 	if (m_ghostEntity != nullptr)
 	{
-		destroyEntity(m_ghostEntity);
+		destroyEntity(game, m_ghostEntity);
 	}
 	m_ghostTemplate.reset();
 	m_ghostEntity = nullptr;
@@ -351,34 +338,34 @@ void BaseMapState::clearGhostTemplate()
 entity::Entity* BaseMapState::createEntity(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, entity::component::ComponentFlags componentFlags)
 {
 	entity::component::ComponentFlags componentsFilter = getComponentsFilter() & componentFlags;
-	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
+	entity::Entity* entity = m_entityPool.createEntity(game, entityTemplate, m_componentRegistry, componentsFilter);
 	return entity;
 }
 
-void BaseMapState::destroyEntity(entity::Entity* entity)
+void BaseMapState::destroyEntity(Game& game, entity::Entity* entity)
 {
 	FLAT_ASSERT(entity->getMap() == nullptr);
-	m_entityPool.destroyEntity(entity);
+	m_entityPool.destroyEntity(game, entity);
 }
 
-void BaseMapState::addEntityToMap(entity::Entity* entity)
+void BaseMapState::addEntityToMap(lua_State* L, entity::Entity* entity)
 {
 	FLAT_ASSERT(entity->getMap() == nullptr);
 	map::Map& map = getMap();
-	map.addEntity(entity);
+	map.addEntity(L, entity);
 }
 
-void BaseMapState::removeEntityFromMap(entity::Entity* entity)
+void BaseMapState::removeEntityFromMap(lua_State* L, entity::Entity* entity)
 {
 	FLAT_ASSERT(entity->getMap() != nullptr);
 	map::Map& map = getMap();
-	map.removeEntity(entity);
+	map.removeEntity(L, entity);
 }
 
-entity::Entity* BaseMapState::removeEntityFromMapAtIndex(int index)
+entity::Entity* BaseMapState::removeEntityFromMapAtIndex(lua_State* L, int index)
 {
 	map::Map& map = getMap();
-	return map.removeEntityAtIndex(index);
+	return map.removeEntityAtIndex(L, index);
 }
 
 bool BaseMapState::isMouseOverUi(game::Game& game) const
@@ -406,21 +393,25 @@ void BaseMapState::addGhostEntity(game::Game& game)
 			if (tile != nullptr)
 			{
 				entity::component::collision::CollisionComponent* collisionComponent = m_ghostEntity->getComponent<entity::component::collision::CollisionComponent>();
-				m_ghostEntity->resetComponents();
-				m_ghostEntity->setHeading(0.f);
-				m_ghostEntity->setElevation(0.f);
-				flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
-				m_ghostEntity->setPosition(ghostPosition);
-				addEntityToMap(m_ghostEntity);
+				lua_State* L = game.lua->getMainState();
+				{
+					FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+					m_ghostEntity->resetComponents(L);
+					m_ghostEntity->setHeading(0.f);
+					m_ghostEntity->setElevation(0.f);
+					flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
+					m_ghostEntity->setPosition(ghostPosition);
+					addEntityToMap(L, m_ghostEntity);
 
-				if (collisionComponent != nullptr)
-				{
-					collisionComponent->incDisableLevel();
-				}
-				m_ghostEntity->update(m_clock->getTime(), 0.f);
-				if (collisionComponent != nullptr)
-				{
-					collisionComponent->decDisableLevel();
+					if (collisionComponent != nullptr)
+					{
+						collisionComponent->incDisableLevel();
+					}
+					m_ghostEntity->update(&game, m_clock->getTime(), 0.f);
+					if (collisionComponent != nullptr)
+					{
+						collisionComponent->decDisableLevel();
+					}
 				}
 
 				// TODO: clean this shit
@@ -437,7 +428,7 @@ void BaseMapState::removeGhostEntity(game::Game & game)
 {
 	if (m_ghostEntity != nullptr && m_ghostEntity->getMap() != nullptr)
 	{
-		removeEntityFromMap(m_ghostEntity);
+		removeEntityFromMap(game.lua->getMainState(), m_ghostEntity);
 	}
 }
 
@@ -652,6 +643,16 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 
 			selectionWidget->removeFromParent();
 
+#ifdef FLAT_DEBUG
+			if (m_selectedEntitiesMutex.try_lock())
+			{
+				m_selectedEntitiesMutex.unlock();
+			}
+			else
+			{
+				FLAT_ASSERT(false);
+			}
+#endif
 			return !m_selectedEntities.empty();
 		}
 	}

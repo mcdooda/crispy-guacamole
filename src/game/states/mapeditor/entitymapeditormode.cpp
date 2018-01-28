@@ -16,7 +16,8 @@ EntityMapEditorMode::EntityMapEditorMode(Game& game) : Super(game)
 
 EntityMapEditorMode::~EntityMapEditorMode()
 {
-	m_game.getStateMachine().getState()->as<states::MapEditorState>().clearGhostTemplate();
+	states::MapEditorState& mapEditorState = m_game.getStateMachine().getState()->as<states::MapEditorState>();
+	mapEditorState.clearGhostTemplate(m_game);
 }
 
 void EntityMapEditorMode::applyBrushPrimaryEffect(bool justPressed)

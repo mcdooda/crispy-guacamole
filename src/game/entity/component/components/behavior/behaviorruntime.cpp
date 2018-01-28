@@ -20,12 +20,11 @@ BehaviorRuntime::BehaviorRuntime() :
 
 }
 
-void BehaviorRuntime::setEntity(Entity* entity)
+void BehaviorRuntime::setEntity(lua_State* L, Entity* entity)
 {
 	m_entity = entity;
 
 	const Behavior& behavior = getBehavior();
-	lua_State* L = behavior.getLuaState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
@@ -44,11 +43,11 @@ void BehaviorRuntime::setEntity(Entity* entity)
 	}
 }
 
-void BehaviorRuntime::enterState(const char* stateName)
+void BehaviorRuntime::enterState(lua_State* L, const char* stateName)
 {
 	if (!m_thread.isEmpty())
 	{
-		m_thread.stop();
+		m_thread.stop(L);
 	}
 
 	FLAT_DEBUG_ONLY(m_currentStateName = stateName;)
@@ -56,7 +55,6 @@ void BehaviorRuntime::enterState(const char* stateName)
 	m_endSleepTime = -1.f;
 
 	const Behavior& behavior = getBehavior();
-	lua_State* L = behavior.getLuaState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
@@ -82,7 +80,7 @@ void BehaviorRuntime::enterState(const char* stateName)
 		lua::pushEntity(L, m_entity);
 
 		// actually start the thread, with 2 arguments: the states table and the entity
-		m_thread.start(2);
+		m_thread.start(L, 2);
 	}
 }
 
@@ -91,27 +89,32 @@ void BehaviorRuntime::sleep(float time, float duration)
 	m_endSleepTime = time + duration;
 }
 
-void BehaviorRuntime::updateCurrentState(float time)
+void BehaviorRuntime::updateCurrentState(lua_State* L, float time)
 {
 	if (m_thread.isRunning() && time >= m_endSleepTime)
 	{
-		m_thread.update();
+		m_thread.update(L);
 	}
 }
 
-void BehaviorRuntime::update(float time)
+void BehaviorRuntime::update(lua_State* L, float time)
 {
 	if (m_thread.isFinished())
 	{
 		if (m_hasIdle)
 		{
-			enterState("idle");
+			enterState(L, "idle");
 		}
 	}
 	else
 	{
-		updateCurrentState(time);
+		updateCurrentState(L, time);
 	}
+}
+
+void BehaviorRuntime::reset(lua_State* L)
+{
+	m_thread.reset(L);
 }
 
 const Behavior& BehaviorRuntime::getBehavior() const

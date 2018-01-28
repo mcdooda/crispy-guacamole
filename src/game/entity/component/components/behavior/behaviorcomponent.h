@@ -25,12 +25,12 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		inline static bool enableInMapEditor() { return false; }
 		inline static bool enableInEntityEditor() { return false; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float time, float dt) override;
+		void update(lua_State* L, float time, float dt) override;
 		
-		void enterState(const char* stateName);
+		void enterState(lua_State* L, const char* stateName);
 
 		void sleep(float time, float duration);
 
@@ -40,9 +40,9 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 #endif
 		
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
-		bool entityEnteredVisionRange(Entity* entity);
-		bool entityLeftVisionRange(Entity* entity);
+		bool addedToMap(lua_State* L, Entity* entity, map::Map* map);
+		bool entityEnteredVisionRange(lua_State* L, Entity* entity);
+		bool entityLeftVisionRange(lua_State* L, Entity* entity);
 		
 	private:
 		BehaviorRuntime m_behaviorRuntime;

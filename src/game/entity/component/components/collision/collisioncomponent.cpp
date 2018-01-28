@@ -17,10 +17,10 @@ namespace component
 namespace collision
 {
 
-void CollisionComponent::update(float currentTime, float elapsedTime)
+void CollisionComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
-	separateFromNearbyEntities();
-	separateFromAdjacentTiles();
+	separateFromNearbyEntities(L);
+	separateFromAdjacentTiles(L);
 }
 
 void CollisionComponent::getAABB(flat::AABB3& aabb) const
@@ -30,7 +30,7 @@ void CollisionComponent::getAABB(flat::AABB3& aabb) const
 	collisionBox.getAABB(m_owner->getPosition(), aabb);
 }
 
-void CollisionComponent::separateFromNearbyEntities()
+void CollisionComponent::separateFromNearbyEntities(lua_State* L)
 {
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
 	if (!collisionComponentTemplate->getSeparate())
@@ -73,7 +73,7 @@ void CollisionComponent::separateFromNearbyEntities()
 						flat::Vector3 penetration;
 						if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
 						{
-							onCollidedWithEntity(neighbor);
+							onCollidedWithEntity(L, neighbor);
 							const movement::MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<movement::MovementComponent>();
 							const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
 							if (neighborWeight + weight > 0.f)
@@ -95,7 +95,7 @@ void CollisionComponent::separateFromNearbyEntities()
 	}
 }
 
-void CollisionComponent::separateFromAdjacentTiles()
+void CollisionComponent::separateFromAdjacentTiles(lua_State* L)
 {
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
@@ -203,7 +203,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	if (position != newPosition)
 	{
 		m_owner->setPosition(newPosition);
-		onCollidedWithMap();
+		onCollidedWithMap(L);
 	}
 }
 

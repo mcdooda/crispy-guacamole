@@ -19,7 +19,7 @@ using LuaBrush = flat::lua::SharedCppReference<Brush>;
 
 int open(Game& game)
 {
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getMainState();
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	// Brush metatable

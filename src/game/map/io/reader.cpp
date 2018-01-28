@@ -51,7 +51,7 @@ void Reader::readConfig()
 	flat::Vector2 yAxis;
 	flat::Vector2 zAxis;
 
-	lua_State* L = m_game.lua->state;
+	lua_State* L = m_game.lua->getMainState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 

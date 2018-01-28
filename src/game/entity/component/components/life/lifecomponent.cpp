@@ -16,7 +16,7 @@ namespace component
 namespace life
 {
 
-void LifeComponent::init()
+void LifeComponent::init(lua_State* L)
 {
 	m_health = getMaxHealth();
 	m_owner->addedToMap.on(this, &LifeComponent::addedToMap);
@@ -24,12 +24,20 @@ void LifeComponent::init()
 	m_despawning = false;
 }
 
-void LifeComponent::deinit()
+void LifeComponent::deinit(lua_State* L)
 {
 	m_owner->addedToMap.off(this);
+
+	for (flat::lua::UniqueLuaReference<LUA_TFUNCTION>& healthChangedRef : m_healthChangedRefs)
+	{
+		healthChangedRef.reset(L);
+	}
+	m_healthChangedRefs.clear();
+
+	m_spawnDespawnThread.reset(L);
 }
 
-void LifeComponent::update(float currentTime, float elapsedTime)
+void LifeComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
 	// wait for animations and business things to finish before updating the attack thread
 	if (m_owner->isBusy())
@@ -39,23 +47,23 @@ void LifeComponent::update(float currentTime, float elapsedTime)
 	
 	if (m_spawnDespawnThread.isRunning()) // the thread might be finished but we still update because the entity was busy
 	{
-		m_spawnDespawnThread.update();
+		m_spawnDespawnThread.update(L);
 		checkSpawnDespawnThreadFinished();
 	}
 }
 
-void LifeComponent::kill()
+void LifeComponent::kill(lua_State* L)
 {
 	if (!m_spawning && !m_despawning)
 	{
 		int previousHealth = m_health;
 		m_health = 0;
 		healthChanged(previousHealth);
-		onDie();
+		onDie(L);
 	}
 }
 
-void LifeComponent::dealDamage(int damage)
+void LifeComponent::dealDamage(lua_State* L, int damage)
 {
 	if (!m_spawning && !m_despawning)
 	{
@@ -65,7 +73,7 @@ void LifeComponent::dealDamage(int damage)
 		healthChanged(previousHealth);
 		if (m_health == 0)
 		{
-			onDie();
+			onDie(L);
 		}
 	}
 }
@@ -83,14 +91,14 @@ void LifeComponent::pushHealthChangedCallback(lua_State* L, int callbackIndex) c
 	m_healthChangedRefs[callbackIndex].push(L);
 }
 
-bool LifeComponent::addedToMap(Entity* entity, map::Map* map)
+bool LifeComponent::addedToMap(lua_State* L, Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
-	onLive();
+	onLive(L);
 	return true;
 }
 
-void LifeComponent::onLive()
+void LifeComponent::onLive(lua_State* L)
 {
 	FLAT_ASSERT(!m_spawning && !m_despawning);
 
@@ -105,20 +113,17 @@ void LifeComponent::onLive()
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& spawnFunc = lifeComponentTemplate->getSpawnFunc();
 	if (!spawnFunc.isEmpty())
 	{
-		lua_State* L = spawnFunc.getLuaState();
-		{
-			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-			spawnFunc.push(L);
-			m_spawnDespawnThread.set(L, -1);
-			lua_pop(L, 1);
-			m_spawnDespawnThread.start(m_owner);
-		}
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+		spawnFunc.push(L);
+		m_spawnDespawnThread.set(L, -1);
+		lua_pop(L, 1);
+		m_spawnDespawnThread.start(L, m_owner);
 	}
 
 	checkSpawnDespawnThreadFinished();
 }
 
-void LifeComponent::onDie()
+void LifeComponent::onDie(lua_State* L)
 {
 	FLAT_ASSERT(!m_spawning && !m_despawning);
 
@@ -131,14 +136,11 @@ void LifeComponent::onDie()
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& despawnFunc = lifeComponentTemplate->getDespawnFunc();
 	if (!despawnFunc.isEmpty())
 	{
-		lua_State* L = despawnFunc.getLuaState();
-		{
-			FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-			despawnFunc.push(L);
-			m_spawnDespawnThread.set(L, -1);
-			lua_pop(L, 1);
-			m_spawnDespawnThread.start(m_owner);
-		}
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+		despawnFunc.push(L);
+		m_spawnDespawnThread.set(L, -1);
+		lua_pop(L, 1);
+		m_spawnDespawnThread.start(L, m_owner);
 	}
 
 	checkSpawnDespawnThreadFinished();

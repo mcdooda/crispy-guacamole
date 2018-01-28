@@ -20,23 +20,23 @@ class UiComponent : public ComponentImpl<UiComponentTemplate>
 		inline static const char* getConfigName() { return "ui"; }
 		inline static bool enableInMapEditor() { return false; }
 
-		void init() override;
-		void deinit() override;
+		void init(lua_State* L) override;
+		void deinit(lua_State* L) override;
 
-		void update(float currentTime, float elapsedTime) override;
+		void update(lua_State* L, float currentTime, float elapsedTime) override;
 
 		inline void setWidgetOffset(const flat::Vector2& widgetOffset) { m_widgetOffset = widgetOffset; }
 		inline void setWidgetVisible(bool widgetVisible) { m_widgetVisible = widgetVisible; }
 
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
-		bool removedFromMap(Entity* entity);
+		bool addedToMap(lua_State* L, Entity* entity, map::Map* map);
+		bool removedFromMap(lua_State* L, Entity* entity);
 		bool selected();
 		bool deselected();
 
 		flat::sharp::ui::WidgetFactory& getWidgetFactory() const;
 
-		void triggerCallback(const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& function);
+		void triggerCallback(lua_State* L, const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& function);
 
 	private:
 		std::shared_ptr<flat::sharp::ui::Widget> m_widget;

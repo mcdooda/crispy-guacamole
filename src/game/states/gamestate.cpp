@@ -30,7 +30,7 @@ void GameState::enter(Game& game)
 	}
 #endif
 	
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getMainState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
@@ -41,7 +41,7 @@ void GameState::enter(Game& game)
 		{
 			luaL_checktype(L, -1, LUA_TFUNCTION);
 			m_levelThread.set(L, -1);
-			m_levelThread.start(0);
+			m_levelThread.start(L, 0);
 		}
 
 		lua_pop(L, 1);
@@ -149,9 +149,9 @@ void GameState::execute(Game& game)
 	{
 #endif
 
-	despawnEntities();
+	despawnEntities(game);
 	const flat::time::Clock& clock = getClock();
-	m_map.updateEntities(clock.getTime(), clock.getDT());
+	m_map.updateEntities(game, clock.getTime(), clock.getDT());
 
 #ifdef FLAT_DEBUG
 	}
@@ -159,10 +159,16 @@ void GameState::execute(Game& game)
 
 	if (!m_levelThread.isFinished())
 	{
-		m_levelThread.update();
+		m_levelThread.update(game.lua->getMainState());
 	}
 	
 	Super::execute(game);
+}
+
+void GameState::exit(Game& game)
+{
+	Super::exit(game);
+	m_levelThread.reset(game.lua->getMainState());
 }
 
 void GameState::moveToFormation(Game& game)

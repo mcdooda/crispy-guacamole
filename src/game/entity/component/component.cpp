@@ -25,17 +25,17 @@ Component::~Component()
 	
 }
 
-void Component::init()
+void Component::init(lua_State* L)
 {
 
 }
 
-void Component::deinit()
+void Component::deinit(lua_State* L)
 {
 
 }
 
-void Component::update(float time, float dt)
+void Component::update(lua_State* L, float time, float dt)
 {
 
 }

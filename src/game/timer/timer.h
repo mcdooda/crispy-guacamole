@@ -24,6 +24,8 @@ class Timer
 		
 		inline float getElapsedTime(float currentTime) const { return currentTime - m_beginTime; }
 		inline bool isFinished(float currentTime) const { return currentTime >= getTimeOut(); }
+
+		void reset(lua_State* L);
 		
 	private:
 		mutable float m_beginTime;

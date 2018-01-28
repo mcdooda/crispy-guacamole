@@ -15,7 +15,7 @@ using LuaTimer = flat::lua::SharedCppValue<Timer*>;
 
 int open(Game& game)
 {
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getMainState();
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	static const luaL_Reg Timer_lib_m[] = {

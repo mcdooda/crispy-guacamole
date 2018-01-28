@@ -18,6 +18,8 @@ void BaseState::enter(Game& game)
 
 	flat::sharp::ui::RootWidget& rootWidget = *game.ui->root.get();
 	rootWidget.clearAll();
+
+	game.lua->stopGarbageCollector();
 }
 
 void BaseState::execute(Game& game)
@@ -36,10 +38,13 @@ void BaseState::execute(Game& game)
 
 	update(game);
 	draw(game);
+
+	game.lua->collectGarbage();
 }
 
 void BaseState::exit(Game& game)
 {
+	m_timerContainer.clearTimers(game.lua->getMainState());
 }
 
 void BaseState::update(Game& game)
@@ -70,12 +75,12 @@ void BaseState::initTime(Game& game)
 
 void BaseState::updateTimers(Game& game)
 {
-	m_timerContainer.updateTimers(game.lua->state);
+	m_timerContainer.updateTimers(game.lua->getMainState());
 }
 
 void BaseState::initLua(Game& game)
 {
-	lua_State* L = game.lua->state;
+	lua_State* L = game.lua->getMainState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 		timer::lua::open(game);

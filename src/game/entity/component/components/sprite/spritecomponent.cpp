@@ -16,7 +16,7 @@ namespace component
 namespace sprite
 {
 
-void SpriteComponent::init()
+void SpriteComponent::init(lua_State* L)
 {
 	const sprite::SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
 	m_sprite.setTexture(spriteDescription.getAtlas());
@@ -56,7 +56,7 @@ void SpriteComponent::init()
 	}
 }
 
-void SpriteComponent::deinit()
+void SpriteComponent::deinit(lua_State* L)
 {
 	m_owner->clearSprite();
 
@@ -166,7 +166,7 @@ bool SpriteComponent::getAttachPoint(const std::string& attachPointName, flat::V
 	return false;
 }
 
-void SpriteComponent::update(float currentTime, float elapsedTime)
+void SpriteComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
 	if (m_positionChanged)
 	{
@@ -250,7 +250,7 @@ void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 }
 #endif
 
-bool SpriteComponent::addedToMap(Entity * entity, map::Map * map)
+bool SpriteComponent::addedToMap(lua_State* L, Entity* entity, map::Map* map)
 {
 	m_positionChanged = false;
 	m_headingChanged = false;

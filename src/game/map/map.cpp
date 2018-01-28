@@ -6,6 +6,7 @@
 #include "io/writer.h"
 #include "../mod/mod.h"
 #include "../entity/entity.h"
+#include "../game.h"
 
 namespace game
 {
@@ -177,34 +178,40 @@ void Map::eachTileIfExists(std::function<void(Tile*)> func)
 	});
 }
 
-void Map::addEntity(entity::Entity* entity)
+void Map::addEntity(lua_State* L, entity::Entity* entity)
 {
+	std::lock_guard<std::mutex> lock(m_entitiesMutex);
+
 	FLAT_ASSERT(entity != nullptr);
 	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
 	m_entities.push_back(entity);
-	entity->onAddedToMap(this);
+	entity->onAddedToMap(L, this);
 
 	m_displayManager.addEntity(entity);
 }
 
-void Map::removeEntity(entity::Entity* entity)
+void Map::removeEntity(lua_State* L, entity::Entity* entity)
 {
+	std::lock_guard<std::mutex> lock(m_entitiesMutex);
+
 	FLAT_ASSERT(entity != nullptr);
 	std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
 	FLAT_ASSERT(it != m_entities.end());
 	m_entities.erase(it);
-	entity->onRemovedFromMap();
+	entity->onRemovedFromMap(L);
 
 	m_displayManager.removeEntity(entity);
 }
 
-entity::Entity* Map::removeEntityAtIndex(int index)
+entity::Entity* Map::removeEntityAtIndex(lua_State* L, int index)
 {
+	std::lock_guard<std::mutex> lock(m_entitiesMutex);
+
 	FLAT_ASSERT(0 <= index && index < m_entities.size());
 	entity::Entity* entity = m_entities[index];
 	m_entities[index] = m_entities.back();
 	m_entities.pop_back();
-	entity->onRemovedFromMap();
+	entity->onRemovedFromMap(L);
 
 	m_displayManager.removeEntity(entity);
 	return entity;
@@ -236,23 +243,19 @@ void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::fun
 	}
 }
 
-void Map::updateEntities(float time, float dt)
+void Map::updateEntities(Game& game, float time, float dt)
 {
 	std::vector<entity::Entity*> entities = m_entities;
-	for (entity::Entity* entity : entities)
+	game.threads->schedule(
+		entities.begin(), entities.end(),
+		&entity::Entity::update,
+		&game, time, dt
+	);
+	game.threads->execute();
+	/*for (entity::Entity* entity : entities)
 	{
 		entity->update(time, dt);
-
-		// ensure all AABBs are up to date
-#ifdef FLAT_DEBUG
-		if (entity->hasSprite())
-		{
-			flat::AABB2 spriteAABB;
-			entity->getSprite().getAABB(spriteAABB);
-			FLAT_ASSERT(spriteAABB == entity->getAABB());
-		}
-#endif
-	}
+	}*/
 }
 
 void Map::setTileNormalDirty(Tile& tile)

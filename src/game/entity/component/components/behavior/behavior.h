@@ -22,8 +22,8 @@ class Behavior
 		
 	private:
 		void load(lua_State* L);
-		void pushStates(lua_State*) const;
-		inline lua_State* getLuaState() const { return m_states.getLuaState(); }
+		void pushStates(lua_State* L) const;
+		lua_State* getLuaState() const { FLAT_ASSERT(false); return nullptr; }
 		
 	private:
 		flat::lua::SharedLuaReference<LUA_TTABLE> m_states;

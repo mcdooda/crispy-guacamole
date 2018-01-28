@@ -15,31 +15,32 @@ namespace component
 namespace attack
 {
 
-void AttackComponent::init()
+void AttackComponent::init(lua_State* L)
 {
 	m_owner->addedToMap.on(this, &AttackComponent::addedToMap);
 }
 
-void AttackComponent::deinit()
+void AttackComponent::deinit(lua_State* L)
 {
 	m_owner->addedToMap.off(this);
+	m_attackThread.reset(L);
 }
 
-void AttackComponent::update(float currentTime, float elapsedTime)
+void AttackComponent::update(lua_State* L, float currentTime, float elapsedTime)
 {
 	if (m_attacking)
 	{
-		updateAttack();
+		updateAttack(L);
 	}
 	else
 	{
-		tryBeginAttack(currentTime);
+		tryBeginAttack(L, currentTime);
 	}
 }
 
-void AttackComponent::attack(float currentTime)
+void AttackComponent::attack(lua_State* L, float currentTime)
 {
-	beginAttack(currentTime);
+	beginAttack(L, currentTime);
 }
 
 bool AttackComponent::isInAttackRange(Entity* entity) const
@@ -52,7 +53,7 @@ bool AttackComponent::isInAttackRange(Entity* entity) const
 	return distance2 <= (attackRange + targetRadius) * (attackRange + targetRadius);
 }
 
-void AttackComponent::tryBeginAttack(float currentTime)
+void AttackComponent::tryBeginAttack(lua_State* L, float currentTime)
 {
 	const AttackComponentTemplate* attackComponentTemplate = getTemplate();
 
@@ -68,7 +69,7 @@ void AttackComponent::tryBeginAttack(float currentTime)
 		{
 			if (isInAttackRange(target))
 			{
-				beginAttack(currentTime);
+				beginAttack(L, currentTime);
 			}
 		}
 	}
@@ -82,7 +83,7 @@ void AttackComponent::tryEndAttack()
 	}
 }
 
-void AttackComponent::beginAttack(float currentTime)
+void AttackComponent::beginAttack(lua_State* L, float currentTime)
 {
 	m_lastAttackTime = currentTime;
 	m_attacking = true;
@@ -101,22 +102,20 @@ void AttackComponent::beginAttack(float currentTime)
 
 	attackStarted();
 
-	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& attack = attackComponentTemplate->getAttack();
-	lua_State* L = attack.getLuaState();
-
 	{
 		// call attack function
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& attack = attackComponentTemplate->getAttack();
 		attack.push(L);
 		m_attackThread.set(L, -1);
 		lua_pop(L, 1);
-		m_attackThread.start(m_owner);
+		m_attackThread.start(L, m_owner);
 	}
 
 	tryEndAttack();
 }
 
-void AttackComponent::updateAttack()
+void AttackComponent::updateAttack(lua_State* L)
 {
 	// wait for animations and business things to finish before updating the attack thread
 	if (isBusyForAttacking())
@@ -127,7 +126,7 @@ void AttackComponent::updateAttack()
 	// the thread might be finished but we still update because the entity was busy
 	if (m_attackThread.isRunning())
 	{
-		m_attackThread.update();
+		m_attackThread.update(L);
 	}
 
 	tryEndAttack();
@@ -154,7 +153,7 @@ float AttackComponent::getAttackRange() const
 	return getTemplate()->getAttackRange() + EntityHelper::getRadius(m_owner);
 }
 
-bool AttackComponent::addedToMap(Entity * entity, map::Map * map)
+bool AttackComponent::addedToMap(lua_State* L, Entity* entity, map::Map* map)
 {
 	m_lastAttackTime = 0.f;
 	m_attacking = false;

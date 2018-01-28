@@ -2,6 +2,8 @@
 #include "entitytemplate.h"
 #include "component/componentregistry.h"
 
+#include "../game.h"
+
 namespace game
 {
 namespace entity
@@ -25,6 +27,7 @@ EntityPool::~EntityPool()
 }
 
 Entity* EntityPool::createEntity(
+	Game& game,
 	const std::shared_ptr<const EntityTemplate>& entityTemplate,
 	const component::ComponentRegistry& componentRegistry,
 	component::ComponentFlags componentsFilter
@@ -44,15 +47,19 @@ Entity* EntityPool::createEntity(
 	});
 
 	entity->cacheComponents();
-	entity->initComponents();
+
+	lua_State* L = game.lua->getCurrentState();
+	entity->initComponents(L);
 	return entity;
 }
 
-void EntityPool::destroyEntity(Entity* entity)
+FLAT_OPTIMIZE_OFF()
+void EntityPool::destroyEntity(Game& game, Entity* entity)
 {
 	FLAT_ASSERT(entity != nullptr);
 	
-	entity->deinitComponents();
+	lua_State* L = game.lua->getMainState();
+	entity->deinitComponents(L);
 	for (component::Component* component : entity->getComponents())
 	{
 		destroyComponent(component);
@@ -61,6 +68,7 @@ void EntityPool::destroyEntity(Entity* entity)
 	entity->removeAllComponents();
 	m_entityPool.destroy(entity);
 }
+FLAT_OPTIMIZE_ON()
 
 component::Component* EntityPool::createComponent(const component::ComponentType& componentType)
 {

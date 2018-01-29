@@ -20,9 +20,18 @@ void LifeComponent::init()
 {
 	m_health = getMaxHealth();
 	m_owner->addedToMap.on(this, &LifeComponent::addedToMap);
-	healthChanged.on(this, &LifeComponent::onHealthChange);
 	m_spawning = false;
 	m_despawning = false;
+
+	m_healthChangedSlotProxy.init(
+		&healthChanged,
+		[this](lua_State* L, int previousHealth)
+		{
+			lua_pushinteger(L, previousHealth);
+			lua_pushinteger(L, m_health);
+			lua_pushinteger(L, getMaxHealth());
+		}
+	);
 }
 
 void LifeComponent::deinit()
@@ -72,10 +81,14 @@ void LifeComponent::dealDamage(int damage)
 	}
 }
 
-void LifeComponent::addHealthChangedCallback(lua_State* L, int index)
+int LifeComponent::addHealthChangedCallback(lua_State* L, int index)
 {
-	m_healthChangedCallbacks.emplace_back();
-	m_healthChangedCallbacks.back().set(L, index);
+	return m_healthChangedSlotProxy.addCallback(L, index);
+}
+
+void LifeComponent::removeHealthChangeCallback(int index)
+{
+	m_healthChangedSlotProxy.removeCallback(index);
 }
 
 bool LifeComponent::addedToMap(Entity* entity, map::Map* map)
@@ -158,23 +171,6 @@ void LifeComponent::checkSpawnDespawnThreadFinished()
 		enableComponent<movement::MovementComponent>();
 		enableComponent<behavior::BehaviorComponent>();
 	}
-}
-
-bool LifeComponent::onHealthChange(int previousHealth)
-{
-	for (const flat::lua::UniqueLuaReference<LUA_TFUNCTION>& healthChangeCallback : m_healthChangedCallbacks)
-	{
-		healthChangeCallback.callFunction(
-			[this, previousHealth](lua_State* L)
-			{
-				lua_pushinteger(L, previousHealth);
-				lua_pushinteger(L, m_health);
-				lua_pushinteger(L, getMaxHealth());
-			}
-		);
-	}
-
-	return true;
 }
 
 #ifdef FLAT_DEBUG

@@ -4,6 +4,7 @@
 #include "../../componenttype.h"
 #include "../../components/attack/attackcomponent.h"
 #include "../../components/movement/movementcomponent.h"
+#include "../../components/selection/selectioncomponent.h"
 #include "../../../entity.h"
 #include "../../../../map/map.h"
 
@@ -36,8 +37,12 @@ void SpriteComponent::init()
 	m_owner->headingChanged.on(this, &SpriteComponent::headingChanged);
 	m_owner->positionChanged.on(this, &SpriteComponent::positionChanged);
 
-	m_owner->selected.on(this, &SpriteComponent::selected);
-	m_owner->deselected.on(this, &SpriteComponent::deselected);
+	selection::SelectionComponent* selectionComponent = m_owner->getComponent<selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
+	{
+		selectionComponent->selected.on(this, &SpriteComponent::selected);
+		selectionComponent->deselected.on(this, &SpriteComponent::deselected);
+	}
 
 	if (m_moveAnimationDescription)
 	{
@@ -66,8 +71,12 @@ void SpriteComponent::deinit()
 	m_owner->headingChanged.off(this);
 	m_owner->positionChanged.off(this);
 
-	m_owner->selected.off(this);
-	m_owner->deselected.off(this);
+	selection::SelectionComponent* selectionComponent = m_owner->getComponent<selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
+	{
+		selectionComponent->selected.off(this);
+		selectionComponent->deselected.off(this);
+	}
 
 	if (m_moveAnimationDescription)
 	{

@@ -21,8 +21,6 @@ namespace movement
 
 void MovementComponent::init()
 {
-	m_owner->setCanBeSelected(true);
-
 	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
 	m_speed = movementComponentTemplate->getSpeed();
 	// not yet in the map but makes the component not busy

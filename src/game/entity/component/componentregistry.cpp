@@ -8,6 +8,7 @@
 #include "components/movement/movementcomponent.h"
 #include "components/projectile/projectilecomponent.h"
 #include "components/prop/propcomponent.h"
+#include "components/selection/selectioncomponent.h"
 #include "components/sprite/spritecomponent.h"
 #include "components/texture/texturecomponent.h"
 #include "components/ui/uicomponent.h"
@@ -48,6 +49,7 @@ void ComponentRegistry::registerComponentTypes()
 	// order does not matter for these components
 	registerComponentType<faction::FactionComponent>();
 	registerComponentType<prop::PropComponent>();
+	registerComponentType<selection::SelectionComponent>();
 }
 
 const ComponentType& ComponentRegistry::getComponentType(ComponentFlags componentFlag) const

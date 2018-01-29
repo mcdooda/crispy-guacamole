@@ -15,14 +15,12 @@ namespace prop
 
 void PropComponent::init()
 {
-	m_owner->setCanBeSelected(true);
 	m_owner->addedToMap.on(this, &PropComponent::addedToMap);
 	m_owner->removedFromMap.on(this, &PropComponent::removedFromMap);
 }
 
 void PropComponent::deinit()
 {
-	m_owner->setCanBeSelected(false);
 	m_owner->addedToMap.off(this);
 	m_owner->removedFromMap.off(this);
 }

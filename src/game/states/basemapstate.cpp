@@ -573,7 +573,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 		if (mouseOverObject->isEntity())
 		{
 			const entity::Entity* entity = static_cast<const entity::Entity*>(mouseOverObject);
-			if (entity->getCanBeSelected())
+			if (entity->canBeSelected())
 			{
 				newMouseOverEntity = entity;
 			}
@@ -708,7 +708,7 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 	}
 
 	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
-	if (mouseOverEntity != nullptr && mouseOverEntity->getCanBeSelected())
+	if (mouseOverEntity != nullptr && mouseOverEntity->canBeSelected())
 	{
 		const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getTemplate();
 
@@ -751,7 +751,7 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 	{
 		// TODO: fix these casts
 		entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
-		if (!entity->getCanBeSelected())
+		if (!entity->canBeSelected())
 		{
 			continue;
 		}
@@ -773,7 +773,7 @@ void BaseMapState::clearSelection()
 	m_selectedEntities.clear();
 }
 
-void BaseMapState::addToSelectedEntities(entity::Entity * entity)
+void BaseMapState::addToSelectedEntities(entity::Entity* entity)
 {
 	if (!entity->isSelected())
 	{

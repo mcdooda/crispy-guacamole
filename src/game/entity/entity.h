@@ -108,11 +108,10 @@ class Entity final : public map::MapObject
 		inline const std::shared_ptr<const EntityTemplate>& getTemplate() const { return m_template; }
 		const std::string& getTemplateName() const;
 
-		inline void setCanBeSelected(bool canBeSelected) { m_canBeSelected = canBeSelected; }
-		inline bool getCanBeSelected() const { return m_canBeSelected; }
 
 		void setSelected(bool selected);
-		inline bool isSelected() const { return m_selected; }
+		bool isSelected() const;
+		inline bool canBeSelected() const { return m_canBeSelected; }
 
 		inline void markForDelete() { m_markedForDelete = true; }
 		inline bool isMarkedForDelete() const { return m_markedForDelete; }
@@ -144,8 +143,6 @@ class Entity final : public map::MapObject
 		flat::Slot<float> elevationChanged;
 		flat::Slot<Entity*, map::Map*> addedToMap;
 		flat::Slot<Entity*> removedFromMap;
-		flat::Slot<> selected;
-		flat::Slot<> deselected;
 		
 	protected:
 		map::Tile* getTileFromPosition();
@@ -175,7 +172,6 @@ class Entity final : public map::MapObject
 		std::shared_ptr<const EntityTemplate> m_template;
 
 		bool m_canBeSelected : 1;
-		bool m_selected : 1;
 		bool m_markedForDelete : 1;
 		bool m_aabbDirty : 1;
 #ifdef FLAT_DEBUG

@@ -3,6 +3,7 @@
 #include "component/components/behavior/behaviorcomponent.h"
 #include "component/components/collision/collisioncomponent.h"
 #include "component/components/movement/movementcomponent.h"
+#include "component/components/selection/selectioncomponent.h"
 #include "../map/map.h"
 #include "../map/tile.h"
 
@@ -25,7 +26,6 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_tile(nullptr),
 	m_template(entityTemplate),
 	m_canBeSelected(false),
-	m_selected(false),
 	m_markedForDelete(false),
 	m_aabbDirty(false)
 #ifdef FLAT_DEBUG
@@ -240,15 +240,21 @@ const std::string& Entity::getTemplateName() const
 
 void Entity::setSelected(bool selected)
 {
-	FLAT_ASSERT(selected != m_selected); // we want to avoid triggering slots again if the selected state did not change
-	m_selected = selected;
-	if (selected)
+	component::selection::SelectionComponent* selectionComponent = getComponent<component::selection::SelectionComponent>();
+	FLAT_ASSERT(selectionComponent != nullptr);
+	selectionComponent->setSelected(selected);
+}
+
+bool Entity::isSelected() const
+{
+	const component::selection::SelectionComponent* selectionComponent = getComponent<component::selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
 	{
-		this->selected();
+		return selectionComponent->isSelected();
 	}
 	else
 	{
-		deselected();
+		return false;
 	}
 }
 
@@ -338,6 +344,8 @@ void Entity::cacheComponents()
 	m_behaviorComponent = findComponent<component::behavior::BehaviorComponent>();
 	m_collisionComponent = findComponent<component::collision::CollisionComponent>();
 	m_movementComponent = findComponent<component::movement::MovementComponent>();
+
+	m_canBeSelected = findComponent<component::selection::SelectionComponent>() != nullptr;
 }
 
 void Entity::initComponents()

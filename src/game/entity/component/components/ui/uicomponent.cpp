@@ -1,4 +1,5 @@
 #include "uicomponent.h"
+#include "../selection/selectioncomponent.h"
 #include "../../../lua/entity.h"
 #include "../../../../map/map.h"
 #include "../../../../game.h"
@@ -28,8 +29,12 @@ void UiComponent::init()
 	m_owner->addedToMap.on(this, &UiComponent::addedToMap);
 	m_owner->removedFromMap.on(this, &UiComponent::removedFromMap);
 
-	m_owner->selected.on(this, &UiComponent::selected);
-	m_owner->deselected.on(this, &UiComponent::deselected);
+	selection::SelectionComponent* selectionComponent = m_owner->getComponent<selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
+	{
+		selectionComponent->selected.on(this, &UiComponent::selected);
+		selectionComponent->deselected.on(this, &UiComponent::deselected);
+	}
 
 	// TODO: clean this shit!
 	lua_State* L = getTemplate()->getAddedToMap().getLuaState();
@@ -56,8 +61,12 @@ void UiComponent::deinit()
 
 	m_owner->positionChanged.off(this);
 
-	m_owner->selected.off(this);
-	m_owner->deselected.off(this);
+	selection::SelectionComponent* selectionComponent = m_owner->getComponent<selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
+	{
+		selectionComponent->selected.off(this);
+		selectionComponent->deselected.off(this);
+	}
 
 	m_gameView = nullptr;
 }

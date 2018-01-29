@@ -1,6 +1,7 @@
 #include <iostream>
 #include "texturecomponent.h"
 #include "texturecomponenttemplate.h"
+#include "../selection/selectioncomponent.h"
 #include "../../../entity.h"
 #include "../../../../map/map.h"
 
@@ -24,8 +25,12 @@ void TextureComponent::init()
 	m_owner->elevationChanged.on(this, &TextureComponent::elevationChanged);
 	m_owner->positionChanged.on(this, &TextureComponent::positionChanged);
 
-	m_owner->selected.on(this, &TextureComponent::selected);
-	m_owner->deselected.on(this, &TextureComponent::deselected);
+	selection::SelectionComponent* selectionComponent = m_owner->getComponent<selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
+	{
+		selectionComponent->selected.on(this, &TextureComponent::selected);
+		selectionComponent->deselected.on(this, &TextureComponent::deselected);
+	}
 }
 
 void TextureComponent::deinit()
@@ -36,8 +41,12 @@ void TextureComponent::deinit()
 	m_owner->elevationChanged.off(this);
 	m_owner->positionChanged.off(this);
 
-	m_owner->selected.off(this);
-	m_owner->deselected.off(this);
+	selection::SelectionComponent* selectionComponent = m_owner->getComponent<selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
+	{
+		selectionComponent->selected.off(this);
+		selectionComponent->deselected.off(this);
+	}
 }
 
 void TextureComponent::update(float currentTime, float elapsedTime)

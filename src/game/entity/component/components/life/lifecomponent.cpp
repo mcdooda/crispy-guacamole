@@ -38,6 +38,7 @@ void LifeComponent::deinit()
 {
 	m_owner->addedToMap.off(this);
 	healthChanged.off(this);
+	m_healthChangedSlotProxy.reset();
 }
 
 void LifeComponent::update(float currentTime, float elapsedTime)

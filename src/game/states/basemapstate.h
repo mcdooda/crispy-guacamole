@@ -117,6 +117,7 @@ class BaseMapState : public BaseState
 		void addToSelectedEntities(entity::Entity* entity);
 		void removeFromSelectedEntities(entity::Entity* entity);
 		bool isSmallSelection() const;
+		void clickEntity(entity::Entity* entity) const;
 
 #ifdef FLAT_DEBUG
 		void copyStateBeforeReload(const BaseMapState& other);

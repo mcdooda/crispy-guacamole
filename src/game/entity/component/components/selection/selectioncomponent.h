@@ -25,11 +25,24 @@ class SelectionComponent : public ComponentImpl<SelectionComponentTemplate>
 		void setSelected(bool selected);
 		inline bool isSelected() const { return m_selected; }
 
+		int addSelectedCallback(lua_State* L, int index);
+		void removeSelectedCallback(int index);
+
+		int addDeselectedCallback(lua_State* L, int index);
+		void removeDeselectedCallback(int index);
+
+		int addClickCallback(lua_State* L, int index);
+		void removeClickCallback(int index);
+
 	public:
 		flat::Slot<> selected;
 		flat::Slot<> deselected;
+		flat::Slot<> click;
 
 	private:
+		flat::lua::SlotProxy<> m_selectedSlotProxy;
+		flat::lua::SlotProxy<> m_deselectedSlotProxy;
+		flat::lua::SlotProxy<> m_clickSlotProxy;
 		bool m_selected;
 };
 

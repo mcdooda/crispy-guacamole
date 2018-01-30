@@ -24,7 +24,7 @@ local function isBetterAttackTarget(archer, target)
 end
 
 function states:init(archer)
-	
+	archer:click(function(archer) print(archer, 'clicked') end)
 end
 
 function states:idle(archer)

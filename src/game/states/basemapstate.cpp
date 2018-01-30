@@ -14,6 +14,7 @@
 #include "../entity/lua/entity.h"
 #include "../entity/component/lua/componentregistry.h"
 #include "../entity/component/components/collision/collisioncomponent.h"
+#include "../entity/component/components/selection/selectioncomponent.h"
 #include "../entity/faction/lua/faction.h"
 #include "../entity/entitytemplate.h"
 #include "../mod/lua/mod.h"
@@ -694,8 +695,10 @@ void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePos
 		clearSelection();
 	}
 
-	if (entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity())
+	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
+	if (mouseOverEntity != nullptr)
 	{
+		clickEntity(mouseOverEntity);
 		addToSelectedEntities(mouseOverEntity);
 	}
 }
@@ -775,7 +778,7 @@ void BaseMapState::clearSelection()
 
 void BaseMapState::addToSelectedEntities(entity::Entity* entity)
 {
-	if (!entity->isSelected())
+	if (entity->canBeSelected() && !entity->isSelected())
 	{
 		entity->setSelected(true);
 		FLAT_ASSERT(std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity) == m_selectedEntities.end());
@@ -804,6 +807,15 @@ bool BaseMapState::isSmallSelection() const
 		return selectionSize.x < smallSize && selectionSize.y < smallSize;
 	}
 	return false;
+}
+
+void BaseMapState::clickEntity(entity::Entity* entity) const
+{
+	if (entity->canBeSelected())
+	{
+		entity::component::selection::SelectionComponent* selectionComponent = entity->getComponent<entity::component::selection::SelectionComponent>();
+		selectionComponent->click();
+	}
 }
 
 #ifdef FLAT_DEBUG

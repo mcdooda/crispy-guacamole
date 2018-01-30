@@ -4,11 +4,12 @@
 #include "../faction/faction.h"
 #include "../component/components/attack/attackcomponent.h"
 #include "../component/components/behavior/behaviorcomponent.h"
-#include "../component/components/movement/movementcomponent.h"
-#include "../component/components/sprite/spritecomponent.h"
 #include "../component/components/detection/detectioncomponent.h"
 #include "../component/components/faction/factioncomponent.h"
 #include "../component/components/life/lifecomponent.h"
+#include "../component/components/movement/movementcomponent.h"
+#include "../component/components/selection/selectioncomponent.h"
+#include "../component/components/sprite/spritecomponent.h"
 #include "../component/components/ui/uicomponent.h"
 #include "../../states/basemapstate.h"
 #include "../../game.h"
@@ -107,6 +108,11 @@ int open(Game& game)
 		{"getHealth",                l_Entity_getHealth},
 		{"getMaxHealth",             l_Entity_getMaxHealth},
 		{"healthChanged",            l_Entity_healthChanged},
+
+		// selection
+		{"selected",                 l_Entity_selected},
+		{"deselected",               l_Entity_deselected},
+		{"click",                    l_Entity_click},
 		
 		{nullptr, nullptr}
 	};
@@ -679,6 +685,30 @@ int l_Entity_healthChanged(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lifeComponent.addHealthChangedCallback(L, 2);
+	return 0;
+}
+
+int l_Entity_selected(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	selection::SelectionComponent& selectionComponent = getComponent<selection::SelectionComponent>(L, entity);
+	selectionComponent.addSelectedCallback(L, 2);
+	return 0;
+}
+
+int l_Entity_deselected(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	selection::SelectionComponent& selectionComponent = getComponent<selection::SelectionComponent>(L, entity);
+	selectionComponent.addDeselectedCallback(L, 2);
+	return 0;
+}
+
+int l_Entity_click(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	selection::SelectionComponent& selectionComponent = getComponent<selection::SelectionComponent>(L, entity);
+	selectionComponent.addClickCallback(L, 2);
 	return 0;
 }
 

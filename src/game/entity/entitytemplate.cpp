@@ -72,6 +72,16 @@ void EntityTemplate::removeComponent(Game& game, const component::ComponentRegis
 
 component::ComponentTemplate* EntityTemplate::loadComponentTemplate(Game& game, const component::ComponentType& componentType) const
 {
+	component::ComponentTemplate* componentTemplate = nullptr;
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(game.lua->state, 0);
+		game.lua->protectedCall(this, &EntityTemplate::loadComponentTemplateSafe, game, componentType, componentTemplate);
+	}
+	return componentTemplate;
+}
+
+void EntityTemplate::loadComponentTemplateSafe(Game& game, const component::ComponentType& componentType, component::ComponentTemplate*& componentTemplate) const
+{
 	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -83,9 +93,9 @@ component::ComponentTemplate* EntityTemplate::loadComponentTemplate(Game& game, 
 			code = lua_pcall(L, 0, 1, 0);
 			if (code == LUA_OK)
 			{
-				component::ComponentTemplate* componentTemplate = componentType.loadConfigFile(game, L, m_path);
+				componentTemplate = componentType.loadConfigFile(game, L, m_path);
 				lua_pop(L, 1); // pop config table
-				return componentTemplate;
+				return;
 			}
 			else
 			{
@@ -104,7 +114,6 @@ component::ComponentTemplate* EntityTemplate::loadComponentTemplate(Game& game, 
 			luaL_error(L, "luaL_loadfile failed with error %s", flat::lua::codeToString(code));
 		}
 	}
-	return nullptr;
 }
 
 } // entity

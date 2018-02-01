@@ -36,6 +36,7 @@ class EntityTemplate final
 
 	private:
 		component::ComponentTemplate* loadComponentTemplate(Game& game, const component::ComponentType& componentType) const;
+		void loadComponentTemplateSafe(Game& game, const component::ComponentType& componentType, component::ComponentTemplate*& componentTemplate) const;
 	
 	private:
 		std::string m_path;

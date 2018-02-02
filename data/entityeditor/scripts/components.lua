@@ -7,6 +7,7 @@ local root = Widget.getRoot()
 local selectedBackgroundColor = 0x666666FF
 local componentDisabledColor = 0x999999FF
 local componentEnabledColor = 0xFFFFFFFF
+local componentErrorColor = 0xFF5555FF
 
 do
     local leftPanel = Widget.makeLineFlow()
@@ -53,6 +54,7 @@ do
     -- component names
     local componentTabs = {}
     local componentNameLabels = {}
+    local brokenComponents = {}
     do
         local componentsPanel = Widget.makeColumnFlow()
         componentsPanel:setBackgroundColor(0x444444FF)
@@ -76,7 +78,14 @@ do
             if hasComponent then
                 componentNameLabel:setTextColor(componentEnabledColor)
             else
-                componentNameLabel:setTextColor(componentDisabledColor)
+                local componentFile = io.open(Path.getComponentPath(entityTemplateName, componentName) .. '.lua', 'r')
+                if componentFile then
+                    componentFile:close()
+                    componentNameLabel:setTextColor(componentErrorColor)
+                    brokenComponents[componentName] = true
+                else
+                    componentNameLabel:setTextColor(componentDisabledColor)
+                end
             end
             componentNameLabels[componentName] = componentNameLabel
 
@@ -173,7 +182,7 @@ do
                             { entityTemplateName = entityTemplateName },
                             function(isNew)
                                 getEntity():delete()
-                                Game.debug_reloadComponent(entityTemplateName, Component[selectedComponentName], isNew)
+                                Game.debug_reloadComponent(entityTemplateName, Component[selectedComponentName], isNew or brokenComponents[selectedComponentName])
                                 
                                 -- force reload component template
                                 Path.requireComponentTemplate(entityTemplateName, selectedComponentName, true)
@@ -182,12 +191,14 @@ do
                                 EntityEditor.entitySpawned(function(entity)
                                     -- update current tab
                                     setComponentTab(selectedComponentName, selectedComponentName)
+                                    if entity:hasComponent(Component[selectedComponentName]) then
+                                        brokenComponents[selectedComponentName] = nil
+                                        componentNameLabels[selectedComponentName]:setTextColor(componentEnabledColor)
+                                    else
+                                        componentNameLabels[selectedComponentName]:setTextColor(componentErrorColor)
+                                    end
                                     return false
                                 end)
-
-                                if isNew then
-                                    componentNameLabels[selectedComponentName]:setTextColor(componentEnabledColor)
-                                end
                             end
                         )
                     end)

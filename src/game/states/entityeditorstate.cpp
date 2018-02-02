@@ -27,34 +27,16 @@ void EntityEditorState::enter(Game& game)
 
 void EntityEditorState::execute(Game& game)
 {
+	respawnEntityIfNeeded(game);
+
+#ifdef FLAT_DEBUG
+	updateDebuggedComponent();
+#endif
+
+	handleGameActionInputs(game);
+	updateEntities();
+
 	Super::execute(game);
-
-	despawnEntities();
-	if (!m_entity.isValid())
-	{
-		spawnEntity(game);
-
-#ifdef FLAT_DEBUG
-		entity::Entity* entity = m_entity.getEntity();
-		entity->setDebug(m_debuggedComponentFlags != 0);
-		entity->setDebuggedComponentFlags(m_debuggedComponentFlags);
-#endif
-	}
-
-	const flat::time::Clock& clock = getClock();
-	m_map.updateEntities(clock.getTime(), clock.getDT());
-
-#ifdef FLAT_DEBUG
-	entity::Entity* entity = m_entity.getEntity();
-	if (entity != nullptr)
-	{
-		entity::component::ComponentFlags debuggedComponentFlags = entity->getDebuggedComponentFlags();
-		if (debuggedComponentFlags != 0)
-		{
-			m_debuggedComponentFlags = debuggedComponentFlags;
-		}
-	}
-#endif
 }
 
 void EntityEditorState::spawnEntity(Game& game)
@@ -84,6 +66,35 @@ void EntityEditorState::spawnEntity(Game& game)
 	m_entity = entity->getHandle();
 	entitySpawned(entity);
 }
+
+void EntityEditorState::respawnEntityIfNeeded(Game & game)
+{
+	if (!m_entity.isValid())
+	{
+		spawnEntity(game);
+
+#ifdef FLAT_DEBUG
+		entity::Entity* entity = m_entity.getEntity();
+		entity->setDebug(m_debuggedComponentFlags != 0);
+		entity->setDebuggedComponentFlags(m_debuggedComponentFlags);
+#endif
+	}
+}
+
+#ifdef FLAT_DEBUG
+void EntityEditorState::updateDebuggedComponent()
+{
+	entity::Entity* entity = m_entity.getEntity();
+	if (entity != nullptr)
+	{
+		entity::component::ComponentFlags debuggedComponentFlags = entity->getDebuggedComponentFlags();
+		if (debuggedComponentFlags != 0)
+		{
+			m_debuggedComponentFlags = debuggedComponentFlags;
+		}
+	}
+}
+#endif
 
 } // states
 } // game

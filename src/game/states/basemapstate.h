@@ -88,6 +88,9 @@ class BaseMapState : public BaseState
 		inline const flat::video::View& getGameView() const { return m_gameView; }
 
 		bool isMouseOverUi(game::Game& game) const;
+
+		void setGamePause(Game& game, bool pause, bool pauseNextFrame);
+		inline bool isGamePaused() const { return m_gamePaused; }
 		
 	protected:
 		void update(game::Game& game) override;
@@ -118,6 +121,11 @@ class BaseMapState : public BaseState
 		void removeFromSelectedEntities(entity::Entity* entity);
 		bool isSmallSelection() const;
 		void clickEntity(entity::Entity* entity) const;
+
+		// game features
+		void handleGameActionInputs(Game& game);
+		void moveToFormation(Game& game);
+		void updateEntities();
 
 #ifdef FLAT_DEBUG
 		void copyStateBeforeReload(const BaseMapState& other);
@@ -161,7 +169,10 @@ class BaseMapState : public BaseState
 #ifdef FLAT_DEBUG
 		debug::DebugDisplay m_debugDisplay;
 
-		bool m_isReloading;
+		bool m_isReloading : 1;
+
+		bool m_gamePaused : 1;
+		bool m_pauseNextFrame : 1;
 #endif
 };
 

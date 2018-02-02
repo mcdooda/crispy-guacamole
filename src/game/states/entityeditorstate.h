@@ -21,6 +21,11 @@ class EntityEditorState : public BaseMapStateImpl<map::EditorMap>
 
 	private:
 		void spawnEntity(Game& game);
+		void respawnEntityIfNeeded(Game& game);
+
+#ifdef FLAT_DEBUG
+		void updateDebuggedComponent();
+#endif
 
 	private:
 		entity::EntityHandle m_entity;

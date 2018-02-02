@@ -17,20 +17,16 @@ class GameState : public BaseMapStateImpl<map::GameMap>
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
 
-#ifdef FLAT_DEBUG
-		void setGamePause(Game& game, bool pause, bool pauseNextFrame);
-		inline bool isGamePaused() const { return m_gamePaused; }
-#endif
+	protected:
+		void startLevelScript(Game& game);
+		void updateLevelScript();
 
-	private:
-		void moveToFormation(Game& game);
+#ifdef FLAT_DEBUG
+		void handleDebugInputs(Game& game);
+#endif
 
 	private:
 		flat::lua::Thread m_levelThread;
-#ifdef FLAT_DEBUG
-		bool m_gamePaused;
-		bool m_pauseNextFrame;
-#endif
 };
 
 } // states

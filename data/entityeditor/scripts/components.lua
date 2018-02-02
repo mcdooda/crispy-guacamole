@@ -78,9 +78,7 @@ do
             if hasComponent then
                 componentNameLabel:setTextColor(componentEnabledColor)
             else
-                local componentFile = io.open(Path.getComponentPath(entityTemplateName, componentName) .. '.lua', 'r')
-                if componentFile then
-                    componentFile:close()
+                if Path.componentFileExists(entityTemplateName, componentName) then
                     componentNameLabel:setTextColor(componentErrorColor)
                     brokenComponents[componentName] = true
                 else
@@ -238,15 +236,20 @@ do
                 if hasComponent then
                     local componentDetailsPanel = Widget.makeColumnFlow()
                     componentDetailsPanel:setPadding(5)
-                    local hasDetails, showComponentDetails = pcall(function()
-                        return require('data/entityeditor/scripts/components/' .. selectedComponentName)
-                    end)
-                    if hasDetails then
-                        local componentTemplate = Path.requireComponentTemplate(entityTemplateName, selectedComponentName)
-                        showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
-                    else
-                        local errorMessage = showComponentDetails
-                        print(errorMessage)
+                    local componentDetailsFilePath = 'data/entityeditor/scripts/components/' .. selectedComponentName
+                    local componentDetailsFile = io.open(componentDetailsFilePath .. '.lua', 'r')
+                    if componentDetailsFile then
+                        componentDetailsFile:close()
+                        local hasDetails, showComponentDetails = pcall(function()
+                            return require(componentDetailsFilePath)
+                        end)
+                        if hasDetails then
+                            local componentTemplate = Path.requireComponentTemplate(entityTemplateName, selectedComponentName)
+                            showComponentDetails(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
+                        else
+                            local errorMessage = showComponentDetails
+                            print(errorMessage)
+                        end
                     end
                     selectedComponentPanel:addChild(componentDetailsPanel)
                 end

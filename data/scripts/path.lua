@@ -42,6 +42,16 @@ local function getComponentPath(entityTemplateName, componentTemplateName)
     return getEntityFilePath(entityTemplateName, componentTemplateName)
 end
 
+local function componentFileExists(entityTemplateName, componentTemplateName)
+    local file = io.open(getComponentPath(entityTemplateName, componentTemplateName) .. '.lua', 'r')
+    if file then
+        file:close()
+        return true
+    else
+        return false
+    end
+end
+
 local function requireComponentTemplate(entityTemplateName, componentTemplateName, forceReload)
     local componentPath = getComponentPath(entityTemplateName, componentTemplateName)
     if forceReload then
@@ -106,6 +116,7 @@ return {
     getEntityPath                    = getEntityPath,
     getEntityFilePath                = getEntityFilePath,
     getComponentPath                 = getComponentPath,
+    componentFileExists              = componentFileExists,
     requireComponentTemplate         = requireComponentTemplate,
     requireComponentTemplateIfExists = requireComponentTemplateIfExists,
 

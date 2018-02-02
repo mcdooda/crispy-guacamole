@@ -85,6 +85,7 @@ void BaseState::updateTimers(Game& game)
 
 void BaseState::initLua(Game& game)
 {
+	game.lua->reset(game);
 	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);

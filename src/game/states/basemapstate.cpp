@@ -40,11 +40,6 @@ void BaseMapState::enter(Game& game)
 #ifdef FLAT_DEBUG
 	m_gamePaused = false;
 	m_pauseNextFrame = false;
-
-	if (m_isReloading)
-	{
-		game.lua->clearLoadedPackages();
-	}
 #endif
 	
 	// init lua then

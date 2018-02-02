@@ -78,6 +78,12 @@ script {
         10,
       },
     },
+    {
+      name = 'bool',
+      loadArguments = {
+        true,
+      },
+    },
   },
   links = {
     {
@@ -187,6 +193,12 @@ script {
       1,
       14,
       3,
+    },
+    {
+      16,
+      1,
+      1,
+      5,
     },
   },
 }

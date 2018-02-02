@@ -84,6 +84,12 @@ script {
         'crossbow',
       },
     },
+    {
+      name = 'bool',
+      loadArguments = {
+        true,
+      },
+    },
   },
   links = {
     {
@@ -204,6 +210,12 @@ script {
       16,
       1,
       14,
+      5,
+    },
+    {
+      17,
+      1,
+      1,
       5,
     },
   },

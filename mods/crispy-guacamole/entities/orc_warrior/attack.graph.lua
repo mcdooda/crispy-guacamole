@@ -4,43 +4,43 @@ script {
       name = 'components/attackcomponent',
     },
     {
-      name = 'number',
       loadArguments = {
         0.69999998807907,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
         1,
       },
+      name = 'number',
     },
     {
-      name = 'bool',
       loadArguments = {
         true,
       },
+      name = 'bool',
     },
     {
-      name = 'bool',
       loadArguments = {
         false,
       },
+      name = 'bool',
     },
     {
-      name = 'script/scriptoutput',
       loadArguments = {
         {
           5,
           'Table',
         },
       },
+      name = 'script/scriptoutput',
     },
     {
-      name = 'number',
       loadArguments = {
         0,
       },
+      name = 'number',
     },
     {
       name = 'entity/getattacktarget',
@@ -52,31 +52,37 @@ script {
       name = 'entity/playanimation',
     },
     {
-      name = 'string',
       loadArguments = {
         'attack',
       },
+      name = 'string',
     },
     {
-      name = 'number',
       loadArguments = {
         1,
       },
+      name = 'number',
     },
     {
-      name = 'bool',
       loadArguments = {
         false,
       },
+      name = 'bool',
     },
     {
       name = 'entity/dealdamage',
     },
     {
-      name = 'number',
       loadArguments = {
         20,
       },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'bool',
     },
   },
   links = {
@@ -187,6 +193,12 @@ script {
       1,
       14,
       3,
+    },
+    {
+      16,
+      1,
+      1,
+      5,
     },
   },
 }

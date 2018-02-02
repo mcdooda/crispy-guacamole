@@ -14,8 +14,7 @@ local function getPreviewAnimation(spriteComponentTemplate, animationName)
     end
 end
 
-local function setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
-    local animation = getPreviewAnimation(spriteComponentTemplate, animationName)
+local function setInitBackgroundPosition(preview, spriteComponentTemplate, animation)
     preview:setBackgroundPosition(
         0,
         (animation.line - 1) / spriteComponentTemplate.size:y()
@@ -38,7 +37,7 @@ local function startEntitySpriteAnimation(preview, spriteComponentTemplate, anim
 
     local function stopAnimation()
         timer:stop()
-        setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
+        setInitBackgroundPosition(preview, spriteComponentTemplate, animation)
     end
 
     return stopAnimation
@@ -60,7 +59,7 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, 
         imageWidth / spriteComponentTemplate.size:x(),
         imageHeight / spriteComponentTemplate.size:y()
     )
-    setInitBackgroundPosition(preview, spriteComponentTemplate, animationName)
+    setInitBackgroundPosition(preview, spriteComponentTemplate, getPreviewAnimation(spriteComponentTemplate, animationName))
     local stopAnimation
     if loopForever then
         startEntitySpriteAnimationByName(preview, spriteComponentTemplate, animationName)

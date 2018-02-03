@@ -4,7 +4,6 @@ local ModData = {}
 
 -- entities
 local entities = Mod.getEntities()
-flat.dump(entities)
 ModData.entities = {
 	names = entities
 }
@@ -24,7 +23,6 @@ end
 
 -- maps
 local maps = Mod.getMaps()
-flat.dump(maps)
 ModData.maps = {
 	names = maps
 }
@@ -40,7 +38,6 @@ end
 
 -- props
 local props = Mod.getProps()
-flat.dump(props)
 ModData.props = {
 	names = props,
 	getHighest = function(propDir)
@@ -62,7 +59,6 @@ end
 
 -- tiles
 local tiles = Mod.getTiles()
-flat.dump(tiles)
 ModData.tiles = {
 	names = tiles,
 	getHighest = function(tileDir)

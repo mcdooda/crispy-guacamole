@@ -1,8 +1,9 @@
 local UiSettings = require 'data/scripts/ui/uisettings'
 
-local defaultMod = 'mods/crispy-guacamole'
-local maps = require(defaultMod .. '/maps/maps')
-local entities = require(defaultMod .. '/entities/entities')
+local modPath = Mod.getPath()
+assert(modPath and #modPath > 0)
+local maps = Mod.getMaps()
+local entities = Mod.getEntities()
 
 local boxContainer = Widget.makeLineFlow()
 boxContainer:setPositionPolicy(Widget.PositionPolicy.CENTER)
@@ -50,7 +51,7 @@ do
         local mapLabel = Widget.makeText(mapName, table.unpack(UiSettings.titleFont))
         mapLabel:setMargin(0, 5, 0, 5)
         mapLabel:click(function()
-            Game.openMap(defaultMod, mapName)
+            Game.openMap(modPath, mapName)
             return true
         end)
         mapLine:addChild(mapLabel)
@@ -63,7 +64,7 @@ do
         local editLabel = Widget.makeText('Edit', table.unpack(UiSettings.titleFont))
         editLabel:setMargin(0, 5, 0, 5)
         editLabel:click(function()
-            MapEditor.openMap(defaultMod, mapName)
+            MapEditor.openMap(modPath, mapName)
             return true
         end)
         mapLine:addChild(editLabel)
@@ -123,7 +124,7 @@ do
         local entityLabel = Widget.makeText(entityName, table.unpack(UiSettings.titleFont))
         entityLabel:setMargin(0, 5, 0, 5)
         entityLabel:click(function()
-            EntityEditor.openEntity(defaultMod, 'sandbox', entityName)
+            EntityEditor.openEntity(modPath, 'sandbox', entityName)
             return true
         end)
         entityLine:addChild(entityLabel)

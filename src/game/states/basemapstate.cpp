@@ -17,7 +17,6 @@
 #include "../entity/component/components/selection/selectioncomponent.h"
 #include "../entity/faction/lua/faction.h"
 #include "../entity/entitytemplate.h"
-#include "../mod/lua/mod.h"
 
 namespace game
 {
@@ -51,7 +50,6 @@ void BaseMapState::enter(Game& game)
 		entity::lua::open(game);
 		entity::component::lua::open(L, m_componentRegistry);
 		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
-		mod::lua::open(L);
 		map::lua::map::open(L);
 		map::lua::zone::open(game);
 		map::brush::lua::open(game);

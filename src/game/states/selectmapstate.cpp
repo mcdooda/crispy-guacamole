@@ -8,7 +8,13 @@ namespace states
 
 void SelectMapState::enter(Game& game)
 {
+	if (game.modPath.empty())
+	{
+		game.modPath = "mods/crispy-guacamole";
+	}
+
 	Super::enter(game);
+
 	game.lua->doFile("data/selectmap/scripts/selectmap.lua");
 }
 

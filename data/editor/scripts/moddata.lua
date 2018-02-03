@@ -3,7 +3,8 @@ local Path = require 'data/scripts/path'
 local ModData = {}
 
 -- entities
-local entities = Path.requireModFile 'entities/entities'
+local entities = Mod.getEntities()
+flat.dump(entities)
 ModData.entities = {
 	names = entities
 }
@@ -22,7 +23,8 @@ for i = 1, #entities do
 end
 
 -- maps
-local maps = Path.requireModFile 'maps/maps'
+local maps = Mod.getMaps()
+flat.dump(maps)
 ModData.maps = {
 	names = maps
 }
@@ -37,7 +39,8 @@ for i = 1, #maps do
 end
 
 -- props
-local props = Path.requireModFile 'props/props'
+local props = Mod.getProps()
+flat.dump(props)
 ModData.props = {
 	names = props,
 	getHighest = function(propDir)
@@ -58,7 +61,8 @@ for i = 1, #props do
 end
 
 -- tiles
-local tiles = Path.requireModFile 'tiles/tiles'
+local tiles = Mod.getTiles()
+flat.dump(tiles)
 ModData.tiles = {
 	names = tiles,
 	getHighest = function(tileDir)

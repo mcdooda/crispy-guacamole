@@ -4,6 +4,7 @@
 #include "lua/entityeditor.h"
 #include "../game.h"
 #include "../timer/lua/timer.h"
+#include "../mod/lua/mod.h"
 
 namespace game
 {
@@ -93,6 +94,7 @@ void BaseState::initLua(Game& game)
 		states::lua::game::open(L);
 		states::lua::mapeditor::open(L);
 		states::lua::entityeditor::open(L);
+		mod::lua::open(L);
 	}
 }
 

@@ -18,8 +18,10 @@ class SelectionComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
-	private:
+		inline bool canBeSelected() const { return m_canBeSelected; }
 
+	private:
+		bool m_canBeSelected;
 };
 
 } // selection

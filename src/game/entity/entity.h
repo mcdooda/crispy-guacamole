@@ -111,6 +111,7 @@ class Entity final : public map::MapObject
 
 		void setSelected(bool selected);
 		bool isSelected() const;
+		inline void setCanBeSelected(bool canBeSelected) { m_canBeSelected = canBeSelected; }
 		inline bool canBeSelected() const { return m_canBeSelected; }
 
 		inline void markForDelete() { m_markedForDelete = true; }

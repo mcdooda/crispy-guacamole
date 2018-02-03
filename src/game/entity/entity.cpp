@@ -247,15 +247,14 @@ void Entity::setSelected(bool selected)
 
 bool Entity::isSelected() const
 {
-	const component::selection::SelectionComponent* selectionComponent = getComponent<component::selection::SelectionComponent>();
-	if (selectionComponent != nullptr)
-	{
-		return selectionComponent->isSelected();
-	}
-	else
+	if (!m_canBeSelected)
 	{
 		return false;
 	}
+
+	const component::selection::SelectionComponent* selectionComponent = getComponent<component::selection::SelectionComponent>();
+	FLAT_ASSERT(selectionComponent != nullptr);
+	return selectionComponent->isSelected();
 }
 
 #ifdef FLAT_DEBUG
@@ -344,8 +343,6 @@ void Entity::cacheComponents()
 	m_behaviorComponent = findComponent<component::behavior::BehaviorComponent>();
 	m_collisionComponent = findComponent<component::collision::CollisionComponent>();
 	m_movementComponent = findComponent<component::movement::MovementComponent>();
-
-	m_canBeSelected = findComponent<component::selection::SelectionComponent>() != nullptr;
 }
 
 void Entity::initComponents()

@@ -592,10 +592,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 		if (mouseOverObject->isEntity())
 		{
 			const entity::Entity* entity = static_cast<const entity::Entity*>(mouseOverObject);
-			if (entity->canBeSelected())
-			{
-				newMouseOverEntity = entity;
-			}
+			newMouseOverEntity = entity;
 		}
 		else if (mouseOverObject->isTile())
 		{
@@ -729,25 +726,33 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 	}
 
 	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
-	if (mouseOverEntity != nullptr && mouseOverEntity->canBeSelected())
+	if (mouseOverEntity != nullptr)
 	{
-		const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getTemplate();
-
-		flat::AABB2 screenAABB;
-		m_gameView.getScreenAABB(screenAABB);
-
-		const map::DisplayManager& mapDisplayManager = getMap().getDisplayManager();
-		std::vector<const map::MapObject*> entitiesInScreen;
-		mapDisplayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
-
-		for (const map::MapObject* mapObject : entitiesInScreen)
+		if (mouseOverEntity->canBeSelected())
 		{
-			// TODO: fix these casts
-			entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
-			if (entity->getTemplate() == entityTemplate)
+			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getTemplate();
+
+			flat::AABB2 screenAABB;
+			m_gameView.getScreenAABB(screenAABB);
+
+			const map::DisplayManager& mapDisplayManager = getMap().getDisplayManager();
+			std::vector<const map::MapObject*> entitiesInScreen;
+			mapDisplayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
+
+			for (const map::MapObject* mapObject : entitiesInScreen)
 			{
-				addToSelectedEntities(entity);
+				// TODO: fix these casts
+				entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
+				if (entity->getTemplate() == entityTemplate)
+				{
+					addToSelectedEntities(entity);
+				}
 			}
+		}
+		else
+		{
+			// if the entity is not selectable, still trigger a click on double click
+			clickEntity(mouseOverEntity);
 		}
 	}
 }
@@ -829,9 +834,9 @@ bool BaseMapState::isSmallSelection() const
 
 void BaseMapState::clickEntity(entity::Entity* entity) const
 {
-	if (entity->canBeSelected())
+	entity::component::selection::SelectionComponent* selectionComponent = entity->getComponent<entity::component::selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
 	{
-		entity::component::selection::SelectionComponent* selectionComponent = entity->getComponent<entity::component::selection::SelectionComponent>();
 		selectionComponent->click();
 	}
 }

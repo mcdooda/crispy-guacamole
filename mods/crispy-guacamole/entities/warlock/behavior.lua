@@ -8,7 +8,7 @@ local random = math.random
 local states = {}
 
 function states:init(warlock)
-	
+	warlock:click(function(warlock) print(warlock, 'clicked') end)
 end
 
 function states:idle(warlock)

@@ -8,6 +8,7 @@ return {
     'components/movementcomponent',
     'components/projectilecomponent',
     'components/propcomponent',
+    'components/selectioncomponent',
     'components/spriteanimation',
     'components/spriteattachpoint',
     'components/spritecomponent',

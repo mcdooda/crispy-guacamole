@@ -1,1 +1,3 @@
-return {}
+return {
+    canBeSelected = false
+}

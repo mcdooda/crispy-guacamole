@@ -12,6 +12,8 @@ namespace selection
 
 void SelectionComponent::init()
 {
+	m_owner->setCanBeSelected(getTemplate()->canBeSelected());
+
 	m_selected = false;
 
 	auto pushEntityCallback = [this](lua_State* L)

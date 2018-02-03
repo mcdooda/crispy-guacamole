@@ -65,6 +65,7 @@ local function requireComponentTemplateIfExists(entityTemplateName, componentTem
         return requireComponentTemplate(entityTemplateName, componentTemplateName, forceReload)
     end)
     if componentExists then
+        assert(type(componentTemplate) == 'table')
         return componentTemplate
     end
 end

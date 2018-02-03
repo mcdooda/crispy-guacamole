@@ -110,6 +110,7 @@ local function entityPreview(entityTemplateName, animationName, loopForever, sca
 end
 
 return {
-    entity = entityPreview,
-    sprite = entitySpritePreview
+    entity  = entityPreview,
+    sprite  = entitySpritePreview,
+    texture = entityTexturePreview
 }

@@ -373,7 +373,13 @@ function ComponentDetailsPanel:showComponentDetails(componentName)
 end
 
 function ComponentDetailsPanel:showComponentDoesNotExist(componentName)
-    local label = Widget.makeText('This component does not exist', table.unpack(UiSettings.defaultFont))
+    local label
+    if EntityState:componentFileExists(componentName) then
+        label = Widget.makeText('This component is broken', table.unpack(UiSettings.defaultFont))
+        label:setTextColor(Theme.COMPONENT_ERROR_COLOR)
+    else
+        label = Widget.makeText('This component does not exist', table.unpack(UiSettings.defaultFont))
+    end
     self.detailsPanel:addChild(label)
 end
 

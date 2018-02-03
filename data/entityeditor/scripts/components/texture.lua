@@ -11,7 +11,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
         componentDetailsPanel:addChild(label)
     end
     do
-        local texturePreview = Preview.entity(entityTemplateName)
+        local texturePreview = Preview.texture(entityTemplateName)
         texturePreview:setMargin(2)
         componentDetailsPanel:addChild(texturePreview)
     end

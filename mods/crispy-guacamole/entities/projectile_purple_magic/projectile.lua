@@ -1,7 +1,7 @@
 return {
 	weight = 0,
 	speed = 12,
-	collidedCallback = function(projectile, collidedEntity)
+	collidedCallback = function(projectile, collidedEntity, normal)
 		if not collidedEntity then
 			local position = projectile:getPosition()
 			local heading = projectile:getHeading()

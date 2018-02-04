@@ -76,16 +76,17 @@ bool ProjectileComponent::headingChanged(float heading)
 	return true;
 }
 
-bool ProjectileComponent::collided(Entity* collidedEntity)
+bool ProjectileComponent::collided(Entity* collidedEntity, const flat::Vector3& normal)
 {
 	if (!isEnabled())
 		return true;
 
 	getTemplate()->getCollidedCallback().callFunction(
-		[this, collidedEntity](lua_State* L)
+		[this, collidedEntity, &normal](lua_State* L)
 		{
 			lua::pushEntity(L, m_owner);
 			lua::pushEntity(L, collidedEntity);
+			flat::lua::pushVector3(L, normal);
 		},
 		1,
 		[this](lua_State* L)
@@ -101,9 +102,9 @@ bool ProjectileComponent::collided(Entity* collidedEntity)
 	return true;
 }
 
-bool ProjectileComponent::collidedWithMap()
+bool ProjectileComponent::collidedWithMap(const flat::Vector3& normal)
 {
-	return collided(nullptr);
+	return collided(nullptr, normal);
 }
 
 float ProjectileComponent::getSpeedXY() const

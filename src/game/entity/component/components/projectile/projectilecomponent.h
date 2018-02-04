@@ -36,8 +36,8 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 	private:
 		bool addedToMap(Entity* entity, map::Map* map);
 		bool headingChanged(float heading);
-		bool collided(Entity* collidedEntity);
-		bool collidedWithMap();
+		bool collided(Entity* collidedEntity, const flat::Vector3& normal);
+		bool collidedWithMap(const flat::Vector3& normal);
 
 		float getSpeedXY() const;
 		

@@ -32,8 +32,8 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:
-		flat::Slot<Entity*> onCollidedWithEntity;
-		flat::Slot<> onCollidedWithMap;
+		flat::Slot<Entity*, const flat::Vector3&> onCollidedWithEntity;
+		flat::Slot<const flat::Vector3&> onCollidedWithMap;
 
 	private:
 		void separateFromNearbyEntities();

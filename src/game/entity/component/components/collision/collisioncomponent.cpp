@@ -73,7 +73,8 @@ void CollisionComponent::separateFromNearbyEntities()
 						flat::Vector3 penetration;
 						if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
 						{
-							onCollidedWithEntity(neighbor);
+							flat::Vector3 normal = flat::normalize(penetration);
+							onCollidedWithEntity(neighbor, normal);
 							const movement::MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<movement::MovementComponent>();
 							const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
 							if (neighborWeight + weight > 0.f)
@@ -202,8 +203,9 @@ void CollisionComponent::separateFromAdjacentTiles()
 	flat::Vector3 newPosition(newPosition2d, std::max(position.z, tile->getZ()));
 	if (position != newPosition)
 	{
+		flat::Vector3 normal = flat::normalize(newPosition - position);
 		m_owner->setPosition(newPosition);
-		onCollidedWithMap();
+		onCollidedWithMap(normal);
 	}
 }
 

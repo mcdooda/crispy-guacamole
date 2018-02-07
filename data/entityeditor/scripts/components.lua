@@ -237,19 +237,18 @@ function ComponentDetailsPanel:build()
         end
 
         do
-            local editComponentIcon = Icon:new('brush', 10)
+            local editComponentIcon = Icon:new 'brush'
             editComponentIcon.container:setMargin(0, 0, 5, 5)
-            editComponentIcon.container:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
             editComponentIcon.container:click(function()
                 self:editCurrentComponent()
             end)
             titleLine:addChild(editComponentIcon.container)
+            self.editComponentIcon = editComponentIcon
         end
 
         do
-            local deleteComponentIcon = Icon:new('remove', 10)
+            local deleteComponentIcon = Icon:new 'remove'
             deleteComponentIcon.container:setMargin(0, 0, 5, 5)
-            deleteComponentIcon.container:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
             deleteComponentIcon.container:click(function()
                 self:removeCurrentComponent()
             end)
@@ -281,11 +280,15 @@ function ComponentDetailsPanel:toggleCurrentComponent()
     end
 end
 
+function ComponentDetailsPanel:shouldEditGraph(componentName)
+    return not EntityState:hasComponent(componentName) or EntityState:componentIsGraph(componentName)
+end
+
 function ComponentDetailsPanel:editCurrentComponent()
     local entityTemplateName = EntityState:getTemplateName()
     local componentName = ComponentSelectionPanel:getCurrentComponentName()
 
-    local editGraph = not EntityState:hasComponent(componentName) or EntityState:componentIsGraph(componentName)
+    local editGraph = self:shouldEditGraph(componentName)
 
     if not editGraph then
         pcall(function()
@@ -351,6 +354,12 @@ function ComponentDetailsPanel:setComponent(componentName)
     else
         self.enabledLabel:hide()
         self.deleteComponentIcon.container:hide()
+    end
+
+    if self:shouldEditGraph(componentName) then
+        self.editComponentIcon:setIcon 'graph'
+    else
+        self.editComponentIcon:setIcon 'pencil'
     end
 
     self.detailsPanel:removeAllChildren()

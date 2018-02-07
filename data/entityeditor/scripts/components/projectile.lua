@@ -33,7 +33,6 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
 
         do
             local playIcon = Icon:new('play', 10)
-            playIcon.container:setMargin(0, 0, 1, 3)
             playIcon.container:click(function()
                 local shot, errorMessage = pcall(function()
                     local entity = getEntity()

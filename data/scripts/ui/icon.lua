@@ -11,6 +11,8 @@ function Icon:new(icon, size)
     local character, fontPath = self:findIcon(icon)
     local text = Widget.makeText(character, fontPath, size)
     local container = Widget.makeLineFlow()
+    container:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
+    container:setMargin(0, 3, 0, 3)
     container:addChild(text)
     local o = setmetatable({
         container = container,
@@ -22,11 +24,11 @@ function Icon:new(icon, size)
 end
 
 function Icon:setIcon(icon)
-    local character, fontPath = self.findIcon(icon)
+    local character, fontPath = self:findIcon(icon)
     self.icon = icon
     self.text:removeFromParent()
     local text = Widget.makeText(character, fontPath, self.size)
-    container:addChild(text)
+    self.container:addChild(text)
     self.text = text
 end
 

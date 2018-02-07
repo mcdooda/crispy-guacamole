@@ -2,7 +2,7 @@
 local Dialog = require 'data/scripts/ui/dialog'
 local Button = require 'data/scripts/ui/button'
 local UiSettings = require 'data/scripts/ui/uisettings'
-local icon = require 'data/scripts/ui/icon'
+local Icon = require 'data/scripts/ui/icon'
 local Path = require 'data/scripts/path'
 
 local COLORS = {
@@ -27,6 +27,12 @@ local COLORS = {
     transparent= 0x00000000
 }
 
+local function mouseEnter(icon)
+    icon:setColor(COLORS.lightBlue)
+end
+local function mouseLeave(icon)
+    icon:setColor(COLORS.lightBlack)
+end
 
 local root = Widget.getRoot()
 do
@@ -36,48 +42,35 @@ do
         local lineWidget = Widget.makeLineFlow()
         lineWidget:setMargin(15)
         local i = 1
-        for iconName, text in pairs(UiSettings.icons) do
-            if i%10 == 0 then
-                content:addChild(lineWidget)
-                lineWidget = Widget.makeLineFlow()
-                lineWidget:setMargin(15)
+        for i = 1, #UiSettings.fontIcons do
+            local fontIcon = UiSettings.fontIcons[i]
+            local icons = require(Icon.iconFontsPath .. '/' .. fontIcon)
+            for iconName in flat.sortedpairs(icons) do
+                if i%10 == 0 then
+                    content:addChild(lineWidget)
+                    lineWidget = Widget.makeLineFlow()
+                    lineWidget:setMargin(15)
+                end
+                local preview = Widget.makeColumnFlow()
+                local iconNameWidget = Widget.makeText(iconName, table.unpack(UiSettings.defaultFont))
+                iconNameWidget:setTextColor(COLORS.lightBlack)
+                local iconWidget = Icon:new(iconName, 20)
+                iconWidget.container:setMargin(5)
+                iconWidget.text:mouseEnter(function(c) mouseEnter(iconWidget) end)
+                iconWidget.text:mouseLeave(function(c) mouseLeave(iconWidget) end)
+                iconWidget.container:click(function(c) mouseLeave(iconWidget) end)
+                iconWidget:setColor(COLORS.lightBlack)
+                preview:addChild(iconWidget.container)
+                preview:addChild(iconNameWidget)
+                preview:setMargin(5)
+                lineWidget:addChild(preview)
+                i = i + 1
             end
-            local preview = Widget.makeColumnFlow()
-            local iconNameWidget = Widget.makeText(iconName, table.unpack(UiSettings.defaultFont))
-            iconNameWidget:setTextColor(COLORS.lightBlack)
-            local iconWidget = icon:new(iconName, 20)
-            iconWidget.container:setMargin(5)
-            iconWidget.container:setTextColor(COLORS.lightBlack)
-            preview:addChild(iconWidget.container)
-            preview:addChild(iconNameWidget)
-            preview:setMargin(5)
-            lineWidget:addChild(preview)
-            i = i + 1
         end
-        content:addChild(lineWidget)
 
-        local lineWidget2 = Widget.makeLineFlow()
-        lineWidget2:setMargin(15)
-        i = 1
-        for iconName, text in pairs(UiSettings.customIcons) do
-            if i%10 == 0 then
-                content:addChild(lineWidget2)
-                lineWidget2 = Widget.makeLineFlow()
-                lineWidget2:setMargin(15)
-            end
-            local preview2 = Widget.makeColumnFlow()
-            local iconNameWidget = Widget.makeText(iconName, table.unpack(UiSettings.defaultFont))
-            iconNameWidget:setTextColor(COLORS.lightBlack)
-            local iconWidget = icon:new(iconName, 20)
-            iconWidget.container:setMargin(5)
-            iconWidget.container:setTextColor(COLORS.lightBlack)
-            preview2:addChild(iconWidget.container)
-            preview2:addChild(iconNameWidget)
-            preview2:setMargin(5)
-            lineWidget2:addChild(preview2)
-            i = i + 1
-        end
-        content:addChild(lineWidget2)
+
+
+        content:addChild(lineWidget)
         content:setSize(600,800)
         content:setSizePolicy(Widget.SizePolicy.FIXED)
         content:setAllowScrollY(true)
@@ -98,10 +91,10 @@ do
 
     local btnText = Widget.makeLineFlow()
 
-    local okIcon = icon:new("palette")
+    local okIcon = Icon:new("palette")
 
     okIcon.container:setMargin(0,5,0,0)
-    okIcon.container:setTextColor(COLORS.white)
+    okIcon:setColor(COLORS.white)
     btnText:addChild(okIcon.container)
 
     local btnConfirm = Button:new(btnText)
@@ -109,15 +102,7 @@ do
     topPanel:addChild(btnConfirm.container)
     topPanel:addChild(btnFlatTest.container)
     btnConfirm.container:click(showIconDialog)
-    btnFlatTest.container:click(function()
-
-        -- local content = Widget.makeLineFlow()
-        -- flat.node.editor.open(content, Path.getComponentPath("Zombie", "attack"))
-
-        -- local widgetTitle = Widget.makeText("Icones", table.unpack(UiSettings.titleFont))
-        -- widgetTitle:setMargin(15)
-        -- local dialog = Dialog:new(content, {confirm = false, cancel = true, title=widgetTitle})
-    end)
+    btnFlatTest.container:click(test)
     root:addChild(topPanel)
 
 end

@@ -28,6 +28,22 @@ void CollisionBox::getAABB(const flat::Vector3& position, flat::AABB3& aabb) con
 	}
 }
 
+float CollisionBox::getBottom(const flat::Vector3& position) const
+{
+	switch (type)
+	{
+	case CollisionType::SPHERE:
+		return position.z - sphere.radius;
+
+	case CollisionType::CYLINDER:
+		return position.z;
+
+	default:
+		FLAT_ASSERT(false);
+		return 0.f;
+	}
+}
+
 bool CollisionBox::collides(const flat::Vector3& aPos, const flat::Vector3& bPos, const CollisionBox& a, const CollisionBox& b, flat::Vector3& penetration)
 {
 	if (a.type == CollisionType::SPHERE && b.type == CollisionType::SPHERE)

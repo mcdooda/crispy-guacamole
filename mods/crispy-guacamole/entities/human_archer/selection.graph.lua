@@ -5,7 +5,7 @@ script {
     },
     {
       loadArguments = {
-        false,
+        true,
       },
       name = 'bool',
     },

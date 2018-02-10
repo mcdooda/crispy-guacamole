@@ -28,12 +28,13 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 		void update(float currentTime, float elapsedTime) override;
 
 		void getAABB(flat::AABB3& aabb) const;
+		float getBottom() const;
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:
 		flat::Slot<Entity*, const flat::Vector3&> onCollidedWithEntity;
-		flat::Slot<const flat::Vector3&> onCollidedWithMap;
+		flat::Slot<const map::Tile*, const flat::Vector3&> onCollidedWithMap;
 
 	private:
 		void separateFromNearbyEntities();

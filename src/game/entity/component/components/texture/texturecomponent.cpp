@@ -67,9 +67,7 @@ void TextureComponent::update(float currentTime, float elapsedTime)
 	if (m_headingChanged || m_elevationChanged)
 	{
 		const float heading = m_owner->getHeading();
-		FLAT_ASSERT(0.f <= heading && heading < flat::PI2);
 		const float elevation = m_owner->getElevation();
-		FLAT_ASSERT(-flat::PI <= elevation && elevation < flat::PI);
 
 		const float directionLenXY = std::cos(elevation);
 		flat::Vector3 direction(std::cos(heading) * directionLenXY, std::sin(heading) * directionLenXY, std::sin(elevation));

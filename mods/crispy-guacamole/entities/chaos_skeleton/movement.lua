@@ -1,5 +1,1 @@
-return {
-	speed = 2.2,
-	jumpForce = 4.1,
-	weight = 9
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/chaos_skeleton/movement'

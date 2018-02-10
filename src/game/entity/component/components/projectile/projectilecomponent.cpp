@@ -3,6 +3,7 @@
 #include "../collision/collisioncomponent.h"
 #include "../../../entity.h"
 #include "../../../lua/entity.h"
+#include "../../../../map/map.h"
 
 namespace game
 {
@@ -21,8 +22,8 @@ void ProjectileComponent::init()
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
 	{
+		collisionComponent->onCollidedWithEntity.on(this, &ProjectileComponent::collidedWithEntity);
 		collisionComponent->onCollidedWithMap.on(this, &ProjectileComponent::collidedWithMap);
-		collisionComponent->onCollidedWithEntity.on(this, &ProjectileComponent::collided);
 	}
 }
 
@@ -34,21 +35,43 @@ void ProjectileComponent::deinit()
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
 	{
-		collisionComponent->onCollidedWithMap.off(this);
 		collisionComponent->onCollidedWithEntity.off(this);
+		collisionComponent->onCollidedWithMap.off(this);
 	}
 }
 
 void ProjectileComponent::update(float currentTime, float elapsedTime)
 {
+	const map::Map* map = m_owner->getMap();
+	FLAT_ASSERT(map != nullptr);
+
 	const float weight = getTemplate()->getWeight();
 	const flat::Vector3 oldSpeed = m_speed;
 	m_speed.z -= weight * elapsedTime;
 	const flat::Vector3& position = m_owner->getPosition();
 	flat::Vector3 newPosition = position + (oldSpeed + m_speed) * 0.5f * elapsedTime;
-	m_owner->setPosition(newPosition);
+
+	const map::Tile* tile = map->getTileIfExists(newPosition.x, newPosition.y);
+	if (tile == nullptr)
+	{
+		m_owner->markForDelete();
+	}
+	else
+	{
+		m_owner->setPosition(newPosition);
+		const float speedXY = getSpeedXY();
+		const float elevation = std::atan2(m_speed.z, speedXY);
+		m_owner->setElevation(elevation);
+	}
+}
+
+void ProjectileComponent::setSpeed(const flat::Vector3& speed)
+{
+	m_speed = speed;
+	const float heading = std::atan2(speed.y, speed.x);
+	m_owner->setHeading(heading);
 	const float speedXY = getSpeedXY();
-	float elevation = std::atan2(m_speed.z, speedXY);
+	const float elevation = std::atan2(speed.z, speedXY);
 	m_owner->setElevation(elevation);
 }
 
@@ -76,35 +99,40 @@ bool ProjectileComponent::headingChanged(float heading)
 	return true;
 }
 
-bool ProjectileComponent::collided(Entity* collidedEntity, const flat::Vector3& normal)
+bool ProjectileComponent::collided(Entity* collidedEntity, const map::Tile* collidedTile, const flat::Vector3& normal)
 {
-	if (!isEnabled())
+	if (!isEnabled())	
+	{
 		return true;
+	}
 
-	getTemplate()->getCollidedCallback().callFunction(
-		[this, collidedEntity, &normal](lua_State* L)
+	if (collidedTile == nullptr && collidedEntity == nullptr)
+	{
+		m_owner->markForDelete();
+	}
+	else
+	{
+		getTemplate()->getCollidedCallback().callFunction(
+			[this, collidedEntity, &normal](lua_State* L)
 		{
 			lua::pushEntity(L, m_owner);
 			lua::pushEntity(L, collidedEntity);
 			flat::lua::pushVector3(L, normal);
-		},
-		1,
-		[this](lua_State* L)
-		{
-			bool keepEnabled = lua_toboolean(L, -1) == 1;
-			if (!keepEnabled)
-			{
-				incDisableLevel();
-			}
 		}
-	);
+		);
+	}
 
 	return true;
 }
 
-bool ProjectileComponent::collidedWithMap(const flat::Vector3& normal)
+bool ProjectileComponent::collidedWithEntity(Entity* collidedEntity, const flat::Vector3& normal)
 {
-	return collided(nullptr, normal);
+	return collided(collidedEntity, nullptr, normal);
+}
+
+bool ProjectileComponent::collidedWithMap(const map::Tile* tile, const flat::Vector3& normal)
+{
+	return collided(nullptr, tile, normal);
 }
 
 float ProjectileComponent::getSpeedXY() const

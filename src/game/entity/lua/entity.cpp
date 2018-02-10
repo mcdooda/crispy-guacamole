@@ -8,6 +8,7 @@
 #include "../component/components/faction/factioncomponent.h"
 #include "../component/components/life/lifecomponent.h"
 #include "../component/components/movement/movementcomponent.h"
+#include "../component/components/projectile/projectilecomponent.h"
 #include "../component/components/selection/selectioncomponent.h"
 #include "../component/components/sprite/spritecomponent.h"
 #include "../component/components/ui/uicomponent.h"
@@ -113,6 +114,10 @@ int open(Game& game)
 		{"selected",                 l_Entity_selected},
 		{"deselected",               l_Entity_deselected},
 		{"click",                    l_Entity_click},
+
+		// projectile
+		{"setProjectileSpeed",       l_Entity_setProjectileSpeed},
+		{"getProjectileSpeed",       l_Entity_getProjectileSpeed},
 		
 		{nullptr, nullptr}
 	};
@@ -710,6 +715,23 @@ int l_Entity_click(lua_State* L)
 	selection::SelectionComponent& selectionComponent = getComponent<selection::SelectionComponent>(L, entity);
 	selectionComponent.addClickCallback(L, 2);
 	return 0;
+}
+
+int l_Entity_setProjectileSpeed(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::Vector3& speed = flat::lua::getVector3(L, 2);
+	projectile::ProjectileComponent& projectileComponent = getComponent<projectile::ProjectileComponent>(L, entity);
+	projectileComponent.setSpeed(speed);
+	return 0;
+}
+
+int l_Entity_getProjectileSpeed(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	projectile::ProjectileComponent& projectileComponent = getComponent<projectile::ProjectileComponent>(L, entity);
+	flat::lua::pushVector3(L, projectileComponent.getSpeed());
+	return 1;
 }
 
 // static lua functions

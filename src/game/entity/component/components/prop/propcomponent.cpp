@@ -34,19 +34,21 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 
+	// occupy the tile
+	map::Tile* tile = m_owner->getTile();
+	tile->setWalkable(false);
+
 	// center the entity on its tile
 	flat::Vector3 position = m_owner->getPosition();
 	position.x = std::round(position.x);
 	position.y = std::round(position.y);
+	position.z = tile->getZ();
 	m_owner->setPosition(position);
 
 	// make it "stand"
 	m_owner->setHeading(flat::PI * 0.75f);
 	m_owner->setElevation(0.f);
 
-	// occupy the tile
-	map::Tile* tile = m_owner->getTile();
-	tile->setWalkable(false);
 	return true;
 }
 

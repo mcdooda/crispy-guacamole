@@ -34,21 +34,9 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
         do
             local playIcon = Icon:new('play', 10)
             playIcon.container:click(function()
-                local shot, errorMessage = pcall(function()
-                    local entity = getEntity()
-                    local position = entity:getPosition()
-                    position:z(1)
-                    entity:setPosition(position)
-                    -- wait a little before firing
-                    Timer.start(1, nil, function()
-                        local entity = getEntity()
-                        if entity:isValid() and not entity:isComponentEnabled(Component.projectile) then
-                            entity:decComponentDisableLevel(Component.projectile)
-                        end
-                    end)
-                end)
-                if not shot then
-                    print(errorMessage)
+                local entity = getEntity()
+                if not entity:isComponentEnabled(Component.projectile) then
+                    entity:decComponentDisableLevel(Component.projectile)
                 end
             end)
             shootLine:addChild(playIcon.container)

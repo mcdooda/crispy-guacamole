@@ -9,55 +9,43 @@ script {
     {
       2,
       1,
-      5,
+      1,
+      1,
+    },
+    {
+      3,
+      1,
+      1,
       2,
     },
     {
-      3,
-      1,
-      5,
-      3,
-    },
-    {
       4,
       1,
-      5,
+      1,
       4,
-    },
-    {
-      5,
-      1,
-      6,
-      1,
     },
   },
   nodes = {
     {
+      name = 'components/collisioncomponent',
+    },
+    {
       loadArguments = {
-        2,
+        'sphere',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.010099999606609,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        7,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
+        false,
       },
       name = 'bool',
-    },
-    {
-      name = 'components/movementcomponent',
     },
     {
       loadArguments = {

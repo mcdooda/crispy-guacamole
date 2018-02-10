@@ -31,13 +31,17 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 
 		void update(float currentTime, float elapsedTime) override;
 
+		void setSpeed(const flat::Vector3& speed);
+		inline const flat::Vector3& getSpeed() const { return m_speed; }
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
 		bool addedToMap(Entity* entity, map::Map* map);
 		bool headingChanged(float heading);
-		bool collided(Entity* collidedEntity, const flat::Vector3& normal);
-		bool collidedWithMap(const flat::Vector3& normal);
+		bool collided(Entity* collidedEntity, const map::Tile* collidedTile, const flat::Vector3& normal);
+		bool collidedWithEntity(Entity* collidedEntity, const flat::Vector3& normal);
+		bool collidedWithMap(const map::Tile* tile, const flat::Vector3& normal);
 
 		float getSpeedXY() const;
 		

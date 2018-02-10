@@ -96,6 +96,10 @@ int l_Entity_selected(lua_State* L);
 int l_Entity_deselected(lua_State* L);
 int l_Entity_click(lua_State* L);
 
+// projectile
+int l_Entity_setProjectileSpeed(lua_State* L);
+int l_Entity_getProjectileSpeed(lua_State* L);
+
 // static lua functions
 int l_Entity_spawn(lua_State* L);
 

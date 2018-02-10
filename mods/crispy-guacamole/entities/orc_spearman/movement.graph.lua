@@ -3,59 +3,35 @@ script {
     {
       1,
       1,
-      5,
-      1,
-    },
-    {
       2,
       1,
-      5,
-      2,
     },
     {
       3,
       1,
+      1,
+      1,
+    },
+    {
+      4,
+      1,
+      1,
+      2,
+    },
+    {
       5,
+      1,
+      1,
       3,
     },
     {
-      4,
-      1,
-      5,
-      4,
-    },
-    {
-      5,
-      1,
       6,
       1,
+      1,
+      4,
     },
   },
   nodes = {
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        7,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'bool',
-    },
     {
       name = 'components/movementcomponent',
     },
@@ -67,6 +43,30 @@ script {
         },
       },
       name = 'script/scriptoutput',
+    },
+    {
+      loadArguments = {
+        2.2000000476837,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        4.0999999046326,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        9,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'bool',
     },
   },
 }

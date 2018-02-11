@@ -9,16 +9,15 @@ namespace states
 namespace editor
 {
 
-ZoneMapEditorMode::ZoneMapEditorMode(Game& game) : Super(game),
-	m_drawingRectangle(false),
-	m_selectedRectangle(nullptr)
+ZoneMapEditorMode::ZoneMapEditorMode(Game& game) : Super(game)
 {
 
 }
 
-ZoneMapEditorMode::~ZoneMapEditorMode()
+void ZoneMapEditorMode::enter(MapEditorState& mapEditorState)
 {
-
+	m_drawingRectangle = false;
+	m_selectedRectangle = nullptr;
 }
 
 void ZoneMapEditorMode::clearBrush(MapEditorState& mapEditorState) const

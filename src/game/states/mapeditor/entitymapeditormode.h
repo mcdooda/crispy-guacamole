@@ -16,7 +16,8 @@ class EntityMapEditorMode : public MapEditorMode
 	using Super = MapEditorMode;
 public:
 	EntityMapEditorMode(Game& game);
-	~EntityMapEditorMode() override;
+
+	void exit(MapEditorState& mapEditorState) override;
 
 	void applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed) override;
 	void handleShortcuts(MapEditorState& mapEditorState) override;

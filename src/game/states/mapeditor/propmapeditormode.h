@@ -19,7 +19,8 @@ class PropMapEditorMode : public MapEditorMode
 	using Super = MapEditorMode;
 	public:
 		PropMapEditorMode(Game& game);
-		~PropMapEditorMode() override;
+
+		void enter(MapEditorState& mapEditorState) override;
 
 		void updateBrushTiles(MapEditorState& mapEditorState) override;
 		void applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed) override;

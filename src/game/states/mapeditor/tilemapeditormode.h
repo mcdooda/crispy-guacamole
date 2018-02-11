@@ -19,7 +19,8 @@ class TileMapEditorMode : public MapEditorMode
 	using Super = MapEditorMode;
 	public:
 		TileMapEditorMode(Game& game);
-		~TileMapEditorMode() override;
+
+		void enter(MapEditorState& mapEditorState) override;
 
 		void updateBrushTiles(MapEditorState& mapEditorState) override;
 		void applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed) override;

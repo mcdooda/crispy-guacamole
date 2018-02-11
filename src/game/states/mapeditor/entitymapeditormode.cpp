@@ -11,12 +11,13 @@ namespace editor
 
 EntityMapEditorMode::EntityMapEditorMode(Game& game) : Super(game)
 {
-	
+
 }
 
-EntityMapEditorMode::~EntityMapEditorMode()
+void EntityMapEditorMode::exit(MapEditorState& mapEditorState)
 {
-	m_game.getStateMachine().getState()->as<states::MapEditorState>().clearGhostTemplate();
+	Super::exit(mapEditorState);
+	mapEditorState.clearGhostTemplate();
 }
 
 void EntityMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed)

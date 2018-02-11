@@ -20,7 +20,8 @@ class ZoneMapEditorMode : public MapEditorMode
 	using Super = MapEditorMode;
 	public:
 		ZoneMapEditorMode(Game& game);
-		~ZoneMapEditorMode() override;
+
+		void enter(MapEditorState& mapEditorState) override;
 
 		void clearBrush(MapEditorState& mapEditorState) const override;
 		void displayBrush(MapEditorState& mapEditorState) const override;

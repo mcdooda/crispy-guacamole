@@ -14,14 +14,16 @@ namespace editor
 
 PropMapEditorMode::PropMapEditorMode(Game& game) : Super(game)
 {
-	map::brush::Brush* brush = new map::brush::SphereBrush();
-	brush->setRadius(3.f);
-	m_brush.reset(brush);
+
 }
 
-PropMapEditorMode::~PropMapEditorMode()
+void PropMapEditorMode::enter(MapEditorState& mapEditorState)
 {
-	
+	std::unique_ptr<map::brush::Brush> brush = std::make_unique<map::brush::SphereBrush>();
+	brush->setRadius(3.f);
+	m_brush = std::move(brush);
+
+	Super::enter(mapEditorState);
 }
 
 void PropMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)

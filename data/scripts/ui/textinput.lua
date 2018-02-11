@@ -9,17 +9,22 @@ local TextInput = {}
 TextInput.__index = TextInput
 
 function TextInput:new(value)
-	local container = Widget.makeLineFlow()
+	local container = Widget.makeFixedSize(120, 1)
+	container:setMargin(2)
 	container:setBackgroundColor(BORDER_COLOR)
 
 	local background = Widget.makeLineFlow()
+	background:setSizePolicy(Widget.SizePolicy.EXPAND)
 	background:setBackgroundColor(BACKGROUND_COLOR)
 	background:setMargin(1)
 	container:addChild(background)
 
 	local textInputWidget = Widget.makeTextInput(table.unpack(UiSettings.defaultFont))
+	local _, h = textInputWidget:getSize()
+	textInputWidget:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.FIXED_Y)
 	textInputWidget:setText(value)
 	textInputWidget:setMargin(2, 4, 2, 4)
+	container:setSize(120, h + 6)
 	background:addChild(textInputWidget)
 
 	textInputWidget:focus(function()

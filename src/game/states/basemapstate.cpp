@@ -151,6 +151,8 @@ void BaseMapState::exit(Game& game)
 	}
 	clearGhostTemplate();
 	map.removeAllEntities();
+
+	Super::exit(game);
 }
 
 void BaseMapState::setModPath(const std::string& modPath)

@@ -18,9 +18,6 @@ void BaseState::enter(Game& game)
 	initLua(game);
 	initRender(game);
 	resetViews(game);
-
-	flat::sharp::ui::RootWidget& rootWidget = *game.ui->root.get();
-	rootWidget.clearAll();
 }
 
 void BaseState::execute(Game& game)
@@ -45,6 +42,8 @@ void BaseState::execute(Game& game)
 
 void BaseState::exit(Game& game)
 {
+	flat::sharp::ui::RootWidget& rootWidget = *game.ui->root.get();
+	rootWidget.clearAll();
 }
 
 void BaseState::update(Game& game)

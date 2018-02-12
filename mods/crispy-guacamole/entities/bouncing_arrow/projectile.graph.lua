@@ -38,6 +38,12 @@ script {
     },
     {
       1,
+      3,
+      20,
+      2,
+    },
+    {
+      1,
       4,
       8,
       1,
@@ -69,7 +75,7 @@ script {
     {
       6,
       1,
-      11,
+      18,
       1,
     },
     {
@@ -105,8 +111,56 @@ script {
     {
       13,
       1,
+      14,
+      1,
+    },
+    {
+      14,
+      1,
       11,
       3,
+    },
+    {
+      14,
+      1,
+      16,
+      1,
+    },
+    {
+      15,
+      1,
+      14,
+      2,
+    },
+    {
+      16,
+      1,
+      17,
+      1,
+    },
+    {
+      17,
+      1,
+      18,
+      2,
+    },
+    {
+      18,
+      1,
+      20,
+      1,
+    },
+    {
+      18,
+      2,
+      11,
+      1,
+    },
+    {
+      19,
+      1,
+      17,
+      2,
     },
   },
   nodes = {
@@ -163,6 +217,33 @@ script {
     },
     {
       name = 'math/vector3/vector3reflect',
+    },
+    {
+      name = 'math/vector3/vector3numbermultiply',
+    },
+    {
+      loadArguments = {
+        0.89999997615814,
+      },
+      name = 'number',
+    },
+    {
+      name = 'math/vector3/vector3length',
+    },
+    {
+      name = 'math/lessthan',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      name = 'entity/despawnentity',
     },
   },
 }

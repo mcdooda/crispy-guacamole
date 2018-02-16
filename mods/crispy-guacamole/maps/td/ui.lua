@@ -1,67 +1,56 @@
-local Preview = require 'data/scripts/preview'
-local UiSettings = require 'data/scripts/ui/uisettings'
+local Theme = require 'mods/crispy-guacamole/maps/td/theme'
+local BuildingIcon = require 'mods/crispy-guacamole/maps/td/buildingicon'
 
 local root = Widget.getRoot()
 
-local Theme = {
-    BACKGROUND_COLOR = 0xFFFFFFCC,
-    TEXT_COLOR       = 0x111111FF
-}
-
 -- right panel
+local function makeRightPanelContainer(title)
+    local container = Widget.makeColumnFlow()
+    container:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
+    container:setPadding(5)
+    container:setMargin(0, 0, 5, 0)
+    container:setBackgroundColor(Theme.BACKGROUND_COLOR)
+
+    do
+        local label = Widget.makeText(title, table.unpack(Theme.defaultFont))
+        label:setTextColor(Theme.TEXT_COLOR)
+        container:addChild(label)
+    end
+
+    return container
+end
+
 do
     local rightPanel = Widget.makeColumnFlow()
     rightPanel:setPositionPolicy(Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.CENTER_Y)
-    rightPanel:setBackgroundColor(Theme.BACKGROUND_COLOR)
-    rightPanel:setPadding(10)
+    rightPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.COMPRESS_Y)
+    rightPanel:setSize(70, 0)
 
+    -- buildings
     do
-        local buildingTitleLabel = Widget.makeText('Buildings', table.unpack(UiSettings.defaultFont))
-        buildingTitleLabel:setTextColor(Theme.TEXT_COLOR)
-        rightPanel:addChild(buildingTitleLabel)
+        local buildingsContainer = makeRightPanelContainer 'Buildings'
+
+        do
+            BuildingIcon:new('tower', buildingsContainer)
+            BuildingIcon:new('sleeping_dragon', buildingsContainer)
+        end
+
+        rightPanel:addChild(buildingsContainer)
     end
 
+    -- money
     do
-        local previewContainer = Widget.makeColumnFlow()
-        previewContainer:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
-        do
-            local preview = Preview.entity('tower')
-            preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
-            previewContainer:addChild(preview)
-        end
+        local moneyContainer = makeRightPanelContainer 'Money'
 
         do
-            local tooltip = Widget.makeColumnFlow()
-            tooltip:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
-            tooltip:setBackgroundColor(Theme.BACKGROUND_COLOR)
-            
-            do
-                local tooltipLabel = Widget.makeText('Tower', table.unpack(UiSettings.defaultFont))
-                tooltipLabel:setTextColor(Theme.TEXT_COLOR)
-                tooltip:addChild(tooltipLabel)
-            end
-
-            do
-                previewContainer:mouseEnter(function()
-                    print 'mouseEnter'
-                    root:addChild(tooltip)
-                end)
-
-                previewContainer:mouseLeave(function()
-                    print 'mouseLeave'
-                    tooltip:removeFromParent()
-                end)
-
-                previewContainer:mouseMove(function()
-                    local x, y = Mouse.getPosition()
-                    print(x, y)
-                    tooltip:setPosition(x, y)
-                end)
-            end
+            local moneyAmountLabel = Widget.makeText('100 gold', table.unpack(Theme.defaultFont))
+            moneyAmountLabel:setTextColor(Theme.TEXT_COLOR)
+            moneyContainer:addChild(moneyAmountLabel)
         end
 
-        rightPanel:addChild(previewContainer)
+        rightPanel:addChild(moneyContainer)
     end
 
     root:addChild(rightPanel)
 end
+

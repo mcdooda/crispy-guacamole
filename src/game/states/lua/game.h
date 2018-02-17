@@ -29,6 +29,9 @@ int l_Game_debug_removeComponent(lua_State* L);
 
 int l_Game_openMap(lua_State* L);
 
+int l_Game_setGhostEntity(lua_State* L);
+int l_Game_clearGhostEntity(lua_State* L);
+
 } // game
 } // lua
 } // states

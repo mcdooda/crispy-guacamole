@@ -1,5 +1,7 @@
 local Theme = require 'mods/crispy-guacamole/maps/td/theme'
 local BuildingIcon = require 'mods/crispy-guacamole/maps/td/buildingicon'
+local TowersData = require 'mods/crispy-guacamole/maps/td/towersdata'
+local Money = require 'mods/crispy-guacamole/maps/td/money'
 
 local root = Widget.getRoot()
 
@@ -13,6 +15,7 @@ local function makeRightPanelContainer(title)
 
     do
         local label = Widget.makeText(title, table.unpack(Theme.defaultFont))
+        label:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP)
         label:setTextColor(Theme.TEXT_COLOR)
         container:addChild(label)
     end
@@ -30,9 +33,9 @@ do
     do
         local buildingsContainer = makeRightPanelContainer 'Buildings'
 
-        do
-            BuildingIcon:new('tower', buildingsContainer)
-            BuildingIcon:new('sleeping_dragon', buildingsContainer)
+        for i = 1, #TowersData do
+            local towerData = TowersData[i]
+            BuildingIcon:new(towerData, buildingsContainer)
         end
 
         rightPanel:addChild(buildingsContainer)
@@ -40,12 +43,17 @@ do
 
     -- money
     do
-        local moneyContainer = makeRightPanelContainer 'Money'
+        local moneyContainer = makeRightPanelContainer 'Gold'
 
         do
-            local moneyAmountLabel = Widget.makeText('100 gold', table.unpack(Theme.defaultFont))
+            local moneyAmountLabel = Widget.makeText('0', table.unpack(Theme.defaultFont))
+            moneyAmountLabel:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
             moneyAmountLabel:setTextColor(Theme.TEXT_COLOR)
             moneyContainer:addChild(moneyAmountLabel)
+
+            Money:onAmountChanged(function()
+                moneyAmountLabel:setText(Money:getAmount())
+            end)
         end
 
         rightPanel:addChild(moneyContainer)

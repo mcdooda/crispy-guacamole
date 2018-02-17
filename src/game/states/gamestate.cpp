@@ -2,6 +2,7 @@
 #include "../game.h"
 #include "../entity/entity.h"
 #include "../entity/entitytemplate.h"
+#include "../map/brush/lua/tilescontainer.h"
 
 #ifdef FLAT_DEBUG
 #include "mapeditorstate.h"
@@ -41,7 +42,58 @@ void GameState::execute(Game& game)
 	updateLevelScript();
 }
 
-void GameState::startLevelScript(Game & game)
+void GameState::setCanPlaceGhostEntity(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& canPlaceGhostEntity)
+{
+	m_canPlaceGhostEntity = std::move(canPlaceGhostEntity);
+}
+
+void GameState::setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& onGhostEntityPlaced)
+{
+	m_onGhostEntityPlaced = std::move(onGhostEntityPlaced);
+}
+
+bool GameState::canPlaceGhostEntity(const map::Tile* tile) const
+{
+	if (m_canPlaceGhostEntity)
+	{
+		bool canPlaceEntity = false;
+		m_canPlaceGhostEntity.callFunction(
+			[tile](lua_State* L)
+			{
+				map::brush::TilesContainer* tilesContainer = new map::brush::TilesContainer();
+				tilesContainer->emplace_back(const_cast<map::Tile*>(tile), 1);
+				map::brush::lua::pushTilesContainer(L, tilesContainer);
+			},
+			1,
+			[&canPlaceEntity](lua_State* L)
+			{
+				canPlaceEntity = lua_toboolean(L, -1);
+			}
+		);
+		return canPlaceEntity;
+	}
+	return true;
+}
+
+bool GameState::onGhostEntityPlaced()
+{
+	if (m_canPlaceGhostEntity)
+	{
+		bool placeEntity = false;
+		m_onGhostEntityPlaced.callFunction(
+			[](lua_State* L) {},
+			1,
+			[&placeEntity](lua_State* L)
+			{
+				placeEntity = lua_toboolean(L, -1);
+			}
+		);
+		return placeEntity;
+	}
+	return true;
+}
+
+void GameState::startLevelScript(Game& game)
 {
 	lua_State* L = game.lua->state;
 	{

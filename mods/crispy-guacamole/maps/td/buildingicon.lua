@@ -1,12 +1,13 @@
 local Theme = require 'mods/crispy-guacamole/maps/td/theme'
 local Preview = require 'data/scripts/preview'
+local Money = require 'mods/crispy-guacamole/maps/td/money'
 
 local BuildingIcon = {}
 BuildingIcon.__index = BuildingIcon
 
-function BuildingIcon:new(entityTemplateName, parent)
+function BuildingIcon:new(towerData, parent)
     local o = setmetatable({
-        entityTemplateName = entityTemplateName,
+        towerData = towerData,
         container = nil
     }, self)
     o:build(parent)
@@ -17,7 +18,7 @@ function BuildingIcon:build(parent)
     local previewContainer = Widget.makeColumnFlow()
     previewContainer:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
     do
-        local preview = Preview.entity(self.entityTemplateName)
+        local preview = Preview.entity(self.towerData.template)
         preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
         previewContainer:addChild(preview)
     end
@@ -26,9 +27,16 @@ function BuildingIcon:build(parent)
         local tooltip = Widget.makeColumnFlow()
         tooltip:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
         tooltip:setBackgroundColor(Theme.BACKGROUND_COLOR)
+        tooltip:setPadding(5)
         
         do
-            local tooltipLabel = Widget.makeText(self.entityTemplateName, table.unpack(Theme.defaultFont))
+            local tooltipLabel = Widget.makeText(self.towerData.name, table.unpack(Theme.defaultFont))
+            tooltipLabel:setTextColor(Theme.TEXT_COLOR)
+            tooltip:addChild(tooltipLabel)
+        end
+
+        do
+            local tooltipLabel = Widget.makeText('Cost: ' .. self.towerData.cost, table.unpack(Theme.defaultFont))
             tooltipLabel:setTextColor(Theme.TEXT_COLOR)
             tooltip:addChild(tooltipLabel)
         end
@@ -43,7 +51,27 @@ function BuildingIcon:build(parent)
             end)
 
             previewContainer:click(function()
-                print(self.entityTemplateName)
+                local buildableZone = Map.getZone 'Buildable'
+                Game.setGhostEntity(
+                    self.towerData.template,
+                    function(tiles)
+                        if Money:getAmount() < self.towerData.cost then
+                            return false
+                        end
+
+                        local isInsideBuildableZone = true
+                        tiles:eachTile(function(tile)
+                            if not buildableZone:isTileInside(tile) then
+                                isInsideBuildableZone = false
+                            end
+                        end)
+                        return isInsideBuildableZone
+                    end,
+                    function()
+                        Money:sub(self.towerData.cost)
+                        return true
+                    end
+                )
             end)
 
             previewContainer:mouseMove(function()

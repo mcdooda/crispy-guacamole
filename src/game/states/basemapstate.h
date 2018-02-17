@@ -73,6 +73,8 @@ class BaseMapState : public BaseState
 
 		void setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate);
 		void clearGhostTemplate();
+		virtual bool canPlaceGhostEntity(const map::Tile* tile) const;
+		virtual bool onGhostEntityPlaced();
 
 		entity::Entity* createEntity(
 			Game& game,

@@ -34,6 +34,9 @@ int open(lua_State* L)
 
 		{"openMap",               l_Game_openMap},
 
+		{"setGhostEntity",        l_Game_setGhostEntity},
+		{"clearGhostEntity",      l_Game_clearGhostEntity},
+
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Game_lib_f, 0);
@@ -120,6 +123,29 @@ int l_Game_openMap(lua_State* L)
 	gameState->setModPath(modPath);
 	game.getStateMachine().setNextState(std::move(gameState));
 	return 1;
+}
+
+int l_Game_setGhostEntity(lua_State* L)
+{
+	const char* ghostTemplateName = luaL_checkstring(L, 1);
+	flat::lua::UniqueLuaReference<LUA_TFUNCTION> canPlaceGhostEntity;
+	canPlaceGhostEntity.setIfNotNil(L, 2);
+	flat::lua::UniqueLuaReference<LUA_TFUNCTION> onGhostEntityPlaced;
+	onGhostEntityPlaced.setIfNotNil(L, 3);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	std::shared_ptr<const entity::EntityTemplate> ghostTemplate = gameState.getEntityTemplate(game, ghostTemplateName);
+	gameState.setGhostTemplate(game, ghostTemplate);
+	gameState.setCanPlaceGhostEntity(std::move(canPlaceGhostEntity));
+	gameState.setOnGhostEntityPlaced(std::move(onGhostEntityPlaced));
+	return 0;
+}
+
+int l_Game_clearGhostEntity(lua_State* L)
+{
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	gameState.clearGhostTemplate();
+	return 0;
 }
 
 } // game

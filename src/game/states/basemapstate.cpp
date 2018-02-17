@@ -13,6 +13,8 @@
 #include "../map/brush/lua/brush.h"
 #include "../entity/lua/entity.h"
 #include "../entity/component/lua/componentregistry.h"
+#include "../entity/component/components/attack/attackcomponent.h"
+#include "../entity/component/components/behavior/behaviorcomponent.h"
 #include "../entity/component/components/collision/collisioncomponent.h"
 #include "../entity/component/components/selection/selectioncomponent.h"
 #include "../entity/faction/lua/faction.h"
@@ -338,7 +340,12 @@ void BaseMapState::setGhostTemplate(Game& game, const std::shared_ptr<const enti
 {
 	clearGhostTemplate();
 	m_ghostTemplate = ghostTemplate;
-	m_ghostEntity = createEntity(game, ghostTemplate, entity::component::AllComponents);
+	using namespace entity::component;
+	ComponentFlags componentFlags = AllComponents;
+	componentFlags &= ~attack::AttackComponent::getFlag();
+	componentFlags &= ~behavior::BehaviorComponent::getFlag();
+	componentFlags &= ~collision::CollisionComponent::getFlag();
+	m_ghostEntity = createEntity(game, ghostTemplate, componentFlags);
 }
 
 void BaseMapState::clearGhostTemplate()
@@ -349,6 +356,16 @@ void BaseMapState::clearGhostTemplate()
 	}
 	m_ghostTemplate.reset();
 	m_ghostEntity = nullptr;
+}
+
+bool BaseMapState::canPlaceGhostEntity(const map::Tile* tile) const
+{
+	return true;
+}
+
+bool BaseMapState::onGhostEntityPlaced()
+{
+	return true;
 }
 
 entity::Entity* BaseMapState::createEntity(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, entity::component::ComponentFlags componentFlags)
@@ -427,10 +444,9 @@ void BaseMapState::addGhostEntity(game::Game& game)
 		flat::Vector2 cursorPosition = getCursorMapPosition(game, isOnTile);
 		if (isOnTile)
 		{
-			map::Tile* tile = getMap().getTileIfWalkable(cursorPosition.x, cursorPosition.y);
+			const map::Tile* tile = getMap().getTileIfWalkable(cursorPosition.x, cursorPosition.y);
 			if (tile != nullptr)
 			{
-				entity::component::collision::CollisionComponent* collisionComponent = m_ghostEntity->getComponent<entity::component::collision::CollisionComponent>();
 				m_ghostEntity->resetComponents();
 				m_ghostEntity->setHeading(0.f);
 				m_ghostEntity->setElevation(0.f);
@@ -438,20 +454,20 @@ void BaseMapState::addGhostEntity(game::Game& game)
 				m_ghostEntity->setPosition(ghostPosition);
 				addEntityToMap(m_ghostEntity);
 
-				if (collisionComponent != nullptr)
-				{
-					collisionComponent->incDisableLevel();
-				}
 				m_ghostEntity->update(m_clock->getTime(), 0.f);
-				if (collisionComponent != nullptr)
-				{
-					collisionComponent->decDisableLevel();
-				}
 
 				// TODO: clean this shit
 				flat::render::Sprite& sprite = const_cast<flat::render::Sprite&>(m_ghostEntity->getSprite());
-				flat::video::Color color = sprite.getColor();
-				color.a = 0.6f;
+				flat::video::Color color;
+				if (canPlaceGhostEntity(tile))
+				{
+					color = flat::video::Color::WHITE;
+					color.a = 0.6f;
+				}
+				else
+				{
+					color = flat::video::Color::BLACK;
+				}
 				sprite.setColor(color);
 			}
 		}
@@ -859,6 +875,34 @@ void BaseMapState::handleGameActionInputs(Game& game)
 		{
 			const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
 			selectEntitiesOfTypeInScreen(game, mouse->getPosition(), shiftPressed);
+		}
+		else if (m_ghostTemplate.get() != nullptr)
+		{
+			if (mouse->isJustPressed(M(LEFT)))
+			{
+				bool cursorOnTile;
+				flat::Vector2 position2d = getCursorMapPosition(game, cursorOnTile);
+				if (cursorOnTile)
+				{
+					const map::Tile* tile = getMap().getTileIfWalkable(position2d.x, position2d.y);
+					if (tile != nullptr && canPlaceGhostEntity(tile))
+					{
+						if (onGhostEntityPlaced())
+						{
+							flat::Vector3 position(position2d.x, position2d.y, tile->getZ());
+							spawnEntityAtPosition(game, m_ghostTemplate, position);
+						}
+						if (!keyboard->isPressed(K(LSHIFT)))
+						{
+							clearGhostTemplate();
+						}
+					}
+				}
+			}
+			else if (mouse->isJustPressed(M(RIGHT)))
+			{
+				clearGhostTemplate();
+			}
 		}
 		else
 		{

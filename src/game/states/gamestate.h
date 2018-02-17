@@ -17,6 +17,12 @@ class GameState : public BaseMapStateImpl<map::GameMap>
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
 
+		void setCanPlaceGhostEntity(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& canPlaceGhostEntity);
+		void setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& onGhostEntityPlaced);
+
+		bool canPlaceGhostEntity(const map::Tile* tile) const override;
+		bool onGhostEntityPlaced() override;
+
 	protected:
 		void startLevelScript(Game& game);
 		void updateLevelScript();
@@ -27,6 +33,9 @@ class GameState : public BaseMapStateImpl<map::GameMap>
 
 	private:
 		flat::lua::Thread m_levelThread;
+
+		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_canPlaceGhostEntity;
+		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_onGhostEntityPlaced;
 };
 
 } // states

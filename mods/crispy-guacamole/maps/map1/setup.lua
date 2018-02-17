@@ -1,5 +1,5 @@
-local LevelTasks = dofile 'data/scripts/leveltasks.lua'
+local LevelTasks = require 'data/scripts/leveltasks'
 
-LevelTasks.run(
+LevelTasks:run(
     'hello'
 )

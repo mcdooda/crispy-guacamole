@@ -1,7 +1,8 @@
+local LevelTasks = require 'data/scripts/leveltasks'
+
 dofile 'mods/crispy-guacamole/maps/td/ui.lua'
 
-local LevelTasks = dofile 'data/scripts/leveltasks.lua'
-
-LevelTasks.run(
-    'waves'
+LevelTasks:run(
+    'waves',
+    'income'
 )

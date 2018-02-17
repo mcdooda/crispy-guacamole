@@ -5,12 +5,14 @@ local coresume = coroutine.resume
 local costatus = coroutine.status
 local coyield = coroutine.yield
 
+local getTime = Game.getTime
+
 local LevelTasks = {
     tasks = {}
 }
 
-function LevelTasks.executeTasks()
-    local tasks = LevelTasks.tasks
+function LevelTasks:executeTasks()
+    local tasks = self.tasks
     local taskCount = #tasks
     for i = taskCount, 1, -1 do
         local task = tasks[i]
@@ -23,22 +25,22 @@ function LevelTasks.executeTasks()
     end
 end
 
-function LevelTasks.loop()
+function LevelTasks:loop()
     while true do
-        LevelTasks.executeTasks()
+        self:executeTasks()
         coyield()
     end
 end
 
-function LevelTasks.addTask(func)
-    local tasks = LevelTasks.tasks
+function LevelTasks:addTask(func)
+    local tasks = self.tasks
     local task = cocreate(func)
     tasks[#tasks + 1] = task
     return task
 end
 
-function LevelTasks.removeTask(task)
-    local tasks = LevelTasks.tasks
+function LevelTasks:removeTask(task)
+    local tasks = self.tasks
     for i = 1, #tasks do
         if tasks[i] == task then
             tasks[i] = tasks[#tasks]
@@ -49,13 +51,20 @@ function LevelTasks.removeTask(task)
     return false
 end
 
-function LevelTasks.run(...)
+function LevelTasks:run(...)
     for i = 1, select('#', ...) do
         local file = select(i, ...)
         local task = assert(loadfile(Path.getMapFilePath(file .. '.lua')))
-        LevelTasks.addTask(task)
+        self:addTask(task)
     end
-    LevelTasks.loop()
+    self:loop()
+end
+
+function LevelTasks:sleep(duration)
+    local endTime = getTime() + duration
+    while getTime() < endTime do
+        coyield()
+    end
 end
 
 return LevelTasks

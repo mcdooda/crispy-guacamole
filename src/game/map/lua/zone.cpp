@@ -28,6 +28,8 @@ int open(Game& game)
 
 		{"getCenter",        l_Zone_getCenter},
 
+		{"isTileInside",     l_Zone_isTileInside},
+
 		{nullptr, nullptr}
 	};
 	game.lua->registerClass<LuaZone>("CG.Zone", Zone_lib_m);
@@ -77,6 +79,14 @@ int l_Zone_getCenter(lua_State* L)
 {
 	Zone* zone = getZone(L, 1);
 	flat::lua::pushVector2(L, zone->getCenter());
+	return 1;
+}
+
+int l_Zone_isTileInside(lua_State* L)
+{
+	Zone* zone = getZone(L, 1);
+	Tile* tile = static_cast<Tile*>(lua_touserdata(L, 2));
+	lua_pushboolean(L, zone->isTileInside(tile));
 	return 1;
 }
 

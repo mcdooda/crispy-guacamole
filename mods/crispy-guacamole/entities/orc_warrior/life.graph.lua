@@ -1,45 +1,4 @@
 script {
-  nodes = {
-    {
-      name = 'components/lifecomponent',
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        200,
-      },
-    },
-    {
-      name = 'script/scriptoutput',
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-    },
-    {
-      name = 'entity/playanimation',
-    },
-    {
-      name = 'string',
-      loadArguments = {
-        'death',
-      },
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        1,
-      },
-    },
-    {
-      name = 'bool',
-      loadArguments = {
-        true,
-      },
-    },
-  },
   links = {
     {
       1,
@@ -82,6 +41,47 @@ script {
       1,
       4,
       5,
+    },
+  },
+  nodes = {
+    {
+      name = 'components/lifecomponent',
+    },
+    {
+      loadArguments = {
+        1500,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          'Table',
+        },
+      },
+      name = 'script/scriptoutput',
+    },
+    {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        'death',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'bool',
     },
   },
 }

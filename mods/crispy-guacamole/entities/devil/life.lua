@@ -1,5 +1,5 @@
 return {
-	maxHealth = 100,
+	maxHealth = 2000,
 	--[[spawn = function(larva)
 		
 	end,

@@ -6,13 +6,15 @@ local startZonePosition = startZone:getCenter()
 local endZonePosition = endZone:getCenter()
 
 local waves = {
-    {'larva', 'larva', 'larva'},
-    {'sheep', 'sheep', 'sheep'},
-    {'boar', 'boar', 'boar'},
-    {'zombie', 'zombie', 'zombie'},
-    {'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton'},
-    {'devil', 'devil', 'devil'},
-    {'eye', 'eye', 'eye'},
+    {'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva'},
+    {'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep'},
+    {'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar'},
+    {'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie'},
+    {'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton'},
+    {'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil'},
+    {'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye'},
+    {'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'devil', 'devil', 'devil'},
+    {'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior'}
 }
 
 local function despawnEntities()

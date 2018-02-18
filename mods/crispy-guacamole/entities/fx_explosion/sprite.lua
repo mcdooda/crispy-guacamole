@@ -1,12 +1,1 @@
-return {
-	origin = flat.Vector2(9, 11),
-	size = flat.Vector2(8, 1),
-	animations = {
-		explode = {
-			line = 1,
-			numFrames = 8,
-			frameDuration = 0.07
-		}
-	}
-}
-
+return flat.graph.script.run 'mods/crispy-guacamole/entities/fx_explosion/sprite'

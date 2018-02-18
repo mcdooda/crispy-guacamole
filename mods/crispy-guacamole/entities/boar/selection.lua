@@ -1,3 +1,1 @@
-return {
-    canBeSelected = true
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/boar/selection'

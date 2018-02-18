@@ -1,3 +1,1 @@
-return {
-	faction = 'wild life'
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/boar/faction'

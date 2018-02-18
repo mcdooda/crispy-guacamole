@@ -1,9 +1,1 @@
-return {
-	maxHealth = 100,
-	--[[spawn = function(larva)
-		
-	end,
-	despawn = function(larva)
-		
-	end]]
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/boar/life'

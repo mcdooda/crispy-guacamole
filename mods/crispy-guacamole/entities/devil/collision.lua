@@ -1,6 +1,1 @@
-return {
-	type = 'cylinder',
-	radius = 0.25,
-	height = 1,
-	separate = true
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/devil/collision'

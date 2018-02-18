@@ -1,6 +1,1 @@
-return {
-	speed = 0.7,
-	jumpForce = 4,
-	weight = 10,
-	snapToGround = true
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/devil/movement'

@@ -1,6 +1,6 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 
-function doNothing()
+local function doNothing()
 	while true do
 		coroutine.yield()
 	end

@@ -732,7 +732,7 @@ void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePos
 	if (mouseOverEntity != nullptr)
 	{
 		clickEntity(mouseOverEntity);
-		addToSelectedEntities(mouseOverEntity);
+		addToSelectedEntities(game, mouseOverEntity);
 	}
 }
 
@@ -746,7 +746,7 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
 	if (mouseOverEntity != nullptr)
 	{
-		if (mouseOverEntity->canBeSelected())
+		if (mouseOverEntity->canBeSelected() || forceEntitySelection(game))
 		{
 			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getTemplate();
 
@@ -763,7 +763,7 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 				entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
 				if (entity->getTemplate() == entityTemplate)
 				{
-					addToSelectedEntities(entity);
+					addToSelectedEntities(game, entity);
 				}
 			}
 		}
@@ -795,7 +795,7 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 	{
 		// TODO: fix these casts
 		entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
-		if (!entity->canBeSelected())
+		if (!entity->canBeSelected() && !forceEntitySelection(game))
 		{
 			continue;
 		}
@@ -803,7 +803,7 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 		// check that the sprite origin actually is in the AABB
 		if (selectionAABB.isInside(entity->getSprite().getPosition()))
 		{
-			addToSelectedEntities(entity);
+			addToSelectedEntities(game, entity);
 		}
 	}
 }
@@ -817,9 +817,9 @@ void BaseMapState::clearSelection()
 	m_selectedEntities.clear();
 }
 
-void BaseMapState::addToSelectedEntities(entity::Entity* entity)
+void BaseMapState::addToSelectedEntities(Game& game, entity::Entity* entity)
 {
-	if (entity->canBeSelected() && !entity->isSelected())
+	if ((entity->canBeSelected() || forceEntitySelection(game)) && !entity->isSelected())
 	{
 		entity->setSelected(true);
 		FLAT_ASSERT(std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity) == m_selectedEntities.end());
@@ -857,6 +857,16 @@ void BaseMapState::clickEntity(entity::Entity* entity) const
 	{
 		selectionComponent->click();
 	}
+}
+
+bool BaseMapState::forceEntitySelection(Game& game) const
+{
+#ifdef FLAT_DEBUG
+	auto& keyboard = game.input->keyboard;
+	return keyboard->isPressed(K(LALT));
+#else
+	return false;
+#endif
 }
 
 void BaseMapState::handleGameActionInputs(Game& game)

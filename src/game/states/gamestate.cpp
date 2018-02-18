@@ -61,7 +61,7 @@ bool GameState::canPlaceGhostEntity(const map::Tile* tile) const
 			[tile](lua_State* L)
 			{
 				map::brush::TilesContainer* tilesContainer = new map::brush::TilesContainer();
-				tilesContainer->emplace_back(const_cast<map::Tile*>(tile), 1);
+				tilesContainer->emplace_back(const_cast<map::Tile*>(tile), 1.f);
 				map::brush::lua::pushTilesContainer(L, tilesContainer);
 			},
 			1,

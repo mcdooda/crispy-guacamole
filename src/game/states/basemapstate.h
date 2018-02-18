@@ -119,10 +119,11 @@ class BaseMapState : public BaseState
 		void selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);
 		void clearSelection();
-		void addToSelectedEntities(entity::Entity* entity);
+		void addToSelectedEntities(Game& game, entity::Entity* entity);
 		void removeFromSelectedEntities(entity::Entity* entity);
 		bool isSmallSelection() const;
 		void clickEntity(entity::Entity* entity) const;
+		bool forceEntitySelection(Game& game) const;
 
 		// game features
 		void handleGameActionInputs(Game& game);

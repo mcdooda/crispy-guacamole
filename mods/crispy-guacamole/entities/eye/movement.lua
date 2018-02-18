@@ -1,6 +1,1 @@
-return {
-	speed = 1.5,
-	jumpForce = 4.1,
-	weight = 9,
-	snapToGround = true
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/eye/movement'

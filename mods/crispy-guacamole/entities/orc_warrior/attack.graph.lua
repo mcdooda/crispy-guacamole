@@ -19,13 +19,13 @@ script {
       loadArguments = {
         true,
       },
-      name = 'bool',
+      name = 'boolean',
     },
     {
       loadArguments = {
         false,
       },
-      name = 'bool',
+      name = 'boolean',
     },
     {
       loadArguments = {
@@ -67,7 +67,7 @@ script {
       loadArguments = {
         false,
       },
-      name = 'bool',
+      name = 'boolean',
     },
     {
       name = 'entity/dealdamage',
@@ -82,7 +82,7 @@ script {
       loadArguments = {
         true,
       },
-      name = 'bool',
+      name = 'boolean',
     },
   },
   links = {

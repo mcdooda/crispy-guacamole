@@ -54,7 +54,7 @@ script {
       loadArguments = {
         true,
       },
-      name = 'bool',
+      name = 'boolean',
     },
     {
       name = 'components/movementcomponent',

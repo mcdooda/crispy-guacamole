@@ -57,7 +57,7 @@ script {
       loadArguments = {
         true,
       },
-      name = 'bool',
+      name = 'boolean',
     },
     {
       loadArguments = {

@@ -96,7 +96,7 @@ script {
       loadArguments = {
         true,
       },
-      name = 'bool',
+      name = 'boolean',
     },
     {
       name = 'entity/playanimation',
@@ -117,7 +117,7 @@ script {
       loadArguments = {
         true,
       },
-      name = 'bool',
+      name = 'boolean',
     },
     {
       loadArguments = {

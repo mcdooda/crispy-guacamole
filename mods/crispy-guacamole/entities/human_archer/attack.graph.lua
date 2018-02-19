@@ -16,13 +16,13 @@ script {
       },
     },
     {
-      name = 'bool',
+      name = 'boolean',
       loadArguments = {
         true,
       },
     },
     {
-      name = 'bool',
+      name = 'boolean',
       loadArguments = {
         true,
       },
@@ -64,7 +64,7 @@ script {
       },
     },
     {
-      name = 'bool',
+      name = 'boolean',
       loadArguments = {
         false,
       },
@@ -85,7 +85,7 @@ script {
       },
     },
     {
-      name = 'bool',
+      name = 'boolean',
       loadArguments = {
         true,
       },

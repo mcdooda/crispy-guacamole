@@ -14,8 +14,6 @@ void SelectionComponent::init()
 {
 	m_owner->setCanBeSelected(getTemplate()->canBeSelected());
 
-	m_selected = false;
-
 	auto pushEntityCallback = [this](lua_State* L)
 	{
 		lua::pushEntity(L, m_owner);
@@ -27,9 +25,9 @@ void SelectionComponent::init()
 
 void SelectionComponent::deinit()
 {
-	if (m_selected)
+	if (m_owner->isSelected())
 	{
-		setSelected(false);
+		m_owner->setSelected(false);
 	}
 
 	m_selectedSlotProxy.reset();
@@ -65,20 +63,6 @@ int SelectionComponent::addClickCallback(lua_State* L, int index)
 void SelectionComponent::removeClickCallback(int index)
 {
 	m_clickSlotProxy.removeCallback(index);
-}
-
-void SelectionComponent::setSelected(bool selected)
-{
-	FLAT_ASSERT(selected != m_selected); // we want to avoid triggering slots again if the selected state did not change
-	m_selected = selected;
-	if (selected)
-	{
-		this->selected();
-	}
-	else
-	{
-		deselected();
-	}
 }
 
 } // selection

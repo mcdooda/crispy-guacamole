@@ -110,7 +110,7 @@ class Entity final : public map::MapObject
 
 
 		void setSelected(bool selected);
-		bool isSelected() const;
+		inline bool isSelected() const { return m_selected; }
 		inline void setCanBeSelected(bool canBeSelected) { m_canBeSelected = canBeSelected; }
 		inline bool canBeSelected() const { return m_canBeSelected; }
 
@@ -173,6 +173,7 @@ class Entity final : public map::MapObject
 		std::shared_ptr<const EntityTemplate> m_template;
 
 		bool m_canBeSelected : 1;
+		bool m_selected : 1;
 		bool m_markedForDelete : 1;
 		bool m_aabbDirty : 1;
 #ifdef FLAT_DEBUG

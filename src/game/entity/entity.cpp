@@ -26,6 +26,7 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_tile(nullptr),
 	m_template(entityTemplate),
 	m_canBeSelected(false),
+	m_selected(false),
 	m_markedForDelete(false),
 	m_aabbDirty(false)
 #ifdef FLAT_DEBUG
@@ -240,21 +241,21 @@ const std::string& Entity::getTemplateName() const
 
 void Entity::setSelected(bool selected)
 {
+	FLAT_ASSERT(selected != m_selected);
+	m_selected = selected;
+
 	component::selection::SelectionComponent* selectionComponent = getComponent<component::selection::SelectionComponent>();
-	FLAT_ASSERT(selectionComponent != nullptr);
-	selectionComponent->setSelected(selected);
-}
-
-bool Entity::isSelected() const
-{
-	if (!m_canBeSelected)
+	if (selectionComponent != nullptr)
 	{
-		return false;
+		if (selected)
+		{
+			selectionComponent->selected();
+		}
+		else
+		{
+			selectionComponent->deselected();
+		}
 	}
-
-	const component::selection::SelectionComponent* selectionComponent = getComponent<component::selection::SelectionComponent>();
-	FLAT_ASSERT(selectionComponent != nullptr);
-	return selectionComponent->isSelected();
 }
 
 #ifdef FLAT_DEBUG

@@ -14,6 +14,7 @@ local function spawn(templateName, template, position, targetPosition)
     local speedXY2 = speedXY * speedXY
     local speedXY4 = speedXY2 * speedXY2
     local elevation = atan(
+        --        + to get the opposite angle
         (speedXY2 - sqrt(speedXY4 - weight * (weight * dXY * dXY + 2 * dZ * speedXY2)))
         / (weight * dXY)
     )

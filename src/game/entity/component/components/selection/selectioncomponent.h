@@ -22,9 +22,6 @@ class SelectionComponent : public ComponentImpl<SelectionComponentTemplate>
 		void init() override;
 		void deinit() override;
 
-		void setSelected(bool selected);
-		inline bool isSelected() const { return m_selected; }
-
 		int addSelectedCallback(lua_State* L, int index);
 		void removeSelectedCallback(int index);
 
@@ -43,7 +40,6 @@ class SelectionComponent : public ComponentImpl<SelectionComponentTemplate>
 		flat::lua::SlotProxy<> m_selectedSlotProxy;
 		flat::lua::SlotProxy<> m_deselectedSlotProxy;
 		flat::lua::SlotProxy<> m_clickSlotProxy;
-		bool m_selected;
 };
 
 } // selection

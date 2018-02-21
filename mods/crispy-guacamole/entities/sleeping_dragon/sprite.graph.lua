@@ -147,37 +147,36 @@ script {
       name = 'vector2',
     },
     {
-      name = 'number',
       loadArguments = {
         27,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
         32,
       },
+      name = 'number',
     },
     {
       name = 'vector2',
     },
     {
-      name = 'number',
       loadArguments = {
-        8,
+        12,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
         3,
       },
+      name = 'number',
     },
     {
       name = 'components/spriteanimation',
     },
     {
-      name = 'script/array',
       loadArguments = {
         {
           5,
@@ -192,93 +191,94 @@ script {
           'Table',
         },
       },
+      name = 'script/array',
     },
     {
-      name = 'string',
       loadArguments = {
         'awakening',
       },
+      name = 'string',
     },
     {
-      name = 'number',
       loadArguments = {
         1,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
-        8,
+        12,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
         0.10000000149012,
       },
+      name = 'number',
     },
     {
-      name = 'script/scriptoutput',
       loadArguments = {
         {
           5,
           'Table',
         },
       },
+      name = 'script/scriptoutput',
     },
     {
       name = 'components/spriteanimation',
     },
     {
-      name = 'string',
       loadArguments = {
         'poked',
       },
+      name = 'string',
     },
     {
-      name = 'number',
       loadArguments = {
         2,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
-        8,
+        12,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
         0.10000000149012,
       },
+      name = 'number',
     },
     {
       name = 'components/spriteanimation',
     },
     {
-      name = 'string',
       loadArguments = {
         'angry',
       },
+      name = 'string',
     },
     {
-      name = 'number',
       loadArguments = {
         3,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
-        8,
+        12,
       },
+      name = 'number',
     },
     {
-      name = 'number',
       loadArguments = {
         0.079999998211861,
       },
+      name = 'number',
     },
   },
 }

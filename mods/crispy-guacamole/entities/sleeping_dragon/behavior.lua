@@ -1,3 +1,5 @@
+local Money = require 'mods/crispy-guacamole/maps/dragon\'s lair/money'
+
 local states = {}
 
 local currencies = { 
@@ -31,8 +33,10 @@ end
 function states:init(dragon)
 	dragon:click(function(dragon) 			
 		local position = dragon:getPosition()
-		spawnAmount(dragon:getPosition(), math.random(100))
+		local sum = math.random(100)
+		spawnAmount(dragon:getPosition(), sum)
 		dragon:playAnimation('poked', 1, false)
+    	Money:add(sum)
 	end)
 end
 

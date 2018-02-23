@@ -90,6 +90,7 @@ int l_Entity_dealDamage(lua_State* L);
 int l_Entity_getHealth(lua_State* L);
 int l_Entity_getMaxHealth(lua_State* L);
 int l_Entity_healthChanged(lua_State* L);
+int l_Entity_died(lua_State* L);
 
 // selection
 int l_Entity_selected(lua_State* L);

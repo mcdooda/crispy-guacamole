@@ -38,6 +38,9 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		int addHealthChangedCallback(lua_State* L, int index);
 		void removeHealthChangeCallback(int index);
 
+		int addDiedCallback(lua_State* L, int index);
+		void removeDiedCallback(int index);
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:
@@ -55,6 +58,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 
 	private:
 		flat::lua::SlotProxy<int> m_healthChangedSlotProxy;
+		flat::lua::SlotProxy<> m_diedSlotProxy;
 		EntityThread m_spawnDespawnThread;
 		int m_health;
 		bool m_spawning : 1;

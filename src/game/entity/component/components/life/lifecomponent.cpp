@@ -32,6 +32,11 @@ void LifeComponent::init()
 			lua_pushinteger(L, getMaxHealth());
 		}
 	);
+
+	m_diedSlotProxy.init(
+		&die,
+		[](lua_State* L) {}
+	);
 }
 
 void LifeComponent::deinit()
@@ -39,6 +44,7 @@ void LifeComponent::deinit()
 	m_owner->addedToMap.off(this);
 	healthChanged.off(this);
 	m_healthChangedSlotProxy.reset();
+	m_diedSlotProxy.reset();
 }
 
 void LifeComponent::update(float currentTime, float elapsedTime)
@@ -90,6 +96,16 @@ int LifeComponent::addHealthChangedCallback(lua_State* L, int index)
 void LifeComponent::removeHealthChangeCallback(int index)
 {
 	m_healthChangedSlotProxy.removeCallback(index);
+}
+
+int LifeComponent::addDiedCallback(lua_State * L, int index)
+{
+	return m_diedSlotProxy.addCallback(L, index);
+}
+
+void LifeComponent::removeDiedCallback(int index)
+{
+	m_diedSlotProxy.removeCallback(index);
 }
 
 bool LifeComponent::addedToMap(Entity* entity, map::Map* map)

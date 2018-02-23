@@ -109,6 +109,7 @@ int open(Game& game)
 		{"getHealth",                l_Entity_getHealth},
 		{"getMaxHealth",             l_Entity_getMaxHealth},
 		{"healthChanged",            l_Entity_healthChanged},
+		{"died",                     l_Entity_died},
 
 		// selection
 		{"selected",                 l_Entity_selected},
@@ -690,6 +691,14 @@ int l_Entity_healthChanged(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lifeComponent.addHealthChangedCallback(L, 2);
+	return 0;
+}
+
+int l_Entity_died(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lifeComponent.addDiedCallback(L, 2);
 	return 0;
 }
 

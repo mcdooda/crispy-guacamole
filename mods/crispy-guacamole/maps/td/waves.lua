@@ -1,3 +1,5 @@
+local Score = require 'mods/crispy-guacamole/maps/td/score'
+
 local mazeZone  = Map.getZone 'Cherry'
 local startZone = Map.getZone 'Apple'
 local endZone   = Map.getZone 'Lemon'
@@ -5,22 +7,36 @@ local endZone   = Map.getZone 'Lemon'
 local startZonePosition = startZone:getCenter()
 local endZonePosition = endZone:getCenter()
 
+local function makeWave(...)
+    local wave = {}
+    local args = {...}
+    for i = 1, #args, 2 do
+        local template = args[i]
+        local amount = args[i + 1]
+        for j = 1, amount do
+            wave[#wave + 1] = template
+        end
+    end
+    return wave
+end
+
 local waves = {
-    {'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva', 'larva'},
-    {'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep', 'sheep'},
-    {'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar', 'boar'},
-    {'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie'},
-    {'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton', 'chaos_skeleton'},
-    {'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil', 'devil'},
-    {'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye', 'eye'},
-    {'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'larva', 'larva', 'larva', 'larva', 'larva', 'eye', 'eye', 'eye', 'eye', 'eye', 'devil', 'devil', 'devil'},
-    {'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior', 'orc_warrior'}
+    makeWave('larva', 10),
+    makeWave('sheep', 15),
+    makeWave('boar', 20),
+    makeWave('zombie', 25),
+    makeWave('chaos_skeleton', 30),
+    makeWave('devil', 15),
+    makeWave('eye', 50),
+    makeWave('larva', 5, 'eye', 5, 'larva', 5, 'eye', 5, 'larva', 5, 'eye', 5, 'larva', 5, 'eye', 5, 'devil', 20),
+    makeWave('orc_warrior', 100)
 }
 
 local function despawnEntities()
     local endEntities = endZone:getEntities()
     for i = 1, #endEntities do
         endEntities[i]:despawn()
+        Score:addLeak()
     end
 end
 
@@ -39,6 +55,9 @@ for i = 1, #waves do
             )
             entity:restrictToZone 'Cherry'
             entity:moveTo(endZonePosition, false)
+            entity:died(function()
+                Score:addKill()
+            end)
         
             local delay = 0.3
             local endTime = Game.getTime() + delay

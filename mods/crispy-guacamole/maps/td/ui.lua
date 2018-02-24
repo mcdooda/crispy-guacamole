@@ -69,7 +69,7 @@ do
             scoreKillsLabel:setTextColor(Theme.TEXT_COLOR)
             scoreContainer:addChild(scoreKillsLabel)
 
-            local scoreLeaksLabel = Widget.makeText('Deaths: 0', table.unpack(Theme.defaultFont))
+            local scoreLeaksLabel = Widget.makeText('Leaks: 0', table.unpack(Theme.defaultFont))
             scoreLeaksLabel:setTextColor(Theme.TEXT_COLOR)
             scoreContainer:addChild(scoreLeaksLabel)
 

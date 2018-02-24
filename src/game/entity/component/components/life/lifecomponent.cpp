@@ -22,6 +22,9 @@ void LifeComponent::init()
 	m_owner->addedToMap.on(this, &LifeComponent::addedToMap);
 	m_spawning = false;
 	m_despawning = false;
+#ifdef FLAT_DEBUG
+	m_dead = false;
+#endif
 
 	m_healthChangedSlotProxy.init(
 		&healthChanged,
@@ -75,7 +78,7 @@ void LifeComponent::kill()
 
 void LifeComponent::dealDamage(int damage)
 {
-	if (!m_spawning && !m_despawning)
+	if (!m_spawning && !m_despawning && m_health > 0)
 	{
 		damage = std::min(damage, m_health);
 		int previousHealth = m_health;
@@ -145,7 +148,10 @@ void LifeComponent::onLive()
 
 void LifeComponent::onDie()
 {
-	FLAT_ASSERT(!m_spawning && !m_despawning);
+	FLAT_ASSERT(!m_spawning && !m_despawning && !m_dead);
+#ifdef FLAT_DEBUG
+	m_dead = true;
+#endif
 
 	m_despawning = true;
 

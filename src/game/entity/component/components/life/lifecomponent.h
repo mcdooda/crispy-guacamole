@@ -63,6 +63,10 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		int m_health;
 		bool m_spawning : 1;
 		bool m_despawning : 1;
+
+#ifdef FLAT_DEBUG
+		bool m_dead : 1;
+#endif
 };
 
 } // life

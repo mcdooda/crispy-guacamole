@@ -42,6 +42,12 @@ function BuildingIcon:build(parent)
         end
 
         do
+            local tooltipLabel = Widget.makeText(self.towerData.description, table.unpack(Theme.defaultFont))
+            tooltipLabel:setTextColor(Theme.TEXT_COLOR)
+            tooltip:addChild(tooltipLabel)
+        end
+
+        do
             previewContainer:mouseEnter(function()
                 Widget.getRoot():addChild(tooltip)
             end)
@@ -69,6 +75,9 @@ function BuildingIcon:build(parent)
                     end,
                     function()
                         Money:sub(self.towerData.cost)
+                        if self.towerData.onPlace then
+                            self.towerData.onPlace()
+                        end
                         return true
                     end
                 )

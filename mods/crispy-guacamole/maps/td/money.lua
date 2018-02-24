@@ -1,6 +1,8 @@
 local Money = {
-    amount = 0,
-    amountChanged = {}
+    amount = 1000,
+    income = 0,
+    amountChanged = flat.Slot:new(),
+    incomeChanged = flat.Slot:new()
 }
 
 function Money:add(amount)
@@ -12,19 +14,25 @@ function Money:sub(amount)
 end
 
 function Money:onAmountChanged(amountChanged)
-    self.amountChanged[#self.amountChanged + 1] = amountChanged
+    self.amountChanged:on(amountChanged)
 end
 
 function Money:setAmount(amount)
     assert(amount >= 0)
-    self.amount = amount
-    for i = 1, #self.amountChanged do
-        self.amountChanged[i]()
+    if amount ~= self.amount then
+        self.amount = amount
+        self.amountChanged(amount)
     end
 end
 
 function Money:getAmount()
     return self.amount
+end
+
+function Money:addIncome(income)
+    assert(income > 0)
+    self.income = self.income + income
+    self.incomeChanged(self.income)
 end
 
 return Money

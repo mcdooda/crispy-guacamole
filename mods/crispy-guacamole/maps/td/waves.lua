@@ -1,4 +1,6 @@
 local Score = require 'mods/crispy-guacamole/maps/td/score'
+local Money = require 'mods/crispy-guacamole/maps/td/money'
+local MonstersData = require 'mods/crispy-guacamole/maps/td/monstersdata'
 
 local mazeZone  = Map.getZone 'Cherry'
 local startZone = Map.getZone 'Apple'
@@ -9,10 +11,9 @@ local endZonePosition = endZone:getCenter()
 
 local function makeWave(...)
     local wave = {}
-    local args = {...}
-    for i = 1, #args, 2 do
-        local template = args[i]
-        local amount = args[i + 1]
+    for i = 1, select('#', ...), 2 do
+        local template = select(i, ...)
+        local amount = select(i + 1, ...)
         for j = 1, amount do
             wave[#wave + 1] = template
         end
@@ -44,11 +45,9 @@ local function despawnEntities()
 end
 
 for i = 1, #waves do
-    --print('== wave ' .. i .. ' ==')
     local wave = waves[i]
     for j = 1, #wave do
         local entityTemplate = wave[j]
-        --print('* spawning ' .. entityTemplate)
         for k = 1, 1 do
             local entity = Entity.spawn(
                 entityTemplate,
@@ -61,6 +60,8 @@ for i = 1, #waves do
             entity:moveTo(endZonePosition, false)
             entity:died(function()
                 Score:addKill()
+                local monsterData = assert(MonstersData[entityTemplate])
+                Money:add(monsterData.reward)
             end)
         
             local delay = 0.3
@@ -76,6 +77,5 @@ for i = 1, #waves do
         coroutine.yield()
         despawnEntities()
         local numEntities = mazeZone:getEntitiesCount()
-        --print('Still ' .. numEntities .. ' entities ...')
     until numEntities == 0
 end

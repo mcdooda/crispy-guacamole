@@ -47,13 +47,13 @@ do
         local moneyContainer = makeRightPanelContainer 'Gold'
 
         do
-            local moneyAmountLabel = Widget.makeText('0', table.unpack(Theme.defaultFont))
+            local moneyAmountLabel = Widget.makeText(Money:getAmount(), table.unpack(Theme.defaultFont))
             moneyAmountLabel:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
             moneyAmountLabel:setTextColor(Theme.TEXT_COLOR)
             moneyContainer:addChild(moneyAmountLabel)
 
-            Money:onAmountChanged(function()
-                moneyAmountLabel:setText(Money:getAmount())
+            Money:onAmountChanged(function(amount)
+                moneyAmountLabel:setText(amount)
             end)
         end
 

@@ -35,8 +35,11 @@ local waves = {
 local function despawnEntities()
     local endEntities = endZone:getEntities()
     for i = 1, #endEntities do
-        endEntities[i]:despawn()
-        Score:addLeak()
+        local entity = endEntities[i]
+        if entity:getExtraData().isWaveEntity then
+            endEntities[i]:despawn()
+            Score:addLeak()
+        end
     end
 end
 
@@ -53,6 +56,7 @@ for i = 1, #waves do
                 nil, nil,
                 Components.allExcept(Component.behavior)
             )
+            entity:getExtraData().isWaveEntity = true
             entity:restrictToZone 'Cherry'
             entity:moveTo(endZonePosition, false)
             entity:died(function()

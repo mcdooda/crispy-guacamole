@@ -106,6 +106,10 @@ void Game::checkArgs()
 					mapName = argGetString(++i);
 					entityName = argGetString(++i);
 					break;
+
+					case 'o':
+					modPath = argGetString(++i);
+					break;
 					
 					default:
 					std::cerr << "Unhandled argument '" << arg << "'" << std::endl;

@@ -18,6 +18,7 @@ void BaseState::enter(Game& game)
 	initLua(game);
 	initRender(game);
 	resetViews(game);
+	game.input->clearFrameEvents();
 }
 
 void BaseState::execute(Game& game)

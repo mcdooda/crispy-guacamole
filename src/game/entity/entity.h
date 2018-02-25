@@ -77,6 +77,7 @@ class Entity final : public map::MapObject
 		bool isBusy() const;
 		bool isBusy(component::ComponentFlags componentFlags) const;
 		
+		bool acceptsMoveOrders() const;
 		void addPointOnPath(const flat::Vector2& point);
 		void clearPath();
 		

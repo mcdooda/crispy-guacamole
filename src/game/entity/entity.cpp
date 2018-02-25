@@ -222,6 +222,11 @@ bool Entity::isBusy(component::ComponentFlags componentFlags) const
 	return false;
 }
 
+bool Entity::acceptsMoveOrders() const
+{
+	return m_movementComponent != nullptr;
+}
+
 void Entity::addPointOnPath(const flat::Vector2& point)
 {
 	FLAT_ASSERT(m_movementComponent != nullptr);

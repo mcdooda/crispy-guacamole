@@ -932,13 +932,19 @@ void BaseMapState::handleGameActionInputs(Game& game)
 					{
 						for (entity::Entity* entity : m_selectedEntities)
 						{
-							entity->clearPath();
+							if (entity->acceptsMoveOrders())
+							{
+								entity->clearPath();
+							}
 						}
 					}
 
 					for (entity::Entity* entity : m_selectedEntities)
 					{
-						entity->addPointOnPath(clickedTilePosition);
+						if (entity->acceptsMoveOrders())
+						{
+							entity->addPointOnPath(clickedTilePosition);
+						}
 					}
 				}
 			}

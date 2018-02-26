@@ -210,24 +210,66 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 		flat::Vector2 delta = gameViewToMap(gameViewPosition - spritePosition);
 
 		flat::Vector2 tileCenter = flat::Vector2(m_mouseOverTile->getX(), m_mouseOverTile->getY());
-		flat::AABB2 tileAABB(tileCenter - flat::Vector2(0.5f), tileCenter + flat::Vector2(0.5f));
 		flat::Vector2 mapPositionOnTile = tileCenter + delta;
-		if (tileAABB.isInside(mapPositionOnTile))
+		if (mapPositionOnTile.x <= tileCenter.x + 0.5f && mapPositionOnTile.y <= tileCenter.y + 0.5f)
 		{
-			mapPosition = mapPositionOnTile;
-			mapPosition.x = glm::clamp(mapPosition.x, tileCenter.x - (0.5f - flat::EPSILON), tileCenter.x + (0.5f - flat::EPSILON));
-			mapPosition.y = glm::clamp(mapPosition.y, tileCenter.y - (0.5f - flat::EPSILON), tileCenter.y + (0.5f - flat::EPSILON));
+			mapPosition.x = glm::clamp(mapPositionOnTile.x, tileCenter.x - (0.5f - flat::EPSILON), tileCenter.x + (0.5f - flat::EPSILON));
+			mapPosition.y = glm::clamp(mapPositionOnTile.y, tileCenter.y - (0.5f - flat::EPSILON), tileCenter.y + (0.5f - flat::EPSILON));
 			isOnTile = true;
 		}
 		else
 		{
-			mapPosition.x = std::min(mapPositionOnTile.x, tileCenter.x + 0.5f + flat::EPSILON);
-			mapPosition.y = std::min(mapPositionOnTile.y, tileCenter.y + 0.5f + flat::EPSILON);
+			flat::Vector2 adjacentTilePosition;
+			if (mapPositionOnTile.x - tileCenter.x > mapPositionOnTile.y - tileCenter.y)
+			{
+				adjacentTilePosition = flat::Vector2(tileCenter.x + 0.5f + flat::EPSILON, tileCenter.y);
+			}
+			else
+			{
+				adjacentTilePosition = flat::Vector2(tileCenter.x, tileCenter.y + 0.5f + flat::EPSILON);
+			}
+
+			const map::Tile* adjacentTile = map.getTileIfExists(adjacentTilePosition.x, adjacentTilePosition.y);
+			if (adjacentTile != nullptr)
+			{
+				mapPosition = adjacentTilePosition;
+				isOnTile = true;
+			}
+			else
+			{
+				mapPosition.x = std::min(mapPositionOnTile.x, tileCenter.x + 0.5f + flat::EPSILON);
+				mapPosition.y = std::min(mapPositionOnTile.y, tileCenter.y + 0.5f + flat::EPSILON);
+			}
 		}
 	}
 
 	return mapPosition;
 }
+
+#ifdef FLAT_DEBUG
+void BaseMapState::debugCursorPosition(Game& game)
+{
+	bool cursorOnTile;
+	flat::Vector2 position2d = getCursorMapPosition(game, cursorOnTile);
+	flat::Vector3 position3d(position2d, 0.f);
+	flat::video::Color color = flat::video::Color::RED;
+	const map::Tile* tile = getMap().getTileIfExists(position2d.x, position2d.y);
+	if (tile != nullptr && cursorOnTile)
+	{
+		position3d.z = tile->getZ();
+		color = flat::video::Color::BLUE;
+
+		{
+			flat::Vector3 position3d(tile->getX(), tile->getY(), tile->getZ());
+			m_debugDisplay.add3dLine(position3d + flat::Vector3(-0.5f, -0.5f, 0.f), position3d + flat::Vector3(0.5f, -0.5f, 0.f));
+			m_debugDisplay.add3dLine(position3d + flat::Vector3(0.5f, -0.5f, 0.f), position3d + flat::Vector3(0.5f, 0.5f, 0.f));
+			m_debugDisplay.add3dLine(position3d + flat::Vector3(0.5f, 0.5f, 0.f), position3d + flat::Vector3(-0.5f, 0.5f, 0.f));
+			m_debugDisplay.add3dLine(position3d + flat::Vector3(-0.5f, 0.5f, 0.f), position3d + flat::Vector3(-0.5f, -0.5f, 0.f));
+		}
+	}
+	m_debugDisplay.add3dCircle(position3d, 0.1f, color, 1.f);
+}
+#endif
 
 void BaseMapState::addFaction(const std::string& factionName)
 {
@@ -434,6 +476,8 @@ void BaseMapState::update(game::Game& game)
 	updateGameView(game);
 	m_entityTemplateManager.update();
 	Super::update(game);
+
+	//debugCursorPosition(game);
 }
 
 void BaseMapState::addGhostEntity(game::Game& game)

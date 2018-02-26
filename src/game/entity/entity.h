@@ -138,6 +138,8 @@ class Entity final : public map::MapObject
 			FLAT_ASSERT(entityProgramSettings != nullptr);
 			return *entityProgramSettings;
 		}
+
+		inline void setAABBCanChange(bool aabbCanChange) { m_aabbCanChange = aabbCanChange; }
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -177,6 +179,7 @@ class Entity final : public map::MapObject
 		bool m_selected : 1;
 		bool m_markedForDelete : 1;
 		bool m_aabbDirty : 1;
+		bool m_aabbCanChange : 1;
 #ifdef FLAT_DEBUG
 		bool m_debug : 1;
 		bool m_debugBreak : 1;

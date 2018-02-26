@@ -34,6 +34,7 @@ class DebugDisplay
 		void add2dLine(const flat::Vector2& fromPos, const flat::Vector2& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth = 1.f);
 
 		void add2dAABB(const flat::AABB2& aabb, const flat::video::Color& color = flat::video::Color::BLUE);
+		void add3dAABB(const flat::AABB3& aabb, const flat::video::Color& color = flat::video::Color::BLUE);
 
 		void add3dCircle(const flat::Vector3& center, float radius, const flat::video::Color& color, float lineWidth = 1.f);
 

@@ -34,9 +34,24 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 
-	// occupy the tile
 	map::Tile* tile = m_owner->getTile();
-	tile->setWalkable(false);
+
+	// occupy the tile
+	const PropComponentTemplate* propComponentTemplate = getTemplate();
+	const int width = propComponentTemplate->getWidth();
+	const int height = propComponentTemplate->getHeight();
+	for (int i = 0; i < width; ++i)
+	{
+		for (int j = 0; j < height; ++j)
+		{
+			map::Tile* tileToOccupy = map->getTileIfWalkable(tile->getX() - i, tile->getY() - j);
+			//FLAT_ASSERT(tileToOccupy != nullptr);
+			if (tileToOccupy != nullptr)
+			{
+				tileToOccupy->setWalkable(false);
+			}
+		}
+	}
 
 	// center the entity on its tile
 	flat::Vector3 position = m_owner->getPosition();
@@ -44,6 +59,13 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	position.y = std::round(position.y);
 	position.z = tile->getZ();
 	m_owner->setPosition(position);
+
+	// set aabb
+	flat::AABB3 aabb;
+	aabb.min = position - flat::Vector3(width - 0.5f, height - 0.5f, 0.f);
+	aabb.max = position + flat::Vector3(0.5f, 0.5f, 5.f);
+	m_owner->setWorldSpaceAABB(aabb);
+	m_owner->setAABBCanChange(false);
 
 	// make it "stand"
 	m_owner->setHeading(flat::PI * 0.75f);
@@ -54,10 +76,33 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 
 bool PropComponent::removedFromMap(Entity* entity)
 {
+	map::Map* map = m_owner->getMap();
 	map::Tile* tile = m_owner->getTile();
-	tile->setWalkable(true);
+
+	const PropComponentTemplate* propComponentTemplate = getTemplate();
+	const int width = propComponentTemplate->getWidth();
+	const int height = propComponentTemplate->getHeight();
+	for (int i = 0; i < width; ++i)
+	{
+		for (int j = 0; j < height; ++j)
+		{
+			map::Tile* tileToOccupy = map->getTileIfExists(tile->getX() - i, tile->getY() - j);
+			//FLAT_ASSERT(tileToOccupy != nullptr);
+			if (tileToOccupy != nullptr)
+			{
+				tileToOccupy->setWalkable(true);
+			}
+		}
+	}
 	return true;
 }
+
+#ifdef FLAT_DEBUG
+void PropComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	debugDisplay.add3dAABB(m_owner->getWorldSpaceAABB());
+}
+#endif
 
 } // prop
 } // component

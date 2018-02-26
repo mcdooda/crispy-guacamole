@@ -3,31 +3,46 @@ script {
     {
       1,
       1,
+      5,
+      1,
+    },
+    {
       2,
+      1,
+      1,
       1,
     },
     {
       3,
       1,
-      1,
+      2,
       1,
     },
     {
       4,
       1,
-      3,
-      1,
-    },
-    {
-      5,
-      1,
-      3,
+      2,
       2,
     },
   },
   nodes = {
     {
       name = 'components/propcomponent',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
@@ -37,21 +52,6 @@ script {
         },
       },
       name = 'script/scriptoutput',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
     },
   },
 }

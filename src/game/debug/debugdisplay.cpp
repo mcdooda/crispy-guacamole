@@ -69,6 +69,60 @@ void DebugDisplay::add2dAABB(const flat::AABB2& aabb, const flat::video::Color& 
 	add2dLine(flat::Vector2(aabb.min.x, aabb.max.y), aabb.min, color);
 }
 
+void DebugDisplay::add3dAABB(const flat::AABB3& aabb, const flat::video::Color& color)
+{
+	// bottom square
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * flat::Vector3(aabb.max.x, aabb.min.y, aabb.min.z));
+		flat::Vector2 b = flat::Vector2(m_transform * flat::Vector3(aabb.max.x, aabb.max.y, aabb.min.z));
+		add2dLine(a, b, color, color);
+	}
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * flat::Vector3(aabb.max.x, aabb.max.y, aabb.min.z));
+		flat::Vector2 b = flat::Vector2(m_transform * flat::Vector3(aabb.min.x, aabb.max.y, aabb.min.z));
+		add2dLine(a, b, color, color);
+	}
+
+	// top square
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * flat::Vector3(aabb.min.x, aabb.min.y, aabb.max.z));
+		flat::Vector2 b = flat::Vector2(m_transform * flat::Vector3(aabb.max.x, aabb.min.y, aabb.max.z));
+		add2dLine(a, b, color, color);
+	}
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * flat::Vector3(aabb.max.x, aabb.min.y, aabb.max.z));
+		flat::Vector2 b = flat::Vector2(m_transform * aabb.max);
+		add2dLine(a, b, color, color);
+	}
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * aabb.max);
+		flat::Vector2 b = flat::Vector2(m_transform * flat::Vector3(aabb.min.x, aabb.max.y, aabb.max.z));
+		add2dLine(a, b, color, color);
+	}
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * flat::Vector3(aabb.min.x, aabb.max.y, aabb.max.z));
+		flat::Vector2 b = flat::Vector2(m_transform * flat::Vector3(aabb.min.x, aabb.min.y, aabb.max.z));
+		add2dLine(a, b, color, color);
+	}
+
+	// vertical edges
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * flat::Vector3(aabb.min.x, aabb.max.y, aabb.min.z));
+		flat::Vector2 b = flat::Vector2(m_transform * flat::Vector3(aabb.min.x, aabb.max.y, aabb.max.z));
+		add2dLine(a, b, color, color);
+	}
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * flat::Vector3(aabb.max.x, aabb.min.y, aabb.min.z));
+		flat::Vector2 b = flat::Vector2(m_transform * flat::Vector3(aabb.max.x, aabb.min.y, aabb.max.z));
+		add2dLine(a, b, color, color);
+	}
+	{
+		flat::Vector2 a = flat::Vector2(m_transform * flat::Vector3(aabb.max.x, aabb.max.y, aabb.min.z));
+		flat::Vector2 b = flat::Vector2(m_transform * aabb.max);
+		add2dLine(a, b, color, color);
+	}
+}
+
 void DebugDisplay::add3dCircle(const flat::Vector3& center, float radius, const flat::video::Color& color, float lineWidth)
 {
 	const int numSegments = 32;

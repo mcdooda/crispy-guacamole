@@ -24,6 +24,8 @@ class PropComponent : public ComponentImpl<PropComponentTemplate>
 
 		void update(float currentTime, float elapsedTime) override;
 
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
+
 	private:
 		bool addedToMap(Entity* entity, map::Map* map);
 		bool removedFromMap(Entity* entity);

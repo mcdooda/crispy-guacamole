@@ -17,7 +17,9 @@ class MapObject
 		virtual const flat::render::Sprite& getSprite() const = 0;
 		virtual const flat::render::ProgramSettings& getProgramSettings() const = 0;
 		
+		inline void setWorldSpaceAABB(const flat::AABB3& worldSpaceAABB) { m_worldSpaceAABB = worldSpaceAABB; }
 		inline const flat::AABB3& getWorldSpaceAABB() const { return m_worldSpaceAABB; }
+
 		inline const flat::AABB2& getAABB() const { return m_spriteAABB; }
 
 		void updateRenderHash() const;

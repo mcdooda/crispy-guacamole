@@ -45,6 +45,7 @@ class BaseMapState : public BaseState
 		const map::Map& getMap() const;
 
 		flat::Vector2 getCursorMapPosition(game::Game& game, bool& isOnTile) const;
+		FLAT_DEBUG_ONLY(void debugCursorPosition(Game& game);)
 
 		void addFaction(const std::string& factionName);
 		entity::faction::Faction* getFactionByName(const std::string& factionName);

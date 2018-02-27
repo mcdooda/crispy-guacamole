@@ -17,8 +17,12 @@ class PropComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
-	private:
+		inline int getWidth() const { return m_width; }
+		inline int getHeight() const { return m_height; }
 
+	private:
+		int m_width;
+		int m_height;
 };
 
 } // prop

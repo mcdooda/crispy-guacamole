@@ -28,7 +28,8 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_canBeSelected(false),
 	m_selected(false),
 	m_markedForDelete(false),
-	m_aabbDirty(false)
+	m_aabbDirty(false),
+	m_aabbCanChange(true)
 #ifdef FLAT_DEBUG
 	, m_debug(false)
 	, m_debugBreak(false)
@@ -309,14 +310,17 @@ void Entity::updateAABBIfDirty()
 	{
 		m_aabbDirty = false;
 
-		if (m_collisionComponent != nullptr)
+		if (m_aabbCanChange)
 		{
-			m_collisionComponent->getAABB(m_worldSpaceAABB);
-		}
-		else
-		{
-			m_worldSpaceAABB.min = m_position;
-			m_worldSpaceAABB.max = m_position;
+			if (m_collisionComponent != nullptr)
+			{
+				m_collisionComponent->getAABB(m_worldSpaceAABB);
+			}
+			else
+			{
+				m_worldSpaceAABB.min = m_position;
+				m_worldSpaceAABB.max = m_position;
+			}
 		}
 
 		if (m_sprite != nullptr)

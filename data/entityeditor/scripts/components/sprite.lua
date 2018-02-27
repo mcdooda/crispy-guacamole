@@ -5,7 +5,7 @@ local Icon = require 'data/scripts/ui/icon'
 return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
     do
         local label = Widget.makeText(
-            'Origin: ' .. componentTemplate.origin:x() .. ', ' .. componentTemplate.origin:x(),
+            'Origin: ' .. componentTemplate.origin:x() .. ', ' .. componentTemplate.origin:y(),
             table.unpack(UiSettings.defaultFont)
         )
         label:setMargin(2)
@@ -36,7 +36,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
         for i = 1, #animationsSorted do
             local animationName = animationsSorted[i]
             local animation = componentTemplate.animations[animationName]
-            
+
             local animationLine = Widget.makeLineFlow()
 
             do

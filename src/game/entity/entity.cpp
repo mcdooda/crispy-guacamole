@@ -125,7 +125,7 @@ void Entity::setElevation(float elevation)
 	m_aabbDirty = true;
 }
 
-const flat::render::Sprite& Entity::getSprite() const
+flat::render::Sprite& Entity::getSprite()
 {
 	FLAT_ASSERT(m_sprite != nullptr);
 	return *m_sprite;

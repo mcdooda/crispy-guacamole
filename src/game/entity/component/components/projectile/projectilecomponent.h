@@ -44,6 +44,8 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		bool collidedWithMap(const map::Tile* tile, const flat::Vector3& normal);
 
 		float getSpeedXY() const;
+
+		void updateSprite() const;
 		
 	private:
 		flat::Vector3 m_speed;

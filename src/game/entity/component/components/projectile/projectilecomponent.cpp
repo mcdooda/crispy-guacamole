@@ -62,6 +62,8 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 		const float speedXY = getSpeedXY();
 		const float elevation = std::atan2(m_speed.z, speedXY);
 		m_owner->setElevation(elevation);
+
+		updateSprite();
 	}
 }
 
@@ -73,6 +75,8 @@ void ProjectileComponent::setSpeed(const flat::Vector3& speed)
 	const float speedXY = getSpeedXY();
 	const float elevation = std::atan2(speed.z, speedXY);
 	m_owner->setElevation(elevation);
+
+	updateSprite();
 }
 
 bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map)
@@ -87,6 +91,8 @@ bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map)
 	m_speed.x = std::cos(heading) * speedXY;
 	m_speed.y = std::sin(heading) * speedXY;
 	m_speed.z = std::sin(elevation) * projectileSpeed;
+
+	updateSprite();
 
 	return true;
 }
@@ -138,6 +144,25 @@ bool ProjectileComponent::collidedWithMap(const map::Tile* tile, const flat::Vec
 float ProjectileComponent::getSpeedXY() const
 {
 	return std::sqrt(m_speed.x * m_speed.x + m_speed.y * m_speed.y);
+}
+
+void ProjectileComponent::updateSprite() const
+{
+	const bool rotateSprite = getTemplate()->getRotateSprite();
+	if (rotateSprite && m_owner->hasSprite())
+	{
+		const float heading = m_owner->getHeading();
+		const float elevation = m_owner->getElevation() + flat::PI;
+
+		const float directionLenXY = std::cos(elevation);
+		flat::Vector3 direction(std::cos(heading) * directionLenXY, std::sin(heading) * directionLenXY, std::sin(elevation));
+
+		const map::Map* map = m_owner->getMap();
+		FLAT_ASSERT(map != nullptr);
+
+		flat::Vector2 direction2d(map->getTransform() * direction);
+		m_owner->getSprite().setRotationZ(flat::vector2_angle(direction2d));
+	}
 }
 
 #ifdef FLAT_DEBUG

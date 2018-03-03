@@ -243,7 +243,7 @@ void DisplayManager::sortObjectsByDepth(std::vector<const MapObject*>& objects)
 #if DEBUG_DRAW
 		for (const MapObject* o : objects)
 		{
-			const_cast<flat::render::Sprite&>(o->getSprite()).setColor(flat::video::Color::WHITE);
+			o->getSprite().setColor(flat::video::Color::WHITE);
 		}
 #endif
 
@@ -269,8 +269,8 @@ void DisplayManager::sortObjectsByDepth(std::vector<const MapObject*>& objects)
 					if (mapObject2->isTile() && spritesOverlap(mapObject, mapObject2) && !sortMapObjects2(mapObject, mapObject2))
 					{
 #if DEBUG_DRAW
-						const_cast<flat::render::Sprite&>(mapObject->getSprite()).setColor(flat::video::Color::RED);
-						const_cast<flat::render::Sprite&>(mapObject2->getSprite()).setColor(flat::video::Color::BLUE);
+						mapObject->getSprite().setColor(flat::video::Color::RED);
+						mapObject2->getSprite().setColor(flat::video::Color::BLUE);
 #endif
 						if (k == 0 || !sortMapObjects(objects[j], objects[k]))
 						{
@@ -286,7 +286,7 @@ void DisplayManager::sortObjectsByDepth(std::vector<const MapObject*>& objects)
 					}
 
 #if DEBUG_DRAW
-					const_cast<flat::render::Sprite&>(objects[k]->getSprite()).setColor(flat::video::Color::GREEN);
+					objects[k]->getSprite().setColor(flat::video::Color::GREEN);
 #endif
 					for (int l = i; l < k; ++l)
 					{

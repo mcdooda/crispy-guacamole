@@ -500,8 +500,7 @@ void BaseMapState::addGhostEntity(game::Game& game)
 
 				m_ghostEntity->update(m_clock->getTime(), 0.f);
 
-				// TODO: clean this shit
-				flat::render::Sprite& sprite = const_cast<flat::render::Sprite&>(m_ghostEntity->getSprite());
+				flat::render::Sprite& sprite = m_ghostEntity->getSprite();
 				flat::video::Color color;
 				if (canPlaceGhostEntity(tile))
 				{
@@ -645,15 +644,15 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	const flat::Vector2& mousePosition = game.input->mouse->getPosition();
 	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition);
 
-	const entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
-	const entity::Entity* newMouseOverEntity = nullptr;
+	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
+	entity::Entity* newMouseOverEntity = nullptr;
 
-	const map::MapObject* mouseOverObject = getMap().getDisplayManager().getObjectAtPosition(viewMousePosition);
+	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(getMap().getDisplayManager().getObjectAtPosition(viewMousePosition));
 	if (mouseOverObject != nullptr)
 	{
 		if (mouseOverObject->isEntity())
 		{
-			const entity::Entity* entity = static_cast<const entity::Entity*>(mouseOverObject);
+			entity::Entity* entity = static_cast<entity::Entity*>(mouseOverObject);
 			newMouseOverEntity = entity;
 		}
 		else if (mouseOverObject->isTile())
@@ -688,19 +687,19 @@ void BaseMapState::clearMouseOverEntity()
 	}
 }
 
-void BaseMapState::setMouseOverColor(const entity::Entity* entity) const
+void BaseMapState::setMouseOverColor(entity::Entity* entity) const
 {
-	const_cast<flat::render::Sprite&>(entity->getSprite()).setColor(flat::video::Color::GREEN);
+	entity->getSprite().setColor(flat::video::Color::GREEN);
 }
 
-void BaseMapState::clearMouseOverColor(const entity::Entity* entity) const
+void BaseMapState::clearMouseOverColor(entity::Entity* entity) const
 {
 	flat::video::Color color = flat::video::Color::WHITE;
 	if (entity->isSelected())
 	{
 		color = flat::video::Color::RED;
 	}
-	const_cast<flat::render::Sprite&>(entity->getSprite()).setColor(color);
+	entity->getSprite().setColor(color);
 }
 
 bool BaseMapState::updateSelectionWidget(Game& game)

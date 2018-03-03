@@ -7,6 +7,18 @@ script {
       1,
     },
     {
+      1,
+      2,
+      6,
+      1,
+    },
+    {
+      1,
+      3,
+      6,
+      2,
+    },
+    {
       2,
       1,
       1,
@@ -15,43 +27,49 @@ script {
     {
       3,
       1,
-      2,
       1,
+      2,
     },
     {
       4,
       1,
-      2,
-      2,
+      1,
+      3,
     },
   },
   nodes = {
     {
-      name = 'components/texturecomponent',
+      name = 'components/projectilecomponent',
     },
     {
-      name = 'vector2',
-    },
-    {
-      name = 'number',
       loadArguments = {
-        9,
+        0,
       },
-    },
-    {
       name = 'number',
-      loadArguments = {
-        2,
-      },
     },
     {
-      name = 'script/scriptoutput',
+      loadArguments = {
+        25,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
       loadArguments = {
         {
           5,
           'Table',
         },
       },
+      name = 'script/scriptoutput',
+    },
+    {
+      name = 'entity/despawnentity',
     },
   },
 }

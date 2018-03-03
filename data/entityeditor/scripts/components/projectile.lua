@@ -20,6 +20,14 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
         componentDetailsPanel:addChild(label)
     end
     do
+        local label = Widget.makeText(
+            'Rotate Sprite: ' .. tostring(componentTemplate.rotateSprite),
+            table.unpack(UiSettings.defaultFont)
+        )
+        label:setMargin(2)
+        componentDetailsPanel:addChild(label)
+    end
+    do
         local shootLine = Widget.makeLineFlow()
         shootLine:setMargin(2)
 

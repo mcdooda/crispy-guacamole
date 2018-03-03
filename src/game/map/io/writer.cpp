@@ -51,7 +51,8 @@ void Writer::writeHeaders()
 	{
 		if (tile->exists())
 		{
-			const flat::video::Texture* tileTexture = tile->getSprite().getTexture().get();
+			const flat::render::Sprite& sprite = tile->getSprite();
+			const flat::video::Texture* tileTexture = sprite.getTexture().get();
 			FLAT_ASSERT(tileTexture != nullptr);
 			std::map<const flat::video::Texture*, uint16_t>::iterator it = m_tileTextures.find(tileTexture);
 			if (it == m_tileTextures.end())
@@ -83,7 +84,8 @@ void Writer::writeHeaders()
 		{
 			if (const Prop* prop = tile->getProp())
 			{
-				const flat::video::Texture* propTexture = prop->getSprite().getTexture().get();
+				const flat::render::Sprite& sprite = prop->getSprite();
+				const flat::video::Texture* propTexture = sprite.getTexture().get();
 				FLAT_ASSERT(propTexture != nullptr);
 				std::map<const flat::video::Texture*, uint16_t>::iterator it = m_propTextures.find(propTexture);
 				if (it == m_propTextures.end())

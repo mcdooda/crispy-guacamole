@@ -44,10 +44,10 @@ void TimerContainer::updateTimers(lua_State* L)
 
 	// remove stopped timers
 	m_timers.erase(
-		std::remove_if(
+		std::remove(
 			m_timers.begin(),
 			m_timers.end(),
-			[](Timer* timer) { return timer == nullptr; }
+			nullptr
 		),
 		m_timers.end()
 	);

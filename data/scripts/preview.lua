@@ -15,9 +15,10 @@ local function getPreviewAnimation(spriteComponentTemplate, animationName)
 end
 
 local function setInitBackgroundPosition(preview, spriteComponentTemplate, animation)
+    local line = animation and animation.line or 1
     preview:setBackgroundPosition(
         0,
-        (animation.line - 1) / spriteComponentTemplate.size:y()
+        (line - 1) / spriteComponentTemplate.size:y()
     )
 end
 
@@ -68,7 +69,9 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, 
             stopAnimation = startEntitySpriteAnimationByName(preview, spriteComponentTemplate, animationName)
         end)
         preview:mouseLeave(function()
-            stopAnimation()
+            if stopAnimation then
+                stopAnimation()
+            end
         end)
     end
     if scale then

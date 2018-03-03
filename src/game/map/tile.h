@@ -32,7 +32,10 @@ class Tile final : public MapObject
 		inline void setWalkable(bool walkable) { m_walkable = walkable; }
 		
 		inline bool hasSprite() const { return static_cast<bool>(m_sprite.getTexture()); }
-		const flat::render::Sprite& getSprite() const override;
+
+		flat::render::Sprite& getSprite() override;
+		using MapObject::getSprite;
+
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		void updateWorldSpaceAABB();
 		

@@ -19,7 +19,7 @@ void TextureComponent::init()
 	const TextureComponentTemplate* textureComponentTemplate = getTemplate();
 	m_sprite.setTexture(textureComponentTemplate->getTexture());
 	m_sprite.setOrigin(textureComponentTemplate->getOrigin());
-	m_owner->setSprite(m_sprite);
+	m_owner->setSprite(&m_sprite);
 
 	m_owner->headingChanged.on(this, &TextureComponent::headingChanged);
 	m_owner->elevationChanged.on(this, &TextureComponent::elevationChanged);

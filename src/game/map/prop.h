@@ -14,7 +14,9 @@ class Prop : public MapObject
 public:
 	Prop() {}
 
-	const flat::render::Sprite& getSprite() const override;
+	flat::render::Sprite& getSprite() override;
+	using MapObject::getSprite;
+
 	const flat::render::ProgramSettings& getProgramSettings() const override;
 
 	void updateWorldSpaceAABB(const flat::Vector3& position);

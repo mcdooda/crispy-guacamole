@@ -62,7 +62,6 @@ void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::string& 
 
 		lua_pop(L, 4);
 	}
-	m_spriteDescription.cacheMandatoryAnimationDescriptions();
 
 	lua_pop(L, 1);
 

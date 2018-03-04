@@ -77,6 +77,8 @@ int open(Game& game)
 		{"getSpeed",                 l_Entity_getSpeed},
 		{"jump",                     l_Entity_jump},
 		{"restrictToZone",           l_Entity_restrictToZone},
+		{"setMoveAnimation",         l_Entity_setMoveAnimation},
+		{"setDefaultMoveAnimation",  l_Entity_setDefaultMoveAnimation},
 
 		// behavior
 		{"enterState",               l_Entity_enterState},
@@ -84,8 +86,6 @@ int open(Game& game)
 
 		// sprite
 		{"playAnimation",            l_Entity_playAnimation},
-		{"setMoveAnimation",         l_Entity_setMoveAnimation},
-		{"setDefaultMoveAnimation",  l_Entity_setDefaultMoveAnimation},
 		{"getAttachPoint",           l_Entity_getAttachPoint},
 
 		// detection
@@ -392,6 +392,8 @@ int l_Entity_setUiVisible(lua_State* L)
 	return 0;
 }
 
+// MOVEMENT
+
 int l_Entity_moveTo(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -457,6 +459,33 @@ int l_Entity_restrictToZone(lua_State* L)
 	return 0;
 }
 
+int l_Entity_setMoveAnimation(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const char* moveAnimationName = luaL_checkstring(L, 2);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	bool animationExists = movementComponent.setMoveAnimationByName(moveAnimationName);
+	if (!animationExists)
+	{
+		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), moveAnimationName);
+	}
+	return 0;
+}
+
+int l_Entity_setDefaultMoveAnimation(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	bool defaultMoveAnimationExists = movementComponent.setDefaultMoveAnimation();
+	if (!defaultMoveAnimationExists)
+	{
+		luaL_error(L, "%s has no default move animation", entity.getTemplateName().c_str());
+	}
+	return 0;
+}
+
+// BEHAVIOR
+
 int l_Entity_enterState(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -482,6 +511,8 @@ int l_Entity_sleep(lua_State* L)
 	return lua_yield(L, 0);
 }
 
+// SPRITE
+
 int l_Entity_playAnimation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -497,31 +528,6 @@ int l_Entity_playAnimation(lua_State* L)
 	return locYieldIf(L, yield, 0);
 }
 
-int l_Entity_setMoveAnimation(lua_State* L)
-{
-	Entity& entity = getEntity(L, 1);
-	const char* moveAnimationName = luaL_checkstring(L, 2);
-	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
-	bool animationExists = spriteComponent.setMoveAnimationByName(moveAnimationName);
-	if (!animationExists)
-	{
-		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), moveAnimationName);
-	}
-	return 0;
-}
-
-int l_Entity_setDefaultMoveAnimation(lua_State* L)
-{
-	Entity& entity = getEntity(L, 1);
-	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
-	bool defaultMoveAnimationExists = spriteComponent.setDefaultMoveAnimation();
-	if (!defaultMoveAnimationExists)
-	{
-		luaL_error(L, "%s has no default move animation", entity.getTemplateName().c_str());
-	}
-	return 0;
-}
-
 int l_Entity_getAttachPoint(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -535,6 +541,8 @@ int l_Entity_getAttachPoint(lua_State* L)
 	}
 	return 0;
 }
+
+// DETECTION
 
 int l_Entity_canSee(lua_State* L)
 {
@@ -576,6 +584,8 @@ int l_Entity_eachVisibleEntity(lua_State* L)
 	lua_pushinteger(L, 0);
 	return 3;
 }
+
+// FACTION
 
 namespace
 {
@@ -619,6 +629,8 @@ int l_Entity_isHostile(lua_State* L)
 	return 1;
 }
 
+// ATTACK
+
 int l_Entity_setAttackTarget(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -644,6 +656,8 @@ int l_Entity_isInAttackRange(lua_State* L)
 	lua_pushboolean(L, attackComponent.isInAttackRange(&target));
 	return 1;
 }
+
+// LIFE
 
 int l_Entity_isLiving(lua_State* L)
 {
@@ -702,6 +716,8 @@ int l_Entity_died(lua_State * L)
 	return 0;
 }
 
+// SELECTION
+
 int l_Entity_selected(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -725,6 +741,8 @@ int l_Entity_click(lua_State* L)
 	selectionComponent.addClickCallback(L, 2);
 	return 0;
 }
+
+// PROJECTILE
 
 int l_Entity_setProjectileSpeed(lua_State * L)
 {

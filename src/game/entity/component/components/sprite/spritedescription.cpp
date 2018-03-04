@@ -11,8 +11,7 @@ namespace sprite
 
 SpriteDescription::SpriteDescription() :
 	m_atlasWidth(1),
-	m_atlasHeight(1),
-	m_defaultMoveAnimationDescription(nullptr)
+	m_atlasHeight(1)
 {
 	
 }
@@ -21,11 +20,6 @@ void SpriteDescription::addAnimationDescription(const std::string& animationName
 {
 	FLAT_DEBUG_ONLY(animationDescription.setName(animationName);)
 	m_animationDescriptions.emplace(animationName, animationDescription);
-}
-
-void SpriteDescription::cacheMandatoryAnimationDescriptions()
-{
-	m_defaultMoveAnimationDescription = getAnimationDescription("move");
 }
 
 const AnimationDescription* SpriteDescription::getAnimationDescription(const std::string& animationName) const

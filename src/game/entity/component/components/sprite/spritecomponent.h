@@ -26,34 +26,22 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		
 		bool isBusy() const override;
 		
-		void playAnimation(const sprite::AnimationDescription& animationDescription, int numLoops = 1);
+		void playAnimation(const AnimationDescription& animationDescription, int numLoops = 1);
 		bool playAnimationByName(const std::string& animationName, int numLoops = 1);
-		bool setMoveAnimationByName(const std::string& moveAnimationName);
-		bool setDefaultMoveAnimation();
 
 		bool getAttachPoint(const std::string& attachPointName, flat::Vector3& attachPoint) const;
 		
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
-		bool headingChanged(float heading);
-		bool positionChanged(const flat::Vector3& position);
-		bool movementStarted();
-		bool movementStopped();
-		bool attackStopped();
 		bool selected();
 		bool deselected();
+
+		bool addedToMap(Entity* entity, map::Map* map);
 		
 	private:
 		flat::render::AnimatedSprite m_sprite;
-		const sprite::AnimationDescription* m_moveAnimationDescription;
-		const sprite::AnimationDescription* m_currentAnimationDescription;
-		bool m_positionChanged : 1;
-		bool m_headingChanged : 1;
-		bool m_movementStarted : 1;
-		bool m_movementStopped : 1;
-		bool m_attackStopped : 1;
+		const AnimationDescription* m_currentAnimationDescription;
 };
 
 } // sprite

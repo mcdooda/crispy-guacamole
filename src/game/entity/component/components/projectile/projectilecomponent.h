@@ -38,6 +38,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 
 	private:
 		bool addedToMap(Entity* entity, map::Map* map);
+		bool removedFromMap(Entity* entity);
 		bool headingChanged(float heading);
 		bool collided(Entity* collidedEntity, const map::Tile* collidedTile, const flat::Vector3& normal);
 		bool collidedWithEntity(Entity* collidedEntity, const flat::Vector3& normal);
@@ -45,7 +46,9 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 
 		float getSpeedXY() const;
 
-		void updateSprite() const;
+		bool updateSpritePosition(const flat::Vector3& position);
+		bool updateSpriteElevation(float elevation);
+		void updateSpriteRotation() const;
 		
 	private:
 		flat::Vector3 m_speed;

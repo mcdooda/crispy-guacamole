@@ -1,6 +1,7 @@
 #include "movementcomponent.h"
 #include "movementcomponenttemplate.h"
 #include "../collision/collisioncomponent.h"
+#include "../sprite/spritecomponent.h"
 #include "../../componenttype.h"
 #include "../../../entity.h"
 #include "../../../entityhelper.h"
@@ -27,11 +28,16 @@ void MovementComponent::init()
 	m_isTouchingGround = movementComponentTemplate->getSnapToGround();
 
 	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
+	m_owner->removedFromMap.on(this, &MovementComponent::removedFromMap);
+
+	m_moveAnimationDescription = nullptr;
+	setDefaultMoveAnimation();
 }
 
 void MovementComponent::deinit()
 {
 	m_owner->addedToMap.off(this);
+	m_owner->removedFromMap.off(this);
 }
 
 void MovementComponent::update(float currentTime, float elapsedTime)
@@ -166,35 +172,16 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 
 	const bool wasMoving = m_isMoving;
 	m_isMoving = followsPath();
-	if (!wasMoving && m_isMoving)
-	{
-		movementStarted();
-	}
-	else if (!m_isMoving && wasMoving)
+
+	const bool movementStarted = !wasMoving && m_isMoving;
+	const bool movementStopped = !m_isMoving && wasMoving;
+
+	if (movementStopped)
 	{
 		m_returnToDestinationTime = currentTime + RETURN_TO_DESTINATION_DURATION;
-		movementStopped();
 	}
-}
 
-bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
-{
-	FLAT_ASSERT(entity == m_owner);
-
-	const map::Tile* tile = m_owner->getTile();
-	const flat::Vector3& position = m_owner->getPosition();
-
-	m_destination = flat::Vector2(position);
-
-	// m_isTouchingGround already set is init()
-	FLAT_ASSERT(m_isTouchingGround == getTemplate()->getSnapToGround());
-	if (m_isTouchingGround || tile->getZ() >= position.z)
-	{
-		m_owner->setZ(tile->getZ());
-		m_isTouchingGround = true; // in case the entity was below its tile
-	}
-	m_zSpeed = 0.f;
-	return true;
+	updateSprite(movementStarted, movementStopped);
 }
 
 bool MovementComponent::isBusy() const
@@ -278,6 +265,23 @@ void MovementComponent::jump()
 	}
 }
 
+bool MovementComponent::setMoveAnimationByName(const std::string& animationName)
+{
+	const sprite::SpriteDescription& spriteDescription = getTemplate<sprite::SpriteComponent>()->getSpriteDescription();
+	const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
+	if (animationDescription != nullptr)
+	{
+		m_moveAnimationDescription = animationDescription;
+		return true;
+	}
+	return false;
+}
+
+bool MovementComponent::setDefaultMoveAnimation()
+{
+	return setMoveAnimationByName("move");
+}
+
 void MovementComponent::fall(float elapsedTime)
 {
 	if (m_isTouchingGround)
@@ -295,6 +299,88 @@ void MovementComponent::fall(float elapsedTime)
 		m_isTouchingGround = true;
 	}
 	m_owner->setZ(z);
+}
+
+bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
+{
+	FLAT_ASSERT(entity == m_owner);
+
+	const map::Tile* tile = m_owner->getTile();
+	const flat::Vector3& position = m_owner->getPosition();
+
+	m_destination = flat::Vector2(position);
+
+	// m_isTouchingGround already set is init()
+	FLAT_ASSERT(m_isTouchingGround == getTemplate()->getSnapToGround());
+	if (m_isTouchingGround || tile->getZ() >= position.z)
+	{
+		m_owner->setZ(tile->getZ());
+		m_isTouchingGround = true; // in case the entity was below its tile
+	}
+	m_zSpeed = 0.f;
+
+	// connect to position and heading changed slots
+	if (m_owner->hasSprite())
+	{
+		m_owner->positionChanged.on(this, &MovementComponent::updateSpritePosition);
+		m_owner->headingChanged.on(this, &MovementComponent::updateSpriteHeading);
+	}
+
+	return true;
+}
+
+bool MovementComponent::removedFromMap(Entity* entity)
+{
+	FLAT_ASSERT(entity == m_owner);
+
+	if (m_owner->hasSprite())
+	{
+		m_owner->positionChanged.off(this);
+		m_owner->headingChanged.off(this);
+	}
+
+	return true;
+}
+
+void MovementComponent::updateSprite(bool movementStarted, bool movementStopped)
+{
+	if (m_owner->hasSprite())
+	{
+		if (movementStarted)
+		{
+			sprite::SpriteComponent* spriteComponent = m_owner->getComponent<sprite::SpriteComponent>();
+			if (spriteComponent != nullptr && m_moveAnimationDescription != nullptr)
+			{
+				spriteComponent->playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
+			}
+		}
+		else if (movementStopped)
+		{
+			flat::render::AnimatedSprite& sprite = static_cast<flat::render::AnimatedSprite&>(m_owner->getSprite());
+			sprite.setAnimated(false);
+		}
+	}
+}
+
+bool MovementComponent::updateSpritePosition(const flat::Vector3& position)
+{
+	FLAT_ASSERT(m_owner->hasSprite());
+
+	const map::Map* map = m_owner->getMap();
+	FLAT_ASSERT(map != nullptr);
+
+	flat::Vector2 position2d(map->getTransform() * position);
+	m_owner->getSprite().setPosition(position2d);
+	return true;
+}
+
+bool MovementComponent::updateSpriteHeading(float heading)
+{
+	FLAT_ASSERT(m_owner->hasSprite());
+
+	FLAT_ASSERT(0 <= heading && heading < M_PI * 2.f);
+	m_owner->getSprite().setFlipX(heading < M_PI / 4.f || heading > 5.f * M_PI / 4.f);
+	return true;
 }
 
 #ifdef FLAT_DEBUG

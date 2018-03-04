@@ -18,6 +18,11 @@ namespace entity
 {
 namespace component
 {
+namespace sprite
+{
+class AnimationDescription;
+}
+
 namespace movement
 {
 
@@ -30,8 +35,6 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
-		
-		bool addedToMap(Entity* entity, map::Map* map);
 		
 		bool isBusy() const override;
 		
@@ -48,14 +51,20 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 		inline void restrictToZone(const std::shared_ptr<const map::Zone>& zone) { m_restrictToZone = zone; }
 
-		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
+		bool setMoveAnimationByName(const std::string& animationName);
+		bool setDefaultMoveAnimation();
 
-	public:
-		flat::Slot<> movementStarted;
-		flat::Slot<> movementStopped;
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		
 	private:
 		void fall(float elapsedTime);
+
+		bool addedToMap(Entity* entity, map::Map* map);
+		bool removedFromMap(Entity* entity);
+
+		void updateSprite(bool movementStarted, bool movementStopped);
+		bool updateSpritePosition(const flat::Vector3& position);
+		bool updateSpriteHeading(float heading);
 		
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;
@@ -68,6 +77,10 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		float m_returnToDestinationTime;
 		float m_speed;
 		float m_zSpeed;
+
+		// sprite data
+		const sprite::AnimationDescription* m_moveAnimationDescription;
+
 		bool m_isTouchingGround : 1;
 		bool m_isMoving : 1; // should not be set directly, only used to trigger movementStarted/movementStopped when needed
 

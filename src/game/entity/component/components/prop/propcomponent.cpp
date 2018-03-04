@@ -67,9 +67,13 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	m_owner->setWorldSpaceAABB(aabb);
 	m_owner->setAABBCanChange(false);
 
-	// make it "stand"
-	m_owner->setHeading(flat::PI * 0.75f);
-	m_owner->setElevation(0.f);
+	//  update sprite
+	if (m_owner->hasSprite())
+	{
+		flat::render::Sprite& sprite = m_owner->getSprite();
+		flat::Vector2 position2d(map->getTransform() * position);
+		sprite.setPosition(position2d);
+	}
 
 	return true;
 }

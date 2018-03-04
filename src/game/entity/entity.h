@@ -59,10 +59,10 @@ class Entity final : public map::MapObject
 		void setElevation(float elevation);
 		inline float getElevation() const { return m_elevation; }
 		
-		inline void setSprite(const flat::render::Sprite& sprite) { m_sprite = &sprite; }
+		inline void setSprite(flat::render::Sprite* sprite) { FLAT_ASSERT(sprite != nullptr); m_sprite = sprite; }
 		inline void clearSprite() { m_sprite = nullptr; }
 		inline bool hasSprite() const { return m_sprite != nullptr; }
-		const flat::render::Sprite& getSprite() const override;
+		flat::render::Sprite& getSprite() override;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
 		void onAddedToMap(map::Map* map);
@@ -160,7 +160,7 @@ class Entity final : public map::MapObject
 		component::collision::CollisionComponent* m_collisionComponent;
 		component::movement::MovementComponent*   m_movementComponent;
 
-		const flat::render::Sprite* m_sprite;
+		flat::render::Sprite* m_sprite;
 		
 		EntityId m_id;
 

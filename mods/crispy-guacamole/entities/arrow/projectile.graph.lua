@@ -1,54 +1,4 @@
 script {
-  nodes = {
-    {
-      name = 'components/projectilecomponent',
-    },
-    {
-      loadArguments = {
-        30,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        12,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
-    },
-    {
-      name = 'script/condition',
-    },
-    {
-      name = 'entity/spawnentity',
-    },
-    {
-      loadArguments = {
-        'fx_explosion',
-      },
-      name = 'string',
-    },
-    {
-      name = 'entity/isvalidentity',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'entity/getheading',
-    },
-    {
-      name = 'entity/despawnentity',
-    },
-  },
   links = {
     {
       1,
@@ -133,6 +83,68 @@ script {
       1,
       6,
       4,
+    },
+    {
+      12,
+      1,
+      1,
+      3,
+    },
+  },
+  nodes = {
+    {
+      name = 'components/projectilecomponent',
+    },
+    {
+      loadArguments = {
+        30,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        12,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          'Table',
+        },
+      },
+      name = 'script/scriptoutput',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'entity/spawnentity',
+    },
+    {
+      loadArguments = {
+        'fx_explosion',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/isvalidentity',
+    },
+    {
+      name = 'entity/getposition',
+    },
+    {
+      name = 'entity/getheading',
+    },
+    {
+      name = 'entity/despawnentity',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
   },
 }

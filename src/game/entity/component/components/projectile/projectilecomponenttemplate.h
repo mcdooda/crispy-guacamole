@@ -17,14 +17,16 @@ class ProjectileComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
+		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getCollidedCallback() const { return m_collidedCallback; }
 		inline float getWeight() const { return m_weight; }
 		inline float getSpeed() const { return m_speed; }
-		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getCollidedCallback() const { return m_collidedCallback; }
+		inline bool getRotateSprite() const { return m_rotateSprite; }
 
 	private:
+		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_collidedCallback;
 		float m_weight;
 		float m_speed;
-		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_collidedCallback;
+		bool m_rotateSprite;
 };
 
 } // projectile

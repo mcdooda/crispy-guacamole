@@ -108,6 +108,12 @@ script {
       11,
       2,
     },
+    {
+      15,
+      1,
+      1,
+      3,
+    },
   },
   nodes = {
     {
@@ -169,6 +175,12 @@ script {
     },
     {
       name = 'entity/despawnentity',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
   },
 }

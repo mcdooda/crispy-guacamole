@@ -15,9 +15,10 @@ local function getPreviewAnimation(spriteComponentTemplate, animationName)
 end
 
 local function setInitBackgroundPosition(preview, spriteComponentTemplate, animation)
+    local line = animation and animation.line or 1
     preview:setBackgroundPosition(
         0,
-        (animation.line - 1) / spriteComponentTemplate.size:y()
+        (line - 1) / spriteComponentTemplate.size:y()
     )
 end
 
@@ -68,23 +69,15 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, 
             stopAnimation = startEntitySpriteAnimationByName(preview, spriteComponentTemplate, animationName)
         end)
         preview:mouseLeave(function()
-            stopAnimation()
+            if stopAnimation then
+                stopAnimation()
+            end
         end)
     end
     if scale then
         local width, height = preview:getSize()
         preview:setSize(width * scale, height * scale)
         preview:setBackgroundSize(imageWidth * scale, imageHeight * scale)
-    end
-    return preview
-end
-
-local function entityTexturePreview(entityTemplateName, scale)
-    local entityTexturePath = Path.getEntityFilePath(entityTemplateName, 'texture.png')
-    local preview = Widget.makeImage(entityTexturePath)
-    if scale then
-        local width, height = preview:getSize()
-        preview:setSize(width * scale, height * scale)
     end
     return preview
 end
@@ -96,12 +89,6 @@ local function entityPreview(entityTemplateName, animationName, loopForever, sca
        return entitySpritePreview(entityTemplateName, spriteComponentTemplate, animationName, loopForever, scale)
     end
 
-    -- then texture component
-    local textureComponentTemplate = Path.requireComponentTemplateIfExists(entityTemplateName, 'texture')
-    if textureComponentTemplate then
-        return entityTexturePreview(entityTemplateName, scale)
-    end
-
     -- none of them
     print('No preview for ' .. entityTemplateName)
     local unavailablePreview = Widget.makeFixedSize(10, 10)
@@ -110,7 +97,6 @@ local function entityPreview(entityTemplateName, animationName, loopForever, sca
 end
 
 return {
-    entity  = entityPreview,
-    sprite  = entitySpritePreview,
-    texture = entityTexturePreview
+    entity = entityPreview,
+    sprite = entitySpritePreview
 }

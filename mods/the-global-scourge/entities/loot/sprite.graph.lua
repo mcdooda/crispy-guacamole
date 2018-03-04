@@ -3,7 +3,7 @@ script {
     {
       1,
       1,
-      5,
+      9,
       1,
     },
     {
@@ -24,25 +24,67 @@ script {
       2,
       2,
     },
+    {
+      5,
+      1,
+      1,
+      2,
+    },
+    {
+      6,
+      1,
+      5,
+      1,
+    },
+    {
+      7,
+      1,
+      5,
+      2,
+    },
+    {
+      8,
+      1,
+      1,
+      3,
+    },
   },
   nodes = {
     {
-      name = 'components/texturecomponent',
+      name = 'components/spritecomponent',
     },
     {
       name = 'vector2',
     },
     {
       loadArguments = {
-        32,
+        12,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        38,
+        77,
       },
       name = 'number',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      name = 'script/array',
     },
     {
       loadArguments = {

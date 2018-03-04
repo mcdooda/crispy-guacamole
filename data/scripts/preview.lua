@@ -82,27 +82,11 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, 
     return preview
 end
 
-local function entityTexturePreview(entityTemplateName, scale)
-    local entityTexturePath = Path.getEntityFilePath(entityTemplateName, 'texture.png')
-    local preview = Widget.makeImage(entityTexturePath)
-    if scale then
-        local width, height = preview:getSize()
-        preview:setSize(width * scale, height * scale)
-    end
-    return preview
-end
-
 local function entityPreview(entityTemplateName, animationName, loopForever, scale)
     -- try sprite component first
     local spriteComponentTemplate = Path.requireComponentTemplateIfExists(entityTemplateName, 'sprite')
     if spriteComponentTemplate then
        return entitySpritePreview(entityTemplateName, spriteComponentTemplate, animationName, loopForever, scale)
-    end
-
-    -- then texture component
-    local textureComponentTemplate = Path.requireComponentTemplateIfExists(entityTemplateName, 'texture')
-    if textureComponentTemplate then
-        return entityTexturePreview(entityTemplateName, scale)
     end
 
     -- none of them
@@ -113,7 +97,6 @@ local function entityPreview(entityTemplateName, animationName, loopForever, sca
 end
 
 return {
-    entity  = entityPreview,
-    sprite  = entitySpritePreview,
-    texture = entityTexturePreview
+    entity = entityPreview,
+    sprite = entitySpritePreview
 }

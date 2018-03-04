@@ -1,0 +1,3 @@
+return {
+    door = 1,
+}

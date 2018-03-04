@@ -24,10 +24,50 @@ local function makeRightPanelContainer(title)
 end
 
 do
-    local rightPanel = Widget.makeColumnFlow()
-    rightPanel:setPositionPolicy(Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.CENTER_Y)
-    rightPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.COMPRESS_Y)
-    rightPanel:setSize(70, 0)
+    -- life and gold
+    do
+        local topPanel = Widget.makeLineFlow()
+        topPanel:setPositionPolicy(Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.CENTER_Y)
+        topPanel:setSizePolicy(Widget.SizePolicy.FIXED_Y + Widget.SizePolicy.COMPRESS_X)
+        topPanel:setSize(0, 100)
+
+        do
+            local moneyAmountLabel = Widget.makeText('0', table.unpack(Theme.defaultFont))
+            moneyAmountLabel:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
+            moneyAmountLabel:setTextColor(Theme.TEXT_COLOR)
+            topPanel:addChild(moneyAmountLabel)
+
+            Money:onAmountChanged(function()
+                moneyAmountLabel:setText(Money:getAmount())
+            end)
+        end
+
+
+        do
+            local lifeAmountLabel = Widget.makeLineFlow()
+            lifeAmountLabel:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
+            lifeAmountLabel:setTextColor(Theme.TEXT_COLOR)
+            topPanel:addChild(lifeAmountLabel)
+
+            Money:onAmountChanged(function()
+                for i = 0, Life:getAmount() do
+                    Widget.makeImage()
+                end
+                lifeAmountLabel:setText(Life:getAmount())
+            end)
+        end
+
+        root:addChild(topPanel)
+    end
+
+    -- items
+    do
+        local itemPanel = Widget.makeLineFlow()
+        itemPanel:setPositionPolicy(Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.CENTER_Y)
+        itemPanel:setSizePolicy(Widget.SizePolicy.FIXED_Y + Widget.SizePolicy.COMPRESS_X)
+        itemPanel:setSize(0, 100)
+        root:addChild(itemPanel)
+    end
 
     -- buildings
     do

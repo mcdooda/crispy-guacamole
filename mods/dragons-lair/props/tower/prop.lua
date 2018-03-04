@@ -1,0 +1,3 @@
+return {
+	tower = 1
+}

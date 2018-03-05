@@ -1,0 +1,1 @@
+return flat.graph.script.run 'mods/dragons-lair/entities/fx_explosion/sprite'

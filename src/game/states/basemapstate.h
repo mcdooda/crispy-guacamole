@@ -92,8 +92,10 @@ class BaseMapState : public BaseState
 
 		bool isMouseOverUi(game::Game& game) const;
 
+#ifdef FLAT_DEBUG
 		void setGamePause(Game& game, bool pause, bool pauseNextFrame);
 		inline bool isGamePaused() const { return m_gamePaused; }
+#endif
 		
 	protected:
 		void update(game::Game& game) override;

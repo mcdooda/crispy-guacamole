@@ -1,9 +1,11 @@
-local Theme = require 'mods/dragons-lair/maps/dragon\'s lair/theme'
-local Money = require 'mods/dragons-lair/maps/dragon\'s lair/money'
-local Life  = require 'mods/dragons-lair/maps/dragon\'s lair/life'
-local Path  = require 'data/scripts/path'
-
-local root = Widget.getRoot()
+local Theme     = require 'mods/dragons-lair/maps/dragon\'s lair/theme'
+local Money     = require 'mods/dragons-lair/maps/dragon\'s lair/money'
+local Life      = require 'mods/dragons-lair/maps/dragon\'s lair/life'
+local Inventory = require 'mods/dragons-lair/maps/dragon\'s lair/inventory'
+local Items     = require 'mods/dragons-lair/maps/dragon\'s lair/items'
+local ItemIcon  = require 'mods/dragons-lair/maps/dragon\'s lair/itemicon'
+local Path      = require 'data/scripts/path'
+local root      = Widget.getRoot()
 
 -- right panel
 local function makeRightPanelContainer(title)
@@ -71,13 +73,21 @@ do
 
     -- items
     do
+        Inventory:addItem(Items[1])
+        Inventory:addItem(Items[2])
+        Inventory:addItem(Items[3])
+        Inventory:addItem(Items[4])
         local itemPanel = Widget.makeLineFlow()
         itemPanel:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM)
         itemPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
-        for i = 1, 6 do
-            local item = Widget.makeImage(Path.getModFilePath 'ui/user/item-frame.png')
-            item:setSize(56, 56)
-            itemPanel:addChild(item)
+        for i = 1, Inventory:getMaxItems() do
+            local frame = Widget.makeImage(Path.getModFilePath 'ui/user/item-frame.png')
+            frame:setSize(56, 56)
+            if i <= #Inventory.items then
+                local item = Inventory.items[i]
+                ItemIcon:new(item, frame)
+            end
+            itemPanel:addChild(frame)
         end
         root:addChild(itemPanel)
     end

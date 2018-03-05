@@ -1,4 +1,5 @@
-local Money = require 'mods/dragons-lair/maps/dragon\'s lair/money'
+local Money  = require 'mods/dragons-lair/maps/dragon\'s lair/money'
+local User   = require 'mods/dragons-lair/maps/dragon\'s lair/user'
 local states = {}
 
 local currencies = { 
@@ -32,10 +33,10 @@ end
 function states:init(dragon)
 	dragon:click(function(dragon) 			
 		local position = dragon:getPosition()
-		local sum = math.random(100)
-		spawnAmount(dragon:getPosition(), sum)
+		local damages = math.floor(User:computeDamages())
+		spawnAmount(dragon:getPosition(), damages)
 		dragon:playAnimation('poked', 1, false)
-    	Money:add(sum)
+		Money:add(damages)
 	end)
 end
 

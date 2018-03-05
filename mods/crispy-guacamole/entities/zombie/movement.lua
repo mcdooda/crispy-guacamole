@@ -5,4 +5,4 @@
 	snapToGround = true
 }]]
 
-return flat.graph.script.run 'mods/crispy-guacamole/entities/zombie/movement'
+return flat.graph.script.run(Mod.getPath() .. '/entities/zombie/movement')

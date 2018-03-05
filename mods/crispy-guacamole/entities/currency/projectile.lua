@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/currency/projectile'
+return flat.graph.script.run(Mod.getPath() .. '/entities/currency/projectile')

@@ -27,4 +27,4 @@ return {
 }
 ]]
 
-return flat.graph.script.run 'mods/crispy-guacamole/entities/zombie/sprite'
+return flat.graph.script.run(Mod.getPath() .. '/entities/zombie/sprite')

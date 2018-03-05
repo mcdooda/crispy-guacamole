@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/the-global-scourge/entities/main/sprite'
+return flat.graph.script.run(Mod.getPath() .. '/entities/main/sprite')

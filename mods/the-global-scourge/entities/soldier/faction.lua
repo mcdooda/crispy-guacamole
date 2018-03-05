@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/the-global-scourge/entities/soldier/faction'
+return flat.graph.script.run(Mod.getPath() .. '/entities/soldier/faction')

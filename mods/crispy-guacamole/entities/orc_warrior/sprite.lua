@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/orc_warrior/sprite'
+return flat.graph.script.run(Mod.getPath() .. '/entities/orc_warrior/sprite')

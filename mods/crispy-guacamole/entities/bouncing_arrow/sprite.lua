@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/bouncing_arrow/sprite'
+return flat.graph.script.run(Mod.getPath() .. '/entities/bouncing_arrow/sprite')

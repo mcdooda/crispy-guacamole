@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/the-global-scourge/entities/meteorite/sprite'
+return flat.graph.script.run(Mod.getPath() .. '/entities/meteorite/sprite')

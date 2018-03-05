@@ -26,4 +26,4 @@ return {
 }
 --]]
 
-return flat.graph.script.run 'mods/crispy-guacamole/entities/human_archer/attack'
+return flat.graph.script.run(Mod.getPath() .. '/entities/human_archer/attack')

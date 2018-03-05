@@ -6,4 +6,4 @@ return {
 }
 ]]
 
-return flat.graph.script.run 'mods/crispy-guacamole/entities/arrow/collision'
+return flat.graph.script.run(Mod.getPath() .. '/entities/arrow/collision')

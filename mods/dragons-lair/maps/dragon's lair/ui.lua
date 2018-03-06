@@ -4,22 +4,24 @@ local Life      = require 'mods/dragons-lair/maps/dragon\'s lair/life'
 local Inventory = require 'mods/dragons-lair/maps/dragon\'s lair/inventory'
 local Items     = require 'mods/dragons-lair/maps/dragon\'s lair/items'
 local ItemIcon  = require 'mods/dragons-lair/maps/dragon\'s lair/itemicon'
+local User      = require 'mods/dragons-lair/maps/dragon\'s lair/user'
 local Path      = require 'data/scripts/path'
 local root      = Widget.getRoot()
 
--- right panel
-local function makeRightPanelContainer(title)
-    local container = Widget.makeColumnFlow()
-    container:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
-    container:setPadding(5)
-    container:setMargin(0, 0, 5, 0)
-    container:setBackgroundColor(Theme.BACKGROUND_COLOR)
-
+local function makeFrame(widget)
+    local container = Widget.makeLineFlow()
+    container:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
     do
-        local label = Widget.makeText(title, table.unpack(Theme.defaultFont))
-        label:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP)
-        label:setTextColor(Theme.TEXT_COLOR)
-        container:addChild(label)
+        local left = Widget.makeImage(Path.getModFilePath 'ui/user/left-frame.png')
+        left:setSize(16, 56)
+        container:addChild(left)
+        local center = Widget.makeImage(Path.getModFilePath 'ui/user/center-frame.png')
+        center:setSize(150, 56)
+        center:addChild(widget)
+        container:addChild(center)
+        local right = Widget.makeImage(Path.getModFilePath 'ui/user/right-frame.png')
+        right:setSize(16, 56)
+        container:addChild(right)
     end
 
     return container
@@ -76,9 +78,13 @@ do
         Inventory:addItem(Items[1])
         Inventory:addItem(Items[2])
         Inventory:addItem(Items[3])
+        Inventory:addItem(Items[3])
         Inventory:addItem(Items[4])
+        Inventory:addItem(Items[4])
+        local inventoryPanel = Widget.makeLineFlow()
+        inventoryPanel:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM)
+        inventoryPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
         local itemPanel = Widget.makeLineFlow()
-        itemPanel:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM)
         itemPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
         for i = 1, Inventory:getMaxItems() do
             local frame = Widget.makeImage(Path.getModFilePath 'ui/user/item-frame.png')
@@ -89,7 +95,18 @@ do
             end
             itemPanel:addChild(frame)
         end
-        root:addChild(itemPanel)
+        inventoryPanel:addChild(itemPanel)
+
+        -- stats panel
+        local statsPanel = Widget.makeColumnFlow()
+        statsPanel:setMargin(10, 0, 0, 0)
+        statsPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
+        local damages = Widget.makeText('Damages: ' .. math.floor(User:computeDamages()), table.unpack(Theme.gameFont))
+        statsPanel:addChild(damages)
+        local frame = makeFrame(statsPanel)
+        inventoryPanel:addChild(frame)
+
+        root:addChild(inventoryPanel)
     end
 end
 

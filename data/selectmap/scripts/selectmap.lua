@@ -8,6 +8,13 @@ local entities = Mod.getEntities()
 local boxContainer = Widget.makeLineFlow()
 boxContainer:setPositionPolicy(Widget.PositionPolicy.CENTER)
 
+-- mod path
+do
+    local modPathLabel = Widget.makeText(modPath, table.unpack(UiSettings.defaultFont))
+    modPathLabel:setMargin(5)
+    Widget.getRoot():addChild(modPathLabel)
+end
+
 -- maps
 do
     local box = Widget.makeColumnFlow()

@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/dragons-lair/entities/sleeping_dragon/sprite'
+return flat.graph.script.run(Mod.getPath() .. '/entities/sleeping_dragon/sprite')

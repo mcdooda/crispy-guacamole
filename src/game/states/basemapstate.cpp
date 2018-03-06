@@ -449,6 +449,7 @@ bool BaseMapState::isMouseOverUi(game::Game& game) const
 	return root->isMouseOver() && root->getCurrentMouseOverWidget().lock() != m_selectionWidget;
 }
 
+#ifdef FLAT_DEBUG
 void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 {
 	m_pauseNextFrame = pauseNextFrame;
@@ -470,6 +471,7 @@ void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 		clock.resume();
 	}
 }
+#endif
 
 void BaseMapState::update(game::Game& game)
 {
@@ -704,7 +706,7 @@ void BaseMapState::clearMouseOverColor(entity::Entity* entity) const
 
 bool BaseMapState::updateSelectionWidget(Game& game)
 {
-	if (isMouseOverUi(game))
+	if (isMouseOverUi(game) && !isSelecting())
 	{
 		return false;
 	}
@@ -917,7 +919,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 	const auto& mouse = game.input->mouse;
 	const auto& keyboard = game.input->keyboard;
 
-	if (isMouseOverUi(game))
+	if (isMouseOverUi(game) && !isSelecting())
 	{
 		clearMouseOverEntity();
 	}

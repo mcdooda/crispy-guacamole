@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/dragons-lair/entities/fx_explosion/sprite'
+return flat.graph.script.run(Mod.getPath() .. '/entities/fx_explosion/sprite')

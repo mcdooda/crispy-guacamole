@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/sleeping_dragon/selection'
+return flat.graph.script.run(Mod.getPath() .. '/entities/sleeping_dragon/selection')

@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/the-global-scourge/entities/resource/prop'
+return flat.graph.script.run(Mod.getPath() .. '/entities/resource/prop')

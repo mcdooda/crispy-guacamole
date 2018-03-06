@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/tower/prop'
+return flat.graph.script.run(Mod.getPath() .. '/entities/tower/prop')

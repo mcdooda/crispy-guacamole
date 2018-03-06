@@ -10,4 +10,4 @@ return {
 }
 ]]
 
-return flat.graph.script.run 'mods/crispy-guacamole/entities/zombie/life'
+return flat.graph.script.run(Mod.getPath() .. '/entities/zombie/life')

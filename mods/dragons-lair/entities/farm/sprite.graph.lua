@@ -94,7 +94,7 @@ script {
     },
     {
       loadArguments = {
-        20,
+        24,
       },
       name = 'number',
     },

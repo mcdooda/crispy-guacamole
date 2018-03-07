@@ -19,7 +19,7 @@ script {
     },
     {
       loadArguments = {
-        false,
+        true,
       },
       name = 'boolean',
     },

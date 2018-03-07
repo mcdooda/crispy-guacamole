@@ -1,6 +1,8 @@
+--local NumberWatch = require 'mods/dragons-lair/scripts/numberwatch'
+
 local Life = {
-    amount = 2,
-    amountChanged = {}
+    amount = 3,
+    amountChanged = flat.Slot:new()
 }
 
 function Life:add(amount)
@@ -12,14 +14,14 @@ function Life:sub(amount)
 end
 
 function Life:onAmountChanged(amountChanged)
-    self.amountChanged[#self.amountChanged + 1] = amountChanged
+    self.amountChanged:on(amountChanged)
 end
 
 function Life:setAmount(amount)
     assert(amount >= 0)
-    self.amount = amount
-    for i = 1, #self.amountChanged do
-        self.amountChanged[i]()
+    if amount ~= self.amount then
+        self.amount = amount
+        self.amountChanged(amount)
     end
 end
 

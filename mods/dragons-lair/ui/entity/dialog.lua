@@ -1,14 +1,14 @@
-local Path = require 'data/scripts/path'
+local Path  = require 'data/scripts/path'
+local Theme = require 'mods/dragons-lair/ui/theme'
 
 local cornerWidth = 10
 local cornerHeight = 10
 local sideSize = 8
-local backgroundColor =  0xEDC8ADFF
 
 return {
     addedToMap = function(entity, widget)
         local container = Widget.makeFixedSize(100, 100)
-        container:setBackgroundColor(backgroundColor)
+        container:setBackgroundColor(Theme.DIALOG_COLOR)
 
         -- sides
         do

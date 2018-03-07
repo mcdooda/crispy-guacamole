@@ -1,4 +1,4 @@
-local Theme   = require 'mods/dragons-lair/maps/dragon\'s lair/theme'
+local Theme   = require 'mods/dragons-lair/ui/theme'
 local Preview = require 'data/scripts/preview'
 local Money   = require 'mods/dragons-lair/maps/dragon\'s lair/money'
 

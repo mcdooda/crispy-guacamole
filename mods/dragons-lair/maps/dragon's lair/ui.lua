@@ -1,4 +1,4 @@
-local Theme     = require 'mods/dragons-lair/maps/dragon\'s lair/theme'
+local Theme     = require 'mods/dragons-lair/ui/theme'
 local Money     = require 'mods/dragons-lair/maps/dragon\'s lair/money'
 local Life      = require 'mods/dragons-lair/maps/dragon\'s lair/life'
 local Inventory = require 'mods/dragons-lair/maps/dragon\'s lair/inventory'
@@ -39,7 +39,7 @@ do
             moneyWidget:setPositionPolicy(Widget.PositionPolicy.LEFT + Widget.PositionPolicy.CENTER_Y)
             moneyWidget:setBackground(Path.getModFilePath 'ui/user/money-frame.png')
 
-            local moneyAmountLabel = Widget.makeText('0', table.unpack(Theme.gameFont))
+            local moneyAmountLabel = Widget.makeText('0', table.unpack(Theme.GAME_FONT))
             moneyAmountLabel:setPositionPolicy(Widget.PositionPolicy.CENTER)
             moneyAmountLabel:setTextColor(Theme.TEXT_COLOR)
             moneyAmountLabel:setMargin(0, -50, 0 , 0)
@@ -101,7 +101,7 @@ do
         local statsPanel = Widget.makeColumnFlow()
         statsPanel:setMargin(10, 0, 0, 0)
         statsPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
-        local damages = Widget.makeText('Damages: ' .. math.floor(User:computeDamages()), table.unpack(Theme.gameFont))
+        local damages = Widget.makeText('Damages: ' .. math.floor(User:computeDamages()), table.unpack(Theme.GAME_FONT))
         statsPanel:addChild(damages)
         local frame = makeFrame(statsPanel)
         inventoryPanel:addChild(frame)

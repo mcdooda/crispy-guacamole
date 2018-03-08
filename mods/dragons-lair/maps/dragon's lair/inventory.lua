@@ -1,25 +1,25 @@
 local Inventory = {
     maxItems = 6,
     items ={},
-    maxItemsChanged = {},
-    itemsChanged = {}
+    maxItemsChanged = flat.Slot:new(),
+    itemsChanged = flat.Slot:new()
 }
 
 function Inventory:addItem(item)
     if #self.items < self.maxItems then
         self.items[#self.items + 1] = item
         for i = 1, #self.itemsChanged do
-            self.itemsChanged[i]()
+            self.itemsChanged()
         end
     end
 end
 
 function Inventory:onItemsChanged(itemsChanged)
-    self.itemsChanged[#self.itemsChanged + 1] = itemsChanged
+    self.itemsChanged:on(itemsChanged)
 end
 
 function Inventory:onMaxItemsChanged(maxItemsChanged)
-    self.maxItemsChanged[#self.maxItemsChanged + 1] = maxItemsChanged
+    self.maxItemsChanged:on(maxItemsChanged)
 end
 
 function Inventory:setMaxItems(amount)

@@ -1,5 +1,5 @@
 local Money = {
-    amount = 1000,
+    amount = 0,
     amountChanged = flat.Slot:new()
 }
 

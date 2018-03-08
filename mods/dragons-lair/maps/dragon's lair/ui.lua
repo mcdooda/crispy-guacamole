@@ -6,6 +6,9 @@ local Items     = require 'mods/dragons-lair/maps/dragon\'s lair/items'
 local ItemIcon  = require 'mods/dragons-lair/maps/dragon\'s lair/itemicon'
 local User      = require 'mods/dragons-lair/maps/dragon\'s lair/user'
 local Path      = require 'data/scripts/path'
+
+local ShopKeeper = require 'mods/dragons-lair/maps/dragon\'s lair/shopkeeper'
+
 local root      = Widget.getRoot()
 
 local function makeFrame(widget)
@@ -81,6 +84,14 @@ do
         Inventory:addItem(Items[3])
         Inventory:addItem(Items[4])
         Inventory:addItem(Items[4])
+
+        ShopKeeper:addItem(Items[1])
+        ShopKeeper:addItem(Items[2])
+        ShopKeeper:addItem(Items[3])
+        ShopKeeper:addItem(Items[4])
+        ShopKeeper:addItem(Items[3])
+        ShopKeeper:addItem(Items[4])
+
         local inventoryPanel = Widget.makeLineFlow()
         inventoryPanel:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM)
         inventoryPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)

@@ -1,5 +1,3 @@
---local NumberWatch = require 'mods/dragons-lair/scripts/numberwatch'
-
 local Life = {
     amount = 3,
     amountChanged = flat.Slot:new()

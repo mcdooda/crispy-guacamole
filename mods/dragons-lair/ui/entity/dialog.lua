@@ -7,7 +7,7 @@ local sideSize = 8
 
 return {
     addedToMap = function(entity, widget)
-        local container = Widget.makeFixedSize(100, 100)
+        local container = Widget.makeFixedSize(1, 1)
         container:setBackgroundColor(Theme.DIALOG_COLOR)
 
         -- sides
@@ -67,6 +67,7 @@ return {
         Widget.getRoot():addChild(widget)
 
         entity:setUiVisible(false)
+        return container
     end,
 
     removedFromMap = function(entity, widget)

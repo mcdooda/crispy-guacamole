@@ -90,16 +90,12 @@ class Entity final : public map::MapObject
 		inline void resetComponents() { deinitComponents(); initComponents(); }
 
 		template <class ComponentType>
-		inline const ComponentType* findComponent() const;
-		template <class ComponentType>
-		inline ComponentType* findComponent();
-		const component::Component* findComponent(component::ComponentFlags componentFlag) const;
-		component::Component* findComponent(component::ComponentFlags componentFlag);
-
-		template <class ComponentType>
 		inline const ComponentType* getComponent() const;
 		template <class ComponentType>
 		inline ComponentType* getComponent();
+
+		const component::Component* findComponent(component::ComponentFlags componentFlag) const;
+		component::Component* findComponent(component::ComponentFlags componentFlag);
 
 		inline const std::vector<component::Component*>& getComponents() const { return m_components; }
 		inline void removeAllComponents() { m_components.clear(); }
@@ -151,6 +147,11 @@ class Entity final : public map::MapObject
 	protected:
 		map::Tile* getTileFromPosition();
 		void updateAABBIfDirty();
+
+		template <class ComponentType>
+		inline const ComponentType* findComponent() const;
+		template <class ComponentType>
+		inline ComponentType* findComponent();
 		
 	protected:
 		static const flat::render::ProgramSettings* entityProgramSettings;
@@ -190,24 +191,18 @@ template <class ComponentType>
 inline const ComponentType* Entity::findComponent() const
 {
 	static_assert(std::is_base_of<component::Component, ComponentType>::value, "ComponentType must inherit from Component");
-	for (const component::Component* component : m_components)
-	{
-		if (const ComponentType* c = dynamic_cast<const ComponentType*>(component))
-			return c;
-	}
-	return nullptr;
+	const component::Component* component = findComponent(ComponentType::getFlag());
+	FLAT_ASSERT(component == nullptr || dynamic_cast<const ComponentType*>(component) != nullptr);
+	return static_cast<const ComponentType*>(component);
 }
 
 template <class ComponentType>
 inline ComponentType* Entity::findComponent()
 {
 	static_assert(std::is_base_of<component::Component, ComponentType>::value, "ComponentType must inherit from Component");
-	for (component::Component* component : m_components)
-	{
-		if (ComponentType* c = dynamic_cast<ComponentType*>(component))
-			return c;
-	}
-	return nullptr;
+	component::Component* component = findComponent(ComponentType::getFlag());
+	FLAT_ASSERT(component == nullptr || dynamic_cast<ComponentType*>(component) != nullptr);
+	return static_cast<ComponentType*>(component);
 }
 
 template <class ComponentType>
@@ -220,6 +215,28 @@ template <class ComponentType>
 inline ComponentType* Entity::getComponent()
 {
 	return findComponent<ComponentType>();
+}
+
+template <>
+inline const component::behavior::BehaviorComponent* Entity::getComponent() const
+{
+	return m_behaviorComponent;
+}
+template <>
+inline component::behavior::BehaviorComponent* Entity::getComponent()
+{
+	return m_behaviorComponent;
+}
+
+template <>
+inline const component::collision::CollisionComponent* Entity::getComponent() const
+{
+	return m_collisionComponent;
+}
+template <>
+inline component::collision::CollisionComponent* Entity::getComponent()
+{
+	return m_collisionComponent;
 }
 
 template <>

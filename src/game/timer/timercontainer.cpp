@@ -41,7 +41,6 @@ bool TimerContainer::stop(Timer*& timer)
 void TimerContainer::updateTimers(lua_State* L)
 {
 	FLAT_ASSERT(m_clock != nullptr);
-
 	// remove stopped timers
 	m_timers.erase(
 		std::remove(
@@ -96,17 +95,22 @@ void TimerContainer::updateTimers(lua_State* L)
 		}
 		else
 		{
+			assert(lastStoppedTimerIt != it);
 			it = m_timers.erase(it);
 		}
 	}
+	std::deque<Timer*> tmpTimers = m_timers;
 	m_timers.erase(m_timers.begin(), lastStoppedTimerIt);
 
 	// push looping timers back
 	for (Timer* timer : loopingTimers)
 	{
-		timer->setBeginTime(time);
-		std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
-		m_timers.insert(it, timer);
+		if (std::find(tmpTimers.begin(), tmpTimers.end(), timer) != tmpTimers.end())
+		{
+			timer->setBeginTime(time);
+			std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
+			m_timers.insert(it, timer);
+		}
 	}
 }
 

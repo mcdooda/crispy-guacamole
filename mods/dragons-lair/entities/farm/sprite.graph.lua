@@ -88,13 +88,13 @@ script {
     },
     {
       loadArguments = {
-        22,
+        17,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        24,
+        28,
       },
       name = 'number',
     },

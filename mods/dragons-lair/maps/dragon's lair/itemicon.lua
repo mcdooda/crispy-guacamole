@@ -7,21 +7,15 @@ ItemIcon.__index = ItemIcon
 function ItemIcon:new(item, parent)
     local o = setmetatable({
         item = item,
-        container = nil
+        widget = nil
     }, self)
     o:build(parent)
     return o
 end
 
 function ItemIcon:build(parent)
-    local previewContainer = Widget.makeColumnFlow()
-    previewContainer:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.EXPAND_Y)
-    do
-        local preview = Preview.entity('items', self.item.name, 1, 3)
-        preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
-        previewContainer:addChild(preview)
-    end
-
+    local preview = Preview.entity('items', self.item.name, true, 3)
+    preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
     do
         local tooltip = Widget.makeColumnFlow()
         tooltip:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
@@ -35,21 +29,21 @@ function ItemIcon:build(parent)
         end
 
         do
-            local tooltipLabel = Widget.makeText('Cost: ' .. self.item.cost, table.unpack(Theme.defaultFont))
+            local tooltipLabel = Widget.makeText(self.item.description, table.unpack(Theme.defaultFont))
             tooltipLabel:setTextColor(Theme.TEXT_COLOR)
             tooltip:addChild(tooltipLabel)
         end
 
         do
-            previewContainer:mouseEnter(function()
+            preview:mouseEnter(function()
                 Widget.getRoot():addChild(tooltip)
             end)
 
-            previewContainer:mouseLeave(function()
+            preview:mouseLeave(function()
                 tooltip:removeFromParent()
             end)
 
-            previewContainer:mouseMove(function()
+            preview:mouseMove(function()
                 local x, y = Mouse.getPosition()
                 local w, h = tooltip:getComputedSize()
                 tooltip:setPosition(x - w - 5, y - h / 2)
@@ -57,8 +51,8 @@ function ItemIcon:build(parent)
         end
     end
 
-    parent:addChild(previewContainer)
-    self.container = previewContainer
+    parent:addChild(preview)
+    self.widget = preview
 end
 
 return ItemIcon

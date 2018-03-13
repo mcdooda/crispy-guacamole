@@ -8,7 +8,8 @@ local sideSize = 8
 return {
     addedToMap = function(entity, widget)
         local container = Widget.makeFixedSize(1, 1)
-        container:setBackgroundColor(Theme.DIALOG_COLOR)
+        container:setSizePolicy(Widget.SizePolicy.COMPRESS)
+        container:setBackgroundColor(Theme.DIALOG_BACKGROUND_COLOR)
 
         -- sides
         do

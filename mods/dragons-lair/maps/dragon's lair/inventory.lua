@@ -8,9 +8,7 @@ local Inventory = {
 function Inventory:addItem(item)
     if #self.items < self.maxItems then
         self.items[#self.items + 1] = item
-        for i = 1, #self.itemsChanged do
-            self.itemsChanged()
-        end
+        self.itemsChanged()
     end
 end
 

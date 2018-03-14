@@ -3,6 +3,7 @@
 #include "../timercontainer.h"
 #include "../../game.h"
 #include "../../states/basestate.h"
+#include <iostream>
 
 namespace game
 {
@@ -60,15 +61,7 @@ int l_Timer_stop(lua_State* L)
 {
 	TimerContainer& timerContainer = getTimerContainer(L);
 	Timer* timer = getTimer(L, 1);
-	if (timerContainer.stop(timer))
-	{
-		delete timer;
-		lua_pushboolean(L, 1);
-	}
-	else
-	{
-		lua_pushboolean(L, 0);
-	}
+	lua_pushboolean(L, timerContainer.stop(timer));
 	return 1;
 }
 

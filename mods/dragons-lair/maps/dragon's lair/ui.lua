@@ -30,6 +30,42 @@ local function makeFrame(widget)
     return container
 end
 
+
+local function makeInventory()
+    local inventoryPanel = Widget.makeLineFlow()
+    inventoryPanel:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM)
+    inventoryPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
+    local itemPanel = Widget.makeLineFlow()
+    itemPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
+    local function setItemsInventory()
+        itemPanel:removeAllChildren()
+        for i = 1, Inventory:getMaxItems() do
+            local frame = Widget.makeImage(Path.getModFilePath 'ui/user/item-frame.png')
+            frame:setSize(56, 56)
+            if i <= #Inventory.items then
+                local item = Inventory.items[i]
+                ItemIcon:new(item, frame)
+            end
+            itemPanel:addChild(frame)
+        end
+        return itemPanel
+    end
+    setItemsInventory()
+
+    inventoryPanel:addChild(itemPanel)
+
+    -- stats panel
+    local statsPanel = Widget.makeColumnFlow()
+    statsPanel:setMargin(10, 0, 0, 0)
+    statsPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
+    local damages = Widget.makeText('Damages: ' .. math.floor(User:computeDamages()), table.unpack(Theme.UI_FONT))
+    statsPanel:addChild(damages)
+    local frame = makeFrame(statsPanel)
+    inventoryPanel:addChild(frame)
+    Inventory:onItemsChanged(setItemsInventory)
+    return inventoryPanel
+end
+
 do
     -- life and gold
     do
@@ -42,7 +78,7 @@ do
             moneyWidget:setPositionPolicy(Widget.PositionPolicy.LEFT + Widget.PositionPolicy.CENTER_Y)
             moneyWidget:setBackground(Path.getModFilePath 'ui/user/money-frame.png')
 
-            local moneyAmountLabel = Widget.makeText('0', table.unpack(Theme.GAME_FONT))
+            local moneyAmountLabel = Widget.makeText('0', table.unpack(Theme.UI_FONT))
             moneyAmountLabel:setPositionPolicy(Widget.PositionPolicy.CENTER)
             moneyAmountLabel:setTextColor(Theme.TEXT_COLOR)
             moneyAmountLabel:setMargin(0, -50, 0 , 0)
@@ -78,13 +114,6 @@ do
 
     -- items
     do
-        Inventory:addItem(Items[1])
-        Inventory:addItem(Items[2])
-        Inventory:addItem(Items[3])
-        Inventory:addItem(Items[3])
-        Inventory:addItem(Items[4])
-        Inventory:addItem(Items[4])
-
         ShopKeeper:addItem(Items[1])
         ShopKeeper:addItem(Items[2])
         ShopKeeper:addItem(Items[3])
@@ -92,31 +121,7 @@ do
         ShopKeeper:addItem(Items[3])
         ShopKeeper:addItem(Items[4])
 
-        local inventoryPanel = Widget.makeLineFlow()
-        inventoryPanel:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM)
-        inventoryPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
-        local itemPanel = Widget.makeLineFlow()
-        itemPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
-        for i = 1, Inventory:getMaxItems() do
-            local frame = Widget.makeImage(Path.getModFilePath 'ui/user/item-frame.png')
-            frame:setSize(56, 56)
-            if i <= #Inventory.items then
-                local item = Inventory.items[i]
-                ItemIcon:new(item, frame)
-            end
-            itemPanel:addChild(frame)
-        end
-        inventoryPanel:addChild(itemPanel)
-
-        -- stats panel
-        local statsPanel = Widget.makeColumnFlow()
-        statsPanel:setMargin(10, 0, 0, 0)
-        statsPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
-        local damages = Widget.makeText('Damages: ' .. math.floor(User:computeDamages()), table.unpack(Theme.GAME_FONT))
-        statsPanel:addChild(damages)
-        local frame = makeFrame(statsPanel)
-        inventoryPanel:addChild(frame)
-
+        local inventoryPanel = makeInventory()
         root:addChild(inventoryPanel)
     end
 end

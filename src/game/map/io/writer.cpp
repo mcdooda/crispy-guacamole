@@ -34,12 +34,12 @@ bool Writer::canWrite() const
 	return m_file.is_open();
 }
 
-void Writer::write()
+void Writer::write(const std::vector<entity::Entity*>& entities)
 {
 	writeHeaders();
 	writeTiles();
 	writeZones();
-	writeEntities();
+	writeEntities(entities);
 }
 
 void Writer::writeHeaders()
@@ -152,10 +152,8 @@ void Writer::writeTiles()
 	}
 }
 
-void Writer::writeEntities()
+void Writer::writeEntities(const std::vector<entity::Entity*>& entities)
 {
-	const std::vector<entity::Entity*>& entities = m_map.getEntities();
-
 	std::map<const entity::EntityTemplate*, uint16_t> entityTemplates;
 	std::vector<const entity::EntityTemplate*> entityTemplatesOrdered;
 	for (const entity::Entity* entity : entities)

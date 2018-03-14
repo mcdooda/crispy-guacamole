@@ -18,11 +18,10 @@ class PropComponent : public ComponentImpl<PropComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "prop"; }
+		inline static bool requiresUpdate() { return false; }
 
 		void init() override;
 		void deinit() override;
-
-		void update(float currentTime, float elapsedTime) override;
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 

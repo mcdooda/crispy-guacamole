@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <flat.h>
-#include "displaymanager.h"
 #include "../debug/debugdisplay.h"
 
 namespace game
@@ -21,6 +20,7 @@ namespace map
 {
 class Tile;
 class Zone;
+class DisplayManager;
 namespace io
 {
 class Reader;
@@ -32,11 +32,14 @@ class Map
 		Map();
 		virtual ~Map();
 
+		void setDisplayManager(DisplayManager* displayManager) { m_displayManager = displayManager; }
+		inline DisplayManager& getDisplayManager() const { FLAT_ASSERT(m_displayManager != nullptr); return *m_displayManager; }
+
 		void operator=(Map&&) = delete;
 		void operator=(const Map&) = delete;
 		
 		bool load(Game& game, const mod::Mod& mod, const std::string& mapName);
-		bool save(const mod::Mod& mod, const std::string& mapName) const;
+		bool save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const;
 
 		void setBounds(int minX, int maxX, int minY, int maxY);
 		void getBounds(int& minX, int& maxX, int& minY, int& maxY) const;
@@ -71,18 +74,7 @@ class Map
 		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
 		
 		// entities
-		void addEntity(entity::Entity* entity);
-		void removeEntity(entity::Entity* entity);
-		entity::Entity* removeEntityAtIndex(int index);
-
-		inline void removeAllEntities() { m_entities.clear(); }
-
-		const std::vector<entity::Entity*>& getEntities() const { return m_entities; }
-		std::vector<entity::Entity*>& getEntities() { return m_entities; }
-
 		void eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const;
-		
-		void updateEntities(float time, float dt);
 
 		void setTileNormalDirty(Tile& tile);
 		void updateTilesNormals();
@@ -92,13 +84,6 @@ class Map
 		bool removeZone(const std::string& zoneName);
 		bool getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) const;
 		inline const std::map<std::string, std::shared_ptr<Zone>>& getZones() const { return m_zones; }
-
-		inline DisplayManager& getDisplayManager() { return m_displayManager; }
-		inline const DisplayManager& getDisplayManager() const { return m_displayManager; }
-
-#ifdef FLAT_DEBUG
-		void debugDraw(debug::DebugDisplay& debugDisplay) const;
-#endif
 		
 	protected:
 		void setAxes(const flat::Vector2& xAxis,
@@ -108,6 +93,8 @@ class Map
 		virtual void createTiles() = 0;
 		
 	protected:
+		DisplayManager* m_displayManager;
+
 		flat::Matrix3 m_transform;
 		flat::Matrix3 m_invTransform;
 		flat::Vector2 m_xAxis;
@@ -118,14 +105,10 @@ class Map
 		int m_maxX;
 		int m_minY;
 		int m_maxY;
-		
-		std::vector<entity::Entity*> m_entities;
 
 		std::vector<Tile*> m_dirtyNormalTiles;
 
 		std::map<std::string, std::shared_ptr<Zone>> m_zones;
-
-		DisplayManager m_displayManager;
 		
 	private:
 		friend class io::Reader;

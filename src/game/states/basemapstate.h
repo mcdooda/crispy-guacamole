@@ -5,11 +5,13 @@
 #include "basestate.h"
 #include "../mod/mod.h"
 #include "../entity/entitypool.h"
+#include "../entity/entityupdater.h"
 #include "../entity/component/component.h"
 #include "../entity/component/componentregistry.h"
 #include "../entity/faction/faction.h"
 #include "../debug/debugdisplay.h"
 #include "../timer/timercontainer.h"
+#include "../map/displaymanager.h"
 
 namespace game
 {
@@ -57,6 +59,8 @@ class BaseMapState : public BaseState
 
 		const entity::component::ComponentRegistry& getComponentRegistry() const { return m_componentRegistry; }
 
+		const entity::EntityUpdater& getEntityUpdater() const { return m_entityUpdater; }
+
 		entity::Entity* spawnEntityAtPosition(
 			Game& game,
 			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate,
@@ -67,7 +71,6 @@ class BaseMapState : public BaseState
 			entity::component::ComponentFlags enabledComponentFlags = entity::component::AllComponents
 		);
 		void despawnEntity(entity::Entity* entity);
-		void despawnEntityAtIndex(int index);
 		void despawnEntities();
 
 		inline const std::vector<entity::Entity*>& getSelectedEntities() const { return m_selectedEntities; }
@@ -86,7 +89,6 @@ class BaseMapState : public BaseState
 
 		void addEntityToMap(entity::Entity* entity);
 		void removeEntityFromMap(entity::Entity* entity);
-		entity::Entity* removeEntityFromMapAtIndex(int index);
 
 		inline const flat::video::View& getGameView() const { return m_gameView; }
 
@@ -156,6 +158,8 @@ class BaseMapState : public BaseState
 
 		entity::component::ComponentRegistry m_componentRegistry;
 		entity::EntityPool m_entityPool;
+		entity::EntityUpdater m_entityUpdater;
+		map::DisplayManager m_displayManager;
 
 		std::vector<entity::Entity*> m_selectedEntities;
 		entity::EntityHandle m_mouseOverEntity;

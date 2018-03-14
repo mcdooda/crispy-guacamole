@@ -139,7 +139,7 @@ void GameState::handleDebugInputs(Game & game)
 		setGamePause(game, true, false);
 	}
 
-	std::vector<entity::Entity*>& entitiesToDebug = m_selectedEntities.empty() ? getMap().getEntities() : m_selectedEntities;
+	std::vector<entity::Entity*>& entitiesToDebug = m_selectedEntities.empty() ? m_entityUpdater.getEntities() : m_selectedEntities;
 
 	if (keyboard->isJustPressed(K(F1)))
 	{
@@ -156,15 +156,6 @@ void GameState::handleDebugInputs(Game & game)
 			entity->setDebug(false);
 			entity->setDebugAllComponents(false);
 		}
-	}
-
-	if (keyboard->isJustPressed(K(F3)))
-	{
-		for (entity::Entity* entity : entitiesToDebug)
-		{
-			entity->setDebugBreak(true);
-		}
-		m_pauseNextFrame = true;
 	}
 }
 #endif

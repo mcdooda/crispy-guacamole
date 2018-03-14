@@ -6,6 +6,7 @@
 #include "component/components/selection/selectioncomponent.h"
 #include "../map/map.h"
 #include "../map/tile.h"
+#include "../map/displaymanager.h"
 
 namespace game
 {
@@ -32,7 +33,6 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_aabbCanChange(true)
 #ifdef FLAT_DEBUG
 	, m_debug(false)
-	, m_debugBreak(false)
 #endif
 {
 
@@ -155,26 +155,6 @@ void Entity::onRemovedFromMap()
 	m_tile->removeEntity(this);
 	m_map = nullptr;
 	m_tile = nullptr;
-}
-
-void Entity::update(float time, float dt)
-{
-#ifdef FLAT_DEBUG
-	if (m_debugBreak)
-	{
-		FLAT_BREAK();
-	}
-#endif
-
-	for (component::Component* component : m_components)
-	{
-		if (component->isEnabled())
-		{
-			component->update(time, dt);
-		}
-	}
-
-	updateAABBIfDirty();
 }
 
 #ifdef FLAT_DEBUG

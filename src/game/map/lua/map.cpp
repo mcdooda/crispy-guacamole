@@ -74,7 +74,7 @@ int l_Map_getNumEntities(lua_State* L)
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
 	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
-	lua_pushinteger(L, baseMapState.getMap().getEntities().size());
+	lua_pushinteger(L, baseMapState.getEntityUpdater().getEntities().size());
 	return 1;
 }
 

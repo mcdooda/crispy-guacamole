@@ -18,6 +18,7 @@ class SelectionComponent : public ComponentImpl<SelectionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "selection"; }
+		inline static bool requiresUpdate() { return false; }
 
 		void init() override;
 		void deinit() override;

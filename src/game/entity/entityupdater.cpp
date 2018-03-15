@@ -78,7 +78,7 @@ void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 {
 	for (component::Component* component : entity->getComponents())
 	{
-		if (component->componentRequiresUpdate())
+		if (component->componentRequiresUpdate() && component->isEnabled())
 		{
 			component->update(time, dt);
 		}
@@ -91,7 +91,10 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 	{
 		for (component::Component* component : componentList)
 		{
-			component->update(time, dt);
+			if (component->isEnabled())
+			{
+				component->update(time, dt);
+			}
 		}
 	}
 

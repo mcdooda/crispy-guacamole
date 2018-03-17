@@ -37,8 +37,6 @@ class Entity final : public map::MapObject
 		void operator=(const Entity&) = delete;
 
 		bool isEntity() const override { return true; }
-		
-		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 
 		inline EntityId getId() const { return m_id; }
 		inline EntityHandle getHandle() const { return EntityHandle(this); }
@@ -100,7 +98,7 @@ class Entity final : public map::MapObject
 
 		inline flat::lua::UniqueLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
 
-		inline const std::shared_ptr<const EntityTemplate>& getTemplate() const { return m_template; }
+		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 		const std::string& getTemplateName() const;
 
 

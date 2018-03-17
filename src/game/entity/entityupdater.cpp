@@ -83,6 +83,8 @@ void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 			component->update(time, dt);
 		}
 	}
+
+	entity->updateAABBIfDirty();
 }
 
 void EntityUpdater::updateAllEntities(float time, float dt)

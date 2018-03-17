@@ -419,8 +419,8 @@ void BaseMapState::addEntityToMap(entity::Entity* entity)
 	m_entityUpdater.registerEntity(entity);
 	entity->onAddedToMap(&getMap());
 	flat::time::Clock& clock = getClock();
-	m_entityUpdater.updateSingleEntity(entity, clock.getTime(), clock.getDT());
 	m_displayManager.addEntity(entity);
+	m_entityUpdater.updateSingleEntity(entity, clock.getTime(), clock.getDT());
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)
@@ -487,7 +487,6 @@ void BaseMapState::addGhostEntity(game::Game& game)
 				flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
 				m_ghostEntity->setPosition(ghostPosition);
 				addEntityToMap(m_ghostEntity);
-
 				flat::render::Sprite& sprite = m_ghostEntity->getSprite();
 				flat::video::Color color;
 				if (canPlaceGhostEntity(tile))
@@ -500,6 +499,10 @@ void BaseMapState::addGhostEntity(game::Game& game)
 					color = flat::video::Color::BLACK;
 				}
 				sprite.setColor(color);
+
+#ifdef FLAT_DEBUG
+				m_ghostEntity->debugDraw(m_debugDisplay);
+#endif
 			}
 		}
 	}
@@ -583,7 +586,7 @@ void BaseMapState::draw(game::Game& game)
 	map::Map& map = getMap();
 	map.updateTilesNormals();
 	addGhostEntity(game);
-	getMap().getDisplayManager().sortByDepthAndDraw(game, m_gameView);
+	m_displayManager.sortByDepthAndDraw(game, m_gameView);
 	removeGhostEntity(game);
 	
 #ifdef FLAT_DEBUG
@@ -635,7 +638,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
 	entity::Entity* newMouseOverEntity = nullptr;
 
-	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(getMap().getDisplayManager().getObjectAtPosition(viewMousePosition));
+	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(m_displayManager.getObjectAtPosition(viewMousePosition));
 	if (mouseOverObject != nullptr)
 	{
 		if (mouseOverObject->isEntity())
@@ -779,20 +782,19 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 	{
 		if (mouseOverEntity->canBeSelected() || forceEntitySelection(game))
 		{
-			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getTemplate();
+			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getEntityTemplate();
 
 			flat::AABB2 screenAABB;
 			m_gameView.getScreenAABB(screenAABB);
 
-			const map::DisplayManager& mapDisplayManager = getMap().getDisplayManager();
 			std::vector<const map::MapObject*> entitiesInScreen;
-			mapDisplayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
+			m_displayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
 
 			for (const map::MapObject* mapObject : entitiesInScreen)
 			{
 				// TODO: fix these casts
 				entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
-				if (entity->getTemplate() == entityTemplate)
+				if (entity->getEntityTemplate() == entityTemplate)
 				{
 					addToSelectedEntities(game, entity);
 				}
@@ -818,9 +820,8 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 	selectionAABB.max = m_gameView.getRelativePosition(topRight);
 	std::swap(selectionAABB.min.y, selectionAABB.max.y);
 
-	const map::DisplayManager& mapDisplayManager = getMap().getDisplayManager();
 	std::vector<const map::MapObject*> entitiesInSelectionWidget;
-	mapDisplayManager.getEntitiesInAABB(selectionAABB, entitiesInSelectionWidget);
+	m_displayManager.getEntitiesInAABB(selectionAABB, entitiesInSelectionWidget);
 
 	for (const map::MapObject* mapObject : entitiesInSelectionWidget)
 	{

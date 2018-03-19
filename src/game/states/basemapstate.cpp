@@ -586,7 +586,7 @@ void BaseMapState::draw(game::Game& game)
 	map::Map& map = getMap();
 	map.updateTilesNormals();
 	addGhostEntity(game);
-	m_displayManager.sortByDepthAndDraw(game, m_gameView);
+	m_displayManager.sortAndDraw(game, m_gameView);
 	removeGhostEntity(game);
 	
 #ifdef FLAT_DEBUG

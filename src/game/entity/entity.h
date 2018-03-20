@@ -37,8 +37,6 @@ class Entity final : public map::MapObject
 		void operator=(const Entity&) = delete;
 
 		bool isEntity() const override { return true; }
-		
-		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 
 		inline EntityId getId() const { return m_id; }
 		inline EntityHandle getHandle() const { return EntityHandle(this); }
@@ -67,8 +65,6 @@ class Entity final : public map::MapObject
 		
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
-		
-		void update(float time, float dt);
 
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
@@ -102,7 +98,7 @@ class Entity final : public map::MapObject
 
 		inline flat::lua::UniqueLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
 
-		inline const std::shared_ptr<const EntityTemplate>& getTemplate() const { return m_template; }
+		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 		const std::string& getTemplateName() const;
 
 
@@ -117,7 +113,6 @@ class Entity final : public map::MapObject
 #ifdef FLAT_DEBUG
 		inline void setDebug(bool debug) { m_debug = debug; }
 		inline bool getDebug() const { return m_debug; }
-		inline void setDebugBreak(bool debugBreak) { m_debugBreak = debugBreak; }
 
 		void setDebugAllComponents(bool debug);
 		component::ComponentFlags getDebuggedComponentFlags() const;
@@ -136,6 +131,7 @@ class Entity final : public map::MapObject
 		}
 
 		inline void setAABBCanChange(bool aabbCanChange) { m_aabbCanChange = aabbCanChange; }
+		void updateAABBIfDirty();
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -146,7 +142,6 @@ class Entity final : public map::MapObject
 		
 	protected:
 		map::Tile* getTileFromPosition();
-		void updateAABBIfDirty();
 
 		template <class ComponentType>
 		inline const ComponentType* findComponent() const;
@@ -183,7 +178,6 @@ class Entity final : public map::MapObject
 		bool m_aabbCanChange : 1;
 #ifdef FLAT_DEBUG
 		bool m_debug : 1;
-		bool m_debugBreak : 1;
 #endif
 };
 

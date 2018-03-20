@@ -25,11 +25,6 @@ void PropComponent::deinit()
 	m_owner->removedFromMap.off(this);
 }
 
-void PropComponent::update(float currentTime, float elapsedTime)
-{
-	// nothing to do
-}
-
 bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);

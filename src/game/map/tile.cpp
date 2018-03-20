@@ -1,6 +1,7 @@
 #include "tile.h"
 #include "map.h"
 #include "prop.h"
+#include "displaymanager.h"
 
 namespace game
 {

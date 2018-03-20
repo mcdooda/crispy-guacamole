@@ -37,7 +37,7 @@ void Component::deinit()
 
 void Component::update(float time, float dt)
 {
-
+	FLAT_ASSERT_MSG(false, "This should never be called!");
 }
 
 bool Component::isBusy() const

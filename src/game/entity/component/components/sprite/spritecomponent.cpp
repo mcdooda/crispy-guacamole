@@ -5,6 +5,7 @@
 #include "../../components/selection/selectioncomponent.h"
 #include "../../../entity.h"
 #include "../../../../map/map.h"
+#include "../../../../map/displaymanager.h"
 
 namespace game
 {
@@ -121,12 +122,12 @@ void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	debugDisplay.add2dAABB(m_owner->getAABB());
 
 	// below: debug the owner's sprite's quadtree cell
-	/*
+	
 	const map::Map* map = m_owner->getMap();
 	const map::DisplayManager& mapDisplayManager = map->getDisplayManager();
 	const flat::AABB2& quadtreeCellAABB = mapDisplayManager.getEntityCellAABB(m_owner);
 	debugDisplay.add2dAABB(quadtreeCellAABB, flat::video::Color::RED);
-	*/
+	
 }
 #endif
 

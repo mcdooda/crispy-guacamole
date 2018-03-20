@@ -16,14 +16,15 @@ Map::Map() :
 	m_minX(0),
 	m_maxX(0),
 	m_minY(0),
-	m_maxY(0)
+	m_maxY(0),
+	m_displayManager(nullptr)
 {
 	
 }
 
 Map::~Map()
 {
-	FLAT_ASSERT(m_entities.empty());
+	
 }
 
 bool Map::load(Game& game, const mod::Mod& mod, const std::string& mapName)
@@ -39,12 +40,12 @@ bool Map::load(Game& game, const mod::Mod& mod, const std::string& mapName)
 	return false;
 }
 
-bool Map::save(const mod::Mod& mod, const std::string& mapName) const
+bool Map::save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const
 {
 	io::Writer writer(mod, mapName, *this);
 	if (writer.canWrite())
 	{
-		writer.write();
+		writer.write(entities);
 		return true;
 	}
 	return false;
@@ -177,39 +178,6 @@ void Map::eachTileIfExists(std::function<void(Tile*)> func)
 	});
 }
 
-void Map::addEntity(entity::Entity* entity)
-{
-	FLAT_ASSERT(entity != nullptr);
-	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
-	m_entities.push_back(entity);
-	entity->onAddedToMap(this);
-
-	m_displayManager.addEntity(entity);
-}
-
-void Map::removeEntity(entity::Entity* entity)
-{
-	FLAT_ASSERT(entity != nullptr);
-	std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
-	FLAT_ASSERT(it != m_entities.end());
-	m_entities.erase(it);
-	entity->onRemovedFromMap();
-
-	m_displayManager.removeEntity(entity);
-}
-
-entity::Entity* Map::removeEntityAtIndex(int index)
-{
-	FLAT_ASSERT(0 <= index && index < m_entities.size());
-	entity::Entity* entity = m_entities[index];
-	m_entities[index] = m_entities.back();
-	m_entities.pop_back();
-	entity->onRemovedFromMap();
-
-	m_displayManager.removeEntity(entity);
-	return entity;
-}
-
 void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const
 {
 	const int tileMinX = static_cast<int>(std::round(center2d.x - range));
@@ -233,30 +201,6 @@ void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::fun
 				}
 			}
 		}
-	}
-}
-
-void Map::updateEntities(float time, float dt)
-{
-	std::vector<entity::Entity*> entities = m_entities;
-	for (entity::Entity* entity : entities)
-	{
-		if (entity->isMarkedForDelete())
-		{
-			continue;
-		}
-
-		entity->update(time, dt);
-
-		// ensure all AABBs are up to date
-#ifdef FLAT_DEBUG
-		if (entity->hasSprite())
-		{
-			flat::AABB2 spriteAABB;
-			entity->getSprite().getAABB(spriteAABB);
-			FLAT_ASSERT(spriteAABB == entity->getAABB());
-		}
-#endif
 	}
 }
 
@@ -315,16 +259,6 @@ bool Map::getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) cons
 	}
 	return false;
 }
-
-#ifdef FLAT_DEBUG
-void Map::debugDraw(debug::DebugDisplay& debugDisplay) const
-{
-	for (entity::Entity* entity : m_entities)
-	{
-		entity->debugDraw(debugDisplay);
-	}
-}
-#endif
 
 void Map::setAxes(const flat::Vector2& xAxis,
                   const flat::Vector2& yAxis,

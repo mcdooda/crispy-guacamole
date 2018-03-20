@@ -28,6 +28,8 @@ int open(lua_State* L)
 		{"debug_resume",          l_Game_debug_resume},
 		{"debug_pauseNextFrame",  l_Game_debug_pauseNextFrame},
 
+		{ "debug_getNumTimers",   l_Game_debug_getNumTimers},
+
 		{"debug_reloadComponent", l_Game_debug_reloadComponent},
 		{"debug_removeComponent", l_Game_debug_removeComponent },
 #endif
@@ -86,6 +88,14 @@ int l_Game_debug_pauseNextFrame(lua_State* L)
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	gameState.setGamePause(game, false, true);
 	return 0;
+}
+
+int l_Game_debug_getNumTimers(lua_State* L)
+{
+	BaseState& baseState = base::getBaseState(L);
+	flat::time::Clock& clock = baseState.getClock();
+	lua_pushinteger(L, baseState.getTimerContainer().size());
+	return 1;
 }
 
 int l_Game_debug_reloadComponent(lua_State* L)

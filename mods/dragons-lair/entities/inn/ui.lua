@@ -9,6 +9,9 @@ local ui = setmetatable({}, { __index = Dialog })
 local iconSize = 56
 local margin = 20
 local avatar = EntityPreview:new('shopkeeper', 2)
+avatar.widget:mouseDown(function()
+	avatar:startAnimation('no', 1.1)
+end)
 
 local function buildItemList(container, stock)
 	container:removeAllChildren()
@@ -34,10 +37,6 @@ local function buildUi(entity, content)
 		textLabel:setTextColor(Theme.DIALOG_TEXT_COLOR)
 		firstRow:addChild(textLabel)
 		content:addChild(firstRow)
-
-		avatar.widget:mouseDown(function()
-			avatar:startAnimation('no', 1.1)
-		end)
 	end
 	
 	-- item list
@@ -56,7 +55,7 @@ function ui.addedToMap(entity, widget)
 		buildUi(entity, content)
 	end)
 	
-	entity:deselected(function(entity) 			
+	entity:deselected(function(entity)
 		entity:setUiVisible(false)
 		content:removeAllChildren()
 	end)

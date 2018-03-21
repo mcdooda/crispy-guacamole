@@ -13,6 +13,11 @@ TimerContainer::~TimerContainer()
 	clearTimers();
 }
 
+size_t TimerContainer::size() const
+{
+	return m_timers.size() + m_frameTimers.size();
+}
+
 Timer* TimerContainer::add(float duration, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onUpdate, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onEnd, bool loop)
 {
 	const float beginTime = m_clock->getTime();
@@ -27,13 +32,19 @@ bool TimerContainer::stop(Timer*& timer)
 	std::deque<Timer*>::iterator it = std::find(m_timers.begin(), m_timers.end(), timer);
 	if (it != m_timers.end())
 	{
-		m_timerPool.destroy(timer);
+		m_timerPool.destroy(*it);
 		*it = nullptr;
-		timer = nullptr;
 		return true;
 	}
 	else
 	{
+		std::vector<Timer*>::iterator it = std::find(m_pendingTimers.begin(), m_pendingTimers.end(), timer);
+		if (it != m_pendingTimers.end())
+		{
+			m_timerPool.destroy(*it);
+			m_pendingTimers.erase(it);
+			return true;
+		}
 		return false;
 	}
 }
@@ -41,13 +52,14 @@ bool TimerContainer::stop(Timer*& timer)
 void TimerContainer::updateTimers(lua_State* L)
 {
 	FLAT_ASSERT(m_clock != nullptr);
-	// remove stopped timers
+	const float time = m_clock->getTime();
+	size_t size = m_timers.size();
 	m_timers.erase(
-		std::remove(
+	    std::remove(
 			m_timers.begin(),
 			m_timers.end(),
 			nullptr
-		),
+			),
 		m_timers.end()
 	);
 	FLAT_ASSERT(std::is_sorted(m_timers.begin(), m_timers.end(), &TimerContainer::compareTimersByTimeout));
@@ -55,61 +67,71 @@ void TimerContainer::updateTimers(lua_State* L)
 	// insert pending timers
 	for (Timer* timer : m_pendingTimers)
 	{
-		std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
-		m_timers.insert(it, timer);
+		if (!timer->getOnUpdate().isEmpty())
+		{
+			m_frameTimers.push_back(timer);
+		}
+		else
+		{
+			std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
+			m_timers.insert(it, timer);
+		}
 	}
 	m_pendingTimers.clear();
 
 	// update timers
-	const float time = m_clock->getTime();
-	std::deque<Timer*>::iterator lastStoppedTimerIt = m_timers.begin();
-	std::deque<Timer*>::iterator end = m_timers.end();
-	std::vector<Timer*> loopingTimers;
-	for (std::deque<Timer*>::iterator it = m_timers.begin(); it != end;)
+	for (std::deque<Timer*>::iterator it = m_timers.begin(); it != m_timers.end(); it++)
 	{
 		Timer* timer = *it;
 		if (timer != nullptr)
 		{
-			float timeOut = timer->getTimeOut();
+			const float timeOut = timer->getTimeOut();
 			if (time >= timeOut)
 			{
-				// update one last time before dying
-				lua::callTimerUpdate(L, timer, timeOut);
 				lua::callTimerEnd(L, timer);
-
-				lastStoppedTimerIt = it + 1;
 				if (timer->getLoop())
 				{
-					loopingTimers.push_back(timer);
+					timer->setBeginTime(time);
 				}
 				else
 				{
 					m_timerPool.destroy(timer);
+					*it = nullptr;
 				}
 			}
 			else
 			{
-				lua::callTimerUpdate(L, timer, time);
+				break;
 			}
-			++it;
+		}
+	}
+	std::sort(m_timers.begin(), m_timers.end(), &TimerContainer::compareTimersByTimeout);
+
+	// update frame timers
+	for (std::vector<Timer*>::iterator it = m_frameTimers.begin(); it != m_frameTimers.end();)
+	{
+		Timer* timer = *it;
+		const float timeOut = timer->getTimeOut();
+		if (time >= timeOut)
+		{
+			// update one last time before dying
+			lua::callTimerUpdate(L, timer, timeOut);
+			if (timer->getLoop())
+			{
+				timer->setBeginTime(time);
+				it++;
+			}
+			else
+			{
+				lua::callTimerEnd(L, timer);
+				m_timerPool.destroy(timer);
+				it = m_frameTimers.erase(it);
+			}
 		}
 		else
 		{
-			assert(lastStoppedTimerIt != it);
-			it = m_timers.erase(it);
-		}
-	}
-	std::deque<Timer*> tmpTimers = m_timers;
-	m_timers.erase(m_timers.begin(), lastStoppedTimerIt);
-
-	// push looping timers back
-	for (Timer* timer : loopingTimers)
-	{
-		if (std::find(tmpTimers.begin(), tmpTimers.end(), timer) != tmpTimers.end())
-		{
-			timer->setBeginTime(time);
-			std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
-			m_timers.insert(it, timer);
+			lua::callTimerUpdate(L, timer, time);
+			it++;
 		}
 	}
 }
@@ -118,7 +140,19 @@ void TimerContainer::clearTimers()
 {
 	for (Timer* timer : m_timers)
 	{
-		m_timerPool.destroy(timer);
+		if (timer != nullptr)
+		{
+			m_timerPool.destroy(timer);
+		}
+	}
+	m_timers.clear();
+
+	for (Timer* timer : m_frameTimers)
+	{
+		if (timer != nullptr)
+		{
+			m_timerPool.destroy(timer);
+		}
 	}
 	m_timers.clear();
 
@@ -131,6 +165,10 @@ void TimerContainer::clearTimers()
 
 bool TimerContainer::compareTimersByTimeout(const Timer* a, const Timer* b)
 {
+	if (a == nullptr)
+		return true;
+	if (b == nullptr)
+		return false;
 	return a->getTimeOut() < b->getTimeOut();
 }
 

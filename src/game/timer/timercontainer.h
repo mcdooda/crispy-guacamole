@@ -21,6 +21,8 @@ class TimerContainer
 
 		void operator=(const TimerContainer&) = delete;
 
+		size_t size() const;
+
 		inline void setClock(const std::shared_ptr<flat::time::Clock>& clock) { m_clock = clock; }
 		inline const flat::time::Clock& getClock() const { FLAT_ASSERT(m_clock != nullptr); return *m_clock; }
 		
@@ -30,7 +32,7 @@ class TimerContainer
 		void updateTimers(lua_State* L);
 		
 		void clearTimers();
-		
+
 	private:
 		static bool compareTimersByTimeout(const Timer* a, const Timer* b);
 
@@ -38,6 +40,7 @@ class TimerContainer
 		flat::containers::Pool<Timer, 256> m_timerPool;
 		std::vector<Timer*> m_pendingTimers;
 		std::deque<Timer*> m_timers;
+		std::vector<Timer*> m_frameTimers;
 		std::shared_ptr<flat::time::Clock> m_clock;
 };
 

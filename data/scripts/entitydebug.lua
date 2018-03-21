@@ -25,7 +25,7 @@ return function(addContainer, makeSeparator, font)
 
         entityDebugContainer:addChild(checkbox.container)
 
-        Timer.start(0, nil, function()
+        Timer.start(0, function()
             local numEntities = 0
             local debugEnabled = false
             for _, selectedEntity in Map.eachSelectedEntity() do
@@ -38,7 +38,7 @@ return function(addContainer, makeSeparator, font)
             local state = numEntities > 0 and 'default' or 'disabled'
             checkbox:setState(state)
             checkbox:setValue(debugEnabled)
-        end, true)
+        end, nil,  true)
     end
 
     entityDebugContainer:addChild(makeSeparator())
@@ -74,7 +74,7 @@ return function(addContainer, makeSeparator, font)
             checkboxes[componentName] = checkbox
         end
 
-        Timer.start(0, nil, function()
+        Timer.start(0, function()
             local componentsToShow = {}
             for componentName, componentFlag in pairs(Component) do
                 local hasComponent = false
@@ -101,7 +101,7 @@ return function(addContainer, makeSeparator, font)
                 checkbox:setState(state)
                 checkbox:setValue(debugEnabled)
             end
-        end, true)
+        end, nil, true)
     end
 
     entityDebugContainer:addChild(makeSeparator())
@@ -117,7 +117,7 @@ return function(addContainer, makeSeparator, font)
 
         local entityTemplateLabels = {}
 
-        Timer.start(0, nil, function()
+        Timer.start(0, function()
             local selectedEntityTemplates = {}
             for _, selectedEntity in Map.eachSelectedEntity() do
                 selectedEntityTemplates[selectedEntity:getTemplateName()] = true
@@ -142,6 +142,6 @@ return function(addContainer, makeSeparator, font)
                     entityTemplateLabels[entityTemplateName] = nil
                 end
             end
-        end, true)
+        end, nil, true)
     end
 end

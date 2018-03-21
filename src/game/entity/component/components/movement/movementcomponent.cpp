@@ -267,12 +267,16 @@ void MovementComponent::jump()
 
 bool MovementComponent::setMoveAnimationByName(const std::string& animationName)
 {
-	const sprite::SpriteDescription& spriteDescription = getTemplate<sprite::SpriteComponent>()->getSpriteDescription();
-	const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
-	if (animationDescription != nullptr)
+	const sprite::SpriteComponentTemplate* spriteComponentTemplate = getTemplate<sprite::SpriteComponent>();
+	if (spriteComponentTemplate != nullptr)
 	{
-		m_moveAnimationDescription = animationDescription;
-		return true;
+		const sprite::SpriteDescription& spriteDescription = spriteComponentTemplate->getSpriteDescription();
+		const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
+		if (animationDescription != nullptr)
+		{
+			m_moveAnimationDescription = animationDescription;
+			return true;
+		}
 	}
 	return false;
 }

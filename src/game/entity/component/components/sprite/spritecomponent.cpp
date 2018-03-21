@@ -127,7 +127,11 @@ void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	const map::DisplayManager& mapDisplayManager = map->getDisplayManager();
 	const flat::AABB2& quadtreeCellAABB = mapDisplayManager.getEntityCellAABB(m_owner);
 	debugDisplay.add2dAABB(quadtreeCellAABB, flat::video::Color::RED);
-	
+	if (m_currentAnimationDescription != nullptr)
+	{
+		debugDisplay.add3dText(m_owner->getPosition(), m_currentAnimationDescription->getName()
+			+ " " + std::to_string(m_sprite.getCurrentColumn() + 1) + "/" + std::to_string(m_currentAnimationDescription->getNumFrames()));
+	}
 }
 #endif
 

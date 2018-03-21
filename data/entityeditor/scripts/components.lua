@@ -130,11 +130,11 @@ function ComponentSelectionPanel:buildComponentTabs()
     self.componentTabs = {}
 
     for i, componentName in pairs(componentsSorted) do
-        
+
         local componentTab = Widget.makeColumnFlow()
         componentTab:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
         local componentNameLabel = Widget.makeText(componentName, table.unpack(UiSettings.defaultFont))
-        
+
         self.componentNameLabels[componentName] = componentNameLabel
         self:updateTabColor(componentName)
 
@@ -291,9 +291,7 @@ function ComponentDetailsPanel:editCurrentComponent()
     local editGraph = self:shouldEditGraph(componentName)
 
     if not editGraph then
-        pcall(function()
-            os.execute('code ' .. Path.getComponentPath(entityTemplateName, componentName .. '.lua'))
-        end)
+        flat.textEditor.open(Path.getComponentPath(entityTemplateName, componentName .. '.lua'))
     else
         flat.graph.editor.open(
             Widget.getRoot(),
@@ -304,10 +302,10 @@ function ComponentDetailsPanel:editCurrentComponent()
                 -- kill the entity to respawn a new one with the right components
                 EntityState:getEntity():delete()
                 Game.debug_reloadComponent(entityTemplateName, Component[componentName], isNew or EntityState:isComponentBroken(componentName))
-                
+
                 -- force reload component template
                 Path.requireComponentTemplate(entityTemplateName, componentName, true)
-                
+
                 EntityEditor.entitySpawned(function(entity)
                     ComponentSelectionPanel:updateCurrentTab()
                     return false
@@ -327,10 +325,10 @@ function ComponentDetailsPanel:removeCurrentComponent()
     os.remove(componentPath .. '.graph.lua')
     os.remove(componentPath .. '.layout.lua')
     os.remove(componentPath .. '.lua')
-        
+
     -- force reload component template
     Path.requireComponentTemplateIfExists(entityTemplateName, componentName, true)
-    
+
     -- kill the entity to respawn a new one with the right components
     EntityState:getEntity():delete()
     EntityEditor.entitySpawned(function(entity)

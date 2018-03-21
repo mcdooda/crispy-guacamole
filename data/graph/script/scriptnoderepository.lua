@@ -37,9 +37,6 @@ return {
     'components/spritecomponent',
     'entity/playanimation',
 
-    -- texture
-    'components/texturecomponent',
-
     -- entity
     'entity/spawnentity',
     'entity/despawnentity',

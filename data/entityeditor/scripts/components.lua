@@ -310,6 +310,14 @@ function ComponentDetailsPanel:editCurrentComponent()
                     ComponentSelectionPanel:updateCurrentTab()
                     return false
                 end)
+            end,
+            function(graphPath)
+                local modPath = Mod.getPath()
+                local regex = '^' .. modPath:gsub('%-', '%%-') .. '(.+)$'
+                local relativePath, matches = graphPath:gsub(regex, '%1')
+                if matches > 0 then
+                    return ([[return flat.graph.script.run(Mod.getPath() .. '%s')]]):format(relativePath)
+                end
             end
         )
     end
@@ -318,8 +326,6 @@ end
 function ComponentDetailsPanel:removeCurrentComponent()
     local entityTemplateName = EntityState:getTemplateName()
     local componentName = ComponentSelectionPanel:getCurrentComponentName()
-
-    Game.debug_removeComponent(entityTemplateName, Component[componentName])
 
     local componentPath = Path.getComponentPath(entityTemplateName, componentName)
     os.remove(componentPath .. '.graph.lua')
@@ -331,6 +337,10 @@ function ComponentDetailsPanel:removeCurrentComponent()
 
     -- kill the entity to respawn a new one with the right components
     EntityState:getEntity():delete()
+    EntityEditor.entityDespawned(function()
+        Game.debug_removeComponent(entityTemplateName, Component[componentName])
+        return false
+    end)
     EntityEditor.entitySpawned(function(entity)
         ComponentSelectionPanel:updateCurrentTab()
         return false

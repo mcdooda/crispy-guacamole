@@ -37,8 +37,6 @@ class Entity final : public map::MapObject
 		void operator=(const Entity&) = delete;
 
 		bool isEntity() const override { return true; }
-		
-		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 
 		inline EntityId getId() const { return m_id; }
 		inline EntityHandle getHandle() const { return EntityHandle(this); }
@@ -59,16 +57,14 @@ class Entity final : public map::MapObject
 		void setElevation(float elevation);
 		inline float getElevation() const { return m_elevation; }
 		
-		inline void setSprite(const flat::render::Sprite& sprite) { m_sprite = &sprite; }
+		inline void setSprite(flat::render::Sprite* sprite) { FLAT_ASSERT(sprite != nullptr); m_sprite = sprite; }
 		inline void clearSprite() { m_sprite = nullptr; }
 		inline bool hasSprite() const { return m_sprite != nullptr; }
-		const flat::render::Sprite& getSprite() const override;
+		flat::render::Sprite& getSprite() override;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
 		void onAddedToMap(map::Map* map);
 		void onRemovedFromMap();
-		
-		void update(float time, float dt);
 
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
@@ -90,23 +86,19 @@ class Entity final : public map::MapObject
 		inline void resetComponents() { deinitComponents(); initComponents(); }
 
 		template <class ComponentType>
-		inline const ComponentType* findComponent() const;
-		template <class ComponentType>
-		inline ComponentType* findComponent();
-		const component::Component* findComponent(component::ComponentFlags componentFlag) const;
-		component::Component* findComponent(component::ComponentFlags componentFlag);
-
-		template <class ComponentType>
 		inline const ComponentType* getComponent() const;
 		template <class ComponentType>
 		inline ComponentType* getComponent();
+
+		const component::Component* findComponent(component::ComponentFlags componentFlag) const;
+		component::Component* findComponent(component::ComponentFlags componentFlag);
 
 		inline const std::vector<component::Component*>& getComponents() const { return m_components; }
 		inline void removeAllComponents() { m_components.clear(); }
 
 		inline flat::lua::UniqueLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
 
-		inline const std::shared_ptr<const EntityTemplate>& getTemplate() const { return m_template; }
+		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 		const std::string& getTemplateName() const;
 
 
@@ -121,7 +113,6 @@ class Entity final : public map::MapObject
 #ifdef FLAT_DEBUG
 		inline void setDebug(bool debug) { m_debug = debug; }
 		inline bool getDebug() const { return m_debug; }
-		inline void setDebugBreak(bool debugBreak) { m_debugBreak = debugBreak; }
 
 		void setDebugAllComponents(bool debug);
 		component::ComponentFlags getDebuggedComponentFlags() const;
@@ -140,6 +131,7 @@ class Entity final : public map::MapObject
 		}
 
 		inline void setAABBCanChange(bool aabbCanChange) { m_aabbCanChange = aabbCanChange; }
+		void updateAABBIfDirty();
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -150,7 +142,11 @@ class Entity final : public map::MapObject
 		
 	protected:
 		map::Tile* getTileFromPosition();
-		void updateAABBIfDirty();
+
+		template <class ComponentType>
+		inline const ComponentType* findComponent() const;
+		template <class ComponentType>
+		inline ComponentType* findComponent();
 		
 	protected:
 		static const flat::render::ProgramSettings* entityProgramSettings;
@@ -160,7 +156,7 @@ class Entity final : public map::MapObject
 		component::collision::CollisionComponent* m_collisionComponent;
 		component::movement::MovementComponent*   m_movementComponent;
 
-		const flat::render::Sprite* m_sprite;
+		flat::render::Sprite* m_sprite;
 		
 		EntityId m_id;
 
@@ -182,7 +178,6 @@ class Entity final : public map::MapObject
 		bool m_aabbCanChange : 1;
 #ifdef FLAT_DEBUG
 		bool m_debug : 1;
-		bool m_debugBreak : 1;
 #endif
 };
 
@@ -190,24 +185,18 @@ template <class ComponentType>
 inline const ComponentType* Entity::findComponent() const
 {
 	static_assert(std::is_base_of<component::Component, ComponentType>::value, "ComponentType must inherit from Component");
-	for (const component::Component* component : m_components)
-	{
-		if (const ComponentType* c = dynamic_cast<const ComponentType*>(component))
-			return c;
-	}
-	return nullptr;
+	const component::Component* component = findComponent(ComponentType::getFlag());
+	FLAT_ASSERT(component == nullptr || dynamic_cast<const ComponentType*>(component) != nullptr);
+	return static_cast<const ComponentType*>(component);
 }
 
 template <class ComponentType>
 inline ComponentType* Entity::findComponent()
 {
 	static_assert(std::is_base_of<component::Component, ComponentType>::value, "ComponentType must inherit from Component");
-	for (component::Component* component : m_components)
-	{
-		if (ComponentType* c = dynamic_cast<ComponentType*>(component))
-			return c;
-	}
-	return nullptr;
+	component::Component* component = findComponent(ComponentType::getFlag());
+	FLAT_ASSERT(component == nullptr || dynamic_cast<ComponentType*>(component) != nullptr);
+	return static_cast<ComponentType*>(component);
 }
 
 template <class ComponentType>
@@ -220,6 +209,28 @@ template <class ComponentType>
 inline ComponentType* Entity::getComponent()
 {
 	return findComponent<ComponentType>();
+}
+
+template <>
+inline const component::behavior::BehaviorComponent* Entity::getComponent() const
+{
+	return m_behaviorComponent;
+}
+template <>
+inline component::behavior::BehaviorComponent* Entity::getComponent()
+{
+	return m_behaviorComponent;
+}
+
+template <>
+inline const component::collision::CollisionComponent* Entity::getComponent() const
+{
+	return m_collisionComponent;
+}
+template <>
+inline component::collision::CollisionComponent* Entity::getComponent()
+{
+	return m_collisionComponent;
 }
 
 template <>

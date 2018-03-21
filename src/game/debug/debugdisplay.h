@@ -12,11 +12,6 @@ namespace game
 {
 class Game;
 
-namespace map
-{
-class Map;
-}
-
 namespace debug
 {
 

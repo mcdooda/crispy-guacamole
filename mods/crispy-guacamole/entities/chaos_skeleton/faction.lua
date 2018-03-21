@@ -1,3 +1,1 @@
-return {
-	faction = 'chaos'
-}
+return flat.graph.script.run(Mod.getPath() .. '/entities/chaos_skeleton/faction')

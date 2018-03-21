@@ -25,11 +25,6 @@ void PropComponent::deinit()
 	m_owner->removedFromMap.off(this);
 }
 
-void PropComponent::update(float currentTime, float elapsedTime)
-{
-	// nothing to do
-}
-
 bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
@@ -67,9 +62,13 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	m_owner->setWorldSpaceAABB(aabb);
 	m_owner->setAABBCanChange(false);
 
-	// make it "stand"
-	m_owner->setHeading(flat::PI * 0.75f);
-	m_owner->setElevation(0.f);
+	//  update sprite
+	if (m_owner->hasSprite())
+	{
+		flat::render::Sprite& sprite = m_owner->getSprite();
+		flat::Vector2 position2d(map->getTransform() * position);
+		sprite.setPosition(position2d);
+	}
 
 	return true;
 }

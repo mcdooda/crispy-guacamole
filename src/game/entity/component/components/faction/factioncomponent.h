@@ -21,8 +21,7 @@ class FactionComponent : public ComponentImpl<FactionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "faction"; }
-
-		void update(float currentTime, float elapsedTime) override;
+		inline static bool requiresUpdate() { return false; }
 
 		const entity::faction::Faction& getFaction() const;
 };

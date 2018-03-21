@@ -1,1 +1,0 @@
-return flat.graph.script.run 'mods/the-global-scourge/entities/defense1/texture'

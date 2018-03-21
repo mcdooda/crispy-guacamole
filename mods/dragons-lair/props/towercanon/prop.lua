@@ -1,0 +1,3 @@
+return {
+	towercanon = 1
+}

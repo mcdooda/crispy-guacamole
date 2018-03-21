@@ -24,6 +24,12 @@ script {
       1,
       4,
     },
+    {
+      6,
+      1,
+      1,
+      3,
+    },
   },
   nodes = {
     {
@@ -37,7 +43,7 @@ script {
     },
     {
       loadArguments = {
-        0.01,
+        0.0099999997764826,
       },
       name = 'number',
     },
@@ -55,6 +61,12 @@ script {
         },
       },
       name = 'script/scriptoutput',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
   },
 }

@@ -43,13 +43,13 @@ script {
     },
     {
       loadArguments = {
-        1,
+        2,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        2,
       },
       name = 'number',
     },

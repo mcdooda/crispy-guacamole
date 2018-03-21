@@ -26,7 +26,8 @@ namespace states
 {
 
 BaseMapState::BaseMapState() :
-	m_entityPool(m_componentRegistry)
+	m_entityPool(m_componentRegistry),
+	m_entityUpdater(m_componentRegistry)
 #ifdef FLAT_DEBUG
 	, m_isReloading(false)
 #endif
@@ -90,7 +91,14 @@ void BaseMapState::enter(Game& game)
 	
 	initRender(game);
 
-	// reset view
+	m_entityTemplateManager.init(game);
+	
+	loadMap(game, game.mapName);
+
+	// load debug display resources *after* the map is loaded!
+	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
+
+		// reset view
 #ifdef FLAT_DEBUG
 	if (!m_isReloading)
 	{
@@ -107,14 +115,6 @@ void BaseMapState::enter(Game& game)
 #ifdef FLAT_DEBUG
 	}
 #endif
-
-	m_entityTemplateManager.init(game);
-	
-	// level
-	loadMap(game, game.mapName);
-
-	// load debug display resources *after* the map is loaded!
-	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
 
 	resetViews(game);
 
@@ -147,12 +147,12 @@ void BaseMapState::execute(Game& game)
 void BaseMapState::exit(Game& game)
 {
 	map::Map& map = getMap();
-	for (entity::Entity* entity : map.getEntities())
+	std::vector<entity::Entity*> entities = m_entityUpdater.getEntities();
+	for (entity::Entity* entity : entities)
 	{
-		m_entityPool.destroyEntity(entity);
+		despawnEntity(entity);
 	}
 	clearGhostTemplate();
-	map.removeAllEntities();
 
 	Super::exit(game);
 }
@@ -165,6 +165,7 @@ void BaseMapState::setModPath(const std::string& modPath)
 bool BaseMapState::loadMap(Game& game, const std::string& mapName)
 {
 	map::Map& map = getMap();
+	map.setDisplayManager(&m_displayManager);
 	if (map.load(game, m_mod, mapName))
 	{
 		game.mapName = mapName;
@@ -176,7 +177,7 @@ bool BaseMapState::loadMap(Game& game, const std::string& mapName)
 bool BaseMapState::saveMap(Game& game) const
 {
 	const map::Map& map = getMap();
-	return map.save(m_mod, game.mapName);
+	return map.save(m_mod, game.mapName, m_entityUpdater.getEntities());
 }
 
 const map::Map& BaseMapState::getMap() const
@@ -345,8 +346,6 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	entity->setHeading(heading);
 	entity->setElevation(elevation);
 	addEntityToMap(entity);
-	const float currentTime = m_clock->getTime();
-	entity->update(currentTime, 0.f);
 	return entity;
 }
 
@@ -357,23 +356,14 @@ void BaseMapState::despawnEntity(entity::Entity* entity)
 	destroyEntity(entity);
 }
 
-void BaseMapState::despawnEntityAtIndex(int index)
-{
-	entity::Entity* entity = removeEntityFromMapAtIndex(index);
-	removeFromSelectedEntities(entity);
-	destroyEntity(entity);
-}
-
 void BaseMapState::despawnEntities()
 {
-	map::Map& map = getMap();
-	std::vector<entity::Entity*>& entities = map.getEntities();
-	for (int i = static_cast<int>(entities.size() - 1); i >= 0; --i)
+	std::vector<entity::Entity*> entities = m_entityUpdater.getEntities();
+	for (entity::Entity* entity : entities)
 	{
-		entity::Entity* entity = entities[i];
 		if (entity->isMarkedForDelete())
 		{
-			despawnEntityAtIndex(i);
+			despawnEntity(entity);
 		}
 	}
 }
@@ -426,21 +416,19 @@ void BaseMapState::destroyEntity(entity::Entity* entity)
 void BaseMapState::addEntityToMap(entity::Entity* entity)
 {
 	FLAT_ASSERT(entity->getMap() == nullptr);
-	map::Map& map = getMap();
-	map.addEntity(entity);
+	m_entityUpdater.registerEntity(entity);
+	entity->onAddedToMap(&getMap());
+	flat::time::Clock& clock = getClock();
+	m_displayManager.addEntity(entity);
+	m_entityUpdater.updateSingleEntity(entity, clock.getTime(), clock.getDT());
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)
 {
 	FLAT_ASSERT(entity->getMap() != nullptr);
-	map::Map& map = getMap();
-	map.removeEntity(entity);
-}
-
-entity::Entity* BaseMapState::removeEntityFromMapAtIndex(int index)
-{
-	map::Map& map = getMap();
-	return map.removeEntityAtIndex(index);
+	m_entityUpdater.unregisterEntity(entity);
+	entity->onRemovedFromMap();
+	m_displayManager.removeEntity(entity);
 }
 
 bool BaseMapState::isMouseOverUi(game::Game& game) const
@@ -449,6 +437,7 @@ bool BaseMapState::isMouseOverUi(game::Game& game) const
 	return root->isMouseOver() && root->getCurrentMouseOverWidget().lock() != m_selectionWidget;
 }
 
+#ifdef FLAT_DEBUG
 void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 {
 	m_pauseNextFrame = pauseNextFrame;
@@ -470,6 +459,7 @@ void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 		clock.resume();
 	}
 }
+#endif
 
 void BaseMapState::update(game::Game& game)
 {
@@ -497,11 +487,7 @@ void BaseMapState::addGhostEntity(game::Game& game)
 				flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
 				m_ghostEntity->setPosition(ghostPosition);
 				addEntityToMap(m_ghostEntity);
-
-				m_ghostEntity->update(m_clock->getTime(), 0.f);
-
-				// TODO: clean this shit
-				flat::render::Sprite& sprite = const_cast<flat::render::Sprite&>(m_ghostEntity->getSprite());
+				flat::render::Sprite& sprite = m_ghostEntity->getSprite();
 				flat::video::Color color;
 				if (canPlaceGhostEntity(tile))
 				{
@@ -513,6 +499,10 @@ void BaseMapState::addGhostEntity(game::Game& game)
 					color = flat::video::Color::BLACK;
 				}
 				sprite.setColor(color);
+
+#ifdef FLAT_DEBUG
+				m_ghostEntity->debugDraw(m_debugDisplay);
+#endif
 			}
 		}
 	}
@@ -596,11 +586,11 @@ void BaseMapState::draw(game::Game& game)
 	map::Map& map = getMap();
 	map.updateTilesNormals();
 	addGhostEntity(game);
-	getMap().getDisplayManager().sortByDepthAndDraw(game, m_gameView);
+	m_displayManager.sortAndDraw(game, m_gameView);
 	removeGhostEntity(game);
 	
 #ifdef FLAT_DEBUG
-	map.debugDraw(m_debugDisplay);
+	m_entityUpdater.debugDraw(m_debugDisplay);
 	m_debugDisplay.drawElements(game, m_gameView);
 #endif
 	
@@ -645,15 +635,15 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	const flat::Vector2& mousePosition = game.input->mouse->getPosition();
 	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition);
 
-	const entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
-	const entity::Entity* newMouseOverEntity = nullptr;
+	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
+	entity::Entity* newMouseOverEntity = nullptr;
 
-	const map::MapObject* mouseOverObject = getMap().getDisplayManager().getObjectAtPosition(viewMousePosition);
+	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(m_displayManager.getObjectAtPosition(viewMousePosition));
 	if (mouseOverObject != nullptr)
 	{
 		if (mouseOverObject->isEntity())
 		{
-			const entity::Entity* entity = static_cast<const entity::Entity*>(mouseOverObject);
+			entity::Entity* entity = static_cast<entity::Entity*>(mouseOverObject);
 			newMouseOverEntity = entity;
 		}
 		else if (mouseOverObject->isTile())
@@ -688,24 +678,24 @@ void BaseMapState::clearMouseOverEntity()
 	}
 }
 
-void BaseMapState::setMouseOverColor(const entity::Entity* entity) const
+void BaseMapState::setMouseOverColor(entity::Entity* entity) const
 {
-	const_cast<flat::render::Sprite&>(entity->getSprite()).setColor(flat::video::Color::GREEN);
+	entity->getSprite().setColor(flat::video::Color::GREEN);
 }
 
-void BaseMapState::clearMouseOverColor(const entity::Entity* entity) const
+void BaseMapState::clearMouseOverColor(entity::Entity* entity) const
 {
 	flat::video::Color color = flat::video::Color::WHITE;
 	if (entity->isSelected())
 	{
 		color = flat::video::Color::RED;
 	}
-	const_cast<flat::render::Sprite&>(entity->getSprite()).setColor(color);
+	entity->getSprite().setColor(color);
 }
 
 bool BaseMapState::updateSelectionWidget(Game& game)
 {
-	if (isMouseOverUi(game))
+	if (isMouseOverUi(game) && !isSelecting())
 	{
 		return false;
 	}
@@ -792,20 +782,19 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 	{
 		if (mouseOverEntity->canBeSelected() || forceEntitySelection(game))
 		{
-			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getTemplate();
+			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getEntityTemplate();
 
 			flat::AABB2 screenAABB;
 			m_gameView.getScreenAABB(screenAABB);
 
-			const map::DisplayManager& mapDisplayManager = getMap().getDisplayManager();
 			std::vector<const map::MapObject*> entitiesInScreen;
-			mapDisplayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
+			m_displayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
 
 			for (const map::MapObject* mapObject : entitiesInScreen)
 			{
 				// TODO: fix these casts
 				entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
-				if (entity->getTemplate() == entityTemplate)
+				if (entity->getEntityTemplate() == entityTemplate)
 				{
 					addToSelectedEntities(game, entity);
 				}
@@ -831,9 +820,8 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 	selectionAABB.max = m_gameView.getRelativePosition(topRight);
 	std::swap(selectionAABB.min.y, selectionAABB.max.y);
 
-	const map::DisplayManager& mapDisplayManager = getMap().getDisplayManager();
 	std::vector<const map::MapObject*> entitiesInSelectionWidget;
-	mapDisplayManager.getEntitiesInAABB(selectionAABB, entitiesInSelectionWidget);
+	m_displayManager.getEntitiesInAABB(selectionAABB, entitiesInSelectionWidget);
 
 	for (const map::MapObject* mapObject : entitiesInSelectionWidget)
 	{
@@ -918,7 +906,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 	const auto& mouse = game.input->mouse;
 	const auto& keyboard = game.input->keyboard;
 
-	if (isMouseOverUi(game))
+	if (isMouseOverUi(game) && !isSelecting())
 	{
 		clearMouseOverEntity();
 	}
@@ -1078,7 +1066,7 @@ void BaseMapState::updateEntities()
 
 	despawnEntities();
 	const flat::time::Clock& clock = getClock();
-	getMap().updateEntities(clock.getTime(), clock.getDT());
+	m_entityUpdater.updateAllEntities(clock.getTime(), clock.getDT());
 
 #ifdef FLAT_DEBUG
 	}

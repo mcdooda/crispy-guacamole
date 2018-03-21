@@ -1,0 +1,3 @@
+return {
+	watchtower = 1
+}

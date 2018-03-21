@@ -14,6 +14,11 @@ namespace mod
 class Mod;
 }
 
+namespace entity
+{
+class Entity;
+}
+
 namespace map
 {
 class Map;
@@ -28,12 +33,12 @@ class Writer
 		~Writer();
 
 		bool canWrite() const;
-		void write();
+		void write(const std::vector<entity::Entity*>& entities);
 
 	private:
 		void writeHeaders();
 		void writeTiles();
-		void writeEntities();
+		void writeEntities(const std::vector<entity::Entity*>& entities);
 		void writeZones();
 
 		template <class T>

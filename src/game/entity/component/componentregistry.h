@@ -17,7 +17,11 @@ class ComponentRegistry
 {
 public:
 	ComponentRegistry();
+	ComponentRegistry(const ComponentRegistry&) = delete;
+	ComponentRegistry(ComponentRegistry&&) = delete;
 	~ComponentRegistry();
+
+	void operator=(const ComponentRegistry&) = delete;
 
 	void registerComponentTypes();
 

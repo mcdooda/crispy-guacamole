@@ -19,10 +19,11 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 1);
 	static const luaL_Reg EntityEditor_lib_f[] = {
-		{"newEntity",     l_EntityEditor_newEntity},
-		{"openEntity",    l_EntityEditor_openEntity},
+		{"newEntity",       l_EntityEditor_newEntity},
+		{"openEntity",      l_EntityEditor_openEntity},
 
-		{"entitySpawned", l_EntityEditor_entitySpawned},
+		{"entitySpawned",   l_EntityEditor_entitySpawned},
+		{"entityDespawned", l_EntityEditor_entityDespawned},
 
 		{nullptr, nullptr}
 	};
@@ -66,6 +67,30 @@ int l_EntityEditor_entitySpawned(lua_State* L)
 			[entity](lua_State* L)
 			{
 				entity::lua::pushEntity(L, entity);
+			},
+			1,
+			[&keepCallback](lua_State* L)
+			{
+				keepCallback = lua_toboolean(L, -1);
+			}
+		);
+		return keepCallback;
+	});
+	return 0;
+}
+
+int l_EntityEditor_entityDespawned(lua_State* L)
+{
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onEntityDespawned;
+	onEntityDespawned.set(L, 1);
+
+	EntityEditorState& entityEditorState = base::getBaseState(L).to<EntityEditorState>();
+	entityEditorState.entityDespawned.on([L, onEntityDespawned]()
+	{
+		bool keepCallback = true;
+		onEntityDespawned.callFunction(
+			[](lua_State* L)
+			{
 			},
 			1,
 			[&keepCallback](lua_State* L)

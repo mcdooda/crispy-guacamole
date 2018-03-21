@@ -27,9 +27,13 @@ public:
 	ComponentFlags getComponentTypeFlag() const;
 
 	virtual size_t getComponentSize() const = 0;
+
 	virtual const char* getConfigName() const = 0;
 	virtual bool enableInMapEditor() const = 0;
 	virtual bool allowEntityInEditor() const = 0;
+
+	virtual bool requiresUpdate() const = 0;
+
 	virtual ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const = 0;
 
 	virtual Component* createComponent(flat::containers::DynamicPool& pool) const = 0;
@@ -46,9 +50,13 @@ public:
 	ComponentTypeImpl(ComponentTypeId typeId) : Super(typeId) {}
 
 	size_t getComponentSize() const override;
+
 	const char* getConfigName() const override;
 	bool enableInMapEditor() const override;
 	bool allowEntityInEditor() const override;
+
+	bool requiresUpdate() const override;
+
 	ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const override;
 
 	Component* createComponent(flat::containers::DynamicPool& pool) const override;
@@ -77,6 +85,12 @@ template <class T>
 bool ComponentTypeImpl<T>::allowEntityInEditor() const
 {
 	return T::allowEntityInEditor();
+}
+
+template<class T>
+inline bool ComponentTypeImpl<T>::requiresUpdate() const
+{
+	return T::requiresUpdate();
 }
 
 template <class T>

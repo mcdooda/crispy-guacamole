@@ -1,14 +1,1 @@
-return {
-	weight = 0,
-	speed = 12,
-	collidedCallback = function(projectile, collidedEntity, normal)
-		if not collidedEntity then
-			local position = projectile:getPosition()
-			local heading = projectile:getHeading()
-			Entity.spawn('fx_explosion', position, heading)
-
-			projectile:despawn()
-		end
-		return true
-	end
-}
+return flat.graph.script.run(Mod.getPath() .. '/entities/projectile_purple_magic/projectile')

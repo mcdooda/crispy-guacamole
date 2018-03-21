@@ -1,3 +1,1 @@
-return {
-    canBeSelected = true
-}
+return flat.graph.script.run(Mod.getPath() .. '/entities/chaos_skeleton/selection')

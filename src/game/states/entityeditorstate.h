@@ -18,6 +18,7 @@ class EntityEditorState : public BaseMapStateImpl<map::EditorMap>
 
 	public:
 		flat::Slot<entity::Entity*> entitySpawned;
+		flat::Slot<> entityDespawned;
 
 	private:
 		void spawnEntity(Game& game);

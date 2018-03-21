@@ -6,6 +6,7 @@ local ProjectileComponentNode = FunctionalScriptNode:inherit 'Projectile Compone
 function ProjectileComponentNode:buildPins()
     self.weightInPin = self:addInputPin(flat.types.NUMBER, 'Weight')
     self.speedInPin = self:addInputPin(flat.types.NUMBER, 'Speed')
+    self.rotateSpriteInPin = self:addInputPin(flat.types.BOOLEAN, 'Rotate Sprite')
 
     self.componentOutPin = self:addOutputPin(flat.types.TABLE, 'Component')
     self.onAttackOutPin = self:addOutputPin(PinTypes.IMPULSE, 'On Collide')
@@ -17,10 +18,12 @@ end
 function ProjectileComponentNode:execute(runtime)
     local weight = runtime:readPin(self.weightInPin)
     local speed = runtime:readPin(self.speedInPin)
+    local rotateSprite = runtime:readPin(self.rotateSpriteInPin)
 
     local component = {
         weight = weight,
         speed = speed,
+        rotateSprite = rotateSprite,
         collidedCallback = function(entity, collidedEntity, normal)
             runtime:writePin(self.entityOutPin, entity)
             if collidedEntity then

@@ -31,7 +31,7 @@ class DisplayManager final
 		void removeTerrainObject(const MapObject* mapObject);
 		void updateTerrainObject(const MapObject* mapObject);
 
-		void sortByDepthAndDraw(Game& game, const flat::video::View& view);
+		void sortAndDraw(Game& game, const flat::video::View& view);
 
 		const MapObject* getObjectAtPosition(const flat::Vector2& position) const;
 		void getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const;
@@ -41,7 +41,7 @@ class DisplayManager final
 #endif
 
 	private:
-		static void sortObjectsByDepth(std::vector<const MapObject*>& objects);
+		static void sortObjects(std::vector<const MapObject*>& objects);
 		
 	private:
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;

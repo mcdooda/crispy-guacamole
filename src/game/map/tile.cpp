@@ -1,6 +1,7 @@
 #include "tile.h"
 #include "map.h"
 #include "prop.h"
+#include "displaymanager.h"
 
 namespace game
 {
@@ -34,8 +35,7 @@ void Tile::setExists(Map& map, bool exists)
 			setNearbyTilesDirty(map);
 			if (m_prop != nullptr)
 			{
-				// TODO: fix this const_cast
-				const_cast<flat::render::Sprite&>(m_prop->getSprite()).setNormal(flat::Vector3(0.f, 0.f, 1.f));
+				m_prop->getSprite().setNormal(flat::Vector3(0.f, 0.f, 1.f));
 				displayManager.addTerrainObject(m_prop);
 			}
 		}
@@ -51,7 +51,7 @@ void Tile::setExists(Map& map, bool exists)
 	}
 }
 
-const flat::render::Sprite& Tile::getSprite() const
+flat::render::Sprite& Tile::getSprite()
 {
 	FLAT_ASSERT(m_exists);
 	return m_sprite;

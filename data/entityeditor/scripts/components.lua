@@ -329,8 +329,6 @@ function ComponentDetailsPanel:removeCurrentComponent()
     local entityTemplateName = EntityState:getTemplateName()
     local componentName = ComponentSelectionPanel:getCurrentComponentName()
 
-    Game.debug_removeComponent(entityTemplateName, Component[componentName])
-
     local componentPath = Path.getComponentPath(entityTemplateName, componentName)
     os.remove(componentPath .. '.graph.lua')
     os.remove(componentPath .. '.layout.lua')
@@ -341,6 +339,10 @@ function ComponentDetailsPanel:removeCurrentComponent()
     
     -- kill the entity to respawn a new one with the right components
     EntityState:getEntity():delete()
+    EntityEditor.entityDespawned(function()
+        Game.debug_removeComponent(entityTemplateName, Component[componentName])
+        return false
+    end)
     EntityEditor.entitySpawned(function(entity)
         ComponentSelectionPanel:updateCurrentTab()
         return false

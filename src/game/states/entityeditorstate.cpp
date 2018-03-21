@@ -71,6 +71,7 @@ void EntityEditorState::respawnEntityIfNeeded(Game & game)
 {
 	if (!m_entity.isValid())
 	{
+		entityDespawned();
 		spawnEntity(game);
 
 #ifdef FLAT_DEBUG

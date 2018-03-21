@@ -18,6 +18,7 @@ int l_EntityEditor_newEntity(lua_State* L);
 int l_EntityEditor_openEntity(lua_State* L);
 
 int l_EntityEditor_entitySpawned(lua_State* L);
+int l_EntityEditor_entityDespawned(lua_State* L);
 
 } // entityeditor
 } // lua

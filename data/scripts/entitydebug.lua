@@ -24,8 +24,8 @@ return function(addContainer, makeSeparator, font)
         end)
 
         entityDebugContainer:addChild(checkbox.container)
-
-        Timer.start(0, function()
+        local timer = Timer.new()
+        timer:onUpdate(function()
             local numEntities = 0
             local debugEnabled = false
             for _, selectedEntity in Map.eachSelectedEntity() do
@@ -38,7 +38,8 @@ return function(addContainer, makeSeparator, font)
             local state = numEntities > 0 and 'default' or 'disabled'
             checkbox:setState(state)
             checkbox:setValue(debugEnabled)
-        end, nil,  true)
+        end)
+        timer:start(0, true)
     end
 
     entityDebugContainer:addChild(makeSeparator())
@@ -73,8 +74,8 @@ return function(addContainer, makeSeparator, font)
             entityDebugContainer:addChild(checkbox.container)
             checkboxes[componentName] = checkbox
         end
-
-        Timer.start(0, function()
+        local timer = Timer.new()
+        timer:onUpdate(function()
             local componentsToShow = {}
             for componentName, componentFlag in pairs(Component) do
                 local hasComponent = false
@@ -101,7 +102,8 @@ return function(addContainer, makeSeparator, font)
                 checkbox:setState(state)
                 checkbox:setValue(debugEnabled)
             end
-        end, nil, true)
+        end)
+        timer:start(0, true)
     end
 
     entityDebugContainer:addChild(makeSeparator())
@@ -116,8 +118,8 @@ return function(addContainer, makeSeparator, font)
         entityDebugContainer:addChild(entityTemplateNamesContainer)
 
         local entityTemplateLabels = {}
-
-        Timer.start(0, function()
+        local timer = Timer.new()
+        timer:onUpdate(function()
             local selectedEntityTemplates = {}
             for _, selectedEntity in Map.eachSelectedEntity() do
                 selectedEntityTemplates[selectedEntity:getTemplateName()] = true
@@ -142,6 +144,7 @@ return function(addContainer, makeSeparator, font)
                     entityTemplateLabels[entityTemplateName] = nil
                 end
             end
-        end, nil, true)
+        end)
+        timer:start(0, true)
     end
 end

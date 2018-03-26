@@ -3,7 +3,6 @@
 #include "../timercontainer.h"
 #include "../../game.h"
 #include "../../states/basestate.h"
-#include <iostream>
 
 namespace game
 {
@@ -20,15 +19,18 @@ int open(Game& game)
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	static const luaL_Reg Timer_lib_m[] = {
+		{"start",          l_Timer_start},
 		{"stop",           l_Timer_stop},
 		{"getElapsedTime", l_Timer_getElapsedTime},
+		{ "onUpdate",      l_Timer_onUpdate},
+		{ "onEnd",         l_Timer_onEnd},
 		
 		{nullptr, nullptr}
 	};
 	game.lua->registerClass<LuaTimer>("CG.Timer", Timer_lib_m);
 	
 	static const luaL_Reg Timer_lib_s[] = {
-		{"start", l_Timer_start},
+		{"new", l_Timer_create},
 		
 		{nullptr, nullptr}
 	};
@@ -38,23 +40,28 @@ int open(Game& game)
 	return 0;
 }
 
+int l_Timer_create(lua_State* L)
+{
+	TimerContainer& timerContainer = getTimerContainer(L);
+	pushTimer(L, timerContainer.add());
+	return 1;
+}
+
 int l_Timer_start(lua_State* L)
 {
-	float timerDuration = static_cast<float>(luaL_checknumber(L, 1));
-	
-	flat::lua::SharedLuaReference<LUA_TFUNCTION> onUpdate;
-	onUpdate.setIfNotNil(L, 2);
-
-	flat::lua::SharedLuaReference<LUA_TFUNCTION> onEnd;
-	onEnd.setIfNotNil(L, 3);
-
-	bool loop = lua_toboolean(L, 4) == 1;
-	
 	TimerContainer& timerContainer = getTimerContainer(L);
-	Timer* timer = timerContainer.add(timerDuration, onUpdate, onEnd, loop);
+	Timer* timer = getTimer(L, 1);
+	if (!timerContainer.exists(timer))
+	{
+		luaL_error(L, "Timer does not exists anymore, did you stop it?");
+	}
+	const float duration = static_cast<float>(luaL_checknumber(L, 2));
+	const bool loop = lua_toboolean(L, 3) == 1;
+	timer->setDuration(duration);
+	timer->setBeginTime(timerContainer.getClock().getTime());
+	timer->setLoop(loop);
 	callTimerUpdate(L, timer, timerContainer.getClock().getTime());
-	pushTimer(L, timer);
-	return 1;
+	return 0;
 }
 
 int l_Timer_stop(lua_State* L)
@@ -67,10 +74,43 @@ int l_Timer_stop(lua_State* L)
 
 int l_Timer_getElapsedTime(lua_State* L)
 {
-	const float time = getTimerContainer(L).getClock().getTime();
+	TimerContainer& timerContainer = getTimerContainer(L);
+	const float time = timerContainer.getClock().getTime();
 	Timer* timer = getTimer(L, 1);
+	if (!timerContainer.exists(timer))
+	{
+		luaL_error(L, "Timer does not exists anymore, did you stop it?");
+	}
 	lua_pushnumber(L, timer->getElapsedTime(time));
 	return 1;
+}
+
+int l_Timer_onUpdate(lua_State* L)
+{
+	TimerContainer& timerContainer = getTimerContainer(L);
+	Timer* timer = getTimer(L, 1);	
+	if (!timerContainer.exists(timer))
+	{
+		luaL_error(L, "Timer does not exists anymore, did you stop it?");
+	}
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onUpdate;
+	onUpdate.setIfNotNil(L, 2);
+	timer->setOnUpdate(onUpdate);
+	return 0;
+}
+
+int l_Timer_onEnd(lua_State* L)
+{
+	TimerContainer& timerContainer = getTimerContainer(L);
+	Timer* timer = getTimer(L, 1);	
+	if (!timerContainer.exists(timer))
+	{
+		luaL_error(L, "Timer does not exists anymore, did you stop it?");
+	}
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onEnd;
+	onEnd.setIfNotNil(L, 2);
+	timer->setOnEnd(onEnd);
+	return 0;
 }
 
 void callTimerUpdate(lua_State* L, Timer* timer, float currentTime)

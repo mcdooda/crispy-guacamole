@@ -18,13 +18,26 @@ size_t TimerContainer::size() const
 	return m_timers.size() + m_frameTimers.size();
 }
 
-Timer* TimerContainer::add(float duration, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onUpdate, const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onEnd, bool loop)
+Timer* TimerContainer::add()
 {
-	const float beginTime = m_clock->getTime();
-	Timer* timer = m_timerPool.create(beginTime, duration, onUpdate, onEnd, loop);
+	Timer* timer = m_timerPool.create();
 	FLAT_ASSERT(timer != nullptr);
 	m_pendingTimers.push_back(timer);
 	return timer;
+}
+
+bool TimerContainer::exists(Timer* timer)
+{
+	std::deque<Timer*>::iterator it = std::find(m_timers.begin(), m_timers.end(), timer);
+	if (it != m_timers.end())
+	{
+		return true;
+	}
+	else
+	{
+		std::vector<Timer*>::iterator it = std::find(m_pendingTimers.begin(), m_pendingTimers.end(), timer);
+		return it != m_pendingTimers.end();
+	}
 }
 
 bool TimerContainer::stop(Timer*& timer)
@@ -63,21 +76,28 @@ void TimerContainer::updateTimers(lua_State* L)
 		m_timers.end()
 	);
 	FLAT_ASSERT(std::is_sorted(m_timers.begin(), m_timers.end(), &TimerContainer::compareTimersByTimeout));
-
 	// insert pending timers
-	for (Timer* timer : m_pendingTimers)
+	for (std::vector<Timer*>::iterator it = m_pendingTimers.begin(); it != m_pendingTimers.end();)
 	{
-		if (!timer->getOnUpdate().isEmpty())
+		Timer* timer = *it;
+		if (timer->getBeginTime() >= 0)
 		{
-			m_frameTimers.push_back(timer);
+			if (!timer->getOnUpdate().isEmpty())
+			{
+				m_frameTimers.push_back(timer);
+			}
+			else
+			{
+				std::deque<Timer*>::iterator sortedIterator = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
+				m_timers.insert(sortedIterator, timer);
+			}
+			it = m_pendingTimers.erase(it);
 		}
 		else
 		{
-			std::deque<Timer*>::iterator it = std::upper_bound(m_timers.begin(), m_timers.end(), timer, &TimerContainer::compareTimersByTimeout);
-			m_timers.insert(it, timer);
+			it++;
 		}
 	}
-	m_pendingTimers.clear();
 
 	// update timers
 	for (std::deque<Timer*>::iterator it = m_timers.begin(); it != m_timers.end(); it++)

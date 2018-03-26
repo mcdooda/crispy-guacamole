@@ -16,7 +16,8 @@ return function(addContainer, makeSeparator, font)
 			medianFps[j] = getFrameRate()
 		end
 		local i = 1
-		Timer.start(0, function()
+		local timer = Timer.new()
+		timer:onUpdate(function()
 			local fps = getFrameRate()
 			medianFps[i] = nil
 			medianFps[i + medianNumFrames] = fps
@@ -27,7 +28,8 @@ return function(addContainer, makeSeparator, font)
 			displayedFps = displayedFps / medianNumFrames
 			label:setText(format('%.1f fps', displayedFps))
 			i = i + 1
-		end, nil,  true)
+		end)
+		timer:start(0, true)
 	end
 	
 	-- entity count
@@ -35,10 +37,12 @@ return function(addContainer, makeSeparator, font)
 		local label = Widget.makeText('X entities', table.unpack(font))
 		label:setTextColor(0x000000FF)
 		statsContainer:addChild(label)
-		
-		Timer.start(0, function()
+
+		local timer = Timer.new()
+		timer:onUpdate(function()
 			label:setText(format('%d entities', Map.getNumEntities()))
-		end, nil, true)
+		end)
+		timer:start(0, true)
 	end	
 
 	-- timer count
@@ -47,8 +51,10 @@ return function(addContainer, makeSeparator, font)
 		label:setTextColor(0x000000FF)
 		statsContainer:addChild(label)
 		
-		Timer.start(0, function()
+		local timer = Timer.new()
+		timer:onUpdate(function()
 			label:setText(format('%d timers', Game.debug_getNumTimers()))
-		end, nil, true)
+		end)
+		timer:start(0, true)
 	end
 end

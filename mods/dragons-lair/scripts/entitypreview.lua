@@ -45,23 +45,19 @@ end
 function EntityPreview:startEntitySpriteAnimation(animation, duration)
     local frameIndex = 0
     local y = (animation.line - 1) / self.spriteComponentTemplate.size:y()
-    local timer = Timer.start(
-        animation.frameDuration,
-        nil,
-        function()
-            frameIndex = (frameIndex + 1) % animation.numFrames
-            local x = frameIndex / self.spriteComponentTemplate.size:x()
-            self.widget:setBackgroundPosition(x, y)
-        end,
-        true
-    )
+    local timer = Timer.new()
+    timer:onEnd(function()
+        frameIndex = (frameIndex + 1) % animation.numFrames
+        local x = frameIndex / self.spriteComponentTemplate.size:x()
+        self.widget:setBackgroundPosition(x, y)
+    end)
+    timer:start(animation.frameDuration, true)
 
     local animationTimer = nil
     local function resetPreview()
         if timer then
             timer:stop()
             timer = nil
-
         end
         animationTimer = nil
         self.stopAnimation = nil
@@ -69,11 +65,9 @@ function EntityPreview:startEntitySpriteAnimation(animation, duration)
     end
 
     if duration > 0 then
-        animationTimer = Timer.start(
-            duration,
-            nil,
-            resetPreview
-        )
+        animationTimer = Timer.new()
+        animationTimer:onEnd(resetPreview)
+        animationTimer:start(duration)
     end
 
     local function stopAnimation()

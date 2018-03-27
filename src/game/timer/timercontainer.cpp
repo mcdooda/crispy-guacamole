@@ -18,6 +18,21 @@ size_t TimerContainer::size() const
 	return m_timers.size() + m_frameTimers.size();
 }
 
+size_t TimerContainer::timerSize() const
+{
+	return m_timers.size();
+}
+
+size_t TimerContainer::frameTimerSize() const
+{
+	return m_frameTimers.size();
+}
+
+size_t TimerContainer::pendingTimerSize() const
+{
+	return m_pendingTimers.size();
+}
+
 Timer* TimerContainer::add()
 {
 	Timer* timer = m_timerPool.create();

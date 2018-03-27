@@ -23,21 +23,23 @@ int open(lua_State* L)
 		{"getTime",      l_Game_getTime},
 
 #ifdef FLAT_DEBUG
-		{"debug_setTimeSpeed",    l_Game_debug_setTimeSpeed},
-		{"debug_pause",           l_Game_debug_pause},
-		{"debug_resume",          l_Game_debug_resume},
-		{"debug_pauseNextFrame",  l_Game_debug_pauseNextFrame},
+		{"debug_setTimeSpeed",         l_Game_debug_setTimeSpeed},
+		{"debug_pause",                l_Game_debug_pause},
+		{"debug_resume",               l_Game_debug_resume},
+		{"debug_pauseNextFrame",       l_Game_debug_pauseNextFrame},
 
-		{ "debug_getNumTimers",   l_Game_debug_getNumTimers},
+		{ "debug_getNumTimers",        l_Game_debug_getNumTimers},
+		{ "debug_getNumFrameTimers",   l_Game_debug_getNumFrameTimers},
+		{ "debug_getNumPendingTimers", l_Game_debug_getNumPendingTimers},
 
-		{"debug_reloadComponent", l_Game_debug_reloadComponent},
-		{"debug_removeComponent", l_Game_debug_removeComponent },
+		{"debug_reloadComponent",      l_Game_debug_reloadComponent},
+		{"debug_removeComponent",      l_Game_debug_removeComponent },
 #endif
 
-		{"openMap",               l_Game_openMap},
+		{"openMap",                    l_Game_openMap},
 
-		{"setGhostEntity",        l_Game_setGhostEntity},
-		{"clearGhostEntity",      l_Game_clearGhostEntity},
+		{"setGhostEntity",             l_Game_setGhostEntity},
+		{"clearGhostEntity",           l_Game_clearGhostEntity},
 
 		{nullptr, nullptr}
 	};
@@ -94,7 +96,23 @@ int l_Game_debug_getNumTimers(lua_State* L)
 {
 	BaseState& baseState = base::getBaseState(L);
 	flat::time::Clock& clock = baseState.getClock();
-	lua_pushinteger(L, baseState.getTimerContainer().size());
+	lua_pushinteger(L, baseState.getTimerContainer().timerSize());
+	return 1;
+}
+
+int l_Game_debug_getNumFrameTimers(lua_State* L)
+{
+	BaseState& baseState = base::getBaseState(L);
+	flat::time::Clock& clock = baseState.getClock();
+	lua_pushinteger(L, baseState.getTimerContainer().frameTimerSize());
+	return 1;
+}
+
+int l_Game_debug_getNumPendingTimers(lua_State* L)
+{
+	BaseState& baseState = base::getBaseState(L);
+	flat::time::Clock& clock = baseState.getClock();
+	lua_pushinteger(L, baseState.getTimerContainer().pendingTimerSize());
 	return 1;
 }
 

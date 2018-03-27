@@ -47,13 +47,21 @@ return function(addContainer, makeSeparator, font)
 
 	-- timer count
 	do
-		local label = Widget.makeText('X timers', table.unpack(font))
-		label:setTextColor(0x000000FF)
-		statsContainer:addChild(label)
+		local timersLabel = Widget.makeText('X timers', table.unpack(font))
+		timersLabel:setTextColor(0x000000FF)
+		statsContainer:addChild(timersLabel)
+		local frameTimersLabel = Widget.makeText('X timers', table.unpack(font))
+		frameTimersLabel:setTextColor(0x000000FF)
+		statsContainer:addChild(frameTimersLabel)
+		local pendingTimerslabel = Widget.makeText('X timers', table.unpack(font))
+		pendingTimerslabel:setTextColor(0x000000FF)
+		statsContainer:addChild(pendingTimerslabel)
 		
 		local timer = Timer.new()
 		timer:onUpdate(function()
-			label:setText(format('%d timers', Game.debug_getNumTimers()))
+			timersLabel:setText(format('%d timers', Game.debug_getNumTimers()))
+			frameTimersLabel:setText(format('%d frame timers', Game.debug_getNumFrameTimers()))
+			pendingTimerslabel:setText(format('%d pending timers', Game.debug_getNumPendingTimers()))
 		end)
 		timer:start(0, true)
 	end

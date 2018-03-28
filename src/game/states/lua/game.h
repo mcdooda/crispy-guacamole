@@ -24,6 +24,8 @@ int l_Game_debug_resume(lua_State* L);
 int l_Game_debug_pauseNextFrame(lua_State* L);
 
 int l_Game_debug_getNumTimers(lua_State* L);
+int l_Game_debug_getNumFrameTimers(lua_State* L);
+int l_Game_debug_getNumPendingTimers(lua_State* L);
 
 int l_Game_debug_reloadComponent(lua_State* L);
 int l_Game_debug_removeComponent(lua_State* L);

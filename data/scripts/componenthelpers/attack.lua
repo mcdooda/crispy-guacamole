@@ -1,11 +1,11 @@
-local timerStart = Timer.start
-
 local function dealDamageAfterDelay(target, damage, delay)
-    timerStart(delay, nil, function()
+	local timer = Timer.new()
+	timer:onEnd(function()
         if target:isValid() then
             target:dealDamage(damage)
         end
     end)
+    timer:start(delay)
 end
 
 return {

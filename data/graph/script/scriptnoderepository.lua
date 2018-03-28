@@ -18,6 +18,7 @@ return {
 
     -- movement
     'components/movementcomponent',
+    'entity/clearpath',
 
     -- projectile
     'components/projectilecomponent',

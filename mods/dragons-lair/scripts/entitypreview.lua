@@ -45,12 +45,15 @@ end
 function EntityPreview:startEntitySpriteAnimation(animation, duration)
     local frameIndex = 0
     local y = (animation.line - 1) / self.spriteComponentTemplate.size:y()
-    local timer = Timer.new()
-    timer:onEnd(function()
+    
+    local function updateFrame()
         frameIndex = (frameIndex + 1) % animation.numFrames
         local x = frameIndex / self.spriteComponentTemplate.size:x()
         self.widget:setBackgroundPosition(x, y)
-    end)
+    end
+    updateFrame()
+    local timer = Timer.new()
+    timer:onEnd(updateFrame)
     timer:start(animation.frameDuration, true)
 
     local animationTimer = nil

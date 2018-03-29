@@ -13,16 +13,26 @@ avatar.widget:mouseDown(function()
 	avatar:startAnimation('no', 1.1)
 end)
 
+local items = {}
+
 local function buildItemList(container, stock)
 	container:removeAllChildren()
+	for i = 1, #items do
+		if items[i].preview.stopAnimation then
+			items[i].preview:stopAnimation()
+		end
+	end
+	items = {}
+
 	for i = 1, #stock do
 		local item = ItemIcon:new(stock[i], container)
-		item.widget:mouseDown(function()
+		item.preview.widget:mouseDown(function()
 			local result = ShopKeeper:buyItem(i)
 			if not result then
 				avatar:startAnimation('no', 1.1)
 			end
 		end)
+		table.insert(items, item)
 	end
 end
 

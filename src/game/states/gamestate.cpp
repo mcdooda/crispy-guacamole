@@ -67,7 +67,7 @@ bool GameState::canPlaceGhostEntity(const map::Tile* tile) const
 			1,
 			[&canPlaceEntity](lua_State* L)
 			{
-				canPlaceEntity = lua_toboolean(L, -1);
+				canPlaceEntity = lua_toboolean(L, -1) == 1;
 			}
 		);
 		return canPlaceEntity;
@@ -85,7 +85,7 @@ bool GameState::onGhostEntityPlaced()
 			1,
 			[&placeEntity](lua_State* L)
 			{
-				placeEntity = lua_toboolean(L, -1);
+				placeEntity = lua_toboolean(L, -1) == 1;
 			}
 		);
 		return placeEntity;

@@ -71,7 +71,7 @@ int l_EntityEditor_entitySpawned(lua_State* L)
 			1,
 			[&keepCallback](lua_State* L)
 			{
-				keepCallback = lua_toboolean(L, -1);
+				keepCallback = lua_toboolean(L, -1) == 1;
 			}
 		);
 		return keepCallback;
@@ -95,7 +95,7 @@ int l_EntityEditor_entityDespawned(lua_State* L)
 			1,
 			[&keepCallback](lua_State* L)
 			{
-				keepCallback = lua_toboolean(L, -1);
+				keepCallback = lua_toboolean(L, -1) == 1;
 			}
 		);
 		return keepCallback;

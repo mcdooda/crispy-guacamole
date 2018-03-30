@@ -8,9 +8,11 @@ in vec4 position;
 in vec2 uv;
 in vec4 color;
 in vec3 normal;
+in float depth;
 
 out vec2 uv2;
 out vec4 color2;
+out float depth2;
 
 void main()
 {
@@ -30,6 +32,7 @@ void main()
 #if DEBUG_NORMALS
 	color2 = vec4(normal / 2.0 + vec3(0.5, 0.5, 0.5), 1.0);
 #endif
+	depth2 = depth;
 }
 
 

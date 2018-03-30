@@ -109,45 +109,28 @@ void DisplayManager::sortAndDraw(Game& game, const flat::video::View& view)
 
 	sortObjects(objects);
 
+	// set the object depth according to its index
+	const int numObjects = static_cast<int>(objects.size());
+	for (int i = 0; i < numObjects; ++i)
 	{
-#if DEBUG_DRAW
-		int numDrawCalls = 0;
-#endif
+		const MapObject* mapObject = objects[i];
+		const float depth = static_cast<float>(numObjects - i) / numObjects;
+		const_cast<flat::render::Sprite&>(mapObject->getSprite()).setDepth(depth);
+	}
 
-		flat::video::Window& window = *game.video->window;
-
-		flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
-		const flat::Matrix4& viewMatrix = view.getViewProjectionMatrix();
-
-		std::vector<const MapObject*>::iterator it = objects.begin();
-		std::vector<const MapObject*>::iterator end = objects.end();
-		while (it != end)
-		{
-			spriteBatch->clear();
-
-			std::vector<const MapObject*>::iterator it2 = it;
-			while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
+	{
+		std::sort(
+			objects.begin(),
+			objects.end(),
+			[](const MapObject* a, const MapObject* b)
 			{
-				spriteBatch->add((*it2)->getSprite());
-				++it2;
+				return a->getRenderHash() < b->getRenderHash();
 			}
-
-			const flat::render::ProgramSettings& programSettings = (*it)->getProgramSettings();
-			it = it2;
-
-			programSettings.program.use(window);
-			programSettings.settings.viewProjectionMatrixUniform.set(view.getViewProjectionMatrix());
-			spriteBatch->draw(programSettings.settings, viewMatrix);
-#if DEBUG_DRAW
-			++numDrawCalls;
-#endif
-		}
-
-#if DEBUG_DRAW
-		std::cout << "draw calls: " << numDrawCalls << std::endl
-			<< "terrain sprites: " << numTerrainObjects << std::endl
-			<< "entity sprites: " << numEntities << std::endl << std::endl;
-#endif
+		);
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		drawBatches(game, view, objects);
+		glDisable(GL_DEPTH_TEST);
 	}
 }
 
@@ -311,6 +294,46 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects)
 		std::cout << "swaps: " << numSwaps << std::endl;
 #endif
 	}
+}
+
+void DisplayManager::drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects)
+{
+#if DEBUG_DRAW
+	int numDrawCalls = 0;
+#endif
+
+	flat::video::Window& window = *game.video->window;
+
+	flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
+	const flat::Matrix4& viewMatrix = view.getViewProjectionMatrix();
+
+	std::vector<const MapObject*>::const_iterator it = objects.begin();
+	std::vector<const MapObject*>::const_iterator end = objects.end();
+	while (it != end)
+	{
+		spriteBatch->clear();
+
+		std::vector<const MapObject*>::const_iterator it2 = it;
+		while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
+		{
+			spriteBatch->add((*it2)->getSprite());
+			++it2;
+		}
+
+		const flat::render::ProgramSettings& programSettings = (*it)->getProgramSettings();
+		it = it2;
+
+		programSettings.program.use(window);
+		programSettings.settings.viewProjectionMatrixUniform.set(view.getViewProjectionMatrix());
+		spriteBatch->draw(programSettings.settings, viewMatrix);
+#if DEBUG_DRAW
+		++numDrawCalls;
+#endif
+	}
+
+#if DEBUG_DRAW
+	std::cout << "draw calls: " << numDrawCalls << std::endl;
+#endif
 }
 
 #undef DEBUG_DRAW

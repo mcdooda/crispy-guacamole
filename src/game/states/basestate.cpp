@@ -124,13 +124,13 @@ void BaseState::initRender(Game& game)
 	m_uiRender.settings.textureUniform = m_uiRender.program.getUniform<flat::video::Texture>("objectTexture");
 	m_uiRender.settings.textureGivenUniform = m_uiRender.program.getUniform<bool>("textureGiven");
 	m_uiRender.settings.colorUniform = m_uiRender.program.getUniform<flat::video::Color>("globalColor");
-	m_uiRender.settings.colorAttribute = m_uiRender.program.getAttribute("vertexColor");
 	m_uiRender.settings.vertexColorGivenUniform = m_uiRender.program.getUniform<bool>("vertexColorGiven");
 	m_uiRender.settings.secondaryColorUniform = m_uiRender.program.getUniform<flat::video::Color>("secondaryColor");
 	m_uiRender.settings.modelMatrixUniform = m_uiRender.program.getUniform<flat::Matrix4>("modelMatrix");
 	m_uiRender.settings.viewProjectionMatrixUniform = m_uiRender.program.getUniform<flat::Matrix4>("vpMatrix");
 
 	m_uiRender.settings.positionAttribute = m_uiRender.program.getAttribute("position");
+	m_uiRender.settings.colorAttribute = m_uiRender.program.getAttribute("vertexColor");
 	m_uiRender.settings.uvAttribute = m_uiRender.program.getAttribute("uv");
 }
 

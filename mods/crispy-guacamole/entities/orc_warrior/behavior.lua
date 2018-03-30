@@ -1,20 +1,25 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 
-local function doNothing()
-	while true do
-		coroutine.yield()
-	end
-end
+local movement = require(Mod.getPath() .. '/entities/orc_warrior/movement')
 
-local customAttacker = BehaviorHelper.customAttacker(
-	doNothing,
+local states = BehaviorHelper.customAttacker(
+	BehaviorHelper.doNothing,
 	BehaviorHelper.findClosestTarget,
 	BehaviorHelper.isValidHostileAttackTarget
 )
-local init = customAttacker.init
-function customAttacker:init(warrior)
-	local moveAnimation = 'move'
-	warrior:setMoveAnimation(moveAnimation)
+
+local init = states.init
+function states:init(warrior)
+	warrior:setMoveAnimation 'move'
 	init(self, warrior)
 end
-return customAttacker
+
+local followAttackTarget = states.followAttackTarget
+function states:followAttackTarget(warrior)
+	warrior:setMoveAnimation 'run'
+	warrior:setSpeed(movement.speed * 2.5)
+	warrior:playAnimation('rage', 1, false, true)
+	return followAttackTarget(self, warrior)
+end
+
+return states

@@ -14,7 +14,7 @@ function GetAttackTargetNode:execute(runtime)
 
     local attackTarget = entity:getAttackTarget()
 
-    runtime:writePin(self.attackTargetOutPin, attackTarget)
+    runtime:writeOptionalPin(self.attackTargetOutPin, attackTarget)
 end
 
 return GetAttackTargetNode

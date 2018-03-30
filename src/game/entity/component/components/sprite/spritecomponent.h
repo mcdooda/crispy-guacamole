@@ -26,10 +26,12 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		
 		bool isBusy() const override;
 		
-		void playAnimation(const AnimationDescription& animationDescription, int numLoops = 1);
-		bool playAnimationByName(const std::string& animationName, int numLoops = 1);
+		void playAnimation(const AnimationDescription& animationDescription, int numLoops, bool preventBusy);
+		bool playAnimationByName(const std::string& animationName, int numLoops, bool preventBusy);
 
 		bool getAttachPoint(const std::string& attachPointName, flat::Vector3& attachPoint) const;
+
+		inline const AnimationDescription* getCurrentAnimationDescription() const { return m_currentAnimationDescription; }
 		
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		
@@ -42,6 +44,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 	private:
 		flat::render::AnimatedSprite m_sprite;
 		const AnimationDescription* m_currentAnimationDescription;
+		bool m_preventBusy;
 };
 
 } // sprite

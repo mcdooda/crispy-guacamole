@@ -32,6 +32,8 @@ void MovementComponent::init()
 
 	m_moveAnimationDescription = nullptr;
 	setDefaultMoveAnimation();
+
+	m_isMoving = false;
 }
 
 void MovementComponent::deinit()
@@ -253,6 +255,8 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 
 void MovementComponent::clearPath()
 {
+	m_destination = flat::Vector2(m_owner->getPosition());
+	m_returnToDestinationTime = FLT_MAX;
 	m_path.clear();
 }
 
@@ -346,21 +350,23 @@ bool MovementComponent::removedFromMap(Entity* entity)
 	return true;
 }
 
-void MovementComponent::updateSprite(bool movementStarted, bool movementStopped)
+void MovementComponent::updateSprite(bool /*movementStarted*/, bool movementStopped)
 {
 	if (m_owner->hasSprite())
 	{
-		if (movementStarted)
+		sprite::SpriteComponent* spriteComponent = m_owner->getComponent<sprite::SpriteComponent>();
+		FLAT_ASSERT(spriteComponent != nullptr);
+		flat::render::AnimatedSprite& sprite = static_cast<flat::render::AnimatedSprite&>(m_owner->getSprite());
+		if (m_isMoving)
 		{
-			sprite::SpriteComponent* spriteComponent = m_owner->getComponent<sprite::SpriteComponent>();
-			if (spriteComponent != nullptr && m_moveAnimationDescription != nullptr)
+			if (!sprite.isAnimated() && m_moveAnimationDescription != nullptr)
 			{
-				spriteComponent->playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP);
+				sprite.setAnimated(true);
+				spriteComponent->playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP, true);
 			}
 		}
-		else if (movementStopped)
+		else if (movementStopped && spriteComponent->getCurrentAnimationDescription() == m_moveAnimationDescription)
 		{
-			flat::render::AnimatedSprite& sprite = static_cast<flat::render::AnimatedSprite&>(m_owner->getSprite());
 			sprite.setAnimated(false);
 		}
 	}

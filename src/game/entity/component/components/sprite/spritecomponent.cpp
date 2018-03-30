@@ -34,6 +34,8 @@ void SpriteComponent::init()
 	}
 
 	m_owner->addedToMap.on(this, &SpriteComponent::addedToMap);
+
+	m_preventBusy = false;
 }
 
 void SpriteComponent::deinit()
@@ -50,7 +52,7 @@ void SpriteComponent::deinit()
 	m_owner->addedToMap.off(this);
 }
 
-void SpriteComponent::playAnimation(const AnimationDescription& animationDescription, int numLoops)
+void SpriteComponent::playAnimation(const AnimationDescription& animationDescription, int numLoops, bool preventBusy)
 {
 	if (numLoops == flat::render::AnimatedSprite::INFINITE_LOOP
 		&& m_sprite.getLastUpdateTime() > 0.f
@@ -70,15 +72,16 @@ void SpriteComponent::playAnimation(const AnimationDescription& animationDescrip
 		);
 	}
 	m_currentAnimationDescription = &animationDescription;
+	m_preventBusy = preventBusy;
 }
 
-bool SpriteComponent::playAnimationByName(const std::string& animationName, int numLoops)
+bool SpriteComponent::playAnimationByName(const std::string& animationName, int numLoops, bool preventBusy)
 {
 	const SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
 	const AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
 	if (animationDescription)
 	{
-		playAnimation(*animationDescription, numLoops);
+		playAnimation(*animationDescription, numLoops, preventBusy);
 		return true;
 	}
 	return false;
@@ -113,7 +116,7 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 
 bool SpriteComponent::isBusy() const
 {
-	return m_sprite.isAnimated() && !m_sprite.hasInfiniteLoop();
+	return !m_preventBusy && m_sprite.isAnimated();
 }
 
 #ifdef FLAT_DEBUG

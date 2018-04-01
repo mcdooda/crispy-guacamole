@@ -25,16 +25,13 @@ end
 local function startEntitySpriteAnimation(preview, spriteComponentTemplate, animation)
     local frameIndex = 0
     local y = (animation.line - 1) / spriteComponentTemplate.size:y()
-    local timer = Timer.start(
-        animation.frameDuration,
-        nil,
-        function()
+    local timer = Timer.new()
+    timer:onEnd(function()
             frameIndex = (frameIndex + 1) % animation.numFrames
             local x = frameIndex / spriteComponentTemplate.size:x()
             preview:setBackgroundPosition(x, y)
-        end,
-        true
-    )
+        end)
+    timer:start(animation.frameDuration, true)
 
     local function stopAnimation()
         timer:stop()

@@ -11,6 +11,12 @@ local function init(initialState)
 	end
 end
 
+local function doNothing()
+	while true do
+		coroutine.yield()
+	end
+end
+
 --[[
 	Wander
 ]]
@@ -103,7 +109,6 @@ end
 
 local function followAttackTarget(findTargetState)
 	return function(states, entity)
-		entity:clearPath()
 		local visionRange2 = 6 * 6
 		while true do
 			local currentAttackTarget = entity:getAttackTarget()
@@ -123,7 +128,7 @@ local function followAttackTarget(findTargetState)
 					entity:enterState(findTargetState)
 				else
 					-- move closer to the current attack target but avoid collision
-					local followStepDistance = 0.2
+					local followStepDistance = 3
 					local minFollowStepDistance = 0.01
 					local distanceMinusRadius = CollisionHelper.distanceMinusRadius(entity, currentAttackTarget)
 
@@ -134,6 +139,7 @@ local function followAttackTarget(findTargetState)
 					if followStepDistance > minFollowStepDistance then
 						-- normalize direction and multiply by the distance to travel
 						local destination = position2d + move:getNormalized() * followStepDistance
+						entity:clearPath()
 						entity:moveTo(destination)
 					else
 						-- nothing to do for now
@@ -178,6 +184,8 @@ end
 
 return {
 	init                             = init,
+
+	doNothing                        = doNothing,
 
 	wanderAround                     = wanderAround,
 	wander                           = wander,

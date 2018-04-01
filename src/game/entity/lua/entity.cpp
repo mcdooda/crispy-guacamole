@@ -146,7 +146,7 @@ static int locYieldIf(lua_State* L, bool yield, int numReturnValues)
 	return yield ? lua_yield(L, numReturnValues) : numReturnValues;
 }
 
-static bool locGetOptionalYield(lua_State* L, int index)
+static bool locGetOptBool(lua_State* L, int index, bool default)
 {
 	return lua_isnone(L, index) ? true : lua_toboolean(L, index) == 1;
 }
@@ -398,7 +398,7 @@ int l_Entity_moveTo(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	flat::Vector2 pathPoint = flat::lua::getVector2(L, 2);
-	bool yield = locGetOptionalYield(L, 3);
+	bool yield = locGetOptBool(L, 3, true);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	movementComponent.addPointOnPath(pathPoint);
 	return locYieldIf(L, yield, 0);
@@ -432,7 +432,7 @@ int l_Entity_getSpeed(lua_State* L)
 int l_Entity_jump(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	bool yield = locGetOptionalYield(L, 2);
+	bool yield = locGetOptBool(L, 2, true);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	if (!movementComponent.isTouchingGround())
 	{
@@ -490,7 +490,7 @@ int l_Entity_enterState(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const char* stateName = luaL_checkstring(L, 2);
-	bool yield = locGetOptionalYield(L, 3);
+	bool yield = locGetOptBool(L, 3, true);
 	entity.enterState(stateName);
 	return locYieldIf(L, yield, 0);
 }
@@ -518,9 +518,9 @@ int l_Entity_playAnimation(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	const char* animationName = luaL_checkstring(L, 2);
 	int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
-	bool yield = locGetOptionalYield(L, 4);
+	bool yield = locGetOptBool(L, 4, true);
 	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
-	bool animationExists = spriteComponent.playAnimationByName(animationName, numLoops);
+	bool animationExists = spriteComponent.playAnimationByName(animationName, numLoops, !yield);
 	if (!animationExists)
 	{
 		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);

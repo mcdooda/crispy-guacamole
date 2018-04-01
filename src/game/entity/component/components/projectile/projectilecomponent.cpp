@@ -94,7 +94,7 @@ bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map)
 		sprite::SpriteComponent* spriteComponent = m_owner->getComponent<sprite::SpriteComponent>();
 		if (spriteComponent != nullptr)
 		{
-			spriteComponent->playAnimationByName("move", flat::render::AnimatedSprite::INFINITE_LOOP);
+			spriteComponent->playAnimationByName("move", flat::render::AnimatedSprite::INFINITE_LOOP, true);
 		}
 	}
 

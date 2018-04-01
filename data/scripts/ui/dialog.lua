@@ -54,17 +54,16 @@ end
 function Dialog:close()
     local maxTimer = 0.15
     self.background:removeFromParent()
-    Timer.start(
-        maxTimer,
-        function(timer, elapsedTime)
+    local timer = Timer.new()
+    timer:onUpdate(function(timer, elapsedTime)
 
-           local _, rootH = root:getSize()
-           self.container:setPosition(0, (1 - (maxTimer - elapsedTime) / maxTimer) * rootH)
-        end,
-        function(timer)
-            self.container:removeFromParent()
-        end
-    )
+       local _, rootH = root:getSize()
+       self.container:setPosition(0, (1 - (maxTimer - elapsedTime) / maxTimer) * rootH)
+    end)
+    timer:onEnd(function(timer)
+        self.container:removeFromParent()
+    end)
+    timer:start(maxTimer)
 
 end
 
@@ -161,17 +160,12 @@ function Dialog:new(content, options)
     root:addChild(dialogContainer)
 
     local maxTimer = 0.15
-    Timer.start(
-        maxTimer,
-        function(timer, elapsedTime)
-
-           local _, rootH = root:getSize()
-           dialogContainer:setPosition(0, ((maxTimer - elapsedTime) / maxTimer) * rootH)
-        end,
-        function(timer)
-         -- print 'End'
-        end
-    )
+    local timer = Timer.new()
+    timer:onUpdate(function(timer, elapsedTime)
+       local _, rootH = root:getSize()
+       dialogContainer:setPosition(0, ((maxTimer - elapsedTime) / maxTimer) * rootH)
+    end)
+    timer:start(maxTimer)
 
 
     return o

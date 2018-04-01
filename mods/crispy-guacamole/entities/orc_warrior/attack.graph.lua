@@ -1,90 +1,4 @@
 script {
-  nodes = {
-    {
-      name = 'components/attackcomponent',
-    },
-    {
-      loadArguments = {
-        0.69999998807907,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
-    },
-    {
-      name = 'entity/getattacktarget',
-    },
-    {
-      name = 'entity/lookatentity',
-    },
-    {
-      name = 'entity/playanimation',
-    },
-    {
-      loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
-    },
-    {
-      name = 'entity/dealdamage',
-    },
-    {
-      loadArguments = {
-        20,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
-    },
-  },
   links = {
     {
       1,
@@ -95,7 +9,7 @@ script {
     {
       1,
       2,
-      9,
+      18,
       1,
     },
     {
@@ -114,6 +28,12 @@ script {
       1,
       3,
       10,
+      2,
+    },
+    {
+      1,
+      3,
+      13,
       2,
     },
     {
@@ -143,8 +63,8 @@ script {
     {
       7,
       1,
-      14,
-      4,
+      1,
+      5,
     },
     {
       8,
@@ -159,13 +79,13 @@ script {
       3,
     },
     {
-      9,
+      8,
       1,
-      10,
+      19,
       1,
     },
     {
-      10,
+      9,
       1,
       14,
       1,
@@ -173,32 +93,151 @@ script {
     {
       11,
       1,
-      10,
+      14,
       3,
     },
     {
       12,
       1,
-      10,
+      14,
       4,
     },
     {
       13,
       1,
+      9,
+      1,
+    },
+    {
+      14,
+      1,
       10,
-      5,
+      1,
     },
     {
       15,
       1,
-      14,
-      3,
+      10,
+      5,
     },
     {
       16,
       1,
+      10,
+      3,
+    },
+    {
+      17,
       1,
-      5,
+      10,
+      4,
+    },
+    {
+      18,
+      1,
+      13,
+      1,
+    },
+    {
+      19,
+      1,
+      18,
+      2,
+    },
+  },
+  nodes = {
+    {
+      name = 'components/attackcomponent',
+    },
+    {
+      loadArguments = {
+        0.20000000298023,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          'Table',
+        },
+      },
+      name = 'script/scriptoutput',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/getattacktarget',
+    },
+    {
+      name = 'entity/lookatentity',
+    },
+    {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        20,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      name = 'entity/clearpath',
+    },
+    {
+      name = 'entity/dealdamage',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        'attack',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'entity/isvalidentity',
     },
   },
 }

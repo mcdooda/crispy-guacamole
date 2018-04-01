@@ -23,8 +23,8 @@ function FireProjectileNode:execute(runtime, inputPin)
     local projectileName = runtime:readPin(self.projectileNameInPin)
     local attachPoint = runtime:readPin(self.attachPointPin)
     local delay = runtime:readPin(self.delayInPin)
-
-    Timer.start(delay, nil, function()
+    local timer = Timer.new()
+    timer:onEnd(function()
         if not entity:isValid() or not target:isValid() then
             return
         end
@@ -32,6 +32,7 @@ function FireProjectileNode:execute(runtime, inputPin)
         local spawnProjectile = ProjectileHelper.createSpawnerFromEntity(projectileName)
         spawnProjectile(entity, attachPoint, target)
     end)
+    timer:start(delay)
 
     runtime:impulse(self.impulseOutPin)
 end

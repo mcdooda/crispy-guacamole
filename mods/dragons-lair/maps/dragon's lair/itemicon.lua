@@ -1,5 +1,5 @@
 local Theme   = require 'mods/dragons-lair/ui/theme'
-local Preview = require 'data/scripts/preview'
+local EntityPreview = require 'mods/dragons-lair/scripts/entitypreview'
 
 local ItemIcon = {}
 ItemIcon.__index = ItemIcon
@@ -7,15 +7,16 @@ ItemIcon.__index = ItemIcon
 function ItemIcon:new(item, parent)
     local o = setmetatable({
         item = item,
-        widget = nil
+        preview = nil
     }, self)
     o:build(parent)
     return o
 end
 
 function ItemIcon:build(parent)
-    local preview = Preview.entity('items', self.item.name, true, 3)
-    preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
+    local preview = EntityPreview:new('items', 3)
+    preview:startAnimation(self.item.name)
+    preview.widget:setPositionPolicy(Widget.PositionPolicy.CENTER)
     do
         local tooltip = Widget.makeColumnFlow()
         tooltip:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
@@ -35,15 +36,15 @@ function ItemIcon:build(parent)
         end
 
         do
-            preview:mouseEnter(function()
+            preview.widget:mouseEnter(function()
                 Widget.getRoot():addChild(tooltip)
             end)
 
-            preview:mouseLeave(function()
+            preview.widget:mouseLeave(function()
                 tooltip:removeFromParent()
             end)
 
-            preview:mouseMove(function()
+            preview.widget:mouseMove(function()
                 local x, y = Mouse.getPosition()
                 local w, h = tooltip:getComputedSize()
                 tooltip:setPosition(x - w - 5, y - h / 2)
@@ -51,8 +52,8 @@ function ItemIcon:build(parent)
         end
     end
 
-    parent:addChild(preview)
-    self.widget = preview
+    parent:addChild(preview.widget)
+    self.preview = preview
 end
 
 return ItemIcon

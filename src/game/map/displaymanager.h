@@ -42,6 +42,8 @@ class DisplayManager final
 
 	private:
 		static void sortObjects(std::vector<const MapObject*>& objects);
+
+		void drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects);
 		
 	private:
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;

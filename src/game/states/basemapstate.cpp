@@ -74,6 +74,7 @@ void BaseMapState::enter(Game& game)
 	m_entityRender.settings.uvAttribute                 = m_entityRender.program.getAttribute("uv");
 	m_entityRender.settings.colorAttribute              = m_entityRender.program.getAttribute("color");
 	m_entityRender.settings.normalAttribute             = m_entityRender.program.getAttribute("normal");
+	m_entityRender.settings.depthAttribute              = m_entityRender.program.getAttribute("depth");
 
 	entity::Entity::setEntityProgramSettings(m_entityRender);
 
@@ -86,6 +87,7 @@ void BaseMapState::enter(Game& game)
 	m_terrainRender.settings.uvAttribute                 = m_terrainRender.program.getAttribute("uv");
 	m_terrainRender.settings.colorAttribute              = m_terrainRender.program.getAttribute("color");
 	m_terrainRender.settings.normalAttribute             = m_terrainRender.program.getAttribute("normal");
+	m_terrainRender.settings.depthAttribute              = m_terrainRender.program.getAttribute("depth");
 
 	map::Tile::setTileProgramSettings(m_terrainRender);
 	

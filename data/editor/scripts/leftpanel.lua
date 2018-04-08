@@ -73,10 +73,7 @@ do
 			Editor.setTile(ModData.tiles.names[1])
 			for i = 1, #ModData.tiles.names do
 				local tileName = ModData.tiles.names[i]
-				local tileTexturePath = Path.getTileFilePath(tileName, ModData.tiles.getHighest(tileName) .. '.png')
-				local preview = Widget.makeImage(tileTexturePath)
-				local w, h = preview:getSize()
-				preview:setSize(w * 2, h * 2)
+				local preview = Preview.tile(tileName, 1)
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()
 					Editor.setTile(tileName)

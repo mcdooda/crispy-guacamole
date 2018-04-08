@@ -65,7 +65,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	//  update sprite
 	if (m_owner->hasSprite())
 	{
-		flat::render::Sprite& sprite = m_owner->getSprite();
+		flat::render::BaseSprite& sprite = m_owner->getSprite();
 		flat::Vector2 position2d(map->getTransform() * position);
 		sprite.setPosition(position2d);
 	}

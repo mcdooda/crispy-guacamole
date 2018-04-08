@@ -35,6 +35,7 @@ void EntityEditorState::execute(Game& game)
 
 	handleGameActionInputs(game);
 	updateEntities();
+	updateMap();
 
 	Super::execute(game);
 }

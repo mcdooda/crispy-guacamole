@@ -62,13 +62,14 @@ local tiles = Mod.getTiles()
 ModData.tiles = {
 	names = tiles,
 	getHighest = function(tileDir)
-		local max = { nil, 0 }
+		--[[local max = { nil, 0 }
 		for k,v in pairs(ModData.tiles[tileDir]) do
 			if max[2] < v then
 				max = {k,v}
 			end
 		end
-		return max[1]
+		return max[1] ]]
+		return 'atlas'
 	end
 }
 

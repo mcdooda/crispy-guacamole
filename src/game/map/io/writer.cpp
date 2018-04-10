@@ -37,8 +37,8 @@ bool Writer::canWrite() const
 void Writer::write(const std::vector<entity::Entity*>& entities)
 {
 	writeHeaders();
-	writeTiles();
 	writeZones();
+	writeTiles();
 	writeEntities(entities);
 }
 
@@ -51,7 +51,7 @@ void Writer::writeHeaders()
 	{
 		if (tile->exists())
 		{
-			const flat::render::Sprite& sprite = tile->getSprite();
+			const flat::render::BaseSprite& sprite = tile->getSprite();
 			const flat::video::Texture* tileTexture = sprite.getTexture().get();
 			FLAT_ASSERT(tileTexture != nullptr);
 			std::map<const flat::video::Texture*, uint16_t>::iterator it = m_tileTextures.find(tileTexture);
@@ -66,13 +66,11 @@ void Writer::writeHeaders()
 
 	uint16_t numTiles = static_cast<uint16_t>(tileTexturesOrdered.size());
 	write(numTiles);
-	const size_t tilesPrefixSize = std::string("tiles/").size();
 	for (const flat::video::Texture* tileTexture : tileTexturesOrdered)
 	{
 		const flat::video::FileTexture* tileFileTexture = static_cast<const flat::video::FileTexture*>(tileTexture);
-		std::string tileTextureName = m_mod.getTextureRelativePath(tileFileTexture->getFileName());
-		tileTextureName = tileTextureName.substr(tilesPrefixSize, tileTextureName.size() - tilesPrefixSize);
-		write<const std::string&>(tileTextureName);
+		std::string tileTemplateName = getTileTemplateNameFromTexturePath(tileFileTexture->getFileName());
+		write<const std::string&>(tileTemplateName);
 	}
 
 	// prop textures
@@ -84,7 +82,7 @@ void Writer::writeHeaders()
 		{
 			if (const Prop* prop = tile->getProp())
 			{
-				const flat::render::Sprite& sprite = prop->getSprite();
+				const flat::render::BaseSprite& sprite = prop->getSprite();
 				const flat::video::Texture* propTexture = sprite.getTexture().get();
 				FLAT_ASSERT(propTexture != nullptr);
 				std::map<const flat::video::Texture*, uint16_t>::iterator it = m_propTextures.find(propTexture);
@@ -134,9 +132,15 @@ void Writer::writeTiles()
 			{
 				write(tile->getZ());
 
-				const flat::video::Texture* tileTexture = tile->getSprite().getTexture().get();
+				const flat::render::SynchronizedSprite& tileSprite = static_cast<const flat::render::SynchronizedSprite&>(tile->getSprite());
+				const flat::render::SpriteSynchronizer& tileSpriteSynchronizer = tileSprite.getSynchronizer();
+
+				const flat::video::Texture* tileTexture = tileSprite.getTexture().get();
 				uint16_t tileIndex = m_tileTextures.at(tileTexture);
-				write(tileIndex);
+				FLAT_ASSERT((tileIndex & 0x0FFF) == tileIndex);
+				uint16_t tileVariantIndex = tileSpriteSynchronizer.getCurrentLine();
+				FLAT_ASSERT((tileVariantIndex & 0x000F) == tileVariantIndex);
+				write<uint16_t>((tileIndex & 0x0FFF) | (tileVariantIndex << 12));
 
 				const Prop* prop = tile->getProp();
 				bool hasProp = prop != nullptr;
@@ -208,6 +212,16 @@ void Writer::writeZones()
 			write<uint16_t>(rectangle.maxY);
 		}
 	}
+}
+
+std::string Writer::getTileTemplateNameFromTexturePath(const std::string& texturePath) const
+{
+	static const size_t tilesPrefixSize = std::string("tiles/").size();
+	std::string tileTemplateName = m_mod.getTextureRelativePath(texturePath);
+	tileTemplateName = tileTemplateName.substr(tilesPrefixSize, tileTemplateName.size() - tilesPrefixSize);
+	size_t slashIndex = tileTemplateName.find_first_of('/');
+	tileTemplateName = tileTemplateName.substr(0, slashIndex);
+	return tileTemplateName;
 }
 
 } // io

@@ -1,8 +1,11 @@
 #ifndef GAME_MAP_H
 #define GAME_MAP_H
 
+#include <deque>
 #include <functional>
+
 #include <flat.h>
+
 #include "../debug/debugdisplay.h"
 
 namespace game
@@ -21,6 +24,7 @@ namespace map
 class Tile;
 class Zone;
 class DisplayManager;
+class TileTemplate;
 namespace io
 {
 class Reader;
@@ -31,6 +35,8 @@ class Map
 	public:
 		Map();
 		virtual ~Map();
+
+		void update(float currentTime);
 
 		void setDisplayManager(DisplayManager* displayManager) { m_displayManager = displayManager; }
 		inline DisplayManager& getDisplayManager() const { FLAT_ASSERT(m_displayManager != nullptr); return *m_displayManager; }
@@ -65,6 +71,8 @@ class Map
 		virtual void eachTile(std::function<void(Tile*)> func) = 0;
 		void eachTileIfExists(std::function<void(const Tile*)> func) const;
 		void eachTileIfExists(std::function<void(Tile*)> func);
+
+		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(std::shared_ptr<const TileTemplate> tileTemplate, int tileVariantIndex);
 		
 		// axes
 		inline const flat::Matrix3& getTransform() const { return m_transform; }
@@ -109,6 +117,14 @@ class Map
 		std::vector<Tile*> m_dirtyNormalTiles;
 
 		std::map<std::string, std::shared_ptr<Zone>> m_zones;
+
+		struct TileSpriteSynchronizer
+		{
+			std::shared_ptr<const map::TileTemplate> tileTemplate;
+			int tileVariantIndex;
+			flat::render::SpriteSynchronizer spriteSynchronizer;
+		};
+		std::deque<TileSpriteSynchronizer> m_tileSpriteSynchronizers;
 		
 	private:
 		friend class io::Reader;

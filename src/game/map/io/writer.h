@@ -44,6 +44,8 @@ class Writer
 		template <class T>
 		inline void write(T value);
 
+		std::string getTileTemplateNameFromTexturePath(const std::string& texturePath) const;
+
 	private:
 		const mod::Mod& m_mod;
 		const Map& m_map;

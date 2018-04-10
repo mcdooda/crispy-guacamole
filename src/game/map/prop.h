@@ -14,7 +14,7 @@ class Prop : public MapObject
 public:
 	Prop() {}
 
-	flat::render::Sprite& getSprite() override;
+	flat::render::BaseSprite& getSprite() override;
 	using MapObject::getSprite;
 
 	const flat::render::ProgramSettings& getProgramSettings() const override;

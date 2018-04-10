@@ -23,6 +23,22 @@ Tile::~Tile()
 	FLAT_DELETE(m_prop);
 }
 
+void Tile::synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer& spriteSynchronizer)
+{
+	m_sprite.synchronizeTo(spriteSynchronizer);
+	flat::Vector2 origin = flat::Vector2(-map.getXAxis().x, 0.f) + (map.getXAxis() + map.getYAxis()) / 2.f;
+	m_sprite.setOrigin(origin);
+	m_sprite.getAABB(m_spriteAABB);
+
+	if (m_exists)
+	{
+		updateRenderHash();
+
+		DisplayManager& displayManager = map.getDisplayManager();
+		displayManager.updateTerrainObject(this);
+	}
+}
+
 void Tile::setExists(Map& map, bool exists)
 {
 	if (m_exists != exists)
@@ -30,6 +46,7 @@ void Tile::setExists(Map& map, bool exists)
 		DisplayManager& displayManager = map.getDisplayManager();
 		if (exists)
 		{
+			FLAT_ASSERT(m_sprite.isSynchronized());
 			m_exists = true;
 			displayManager.addTerrainObject(this);
 			setNearbyTilesDirty(map);
@@ -51,9 +68,10 @@ void Tile::setExists(Map& map, bool exists)
 	}
 }
 
-flat::render::Sprite& Tile::getSprite()
+flat::render::BaseSprite& Tile::getSprite()
 {
 	FLAT_ASSERT(m_exists);
+	FLAT_ASSERT(m_sprite.isSynchronized());
 	return m_sprite;
 }
 
@@ -79,10 +97,11 @@ void Tile::setCoordinates(Map& map, int x, int y, float z)
 
 	flat::Vector2 position2d(map.getTransform() * position);
 	m_sprite.setPosition(position2d);
-	m_sprite.getAABB(m_spriteAABB);
 
 	if (m_exists)
 	{
+		m_sprite.getAABB(m_spriteAABB);
+
 		DisplayManager& displayManager = map.getDisplayManager();
 		displayManager.updateTerrainObject(this);
 		setNearbyTilesDirty(map);
@@ -104,20 +123,7 @@ void Tile::setCoordinates(Map& map, int x, int y, float z)
 
 void Tile::setTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& tileTexture)
 {
-	m_sprite.setTexture(tileTexture);
-	const flat::Vector2& textureSize = tileTexture->getSize();
-	flat::Vector2 origin(textureSize.x / 2, textureSize.x / 4); // should depend on tile width/height instead
-	m_sprite.setOrigin(origin);
-	m_sprite.getAABB(m_spriteAABB);
-
-
-	if (m_exists)
-	{
-		updateRenderHash();
-
-		DisplayManager& displayManager = map.getDisplayManager();
-		displayManager.updateTerrainObject(this);
-	}
+	FLAT_ASSERT(false);
 }
 
 void Tile::setPropTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& propTexture)

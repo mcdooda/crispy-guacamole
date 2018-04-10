@@ -14,8 +14,8 @@ class MapObject
 		MapObject() {}
 		virtual ~MapObject() {}
 		
-		virtual flat::render::Sprite& getSprite() = 0;
-		inline const flat::render::Sprite& getSprite() const { return const_cast<MapObject*>(this)->getSprite(); }
+		virtual flat::render::BaseSprite& getSprite() = 0;
+		inline const flat::render::BaseSprite& getSprite() const { return const_cast<MapObject*>(this)->getSprite(); }
 
 		virtual const flat::render::ProgramSettings& getProgramSettings() const = 0;
 		

@@ -81,8 +81,9 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
-			std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
-			tile->setTexture(map, texture);
+			int tileVariantIndex = m_tileTemplate->getRandomTileVariantIndex(m_game);
+			flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, tileVariantIndex);
+			tile->synchronizeSpriteTo(map, spriteSynchronizer);
 		}
 	});
 	clearSelectedTiles();
@@ -168,8 +169,9 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 				{
 					if (!tile->hasSprite())
 					{
-						std::shared_ptr<const flat::video::Texture> texture = m_tileTemplate->getRandomTexture(m_game);
-						tile->setTexture(map, texture);
+						int tileVariantIndex = m_tileTemplate->getRandomTileVariantIndex(m_game);
+						flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, tileVariantIndex);
+						tile->synchronizeSpriteTo(map, spriteSynchronizer);
 					}
 					tile->setExists(map, true);
 				}

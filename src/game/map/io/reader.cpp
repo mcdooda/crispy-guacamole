@@ -40,8 +40,8 @@ void Reader::read()
 	readConfig();
 
 	readHeaders();
-	readTiles();
 	readZones();
+	readTiles();
 	readEntities();
 }
 
@@ -113,13 +113,12 @@ void Reader::readHeaders()
 	// tile textures
 	uint16_t numTiles;
 	read(numTiles);
-	m_tileTextures.reserve(numTiles);
+	m_tileTemplateNames.reserve(numTiles);
 	for (int i = 0; i < numTiles; ++i)
 	{
-		std::string name;
-		read(name);
-		std::string texturePath = m_mod.getTexturePath("tiles/" + name);
-		m_tileTextures.push_back(m_game.video->getTexture(texturePath));
+		std::string tileTemplateName;
+		read(tileTemplateName);
+		m_tileTemplateNames.push_back(tileTemplateName);
 	}
 
 	// prop textures
@@ -149,14 +148,6 @@ void Reader::readHeaders()
 void Reader::readTiles()
 {
 	m_map.setBounds(m_minX, m_maxX, m_minY, m_maxY);
-	// TODO read from map.gpmap
-	/*
-	m_map.setAxes(
-		flat::Vector2(-32.f, 16.f),
-		flat::Vector2( 32.f, 16.f),
-		flat::Vector2(  0.f,-32.f)
-	);
-	*/
 	m_map.createTiles();
 	
 	for (int x = m_minX; x <= m_maxX; ++x)
@@ -174,10 +165,18 @@ void Reader::readTiles()
 				read(z);
 				tile->setCoordinates(m_map, x, y, z);
 				
-				uint16_t tileIndex;
-				read(tileIndex);
-				const std::shared_ptr<const flat::video::FileTexture>& texture = m_tileTextures[tileIndex];
-				tile->setTexture(m_map, texture);
+				uint16_t tileId;
+				read(tileId);
+
+				uint16_t tileIndex = tileId & 0x0FFF;
+				uint16_t tileVariantIndex = tileId >> 12;
+
+				states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
+				const std::string& tileTemplateName = m_tileTemplateNames[tileIndex];
+				std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(m_game, tileTemplateName);
+
+				flat::render::SpriteSynchronizer& spriteSynchronizer = m_map.getTileSpriteSynchronizer(tileTemplate, tileVariantIndex);
+				tile->synchronizeSpriteTo(m_map, spriteSynchronizer);
 				
 				bool hasProp;
 				read(hasProp);

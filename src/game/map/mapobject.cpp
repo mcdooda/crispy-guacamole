@@ -7,7 +7,7 @@ namespace map
 
 void MapObject::updateRenderHash() const
 {
-	const flat::render::Sprite& sprite = getSprite();
+	const flat::render::BaseSprite& sprite = getSprite();
 	const flat::video::Texture* texture = sprite.getTexture().get();
 	FLAT_ASSERT_MSG(texture != nullptr && texture->getHash() != 0, "Map object's sprite does not have a texture");
 	const flat::render::ProgramSettings& programSettings = getProgramSettings();

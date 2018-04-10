@@ -1,5 +1,6 @@
 local Path = require 'data/scripts/path'
 
+-- entities
 local function getPreviewAnimation(spriteComponentTemplate, animationName)
     if animationName and spriteComponentTemplate.animations[animationName] then
         return spriteComponentTemplate.animations[animationName]
@@ -14,7 +15,7 @@ local function getPreviewAnimation(spriteComponentTemplate, animationName)
     end
 end
 
-local function setInitBackgroundPosition(preview, spriteComponentTemplate, animation)
+local function setEntitySpriteInitBackgroundPosition(preview, spriteComponentTemplate, animation)
     local line = animation and animation.line or 1
     preview:setBackgroundPosition(
         0,
@@ -27,15 +28,15 @@ local function startEntitySpriteAnimation(preview, spriteComponentTemplate, anim
     local y = (animation.line - 1) / spriteComponentTemplate.size:y()
     local timer = Timer.new()
     timer:onEnd(function()
-            frameIndex = (frameIndex + 1) % animation.numFrames
-            local x = frameIndex / spriteComponentTemplate.size:x()
-            preview:setBackgroundPosition(x, y)
-        end)
+        frameIndex = (frameIndex + 1) % animation.numFrames
+        local x = frameIndex / spriteComponentTemplate.size:x()
+        preview:setBackgroundPosition(x, y)
+    end)
     timer:start(animation.frameDuration, true)
 
     local function stopAnimation()
         timer:stop()
-        setInitBackgroundPosition(preview, spriteComponentTemplate, animation)
+        setEntitySpriteInitBackgroundPosition(preview, spriteComponentTemplate, animation)
     end
 
     return stopAnimation
@@ -57,11 +58,11 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, 
         imageWidth / spriteComponentTemplate.size:x(),
         imageHeight / spriteComponentTemplate.size:y()
     )
-    setInitBackgroundPosition(preview, spriteComponentTemplate, getPreviewAnimation(spriteComponentTemplate, animationName))
-    local stopAnimation
+    setEntitySpriteInitBackgroundPosition(preview, spriteComponentTemplate, getPreviewAnimation(spriteComponentTemplate, animationName))
     if loopForever then
         startEntitySpriteAnimationByName(preview, spriteComponentTemplate, animationName)
     else
+        local stopAnimation
         preview:mouseEnter(function()
             stopAnimation = startEntitySpriteAnimationByName(preview, spriteComponentTemplate, animationName)
         end)
@@ -93,7 +94,68 @@ local function entityPreview(entityTemplateName, animationName, loopForever, sca
     return unavailablePreview
 end
 
+-- tiles
+local function setTileSpriteInitBackgroundPosition(preview)
+    preview:setBackgroundPosition(0, 0)
+end
+
+local function startTileSpriteAnimation(preview, tileTemplate, tileVariantIndex)
+    local frameIndex = 0
+    local animationWidth = tileTemplate.numFrames
+    local animationHeight = #tileTemplate.probabilities
+    local y = (tileVariantIndex - 1) / animationHeight
+    local timer = Timer.new()
+    timer:onEnd(function()
+        frameIndex = (frameIndex + 1) % animationWidth
+        local x = frameIndex / animationWidth
+        preview:setBackgroundPosition(x, y)
+    end)
+    timer:start(tileTemplate.frameDuration, true)
+
+    local function stopAnimation()
+        timer:stop()
+        setTileSpriteInitBackgroundPosition(preview)
+    end
+
+    return stopAnimation
+end
+
+local function tilePreview(tileTemplateName, tileVariantIndex, loopForever, scale)
+    local tileAtlasPath = Path.getTileFilePath(tileTemplateName, 'atlas.png')
+    local preview = Widget.makeImage(tileAtlasPath)
+    preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
+    local imageWidth, imageHeight = Image.getSize(tileAtlasPath)
+    local tileTemplate = Path.requireTileFile(tileTemplateName, 'tile')
+    local animationWidth = tileTemplate.numFrames
+    local animationHeight = #tileTemplate.probabilities
+    preview:setSize(
+        imageWidth / animationWidth,
+        imageHeight / animationHeight
+    )
+    setTileSpriteInitBackgroundPosition(preview)
+    if loopForever then
+        startTileSpriteAnimation(preview, tileTemplate, tileVariantIndex)
+    else
+        local stopAnimation
+        preview:mouseEnter(function()
+            stopAnimation = startTileSpriteAnimation(preview, tileTemplate, tileVariantIndex)
+        end)
+        preview:mouseLeave(function()
+            if stopAnimation then
+                stopAnimation()
+            end
+        end)
+    end
+    if scale then
+        local width, height = preview:getSize()
+        preview:setSize(width * scale, height * scale)
+        preview:setBackgroundSize(imageWidth * scale, imageHeight * scale)
+    end
+    return preview
+end
+
 return {
     entity = entityPreview,
-    sprite = entitySpritePreview
+    sprite = entitySpritePreview,
+    tile = tilePreview
 }

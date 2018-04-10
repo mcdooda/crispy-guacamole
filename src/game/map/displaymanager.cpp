@@ -115,7 +115,7 @@ void DisplayManager::sortAndDraw(Game& game, const flat::video::View& view)
 	{
 		const MapObject* mapObject = objects[i];
 		const float depth = static_cast<float>(numObjects - i) / numObjects;
-		const_cast<flat::render::Sprite&>(mapObject->getSprite()).setDepth(depth);
+		const_cast<flat::render::BaseSprite&>(mapObject->getSprite()).setDepth(depth);
 	}
 
 	{
@@ -147,7 +147,7 @@ const MapObject* DisplayManager::getObjectAtPosition(const flat::Vector2& positi
 	for (int i = static_cast<int>(objects.size()) - 1; objectAtPosition == nullptr && i >= 0; --i)
 	{
 		const MapObject* object = objects[i];
-		const flat::render::Sprite& sprite = object->getSprite();
+		const flat::render::BaseSprite& sprite = object->getSprite();
 
 		flat::video::Color color;
 		sprite.getPixel(position, color);

@@ -1,5 +1,6 @@
 #include "map.h"
 #include "tile.h"
+#include "tiletemplate.h"
 #include "prop.h"
 #include "zone.h"
 #include "io/reader.h"
@@ -25,6 +26,16 @@ Map::Map() :
 Map::~Map()
 {
 	
+}
+
+void Map::update(float currentTime)
+{
+	updateTilesNormals();
+
+	for (TileSpriteSynchronizer& tileSpriteSynchronizer : m_tileSpriteSynchronizers)
+	{
+		tileSpriteSynchronizer.spriteSynchronizer.update(currentTime);
+	}
 }
 
 bool Map::load(Game& game, const mod::Mod& mod, const std::string& mapName)
@@ -176,6 +187,41 @@ void Map::eachTileIfExists(std::function<void(Tile*)> func)
 			func(tile);
 		}
 	});
+}
+
+flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(std::shared_ptr<const TileTemplate> tileTemplate, int tileVariantIndex)
+{
+	std::deque<TileSpriteSynchronizer>::iterator it = std::find_if(
+		m_tileSpriteSynchronizers.begin(),
+		m_tileSpriteSynchronizers.end(),
+		[tileTemplate, tileVariantIndex](const TileSpriteSynchronizer& tileSpriteSynchronize)
+		{
+			return tileSpriteSynchronize.tileTemplate == tileTemplate
+				&& tileSpriteSynchronize.tileVariantIndex == tileVariantIndex;
+		}
+	);
+
+	if (it != m_tileSpriteSynchronizers.end())
+	{
+		return it->spriteSynchronizer;
+	}
+
+	m_tileSpriteSynchronizers.emplace_back();
+	TileSpriteSynchronizer& tileSpriteSynchronizer = m_tileSpriteSynchronizers.back();
+	tileSpriteSynchronizer.tileTemplate = tileTemplate;
+	tileSpriteSynchronizer.tileVariantIndex = tileVariantIndex;
+
+	flat::render::SpriteSynchronizer& spriteSynchronizer = tileSpriteSynchronizer.spriteSynchronizer;
+	spriteSynchronizer.setTexture(tileTemplate->getTexture());
+	spriteSynchronizer.setAtlasSize(tileTemplate->getNumFrames(), tileTemplate->getNumVariants());
+	spriteSynchronizer.playAnimation(
+		tileVariantIndex,
+		tileTemplate->getNumFrames(),
+		tileTemplate->getFrameDuration(),
+		flat::render::AnimatedSprite::INFINITE_LOOP
+	);
+
+	return spriteSynchronizer;
 }
 
 void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const

@@ -43,7 +43,6 @@ void EditorMap::eachTile(std::function<void(Tile*)> func)
 
 void EditorMap::createTiles()
 {
-	FLAT_ASSERT(m_minX < m_maxX && m_minY < m_maxY);
 	// nothing to do as tiles are created on the fly
 }
 

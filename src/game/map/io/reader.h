@@ -53,7 +53,7 @@ class Reader
 		int m_minY;
 		int m_maxY;
 		
-		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_tileTextures;
+		std::vector<std::string> m_tileTemplateNames;
 		std::vector<std::shared_ptr<const flat::video::FileTexture>> m_propTextures;
 };
 

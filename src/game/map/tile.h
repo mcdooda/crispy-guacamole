@@ -23,6 +23,8 @@ class Tile final : public MapObject
 		Tile();
 		~Tile() override;
 
+		void synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer& spriteSynchronizer);
+
 		bool isTile() const override { return true; }
 		
 		inline bool exists() const { return m_exists; }
@@ -31,9 +33,9 @@ class Tile final : public MapObject
 		inline bool isWalkable() const { return m_walkable; }
 		inline void setWalkable(bool walkable) { m_walkable = walkable; }
 		
-		inline bool hasSprite() const { return static_cast<bool>(m_sprite.getTexture()); }
+		inline bool hasSprite() const { return m_sprite.getTexture() != nullptr; }
 
-		flat::render::Sprite& getSprite() override;
+		flat::render::BaseSprite& getSprite() override;
 		using MapObject::getSprite;
 
 		const flat::render::ProgramSettings& getProgramSettings() const override;
@@ -80,7 +82,7 @@ class Tile final : public MapObject
 		static const flat::render::ProgramSettings* tileProgramSettings;
 
 		std::vector<entity::Entity*> m_entities;
-		flat::render::Sprite m_sprite;
+		flat::render::SynchronizedSprite m_sprite;
 		Prop* m_prop;
 		
 		int m_x;

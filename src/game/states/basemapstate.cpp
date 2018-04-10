@@ -469,7 +469,7 @@ void BaseMapState::update(game::Game& game)
 	m_entityTemplateManager.update();
 	Super::update(game);
 
-	//debugCursorPosition(game);
+	debugCursorPosition(game);
 }
 
 void BaseMapState::addGhostEntity(game::Game& game)
@@ -489,7 +489,7 @@ void BaseMapState::addGhostEntity(game::Game& game)
 				flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
 				m_ghostEntity->setPosition(ghostPosition);
 				addEntityToMap(m_ghostEntity);
-				flat::render::Sprite& sprite = m_ghostEntity->getSprite();
+				flat::render::BaseSprite& sprite = m_ghostEntity->getSprite();
 				flat::video::Color color;
 				if (canPlaceGhostEntity(tile))
 				{
@@ -585,8 +585,6 @@ void BaseMapState::updateCameraView()
 void BaseMapState::draw(game::Game& game)
 {
 	// map
-	map::Map& map = getMap();
-	map.updateTilesNormals();
 	addGhostEntity(game);
 	m_displayManager.sortAndDraw(game, m_gameView);
 	removeGhostEntity(game);
@@ -1073,6 +1071,12 @@ void BaseMapState::updateEntities()
 #ifdef FLAT_DEBUG
 	}
 #endif
+}
+
+void BaseMapState::updateMap()
+{
+	const flat::time::Clock& clock = getClock();
+	getMap().update(clock.getTime());
 }
 
 #ifdef FLAT_DEBUG

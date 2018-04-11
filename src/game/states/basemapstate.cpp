@@ -95,7 +95,12 @@ void BaseMapState::enter(Game& game)
 
 	m_entityTemplateManager.init(game);
 	
-	loadMap(game, game.mapName);
+	map::Map& map = getMap();
+	map.setDisplayManager(&m_displayManager);
+	if (!game.mapName.empty())
+	{
+		loadMap(game, game.mapName);
+	}
 
 	// load debug display resources *after* the map is loaded!
 	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
@@ -167,7 +172,6 @@ void BaseMapState::setModPath(const std::string& modPath)
 bool BaseMapState::loadMap(Game& game, const std::string& mapName)
 {
 	map::Map& map = getMap();
-	map.setDisplayManager(&m_displayManager);
 	if (map.load(game, m_mod, mapName))
 	{
 		game.mapName = mapName;

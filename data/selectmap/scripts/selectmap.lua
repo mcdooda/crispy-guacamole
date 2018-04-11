@@ -40,10 +40,12 @@ do
         do
             local newMapLabel = Widget.makeText('New', table.unpack(UiSettings.titleFont))
             newMapLabel:setMargin(5)
-            newMapLabel:click(function()
-                MapEditor.newMap()
-                return true
-            end)
+            newMapLabel:click(flat.ui.task(function()
+                local mapName = flat.ui.prompt 'Map name:'
+                if mapName and mapName ~= '' then
+                    MapEditor.newMap(modPath, mapName)
+                end
+            end))
             mapsTitleLine:addChild(newMapLabel)
         end
 

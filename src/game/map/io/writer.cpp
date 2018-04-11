@@ -37,9 +37,9 @@ bool Writer::canWrite() const
 void Writer::write(const std::vector<entity::Entity*>& entities)
 {
 	writeHeaders();
-	writeZones();
 	writeTiles();
 	writeEntities(entities);
+	writeZones();
 }
 
 void Writer::writeHeaders()

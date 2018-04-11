@@ -40,9 +40,9 @@ void Reader::read()
 	readConfig();
 
 	readHeaders();
-	readZones();
 	readTiles();
 	readEntities();
+	readZones();
 }
 
 void Reader::readConfig()

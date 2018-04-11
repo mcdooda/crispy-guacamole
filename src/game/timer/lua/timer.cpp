@@ -22,15 +22,15 @@ int open(Game& game)
 		{"start",          l_Timer_start},
 		{"stop",           l_Timer_stop},
 		{"getElapsedTime", l_Timer_getElapsedTime},
-		{ "onUpdate",      l_Timer_onUpdate},
-		{ "onEnd",         l_Timer_onEnd},
+		{"onUpdate",       l_Timer_onUpdate},
+		{"onEnd",          l_Timer_onEnd},
 		
 		{nullptr, nullptr}
 	};
 	game.lua->registerClass<LuaTimer>("CG.Timer", Timer_lib_m);
 	
 	static const luaL_Reg Timer_lib_s[] = {
-		{"new", l_Timer_create},
+		{"new", l_Timer_new},
 		
 		{nullptr, nullptr}
 	};
@@ -40,7 +40,7 @@ int open(Game& game)
 	return 0;
 }
 
-int l_Timer_create(lua_State* L)
+int l_Timer_new(lua_State* L)
 {
 	TimerContainer& timerContainer = getTimerContainer(L);
 	pushTimer(L, timerContainer.add());

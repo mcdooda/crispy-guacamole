@@ -15,7 +15,7 @@ namespace lua
 
 int open(Game& game);
 
-int l_Timer_create(lua_State* L);
+int l_Timer_new(lua_State* L);
 int l_Timer_start(lua_State* L);
 int l_Timer_stop(lua_State* L);
 int l_Timer_getElapsedTime(lua_State* L);

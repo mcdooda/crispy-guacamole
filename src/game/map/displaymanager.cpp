@@ -118,20 +118,43 @@ void DisplayManager::sortAndDraw(Game& game, const flat::video::View& view)
 		const_cast<flat::render::BaseSprite&>(mapObject->getSprite()).setDepth(depth);
 	}
 
+	glEnable(GL_DEPTH_TEST);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
 	{
+		std::vector<const MapObject*> opaqueObjects = objects;
+		opaqueObjects.erase(std::remove_if(
+			opaqueObjects.begin(),
+			opaqueObjects.end(),
+			[](const MapObject* a) { return a->getSprite().requiresAlphaBlending(); }
+		), opaqueObjects.end());
+
 		std::sort(
-			objects.begin(),
-			objects.end(),
+			opaqueObjects.begin(),
+			opaqueObjects.end(),
 			[](const MapObject* a, const MapObject* b)
 			{
 				return a->getRenderHash() < b->getRenderHash();
 			}
 		);
-		glEnable(GL_DEPTH_TEST);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		drawBatches(game, view, objects);
-		glDisable(GL_DEPTH_TEST);
+
+		glDisable(GL_BLEND);
+		drawBatches(game, view, std::move(opaqueObjects));
 	}
+
+	{
+		std::vector<const MapObject*> transparentObjects = objects;
+		transparentObjects.erase(std::remove_if(
+			transparentObjects.begin(),
+			transparentObjects.end(),
+			[](const MapObject* a) { return !a->getSprite().requiresAlphaBlending(); }
+		), transparentObjects.end());
+
+		glEnable(GL_BLEND);
+		drawBatches(game, view, std::move(transparentObjects));
+	}
+
+	glDisable(GL_DEPTH_TEST);
 }
 
 const MapObject* DisplayManager::getObjectAtPosition(const flat::Vector2& position) const
@@ -296,7 +319,7 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects)
 	}
 }
 
-void DisplayManager::drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects)
+void DisplayManager::drawBatches(Game& game, const flat::video::View& view, std::vector<const MapObject*>&& objects)
 {
 #if DEBUG_DRAW
 	int numDrawCalls = 0;

@@ -1,6 +1,5 @@
 return {
-	ground1 = 1,
-	ground2 = 1,
-	ground3 = 1,
-	ground4 = 1,
+	probabilities = {1, 1, 1, 1}, -- 4 tile variants
+	frameDuration = 1,
+	numFrames = 1
 }

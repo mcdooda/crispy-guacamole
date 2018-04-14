@@ -1,4 +1,5 @@
 return {
-	snow1 = 1,
-	snow2 = 1
+	probabilities = {1, 1}, -- 2 tile variants
+	frameDuration = 1,
+	numFrames = 1
 }

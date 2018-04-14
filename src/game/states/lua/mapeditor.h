@@ -14,7 +14,6 @@ namespace mapeditor
 
 int open(lua_State* L);
 
-int l_MapEditor_newMap(lua_State* L);
 int l_MapEditor_openMap(lua_State* L);
 
 } // mapeditor

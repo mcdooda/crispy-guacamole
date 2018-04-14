@@ -97,10 +97,7 @@ void BaseMapState::enter(Game& game)
 	
 	map::Map& map = getMap();
 	map.setDisplayManager(&m_displayManager);
-	if (!game.mapName.empty())
-	{
-		loadMap(game, game.mapName);
-	}
+	loadMap(game);
 
 	// load debug display resources *after* the map is loaded!
 	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
@@ -169,15 +166,10 @@ void BaseMapState::setModPath(const std::string& modPath)
 	m_mod.setPath(modPath);
 }
 
-bool BaseMapState::loadMap(Game& game, const std::string& mapName)
+bool BaseMapState::loadMap(Game& game)
 {
 	map::Map& map = getMap();
-	if (map.load(game, m_mod, mapName))
-	{
-		game.mapName = mapName;
-		return true;
-	}
-	return false;
+	return map.load(game, m_mod);
 }
 
 bool BaseMapState::saveMap(Game& game) const
@@ -473,7 +465,7 @@ void BaseMapState::update(game::Game& game)
 	m_entityTemplateManager.update();
 	Super::update(game);
 
-	debugCursorPosition(game);
+	//debugCursorPosition(game);
 }
 
 void BaseMapState::addGhostEntity(game::Game& game)

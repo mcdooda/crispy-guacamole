@@ -38,17 +38,23 @@ void Map::update(float currentTime)
 	}
 }
 
-bool Map::load(Game& game, const mod::Mod& mod, const std::string& mapName)
+bool Map::load(Game& game, const mod::Mod& mod)
 {
-	io::Reader reader(game, mod, mapName, *this);
+	io::Reader reader(game, mod, *this);
+	reader.readConfig();
+
 	if (reader.canRead())
 	{
 		reader.read();
 		updateAllTilesNormals();
 		return true;
 	}
-	FLAT_ASSERT(false);
-	return false;
+	else
+	{
+		setBounds(0, 1, 0, 1);
+		createTiles();
+		return false;
+	}
 }
 
 bool Map::save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const

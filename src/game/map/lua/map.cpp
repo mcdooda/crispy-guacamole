@@ -56,9 +56,10 @@ int l_Map_load(lua_State* L)
 {
 	std::string mapName = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
+	game.mapName = mapName;
 	flat::state::State* state = game.getStateMachine().getState();
 	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
-	bool mapLoaded = baseMapState.loadMap(game, mapName);
+	bool mapLoaded = baseMapState.loadMap(game);
 	lua_pushboolean(L, mapLoaded);
 	return 1;
 }
@@ -81,10 +82,10 @@ int l_Map_debug_getDrawStats(lua_State* L)
 	states::BaseMapState& mapState = state->as<states::BaseMapState>();
 	const Map& map = mapState.getMap();
 	const DisplayManager& displayManager = map.getDisplayManager();
-	lua_pushnumber(L, displayManager.getNumOpaqueObjects());
-	lua_pushnumber(L, displayManager.getNumOpaqueDrawCalls());
-	lua_pushnumber(L, displayManager.getNumTransparentObjects());
-	lua_pushnumber(L, displayManager.getNumTransparentDrawCalls());
+	lua_pushnumber(L, static_cast<lua_Number>(displayManager.getNumOpaqueObjects()));
+	lua_pushnumber(L, static_cast<lua_Number>(displayManager.getNumOpaqueDrawCalls()));
+	lua_pushnumber(L, static_cast<lua_Number>(displayManager.getNumTransparentObjects()));
+	lua_pushnumber(L, static_cast<lua_Number>(displayManager.getNumTransparentDrawCalls()));
 	return 4;
 }
 #endif

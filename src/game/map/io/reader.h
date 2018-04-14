@@ -24,14 +24,15 @@ namespace io
 class Reader
 {
 	public:
-		Reader(Game& game, const mod::Mod& mod, const std::string& mapName, Map& map);
+		Reader(Game& game, const mod::Mod& mod, Map& map);
 		~Reader();
 		
 		bool canRead() const;
 		void read();
 
-	private:
 		void readConfig();
+
+	private:
 		void readHeaders();
 		void readTiles();
 		void readEntities();
@@ -43,7 +44,6 @@ class Reader
 	private:
 		Game& m_game;
 		const mod::Mod& m_mod;
-		std::string m_mapName;
 		Map& m_map;
 		
 		std::ifstream m_file;

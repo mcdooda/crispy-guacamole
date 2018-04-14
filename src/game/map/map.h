@@ -44,7 +44,7 @@ class Map
 		void operator=(Map&&) = delete;
 		void operator=(const Map&) = delete;
 		
-		bool load(Game& game, const mod::Mod& mod, const std::string& mapName);
+		bool load(Game& game, const mod::Mod& mod);
 		bool save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const;
 
 		void setBounds(int minX, int maxX, int minY, int maxY);

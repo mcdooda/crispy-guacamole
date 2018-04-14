@@ -43,7 +43,9 @@ do
             newMapLabel:click(flat.ui.task(function()
                 local mapName = flat.ui.prompt 'Map name:'
                 if mapName and mapName ~= '' then
-                    MapEditor.newMap(modPath, mapName)
+                    mapName = mapName:lower()
+                    loadfile('data/editor/tools/newmap.lua')(mapName)
+                    MapEditor.openMap(modPath, mapName)
                 end
             end))
             mapsTitleLine:addChild(newMapLabel)

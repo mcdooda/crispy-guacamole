@@ -15,14 +15,13 @@ namespace map
 namespace io
 {
 
-Reader::Reader(Game& game, const mod::Mod& mod, const std::string& mapName, Map& map) :
+Reader::Reader(Game& game, const mod::Mod& mod, Map& map) :
 	m_game(game),
 	m_mod(mod),
-	m_mapName(mapName),
 	m_map(map),
-	m_file(mod.getMapPath(mapName).c_str(), std::ofstream::binary)
+	m_file(mod.getMapPath(game.mapName).c_str(), std::ofstream::binary)
 {
-	FLAT_ASSERT(m_file.is_open());
+	
 }
 
 Reader::~Reader()
@@ -55,19 +54,9 @@ void Reader::readConfig()
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-		std::string configFilePath = m_mod.getMapPath(m_mapName, "map.lua");
+		std::string configFilePath = m_mod.getMapPath(m_game.mapName, "map.lua");
 		luaL_loadfile(L, configFilePath.c_str());
 		lua_call(L, 0, 1);
-
-		{
-			m_minX = 0;
-			m_minY = 0;
-			lua_getfield(L, -1, "width");
-			m_maxX = static_cast<int>(luaL_checkinteger(L, -1) + 1);
-			lua_getfield(L, -2, "height");
-			m_maxY = static_cast<int>(luaL_checkinteger(L, -1) + 1);
-			lua_pop(L, 2);
-		}
 
 		{
 			lua_getfield(L, -1, "axes");

@@ -40,7 +40,7 @@ class BaseMapState : public BaseState
 		
 		void setModPath(const std::string& modPath);
 
-		bool loadMap(Game& game, const std::string& mapName);
+		bool loadMap(Game& game);
 		bool saveMap(Game& game) const;
 
 		virtual map::Map& getMap() = 0;

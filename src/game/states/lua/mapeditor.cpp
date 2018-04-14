@@ -17,7 +17,6 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 1);
 	static const luaL_Reg MapEditor_lib_f[] = {
-		{"newMap",  l_MapEditor_newMap},
 		{"openMap", l_MapEditor_openMap},
 
 		{nullptr, nullptr}
@@ -28,19 +27,6 @@ int open(lua_State* L)
 	return 0;
 }
 
-int l_MapEditor_newMap(lua_State* L)
-{
-	FLAT_ASSERT_MSG(false, "not implemented");
-	/*const char* modPath = luaL_checkstring(L, 1);
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	game.modPath = modPath;
-	game.mapName = "";
-	std::unique_ptr<MapEditorState> gameState = std::make_unique<MapEditorState>();
-	gameState->setModPath(modPath);
-	game.getStateMachine().setNextState(std::move(gameState));*/
-	return 1;
-}
-
 int l_MapEditor_openMap(lua_State* L)
 {
 	const char* modPath = luaL_checkstring(L, 1);
@@ -48,9 +34,9 @@ int l_MapEditor_openMap(lua_State* L)
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	game.modPath = modPath;
 	game.mapName = mapName;
-	std::unique_ptr<MapEditorState> gameState = std::make_unique<MapEditorState>();
-	gameState->setModPath(modPath);
-	game.getStateMachine().setNextState(std::move(gameState));
+	std::unique_ptr<MapEditorState> mapEditorState = std::make_unique<MapEditorState>();
+	mapEditorState->setModPath(modPath);
+	game.getStateMachine().setNextState(std::move(mapEditorState));
 	return 1;
 }
 

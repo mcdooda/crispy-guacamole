@@ -1,9 +1,5 @@
 return {
-	grass1 = 1000,
-	grass2 = 10,
-	grass3 = 10,
-	grass4 = 10,
-	grass5 = 10,
-	grass6 = 1,
-	grass7 = 1
+	probabilities = {1000, 10, 10, 10, 10, 10, 1, 1, 1}, -- 7 tile variants
+	frameDuration = 0.15,
+	numFrames = 4
 }

@@ -19,6 +19,10 @@ int l_Map_getName(lua_State* L);
 int l_Map_load(lua_State* L);
 int l_Map_save(lua_State* L);
 
+#ifdef FLAT_DEBUG
+int l_Map_debug_getDrawStats(lua_State* L);
+#endif
+
 int l_Map_getNumEntities(lua_State* L);
 int l_Map_getEntitiesInRange(lua_State* L);
 int l_Map_eachSelectedEntity(lua_State* L);

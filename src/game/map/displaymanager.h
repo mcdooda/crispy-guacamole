@@ -38,12 +38,22 @@ class DisplayManager final
 
 #ifdef FLAT_DEBUG
 		const flat::AABB2& getEntityCellAABB(const entity::Entity* entity) const;
+
+		inline size_t getNumOpaqueObjects() const { return m_numOpaqueObjects; }
+		inline size_t getNumOpaqueDrawCalls() const { return m_numOpaqueDrawCalls; }
+
+		inline size_t getNumTransparentObjects() const { return m_numTransparentObjects; }
+		inline size_t getNumTransparentDrawCalls() const { return m_numTransparentDrawCalls; }
 #endif
 
 	private:
 		static void sortObjects(std::vector<const MapObject*>& objects);
 
-		void drawBatches(Game& game, const flat::video::View& view, std::vector<const MapObject*>&& objects);
+#ifdef FLAT_DEBUG
+		void drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls);
+#else
+		void drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects);
+#endif
 		
 	private:
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
@@ -53,6 +63,14 @@ class DisplayManager final
 
 		std::unique_ptr<TerrainQuadTree> m_terrainQuadtree;
 		std::unordered_map<const MapObject*, int> m_TerrainObjectCellIndices;
+
+#ifdef FLAT_DEBUG
+		size_t m_numOpaqueObjects;
+		size_t m_numOpaqueDrawCalls;
+
+		size_t m_numTransparentObjects;
+		size_t m_numTransparentDrawCalls;
+#endif
 };
 
 } // map

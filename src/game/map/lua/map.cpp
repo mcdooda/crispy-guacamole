@@ -20,19 +20,23 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 3);
 	static const luaL_Reg Map_lib_m[] = {
-		{"getName",             l_Map_getName},
-		{"load",                l_Map_load},
-		{"save",                l_Map_save},
+		{"getName",            l_Map_getName},
+		{"load",               l_Map_load},
+		{"save",               l_Map_save},
 
-		{"getNumEntities",      l_Map_getNumEntities},
-		{"getEntitiesInRange",  l_Map_getEntitiesInRange},
-		{"eachSelectedEntity",  l_Map_eachSelectedEntity},
+#ifdef FLAT_DEBUG
+		{"debug_getDrawStats", l_Map_debug_getDrawStats},
+#endif
 
-		{"getZone",             l_Map_getZone},
+		{"getNumEntities",     l_Map_getNumEntities},
+		{"getEntitiesInRange", l_Map_getEntitiesInRange},
+		{"eachSelectedEntity", l_Map_eachSelectedEntity},
 
-		{"getTileZ",            l_Map_getTileZ},
-		{"setTileZ",            l_Map_setTileZ},
-		{"moveTileZBy",         l_Map_moveTileZBy},
+		{"getZone",            l_Map_getZone},
+
+		{"getTileZ",           l_Map_getTileZ},
+		{"setTileZ",           l_Map_setTileZ},
+		{"moveTileZBy",        l_Map_moveTileZBy},
 
 		{nullptr, nullptr}
 	};
@@ -68,6 +72,22 @@ int l_Map_save(lua_State* L)
 	lua_pushboolean(L, mapSaved);
 	return 1;
 }
+
+#ifdef FLAT_DEBUG
+int l_Map_debug_getDrawStats(lua_State* L)
+{
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	flat::state::State* state = game.getStateMachine().getState();
+	states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	const Map& map = mapState.getMap();
+	const DisplayManager& displayManager = map.getDisplayManager();
+	lua_pushnumber(L, displayManager.getNumOpaqueObjects());
+	lua_pushnumber(L, displayManager.getNumOpaqueDrawCalls());
+	lua_pushnumber(L, displayManager.getNumTransparentObjects());
+	lua_pushnumber(L, displayManager.getNumTransparentDrawCalls());
+	return 4;
+}
+#endif
 
 int l_Map_getNumEntities(lua_State* L)
 {

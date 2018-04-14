@@ -1,0 +1,1 @@
+return flat.graph.script.run 'mods/king-of-the-world/entities/circle/sprite'

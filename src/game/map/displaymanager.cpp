@@ -139,7 +139,12 @@ void DisplayManager::sortAndDraw(Game& game, const flat::video::View& view)
 		);
 
 		glDisable(GL_BLEND);
-		drawBatches(game, view, std::move(opaqueObjects));
+
+#ifdef FLAT_DEBUG
+		drawBatches(game, view, opaqueObjects, m_numOpaqueObjects, m_numOpaqueDrawCalls);
+#else
+		drawBatches(game, view, opaqueObjects);
+#endif
 	}
 
 	{
@@ -151,7 +156,12 @@ void DisplayManager::sortAndDraw(Game& game, const flat::video::View& view)
 		), transparentObjects.end());
 
 		glEnable(GL_BLEND);
-		drawBatches(game, view, std::move(transparentObjects));
+
+#ifdef FLAT_DEBUG
+		drawBatches(game, view, transparentObjects, m_numTransparentObjects, m_numTransparentDrawCalls);
+#else
+		drawBatches(game, view, transparentObjects);
+#endif
 	}
 
 	glDisable(GL_DEPTH_TEST);
@@ -319,11 +329,18 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects)
 	}
 }
 
-void DisplayManager::drawBatches(Game& game, const flat::video::View& view, std::vector<const MapObject*>&& objects)
-{
-#if DEBUG_DRAW
-	int numDrawCalls = 0;
+#ifdef FLAT_DEBUG
+void DisplayManager::drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls)
+#else
+void DisplayManager::drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects)
 #endif
+{
+
+#ifdef FLAT_DEBUG
+	numObjects = objects.size();
+	numDrawCalls = 0;
+#endif
+
 
 	flat::video::Window& window = *game.video->window;
 
@@ -349,14 +366,11 @@ void DisplayManager::drawBatches(Game& game, const flat::video::View& view, std:
 		programSettings.program.use(window);
 		programSettings.settings.viewProjectionMatrixUniform.set(view.getViewProjectionMatrix());
 		spriteBatch->draw(programSettings.settings, viewMatrix);
-#if DEBUG_DRAW
+
+#ifdef FLAT_DEBUG
 		++numDrawCalls;
 #endif
 	}
-
-#if DEBUG_DRAW
-	std::cout << "draw calls: " << numDrawCalls << std::endl;
-#endif
 }
 
 #undef DEBUG_DRAW

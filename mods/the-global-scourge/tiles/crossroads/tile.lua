@@ -1,3 +1,5 @@
 return {
-	crossroads1 = 1
+	probabilities = {1}, -- 1 tile variant
+	frameDuration = 1,
+	numFrames = 1
 }

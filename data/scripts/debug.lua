@@ -58,6 +58,7 @@ local function makeSeparator()
 end
 
 dofile 'data/scripts/stats.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
+dofile 'data/scripts/drawstats.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 dofile 'data/scripts/entitydebug.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 dofile 'data/scripts/memorysnapshot.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
 dofile 'data/scripts/gamespeed.lua' (addContainer, makeSeparator, UiSettings.defaultFont)

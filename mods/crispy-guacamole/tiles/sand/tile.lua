@@ -1,5 +1,5 @@
 return {
-    sand1 = 10,
-    sand2 = 10,
-	sand3 = 100,
+	probabilities = {1, 1, 1}, -- 3 tile variants
+	frameDuration = 1,
+	numFrames = 1
 }

@@ -1,3 +1,5 @@
+#include <future>
+#include <thread>
 #include <flat.h>
 #include "entityupdater.h"
 
@@ -13,7 +15,11 @@ namespace entity
 EntityUpdater::EntityUpdater(const component::ComponentRegistry& componentRegistry)
 {
 	size_t numComponentTypes = componentRegistry.getNumComponentTypes();
-	m_registeredComponents.resize(numComponentTypes);
+	m_registeredComponents.reserve(numComponentTypes);
+	componentRegistry.eachComponentType([this](const component::ComponentType& componentType)
+	{
+		m_registeredComponents.emplace_back(componentType);
+	});
 }
 
 EntityUpdater::~EntityUpdater()
@@ -21,9 +27,9 @@ EntityUpdater::~EntityUpdater()
 #ifdef FLAT_DEBUG
 	FLAT_ASSERT(m_registeredEntities.size() == 0);
 
-	for (const std::deque<component::Component*>& componentList : m_registeredComponents)
+	for (const ComponentList& componentList : m_registeredComponents)
 	{
-		FLAT_ASSERT(componentList.size() == 0);
+		FLAT_ASSERT(componentList.components.size() == 0);
 	}
 #endif
 
@@ -40,7 +46,7 @@ void EntityUpdater::registerEntity(Entity* entity)
 		if (component->componentRequiresUpdate())
 		{
 			component::ComponentTypeId componentTypeId = component->getComponentType().getComponentTypeId();
-			m_registeredComponents[componentTypeId - 1].push_back(component);
+			m_registeredComponents[componentTypeId - 1].components.push_back(component);
 		}
 	}
 }
@@ -56,7 +62,7 @@ void EntityUpdater::unregisterEntity(Entity* entity)
 		if (component->componentRequiresUpdate())
 		{
 			component::ComponentTypeId componentTypeId = component->getComponentType().getComponentTypeId();
-			std::deque<component::Component*>& componentList = m_registeredComponents[componentTypeId - 1];
+			std::deque<component::Component*>& componentList = m_registeredComponents[componentTypeId - 1].components;
 			std::deque<component::Component*>::iterator it = std::find(componentList.begin(), componentList.end(), component);
 			FLAT_ASSERT(it != componentList.end());
 			componentList.erase(it);
@@ -68,13 +74,13 @@ void EntityUpdater::unregisterAllEntities()
 {
 	m_registeredEntities.clear();
 
-	for (std::deque<component::Component*>& componentList : m_registeredComponents)
+	for (ComponentList& componentList : m_registeredComponents)
 	{
-		componentList.clear();
+		componentList.components.clear();
 	}
 }
 
-void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
+void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt) const
 {
 	for (component::Component* component : entity->getComponents())
 	{
@@ -87,16 +93,17 @@ void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 	entity->updateAABBIfDirty();
 }
 
-void EntityUpdater::updateAllEntities(float time, float dt)
+void EntityUpdater::updateAllEntities(float time, float dt) const
 {
-	for (const std::deque<component::Component*>& componentList : m_registeredComponents)
+	for (const ComponentList& componentList : m_registeredComponents)
 	{
-		for (component::Component* component : componentList)
+		if (componentList.componentType.requiresSingleThreadedUpdate())
 		{
-			if (component->isEnabled())
-			{
-				component->update(time, dt);
-			}
+			updateRange(componentList.components.begin(), componentList.components.end(), time, dt);
+		}
+		else
+		{
+			updateMultiThread(componentList, time, dt);
 		}
 	}
 
@@ -113,6 +120,47 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 		}
 	}
 #endif
+}
+
+void EntityUpdater::updateRange(std::deque<component::Component*>::const_iterator begin, std::deque<component::Component*>::const_iterator end, float time, float dt) const
+{
+	for (std::deque<component::Component*>::const_iterator it = begin; it != end; ++it)
+	{
+		component::Component* component = *it;
+		if (component->isEnabled())
+		{
+			component->update(time, dt);
+		}
+	}
+}
+
+void EntityUpdater::updateMultiThread(const ComponentList& componentList, float time, float dt) const
+{
+	const unsigned int numComponents = static_cast<unsigned int>(componentList.components.size());
+	const unsigned int numThreads = std::min(8U, numComponents);
+
+	const unsigned int numComponentsPerThread = static_cast<unsigned int>(std::ceil(static_cast<float>(numComponents) / numThreads));
+
+	std::vector<std::future<void>> futures(numThreads);
+
+	for (unsigned int i = 0; i < numThreads; ++i)
+	{
+		int beginIndex = numComponentsPerThread * i;
+		int endIndex = std::min(beginIndex + numComponentsPerThread, numComponents);
+		std::deque<component::Component*>::const_iterator begin = componentList.components.cbegin() + beginIndex;
+		std::deque<component::Component*>::const_iterator end = componentList.components.cbegin() + endIndex;
+		futures[i] = std::async(
+			[this, begin, end, time, dt]()
+			{
+				updateRange(begin, end, time, dt);
+			}
+		);
+	}
+
+	for (std::future<void>& future : futures)
+	{
+		future.wait();
+	}
 }
 
 #ifdef FLAT_DEBUG

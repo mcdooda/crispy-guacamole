@@ -78,6 +78,7 @@ class ComponentImpl : public Component
 		inline static bool allowEntityInEditor() { return true; }
 
 		inline static bool requiresUpdate() { return true; }
+		inline static bool requiresSingleThreadedUpdate() { return true; }
 
 		inline static void setType(const std::shared_ptr<const ComponentType>& type) { ComponentImpl::type = type; }
 		inline static ComponentFlags getFlag() { return getType().getComponentTypeFlag(); }

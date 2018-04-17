@@ -19,6 +19,8 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "sprite"; }
 
+		inline static bool requiresSingleThreadedUpdate() { return false; }
+
 		void init() override;
 		void deinit() override;
 

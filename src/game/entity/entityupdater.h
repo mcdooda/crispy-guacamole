@@ -18,11 +18,20 @@ class Entity;
 namespace component
 {
 class Component;
+class ComponentType;
 class ComponentRegistry;
 }
 
 class EntityUpdater final
 {
+	private:
+		struct ComponentList
+		{
+			ComponentList(const component::ComponentType& componentType) : componentType(componentType) {}
+			const component::ComponentType& componentType;
+			std::deque<component::Component*> components;
+		};
+
 	public:
 		EntityUpdater() = delete;
 		EntityUpdater(const EntityUpdater&) = delete;
@@ -36,8 +45,8 @@ class EntityUpdater final
 		void unregisterEntity(Entity* entity);
 		void unregisterAllEntities();
 
-		void updateSingleEntity(Entity* entity, float time, float dt);
-		void updateAllEntities(float time, float dt);
+		void updateSingleEntity(Entity* entity, float time, float dt) const;
+		void updateAllEntities(float time, float dt) const;
 
 		const std::vector<Entity*>& getEntities() const { return m_registeredEntities; }
 		std::vector<Entity*>& getEntities() { return m_registeredEntities; }
@@ -47,7 +56,11 @@ class EntityUpdater final
 #endif
 
 	private:
-		std::vector<std::deque<component::Component*>> m_registeredComponents;
+		void updateRange(std::deque<component::Component*>::const_iterator begin, std::deque<component::Component*>::const_iterator end, float time, float dt) const;
+		void updateMultiThread(const ComponentList& componentList, float time, float dt) const;
+
+	private:
+		std::vector<ComponentList> m_registeredComponents;
 		std::vector<Entity*> m_registeredEntities;
 
 };

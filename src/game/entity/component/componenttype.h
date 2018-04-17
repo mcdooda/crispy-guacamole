@@ -33,6 +33,7 @@ public:
 	virtual bool allowEntityInEditor() const = 0;
 
 	virtual bool requiresUpdate() const = 0;
+	virtual bool requiresSingleThreadedUpdate() const = 0;
 
 	virtual ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const = 0;
 
@@ -56,6 +57,7 @@ public:
 	bool allowEntityInEditor() const override;
 
 	bool requiresUpdate() const override;
+	bool requiresSingleThreadedUpdate() const override;
 
 	ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const override;
 
@@ -91,6 +93,12 @@ template<class T>
 inline bool ComponentTypeImpl<T>::requiresUpdate() const
 {
 	return T::requiresUpdate();
+}
+
+template<class T>
+inline bool ComponentTypeImpl<T>::requiresSingleThreadedUpdate() const
+{
+	return T::requiresSingleThreadedUpdate();
 }
 
 template <class T>

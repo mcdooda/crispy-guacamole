@@ -1,7 +1,5 @@
 return {
-	gold = 1,
-	gold2 = 1,
-    gold4 = 10,
-    gold5 = 1,
-	gold3 = 1
+    probabilities = {10, 10, 10, 10, 10}, -- 7 tile variants
+    frameDuration = 0.15,
+    numFrames = 1
 }

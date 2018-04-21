@@ -2,9 +2,13 @@ local Score = require 'mods/crispy-guacamole/maps/td/score'
 local Money = require 'mods/crispy-guacamole/maps/td/money'
 local MonstersData = require 'mods/crispy-guacamole/maps/td/monstersdata'
 
-local mazeZone  = Map.getZone 'Cherry'
-local startZone = Map.getZone 'Apple'
-local endZone   = Map.getZone 'Lemon'
+local mazeZoneName  = 'Maze'
+local startZoneName = 'Start'
+local endZoneName   = 'End'
+
+local mazeZone  = Map.getZone(mazeZoneName)
+local startZone = Map.getZone(startZoneName)
+local endZone   = Map.getZone(endZoneName)
 
 local startZonePosition = startZone:getCenter()
 local endZonePosition = endZone:getCenter()
@@ -56,7 +60,7 @@ for i = 1, #waves do
                 Components.allExcept(Component.behavior)
             )
             entity:getExtraData().isWaveEntity = true
-            entity:restrictToZone 'Cherry'
+            entity:restrictToZone(mazeZoneName)
             entity:moveTo(endZonePosition, false)
             entity:died(function()
                 Score:addKill()

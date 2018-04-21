@@ -137,24 +137,23 @@ do
 				zoneLine:addChild(text)
 				addContent(zoneLine)
 			end
-			do
-				local textInput = TextInput:new ''
-				addContent(textInput.container)
 
+			do
 				local addZoneButton = Widget.makeLineFlow()
 				local icon = Widget.makeImage 'data/editor/interface/icons/plus.png'
 				icon:setMargin(2)
 				addZoneButton:addChild(icon)
-				local text = Widget.makeText('Add zone', table.unpack(UiSettings.defaultFont))
+				local text = Widget.makeText('Add Zone', table.unpack(UiSettings.defaultFont))
 				addZoneButton:addChild(text)
 				addZoneButton:setMargin(0, 0, 0, 7)
-				addZoneButton:click(function()
-					local newZoneName = textInput:getValue()
-					textInput:setValue ''
-					Editor.addZone(newZoneName)
-					refreshCurrentTab()
-					Editor.setZone(newZoneName)
-				end)
+				addZoneButton:click(flat.ui.task(function()
+					local newZoneName = flat.ui.prompt 'Zone name:'
+					if newZoneName and newZoneName ~= '' then
+						Editor.addZone(newZoneName)
+						refreshCurrentTab()
+						Editor.setZone(newZoneName)
+					end
+				end))
 				addContent(addZoneButton)
 			end
 		end

@@ -1,3 +1,0 @@
-return {
-    corner = 1,
-}

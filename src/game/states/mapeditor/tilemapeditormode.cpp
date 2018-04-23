@@ -147,7 +147,7 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 					for (size_t i = 1; i <= numTileVariants; ++i)
 					{
 						lua_rawgeti(L, 1, i);
-						int tileVariantIndex = luaL_checkinteger(L, -1);
+						int tileVariantIndex = static_cast<int>(luaL_checkinteger(L, -1));
 						tileVariantIndices[i - 1] = tileVariantIndex - 1;
 						lua_pop(L, 1);
 					}

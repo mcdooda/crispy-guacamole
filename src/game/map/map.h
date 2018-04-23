@@ -72,7 +72,8 @@ class Map
 		void eachTileIfExists(std::function<void(const Tile*)> func) const;
 		void eachTileIfExists(std::function<void(Tile*)> func);
 
-		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(std::shared_ptr<const TileTemplate> tileTemplate, int tileVariantIndex);
+		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
+		const std::shared_ptr<const TileTemplate> getTileTemplate(const Tile* tile) const;
 		
 		// axes
 		inline const flat::Matrix3& getTransform() const { return m_transform; }

@@ -39,6 +39,7 @@ class BaseMapState : public BaseState
 		void exit(Game& game) override;
 		
 		void setModPath(const std::string& modPath);
+		const mod::Mod& getMod() const { return m_mod; }
 
 		bool loadMap(Game& game);
 		bool saveMap(Game& game) const;

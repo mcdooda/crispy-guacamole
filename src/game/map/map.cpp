@@ -195,7 +195,7 @@ void Map::eachTileIfExists(std::function<void(Tile*)> func)
 	});
 }
 
-flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(std::shared_ptr<const TileTemplate> tileTemplate, int tileVariantIndex)
+flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex)
 {
 	std::deque<TileSpriteSynchronizer>::iterator it = std::find_if(
 		m_tileSpriteSynchronizers.begin(),
@@ -228,6 +228,20 @@ flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(std::shared_ptr
 	);
 
 	return spriteSynchronizer;
+}
+
+const std::shared_ptr<const TileTemplate> Map::getTileTemplate(const Tile* tile) const
+{
+	const flat::render::SynchronizedSprite& sprite = static_cast<const flat::render::SynchronizedSprite&>(tile->getSprite());
+	flat::render::SpriteSynchronizer& synchronizer = sprite.getSynchronizer();
+	for (const TileSpriteSynchronizer& tileSpriteSynchronizer : m_tileSpriteSynchronizers)
+	{
+		if (&tileSpriteSynchronizer.spriteSynchronizer == &synchronizer)
+		{
+			return tileSpriteSynchronizer.tileTemplate;
+		}
+	}
+	return nullptr;
 }
 
 void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const

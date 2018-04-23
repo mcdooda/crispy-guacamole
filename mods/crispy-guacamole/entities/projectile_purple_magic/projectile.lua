@@ -1,1 +1,0 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/projectile_purple_magic/projectile')

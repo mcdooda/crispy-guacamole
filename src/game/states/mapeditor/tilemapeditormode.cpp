@@ -1,3 +1,4 @@
+#include <unordered_set>
 #include "tilemapeditormode.h"
 #include "../mapeditorstate.h"
 #include "../../game.h"
@@ -71,23 +72,99 @@ void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 	}
 }
 
+FLAT_OPTIMIZE_OFF()
 void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {
 	FLAT_ASSERT(m_tileTemplate != nullptr);
 
 	map::Map& map = mapEditorState.getMap();
-	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
+
+	std::unordered_set<map::Tile*> tilesToUpdate;
+	eachBrushTileIfExists([this, &map, &tilesToUpdate](map::Tile* tile, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
-			int tileVariantIndex = m_tileTemplate->getRandomTileVariantIndex(m_game);
-			flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, tileVariantIndex);
+			flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, 0);
 			tile->synchronizeSpriteTo(map, spriteSynchronizer);
+
+			tilesToUpdate.insert(tile);
+
+			// add adjacent tiles
+			auto addToTilesToUpdate = [&tilesToUpdate, &map, tile](int dx, int dy)
+			{
+				map::Tile* adjacentTile = map.getTileIfExists(tile->getX() + dx, tile->getY() + dy);
+				if (adjacentTile != nullptr)
+				{
+					std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(adjacentTile);
+					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
+					if (getSelectTile)
+					{
+						tilesToUpdate.insert(adjacentTile);
+					}
+				}
+			};
+			addToTilesToUpdate(-1, 0);
+			addToTilesToUpdate(0, -1);
+			addToTilesToUpdate(1, 0);
+			addToTilesToUpdate(0, 1);
 		}
 	});
-	clearSelectedTiles();
+
+	for (map::Tile* tile : tilesToUpdate)
+	{
+		int tileVariantIndex = -1;
+		std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(tile);
+		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
+		if (getSelectTile)
+		{
+			getSelectTile.callFunction(
+				[&map, tile](lua_State* L)
+				{
+					auto pushTileTemplateName = [&map, tile, L](int dx, int dy)
+					{
+						const map::Tile* adjacentTile = map.getTileIfExists(tile->getX() + dx, tile->getY() + dy);
+						if (adjacentTile != nullptr)
+						{
+							lua_pushstring(L, map.getTileTemplate(adjacentTile)->getName().c_str());
+						}
+						else
+						{
+							lua_pushnil(L);
+						}
+					};
+					pushTileTemplateName(0, -1);
+					pushTileTemplateName(-1, 0);
+					pushTileTemplateName(1, 0);
+					pushTileTemplateName(0, 1);
+				},
+				1,
+				[this, &tileVariantIndex, &tileTemplate](lua_State* L)
+				{
+					luaL_checktype(L, -1, LUA_TTABLE);
+					size_t numTileVariants = lua_rawlen(L, 1);
+					std::vector<int> tileVariantIndices(numTileVariants);
+					for (size_t i = 1; i <= numTileVariants; ++i)
+					{
+						lua_rawgeti(L, 1, i);
+						int tileVariantIndex = luaL_checkinteger(L, -1);
+						tileVariantIndices[i - 1] = tileVariantIndex - 1;
+						lua_pop(L, 1);
+					}
+					tileVariantIndex = tileTemplate->getRandomTileVariantIndex(m_game, tileVariantIndices);
+				}
+			);
+		}
+		else
+		{
+			tileVariantIndex = tileTemplate->getRandomTileVariantIndex(m_game);
+		}
+		FLAT_ASSERT(tileVariantIndex >= 0);
+		flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(tileTemplate, tileVariantIndex);
+		tile->synchronizeSpriteTo(map, spriteSynchronizer);
+	}
 }
+FLAT_OPTIMIZE_ON()
 
 void TileMapEditorMode::applyBrushSecondaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {

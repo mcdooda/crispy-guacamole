@@ -1,14 +1,18 @@
 #include <flat.h>
 #include "tiletemplate.h"
 #include "../game.h"
+#include "../states/basemapstate.h"
 
 namespace game
 {
 namespace map
 {
 
-TileTemplate::TileTemplate(Game& game, const std::string& path)
+TileTemplate::TileTemplate(Game& game, const std::string& name) :
+	m_name(name)
 {
+	const mod::Mod& mod = game.getStateMachine().getState()->as<states::BaseMapState>().getMod();
+	std::string path = mod.getTileTemplatePath(name);
 	m_texture = game.video->getTexture(path + "atlas.png");
 	loadTileConfig(game, path);
 }
@@ -31,6 +35,30 @@ int TileTemplate::getRandomTileVariantIndex(Game& game) const
 		}
 		random -= probability;
 		++randomIndex;
+	}
+	FLAT_ASSERT(0 <= randomIndex && randomIndex < m_tileVariantProbabilities.size());
+	return randomIndex;
+}
+
+int TileTemplate::getRandomTileVariantIndex(Game & game, const std::vector<int>& tileVariantIndices) const
+{
+	FLAT_ASSERT(!m_tileVariantProbabilities.empty() && m_tileVariantProbabilitiesSum > 0.f);
+	float tileVariantProbabilitiesSum = 0.f;
+	for (int tileVariantIndex : tileVariantIndices)
+	{
+		tileVariantProbabilitiesSum += m_tileVariantProbabilities[tileVariantIndex];
+	}
+	float random = game.random->nextFloat(0.f, tileVariantProbabilitiesSum);
+	int randomIndex = -1;
+	for (int tileVariantIndex : tileVariantIndices)
+	{
+		const float probability = m_tileVariantProbabilities[tileVariantIndex];
+		if (random <= probability)
+		{
+			randomIndex = tileVariantIndex;
+			break;
+		}
+		random -= probability;
 	}
 	FLAT_ASSERT(0 <= randomIndex && randomIndex < m_tileVariantProbabilities.size());
 	return randomIndex;
@@ -69,7 +97,10 @@ void TileTemplate::loadTileConfig(Game& game, const std::string& path)
 		lua_getfield(L, -3, "numFrames");
 		m_numFrames = static_cast<int>(luaL_checkinteger(L, -1));
 
-		lua_pop(L, 4);
+		lua_getfield(L, -4, "selectTile");
+		m_selectTile.setIfNotNil(L, -1);
+
+		lua_pop(L, 5);
 	}
 }
 

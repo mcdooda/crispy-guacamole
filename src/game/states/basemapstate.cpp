@@ -305,8 +305,7 @@ std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(ga
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
 {
-	std::string tileTemplatePath = m_mod.getTileTemplatePath(tileTemplateName);
-	return m_tileTemplateManager.getResource(game, tileTemplatePath);
+	return m_tileTemplateManager.getResource(game, tileTemplateName);
 }
 
 std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const

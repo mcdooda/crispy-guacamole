@@ -15,7 +15,6 @@ void BaseState::enter(Game& game)
 {
 	game.video->window->setTitle("Crispy guacamole");
 	initTime(game);
-	initLua(game);
 	initRender(game);
 	resetViews(game);
 	game.input->clearFrameEvents();

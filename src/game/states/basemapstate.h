@@ -3,6 +3,7 @@
 
 #include <flat.h>
 #include "basestate.h"
+#include "loadingstate.h"
 #include "../mod/mod.h"
 #include "../entity/entitypool.h"
 #include "../entity/entityupdater.h"
@@ -33,6 +34,9 @@ class BaseMapState : public BaseState
 	using Super = BaseState;
 	public:
 		BaseMapState();
+
+		void prepareLoading(Game& game); // everything that should be in startLoading but cannot be easily multithreaded
+		void startLoading(Game& game);
 
 		void enter(Game& game) override;
 		void execute(Game& game) override;
@@ -101,6 +105,9 @@ class BaseMapState : public BaseState
 #endif
 		
 	protected:
+		// loading
+		void initRender(Game& game);
+
 		void update(game::Game& game) override;
 		void addGhostEntity(game::Game& game);
 		void removeGhostEntity(game::Game& game);
@@ -111,7 +118,7 @@ class BaseMapState : public BaseState
 		
 		void draw(game::Game& game) override;
 		
-		void buildUi(game::Game& game);
+		void initUi(game::Game& game);
 
 		virtual entity::component::ComponentFlags getComponentsFilter() const;
 
@@ -204,7 +211,10 @@ inline void BaseMapState::reloadToState(Game& game)
 {
 	std::unique_ptr<T> newState = std::make_unique<T>();
 	newState->copyStateBeforeReload(*this);
-	game.getStateMachine().setNextState(std::move(newState));
+
+	std::unique_ptr<LoadingState> loadingState = std::make_unique<LoadingState>(std::move(newState));
+
+	game.getStateMachine().setNextState(std::move(loadingState));
 }
 #endif
 

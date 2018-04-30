@@ -136,6 +136,8 @@ void Reader::readHeaders()
 
 void Reader::readTiles()
 {
+	states::BaseMapState& baseMapState = getBaseMapState();
+
 	m_map.setBounds(m_minX, m_maxX, m_minY, m_maxY);
 	m_map.createTiles();
 	
@@ -160,7 +162,6 @@ void Reader::readTiles()
 				uint16_t tileIndex = tileId & 0x0FFF;
 				uint16_t tileVariantIndex = tileId >> 12;
 
-				states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
 				const std::string& tileTemplateName = m_tileTemplateNames[tileIndex];
 				std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(m_game, tileTemplateName);
 
@@ -185,7 +186,7 @@ void Reader::readTiles()
 
 void Reader::readEntities()
 {
-	states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
+	states::BaseMapState& baseMapState = getBaseMapState();
 
 	uint16_t numEntityTemplates;
 	read(numEntityTemplates);
@@ -246,6 +247,12 @@ void Reader::readZones()
 			zone->addRectangle(rectangle);
 		}
 	}
+}
+
+states::BaseMapState& Reader::getBaseMapState()
+{
+	states::LoadingState& loadingState = m_game.getStateMachine().getState()->to<states::LoadingState>();
+	return loadingState.getStateToLoad();
 }
 
 } // io

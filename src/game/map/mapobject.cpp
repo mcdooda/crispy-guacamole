@@ -9,7 +9,7 @@ void MapObject::updateRenderHash() const
 {
 	const flat::render::BaseSprite& sprite = getSprite();
 	const flat::video::Texture* texture = sprite.getTexture().get();
-	FLAT_ASSERT_MSG(texture != nullptr && texture->getHash() != 0, "Map object's sprite does not have a texture");
+	FLAT_ASSERT_MSG(texture != nullptr, "Map object's sprite does not have a texture");
 	const flat::render::ProgramSettings& programSettings = getProgramSettings();
 	const flat::video::Program& program = programSettings.program;
 	FLAT_ASSERT_MSG(program.getHash() != 0, "Map object's program is not valid");

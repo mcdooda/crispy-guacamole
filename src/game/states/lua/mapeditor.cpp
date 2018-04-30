@@ -1,5 +1,6 @@
 #include "mapeditor.h"
 #include "../mapeditorstate.h"
+#include "../loadingstate.h"
 #include "../../game.h"
 
 namespace game
@@ -34,9 +35,13 @@ int l_MapEditor_openMap(lua_State* L)
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	game.modPath = modPath;
 	game.mapName = mapName;
+
 	std::unique_ptr<MapEditorState> mapEditorState = std::make_unique<MapEditorState>();
 	mapEditorState->setModPath(modPath);
-	game.getStateMachine().setNextState(std::move(mapEditorState));
+
+	std::unique_ptr<LoadingState> loadingState = std::make_unique<LoadingState>(std::move(mapEditorState));
+
+	game.getStateMachine().setNextState(std::move(loadingState));
 	return 1;
 }
 

@@ -14,6 +14,11 @@ namespace mod
 class Mod;
 }
 
+namespace states
+{
+class BaseMapState;
+}
+
 namespace map
 {
 class Map;
@@ -40,6 +45,8 @@ class Reader
 
 		template <class T>
 		inline void read(T& value);
+
+		states::BaseMapState& getBaseMapState();
 		
 	private:
 		Game& m_game;

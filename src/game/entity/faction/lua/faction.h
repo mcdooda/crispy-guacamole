@@ -5,6 +5,11 @@
 
 namespace game
 {
+namespace states
+{
+class BaseMapState;
+}
+
 namespace entity
 {
 namespace faction
@@ -16,6 +21,9 @@ int open(lua_State* L, const std::string& factionsConfigPath);
 
 int l_faction(lua_State* L);
 int l_factionRelation(lua_State* L);
+
+// private
+states::BaseMapState& getBaseMapState(lua_State* L);
 
 } // lua
 } // faction

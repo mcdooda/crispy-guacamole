@@ -2,6 +2,7 @@
 #include "faction.h"
 #include "../factionrelation.h"
 #include "../../../game.h"
+#include "../../../states/loadingstate.h"
 #include "../../../states/basemapstate.h"
 
 namespace game
@@ -59,8 +60,7 @@ int open(lua_State* L, const std::string& factionsConfigPath)
 int l_faction(lua_State* L)
 {
 	const char* factionName = luaL_checkstring(L, 1);
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	states::BaseMapState& baseMapState = getBaseMapState(L);
 	baseMapState.addFaction(factionName);
 	return 0;
 }
@@ -70,14 +70,20 @@ int l_factionRelation(lua_State* L)
 	const char* faction1Name = luaL_checkstring(L, 1);
 	FactionRelation factionRelation = static_cast<FactionRelation>(luaL_checkinteger(L, 2));
 	const char* faction2Name = luaL_checkstring(L, 3);
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	states::BaseMapState& baseMapState = getBaseMapState(L);
 	Faction* faction1 = baseMapState.getFactionByName(faction1Name);
 	luaL_argcheck(L, faction1 != nullptr, 1, "Faction does not exist");
 	Faction* faction2 = baseMapState.getFactionByName(faction2Name);
 	luaL_argcheck(L, faction2 != nullptr, 3, "Faction does not exist");
 	faction1->addFactionRelation(*faction2, factionRelation);
 	return 0;
+}
+
+states::BaseMapState& getBaseMapState(lua_State * L)
+{
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	states::LoadingState& loadingState = game.getStateMachine().getState()->to<states::LoadingState>();
+	return loadingState.getStateToLoad();
 }
 
 } // lua

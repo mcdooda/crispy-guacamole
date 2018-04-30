@@ -35,16 +35,15 @@ BaseMapState::BaseMapState() :
 
 }
 
-void BaseMapState::enter(Game& game)
+void BaseMapState::prepareLoading(Game& game)
 {
-	Super::enter(game);
+	initRender(game);
 
-#ifdef FLAT_DEBUG
-	m_gamePaused = false;
-	m_pauseNextFrame = false;
-#endif
-	
-	// init lua then
+	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
+}
+
+void BaseMapState::startLoading(Game& game)
+{
 	initLua(game);
 	lua_State* L = game.lua->state;
 	{
@@ -60,50 +59,28 @@ void BaseMapState::enter(Game& game)
 
 		flat::lua::doFile(L, "data/common/init.lua");
 	}
-	
+
 	// ui
-	buildUi(game);
-	
-	// rendering settings
-	m_entityRender.program.load("data/shaders/sprite/entityspritebatch.frag", "data/shaders/sprite/entityspritebatch.vert");
-	
-	m_entityRender.settings.textureUniform              = m_entityRender.program.getUniform<flat::video::Texture>("objectTexture");
-	m_entityRender.settings.viewProjectionMatrixUniform = m_entityRender.program.getUniform<flat::Matrix4>("vpMatrix");
-
-	m_entityRender.settings.positionAttribute           = m_entityRender.program.getAttribute("position");
-	m_entityRender.settings.uvAttribute                 = m_entityRender.program.getAttribute("uv");
-	m_entityRender.settings.colorAttribute              = m_entityRender.program.getAttribute("color");
-	m_entityRender.settings.normalAttribute             = m_entityRender.program.getAttribute("normal");
-	m_entityRender.settings.depthAttribute              = m_entityRender.program.getAttribute("depth");
-
-	entity::Entity::setEntityProgramSettings(m_entityRender);
-
-	m_terrainRender.program.load("data/shaders/sprite/terrainspritebatch.frag", "data/shaders/sprite/terrainspritebatch.vert");
-
-	m_terrainRender.settings.textureUniform              = m_terrainRender.program.getUniform<flat::video::Texture>("objectTexture");
-	m_terrainRender.settings.viewProjectionMatrixUniform = m_terrainRender.program.getUniform<flat::Matrix4>("vpMatrix");
-
-	m_terrainRender.settings.positionAttribute           = m_terrainRender.program.getAttribute("position");
-	m_terrainRender.settings.uvAttribute                 = m_terrainRender.program.getAttribute("uv");
-	m_terrainRender.settings.colorAttribute              = m_terrainRender.program.getAttribute("color");
-	m_terrainRender.settings.normalAttribute             = m_terrainRender.program.getAttribute("normal");
-	m_terrainRender.settings.depthAttribute              = m_terrainRender.program.getAttribute("depth");
-
-	map::Tile::setTileProgramSettings(m_terrainRender);
-	
-	initRender(game);
+	initUi(game);
 
 	m_entityTemplateManager.init(game);
-	
+
 	map::Map& map = getMap();
 	map.setDisplayManager(&m_displayManager);
 	loadMap(game);
 
-	// load debug display resources *after* the map is loaded!
-	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
+	// init debug display *after* the map is loaded!
+	FLAT_DEBUG_ONLY(m_debugDisplay.init(game);)
+}
 
-		// reset view
+void BaseMapState::enter(Game& game)
+{
+	Super::enter(game);
+
 #ifdef FLAT_DEBUG
+	m_gamePaused = false;
+	m_pauseNextFrame = false;
+
 	if (!m_isReloading)
 	{
 #endif
@@ -119,8 +96,6 @@ void BaseMapState::enter(Game& game)
 #ifdef FLAT_DEBUG
 	}
 #endif
-
-	resetViews(game);
 
 	m_mouseOverEntity = nullptr;
 	m_mouseOverTile = nullptr;
@@ -458,6 +433,35 @@ void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 }
 #endif
 
+void BaseMapState::initRender(Game& game)
+{
+	m_entityRender.program.load("data/shaders/sprite/entityspritebatch.frag", "data/shaders/sprite/entityspritebatch.vert");
+
+	m_entityRender.settings.textureUniform = m_entityRender.program.getUniform<flat::video::Texture>("objectTexture");
+	m_entityRender.settings.viewProjectionMatrixUniform = m_entityRender.program.getUniform<flat::Matrix4>("vpMatrix");
+
+	m_entityRender.settings.positionAttribute = m_entityRender.program.getAttribute("position");
+	m_entityRender.settings.uvAttribute = m_entityRender.program.getAttribute("uv");
+	m_entityRender.settings.colorAttribute = m_entityRender.program.getAttribute("color");
+	m_entityRender.settings.normalAttribute = m_entityRender.program.getAttribute("normal");
+	m_entityRender.settings.depthAttribute = m_entityRender.program.getAttribute("depth");
+
+	entity::Entity::setEntityProgramSettings(m_entityRender);
+
+	m_terrainRender.program.load("data/shaders/sprite/terrainspritebatch.frag", "data/shaders/sprite/terrainspritebatch.vert");
+
+	m_terrainRender.settings.textureUniform = m_terrainRender.program.getUniform<flat::video::Texture>("objectTexture");
+	m_terrainRender.settings.viewProjectionMatrixUniform = m_terrainRender.program.getUniform<flat::Matrix4>("vpMatrix");
+
+	m_terrainRender.settings.positionAttribute = m_terrainRender.program.getAttribute("position");
+	m_terrainRender.settings.uvAttribute = m_terrainRender.program.getAttribute("uv");
+	m_terrainRender.settings.colorAttribute = m_terrainRender.program.getAttribute("color");
+	m_terrainRender.settings.normalAttribute = m_terrainRender.program.getAttribute("normal");
+	m_terrainRender.settings.depthAttribute = m_terrainRender.program.getAttribute("depth");
+
+	map::Tile::setTileProgramSettings(m_terrainRender);
+}
+
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
@@ -592,7 +596,7 @@ void BaseMapState::draw(game::Game& game)
 	Super::draw(game);
 }
 
-void BaseMapState::buildUi(game::Game& game)
+void BaseMapState::initUi(game::Game& game)
 {
 	// create selection widget
 	flat::sharp::ui::WidgetFactory& widgetFactory = game.ui->factory;

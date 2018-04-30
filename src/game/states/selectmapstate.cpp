@@ -13,6 +13,7 @@ void SelectMapState::enter(Game& game)
 		game.modPath = "mods/crispy-guacamole";
 	}
 
+	initLua(game);
 	Super::enter(game);
 
 	game.lua->doFile("data/selectmap/scripts/selectmap.lua");

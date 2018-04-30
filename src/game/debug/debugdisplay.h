@@ -18,9 +18,16 @@ namespace debug
 class DebugDisplay
 {
 	public:
-		DebugDisplay();
+		DebugDisplay() = default;
+		DebugDisplay(const DebugDisplay&) = delete;
+		DebugDisplay(DebugDisplay&&) = delete;
+		~DebugDisplay() = default;
+
+		void operator=(const DebugDisplay&) = delete;
+		void operator=(DebugDisplay&&) = delete;
 
 		void loadResources(Game& game);
+		void init(Game& game);
 
 		void add3dLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& color = flat::video::Color::BLUE, float lineWidth = 1.f);
 		void add3dLine(const flat::Vector3& fromPos, const flat::Vector3& toPos, const flat::video::Color& fromColor, const flat::video::Color& toColor, float lineWidth = 1.f);

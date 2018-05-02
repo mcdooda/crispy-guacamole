@@ -359,7 +359,7 @@ void MovementComponent::updateSprite(bool /*movementStarted*/, bool movementStop
 		flat::render::AnimatedSprite& sprite = static_cast<flat::render::AnimatedSprite&>(m_owner->getSprite());
 		if (m_isMoving)
 		{
-			if (!sprite.isAnimated() && m_moveAnimationDescription != nullptr)
+			if (m_moveAnimationDescription != nullptr && (!sprite.isAnimated() || m_moveAnimationDescription != spriteComponent->getCurrentAnimationDescription()))
 			{
 				sprite.setAnimated(true);
 				spriteComponent->playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP, true);
@@ -409,6 +409,7 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	}
 
 	debugDisplay.add3dLine(m_owner->getPosition(), m_owner->getPosition() + flat::Vector3(m_steering, 0.f), flat::video::Color::RED);
+	debugDisplay.add3dText(m_owner->getPosition(), m_moveAnimationDescription->getName());
 }
 #endif
 

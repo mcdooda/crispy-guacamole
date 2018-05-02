@@ -18,6 +18,7 @@ end
 function states:wander(sheep)
 	sheep:setDefaultMoveAnimation()
 	sheep:setSpeed(movement.speed)
+
 	local initialPosition = sheep:getPosition()
 	local initialPosition2d = initialPosition:toVector2()
 	while true do
@@ -47,6 +48,7 @@ end
 function states:flee(sheep)
 	sheep:setMoveAnimation 'run'
 	sheep:setSpeed(movement.runSpeed)
+	
 	local data = sheep:getExtraData()
 	local fleeTarget = data.fleeTarget
 	assert(fleeTarget)

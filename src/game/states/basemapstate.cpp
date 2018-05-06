@@ -657,9 +657,14 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 			entity::Entity* entity = static_cast<entity::Entity*>(mouseOverObject);
 			newMouseOverEntity = entity;
 		}
-		else if (mouseOverObject->isTile())
+		
+		if (mouseOverObject->isTile())
 		{
 			m_mouseOverTile = static_cast<const map::Tile*>(mouseOverObject);
+		}
+		else
+		{
+			m_mouseOverTile = m_displayManager.getTileAtPosition(viewMousePosition);
 		}
 	}
 

@@ -18,7 +18,7 @@ local followAttackTarget = states.followAttackTarget
 function states:followAttackTarget(warrior)
 	warrior:setMoveAnimation 'run'
 	warrior:setSpeed(movement.speed * 2.5)
-	warrior:playAnimation('rage', 1, false, true)
+	warrior:playAnimation('rage', 1, false)
 	return followAttackTarget(self, warrior)
 end
 

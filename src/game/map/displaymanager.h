@@ -15,6 +15,7 @@ namespace map
 {
 class Map;
 class MapObject;
+class Tile;
 
 class DisplayManager final
 {
@@ -35,6 +36,8 @@ class DisplayManager final
 
 		const MapObject* getObjectAtPosition(const flat::Vector2& position) const;
 		void getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const;
+
+		const Tile* getTileAtPosition(const flat::Vector2& position) const;
 
 #ifdef FLAT_DEBUG
 		const flat::AABB2& getEntityCellAABB(const entity::Entity* entity) const;

@@ -47,7 +47,7 @@ end
 
 function states:followTarget(dog)
 	dog:setMoveAnimation 'run'
-	dog:setSpeed(movement.speed * 2)
+	dog:setSpeed(movement.speed * 3)
 
 	local target = dog:getExtraData().target
 	while target:isValid() do

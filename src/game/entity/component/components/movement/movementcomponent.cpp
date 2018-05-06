@@ -359,7 +359,8 @@ void MovementComponent::updateSprite(bool /*movementStarted*/, bool movementStop
 		flat::render::AnimatedSprite& sprite = static_cast<flat::render::AnimatedSprite&>(m_owner->getSprite());
 		if (m_isMoving)
 		{
-			if (m_moveAnimationDescription != nullptr && (!sprite.isAnimated() || m_moveAnimationDescription != spriteComponent->getCurrentAnimationDescription()))
+			if (m_moveAnimationDescription != nullptr
+				&& (!sprite.isAnimated() || (m_moveAnimationDescription != spriteComponent->getCurrentAnimationDescription() && spriteComponent->hasInfiniteLoop())))
 			{
 				sprite.setAnimated(true);
 				spriteComponent->playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP, true);

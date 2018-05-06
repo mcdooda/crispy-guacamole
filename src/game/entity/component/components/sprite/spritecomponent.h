@@ -32,6 +32,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool getAttachPoint(const std::string& attachPointName, flat::Vector3& attachPoint) const;
 
 		inline const AnimationDescription* getCurrentAnimationDescription() const { return m_currentAnimationDescription; }
+		inline bool hasInfiniteLoop() const { return m_sprite.hasInfiniteLoop(); }
 		
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		

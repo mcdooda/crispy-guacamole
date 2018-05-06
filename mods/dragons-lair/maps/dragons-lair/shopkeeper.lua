@@ -1,5 +1,5 @@
-local Money     = require 'mods/dragons-lair/maps/dragon\'s lair/money'
-local Inventory = require 'mods/dragons-lair/maps/dragon\'s lair/inventory'
+local Money     = require 'mods/dragons-lair/maps/dragons-lair/money'
+local Inventory = require 'mods/dragons-lair/maps/dragons-lair/inventory'
 
 local ShopKeeper = {
     stock = {},

@@ -1,6 +1,6 @@
 local Dialog  	 	= require 'mods/dragons-lair/ui/entity/dialog'
-local ShopKeeper 	= require 'mods/dragons-lair/maps/dragon\'s lair/shopkeeper'
-local ItemIcon   	= require 'mods/dragons-lair/maps/dragon\'s lair/itemicon'
+local ShopKeeper 	= require 'mods/dragons-lair/maps/dragons-lair/shopkeeper'
+local ItemIcon   	= require 'mods/dragons-lair/maps/dragons-lair/itemicon'
 local Theme 		= require 'mods/dragons-lair/ui/theme'
 local EntityPreview	= require 'mods/dragons-lair/scripts/entitypreview'
 local Camera 		= require 'data/game/scripts/camera'

@@ -1,4 +1,4 @@
-local Effects = require 'mods/dragons-lair/maps/dragon\'s lair/effects'
+local Effects = require 'mods/dragons-lair/maps/dragons-lair/effects'
 
 return {
     {

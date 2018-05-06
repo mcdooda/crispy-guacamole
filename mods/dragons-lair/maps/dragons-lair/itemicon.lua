@@ -1,4 +1,4 @@
-local Theme   = require 'mods/dragons-lair/ui/theme'
+local Theme         = require 'mods/dragons-lair/ui/theme'
 local EntityPreview = require 'mods/dragons-lair/scripts/entitypreview'
 
 local ItemIcon = {}

@@ -1,5 +1,5 @@
-local Money  = require 'mods/dragons-lair/maps/dragon\'s lair/money'
-local User   = require 'mods/dragons-lair/maps/dragon\'s lair/user'
+local Money  = require 'mods/dragons-lair/maps/dragons-lair/money'
+local User   = require 'mods/dragons-lair/maps/dragons-lair/user'
 local states = {}
 
 local currencies = { 

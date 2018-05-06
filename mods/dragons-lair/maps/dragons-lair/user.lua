@@ -1,5 +1,5 @@
-local Inventory = require 'mods/dragons-lair/maps/dragon\'s lair/inventory'
-local Items     = require 'mods/dragons-lair/maps/dragon\'s lair/items'
+local Inventory = require 'mods/dragons-lair/maps/dragons-lair/inventory'
+local Items     = require 'mods/dragons-lair/maps/dragons-lair/items'
 
 local User = {}
 

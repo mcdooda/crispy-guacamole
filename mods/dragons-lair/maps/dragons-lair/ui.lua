@@ -1,13 +1,13 @@
 local Theme     = require 'mods/dragons-lair/ui/theme'
-local Money     = require 'mods/dragons-lair/maps/dragon\'s lair/money'
-local Life      = require 'mods/dragons-lair/maps/dragon\'s lair/life'
-local Inventory = require 'mods/dragons-lair/maps/dragon\'s lair/inventory'
-local Items     = require 'mods/dragons-lair/maps/dragon\'s lair/items'
-local ItemIcon  = require 'mods/dragons-lair/maps/dragon\'s lair/itemicon'
-local User      = require 'mods/dragons-lair/maps/dragon\'s lair/user'
+local Money     = require 'mods/dragons-lair/maps/dragons-lair/money'
+local Life      = require 'mods/dragons-lair/maps/dragons-lair/life'
+local Inventory = require 'mods/dragons-lair/maps/dragons-lair/inventory'
+local Items     = require 'mods/dragons-lair/maps/dragons-lair/items'
+local ItemIcon  = require 'mods/dragons-lair/maps/dragons-lair/itemicon'
+local User      = require 'mods/dragons-lair/maps/dragons-lair/user'
 local Path      = require 'data/scripts/path'
 
-local ShopKeeper = require 'mods/dragons-lair/maps/dragon\'s lair/shopkeeper'
+local ShopKeeper = require 'mods/dragons-lair/maps/dragons-lair/shopkeeper'
 
 local root      = Widget.getRoot()
 

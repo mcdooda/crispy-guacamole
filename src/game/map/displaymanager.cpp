@@ -198,6 +198,34 @@ void DisplayManager::getEntitiesInAABB(const flat::AABB2& aabb, std::vector<cons
 	m_entityQuadtree->getObjects(aabb, entities);
 }
 
+const Tile* DisplayManager::getTileAtPosition(const flat::Vector2& position) const
+{
+	std::vector<const MapObject*> objects;
+	objects.reserve(16);
+	m_terrainQuadtree->getObjects(position, objects);
+	sortObjects(objects);
+
+	// look for a visible pixel in the objects' sprite
+	const MapObject* objectAtPosition = nullptr;
+	for (int i = static_cast<int>(objects.size()) - 1; objectAtPosition == nullptr && i >= 0; --i)
+	{
+		const MapObject* object = objects[i];
+		if (object->isTile())
+		{
+			const flat::render::BaseSprite& sprite = object->getSprite();
+
+			flat::video::Color color;
+			sprite.getPixel(position, color);
+			if (color.a > 0.5f)
+			{
+				objectAtPosition = object;
+			}
+		}
+	}
+
+	return static_cast<const Tile*>(objectAtPosition);
+}
+
 #ifdef FLAT_DEBUG
 const flat::AABB2& DisplayManager::getEntityCellAABB(const entity::Entity* entity) const
 {

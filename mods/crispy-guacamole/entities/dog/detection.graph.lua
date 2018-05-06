@@ -19,7 +19,7 @@ script {
     },
     {
       loadArguments = {
-        3,
+        6,
       },
       name = 'number',
     },

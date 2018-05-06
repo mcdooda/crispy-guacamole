@@ -36,6 +36,13 @@ int l_Game_openMap(lua_State* L);
 int l_Game_setGhostEntity(lua_State* L);
 int l_Game_clearGhostEntity(lua_State* L);
 
+int l_Game_setCameraCenter(lua_State* L);
+int l_Game_getCameraCenter(lua_State* L);
+int l_Game_setCameraZoom(lua_State* L);
+int l_Game_lockCamera(lua_State* L);
+int l_Game_unlockCamera(lua_State* L);
+int l_Game_convertToCameraPosition(lua_State* L);
+
 } // game
 } // lua
 } // states

@@ -3,6 +3,7 @@ local ShopKeeper 	= require 'mods/dragons-lair/maps/dragon\'s lair/shopkeeper'
 local ItemIcon   	= require 'mods/dragons-lair/maps/dragon\'s lair/itemicon'
 local Theme 		= require 'mods/dragons-lair/ui/theme'
 local EntityPreview	= require 'mods/dragons-lair/scripts/entitypreview'
+local Camera 		= require 'data/game/scripts/camera'
 
 local ui = setmetatable({}, { __index = Dialog })
 
@@ -63,6 +64,7 @@ function ui.addedToMap(entity, widget)
 	entity:selected(function(entity)
 		entity:setUiVisible(true)
 		buildUi(entity, content)
+		Camera.moveTo(entity:getPosition(), 1)
 	end)
 	
 	entity:deselected(function(entity)

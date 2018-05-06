@@ -28,13 +28,19 @@ int open(lua_State* L)
 		{"debug_resume",               l_Game_debug_resume},
 		{"debug_pauseNextFrame",       l_Game_debug_pauseNextFrame},
 
-		{ "debug_getNumTimers",        l_Game_debug_getNumTimers},
-		{ "debug_getNumFrameTimers",   l_Game_debug_getNumFrameTimers},
-		{ "debug_getNumPendingTimers", l_Game_debug_getNumPendingTimers},
+		{"debug_getNumTimers",         l_Game_debug_getNumTimers},
+		{"debug_getNumFrameTimers",    l_Game_debug_getNumFrameTimers},
+		{"debug_getNumPendingTimers",  l_Game_debug_getNumPendingTimers},
 
 		{"debug_reloadComponent",      l_Game_debug_reloadComponent},
-		{"debug_removeComponent",      l_Game_debug_removeComponent },
+		{"debug_removeComponent",      l_Game_debug_removeComponent},
 #endif
+		{"setCameraCenter",            l_Game_setCameraCenter},
+		{"getCameraCenter",            l_Game_getCameraCenter},
+		{"setCameraZoom",              l_Game_setCameraZoom},
+		{"lockCamera",                 l_Game_lockCamera},
+		{"unlockCamera",               l_Game_unlockCamera},
+		{"convertToCameraPosition",    l_Game_convertToCameraPosition},
 
 		{"openMap",                    l_Game_openMap},
 
@@ -174,6 +180,52 @@ int l_Game_clearGhostEntity(lua_State* L)
 	GameState& gameState = base::getBaseState(L).as<GameState>();
 	gameState.clearGhostTemplate();
 	return 0;
+}
+
+int l_Game_setCameraCenter(lua_State* L)
+{
+	const flat::Vector2& position = flat::lua::getVector2(L, 1);
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	gameState.setCameraCenter(position);
+	return 0;
+}
+
+int l_Game_getCameraCenter(lua_State* L)
+{
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	const flat::Vector2& position = gameState.getCameraCenter();
+	flat::lua::pushVector2(L, position);
+	return 1;
+}
+
+int l_Game_setCameraZoom(lua_State* L)
+{
+	const float zoom = static_cast<float>(luaL_checknumber(L, 1));
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	gameState.setCameraZoom(zoom);
+	return 0;
+}
+
+int l_Game_lockCamera(lua_State* L)
+{
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	gameState.lockCamera();
+	return 0;
+}
+
+int l_Game_unlockCamera(lua_State* L)
+{
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	gameState.unlockCamera();
+	return 0;
+}
+
+int l_Game_convertToCameraPosition(lua_State* L)
+{
+	const flat::Vector3& position = flat::lua::getVector3(L, 1);
+	GameState& gameState = base::getBaseState(L).as<GameState>();
+	flat::lua::pushVector2(L, gameState.convertToCameraPosition(position));
+	return 1;
 }
 
 } // game

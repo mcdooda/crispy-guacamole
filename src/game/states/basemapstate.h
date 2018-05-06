@@ -88,6 +88,13 @@ class BaseMapState : public BaseState
 		);
 		void destroyEntity(entity::Entity* entity);
 
+		inline const flat::Vector2& getCameraCenter() const { return m_cameraCenter2d; }
+		void setCameraCenter(const flat::Vector2& cameraCenter);
+		void setCameraZoom(float cameraZoom);
+		void lockCamera() { m_cameraLocked = true; }
+		void unlockCamera() { m_cameraLocked = false; }
+		flat::Vector2 convertToCameraPosition(const flat::Vector3& position) const;
+
 		void addEntityToMap(entity::Entity* entity);
 		void removeEntityFromMap(entity::Entity* entity);
 
@@ -104,9 +111,8 @@ class BaseMapState : public BaseState
 		void update(game::Game& game) override;
 		void addGhostEntity(game::Game& game);
 		void removeGhostEntity(game::Game& game);
-		void updateGameView(game::Game& game);
 		void setCameraCenter(const flat::Vector3& cameraCenter);
-		void setCameraZoom(float cameraZoom);
+		void updateGameView(game::Game& game);
 		void updateCameraView();
 		
 		void draw(game::Game& game) override;
@@ -173,6 +179,7 @@ class BaseMapState : public BaseState
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;
 		float m_cameraZoom;
+		bool m_cameraLocked;
 		
 		// ui
 		flat::Vector2 m_mouseDownPosition;

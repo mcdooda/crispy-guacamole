@@ -27,7 +27,8 @@ namespace states
 
 BaseMapState::BaseMapState() :
 	m_entityPool(m_componentRegistry),
-	m_entityUpdater(m_componentRegistry)
+	m_entityUpdater(m_componentRegistry),
+	m_cameraLocked(false)
 #ifdef FLAT_DEBUG
 	, m_isReloading(false)
 #endif
@@ -515,6 +516,10 @@ void BaseMapState::removeGhostEntity(game::Game & game)
 
 void BaseMapState::updateGameView(game::Game& game)
 {
+	if (m_cameraLocked)
+	{
+		return;
+	}
 	const auto& keyboard = game.input->keyboard;
 	const auto& mouse = game.input->mouse;
 	
@@ -556,17 +561,28 @@ void BaseMapState::updateGameView(game::Game& game)
 	}
 }
 
+void BaseMapState::setCameraCenter(const flat::Vector2& cameraCenter)
+{
+	m_cameraCenter2d = cameraCenter;
+	updateCameraView();
+}
+
 void BaseMapState::setCameraCenter(const flat::Vector3& cameraCenter)
 {
 	const map::Map& map = getMap();
-	m_cameraCenter2d = flat::Vector2(map.getTransform() * cameraCenter);
-	updateCameraView();
+	setCameraCenter(convertToCameraPosition(cameraCenter));
 }
 
 void BaseMapState::setCameraZoom(float cameraZoom)
 {
 	m_cameraZoom = cameraZoom;
 	updateCameraView();
+}
+
+flat::Vector2 BaseMapState::convertToCameraPosition(const flat::Vector3& position) const
+{
+	const map::Map& map = getMap();
+	return flat::Vector2(map.getTransform() * position);
 }
 
 void BaseMapState::updateCameraView()

@@ -196,7 +196,15 @@ void Reader::readEntities()
 		std::string entityTemplateName;
 		read(entityTemplateName);
 		std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(m_game, entityTemplateName);
-		entityTemplates.push_back(entityTemplate);
+		if (entityTemplate->getComponentFlags() != 0)
+		{
+			entityTemplates.push_back(entityTemplate);
+		}
+		else
+		{
+			entityTemplates.push_back(nullptr);
+			std::cerr << "Entity '" << entityTemplateName << "' does not exist anymore" << std::endl;
+		}
 	}
 	
 	uint16_t numEntities;
@@ -210,10 +218,14 @@ void Reader::readEntities()
 		float x, y;
 		read(x);
 		read(y);
-		Tile* tile = m_map.getTile(x, y);
-		FLAT_ASSERT(tile != nullptr);
-		flat::Vector3 position(x, y, tile->getZ());
-		baseMapState.spawnEntityAtPosition(m_game, entityTemplate, position);
+
+		if (entityTemplate != nullptr)
+		{
+			Tile* tile = m_map.getTile(x, y);
+			FLAT_ASSERT(tile != nullptr);
+			flat::Vector3 position(x, y, tile->getZ());
+			baseMapState.spawnEntityAtPosition(m_game, entityTemplate, position);
+		}
 	}
 }
 

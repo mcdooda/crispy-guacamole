@@ -1,3 +1,0 @@
-return {
-	faction = 'wild life'
-}

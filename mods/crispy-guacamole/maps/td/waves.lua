@@ -26,14 +26,14 @@ local function makeWave(...)
 end
 
 local waves = {
-    makeWave('larva', 10),
-    makeWave('sheep', 15),
-    makeWave('boar', 20),
+    makeWave('scourge_larva', 10),
+    makeWave('wild_sheep', 15),
+    makeWave('wild_boar', 20),
     makeWave('zombie', 25),
     makeWave('chaos_skeleton', 30),
-    makeWave('devil', 15),
-    makeWave('eye', 50),
-    makeWave('larva', 5, 'eye', 5, 'larva', 5, 'eye', 5, 'larva', 5, 'eye', 5, 'larva', 5, 'eye', 5, 'devil', 20),
+    makeWave('chaos_devil', 15),
+    makeWave('chaos_eye', 50),
+    makeWave('scourge_larva', 5, 'chaos_eye', 5, 'scourge_larva', 5, 'chaos_eye', 5, 'scourge_larva', 5, 'chaos_eye', 5, 'scourge_larva', 5, 'chaos_eye', 5, 'chaos_devil', 20),
     makeWave('orc_warrior', 100)
 }
 

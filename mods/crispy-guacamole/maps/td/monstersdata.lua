@@ -1,11 +1,11 @@
 return {
-    larva = {
+    scourge_larva = {
         reward = 100
     },
-    sheep = {
+    wild_sheep = {
         reward = 100
     },
-    boar = {
+    wild_boar = {
         reward = 200
     },
     zombie = {
@@ -14,10 +14,10 @@ return {
     chaos_skeleton = {
         reward = 300
     },
-    devil = {
+    chaos_devil = {
         reward = 1000
     },
-    eye = {
+    chaos_eye = {
         reward = 100
     },
     orc_warrior = {

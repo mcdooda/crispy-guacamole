@@ -64,7 +64,7 @@ for i = 1, #waves do
             entity:moveTo(endZonePosition, false)
             entity:died(function()
                 Score:addKill()
-                local monsterData = assert(MonstersData[entityTemplate])
+                local monsterData = assert(MonstersData[entityTemplate], 'Entity ' .. tostring(entityTemplate) .. ' missing in monstersdata.lua!')
                 Money:add(monsterData.reward)
             end)
         

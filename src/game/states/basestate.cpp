@@ -3,7 +3,6 @@
 #include "lua/mapeditor.h"
 #include "lua/entityeditor.h"
 #include "../game.h"
-#include "../timer/lua/timer.h"
 #include "../mod/lua/mod.h"
 
 namespace game
@@ -50,7 +49,6 @@ void BaseState::exit(Game& game)
 void BaseState::update(Game& game)
 {
 	updateUi(game);
-	updateTimers(game);
 }
 
 void BaseState::clearScreen(Game& game)
@@ -76,12 +74,6 @@ void BaseState::initTime(Game& game)
 {
 	m_clock = game.time->newClock();
 	m_uiClock = game.time->newClock();
-	m_timerContainer.setClock(m_clock);
-}
-
-void BaseState::updateTimers(Game& game)
-{
-	m_timerContainer.updateTimers(game.lua->state);
 }
 
 void BaseState::initLua(Game& game)
@@ -90,7 +82,6 @@ void BaseState::initLua(Game& game)
 	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-		timer::lua::open(game);
 		states::lua::game::open(L);
 		states::lua::mapeditor::open(L);
 		states::lua::entityeditor::open(L);

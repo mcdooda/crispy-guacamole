@@ -30,7 +30,6 @@ int open(lua_State* L)
 
 		{"debug_getNumTimers",         l_Game_debug_getNumTimers},
 		{"debug_getNumFrameTimers",    l_Game_debug_getNumFrameTimers},
-		{"debug_getNumPendingTimers",  l_Game_debug_getNumPendingTimers},
 
 		{"debug_reloadComponent",      l_Game_debug_reloadComponent},
 		{"debug_removeComponent",      l_Game_debug_removeComponent},
@@ -100,25 +99,15 @@ int l_Game_debug_pauseNextFrame(lua_State* L)
 
 int l_Game_debug_getNumTimers(lua_State* L)
 {
-	BaseState& baseState = base::getBaseState(L);
-	flat::time::Clock& clock = baseState.getClock();
-	lua_pushinteger(L, baseState.getTimerContainer().timerSize());
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	lua_pushinteger(L, 0);
 	return 1;
 }
 
 int l_Game_debug_getNumFrameTimers(lua_State* L)
 {
-	BaseState& baseState = base::getBaseState(L);
-	flat::time::Clock& clock = baseState.getClock();
-	lua_pushinteger(L, baseState.getTimerContainer().frameTimerSize());
-	return 1;
-}
-
-int l_Game_debug_getNumPendingTimers(lua_State* L)
-{
-	BaseState& baseState = base::getBaseState(L);
-	flat::time::Clock& clock = baseState.getClock();
-	lua_pushinteger(L, baseState.getTimerContainer().pendingTimerSize());
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	lua_pushinteger(L, 0);
 	return 1;
 }
 

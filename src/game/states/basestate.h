@@ -2,7 +2,6 @@
 #define GAME_STATES_BASESTATE_H
 
 #include <flat.h>
-#include "../timer/timercontainer.h"
 
 namespace game
 {
@@ -20,7 +19,6 @@ class BaseState : public flat::state::StateImpl<Game>
 		// time
 		inline const flat::time::Clock& getClock() const { FLAT_ASSERT(m_clock != nullptr); return *m_clock.get(); }
 		inline flat::time::Clock& getClock() { FLAT_ASSERT(m_clock != nullptr); return *m_clock.get(); }
-		inline timer::TimerContainer& getTimerContainer() { return m_timerContainer; }
 
 	protected:
 		virtual void update(Game& game);
@@ -32,7 +30,6 @@ class BaseState : public flat::state::StateImpl<Game>
 
 		// time
 		void initTime(Game& game);
-		void updateTimers(Game& game);
 
 		// lua
 		void initLua(Game& game);
@@ -52,7 +49,6 @@ class BaseState : public flat::state::StateImpl<Game>
 		// time
 		std::shared_ptr<flat::time::Clock> m_clock;
 		std::shared_ptr<flat::time::Clock> m_uiClock;
-		timer::TimerContainer m_timerContainer;
 };
 
 } // states

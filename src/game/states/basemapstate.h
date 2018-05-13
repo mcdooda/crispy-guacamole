@@ -10,7 +10,6 @@
 #include "../entity/component/componentregistry.h"
 #include "../entity/faction/faction.h"
 #include "../debug/debugdisplay.h"
-#include "../timer/timercontainer.h"
 #include "../map/displaymanager.h"
 
 namespace game

@@ -3,7 +3,6 @@
 #include "selectmapstate.h"
 #include "mapeditor/lua/editor.h"
 #include "../game.h"
-#include "../timer/lua/timer.h"
 #include "../map/map.h"
 #include "../map/tile.h"
 #include "../map/tiletemplate.h"

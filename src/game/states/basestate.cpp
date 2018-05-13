@@ -73,7 +73,6 @@ void BaseState::resetViews(Game & game)
 void BaseState::initTime(Game& game)
 {
 	m_clock = game.time->newClock();
-	m_uiClock = game.time->newClock();
 }
 
 void BaseState::initLua(Game& game)

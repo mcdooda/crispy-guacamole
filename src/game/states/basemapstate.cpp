@@ -525,6 +525,7 @@ void BaseMapState::updateGameView(game::Game& game)
 	const map::Map& map = getMap();
 	const flat::Vector2& xAxis = map.getXAxis();
 	flat::Vector2 speed(-xAxis.x, xAxis.y);
+	speed /= m_cameraZoom;
 	
 	flat::Vector2 move;
 	
@@ -545,7 +546,8 @@ void BaseMapState::updateGameView(game::Game& game)
 		move.y = speed.y;
 	
 	const float cameraSpeed = 40.f;
-	m_cameraCenter2d += move * m_uiClock->getDT() * cameraSpeed;
+	flat::time::Clock& uiClock = *game.time->defaultClock;
+	m_cameraCenter2d += move * uiClock.getDT() * cameraSpeed;
 	updateCameraView();
 
 	if (mouse->wheelJustMoved() && keyboard->isPressed(K(LCTRL)))

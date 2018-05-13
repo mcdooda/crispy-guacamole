@@ -48,7 +48,6 @@ class BaseState : public flat::state::StateImpl<Game>
 
 		// time
 		std::shared_ptr<flat::time::Clock> m_clock;
-		std::shared_ptr<flat::time::Clock> m_uiClock;
 };
 
 } // states

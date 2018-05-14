@@ -65,7 +65,7 @@ function LoadingBar:setValue(value)
     local wc,hc = self.content:getSize()
     local wmax = w - self.padding * 2
     local maxTimer = 0.25
-    self.timer = Timer.new()
+    self.timer = flat.Timer()
     self.timer:onUpdate(function(timer, elapsedTime)
         self.content:setSize(
             (wc + (1- (maxTimer - elapsedTime) / maxTimer) * ((wmax  * self.value / 100  - wc) )),

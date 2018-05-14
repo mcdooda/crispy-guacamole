@@ -3,7 +3,7 @@ local function moveCameraTo(worldDestination, duration, easing)
 	easing = easing or flat.easing.easeOut(flat.easing.cubic)
 	local origin = Game.getCameraCenter()
 	local destination = Game.convertToCameraPosition(worldDestination)
-	local timer = Timer.new()
+	local timer = flat.Timer()
 	timer:onUpdate(function(timer, elapsedTime)
 		local t = elapsedTime / duration
 		local result = flat.easing.lerp(t, origin, destination, easing)

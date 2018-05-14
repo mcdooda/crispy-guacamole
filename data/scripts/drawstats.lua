@@ -32,7 +32,7 @@ return function(addContainer, makeSeparator, font)
 		numTransparentDrawCallsLabel:setTextColor(0x000000FF)
 		statsContainer:addChild(numTransparentDrawCallsLabel)
 
-		local timer = Timer.new()
+		local timer = flat.Timer()
 		timer:onUpdate(function()
 			local numOpaqueObjects, numOpaqueDrawCalls, numTransparentObjects, numTransparentDrawCalls = Map.debug_getDrawStats()
 			numOpaqueObjectsLabel:setText(format('%d objects', numOpaqueObjects))

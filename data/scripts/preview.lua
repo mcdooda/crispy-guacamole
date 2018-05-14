@@ -26,7 +26,7 @@ end
 local function startEntitySpriteAnimation(preview, spriteComponentTemplate, animation)
     local frameIndex = 0
     local y = (animation.line - 1) / spriteComponentTemplate.size:y()
-    local timer = Timer.new()
+    local timer = flat.Timer()
     timer:onEnd(function()
         frameIndex = (frameIndex + 1) % animation.numFrames
         local x = frameIndex / spriteComponentTemplate.size:x()
@@ -104,7 +104,7 @@ local function startTileSpriteAnimation(preview, tileTemplate, tileVariantIndex)
     local animationWidth = tileTemplate.numFrames
     local animationHeight = #tileTemplate.probabilities
     local y = (tileVariantIndex - 1) / animationHeight
-    local timer = Timer.new()
+    local timer = flat.Timer()
     timer:onEnd(function()
         frameIndex = (frameIndex + 1) % animationWidth
         local x = frameIndex / animationWidth

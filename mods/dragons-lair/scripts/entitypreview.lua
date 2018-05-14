@@ -52,7 +52,7 @@ function EntityPreview:startEntitySpriteAnimation(animation, duration)
         self.widget:setBackgroundPosition(x, y)
     end
     updateFrame()
-    local timer = Timer.new()
+    local timer = flat.Timer()
     timer:onEnd(updateFrame)
     timer:start(animation.frameDuration, true)
 
@@ -68,7 +68,7 @@ function EntityPreview:startEntitySpriteAnimation(animation, duration)
     end
 
     if duration > 0 then
-        animationTimer = Timer.new()
+        animationTimer = flat.Timer()
         animationTimer:onEnd(resetPreview)
         animationTimer:start(duration)
     end

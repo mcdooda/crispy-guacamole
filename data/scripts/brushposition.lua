@@ -20,7 +20,7 @@ do
 		debugContainer:addChild(label)
 		
 		local getBrushPosition = Editor.getBrushPosition
-		local timer = Timer.new()
+		local timer = flat.Timer()
 		timer:onEnd(function()
 			local x, y = getBrushPosition()
 			label:setText(format('%.1f,%.1f', x, y))

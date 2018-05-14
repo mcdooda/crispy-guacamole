@@ -1,5 +1,5 @@
 local function dealDamageAfterDelay(target, damage, delay)
-	local timer = Timer.new()
+	local timer = flat.Timer()
 	timer:onEnd(function()
         if target:isValid() then
             target:dealDamage(damage)

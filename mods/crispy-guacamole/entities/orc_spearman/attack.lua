@@ -13,7 +13,7 @@ return {
 			spearmanState.lastAttackPosition = position2d
 		end
 		spearman:playAnimation('attack', 1, false)
-		local timer = Timer.new()
+		local timer = flat.Timer()
 		timer:onEnd(function()
 				if target:isValid() then
 					target:dealDamage(10)

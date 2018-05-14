@@ -24,7 +24,7 @@ return function(addContainer, makeSeparator, font)
         end)
 
         entityDebugContainer:addChild(checkbox.container)
-        local timer = Timer.new()
+        local timer = flat.Timer()
         timer:onUpdate(function()
             local numEntities = 0
             local debugEnabled = false
@@ -74,7 +74,7 @@ return function(addContainer, makeSeparator, font)
             entityDebugContainer:addChild(checkbox.container)
             checkboxes[componentName] = checkbox
         end
-        local timer = Timer.new()
+        local timer = flat.Timer()
         timer:onUpdate(function()
             local componentsToShow = {}
             for componentName, componentFlag in pairs(Component) do
@@ -118,7 +118,7 @@ return function(addContainer, makeSeparator, font)
         entityDebugContainer:addChild(entityTemplateNamesContainer)
 
         local entityTemplateLabels = {}
-        local timer = Timer.new()
+        local timer = flat.Timer()
         timer:onUpdate(function()
             local selectedEntityTemplates = {}
             for _, selectedEntity in Map.eachSelectedEntity() do

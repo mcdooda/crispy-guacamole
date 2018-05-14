@@ -16,7 +16,7 @@ return function(addContainer, makeSeparator, font)
 			medianFps[j] = getFrameRate()
 		end
 		local i = 1
-		local timer = Timer.new()
+		local timer = flat.Timer()
 		timer:onUpdate(function()
 			local fps = getFrameRate()
 			medianFps[i] = nil
@@ -38,7 +38,7 @@ return function(addContainer, makeSeparator, font)
 		label:setTextColor(0x000000FF)
 		statsContainer:addChild(label)
 
-		local timer = Timer.new()
+		local timer = flat.Timer()
 		timer:onUpdate(function()
 			label:setText(format('%d entities', Map.getNumEntities()))
 		end)
@@ -54,7 +54,7 @@ return function(addContainer, makeSeparator, font)
 		frameTimersLabel:setTextColor(0x000000FF)
 		statsContainer:addChild(frameTimersLabel)
 		
-		local timer = Timer.new()
+		local timer = flat.Timer()
 		timer:onUpdate(function()
 			timersLabel:setText(format('%d timers', Game.debug_getNumTimers()))
 			frameTimersLabel:setText(format('%d frame timers', Game.debug_getNumFrameTimers()))

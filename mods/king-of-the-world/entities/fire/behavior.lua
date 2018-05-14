@@ -8,9 +8,9 @@ end
 
 function states:updatePosition(fire)
     local extraData = fire:getExtraData()
-    local endTime = Game.getTime() + 5
+    local endTime = game.getTime() + 5
     local entity = extraData.attachedEntity or nil
-    while Game.getTime() < endTime do
+    while game.getTime() < endTime do
         if entity and entity:isValid() then
             if entity:isLiving() then
                 entity:dealDamage(1)
@@ -29,8 +29,8 @@ function states:updatePosition(fire)
 end
 
 function states:burnOut(fire)
-    local endTime = Game.getTime() + 0.8
-    while Game.getTime() < endTime do
+    local endTime = game.getTime() + 0.8
+    while game.getTime() < endTime do
         fire:playAnimation('Fire', -1, false)
         coroutine.yield()
     end

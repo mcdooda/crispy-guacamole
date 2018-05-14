@@ -62,7 +62,7 @@ do
         local mapLabel = Widget.makeText(mapName, table.unpack(UiSettings.titleFont))
         mapLabel:setMargin(0, 5, 0, 5)
         mapLabel:click(function()
-            Game.openMap(modPath, mapName)
+            game.openMap(modPath, mapName)
             return true
         end)
         mapLine:addChild(mapLabel)

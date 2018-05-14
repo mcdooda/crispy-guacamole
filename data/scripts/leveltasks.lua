@@ -5,7 +5,7 @@ local coresume = coroutine.resume
 local costatus = coroutine.status
 local coyield = coroutine.yield
 
-local getTime = Game.getTime
+local getTime = game.getTime
 
 local LevelTasks = {
     tasks = {}

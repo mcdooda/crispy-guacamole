@@ -301,7 +301,7 @@ function ComponentDetailsPanel:editCurrentComponent()
             function(isNew)
                 -- kill the entity to respawn a new one with the right components
                 EntityState:getEntity():delete()
-                Game.debug_reloadComponent(entityTemplateName, Component[componentName], isNew or EntityState:isComponentBroken(componentName))
+                game.debug_reloadComponent(entityTemplateName, Component[componentName], isNew or EntityState:isComponentBroken(componentName))
 
                 -- force reload component template
                 Path.requireComponentTemplate(entityTemplateName, componentName, true)
@@ -338,7 +338,7 @@ function ComponentDetailsPanel:removeCurrentComponent()
     -- kill the entity to respawn a new one with the right components
     EntityState:getEntity():delete()
     EntityEditor.entityDespawned(function()
-        Game.debug_removeComponent(entityTemplateName, Component[componentName])
+        game.debug_removeComponent(entityTemplateName, Component[componentName])
         return false
     end)
     EntityEditor.entitySpawned(function(entity)

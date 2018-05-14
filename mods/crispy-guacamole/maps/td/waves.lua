@@ -69,8 +69,8 @@ for i = 1, #waves do
             end)
         
             local delay = 0.3
-            local endTime = Game.getTime() + delay
-            while Game.getTime() < endTime do
+            local endTime = game.getTime() + delay
+            while game.getTime() < endTime do
                 despawnEntities()
                 coroutine.yield()
             end

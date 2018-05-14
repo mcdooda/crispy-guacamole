@@ -1,5 +1,5 @@
 local function dealDamageAfterDelay(target, damage, delay)
-	local timer = Game.Timer()
+	local timer = game.Timer()
 	timer:onEnd(function()
         if target:isValid() then
             target:dealDamage(damage)

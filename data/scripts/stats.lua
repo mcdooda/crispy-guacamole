@@ -56,8 +56,8 @@ return function(addContainer, makeSeparator, font)
 		
 		local timer = flat.Timer()
 		timer:onUpdate(function()
-			timersLabel:setText(format('%d timers', Game.debug_getNumTimers()))
-			frameTimersLabel:setText(format('%d frame timers', Game.debug_getNumFrameTimers()))
+			timersLabel:setText(format('%d timers', game.debug_getNumTimers()))
+			frameTimersLabel:setText(format('%d frame timers', game.debug_getNumFrameTimers()))
 		end)
 		timer:start(0, true)
 	end

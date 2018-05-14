@@ -19,43 +19,43 @@ int open(lua_State* L)
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	lua_createtable(L, 0, 1);
-	static const luaL_Reg Game_lib_f[] = {
-		{"getTime",                    l_Game_getTime},
-		{"Timer",                      l_Game_Timer},
+	static const luaL_Reg game_lib_f[] = {
+		{"getTime",                    l_game_getTime},
+		{"Timer",                      l_game_Timer},
 
 #ifdef FLAT_DEBUG
-		{"debug_setTimeSpeed",         l_Game_debug_setTimeSpeed},
-		{"debug_pause",                l_Game_debug_pause},
-		{"debug_resume",               l_Game_debug_resume},
-		{"debug_pauseNextFrame",       l_Game_debug_pauseNextFrame},
+		{"debug_setTimeSpeed",         l_game_debug_setTimeSpeed},
+		{"debug_pause",                l_game_debug_pause},
+		{"debug_resume",               l_game_debug_resume},
+		{"debug_pauseNextFrame",       l_game_debug_pauseNextFrame},
 
-		{"debug_getNumTimers",         l_Game_debug_getNumTimers},
-		{"debug_getNumFrameTimers",    l_Game_debug_getNumFrameTimers},
+		{"debug_getNumTimers",         l_game_debug_getNumTimers},
+		{"debug_getNumFrameTimers",    l_game_debug_getNumFrameTimers},
 
-		{"debug_reloadComponent",      l_Game_debug_reloadComponent},
-		{"debug_removeComponent",      l_Game_debug_removeComponent},
+		{"debug_reloadComponent",      l_game_debug_reloadComponent},
+		{"debug_removeComponent",      l_game_debug_removeComponent},
 #endif
-		{"setCameraCenter",            l_Game_setCameraCenter},
-		{"getCameraCenter",            l_Game_getCameraCenter},
-		{"setCameraZoom",              l_Game_setCameraZoom},
-		{"lockCamera",                 l_Game_lockCamera},
-		{"unlockCamera",               l_Game_unlockCamera},
-		{"convertToCameraPosition",    l_Game_convertToCameraPosition},
+		{"setCameraCenter",            l_game_setCameraCenter},
+		{"getCameraCenter",            l_game_getCameraCenter},
+		{"setCameraZoom",              l_game_setCameraZoom},
+		{"lockCamera",                 l_game_lockCamera},
+		{"unlockCamera",               l_game_unlockCamera},
+		{"convertToCameraPosition",    l_game_convertToCameraPosition},
 
-		{"openMap",                    l_Game_openMap},
+		{"openMap",                    l_game_openMap},
 
-		{"setGhostEntity",             l_Game_setGhostEntity},
-		{"clearGhostEntity",           l_Game_clearGhostEntity},
+		{"setGhostEntity",             l_game_setGhostEntity},
+		{"clearGhostEntity",           l_game_clearGhostEntity},
 
 		{nullptr, nullptr}
 	};
-	luaL_setfuncs(L, Game_lib_f, 0);
-	lua_setglobal(L, "Game");
+	luaL_setfuncs(L, game_lib_f, 0);
+	lua_setglobal(L, "game");
 
 	return 0;
 }
 
-int l_Game_getTime(lua_State* L)
+int l_game_getTime(lua_State* L)
 {
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	flat::time::Clock& clock = baseMapState.getGameClock();
@@ -63,7 +63,7 @@ int l_Game_getTime(lua_State* L)
 	return 1;
 }
 
-int l_Game_Timer(lua_State* L)
+int l_game_Timer(lua_State* L)
 {
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	flat::lua::timer::TimerContainer& timerContainer = baseMapState.getGameTimerContainer();
@@ -72,7 +72,7 @@ int l_Game_Timer(lua_State* L)
 }
 
 #ifdef FLAT_DEBUG
-int l_Game_debug_setTimeSpeed(lua_State* L)
+int l_game_debug_setTimeSpeed(lua_State* L)
 {
 	float timeSpeed = static_cast<float>(luaL_checknumber(L, 1));
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
@@ -81,7 +81,7 @@ int l_Game_debug_setTimeSpeed(lua_State* L)
 	return 0;
 }
 
-int l_Game_debug_pause(lua_State* L)
+int l_game_debug_pause(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	BaseMapState& baseMapState = game.getStateMachine().getState()->to<BaseMapState>();
@@ -89,7 +89,7 @@ int l_Game_debug_pause(lua_State* L)
 	return 0;
 }
 
-int l_Game_debug_resume(lua_State* L)
+int l_game_debug_resume(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	BaseMapState& baseMapState = game.getStateMachine().getState()->to<BaseMapState>();
@@ -97,7 +97,7 @@ int l_Game_debug_resume(lua_State* L)
 	return 0;
 }
 
-int l_Game_debug_pauseNextFrame(lua_State* L)
+int l_game_debug_pauseNextFrame(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	BaseMapState& baseMapState = game.getStateMachine().getState()->to<BaseMapState>();
@@ -105,21 +105,21 @@ int l_Game_debug_pauseNextFrame(lua_State* L)
 	return 0;
 }
 
-int l_Game_debug_getNumTimers(lua_State* L)
+int l_game_debug_getNumTimers(lua_State* L)
 {
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	lua_pushinteger(L, baseMapState.getGameTimerContainer().getNumTimers());
 	return 1;
 }
 
-int l_Game_debug_getNumFrameTimers(lua_State* L)
+int l_game_debug_getNumFrameTimers(lua_State* L)
 {
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	lua_pushinteger(L, baseMapState.getGameTimerContainer().getNumFrameTimers());
 	return 1;
 }
 
-int l_Game_debug_reloadComponent(lua_State* L)
+int l_game_debug_reloadComponent(lua_State* L)
 {
 	std::string entityTemplateName = luaL_checkstring(L, 1);
 	entity::component::ComponentFlags componentFlag = static_cast<entity::component::ComponentFlags>(luaL_checkinteger(L, 2));
@@ -131,7 +131,7 @@ int l_Game_debug_reloadComponent(lua_State* L)
 	return 0;
 }
 
-int l_Game_debug_removeComponent(lua_State* L)
+int l_game_debug_removeComponent(lua_State* L)
 {
 	std::string entityTemplateName = luaL_checkstring(L, 1);
 	entity::component::ComponentFlags componentFlag = static_cast<entity::component::ComponentFlags>(luaL_checkinteger(L, 2));
@@ -143,7 +143,7 @@ int l_Game_debug_removeComponent(lua_State* L)
 }
 #endif // FLAT_DEBUG
 
-int l_Game_openMap(lua_State* L)
+int l_game_openMap(lua_State* L)
 {
 	const char* modPath = luaL_checkstring(L, 1);
 	const char* mapName = luaL_checkstring(L, 2);
@@ -156,7 +156,7 @@ int l_Game_openMap(lua_State* L)
 	return 1;
 }
 
-int l_Game_setGhostEntity(lua_State* L)
+int l_game_setGhostEntity(lua_State* L)
 {
 	const char* ghostTemplateName = luaL_checkstring(L, 1);
 	flat::lua::UniqueLuaReference<LUA_TFUNCTION> canPlaceGhostEntity;
@@ -172,14 +172,14 @@ int l_Game_setGhostEntity(lua_State* L)
 	return 0;
 }
 
-int l_Game_clearGhostEntity(lua_State* L)
+int l_game_clearGhostEntity(lua_State* L)
 {
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	baseMapState.clearGhostTemplate();
 	return 0;
 }
 
-int l_Game_setCameraCenter(lua_State* L)
+int l_game_setCameraCenter(lua_State* L)
 {
 	const flat::Vector2& position = flat::lua::getVector2(L, 1);
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
@@ -187,7 +187,7 @@ int l_Game_setCameraCenter(lua_State* L)
 	return 0;
 }
 
-int l_Game_getCameraCenter(lua_State* L)
+int l_game_getCameraCenter(lua_State* L)
 {
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	const flat::Vector2& position = baseMapState.getCameraCenter();
@@ -195,7 +195,7 @@ int l_Game_getCameraCenter(lua_State* L)
 	return 1;
 }
 
-int l_Game_setCameraZoom(lua_State* L)
+int l_game_setCameraZoom(lua_State* L)
 {
 	const float zoom = static_cast<float>(luaL_checknumber(L, 1));
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
@@ -203,21 +203,21 @@ int l_Game_setCameraZoom(lua_State* L)
 	return 0;
 }
 
-int l_Game_lockCamera(lua_State* L)
+int l_game_lockCamera(lua_State* L)
 {
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	baseMapState.lockCamera();
 	return 0;
 }
 
-int l_Game_unlockCamera(lua_State* L)
+int l_game_unlockCamera(lua_State* L)
 {
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	baseMapState.unlockCamera();
 	return 0;
 }
 
-int l_Game_convertToCameraPosition(lua_State* L)
+int l_game_convertToCameraPosition(lua_State* L)
 {
 	const flat::Vector3& position = flat::lua::getVector3(L, 1);
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();

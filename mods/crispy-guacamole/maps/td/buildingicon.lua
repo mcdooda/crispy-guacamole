@@ -58,7 +58,7 @@ function BuildingIcon:build(parent)
 
             previewContainer:click(function()
                 local buildableZone = Map.getZone 'Buildable'
-                Game.setGhostEntity(
+                game.setGhostEntity(
                     self.towerData.template,
                     function(tiles)
                         if Money:getAmount() < self.towerData.cost then

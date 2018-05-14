@@ -39,6 +39,9 @@ void BaseMapState::enter(Game& game)
 {
 	Super::enter(game);
 
+	// time
+	m_gameClock = game.time->newClock();
+	m_gameTimerContainer = game.lua->newTimerContainer(m_gameClock);
 #ifdef FLAT_DEBUG
 	m_gamePaused = false;
 	m_pauseNextFrame = false;
@@ -415,7 +418,7 @@ void BaseMapState::addEntityToMap(entity::Entity* entity)
 	FLAT_ASSERT(entity->getMap() == nullptr);
 	m_entityUpdater.registerEntity(entity);
 	entity->onAddedToMap(&getMap());
-	flat::time::Clock& clock = getClock();
+	flat::time::Clock& clock = getGameClock();
 	m_displayManager.addEntity(entity);
 	m_entityUpdater.updateSingleEntity(entity, clock.getTime(), clock.getDT());
 }
@@ -446,7 +449,7 @@ void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 
 	m_gamePaused = pause;
 
-	flat::time::Clock& clock = getClock();
+	flat::time::Clock& clock = getGameClock();
 	if (pause)
 	{
 		clock.pause();
@@ -1082,7 +1085,7 @@ void BaseMapState::updateEntities()
 #endif
 
 	despawnEntities();
-	const flat::time::Clock& clock = getClock();
+	const flat::time::Clock& clock = getGameClock();
 	m_entityUpdater.updateAllEntities(clock.getTime(), clock.getDT());
 
 #ifdef FLAT_DEBUG
@@ -1092,7 +1095,7 @@ void BaseMapState::updateEntities()
 
 void BaseMapState::updateMap()
 {
-	const flat::time::Clock& clock = getClock();
+	const flat::time::Clock& clock = getGameClock();
 	getMap().update(clock.getTime());
 }
 

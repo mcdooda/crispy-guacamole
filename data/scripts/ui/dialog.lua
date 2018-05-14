@@ -56,7 +56,6 @@ function Dialog:close()
     self.background:removeFromParent()
     local timer = flat.Timer()
     timer:onUpdate(function(timer, elapsedTime)
-
        local _, rootH = root:getSize()
        self.container:setPosition(0, (1 - (maxTimer - elapsedTime) / maxTimer) * rootH)
     end)

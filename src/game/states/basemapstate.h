@@ -101,6 +101,13 @@ class BaseMapState : public BaseState
 
 		bool isMouseOverUi(game::Game& game) const;
 
+		// time
+		inline const flat::time::Clock& getGameClock() const { FLAT_ASSERT(m_gameClock != nullptr); return *m_gameClock.get(); }
+		inline flat::time::Clock& getGameClock() { FLAT_ASSERT(m_gameClock != nullptr); return *m_gameClock.get(); }
+
+		inline const flat::lua::timer::TimerContainer& getGameTimerContainer() const { FLAT_ASSERT(m_gameTimerContainer != nullptr); return *m_gameTimerContainer.get(); }
+		inline flat::lua::timer::TimerContainer& getGameTimerContainer() { FLAT_ASSERT(m_gameTimerContainer != nullptr); return *m_gameTimerContainer.get(); }
+
 #ifdef FLAT_DEBUG
 		void setGamePause(Game& game, bool pause, bool pauseNextFrame);
 		inline bool isGamePaused() const { return m_gamePaused; }
@@ -179,6 +186,10 @@ class BaseMapState : public BaseState
 		flat::Vector2 m_cameraCenter2d;
 		float m_cameraZoom;
 		bool m_cameraLocked;
+
+		// time
+		std::shared_ptr<flat::time::Clock> m_gameClock;
+		std::shared_ptr<flat::lua::timer::TimerContainer> m_gameTimerContainer;
 		
 		// ui
 		flat::Vector2 m_mouseDownPosition;

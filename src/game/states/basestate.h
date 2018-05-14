@@ -16,10 +16,6 @@ class BaseState : public flat::state::StateImpl<Game>
 		void execute(Game& game) override;
 		void exit(Game& game) override;
 
-		// time
-		inline const flat::time::Clock& getClock() const { FLAT_ASSERT(m_clock != nullptr); return *m_clock.get(); }
-		inline flat::time::Clock& getClock() { FLAT_ASSERT(m_clock != nullptr); return *m_clock.get(); }
-
 	protected:
 		virtual void update(Game& game);
 
@@ -27,9 +23,6 @@ class BaseState : public flat::state::StateImpl<Game>
 		virtual void draw(Game& game);
 
 		void resetViews(Game& game);
-
-		// time
-		void initTime(Game& game);
 
 		// lua
 		void initLua(Game& game);
@@ -45,9 +38,6 @@ class BaseState : public flat::state::StateImpl<Game>
 	protected:
 		// rendering
 		flat::render::ProgramSettings m_uiRender;
-
-		// time
-		std::shared_ptr<flat::time::Clock> m_clock;
 };
 
 } // states

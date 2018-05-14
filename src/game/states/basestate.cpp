@@ -13,7 +13,6 @@ namespace states
 void BaseState::enter(Game& game)
 {
 	game.video->window->setTitle("Crispy guacamole");
-	initTime(game);
 	initLua(game);
 	initRender(game);
 	resetViews(game);
@@ -68,11 +67,6 @@ void BaseState::resetViews(Game & game)
 	game.interfaceView.reset();
 	game.interfaceView.move(windowSize / 2.0f);
 	game.interfaceView.updateProjection();
-}
-
-void BaseState::initTime(Game& game)
-{
-	m_clock = game.time->newClock();
 }
 
 void BaseState::initLua(Game& game)

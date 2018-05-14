@@ -502,7 +502,7 @@ int l_Entity_sleep(lua_State* L)
 
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-	const flat::time::Clock& clock = baseMapState.getClock();
+	const flat::time::Clock& clock = baseMapState.getGameClock();
 	const float time = clock.getTime();
 
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);

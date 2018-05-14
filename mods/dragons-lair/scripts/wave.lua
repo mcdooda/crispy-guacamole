@@ -23,7 +23,7 @@ local function new(position2d, radius, height, duration, onEnd, shape)
     end)
 
     shape = shape or waveShape
-    local timer = flat.Timer()
+    local timer = Game.Timer()
     timer:onUpdate(coroutine.wrap(function(timer, age)
         local _
         local progression, prevProgression = 0, 0

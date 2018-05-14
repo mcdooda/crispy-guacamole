@@ -173,7 +173,7 @@ void TileMapEditorMode::applyBrushSecondaryEffect(MapEditorState& mapEditorState
 
 void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 {
-	const float dt = mapEditorState.getClock().getDT();
+	const float dt = mapEditorState.getGameClock().getDT();
 	map::Map& map = mapEditorState.getMap();
 
 	const auto& keyboard = m_game.input->keyboard;

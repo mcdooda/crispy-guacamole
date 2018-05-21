@@ -14,6 +14,7 @@ avatar.widget:mouseDown(function()
 	avatar:startAnimation('no', 1.1)
 end)
 
+local itemContainer = Widget.makeLineFlow()
 local items = {}
 
 local function buildItemList(container, stock)
@@ -51,7 +52,6 @@ local function buildUi(entity, content)
 	end
 	
 	-- item list
-	local itemContainer = Widget.makeLineFlow()
 	content:addChild(itemContainer)
 	buildItemList(itemContainer, ShopKeeper:getStock())
 end
@@ -61,15 +61,16 @@ function ui.addedToMap(entity, widget)
 	local content = Widget.makeColumnFlow()
 	content:setMargin(margin)
 	dialog:addChild(content)
+	buildUi(entity, content)
 	entity:selected(function(entity)
+		buildItemList(itemContainer, ShopKeeper:getStock())
+		avatar:startAnimation('speaking', 2)
 		entity:setUiVisible(true)
-		buildUi(entity, content)
 		Camera.moveTo(entity:getPosition(), 1)
 	end)
 	
 	entity:deselected(function(entity)
 		entity:setUiVisible(false)
-		content:removeAllChildren()
 	end)
 end
 

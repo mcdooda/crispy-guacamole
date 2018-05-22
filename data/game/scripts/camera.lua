@@ -1,4 +1,5 @@
 local function moveCameraTo(worldDestination, duration, easing)
+	game.lockCamera()
 	duration = duration or 1
 	easing = easing or flat.easing.easeOut(flat.easing.cubic)
 	local origin = game.getCameraCenter()
@@ -8,6 +9,9 @@ local function moveCameraTo(worldDestination, duration, easing)
 		local t = elapsedTime / duration
 		local result = flat.easing.lerp(t, origin, destination, easing)
 		game.setCameraCenter(result)
+	end)
+	timer:onEnd(function()
+		game.unlockCamera()
 	end)
 	timer:start(duration, false)
 end

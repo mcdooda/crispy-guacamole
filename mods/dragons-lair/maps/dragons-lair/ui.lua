@@ -37,6 +37,8 @@ local function makeInventory()
     inventoryPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
     local itemPanel = Widget.makeLineFlow()
     itemPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
+    local damages = Widget.makeText('Damages: ' .. math.floor(User:computeDamages()), table.unpack(Theme.UI_FONT))
+
     local function setItemsInventory()
         itemPanel:removeAllChildren()
         for i = 1, Inventory:getMaxItems() do
@@ -48,6 +50,7 @@ local function makeInventory()
             end
             itemPanel:addChild(frame)
         end
+        damages:setText('Damages: ' .. math.floor(User:computeDamages()), table.unpack(Theme.UI_FONT))
         return itemPanel
     end
     setItemsInventory()
@@ -58,7 +61,6 @@ local function makeInventory()
     local statsPanel = Widget.makeColumnFlow()
     statsPanel:setMargin(10, 0, 0, 0)
     statsPanel:setSizePolicy(Widget.SizePolicy.COMPRESS)
-    local damages = Widget.makeText('Damages: ' .. math.floor(User:computeDamages()), table.unpack(Theme.UI_FONT))
     statsPanel:addChild(damages)
     local frame = makeFrame(statsPanel)
     inventoryPanel:addChild(frame)

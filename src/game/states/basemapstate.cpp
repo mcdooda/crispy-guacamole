@@ -553,7 +553,7 @@ void BaseMapState::updateGameView(game::Game& game)
 	m_cameraCenter2d += move * uiClock.getDT() * cameraSpeed;
 	updateCameraView();
 
-	if (mouse->wheelJustMoved() && keyboard->isPressed(K(LCTRL)))
+	if (mouse->wheelJustMoved())
 	{
 		const float zoom = m_cameraZoom * static_cast<float>(std::pow(2, mouse->getWheelMove().y));
 		setCameraZoom(zoom);
@@ -599,6 +599,8 @@ void BaseMapState::updateCameraView()
 
 void BaseMapState::draw(game::Game& game)
 {
+	FLAT_PROFILE("Draw");
+
 	// map
 	addGhostEntity(game);
 	m_displayManager.sortAndDraw(game, m_gameView);

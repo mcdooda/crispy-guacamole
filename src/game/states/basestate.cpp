@@ -90,6 +90,8 @@ void BaseState::updateUi(Game& game)
 
 void BaseState::drawUi(Game& game)
 {
+	FLAT_PROFILE("Draw UI");
+
 	m_uiRender.program.use(*game.video->window);
 
 	m_uiRender.settings.viewProjectionMatrixUniform.set(game.interfaceView.getViewProjectionMatrix());

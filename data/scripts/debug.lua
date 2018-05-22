@@ -57,10 +57,17 @@ local function makeSeparator()
     return widget
 end
 
-dofile 'data/scripts/stats.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
-dofile 'data/scripts/drawstats.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
-dofile 'data/scripts/entitydebug.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
-dofile 'data/scripts/memorysnapshot.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
-dofile 'data/scripts/gamespeed.lua' (addContainer, makeSeparator, UiSettings.defaultFont)
+local debugFiles = {
+    'stats',
+    'drawstats',
+    'profiler',
+    'entitydebug',
+    'memorysnapshot',
+    'gamespeed'
+}
+
+for i = 1, #debugFiles do
+    dofile('data/scripts/' .. debugFiles[i] .. '.lua')(addContainer, makeSeparator, UiSettings.defaultFont)
+end
 
 root:addChild(debugContainer)

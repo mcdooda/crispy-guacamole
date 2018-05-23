@@ -1081,6 +1081,8 @@ void BaseMapState::moveToFormation(Game& game)
 
 void BaseMapState::updateEntities()
 {
+	FLAT_PROFILE("Update entities");
+
 #ifdef FLAT_DEBUG
 	if (!isGamePaused())
 	{

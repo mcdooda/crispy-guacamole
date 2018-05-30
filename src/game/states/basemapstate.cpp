@@ -327,6 +327,8 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	entity::component::ComponentFlags enabledComponentFlags
 )
 {
+	FLAT_PROFILE("Spawn entity");
+
 	entity::Entity* entity = createEntity(game, entityTemplate, componentFlags);
 
 	// disable components not in enabledComponentFlags
@@ -602,13 +604,21 @@ void BaseMapState::draw(game::Game& game)
 	FLAT_PROFILE("Draw");
 
 	// map
-	addGhostEntity(game);
-	m_displayManager.sortAndDraw(game, m_gameView);
-	removeGhostEntity(game);
+	{
+		FLAT_PROFILE("Draw map");
+
+		addGhostEntity(game);
+		m_displayManager.sortAndDraw(game, m_gameView);
+		removeGhostEntity(game);
+	}
 	
 #ifdef FLAT_DEBUG
-	m_entityUpdater.debugDraw(m_debugDisplay);
-	m_debugDisplay.drawElements(game, m_gameView);
+	{
+		FLAT_PROFILE("Draw debug");
+
+		m_entityUpdater.debugDraw(m_debugDisplay);
+		m_debugDisplay.drawElements(game, m_gameView);
+	}
 #endif
 	
 	Super::draw(game);

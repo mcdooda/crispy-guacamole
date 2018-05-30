@@ -76,10 +76,13 @@ void EntityUpdater::unregisterAllEntities()
 
 void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 {
+	FLAT_PROFILE("Update single entity");
+
 	for (component::Component* component : entity->getComponents())
 	{
 		if (component->componentRequiresUpdate() && component->isEnabled())
 		{
+			FLAT_PROFILE(component->getComponentType().getConfigName());
 			component->update(time, dt);
 		}
 	}
@@ -89,30 +92,40 @@ void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 
 void EntityUpdater::updateAllEntities(float time, float dt)
 {
+	FLAT_PROFILE("Update all entities");
+
 	for (const std::deque<component::Component*>& componentList : m_registeredComponents)
 	{
-		for (component::Component* component : componentList)
+		if (componentList.size() > 0)
 		{
-			if (component->isEnabled())
+			FLAT_PROFILE(componentList.front()->getComponentType().getConfigName());
+
+			for (component::Component* component : componentList)
 			{
-				component->update(time, dt);
+				if (component->isEnabled())
+				{
+					component->update(time, dt);
+				}
 			}
 		}
 	}
 
-	for (entity::Entity* entity : m_registeredEntities)
 	{
-		entity->updateAABBIfDirty();
-#ifdef FLAT_DEBUG
-		// ensure all AABBs are up to date
-		if (entity->hasSprite())
+		FLAT_PROFILE("Update AABBs");
+		for (entity::Entity* entity : m_registeredEntities)
 		{
-			flat::AABB2 spriteAABB;
-			entity->getSprite().getAABB(spriteAABB);
-			FLAT_ASSERT(spriteAABB == entity->getAABB());
+			entity->updateAABBIfDirty();
+#ifdef FLAT_DEBUG
+			// ensure all AABBs are up to date
+			if (entity->hasSprite())
+			{
+				flat::AABB2 spriteAABB;
+				entity->getSprite().getAABB(spriteAABB);
+				FLAT_ASSERT(spriteAABB == entity->getAABB());
+			}
+#endif
 		}
 	}
-#endif
 }
 
 #ifdef FLAT_DEBUG

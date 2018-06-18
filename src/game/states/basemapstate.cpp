@@ -534,7 +534,7 @@ void BaseMapState::removeGhostEntity(game::Game & game)
 
 void BaseMapState::updateGameView(game::Game& game)
 {
-	if (m_cameraLocked)
+	if (m_cameraLocked > 0)
 	{
 		return;
 	}
@@ -597,6 +597,15 @@ void BaseMapState::setCameraZoom(float cameraZoom)
 {
 	m_cameraZoom = cameraZoom;
 	updateCameraView();
+}
+
+void BaseMapState::unlockCamera()
+{
+	m_cameraLocked--;
+	if (m_cameraLocked < 0)
+	{
+		m_cameraLocked = 0;
+	}
 }
 
 flat::Vector2 BaseMapState::convertToCameraPosition(const flat::Vector3& position) const

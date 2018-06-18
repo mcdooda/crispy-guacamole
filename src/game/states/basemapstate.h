@@ -90,8 +90,8 @@ class BaseMapState : public BaseState
 		inline const flat::Vector2& getCameraCenter() const { return m_cameraCenter2d; }
 		void setCameraCenter(const flat::Vector2& cameraCenter);
 		void setCameraZoom(float cameraZoom);
-		void lockCamera() { m_cameraLocked = true; }
-		void unlockCamera() { m_cameraLocked = false; }
+		inline void lockCamera() { m_cameraLocked ++; }
+		void unlockCamera();
 		flat::Vector2 convertToCameraPosition(const flat::Vector3& position) const;
 
 		void addEntityToMap(entity::Entity* entity);
@@ -185,7 +185,7 @@ class BaseMapState : public BaseState
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;
 		float m_cameraZoom;
-		bool m_cameraLocked;
+		int m_cameraLocked;
 
 		// time
 		std::shared_ptr<flat::time::Clock> m_gameClock;

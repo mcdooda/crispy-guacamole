@@ -396,6 +396,8 @@ int l_Entity_setUiVisible(lua_State* L)
 
 int l_Entity_moveTo(lua_State* L)
 {
+	FLAT_PROFILE("entity:moveTo()");
+
 	Entity& entity = getEntity(L, 1);
 	flat::Vector2 pathPoint = flat::lua::getVector2(L, 2);
 	bool yield = locGetOptBool(L, 3, true);
@@ -488,6 +490,8 @@ int l_Entity_setDefaultMoveAnimation(lua_State* L)
 
 int l_Entity_enterState(lua_State* L)
 {
+	FLAT_PROFILE("entity:enterState()");
+
 	Entity& entity = getEntity(L, 1);
 	const char* stateName = luaL_checkstring(L, 2);
 	bool yield = locGetOptBool(L, 3, true);
@@ -669,6 +673,8 @@ int l_Entity_isLiving(lua_State* L)
 
 int l_Entity_kill(lua_State* L)
 {
+	FLAT_PROFILE("entity:kill()");
+
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lifeComponent.kill();
@@ -677,6 +683,8 @@ int l_Entity_kill(lua_State* L)
 
 int l_Entity_dealDamage(lua_State* L)
 {
+	FLAT_PROFILE("entity:dealDamage()");
+
 	Entity& entity = getEntity(L, 1);
 	int damage = static_cast<int>(luaL_checkinteger(L, 2));
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);

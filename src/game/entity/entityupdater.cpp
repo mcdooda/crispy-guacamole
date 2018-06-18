@@ -32,6 +32,8 @@ EntityUpdater::~EntityUpdater()
 
 void EntityUpdater::registerEntity(Entity* entity)
 {
+	FLAT_PROFILE("Register entity");
+
 	FLAT_ASSERT(std::find(m_registeredEntities.begin(), m_registeredEntities.end(), entity) == m_registeredEntities.end());
 	m_registeredEntities.push_back(entity);
 

@@ -116,6 +116,8 @@ void GameState::startLevelScript(Game& game)
 
 void GameState::updateLevelScript()
 {
+	FLAT_PROFILE("Update level script");
+
 	if (!m_levelThread.isFinished())
 	{
 		m_levelThread.update();

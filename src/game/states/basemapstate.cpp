@@ -331,28 +331,38 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 
 	entity::Entity* entity = createEntity(game, entityTemplate, componentFlags);
 
-	// disable components not in enabledComponentFlags
-	if (enabledComponentFlags != entity::component::AllComponents)
 	{
-		for (entity::component::Component* component : entity->getComponents())
+		FLAT_PROFILE("Disable useless components");
+		// disable components not in enabledComponentFlags
+		if (enabledComponentFlags != entity::component::AllComponents)
 		{
-			entity::component::ComponentFlags componentFlag = component->getComponentType().getComponentTypeFlag();
-			if ((enabledComponentFlags & componentFlag) == 0)
+			for (entity::component::Component* component : entity->getComponents())
 			{
-				component->incDisableLevel();
+				entity::component::ComponentFlags componentFlag = component->getComponentType().getComponentTypeFlag();
+				if ((enabledComponentFlags & componentFlag) == 0)
+				{
+					component->incDisableLevel();
+				}
 			}
 		}
 	}
 
-	entity->setPosition(position);
-	entity->setHeading(heading);
-	entity->setElevation(elevation);
+	{
+		FLAT_PROFILE("Set initial position");
+		entity->setPosition(position);
+		entity->setHeading(heading);
+		entity->setElevation(elevation);
+	}
+
 	addEntityToMap(entity);
+
 	return entity;
 }
 
 void BaseMapState::despawnEntity(entity::Entity* entity)
 {
+	FLAT_PROFILE("Despawn entity");
+
 	removeEntityFromMap(entity);
 	removeFromSelectedEntities(entity);
 	destroyEntity(entity);
@@ -404,6 +414,8 @@ bool BaseMapState::onGhostEntityPlaced()
 
 entity::Entity* BaseMapState::createEntity(Game& game, const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, entity::component::ComponentFlags componentFlags)
 {
+	FLAT_PROFILE("Create entity");
+
 	entity::component::ComponentFlags componentsFilter = getComponentsFilter() & componentFlags;
 	entity::Entity* entity = m_entityPool.createEntity(entityTemplate, m_componentRegistry, componentsFilter);
 	return entity;
@@ -417,6 +429,8 @@ void BaseMapState::destroyEntity(entity::Entity* entity)
 
 void BaseMapState::addEntityToMap(entity::Entity* entity)
 {
+	FLAT_PROFILE("Add entity to map");
+
 	FLAT_ASSERT(entity->getMap() == nullptr);
 	m_entityUpdater.registerEntity(entity);
 	entity->onAddedToMap(&getMap());
@@ -935,6 +949,8 @@ bool BaseMapState::forceEntitySelection(Game& game) const
 
 void BaseMapState::handleGameActionInputs(Game& game)
 {
+	FLAT_PROFILE("Handle inputs");
+
 	const auto& mouse = game.input->mouse;
 	const auto& keyboard = game.input->keyboard;
 
@@ -1109,6 +1125,8 @@ void BaseMapState::updateEntities()
 
 void BaseMapState::updateMap()
 {
+	FLAT_PROFILE("Update map");
+
 	const flat::time::Clock& clock = getGameClock();
 	getMap().update(clock.getTime());
 }

@@ -20,6 +20,8 @@ Pathfinder::Pathfinder(const Map& map, float jumpHeight) :
 
 bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const
 {
+	FLAT_PROFILE("Find path");
+
 	const map::Tile* firstTile = getTileIfWalkable(from.x, from.y);
 	if (!firstTile)
 	{

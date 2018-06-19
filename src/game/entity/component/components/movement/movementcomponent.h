@@ -68,7 +68,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;
-		static constexpr float MIN_DISTANCE_TO_DESTINATION = 0.1f;
+		static constexpr float MIN_DISTANCE_TO_DESTINATION = FLT_EPSILON;
 		static constexpr float RETURN_TO_DESTINATION_DURATION = 0.5f;
 		
 		std::deque<flat::Vector2> m_path; // TODO: use the right container like a traversable queue

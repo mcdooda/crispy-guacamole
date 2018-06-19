@@ -218,7 +218,7 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 		startingPoint = m_path.back();
 	}
 	
-	if (flat::length2(point - startingPoint) > MIN_DISTANCE_TO_DESTINATION * MIN_DISTANCE_TO_DESTINATION)
+	if (flat::length2(point - startingPoint) > flat::square(MIN_DISTANCE_TO_DESTINATION))
 	{
 		const map::Map& map = *m_owner->getMap();
 		const float jumpHeight = getTemplate()->getJumpMaxHeight();

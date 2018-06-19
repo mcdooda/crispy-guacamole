@@ -57,7 +57,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 local targetZone = Map.getZone 'Target'
                 local zoneCenter = targetZone:getCenter()
 
-                local target = Entity.spawn('sheep', zoneCenter)
+                local target = Entity.spawn('wild_sheep', zoneCenter)
                 entity:setAttackTarget(target)
             end)
             attackLine:addChild(playIcon.container)

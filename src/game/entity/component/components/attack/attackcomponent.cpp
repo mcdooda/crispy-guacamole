@@ -42,14 +42,15 @@ void AttackComponent::attack(float currentTime)
 	beginAttack(currentTime);
 }
 
-bool AttackComponent::isInAttackRange(Entity* entity) const
+bool AttackComponent::isInAttackRange(Entity* target) const
 {
-	const float attackRange = getAttackRange();
+	const float attackRange = getTemplate()->getAttackRange();
 
-	const float targetRadius = EntityHelper::getRadius(entity);
+	const float entityRadius = EntityHelper::getRadius(m_owner);
+	const float targetRadius = EntityHelper::getRadius(target);
 
-	float distance2 = flat::length2(entity->getPosition() - m_owner->getPosition());
-	return distance2 <= (attackRange + targetRadius) * (attackRange + targetRadius);
+	float distance2 = flat::length2(target->getPosition() - m_owner->getPosition());
+	return distance2 <= flat::square(attackRange + entityRadius + targetRadius);
 }
 
 void AttackComponent::tryBeginAttack(float currentTime)
@@ -149,11 +150,6 @@ void AttackComponent::endAttack()
 	attackStopped();
 }
 
-float AttackComponent::getAttackRange() const
-{
-	return getTemplate()->getAttackRange() + EntityHelper::getRadius(m_owner);
-}
-
 bool AttackComponent::addedToMap(Entity * entity, map::Map * map)
 {
 	m_lastAttackTime = 0.f;
@@ -179,7 +175,7 @@ void AttackComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 		debugDisplay.add3dLine(m_owner->getPosition(), target->getPosition(), flat::video::Color::GREEN);
 	}
 
-	debugDisplay.add3dCircle(m_owner->getPosition(), getAttackRange(), flat::video::Color::GREEN, 0.5f);
+	debugDisplay.add3dCircle(m_owner->getPosition(), getTemplate()->getAttackRange() + EntityHelper::getRadius(m_owner), flat::video::Color::GREEN, 0.5f);
 }
 #endif
 

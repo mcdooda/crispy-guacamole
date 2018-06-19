@@ -32,7 +32,7 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 		inline void setAttackTarget(Entity* entity) { m_target = entity; }
 		inline Entity* getAttackTarget() { return m_target.getEntity(); }
 
-		bool isInAttackRange(Entity* entity) const;
+		bool isInAttackRange(Entity* target) const;
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
@@ -47,8 +47,6 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 		void beginAttack(float currentTime);
 		void updateAttack();
 		void endAttack();
-
-		float getAttackRange() const;
 
 		bool isBusyForAttacking() const;
 

@@ -1,9 +1,13 @@
 local CollisionHelper = require 'data/scripts/componenthelpers/collision'
+local AttackHelper = require 'data/scripts/componenthelpers/attack'
 
 local yield = coroutine.yield
 local huge = math.huge
 local random = math.random
 local sqrt = math.sqrt
+local abs = math.abs
+local min = math.min
+local max = math.max
 
 local function init(initialState)
 	return function(states, entity)
@@ -127,16 +131,26 @@ local function followAttackTarget(findTargetState)
 					entity:setAttackTarget(nil)
 					entity:enterState(findTargetState)
 				else
-					-- move closer to the current attack target but avoid collision
-					local followStepDistance = 3
-					local minFollowStepDistance = 0.01
-					local distanceMinusRadius = CollisionHelper.distanceMinusRadius(entity, currentAttackTarget)
+					local distance = sqrt(distance2)
+					local attackRange = AttackHelper.getTemplate(entity).attackRange
+					local _, entityRadius = CollisionHelper.getRadius(entity)
+					local _, targetRadius = CollisionHelper.getRadius(currentAttackTarget)
 
-					if distanceMinusRadius < followStepDistance then
-						followStepDistance = distanceMinusRadius
+					local followStepDistance = 0.7
+
+					local desiredAttackDistance = attackRange + entityRadius + targetRadius
+					if distance - entityRadius - targetRadius < attackRange * 0.05 then
+						-- move away from the target
+						followStepDistance = -attackRange * 0.05
+					else
+						-- move closer to the current attack target but avoid collision
+						local desiredMoveDistance = distance - desiredAttackDistance + 0.01
+						followStepDistance = min(desiredMoveDistance, followStepDistance)
+						followStepDistance = max(0, followStepDistance)
 					end
-
-					if followStepDistance > minFollowStepDistance then
+					
+					-- move closer to the target or move back to avoid the "return to position" effect while in combat
+					if followStepDistance ~= 0 then
 						-- normalize direction and multiply by the distance to travel
 						local destination = position2d + move:getNormalized() * followStepDistance
 						entity:clearPath()
@@ -179,7 +193,7 @@ local function customAttacker(wander, findClosestTarget, isValidHostileAttackTar
 end
 
 local function basicAttacker()
-	return customAttacker(wander, findClosestTarget, isValidHostileAttackTarget)
+	return customAttacker(doNothing, findClosestTarget, isValidHostileAttackTarget)
 end
 
 return {

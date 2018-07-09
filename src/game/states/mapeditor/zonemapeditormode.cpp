@@ -116,9 +116,9 @@ void ZoneMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 		return;
 	}
 
-	const auto& mouse = m_game.input->mouse;
+	const auto& mouse = mapEditorState.m_gameInputContext->getMouseInputContext();
 
-	if (mouse->isJustPressed(M(LEFT)))
+	if (mouse.isJustPressed(M(LEFT)))
 	{
 		m_mouseDownMapPosition = m_brushPosition;
 		m_drawingRectangle = true;
@@ -141,7 +141,7 @@ void ZoneMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 			std::swap(m_currentRectangle.minY, m_currentRectangle.maxY);
 		}
 
-		if (mouse->isJustReleased(M(LEFT)))
+		if (mouse.isJustReleased(M(LEFT)))
 		{
 			map::Zone* currentZone = m_currentZone.lock().get();
 			FLAT_ASSERT(currentZone != nullptr);
@@ -164,9 +164,9 @@ void ZoneMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 
 void ZoneMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 {
-	const auto& keyboard = m_game.input->keyboard;
+	const auto& keyboard = mapEditorState.m_gameInputContext->getKeyboardInputContext();
 
-	if (keyboard->isJustPressed(K(DELETE)))
+	if (keyboard.isJustPressed(K(DELETE)))
 	{
 		if (m_selectedRectangle != nullptr)
 		{

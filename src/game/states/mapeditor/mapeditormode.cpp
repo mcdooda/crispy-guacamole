@@ -44,9 +44,9 @@ void MapEditorMode::exit(MapEditorState& mapEditorState)
 
 void MapEditorMode::updateBrushPosition(MapEditorState& mapEditorState)
 {
-	const auto& keyboard = m_game.input->keyboard;
+	const auto& keyboard = mapEditorState.m_gameInputContext->getKeyboardInputContext();
 	m_brushPosition = mapEditorState.getCursorMapPosition(m_game, m_brushOnTile);
-	if (keyboard->isPressed(K(LSHIFT)))
+	if (keyboard.isPressed(K(LSHIFT)))
 	{
 		m_brushPosition.x = std::round(m_brushPosition.x);
 		m_brushPosition.y = std::round(m_brushPosition.y);
@@ -138,9 +138,9 @@ void MapEditorMode::clearSelectedTiles()
 
 void MapEditorMode::applyBrush(MapEditorState& mapEditorState)
 {
-	const auto& input = m_game.input;
+	const auto& keyboard = mapEditorState.m_gameInputContext->getKeyboardInputContext();
 
-	if (!input->keyboard->isPressed(K(LCTRL)))
+	if (!keyboard.isPressed(K(LCTRL)))
 	{
 		handleShortcuts(mapEditorState);
 	}
@@ -155,14 +155,14 @@ void MapEditorMode::applyBrush(MapEditorState& mapEditorState)
 		const bool modeCanSelectEntities = canSelectEntities();
 		if (!modeCanSelectEntities || (modeCanSelectEntities && !mapEditorState.updateSelectionWidget(m_game)))
 		{
-			auto& mouse = input->mouse;
-			if ((!modeCanSelectEntities && mouse->isPressed(M(LEFT))) || mouse->isJustReleased(M(LEFT)))
+			const auto& mouse = mapEditorState.m_gameInputContext->getMouseInputContext();
+			if ((!modeCanSelectEntities && mouse.isPressed(M(LEFT))) || mouse.isJustReleased(M(LEFT)))
 			{
-				applyBrushPrimaryEffect(mapEditorState, mouse->isJustPressed(M(LEFT)));
+				applyBrushPrimaryEffect(mapEditorState, mouse.isJustPressed(M(LEFT)));
 			}
-			else if (mouse->isPressed(M(RIGHT)))
+			else if (mouse.isPressed(M(RIGHT)))
 			{
-				applyBrushSecondaryEffect(mapEditorState, mouse->isJustPressed(M(RIGHT)));
+				applyBrushSecondaryEffect(mapEditorState, mouse.isJustPressed(M(RIGHT)));
 			}
 		}
 	}

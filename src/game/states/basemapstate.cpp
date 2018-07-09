@@ -66,6 +66,7 @@ void BaseMapState::enter(Game& game)
 	
 	// ui
 	buildUi(game);
+	game.input->pushContext(m_gameInputContext);
 	
 	// rendering settings
 	m_entityRender.program.load("data/shaders/sprite/entityspritebatch.frag", "data/shaders/sprite/entityspritebatch.vert");
@@ -188,7 +189,7 @@ const map::Map& BaseMapState::getMap() const
 
 flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTile) const
 {
-	const flat::Vector2& cursorPosition = game.input->mouse->getPosition();
+	const flat::Vector2& cursorPosition = m_gameInputContext->getMouseInputContext().getPosition();
 	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition);
 
 	const map::Map& map = getMap();
@@ -481,7 +482,19 @@ void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
 	m_entityTemplateManager.update();
+
+	const bool isMouseOverUiBefore = isMouseOverUi(game);
 	Super::update(game);
+	const bool isMouseOverUiAfter = isMouseOverUi(game);
+
+	if (isMouseOverUiBefore && !isMouseOverUiAfter)
+	{
+		game.input->pushContext(m_gameInputContext);
+	}
+	else if (!isMouseOverUiBefore && isMouseOverUiAfter)
+	{
+		game.input->popContext(m_gameInputContext);
+	}
 
 	//debugCursorPosition(game);
 }
@@ -538,8 +551,9 @@ void BaseMapState::updateGameView(game::Game& game)
 	{
 		return;
 	}
-	const auto& keyboard = game.input->keyboard;
-	const auto& mouse = game.input->mouse;
+
+	const auto& keyboard = m_gameInputContext->getKeyboardInputContext();
+	const auto& mouse = m_gameInputContext->getMouseInputContext();
 	
 	const map::Map& map = getMap();
 	const flat::Vector2& xAxis = map.getXAxis();
@@ -549,10 +563,10 @@ void BaseMapState::updateGameView(game::Game& game)
 	flat::Vector2 move;
 	
 	// keyboard wins over mouse
-	bool leftPressed = keyboard->isPressed(K(LEFT));
-	bool rightPressed = keyboard->isPressed(K(RIGHT));
-	bool upPressed = keyboard->isPressed(K(UP));
-	bool downPressed = keyboard->isPressed(K(DOWN));
+	const bool leftPressed = keyboard.isPressed(K(LEFT));
+	const bool rightPressed = keyboard.isPressed(K(RIGHT));
+	const bool upPressed = keyboard.isPressed(K(UP));
+	const bool downPressed = keyboard.isPressed(K(DOWN));
 	
 	if (leftPressed && !rightPressed)
 		move.x = -speed.x;
@@ -569,9 +583,9 @@ void BaseMapState::updateGameView(game::Game& game)
 	m_cameraCenter2d += move * uiClock.getDT() * cameraSpeed;
 	updateCameraView();
 
-	if (mouse->wheelJustMoved())
+	if (mouse.wheelJustMoved() && !keyboard.isPressed(K(SPACE)))
 	{
-		const float zoom = m_cameraZoom * static_cast<float>(std::pow(2, mouse->getWheelMove().y));
+		const float zoom = m_cameraZoom * static_cast<float>(std::pow(2, mouse.getWheelMove().y));
 		setCameraZoom(zoom);
 	}
 	
@@ -649,6 +663,8 @@ void BaseMapState::draw(game::Game& game)
 
 void BaseMapState::buildUi(game::Game& game)
 {
+	m_gameInputContext = std::make_shared<flat::input::context::InputContext>(game);
+
 	// create selection widget
 	flat::sharp::ui::WidgetFactory& widgetFactory = game.ui->factory;
 	m_selectionWidget = widgetFactory.makeFixedSize(flat::Vector2(1.f, 1.f));
@@ -682,7 +698,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 		return;
 	}
 
-	const flat::Vector2& mousePosition = game.input->mouse->getPosition();
+	const flat::Vector2& mousePosition = m_gameInputContext->getMouseInputContext().getPosition();
 	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition);
 
 	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
@@ -755,11 +771,11 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		return false;
 	}
 
-	const auto& mouse = game.input->mouse;
-	const auto& keyboard = game.input->keyboard;
-	const flat::Vector2& mousePosition = mouse->getPosition();
+	const auto& keyboard = m_gameInputContext->getKeyboardInputContext();
+	const auto& mouse = m_gameInputContext->getMouseInputContext();
+	const flat::Vector2& mousePosition = mouse.getPosition();
 
-	if (mouse->isJustReleased(M(LEFT)))
+	if (mouse.isJustReleased(M(LEFT)))
 	{
 		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
 		if (!selectionWidget->getParent().expired())
@@ -767,7 +783,7 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 			const flat::Vector2& bottomLeft = selectionWidget->getPosition();
 			flat::Vector2 topRight = bottomLeft + selectionWidget->getSize();
 
-			const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
+			const bool shiftPressed = keyboard.isPressed(K(LSHIFT));
 			if (!isSmallSelection())
 			{
 				updateSelectedEntities(game, bottomLeft, topRight, shiftPressed);
@@ -778,9 +794,9 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 			return !m_selectedEntities.empty();
 		}
 	}
-	else if (mouse->isJustPressed(M(LEFT)))
+	else if (mouse.isJustPressed(M(LEFT)))
 	{
-		const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
+		const bool shiftPressed = keyboard.isPressed(K(LSHIFT));
 		selectClickedEntity(game, mousePosition, shiftPressed);
 
 		m_mouseDownPosition = mousePosition;
@@ -788,7 +804,7 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		root->addChild(m_selectionWidget);
 	}
 
-	if (mouse->isPressed(M(LEFT)))
+	if (mouse.isPressed(M(LEFT)))
 	{
 		// update selection bounds
 		flat::Vector2 bottomLeft;
@@ -960,8 +976,8 @@ void BaseMapState::handleGameActionInputs(Game& game)
 {
 	FLAT_PROFILE("Handle inputs");
 
-	const auto& mouse = game.input->mouse;
-	const auto& keyboard = game.input->keyboard;
+	const auto& keyboard = m_gameInputContext->getKeyboardInputContext();
+	const auto& mouse = m_gameInputContext->getMouseInputContext();
 
 	if (isMouseOverUi(game) && !isSelecting())
 	{
@@ -970,14 +986,14 @@ void BaseMapState::handleGameActionInputs(Game& game)
 	else
 	{
 		updateMouseOverEntity(game);
-		if (mouse->isJustDoubleClicked(M(LEFT)))
+		if (mouse.isJustDoubleClicked(M(LEFT)))
 		{
-			const bool shiftPressed = keyboard->isPressed(K(LSHIFT));
-			selectEntitiesOfTypeInScreen(game, mouse->getPosition(), shiftPressed);
+			const bool shiftPressed = keyboard.isPressed(K(LSHIFT));
+			selectEntitiesOfTypeInScreen(game, mouse.getPosition(), shiftPressed);
 		}
 		else if (m_ghostTemplate.get() != nullptr)
 		{
-			if (mouse->isJustPressed(M(LEFT)))
+			if (mouse.isJustPressed(M(LEFT)))
 			{
 				bool cursorOnTile;
 				flat::Vector2 position2d = getCursorMapPosition(game, cursorOnTile);
@@ -991,14 +1007,14 @@ void BaseMapState::handleGameActionInputs(Game& game)
 							flat::Vector3 position(position2d.x, position2d.y, tile->getZ());
 							spawnEntityAtPosition(game, m_ghostTemplate, position);
 						}
-						if (!keyboard->isPressed(K(LSHIFT)))
+						if (!keyboard.isPressed(K(LSHIFT)))
 						{
 							clearGhostTemplate();
 						}
 					}
 				}
 			}
-			else if (mouse->isJustPressed(M(RIGHT)))
+			else if (mouse.isJustPressed(M(RIGHT)))
 			{
 				clearGhostTemplate();
 			}
@@ -1008,7 +1024,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 			updateSelectionWidget(game);
 		}
 
-		if (mouse->isJustPressed(M(RIGHT)))
+		if (mouse.isJustPressed(M(RIGHT)))
 		{
 			bool clickedOnTile;
 			flat::Vector2 clickedTilePosition = getCursorMapPosition(game, clickedOnTile);
@@ -1017,7 +1033,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 				map::Tile* clickedTile = getMap().getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
 				if (clickedTile)
 				{
-					if (!keyboard->isPressed(K(LSHIFT)))
+					if (!keyboard.isPressed(K(LSHIFT)))
 					{
 						for (entity::Entity* entity : m_selectedEntities)
 						{
@@ -1040,7 +1056,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 		}
 	}
 
-	if (keyboard->isJustPressed(K(F)))
+	if (keyboard.isJustPressed(K(F)))
 	{
 		moveToFormation(game);
 	}

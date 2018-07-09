@@ -41,8 +41,8 @@ void EntityMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState
 
 void EntityMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 {
-	const auto& keyboard = m_game.input->keyboard;
-	const bool delPressed = keyboard->isJustPressed(K(DELETE));
+	const auto& keyboard = mapEditorState.m_gameInputContext->getKeyboardInputContext();
+	const bool delPressed = keyboard.isJustPressed(K(DELETE));
 	if (delPressed)
 	{
 		for (entity::Entity* entity : mapEditorState.getSelectedEntities())

@@ -28,14 +28,14 @@ void PropMapEditorMode::enter(MapEditorState& mapEditorState)
 
 void PropMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 {
-	const auto& keyboard = m_game.input->keyboard;
-	const auto& mouse = m_game.input->mouse;
+	const auto& keyboard = mapEditorState.m_gameInputContext->getKeyboardInputContext();
+	const auto& mouse = mapEditorState.m_gameInputContext->getMouseInputContext();
 
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush != nullptr);
-	if (mouse->wheelJustMoved() && !keyboard->isPressed(K(LCTRL)))
+	if (mouse.wheelJustMoved() && !keyboard.isPressed(K(LCTRL)))
 	{
-		const flat::Vector2& wheelMove = mouse->getWheelMove();
+		const flat::Vector2& wheelMove = mouse.getWheelMove();
 		float radius = brush->getRadius();
 		radius += wheelMove.y;
 		radius = std::max(std::min(radius, 30.f), 1.f);

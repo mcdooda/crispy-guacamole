@@ -16,11 +16,19 @@ namespace states
 namespace editor
 {
 class MapEditorMode;
+class EntityMapEditorMode;
+class PropMapEditorMode;
+class TileMapEditorMode;
+class ZoneMapEditorMode;
 }
 
 class MapEditorState : public BaseMapStateImpl<map::EditorMap>, public flat::state::Agent
 {
 	friend class editor::MapEditorMode;
+	friend class editor::EntityMapEditorMode;
+	friend class editor::PropMapEditorMode;
+	friend class editor::TileMapEditorMode;
+	friend class editor::ZoneMapEditorMode;
 	using Super = BaseMapStateImpl<map::EditorMap>;
 	public:
 		void enter(Game& game) override final;

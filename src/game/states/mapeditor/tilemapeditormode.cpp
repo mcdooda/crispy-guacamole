@@ -30,14 +30,14 @@ void TileMapEditorMode::enter(MapEditorState& mapEditorState)
 
 void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 {
-	const auto& keyboard = m_game.input->keyboard;
-	const auto& mouse = m_game.input->mouse;
+	const auto& keyboard = mapEditorState.m_gameInputContext->getKeyboardInputContext();
+	const auto& mouse = mapEditorState.m_gameInputContext->getMouseInputContext();
 
 	map::brush::Brush* brush = m_brush.get();
 	FLAT_ASSERT(brush != nullptr);
-	if (mouse->wheelJustMoved() && !keyboard->isPressed(K(LCTRL)))
+	if (mouse.wheelJustMoved() && keyboard.isPressed(K(SPACE)))
 	{
-		const flat::Vector2& wheelMove = mouse->getWheelMove();
+		const flat::Vector2& wheelMove = mouse.getWheelMove();
 		float radius = brush->getRadius();
 		radius += wheelMove.y;
 		radius = std::max(std::min(radius, 30.f), 1.f);
@@ -47,9 +47,9 @@ void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 	m_brushTiles.clear();
 	brush->getTiles(mapEditorState.getMap(), m_brushPosition, m_brushTiles);
 
-	if (mouse->isPressed(M(RIGHT)))
+	if (mouse.isPressed(M(RIGHT)))
 	{
-		if (mouse->isJustPressed(M(RIGHT)) && !keyboard->isPressed(K(LSHIFT)))
+		if (mouse.isJustPressed(M(RIGHT)) && !keyboard.isPressed(K(LSHIFT)))
 		{
 			m_selectedTiles.clear();
 		}
@@ -176,11 +176,11 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 	const float dt = mapEditorState.getGameClock().getDT();
 	map::Map& map = mapEditorState.getMap();
 
-	const auto& keyboard = m_game.input->keyboard;
+	const auto& keyboard = mapEditorState.m_gameInputContext->getKeyboardInputContext();
 
-	const bool altPressed = keyboard->isPressed(K(LALT));
-	const bool upPressed   = altPressed ? keyboard->isJustPressed(K(W)) : keyboard->isPressed(K(W));
-	const bool downPressed = altPressed ? keyboard->isJustPressed(K(S)) : keyboard->isPressed(K(S));
+	const bool altPressed = keyboard.isPressed(K(LALT));
+	const bool upPressed   = altPressed ? keyboard.isJustPressed(K(W)) : keyboard.isPressed(K(W));
+	const bool downPressed = altPressed ? keyboard.isJustPressed(K(S)) : keyboard.isPressed(K(S));
 	if (upPressed || downPressed)
 	{
 		float displacement = upPressed ? 1.f : -1.f;
@@ -198,7 +198,7 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 		});
 	}
 
-	if (keyboard->isPressed(K(F)))
+	if (keyboard.isPressed(K(F)))
 	{
 		float mean = 0.f;
 		float n = 0.f;
@@ -215,7 +215,7 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 		});
 	}
 
-	if (keyboard->isJustPressed(K(R)))
+	if (keyboard.isJustPressed(K(R)))
 	{
 		map.eachTileIfExists([&map](map::Tile* tile)
 		{
@@ -223,7 +223,7 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 		});
 	}
 
-	if (keyboard->isJustPressed(K(DELETE)))
+	if (keyboard.isJustPressed(K(DELETE)))
 	{
 		eachSelectedTileIfExists([this, &map](map::Tile* tile, float effect)
 		{
@@ -235,7 +235,7 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 		});
 	}
 
-	if (keyboard->isPressed(K(SPACE)))
+	if (keyboard.isPressed(K(SPACE)))
 	{
 		eachBrushTile([this, &map](map::Tile* tile, float effect)
 		{

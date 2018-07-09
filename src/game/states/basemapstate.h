@@ -192,6 +192,7 @@ class BaseMapState : public BaseState
 		std::shared_ptr<flat::lua::timer::TimerContainer> m_gameTimerContainer;
 		
 		// ui
+		std::shared_ptr<flat::input::context::InputContext> m_gameInputContext;
 		flat::Vector2 m_mouseDownPosition;
 		std::shared_ptr<flat::sharp::ui::Widget> m_selectionWidget;
 

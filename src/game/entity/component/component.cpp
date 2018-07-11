@@ -45,8 +45,13 @@ bool Component::isBusy() const
 	return false;
 }
 
+void Component::cancelCurrentAction()
+{
+
+}
+
 #ifdef FLAT_DEBUG
-void Component::debugDraw(debug::DebugDisplay & debugDisplay) const
+void Component::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
 
 }

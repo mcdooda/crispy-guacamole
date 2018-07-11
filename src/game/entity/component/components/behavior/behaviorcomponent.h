@@ -29,10 +29,15 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		void deinit() override;
 
 		void update(float time, float dt) override;
+
+		void cancelCurrentAction() override;
 		
 		void enterState(const char* stateName);
+		void setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity);
 
 		void sleep(float time, float duration);
+
+		inline EntityHandle getInteractionEntity() const { return m_interactionEntity; }
 
 #ifdef FLAT_DEBUG
 		void getThreadDebugInfo(std::string& file, int& line) const;
@@ -43,9 +48,12 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		bool addedToMap(Entity* entity, map::Map* map);
 		bool entityEnteredVisionRange(Entity* entity);
 		bool entityLeftVisionRange(Entity* entity);
+
+		void tryInteracting();
 		
 	private:
 		BehaviorRuntime m_behaviorRuntime;
+		EntityHandle m_interactionEntity;
 };
 
 } // behavior

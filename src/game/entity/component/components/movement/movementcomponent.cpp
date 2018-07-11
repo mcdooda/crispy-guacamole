@@ -191,6 +191,11 @@ bool MovementComponent::isBusy() const
 	return followsPath() || (!isTouchingGround() && getTemplate()->getSnapToGround());
 }
 
+void MovementComponent::cancelCurrentAction()
+{
+	clearPath();
+}
+
 bool MovementComponent::followsPath() const
 {
 	return !m_path.empty();

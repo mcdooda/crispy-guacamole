@@ -4,6 +4,7 @@
 #include "components/collision/collisioncomponent.h"
 #include "components/detection/detectioncomponent.h"
 #include "components/faction/factioncomponent.h"
+#include "components/interaction/interactioncomponent.h"
 #include "components/life/lifecomponent.h"
 #include "components/movement/movementcomponent.h"
 #include "components/projectile/projectilecomponent.h"
@@ -46,6 +47,7 @@ void ComponentRegistry::registerComponentTypes()
 
 	// order does not matter for these components
 	registerComponentType<faction::FactionComponent>();
+	registerComponentType<interaction::InteractionComponent>();
 	registerComponentType<prop::PropComponent>();
 	registerComponentType<selection::SelectionComponent>();
 }

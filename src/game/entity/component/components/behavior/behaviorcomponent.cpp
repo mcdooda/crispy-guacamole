@@ -4,7 +4,9 @@
 #include "../../componenttype.h"
 #include "../../../entity.h"
 #include "../../../entitytemplate.h"
+#include "../../../entityhelper.h"
 #include "../detection/detectioncomponent.h"
+#include "../interaction/interactioncomponent.h"
 
 namespace game
 {
@@ -54,6 +56,8 @@ void BehaviorComponent::deinit()
 
 void BehaviorComponent::update(float time, float dt)
 {
+	tryInteracting();
+
 	if (!m_owner->isBusy())
 	{
 		m_behaviorRuntime.update(time);
@@ -77,9 +81,22 @@ void BehaviorComponent::update(float time, float dt)
 	*/
 }
 
+void BehaviorComponent::cancelCurrentAction()
+{
+	m_interactionEntity = nullptr;
+}
+
 void BehaviorComponent::enterState(const char* stateName)
 {
 	m_behaviorRuntime.enterState(stateName);
+}
+
+void BehaviorComponent::setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity)
+{
+	if (m_behaviorRuntime.hasState(stateName))
+	{
+		m_interactionEntity = interactionEntity->getHandle();
+	}
 }
 
 void BehaviorComponent::sleep(float time, float duration)
@@ -107,6 +124,21 @@ bool BehaviorComponent::entityLeftVisionRange(Entity* entity)
 {
 	m_behaviorRuntime.handleEvent<EntityLeftVisionRangeBehaviorEvent>(entity);
 	return true;
+}
+
+void BehaviorComponent::tryInteracting()
+{
+	Entity* interactionEntity = m_interactionEntity.getEntity();
+	if (interactionEntity != nullptr && (EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity) < 0.01f || !m_owner->acceptsMoveOrders()))
+	{
+		m_owner->cancelCurrentActions(AllComponents & ~behavior::BehaviorComponent::getFlag());
+
+		component::interaction::InteractionComponent* interactionComponent = interactionEntity->getComponent<component::interaction::InteractionComponent>();
+		const char* behaviorStateName = interactionComponent->getBehaviorStateName().c_str();
+		FLAT_ASSERT(m_behaviorRuntime.hasState(behaviorStateName));
+		enterState(behaviorStateName);
+		m_interactionEntity = nullptr;
+	}
 }
 
 #ifdef FLAT_DEBUG
@@ -155,6 +187,20 @@ void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 			m_owner->getPosition(),
 			m_behaviorRuntime.getCurrentStateName(),
 			flat::video::Color::RED
+		);
+	}
+
+	Entity* interactionEntity = m_interactionEntity.getEntity();
+	if (interactionEntity != nullptr)
+	{
+		debugDisplay.add3dLine(
+			m_owner->getPosition(),
+			interactionEntity->getPosition(),
+			flat::video::Color::BLACK
+		);
+		debugDisplay.add3dText(
+			m_owner->getPosition() + flat::Vector3(0.f, 0.f, 1.f),
+			std::string("Distance: ") + std::to_string(EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity))
 		);
 	}
 }

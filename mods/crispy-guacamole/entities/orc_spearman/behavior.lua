@@ -13,4 +13,9 @@ function states:init(spearman)
 	init(self, spearman)
 end
 
+function states:gatherMinerals(spearman)
+	print(spearman:getInteractionEntity())
+	spearman:getInteractionEntity():despawn()
+end
+
 return states

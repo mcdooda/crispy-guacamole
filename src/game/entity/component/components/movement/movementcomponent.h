@@ -37,6 +37,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void update(float currentTime, float elapsedTime) override;
 		
 		bool isBusy() const override;
+		void cancelCurrentAction() override;
 		
 		bool followsPath() const;
 		flat::Vector2 getCurrentDirection() const;

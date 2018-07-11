@@ -83,6 +83,7 @@ int open(Game& game)
 		// behavior
 		{"enterState",               l_Entity_enterState},
 		{"sleep",                    l_Entity_sleep},
+		{"getInteractionEntity",     l_Entity_getInteractionEntity},
 
 		// sprite
 		{"playAnimation",            l_Entity_playAnimation},
@@ -513,6 +514,15 @@ int l_Entity_sleep(lua_State* L)
 	behaviorComponent.sleep(time, duration);
 
 	return lua_yield(L, 0);
+}
+
+int l_Entity_getInteractionEntity(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
+	Entity* interactionEntity = behaviorComponent.getInteractionEntity().getEntity();
+	pushEntity(L, interactionEntity);
+	return 1;
 }
 
 // SPRITE

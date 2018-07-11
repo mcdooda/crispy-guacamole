@@ -12,6 +12,9 @@ return {
     -- faction
     'components/factioncomponent',
 
+    -- interaction
+    'components/interactioncomponent',
+
     -- life
     'components/lifecomponent',
     'entity/dealdamage',

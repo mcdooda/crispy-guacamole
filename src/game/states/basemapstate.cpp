@@ -16,6 +16,7 @@
 #include "../entity/component/components/behavior/behaviorcomponent.h"
 #include "../entity/component/components/collision/collisioncomponent.h"
 #include "../entity/component/components/selection/selectioncomponent.h"
+#include "../entity/component/components/interaction/interactioncomponent.h"
 #include "../entity/faction/lua/faction.h"
 #include "../entity/entitytemplate.h"
 
@@ -161,6 +162,11 @@ void BaseMapState::exit(Game& game)
 		despawnEntity(entity);
 	}
 	clearGhostTemplate();
+
+	if (!isMouseOverUi(game))
+	{
+		game.input->popContext(m_gameInputContext);
+	}
 
 	Super::exit(game);
 }
@@ -496,7 +502,7 @@ void BaseMapState::update(game::Game& game)
 		game.input->popContext(m_gameInputContext);
 	}
 
-	//debugCursorPosition(game);
+	debugCursorPosition(game);
 }
 
 void BaseMapState::addGhostEntity(game::Game& game)
@@ -1028,27 +1034,39 @@ void BaseMapState::handleGameActionInputs(Game& game)
 		{
 			bool clickedOnTile;
 			flat::Vector2 clickedTilePosition = getCursorMapPosition(game, clickedOnTile);
+
 			if (clickedOnTile)
 			{
-				map::Tile* clickedTile = getMap().getTileIfWalkable(clickedTilePosition.x, clickedTilePosition.y);
-				if (clickedTile)
+				entity::Entity* interactionEntity = m_mouseOverEntity.getEntity();
+				if (interactionEntity != nullptr)
 				{
-					if (!keyboard.isPressed(K(LSHIFT)))
+					clickedTilePosition = flat::Vector2(interactionEntity->getPosition());
+				}
+
+				const bool shiftPressed = keyboard.isPressed(K(LSHIFT));
+
+				for (entity::Entity* entity : m_selectedEntities)
+				{
+					if (entity->acceptsMoveOrders())
 					{
+						if (!shiftPressed)
+						{
+							entity->cancelCurrentActions();
+						}
+						entity->addPointOnPath(clickedTilePosition);
+					}
+				}
+
+				if (interactionEntity != nullptr)
+				{
+					// try interacting or else only move to the clicked entity
+					entity::component::interaction::InteractionComponent* interactionComponent = interactionEntity->getComponent<entity::component::interaction::InteractionComponent>();
+					if (interactionComponent != nullptr)
+					{
+						const char* behaviorStateName = interactionComponent->getBehaviorStateName().c_str();
 						for (entity::Entity* entity : m_selectedEntities)
 						{
-							if (entity->acceptsMoveOrders())
-							{
-								entity->clearPath();
-							}
-						}
-					}
-
-					for (entity::Entity* entity : m_selectedEntities)
-					{
-						if (entity->acceptsMoveOrders())
-						{
-							entity->addPointOnPath(clickedTilePosition);
+							entity->setInteractionIfCompatible(behaviorStateName, interactionEntity);
 						}
 					}
 				}
@@ -1123,7 +1141,7 @@ void BaseMapState::moveToFormation(Game& game)
 			}
 		}
 		FLAT_ASSERT(closestPositionIt != formationPositions.end());
-		entity->clearPath();
+		entity->cancelCurrentActions();
 		entity->addPointOnPath(*closestPositionIt);
 		formationPositions.erase(closestPositionIt);
 	}

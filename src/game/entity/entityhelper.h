@@ -11,6 +11,8 @@ class EntityHelper
 {
 	public:
 		static float getRadius(const Entity* entity);
+
+		static float getDistanceBetweenEntitiesWithRadius(const Entity* a, const Entity* b);
 };
 
 } // entity

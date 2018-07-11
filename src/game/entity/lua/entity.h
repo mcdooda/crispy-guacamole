@@ -64,6 +64,7 @@ int l_Entity_setDefaultMoveAnimation(lua_State* L);
 // behavior
 int l_Entity_enterState(lua_State* L);
 int l_Entity_sleep(lua_State* L);
+int l_Entity_getInteractionEntity(lua_State* L);
 
 // sprite
 int l_Entity_playAnimation(lua_State* L);

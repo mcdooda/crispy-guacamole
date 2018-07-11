@@ -72,12 +72,17 @@ class Entity final : public map::MapObject
 		
 		bool isBusy() const;
 		bool isBusy(component::ComponentFlags componentFlags) const;
+		void cancelCurrentActions();
+		void cancelCurrentActions(component::ComponentFlags componentFlags);
 		
+		// movement
 		bool acceptsMoveOrders() const;
 		void addPointOnPath(const flat::Vector2& point);
 		void clearPath();
 		
+		// behavior
 		void enterState(const char* stateName);
+		void setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity);
 
 		void addComponent(component::Component* component);
 		void cacheComponents();

@@ -86,6 +86,26 @@ void BehaviorRuntime::enterState(const char* stateName)
 	}
 }
 
+bool BehaviorRuntime::hasState(const char* stateName)
+{
+	const Behavior& behavior = getBehavior();
+	lua_State* L = behavior.getLuaState();
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		// states table
+		behavior.pushStates(L);
+
+		//function
+		lua_getfield(L, -1, stateName);
+		const bool hasState = lua_isnil(L, -1) == 0;
+
+		lua_pop(L, 2);
+
+		return hasState;
+	}
+}
+
 void BehaviorRuntime::sleep(float time, float duration)
 {
 	m_endSleepTime = time + duration;

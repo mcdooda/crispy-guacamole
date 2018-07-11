@@ -203,6 +203,32 @@ bool Entity::isBusy(component::ComponentFlags componentFlags) const
 	return false;
 }
 
+void Entity::cancelCurrentActions()
+{
+	for (component::Component* component : m_components)
+	{
+		if (component->isEnabled())
+		{
+			component->cancelCurrentAction();
+		}
+	}
+}
+
+void Entity::cancelCurrentActions(component::ComponentFlags componentFlags)
+{
+	for (component::Component* component : m_components)
+	{
+		if (component->isEnabled())
+		{
+			component::ComponentFlags componentFlag = component->getComponentType().getComponentTypeFlag();
+			if ((componentFlag & componentFlags) == componentFlag)
+			{
+				component->cancelCurrentAction();
+			}
+		}
+	}
+}
+
 bool Entity::acceptsMoveOrders() const
 {
 	return m_movementComponent != nullptr;
@@ -319,6 +345,12 @@ void Entity::enterState(const char* stateName)
 {
 	FLAT_ASSERT(m_behaviorComponent != nullptr);
 	m_behaviorComponent->enterState(stateName);
+}
+
+void Entity::setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity)
+{
+	FLAT_ASSERT(interactionEntity != nullptr);
+	m_behaviorComponent->setInteractionIfCompatible(stateName, interactionEntity);
 }
 
 void Entity::addComponent(component::Component* component)

@@ -36,6 +36,7 @@ class Component : public flat::util::Convertible<Component>
 		virtual void deinit();
 		virtual void update(float time, float dt);
 		virtual bool isBusy() const;
+		virtual void cancelCurrentAction();
 
 		virtual bool componentRequiresUpdate() const = 0;
 
@@ -51,8 +52,19 @@ class Component : public flat::util::Convertible<Component>
 
 		const EntityTemplate& getEntityTemplate() const;
 
-		inline void decDisableLevel() { --m_disableLevel; FLAT_ASSERT(m_disableLevel >= 0); }
-		inline void incDisableLevel() { ++m_disableLevel; FLAT_ASSERT(m_disableLevel >= 0); }
+		inline void decDisableLevel()
+		{
+			--m_disableLevel;
+			FLAT_ASSERT(m_disableLevel >= 0);
+		}
+		inline void incDisableLevel()
+		{
+			if (m_disableLevel == 0)
+				cancelCurrentAction();
+
+			++m_disableLevel;
+			FLAT_ASSERT(m_disableLevel >= 0);
+		}
 		inline bool isEnabled() const { return m_disableLevel == 0; }
 		
 	protected:

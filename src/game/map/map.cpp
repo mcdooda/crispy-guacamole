@@ -255,7 +255,7 @@ void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::fun
 	{
 		for (int y = tileMinY; y <= tileMaxY; ++y)
 		{
-			if (const map::Tile* tile = getTileIfWalkable(x, y))
+			if (const map::Tile* tile = getTileIfExists(x, y))
 			{
 				for (entity::Entity* entity : tile->getEntities())
 				{

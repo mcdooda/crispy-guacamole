@@ -1066,7 +1066,10 @@ void BaseMapState::handleGameActionInputs(Game& game)
 						const char* behaviorStateName = interactionComponent->getBehaviorStateName().c_str();
 						for (entity::Entity* entity : m_selectedEntities)
 						{
-							entity->setInteractionIfCompatible(behaviorStateName, interactionEntity);
+							if (entity->canInteract())
+							{
+								entity->setInteractionIfCompatible(behaviorStateName, interactionEntity);
+							}
 						}
 					}
 				}

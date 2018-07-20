@@ -341,6 +341,11 @@ void Entity::updateAABBIfDirty()
 	}
 }
 
+bool Entity::canInteract() const
+{
+	return m_behaviorComponent != nullptr;
+}
+
 void Entity::enterState(const char* stateName)
 {
 	FLAT_ASSERT(m_behaviorComponent != nullptr);
@@ -349,6 +354,7 @@ void Entity::enterState(const char* stateName)
 
 void Entity::setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity)
 {
+	FLAT_ASSERT(m_behaviorComponent != nullptr);
 	FLAT_ASSERT(interactionEntity != nullptr);
 	m_behaviorComponent->setInteractionIfCompatible(stateName, interactionEntity);
 }

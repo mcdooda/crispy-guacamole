@@ -6,6 +6,7 @@
 #include "../component/components/behavior/behaviorcomponent.h"
 #include "../component/components/detection/detectioncomponent.h"
 #include "../component/components/faction/factioncomponent.h"
+#include "../component/components/interaction/interactioncomponent.h"
 #include "../component/components/life/lifecomponent.h"
 #include "../component/components/movement/movementcomponent.h"
 #include "../component/components/projectile/projectilecomponent.h"
@@ -84,6 +85,8 @@ int open(Game& game)
 		{"enterState",               l_Entity_enterState},
 		{"sleep",                    l_Entity_sleep},
 		{"getInteractionEntity",     l_Entity_getInteractionEntity},
+		{"getInteractionStateName",  l_Entity_getInteractionStateName},
+		{"interactWith",             l_Entity_interactWith},
 
 		// sprite
 		{"playAnimation",            l_Entity_playAnimation},
@@ -523,6 +526,29 @@ int l_Entity_getInteractionEntity(lua_State * L)
 	Entity* interactionEntity = behaviorComponent.getInteractionEntity().getEntity();
 	pushEntity(L, interactionEntity);
 	return 1;
+}
+
+int l_Entity_getInteractionStateName(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
+	lua_pushstring(L, behaviorComponent.getInteractionStateName());
+	return 1;
+}
+
+int l_Entity_interactWith(lua_State * L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity& interactionEntity = getEntity(L, 2);
+
+	entity.addPointOnPath(flat::Vector2(interactionEntity.getPosition()));
+
+	const interaction::InteractionComponent& interactionComponent = getComponent<interaction::InteractionComponent>(L, interactionEntity);
+	const char* stateName = interactionComponent.getBehaviorStateName().c_str();
+
+	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
+	behaviorComponent.setInteractionIfCompatible(stateName, &interactionEntity);
+	return 0;
 }
 
 // SPRITE

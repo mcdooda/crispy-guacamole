@@ -84,6 +84,7 @@ void BehaviorComponent::update(float time, float dt)
 void BehaviorComponent::cancelCurrentAction()
 {
 	m_interactionEntity = nullptr;
+	m_interactionStateName = nullptr;
 }
 
 void BehaviorComponent::enterState(const char* stateName)
@@ -91,12 +92,15 @@ void BehaviorComponent::enterState(const char* stateName)
 	m_behaviorRuntime.enterState(stateName);
 }
 
-void BehaviorComponent::setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity)
+bool BehaviorComponent::setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity)
 {
 	if (m_behaviorRuntime.hasState(stateName))
 	{
+		m_interactionStateName = stateName;
 		m_interactionEntity = interactionEntity->getHandle();
+		return true;
 	}
+	return false;
 }
 
 void BehaviorComponent::sleep(float time, float duration)
@@ -129,15 +133,29 @@ bool BehaviorComponent::entityLeftVisionRange(Entity* entity)
 void BehaviorComponent::tryInteracting()
 {
 	Entity* interactionEntity = m_interactionEntity.getEntity();
-	if (interactionEntity != nullptr && (EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity) < 0.01f || !m_owner->acceptsMoveOrders()))
+	if (interactionEntity != nullptr)
 	{
-		m_owner->cancelCurrentActions(AllComponents & ~behavior::BehaviorComponent::getFlag());
+		if (EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity) < 0.01f || !m_owner->acceptsMoveOrders())
+		{
+			m_owner->cancelCurrentActions(AllComponents & ~behavior::BehaviorComponent::getFlag());
 
-		component::interaction::InteractionComponent* interactionComponent = interactionEntity->getComponent<component::interaction::InteractionComponent>();
-		const char* behaviorStateName = interactionComponent->getBehaviorStateName().c_str();
-		FLAT_ASSERT(m_behaviorRuntime.hasState(behaviorStateName));
-		enterState(behaviorStateName);
-		m_interactionEntity = nullptr;
+			FLAT_ASSERT(m_behaviorRuntime.hasState(m_interactionStateName));
+			enterState(m_interactionStateName);
+
+			// if the behavior did not change the interaction entity, reset it to null
+			if (m_interactionEntity == interactionEntity)
+			{
+				m_interactionEntity = nullptr;
+			}
+		}
+	}
+	else if (m_interactionStateName != nullptr)
+	{
+		enterState("missingInteractionEntity");
+		if (!m_interactionEntity.isValid())
+		{
+			m_interactionStateName = nullptr;
+		}
 	}
 }
 

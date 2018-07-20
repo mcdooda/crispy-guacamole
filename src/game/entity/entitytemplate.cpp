@@ -111,6 +111,7 @@ void EntityTemplate::loadComponentTemplateSafe(Game& game, const component::Comp
 		}
 		else
 		{
+			flat::lua::printStack(L);
 			luaL_error(L, "luaL_loadfile failed with error %s", flat::lua::codeToString(code));
 		}
 	}

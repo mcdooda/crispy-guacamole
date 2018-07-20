@@ -81,6 +81,7 @@ class Entity final : public map::MapObject
 		void clearPath();
 		
 		// behavior
+		bool canInteract() const;
 		void enterState(const char* stateName);
 		void setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity);
 

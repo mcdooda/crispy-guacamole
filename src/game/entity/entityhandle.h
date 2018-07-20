@@ -19,7 +19,6 @@ class EntityHandle
 		void operator=(const EntityHandle& handle);
 		void operator=(const Entity* entity);
 
-
 		bool isValid() const;
 		inline Entity* getEntity() const { return isValid() ? m_entity : nullptr; }
 

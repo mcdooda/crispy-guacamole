@@ -33,11 +33,12 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		void cancelCurrentAction() override;
 		
 		void enterState(const char* stateName);
-		void setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity);
+		bool setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity);
 
 		void sleep(float time, float duration);
 
 		inline EntityHandle getInteractionEntity() const { return m_interactionEntity; }
+		inline const char* getInteractionStateName() const { return m_interactionStateName; }
 
 #ifdef FLAT_DEBUG
 		void getThreadDebugInfo(std::string& file, int& line) const;
@@ -54,6 +55,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 	private:
 		BehaviorRuntime m_behaviorRuntime;
 		EntityHandle m_interactionEntity;
+		const char* m_interactionStateName;
 };
 
 } // behavior

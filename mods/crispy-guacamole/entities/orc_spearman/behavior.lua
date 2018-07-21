@@ -1,4 +1,18 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
+local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
+
+local function getClosestHut(spearman)
+	return EntitiesByType:getClosest('orc_hut', spearman:getPosition():toVector2())
+end
+
+local function getClosestMinerals(spearman)
+	local hut = getClosestHut(spearman)
+	if hut then
+		return EntitiesByType:getClosest('prop_minerals', hut:getPosition():toVector2())
+	else
+		return EntitiesByType:getClosest('prop_minerals', spearman:getPosition():toVector2())
+	end
+end
 
 local states = BehaviorHelper.customAttacker(
 	BehaviorHelper.doNothing,
@@ -11,25 +25,6 @@ function states:init(spearman)
 	local moveAnimation = math.random(1, 2) == 1 and 'move2' or 'move'
 	spearman:setMoveAnimation(moveAnimation)
 	init(self, spearman)
-end
-
-local function findClosestEntityOfType(entity, range, type)
-	local position = entity:getPosition():toVector2()
-	local nearbyEntities = Map.getEntitiesInRange(position, 10)
-	local closestEntity = nil
-	local closestEntityDistance2 = math.huge
-	for i = 1, #nearbyEntities do
-		local nearbyEntity = nearbyEntities[i]
-		if nearbyEntity:getTemplateName() == type then
-			local nearbyEntityPosition = nearbyEntity:getPosition():toVector2()
-			local distance2 = (nearbyEntityPosition - position):length2()
-			if distance2 < closestEntityDistance2 then
-				closestEntityDistance2 = distance2
-				closestEntity = nearbyEntity
-			end
-		end
-	end
-	return closestEntity
 end
 
 function states:gatherMinerals(spearman)
@@ -45,7 +40,7 @@ function states:gatherMinerals(spearman)
 	local hut = spearman:getExtraData().hut
 
 	if not hut or not hut:isValid() then
-		hut = findClosestEntityOfType(spearman, 10, 'orc_hut')
+		hut = getClosestHut(spearman)
 	end
 
 	if hut then
@@ -60,7 +55,7 @@ function states:backToWork(spearman)
 	local minerals = spearman:getExtraData().minerals
 
 	if not minerals or not minerals:isValid() then
-		minerals = findClosestEntityOfType(spearman, 10, 'prop_minerals')
+		minerals = getClosestMinerals(spearman)
 	end
 
 	if minerals then
@@ -71,12 +66,17 @@ end
 function states:missingInteractionEntity(spearman)
 	local interactionStateName = spearman:getInteractionStateName()
 	if interactionStateName == 'gatherMinerals' then
-		local minerals = findClosestEntityOfType(spearman, 10, 'prop_minerals')
+		local minerals = getClosestMinerals(spearman)
 		if minerals then
 			spearman:interactWith(minerals)
+		else
+			local hut = getClosestHut(spearman)
+			if hut then
+				spearman:interactWith(hut)
+			end
 		end
 	elseif interactionStateName == 'backToWork' then
-		local hut = findClosestEntityOfType(spearman, 10, 'orc_hut')
+		local hut = getClosestHut(spearman)
 		if hut then
 			spearman:interactWith(hut)
 		end

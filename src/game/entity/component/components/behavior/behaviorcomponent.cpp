@@ -135,17 +135,17 @@ void BehaviorComponent::tryInteracting()
 	Entity* interactionEntity = m_interactionEntity.getEntity();
 	if (interactionEntity != nullptr)
 	{
+		FLAT_ASSERT(m_interactionStateName != nullptr && m_behaviorRuntime.hasState(m_interactionStateName));
 		if (EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity) < 0.01f || !m_owner->acceptsMoveOrders())
 		{
 			m_owner->cancelCurrentActions(AllComponents & ~behavior::BehaviorComponent::getFlag());
 
-			FLAT_ASSERT(m_behaviorRuntime.hasState(m_interactionStateName));
 			enterState(m_interactionStateName);
 
-			// if the behavior did not change the interaction entity, reset it to null
+			// if the behavior did not change the interaction entity, cancel the interaction
 			if (m_interactionEntity == interactionEntity)
 			{
-				m_interactionEntity = nullptr;
+				cancelInteraction();
 			}
 		}
 	}
@@ -154,9 +154,15 @@ void BehaviorComponent::tryInteracting()
 		enterState("missingInteractionEntity");
 		if (!m_interactionEntity.isValid())
 		{
-			m_interactionStateName = nullptr;
+			cancelInteraction();
 		}
 	}
+}
+
+void BehaviorComponent::cancelInteraction()
+{
+	m_interactionEntity = nullptr;
+	m_interactionStateName = nullptr;
 }
 
 #ifdef FLAT_DEBUG

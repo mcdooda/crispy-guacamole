@@ -51,6 +51,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		bool entityLeftVisionRange(Entity* entity);
 
 		void tryInteracting();
+		void cancelInteraction();
 		
 	private:
 		BehaviorRuntime m_behaviorRuntime;

@@ -23,25 +23,7 @@ BehaviorRuntime::BehaviorRuntime() :
 void BehaviorRuntime::setEntity(Entity* entity)
 {
 	m_entity = entity;
-
-	const Behavior& behavior = getBehavior();
-	lua_State* L = behavior.getLuaState();
-	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-		// states table
-		behavior.pushStates(L);
-
-		//function
-		lua_getfield(L, -1, "idle");
-		if (!lua_isnil(L, -1))
-		{
-			luaL_checktype(L, -1, LUA_TFUNCTION);
-			m_hasIdle = true;
-		}
-
-		lua_pop(L, 2);
-	}
+	m_hasIdle = hasState("idle");
 }
 
 void BehaviorRuntime::enterState(const char* stateName)
@@ -98,7 +80,7 @@ bool BehaviorRuntime::hasState(const char* stateName)
 
 		//function
 		lua_getfield(L, -1, stateName);
-		const bool hasState = lua_isnil(L, -1) == 0;
+		const bool hasState = lua_isfunction(L, -1) == 1;
 
 		lua_pop(L, 2);
 

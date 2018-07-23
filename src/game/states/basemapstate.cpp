@@ -1050,18 +1050,6 @@ void BaseMapState::handleGameActionInputs(Game& game)
 
 				const bool shiftPressed = keyboard.isPressed(K(LSHIFT));
 
-				for (entity::Entity* entity : m_selectedEntities)
-				{
-					if (entity->acceptsMoveOrders())
-					{
-						if (!shiftPressed)
-						{
-							entity->cancelCurrentActions();
-						}
-						entity->addPointOnPath(clickedTilePosition);
-					}
-				}
-
 				if (interactionEntity != nullptr)
 				{
 					// try interacting or else only move to the clicked entity
@@ -1071,10 +1059,32 @@ void BaseMapState::handleGameActionInputs(Game& game)
 						const char* behaviorStateName = interactionComponent->getBehaviorStateName().data();
 						for (entity::Entity* entity : m_selectedEntities)
 						{
+							if (entity->acceptsMoveOrders())
+							{
+								if (!shiftPressed)
+								{
+									entity->cancelCurrentActions();
+								}
+								entity->moveTo(clickedTilePosition, interactionEntity);
+							}
 							if (entity->canInteract())
 							{
 								entity->setInteractionIfCompatible(behaviorStateName, interactionEntity);
 							}
+						}
+					}
+				}
+				else
+				{
+					for (entity::Entity* entity : m_selectedEntities)
+					{
+						if (entity->acceptsMoveOrders())
+						{
+							if (!shiftPressed)
+							{
+								entity->cancelCurrentActions();
+							}
+							entity->moveTo(clickedTilePosition);
 						}
 					}
 				}
@@ -1150,7 +1160,7 @@ void BaseMapState::moveToFormation(Game& game)
 		}
 		FLAT_ASSERT(closestPositionIt != formationPositions.end());
 		entity->cancelCurrentActions();
-		entity->addPointOnPath(*closestPositionIt);
+		entity->moveTo(*closestPositionIt);
 		formationPositions.erase(closestPositionIt);
 	}
 	FLAT_ASSERT(formationPositions.empty());

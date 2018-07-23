@@ -406,7 +406,7 @@ int l_Entity_moveTo(lua_State* L)
 	flat::Vector2 pathPoint = flat::lua::getVector2(L, 2);
 	bool yield = locGetOptBool(L, 3, true);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	movementComponent.addPointOnPath(pathPoint);
+	movementComponent.moveTo(pathPoint);
 	return locYieldIf(L, yield, 0);
 }
 
@@ -541,13 +541,14 @@ int l_Entity_interactWith(lua_State * L)
 	Entity& entity = getEntity(L, 1);
 	Entity& interactionEntity = getEntity(L, 2);
 
-	entity.addPointOnPath(flat::Vector2(interactionEntity.getPosition()));
-
 	const interaction::InteractionComponent& interactionComponent = getComponent<interaction::InteractionComponent>(L, interactionEntity);
 	const char* stateName = interactionComponent.getBehaviorStateName().data();
 
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
 	behaviorComponent.setInteractionIfCompatible(stateName, &interactionEntity);
+
+	entity.moveTo(flat::Vector2(interactionEntity.getPosition()), &interactionEntity);
+
 	return 0;
 }
 

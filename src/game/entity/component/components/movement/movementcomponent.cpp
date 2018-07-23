@@ -52,7 +52,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 		if (flat::length2(ownerPosition - m_destination) > MIN_DISTANCE_TO_DESTINATION * MIN_DISTANCE_TO_DESTINATION
 			&& currentTime > m_returnToDestinationTime)
 		{
-			addPointOnPath(m_destination);
+			moveTo(m_destination);
 		}
 	}
 
@@ -207,7 +207,7 @@ flat::Vector2 MovementComponent::getCurrentDirection() const
 	return m_path.front() - flat::Vector2(m_owner->getPosition());
 }
 
-void MovementComponent::addPointOnPath(const flat::Vector2& point)
+void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEntity)
 {
 	m_destination = point;
 
@@ -240,6 +240,17 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 			new (pathfinder) map::pathfinder::Pathfinder(map, jumpHeight);
 		}
 
+		map::Tile* interactionTile = nullptr;
+		if (interactionEntity != nullptr)
+		{
+			map::Tile* tile = interactionEntity->getTile();
+			if (!tile->isWalkable())
+			{
+				tile->setWalkable(true);
+				interactionTile = tile;
+			}
+		}
+
 		std::vector<flat::Vector2> path;
 		if (pathfinder->findPath(startingPoint, point, path))
 		{
@@ -255,6 +266,11 @@ void MovementComponent::addPointOnPath(const flat::Vector2& point)
 		}
 
 		pathfinder->~Pathfinder();
+
+		if (interactionTile != nullptr)
+		{
+			interactionTile->setWalkable(false);
+		}
 	}
 }
 

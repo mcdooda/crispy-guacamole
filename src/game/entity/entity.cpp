@@ -234,10 +234,10 @@ bool Entity::acceptsMoveOrders() const
 	return m_movementComponent != nullptr;
 }
 
-void Entity::addPointOnPath(const flat::Vector2& point)
+void Entity::moveTo(const flat::Vector2& point, Entity* interactionEntity)
 {
 	FLAT_ASSERT(m_movementComponent != nullptr);
-	m_movementComponent->addPointOnPath(point);
+	m_movementComponent->moveTo(point, interactionEntity);
 }
 
 void Entity::clearPath()

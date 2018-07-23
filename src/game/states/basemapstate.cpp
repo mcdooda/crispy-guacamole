@@ -97,8 +97,6 @@ void BaseMapState::enter(Game& game)
 	map::Tile::setTileProgramSettings(m_terrainRender);
 	
 	initRender(game);
-
-	m_entityTemplateManager.init(game);
 	
 	map::Map& map = getMap();
 	map.setDisplayManager(&m_displayManager);
@@ -310,7 +308,7 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(30.f, game, m_componentRegistry, entityTemplatePath, entityTemplateName);
+	return m_entityTemplateManager.getResource(game, m_componentRegistry, entityTemplatePath, entityTemplateName);
 }
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
@@ -487,7 +485,6 @@ void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
-	m_entityTemplateManager.update();
 
 	const bool isMouseOverUiBefore = isMouseOverUi(game);
 	Super::update(game);
@@ -1063,7 +1060,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 					entity::component::interaction::InteractionComponent* interactionComponent = interactionEntity->getComponent<entity::component::interaction::InteractionComponent>();
 					if (interactionComponent != nullptr)
 					{
-						const char* behaviorStateName = interactionComponent->getBehaviorStateName().c_str();
+						const char* behaviorStateName = interactionComponent->getBehaviorStateName().data();
 						for (entity::Entity* entity : m_selectedEntities)
 						{
 							if (entity->canInteract())

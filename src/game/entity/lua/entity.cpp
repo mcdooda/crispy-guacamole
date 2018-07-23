@@ -544,7 +544,7 @@ int l_Entity_interactWith(lua_State * L)
 	entity.addPointOnPath(flat::Vector2(interactionEntity.getPosition()));
 
 	const interaction::InteractionComponent& interactionComponent = getComponent<interaction::InteractionComponent>(L, interactionEntity);
-	const char* stateName = interactionComponent.getBehaviorStateName().c_str();
+	const char* stateName = interactionComponent.getBehaviorStateName().data();
 
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
 	behaviorComponent.setInteractionIfCompatible(stateName, &interactionEntity);

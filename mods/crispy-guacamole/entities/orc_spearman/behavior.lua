@@ -65,6 +65,7 @@ end
 
 function states:missingInteractionEntity(spearman)
 	local interactionStateName = spearman:getInteractionStateName()
+	spearman:clearPath()
 	if interactionStateName == 'gatherMinerals' then
 		local minerals = getClosestMinerals(spearman)
 		if minerals then
@@ -80,6 +81,8 @@ function states:missingInteractionEntity(spearman)
 		if hut then
 			spearman:interactWith(hut)
 		end
+	else
+		error('missing interaction entity for state: ' .. interactionStateName)
 	end
 end
 

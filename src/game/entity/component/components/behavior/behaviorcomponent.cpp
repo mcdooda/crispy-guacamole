@@ -83,8 +83,7 @@ void BehaviorComponent::update(float time, float dt)
 
 void BehaviorComponent::cancelCurrentAction()
 {
-	m_interactionEntity = nullptr;
-	m_interactionStateName = nullptr;
+	cancelInteraction();
 }
 
 void BehaviorComponent::enterState(const char* stateName)
@@ -215,17 +214,23 @@ void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	}
 
 	Entity* interactionEntity = m_interactionEntity.getEntity();
-	if (interactionEntity != nullptr)
+	if (interactionEntity != nullptr || m_interactionStateName != nullptr)
 	{
-		debugDisplay.add3dLine(
-			m_owner->getPosition(),
-			interactionEntity->getPosition(),
-			flat::video::Color::BLACK
-		);
-		debugDisplay.add3dText(
-			m_owner->getPosition() + flat::Vector3(0.f, 0.f, 1.f),
-			std::string("Distance: ") + std::to_string(EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity))
-		);
+		std::string str;
+		if (interactionEntity != nullptr)
+		{
+			debugDisplay.add3dLine(
+				m_owner->getPosition(),
+				interactionEntity->getPosition(),
+				flat::video::Color::BLACK
+			);
+			str += std::string("Distance: ") + std::to_string(EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity));
+		}
+		if (m_interactionStateName != nullptr)
+		{
+			str += std::string("\n") + m_interactionStateName;
+		}
+		debugDisplay.add3dText(m_owner->getPosition() + flat::Vector3(0.f, 0.f, 1.f), str);
 	}
 }
 #endif

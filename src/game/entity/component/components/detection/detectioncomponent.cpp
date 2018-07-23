@@ -94,9 +94,9 @@ bool DetectionComponent::visibleEntityRemovedFromMap(Entity* entity)
 void DetectionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
 	flat::Vector3 ownerPosition = m_owner->getPosition() + flat::Vector3(0.f, 0.f, 0.5f);
-	for (const EntityHandle& entityHandle : m_visibleEntities)
+	for (Entity* entity : m_visibleEntities)
 	{
-		debugDisplay.add3dLine(ownerPosition, entityHandle.getEntity()->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE, 1.f);
+		debugDisplay.add3dLine(ownerPosition, entity->getPosition(), flat::video::Color::RED, flat::video::Color::BLUE, 1.f);
 	}
 
 	debugDisplay.add3dCircle(m_owner->getPosition(), getTemplate()->getVisionRange(), flat::video::Color::BLUE, 0.5f);

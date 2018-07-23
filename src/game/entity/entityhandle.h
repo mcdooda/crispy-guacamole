@@ -14,7 +14,7 @@ class EntityHandle
 	public:
 		EntityHandle();
 		EntityHandle(const EntityHandle& handle);
-		EntityHandle(const Entity* entity);
+		explicit EntityHandle(const Entity* entity);
 
 		void operator=(const EntityHandle& handle);
 		void operator=(const Entity* entity);
@@ -25,6 +25,8 @@ class EntityHandle
 		inline bool operator==(const EntityHandle& other) const { return m_id == other.m_id; }
 		inline bool operator!=(const EntityHandle& other) const { return m_id != other.m_id; }
 		inline bool operator< (const EntityHandle& other) const { return m_id <  other.m_id; }
+
+		inline bool operator==(const Entity* entity) const { return (!isValid() && entity == nullptr) || m_entity == entity; }
 
 	public:
 		static const EntityHandle InvalidHandle;

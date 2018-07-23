@@ -4,6 +4,8 @@ local mineralsAmountWidgetWidth = 32
 
 return {
     addedToMap = function(entity, widget)
+        local extraData = entity:getExtraData()
+
         local amountLabel
         do
             local amountContainer = Widget.makeFixedSize(mineralsAmountWidgetWidth, 1)
@@ -11,7 +13,7 @@ return {
             amountContainer:setBackgroundColor(Theme.MINERALS_BACKGROUND_COLOR)
 
             do
-                amountLabel = Widget.makeText(entity:getExtraData().amount, table.unpack(Theme.mineralsFont))
+                amountLabel = Widget.makeText(extraData.amount or 0, table.unpack(Theme.mineralsFont))
                 amountLabel:setTextColor(Theme.MINERALS_TEXT_COLOR)
                 amountLabel:setPositionPolicy(Widget.PositionPolicy.CENTER)
                 amountContainer:addChild(amountLabel)
@@ -24,9 +26,11 @@ return {
 
         Widget.getRoot():addChild(widget)
 
-        entity:getExtraData().amountChanged:on(function(amount)
-            amountLabel:setText(amount)
-        end)
+        if extraData.amountChanged then
+            extraData.amountChanged:on(function(amount)
+                amountLabel:setText(amount)
+            end)
+        end
     end,
 
     removedFromMap = function(entity, widget)

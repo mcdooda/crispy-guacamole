@@ -29,7 +29,13 @@ end
 
 function states:gatherMinerals(spearman)
 	local minerals = spearman:getInteractionEntity()
-	spearman:getExtraData().minerals = minerals
+
+	local extraData = spearman:getExtraData()
+	local mineralsChanged = false
+	if extraData.minerals ~= minerals then
+		extraData.minerals = minerals
+		mineralsChanged = true
+	end
 
 	local mineralsData = minerals:getExtraData()
 	mineralsData:withdraw(1)
@@ -37,10 +43,11 @@ function states:gatherMinerals(spearman)
 		minerals:despawn()
 	end
 
-	local hut = spearman:getExtraData().hut
+	local hut = not mineralsChanged and spearman:getExtraData().hut or nil
 
 	if not hut or not hut:isValid() then
 		hut = getClosestHut(spearman)
+		extraData.hut = hut
 	end
 
 	if hut then
@@ -50,9 +57,12 @@ end
 
 function states:backToWork(spearman)
 	local hut = spearman:getInteractionEntity()
-	spearman:getExtraData().hut = hut
 
-	local minerals = spearman:getExtraData().minerals
+	local extraData = spearman:getExtraData()
+
+	extraData.hut = hut
+
+	local minerals = extraData.minerals
 
 	if not minerals or not minerals:isValid() then
 		minerals = getClosestMinerals(spearman)
@@ -64,8 +74,9 @@ function states:backToWork(spearman)
 end
 
 function states:missingInteractionEntity(spearman)
-	local interactionStateName = spearman:getInteractionStateName()
 	spearman:clearPath()
+	spearman:getExtraData().hut = nil
+	local interactionStateName = spearman:getInteractionStateName()
 	if interactionStateName == 'gatherMinerals' then
 		local minerals = getClosestMinerals(spearman)
 		if minerals then

@@ -32,7 +32,7 @@ function states:gatherMinerals(spearman)
 	spearman:getExtraData().minerals = minerals
 
 	local mineralsData = minerals:getExtraData()
-	mineralsData.amount = mineralsData.amount - 1
+	mineralsData:withdraw(1)
 	if mineralsData.amount == 0 then
 		minerals:despawn()
 	end

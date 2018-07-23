@@ -97,15 +97,9 @@ void BaseMapState::enter(Game& game)
 	map::Tile::setTileProgramSettings(m_terrainRender);
 	
 	initRender(game);
-	
-	map::Map& map = getMap();
-	map.setDisplayManager(&m_displayManager);
-	loadMap(game);
 
-	// load debug display resources *after* the map is loaded!
-	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
 
-		// reset view
+	// reset the game view *before* loading the map so the ui components can be initialized properly
 #ifdef FLAT_DEBUG
 	if (!m_isReloading)
 	{
@@ -113,8 +107,19 @@ void BaseMapState::enter(Game& game)
 		m_gameView.setWindow(game.video->window);
 		m_gameView.updateProjection();
 		m_cameraZoom = 1.f;
+#ifdef FLAT_DEBUG
+	}
+#endif
+	
+	map::Map& map = getMap();
+	map.setDisplayManager(&m_displayManager);
+	loadMap(game);
 
-		map::Map& map = getMap();
+	// reset the camera *after* loading the map so it's centered on the map
+#ifdef FLAT_DEBUG
+	if (!m_isReloading)
+	{
+#endif
 		int minX, maxX, minY, maxY;
 		map.getBounds(minX, maxX, minY, maxY);
 		flat::Vector3 cameraCenter((maxX + minX) / 2.f, (maxY + minY) / 2.f, 0.f);
@@ -122,6 +127,9 @@ void BaseMapState::enter(Game& game)
 #ifdef FLAT_DEBUG
 	}
 #endif
+
+	// load debug display resources *after* the map is loaded!
+	FLAT_DEBUG_ONLY(m_debugDisplay.loadResources(game);)
 
 	resetViews(game);
 

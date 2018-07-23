@@ -1,4 +1,4 @@
-local Theme = require 'mods/crispy-guacamole/maps/td/theme'
+local Theme = require 'mods/crispy-guacamole/ui/theme'
 local Preview = require 'data/scripts/preview'
 local Money = require 'mods/crispy-guacamole/maps/td/money'
 

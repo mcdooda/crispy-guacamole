@@ -3,9 +3,15 @@ local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
 local states = {}
 
 local function withdraw(extraData, value)
-	extraData.amount = extraData.amount - value
-	assert(extraData.amount >= 0)
-	extraData.amountChanged(extraData.amount)
+	local amount = extraData.amount
+	amount = amount - value
+	if amount < 0 then
+		value = value + amount
+		amount = 0
+	end
+	extraData.amount = amount
+	extraData.amountChanged(amount)
+	return value
 end
 
 function states:init(minerals)

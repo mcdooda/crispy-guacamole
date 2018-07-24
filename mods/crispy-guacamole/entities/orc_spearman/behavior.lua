@@ -1,5 +1,6 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
+local Money = require 'mods/crispy-guacamole/scripts/money'
 
 local function getClosestHut(spearman)
 	return EntitiesByType:getClosest('orc_hut', spearman:getPosition():toVector2())
@@ -24,6 +25,7 @@ local init = states.init
 function states:init(spearman)
 	local moveAnimation = math.random(1, 2) == 1 and 'move2' or 'move'
 	spearman:setMoveAnimation(moveAnimation)
+	spearman:getExtraData().mineralsAmount = 0
 	init(self, spearman)
 end
 
@@ -38,7 +40,8 @@ function states:gatherMinerals(spearman)
 	end
 
 	local mineralsData = minerals:getExtraData()
-	mineralsData:withdraw(1)
+	local collected = mineralsData:withdraw(1)
+	extraData.mineralsAmount = collected
 	if mineralsData.amount == 0 then
 		minerals:despawn()
 	end
@@ -61,6 +64,11 @@ function states:backToWork(spearman)
 	local extraData = spearman:getExtraData()
 
 	extraData.hut = hut
+
+	if extraData.mineralsAmount > 0 then
+		Money:add(extraData.mineralsAmount)
+		extraData.mineralsAmount = 0
+	end
 
 	local minerals = extraData.minerals
 

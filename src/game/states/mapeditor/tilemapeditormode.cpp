@@ -72,7 +72,6 @@ void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 	}
 }
 
-FLAT_OPTIMIZE_OFF()
 void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {
 	FLAT_ASSERT(m_tileTemplate != nullptr);
@@ -164,7 +163,6 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 		tile->synchronizeSpriteTo(map, spriteSynchronizer);
 	}
 }
-FLAT_OPTIMIZE_ON()
 
 void TileMapEditorMode::applyBrushSecondaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {

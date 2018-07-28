@@ -273,7 +273,6 @@ int l_Entity_despawn(lua_State* L)
 	return 0;
 }
 
-FLAT_OPTIMIZE_OFF()
 int l_Entity_getExtraData(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -322,7 +321,6 @@ int l_Entity_getExtraData(lua_State* L)
 
 	return 1;
 }
-FLAT_OPTIMIZE_ON()
 
 int l_Entity_setPosition(lua_State* L)
 {

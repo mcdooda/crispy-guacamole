@@ -273,10 +273,11 @@ int l_Entity_despawn(lua_State* L)
 	return 0;
 }
 
+FLAT_OPTIMIZE_OFF()
 int l_Entity_getExtraData(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	const char* key = luaL_optstring(L, 2, nullptr);
+	const bool keyGiven = lua_isstring(L, 2);
 
 	flat::lua::UniqueLuaReference<LUA_TTABLE>& extraData = entity.getExtraData();
 	if (!extraData)
@@ -284,10 +285,10 @@ int l_Entity_getExtraData(lua_State* L)
 		lua_createtable(L, 0, 1);
 		extraData.set(L, -1);
 
-		if (key != nullptr)
+		if (keyGiven)
 		{
 			lua_createtable(L, 0, 1);
-			lua_pushstring(L, key); // push key
+			lua_pushvalue(L, 2); // push key
 			lua_pushvalue(L, -2); // just created value
 			lua_rawset(L, -4);
 			lua_pushboolean(L, true);
@@ -298,16 +299,16 @@ int l_Entity_getExtraData(lua_State* L)
 	{
 		extraData.push(L);
 
-		if (key != nullptr)
+		if (keyGiven)
 		{
-			lua_pushstring(L, key);
+			lua_pushvalue(L, 2);
 			lua_rawget(L, -2);
 			if (lua_isnil(L, -1))
 			{
 				lua_createtable(L, 0, 1);
-				lua_pushvalue(L, -3); // key already on the stack
+				lua_pushvalue(L, 2); // key already on the stack
 				lua_pushvalue(L, -2); // just created value
-				lua_rawset(L, -6);
+				lua_rawset(L, -5);
 				lua_pushboolean(L, true);
 			}
 			else
@@ -321,6 +322,7 @@ int l_Entity_getExtraData(lua_State* L)
 
 	return 1;
 }
+FLAT_OPTIMIZE_ON()
 
 int l_Entity_setPosition(lua_State* L)
 {

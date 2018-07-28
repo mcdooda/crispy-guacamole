@@ -507,7 +507,7 @@ void BaseMapState::update(game::Game& game)
 		game.input->popContext(m_gameInputContext);
 	}
 
-	debugCursorPosition(game);
+	//debugCursorPosition(game);
 }
 
 void BaseMapState::addGhostEntity(game::Game& game)

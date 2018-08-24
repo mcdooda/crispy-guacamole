@@ -3,15 +3,27 @@ local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
 local Money = require 'mods/crispy-guacamole/scripts/money'
 
 local function getClosestHut(spearman)
-	return EntitiesByType:getClosest('orc_hut', spearman:getPosition():toVector2())
+	return EntitiesByType:getClosests('orc_hut', spearman:getPosition():toVector2())[1]
 end
 
 local function getClosestMinerals(spearman)
 	local hut = getClosestHut(spearman)
 	if hut then
-		return EntitiesByType:getClosest('prop_minerals', hut:getPosition():toVector2())
+		local spearmanPosition = spearman:getPosition()
+		local closestMineral
+		local closestEntityDistance2 = math.huge
+		local closestMinerals = EntitiesByType:getClosests('prop_minerals', hut:getPosition():toVector2())
+		for i = 1, #closestMinerals do
+			local mineral = closestMinerals[i]
+			local distance2 = (spearmanPosition - mineral:getPosition()):length2()
+			if distance2 < closestEntityDistance2 then
+				closestMineral = mineral
+				closestEntityDistance2 = distance2
+			end
+		end
+		return closestMineral
 	else
-		return EntitiesByType:getClosest('prop_minerals', spearman:getPosition():toVector2())
+		return EntitiesByType:getClosests('prop_minerals', spearman:getPosition():toVector2())[1]
 	end
 end
 

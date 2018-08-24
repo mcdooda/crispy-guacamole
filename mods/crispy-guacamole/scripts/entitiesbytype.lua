@@ -36,22 +36,24 @@ function EntitiesByType:getAll(type)
     return entitiesOfType
 end
 
-function EntitiesByType:getClosest(type, position)
+function EntitiesByType:getClosests(type, position)
     local entities = EntitiesByType:getAll(type)
-    local closestEntity = nil
+    local closestEntities = {}
     local closestEntityDistance2 = math.huge
     for i = 1, #entities do
         local entity = entities[i]
         if entity:isValid() and entity:getTemplateName() == type then
             local entityPosition = entity:getPosition():toVector2()
             local distance2 = (entityPosition - position):length2()
-            if distance2 < closestEntityDistance2 then
+            if distance2 == closestEntityDistance2 then
+                closestEntities[#closestEntities + 1] = entity
+            elseif distance2 < closestEntityDistance2 then
                 closestEntityDistance2 = distance2
-                closestEntity = entity
+                closestEntities = { entity }
             end
         end
     end
-    return closestEntity
+    return closestEntities
 end
 
 return EntitiesByType

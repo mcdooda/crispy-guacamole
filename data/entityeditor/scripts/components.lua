@@ -249,9 +249,11 @@ function ComponentDetailsPanel:build()
         do
             local deleteComponentIcon = Icon:new 'remove'
             deleteComponentIcon.container:setMargin(0, 0, 5, 5)
-            deleteComponentIcon.container:click(function()
-                self:removeCurrentComponent()
-            end)
+            deleteComponentIcon.container:click(flat.ui.task(function()
+                if flat.ui.confirm 'Are you sure you want to delete this component?' then
+                    self:removeCurrentComponent()
+                end
+            end))
             titleLine:addChild(deleteComponentIcon.container)
             self.deleteComponentIcon = deleteComponentIcon
         end

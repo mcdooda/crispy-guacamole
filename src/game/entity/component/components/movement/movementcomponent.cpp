@@ -431,7 +431,14 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	}
 
 	debugDisplay.add3dLine(m_owner->getPosition(), m_owner->getPosition() + flat::Vector3(m_steering, 0.f), flat::video::Color::RED);
-	debugDisplay.add3dText(m_owner->getPosition(), m_moveAnimationDescription->getName());
+	if (m_moveAnimationDescription != nullptr)
+	{
+		debugDisplay.add3dText(m_owner->getPosition(), m_moveAnimationDescription->getName());
+	}
+	else
+	{
+		debugDisplay.add3dText(m_owner->getPosition(), "no move animation", flat::video::Color::RED);
+	}
 }
 #endif
 

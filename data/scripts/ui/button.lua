@@ -51,12 +51,16 @@ local function mouseLeave(button)
     button.container:setBackgroundColor(button.color)
     return true
 end
+function Button:click(callback)
+    self.container:click(callback)
+    return true
+end
 
 function Button:new(content, options, callbacks)
     content    = content or Widget.makeFixedSize(10,10)
     options    = options or {color="grey"}
     local margin     = options.margin or 5
-    local padding    = options.padding or {t=8, r=20, b=8 , l=20}
+    local padding    = options.padding or {8, 20, 8, 20}
     local color      = options.color or "grey"
     local clickColor = options.clickColor or "lightBlack"
     local hoverColor = options.hoverColor or "lightGrey"
@@ -73,13 +77,16 @@ function Button:new(content, options, callbacks)
         clickColor = COLORS[clickColor]
     end
 
-    callbacks  = callbacks or {}
+    callbacks = callbacks or {}
 
     local container = Widget.makeLineFlow()
     container:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.COMPRESS_Y)
     container:addChild(content)
-    container:setPadding(padding.t, padding.r, padding.b, padding.l)
-
+    if type(padding) == "table" then
+        container:setPadding(padding[1], padding[2], padding[3], padding[4])
+    elseif (padding ~= nil) then
+        container:setPadding(padding)
+    end
     container:setBackgroundColor(color)
     container:setMargin(margin)
 

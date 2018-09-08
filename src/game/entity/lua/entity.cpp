@@ -189,7 +189,7 @@ int l_Entity_hasComponent(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
-	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
+	luaL_argcheck(L, componentFlag != 0, 2, "componentFlag must not be zero");
 	component::Component* component = entity.findComponent(componentFlag);
 	lua_pushboolean(L, component != nullptr);
 	return 1;
@@ -199,7 +199,7 @@ int l_Entity_decComponentDisableLevel(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
-	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
+	luaL_argcheck(L, componentFlag != 0, 2, "componentFlag must not be zero");
 	component::Component* component = entity.findComponent(componentFlag);
 	luaL_argcheck(L, component != nullptr, 2, "entity does not have this component");
 	component->decDisableLevel();
@@ -210,7 +210,7 @@ int l_Entity_incComponentDisableLevel(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
-	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
+	luaL_argcheck(L, componentFlag != 0, 2, "componentFlag must not be zero");
 	component::Component* component = entity.findComponent(componentFlag);
 	luaL_argcheck(L, component != nullptr, 2, "entity does not have this component");
 	component->incDisableLevel();
@@ -221,7 +221,7 @@ int l_Entity_isComponentEnabled(lua_State * L)
 {
 	Entity& entity = getEntity(L, 1);
 	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
-	luaL_argcheck(L, 2, componentFlag != 0, "componentFlag must not be zero");
+	luaL_argcheck(L, componentFlag != 0, 2, "componentFlag must not be zero");
 	component::Component* component = entity.findComponent(componentFlag);
 	luaL_argcheck(L, component != nullptr, 2, "entity does not have this component");
 	lua_pushboolean(L, component->isEnabled());
@@ -840,7 +840,7 @@ int l_Entity_spawn(lua_State* L)
 
 	// components flags
 	component::ComponentFlags componentFlags = static_cast<component::ComponentFlags>(luaL_optinteger(L, 5, component::AllComponents));
-	luaL_argcheck(L, 2, componentFlags != 0, "componentFlags must not be zero");
+	luaL_argcheck(L, componentFlags != 0, 2, "componentFlags must not be zero");
 
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
 	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation, componentFlags);

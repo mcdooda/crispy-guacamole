@@ -7,6 +7,8 @@ local entities = Mod.getEntities()
 
 local boxContainer = Widget.makeLineFlow()
 boxContainer:setPositionPolicy(Widget.PositionPolicy.CENTER)
+boxContainer:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
+boxContainer:setMargin(20)
 
 -- mod path
 do
@@ -19,7 +21,7 @@ end
 do
     local box = Widget.makeColumnFlow()
     box:setBackgroundColor(0x666666FF)
-    box:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.COMPRESS_Y)
+    box:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
     box:setSize(300, 0)
 
     do
@@ -54,33 +56,41 @@ do
         box:addChild(mapsTitleLine)
     end
 
-    for i = 1, #maps do
-        local mapName = maps[i]
-        local mapLine = Widget.makeLineFlow()
-        mapLine:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
+    do
+        local mapListBox = Widget.makeColumnFlow()
+        mapListBox:setSizePolicy(Widget.SizePolicy.EXPAND)
+        mapListBox:setAllowScrollY(true)
 
-        local mapLabel = Widget.makeText(mapName, table.unpack(UiSettings.titleFont))
-        mapLabel:setMargin(0, 5, 0, 5)
-        mapLabel:click(function()
-            game.openMap(modPath, mapName)
-            return true
-        end)
-        mapLine:addChild(mapLabel)
+        for i = 1, #maps do
+            local mapName = maps[i]
+            local mapLine = Widget.makeLineFlow()
+            mapLine:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
 
-        do
-            local spacer = Widget.makeExpand()
-            mapLine:addChild(spacer)
+            local mapLabel = Widget.makeText(mapName, table.unpack(UiSettings.titleFont))
+            mapLabel:setMargin(0, 5, 0, 5)
+            mapLabel:click(function()
+                game.openMap(modPath, mapName)
+                return true
+            end)
+            mapLine:addChild(mapLabel)
+
+            do
+                local spacer = Widget.makeExpand()
+                mapLine:addChild(spacer)
+            end
+
+            local editLabel = Widget.makeText('Edit', table.unpack(UiSettings.titleFont))
+            editLabel:setMargin(0, 5, 0, 5)
+            editLabel:click(function()
+                MapEditor.openMap(modPath, mapName)
+                return true
+            end)
+            mapLine:addChild(editLabel)
+
+            mapListBox:addChild(mapLine)
         end
 
-        local editLabel = Widget.makeText('Edit', table.unpack(UiSettings.titleFont))
-        editLabel:setMargin(0, 5, 0, 5)
-        editLabel:click(function()
-            MapEditor.openMap(modPath, mapName)
-            return true
-        end)
-        mapLine:addChild(editLabel)
-
-        box:addChild(mapLine)
+        box:addChild(mapListBox)
     end
 
     boxContainer:addChild(box)
@@ -96,7 +106,7 @@ end
 do
     local box = Widget.makeColumnFlow()
     box:setBackgroundColor(0x666666FF)
-    box:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.COMPRESS_Y)
+    box:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
     box:setSize(300, 0)
 
     do
@@ -127,20 +137,28 @@ do
         box:addChild(entitiesTitleLine)
     end
 
-    for i = 1, #entities do
-        local entityName = entities[i]
-        local entityLine = Widget.makeLineFlow()
-        entityLine:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
+    do
+        local entityListBox = Widget.makeColumnFlow()
+        entityListBox:setSizePolicy(Widget.SizePolicy.EXPAND)
+        entityListBox:setAllowScrollY(true)
 
-        local entityLabel = Widget.makeText(entityName, table.unpack(UiSettings.titleFont))
-        entityLabel:setMargin(0, 5, 0, 5)
-        entityLabel:click(function()
-            EntityEditor.openEntity(modPath, 'sandbox', entityName)
-            return true
-        end)
-        entityLine:addChild(entityLabel)
+        for i = 1, #entities do
+            local entityName = entities[i]
+            local entityLine = Widget.makeLineFlow()
+            entityLine:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
 
-        box:addChild(entityLine)
+            local entityLabel = Widget.makeText(entityName, table.unpack(UiSettings.titleFont))
+            entityLabel:setMargin(0, 5, 0, 5)
+            entityLabel:click(function()
+                EntityEditor.openEntity(modPath, 'sandbox', entityName)
+                return true
+            end)
+            entityLine:addChild(entityLabel)
+
+            entityListBox:addChild(entityLine)
+        end
+
+        box:addChild(entityListBox)
     end
 
     boxContainer:addChild(box)

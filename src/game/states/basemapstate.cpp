@@ -463,8 +463,7 @@ void BaseMapState::removeEntityFromMap(entity::Entity* entity)
 bool BaseMapState::isMouseOverUi(game::Game& game) const
 {
 	flat::sharp::ui::RootWidget* root = game.ui->root.get();
-	flat::sharp::ui::Widget* mouseOverWidget = root->getCurrentMouseOverWidget();
-	return mouseOverWidget != nullptr && m_selectionWidget.get() != mouseOverWidget;
+	return root->isMouseOver() && root->getCurrentMouseOverWidget().lock() != m_selectionWidget;
 }
 
 #ifdef FLAT_DEBUG

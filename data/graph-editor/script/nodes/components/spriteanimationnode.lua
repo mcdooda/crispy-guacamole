@@ -27,7 +27,7 @@ function SpriteAnimationNode.update(spriteAnimationNode, nodeWidget, pinsWidget)
     -- do not crash if an error occured while running the graph
     pcall(function()
         local mainWindow = nodeWidget.mainWindow
-        local script = mainWindow.graph
+        local script = mainWindow:getCurrentGraph()
         local scriptRuntime = ScriptRuntime:new(script)
         local spriteComponentNode = getSpriteComponentNode(script)
         if spriteComponentNode then

@@ -45,6 +45,8 @@ return {
     'entity/playanimation',
 
     -- entity
+    'entity/gettemplatename',
+
     'entity/spawnentity',
     'entity/despawnentity',
 

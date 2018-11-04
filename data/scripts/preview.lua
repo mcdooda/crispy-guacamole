@@ -88,7 +88,7 @@ local function entityPreview(entityTemplateName, animationName, loopForever, sca
     end
 
     -- none of them
-    print('No preview for ' .. entityTemplateName)
+    flat.ui.error('No preview for ' .. entityTemplateName)
     local unavailablePreview = Widget.makeFixedSize(10, 10)
     unavailablePreview:setBackgroundColor(0xFF00FFFF)
     return unavailablePreview

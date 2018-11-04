@@ -35,7 +35,7 @@ function EntityPreview:build(scale)
         )
         self.widget:setBackgroundSize(imageWidth * scale, imageHeight *scale)
     else
-        print('No preview for ' .. self.entityName)
+        flat.ui.error('No preview for ' .. self.entityName)
         local unavailablePreview = Widget.makeFixedSize(10, 10)
         unavailablePreview:setBackgroundColor(0xFF00FFFF)
         self.widget = unavailablePreview

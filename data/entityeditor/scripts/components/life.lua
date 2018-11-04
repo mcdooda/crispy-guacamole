@@ -33,7 +33,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                     entity:kill()
                 end)
                 if not killed then
-                    print(errorMessage)
+                    flat.ui.error(errorMessage)
                 end
             end)
             killLine:addChild(playIcon.container)

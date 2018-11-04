@@ -8,7 +8,7 @@ return function(addContainer, makeSeparator, font)
     snapshotButton:click(function()
         collectgarbage 'collect'
         snapshot = flat.lua.snapshot.snapshot()
-        print 'Lua memory snapshot taken'
+        flat.ui.info 'Lua memory snapshot taken'
     end)
     memorySnapshotContainer:addChild(snapshotButton)
 
@@ -22,7 +22,7 @@ return function(addContainer, makeSeparator, font)
             local diffFile = 'snapshotdiff-' .. diffNumber
             flat.lua.snapshot.diff(snapshot, snapshot2, diffFile)
             diffNumber = diffNumber + 1
-            print('Snapshot diff saved to ' .. diffFile)
+            flat.ui.info('Snapshot diff saved to ' .. diffFile)
         end
     end)
     memorySnapshotContainer:addChild(diffButton)

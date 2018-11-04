@@ -53,7 +53,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                         entity:enterState(stateName, false)
                     end)
                     if not enteredState then
-                        print(errorMessage)
+                        flat.ui.error(errorMessage)
                         entity:incComponentDisableLevel(Component.behavior)
                     end
                 end)

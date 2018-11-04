@@ -57,7 +57,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                     entity:jump(false)
                 end)
                 if not jumped then
-                    print(errorMessage)
+                    flat.ui.error(errorMessage)
                 end
             end)
             jumpLine:addChild(playIcon.container)

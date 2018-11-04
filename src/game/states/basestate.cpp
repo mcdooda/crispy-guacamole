@@ -41,7 +41,7 @@ void BaseState::execute(Game& game)
 
 void BaseState::exit(Game& game)
 {
-	game.ui->reset();
+	
 }
 
 void BaseState::update(Game& game)
@@ -79,6 +79,8 @@ void BaseState::initLua(Game& game)
 		states::lua::entityeditor::open(L);
 		mod::lua::open(L);
 	}
+	game.ui->reset();
+	game.notify->reset();
 }
 
 void BaseState::updateUi(Game& game)

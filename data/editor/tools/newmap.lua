@@ -3,7 +3,6 @@ local mapName = ...
 local modPath = Mod.getPath()
 local mapPath = modPath .. '/maps/' .. mapName
 local command = 'mkdir "' .. mapPath .. '"'
-print(command)
 os.execute(command)
 
 do

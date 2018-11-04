@@ -79,8 +79,7 @@ function Button:new(content, options, callbacks)
 
     callbacks = callbacks or {}
 
-    local container = Widget.makeLineFlow()
-    container:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.COMPRESS_Y)
+    local container = Widget.makeCompress()
     container:addChild(content)
     if type(padding) == "table" then
         container:setPadding(padding[1], padding[2], padding[3], padding[4])

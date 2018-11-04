@@ -83,6 +83,7 @@ void MapEditorState::saveOnCtrlS(Game& game)
 	if (keyboard->isPressed(K(LCTRL)) && keyboard->isJustPressed(K(S)))
 	{
 		saveMap(game);
+		game.notify->success(std::string("Map ") + game.mapName + " saved successfully");
 	}
 }
 

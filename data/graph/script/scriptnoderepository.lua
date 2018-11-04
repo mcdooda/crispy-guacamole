@@ -3,6 +3,9 @@ return {
     'components/attackcomponent',
     'entity/getattacktarget',
 
+    -- behavior
+    'components/behaviorcomponent',
+
     -- collision
     'components/collisioncomponent',
 

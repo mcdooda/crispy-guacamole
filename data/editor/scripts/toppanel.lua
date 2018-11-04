@@ -45,7 +45,7 @@ do
         for i = 1, #UiSettings.fontIcons do
             local fontIcon = UiSettings.fontIcons[i]
             local icons = require(Icon.iconFontsPath .. '/' .. fontIcon)
-            for iconName in flat.sortedpairs(icons) do
+            for iconName in flat.sortedPairs(icons) do
                 if i%10 == 0 then
                     content:addChild(lineWidget)
                     lineWidget = Widget.makeLineFlow()

@@ -1,10 +1,11 @@
+local NodeEditor = flat.require 'graph-editor/nodeeditor'
 local ScriptRuntime = flat.require 'graph/script/scriptruntime'
 local SpriteComponentNode = require 'data/graph/script/nodes/components/spritecomponentnode'
 local Preview = require 'data/scripts/preview'
 
-local SpriteAnimationNode = {}
+local SpriteAnimationNode = NodeEditor:inherit()
 
-function SpriteAnimationNode.build(spriteAnimationNode, nodeWidget, pinsWidget)
+function SpriteAnimationNode:build(spriteAnimationNode, nodeWidget, pinsWidget)
     local previewContainer = Widget.makeColumnFlow()
     pinsWidget:addChild(previewContainer)
     nodeWidget.previewContainer = previewContainer
@@ -21,7 +22,7 @@ local function getSpriteComponentNode(script)
     end
 end
 
-function SpriteAnimationNode.update(spriteAnimationNode, nodeWidget, pinsWidget)
+function SpriteAnimationNode:update(spriteAnimationNode, nodeWidget, pinsWidget)
     nodeWidget.previewContainer:removeAllChildren()
 
     -- do not crash if an error occured while running the graph

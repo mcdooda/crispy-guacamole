@@ -7,6 +7,18 @@ return {
       1,
     },
     {
+      1,
+      2,
+      40,
+      1,
+    },
+    {
+      1,
+      3,
+      40,
+      2,
+    },
+    {
       3,
       1,
       1,
@@ -463,6 +475,12 @@ return {
         0.5,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/crispy-guacamole/compounds/script/Flip Sprite',
+      },
+      name = 'compound',
     },
   },
 }

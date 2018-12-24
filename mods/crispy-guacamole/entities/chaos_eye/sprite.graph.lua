@@ -9,13 +9,13 @@ return {
     {
       1,
       2,
-      15,
+      11,
       1,
     },
     {
       1,
       3,
-      15,
+      11,
       2,
     },
     {
@@ -67,25 +67,25 @@ return {
       1,
     },
     {
-      11,
-      1,
-      10,
-      1,
-    },
-    {
       12,
       1,
       10,
-      2,
+      1,
     },
     {
       13,
       1,
       10,
-      3,
+      2,
     },
     {
       14,
+      1,
+      10,
+      3,
+    },
+    {
+      15,
       1,
       10,
       4,
@@ -149,6 +149,12 @@ return {
     },
     {
       loadArguments = {
+        'mods/crispy-guacamole/compounds/script/Flip Sprite',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
         'move',
       },
       name = 'string',
@@ -170,12 +176,6 @@ return {
         0.10000000149012,
       },
       name = 'number',
-    },
-    {
-      loadArguments = {
-        'mods/crispy-guacamole/compounds/script/Flip Sprite',
-      },
-      name = 'compound',
     },
   },
 }

@@ -3,92 +3,80 @@ return {
     {
       1,
       1,
-      2,
+      8,
       1,
     },
     {
-      1,
       2,
-      15,
       1,
-    },
-    {
       1,
-      3,
-      15,
-      2,
+      1,
     },
     {
       3,
       1,
-      1,
+      2,
       1,
     },
     {
       4,
       1,
-      1,
+      2,
       2,
     },
     {
       5,
       1,
       1,
-      3,
+      2,
     },
     {
       6,
       1,
-      3,
+      5,
       1,
     },
     {
       7,
       1,
-      3,
-      2,
-    },
-    {
-      8,
-      1,
-      4,
+      5,
       2,
     },
     {
       9,
       1,
-      4,
       1,
+      3,
     },
     {
       10,
       1,
-      5,
+      9,
       1,
     },
     {
       11,
       1,
       10,
-      4,
+      1,
     },
     {
       12,
       1,
       10,
-      3,
+      2,
     },
     {
       13,
       1,
       10,
-      2,
+      3,
     },
     {
       14,
       1,
       10,
-      1,
+      4,
     },
   },
   nodeType = 'script',
@@ -97,73 +85,55 @@ return {
       name = 'components/spritecomponent',
     },
     {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        6,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        16,
+      },
+      name = 'number',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
       loadArguments = {
         {
           5,
-          'Table',
+          'Component',
         },
       },
       name = 'script/scriptoutput',
     },
     {
-      name = 'vector2',
-    },
-    {
-      name = 'vector2',
-    },
-    {
       loadArguments = {
         {
           5,
-          'Table',
+          '',
         },
       },
       name = 'script/array',
     },
     {
-      loadArguments = {
-        9,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        21,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
       name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
     },
     {
       loadArguments = {
@@ -173,9 +143,21 @@ return {
     },
     {
       loadArguments = {
-        'mods/crispy-guacamole/compounds/script/Flip Sprite',
+        1,
       },
-      name = 'compound',
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.20000000298023,
+      },
+      name = 'number',
     },
   },
 }

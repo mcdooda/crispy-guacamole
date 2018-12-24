@@ -3,7 +3,7 @@ return {
     {
       1,
       1,
-      17,
+      2,
       1,
     },
     {
@@ -17,113 +17,107 @@ return {
       3,
       3,
       2,
-    },
-    {
-      2,
-      1,
-      1,
-      1,
     },
     {
       4,
       1,
-      20,
+      1,
       1,
     },
     {
       5,
       1,
+      4,
       1,
-      2,
     },
     {
       6,
       1,
-      2,
+      4,
       2,
     },
     {
       7,
       1,
-      2,
       1,
+      2,
     },
     {
       8,
       1,
-      9,
-      2,
+      7,
+      1,
     },
     {
       9,
       1,
-      19,
-      1,
+      7,
+      2,
     },
     {
       10,
       1,
-      19,
-      2,
-    },
-    {
-      11,
       1,
-      9,
       3,
     },
     {
       12,
       1,
-      9,
-      4,
+      10,
+      1,
     },
     {
       13,
       1,
-      20,
-      3,
+      12,
+      1,
     },
     {
       14,
       1,
-      20,
+      12,
       2,
     },
     {
       15,
       1,
-      5,
-      1,
+      12,
+      3,
     },
     {
       16,
       1,
-      5,
+      12,
+      4,
+    },
+    {
+      17,
+      1,
+      10,
       2,
     },
     {
       18,
       1,
-      9,
+      17,
       1,
     },
     {
       19,
       1,
-      1,
-      3,
+      17,
+      2,
     },
     {
       20,
       1,
-      19,
+      17,
       3,
     },
     {
       21,
       1,
-      19,
+      17,
       4,
     },
     {
@@ -135,49 +129,25 @@ return {
     {
       23,
       1,
-      20,
-      4,
+      22,
+      1,
     },
     {
       24,
       1,
-      10,
-      1,
+      22,
+      2,
     },
     {
       25,
       1,
-      10,
-      4,
+      22,
+      3,
     },
     {
       26,
       1,
-      10,
-      2,
-    },
-    {
-      27,
-      1,
-      21,
-      1,
-    },
-    {
-      28,
-      1,
-      21,
-      2,
-    },
-    {
-      29,
-      1,
-      21,
-      3,
-    },
-    {
-      30,
-      1,
-      21,
+      22,
       4,
     },
   },
@@ -187,7 +157,13 @@ return {
       name = 'components/spritecomponent',
     },
     {
-      name = 'vector2',
+      loadArguments = {
+        {
+          5,
+          'Component',
+        },
+      },
+      name = 'script/scriptoutput',
     },
     {
       loadArguments = {
@@ -196,23 +172,26 @@ return {
       name = 'compound',
     },
     {
+      name = 'vector2',
+    },
+    {
       loadArguments = {
-        'despawn',
+        16.5,
       },
-      name = 'string',
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        21,
+      },
+      name = 'number',
     },
     {
       name = 'vector2',
     },
     {
       loadArguments = {
-        17,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        10.5,
+        8,
       },
       name = 'number',
     },
@@ -223,112 +202,36 @@ return {
       name = 'number',
     },
     {
-      name = 'components/spriteanimation',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        11,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
       loadArguments = {
         {
           5,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
-    },
-    {
-      loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
+          '',
         },
         {
           5,
-          'Table',
+          '',
         },
         {
           5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
+          '',
         },
       },
       name = 'script/array',
     },
     {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
       name = 'components/spriteanimation',
     },
     {
-      name = 'components/spriteanimation',
-    },
-    {
       loadArguments = {
-        11,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'spawn',
+        'move',
       },
       name = 'string',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
-      },
-      name = 'number',
     },
     {
       loadArguments = {
@@ -338,7 +241,22 @@ return {
     },
     {
       loadArguments = {
-        'move',
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.059999998658895,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'attack',
       },
       name = 'string',
     },
@@ -350,13 +268,40 @@ return {
     },
     {
       loadArguments = {
-        4,
+        8,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.11999999731779,
+        0.079999998211861,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'despawn',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        7,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
       },
       name = 'number',
     },

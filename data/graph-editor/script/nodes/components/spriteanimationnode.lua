@@ -52,9 +52,6 @@ function SpriteAnimationNode:update(spriteAnimationNode, nodeWidget, pinsWidget)
             end
         end
     end)
-    if not ok then
-        print(err)
-    end
     return true
 end
 

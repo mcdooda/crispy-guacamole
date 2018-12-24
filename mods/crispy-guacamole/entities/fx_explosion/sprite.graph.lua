@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -58,19 +58,19 @@ script {
       11,
       1,
       10,
-      1,
+      3,
     },
     {
       12,
       1,
       10,
-      2,
+      1,
     },
     {
       13,
       1,
       10,
-      3,
+      2,
     },
     {
       14,
@@ -79,6 +79,7 @@ script {
       4,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/spritecomponent',
@@ -136,6 +137,12 @@ script {
     },
     {
       loadArguments = {
+        8,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
         'explode',
       },
       name = 'string',
@@ -143,12 +150,6 @@ script {
     {
       loadArguments = {
         1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        8,
       },
       name = 'number',
     },

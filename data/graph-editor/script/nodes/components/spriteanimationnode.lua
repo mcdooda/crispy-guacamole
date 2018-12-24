@@ -23,20 +23,26 @@ local function getSpriteComponentNode(script)
 end
 
 function SpriteAnimationNode:update(spriteAnimationNode, nodeWidget, pinsWidget)
+    local mainWindow = nodeWidget.mainWindow
+    local spriteAnimationNodeIndex = assert(mainWindow:getCurrentGraph():findNodeIndex(spriteAnimationNode))
     nodeWidget.previewContainer:removeAllChildren()
 
     -- do not crash if an error occured while running the graph
-    pcall(function()
-        local mainWindow = nodeWidget.mainWindow
-        local script = mainWindow:getCurrentGraph()
-        local scriptRuntime = ScriptRuntime:new(script)
-        local spriteComponentNode = getSpriteComponentNode(script)
+    local ok, err = pcall(function()
+        -- we must use a clone of the graph as we need to resolve the compounds
+        local scriptClone = mainWindow:getCurrentGraph():clone()
+        scriptClone:resolveCompounds()
+        local scriptRuntime = ScriptRuntime:new(scriptClone)
+        local spriteComponentNode = getSpriteComponentNode(scriptClone)
         if spriteComponentNode then
             local spriteComponentNodeRuntime = scriptRuntime:getNodeRuntime(spriteComponentNode)
             local spriteComponentTemplate = spriteComponentNodeRuntime:tryReadFromOutputPin(spriteComponentNode.componentOutPin)
             if spriteComponentTemplate then
-                local spriteAnimationNodeRuntime = scriptRuntime:getNodeRuntime(spriteAnimationNode)
-                local spriteAnimationName = spriteAnimationNodeRuntime:readOptionalPin(spriteAnimationNode.nameInPin)
+                -- this can be inaccurate when used with compounds
+                -- the ideal solution would be to look for the clone node by animation name
+                local spriteAnimationNodeClone = scriptClone.nodeInstances[spriteAnimationNodeIndex]
+                local spriteAnimationNodeRuntime = scriptRuntime:getNodeRuntime(spriteAnimationNodeClone)
+                local spriteAnimationName = spriteAnimationNodeRuntime:readOptionalPin(spriteAnimationNodeClone.nameInPin)
                 if spriteAnimationName then
                     local entityTemplateName = mainWindow.metadata.entityTemplateName
                     local animationPreview = Preview.sprite(entityTemplateName, spriteComponentTemplate, spriteAnimationName, true)
@@ -46,6 +52,9 @@ function SpriteAnimationNode:update(spriteAnimationNode, nodeWidget, pinsWidget)
             end
         end
     end)
+    if not ok then
+        print(err)
+    end
     return true
 end
 

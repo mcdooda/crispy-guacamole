@@ -43,6 +43,7 @@ return {
     'components/spriteattachpoint',
     'components/spritecomponent',
     'entity/playanimation',
+    'entity/flipspritex',
 
     -- entity
     'entity/gettemplatename',
@@ -52,6 +53,7 @@ return {
 
     'entity/lookatentity',
     'entity/getheading',
+    'entity/headingchanged',
     'entity/getposition',
 
     'entity/isvalidentity',

@@ -10,6 +10,8 @@ function SpriteComponentNode:buildPins()
     self.attachPointsInPin = self:addInputPin(flat.types.TABLE, 'Attach Points')
 
     self.componentOutPin = self:addOutputPin(flat.types.TABLE, 'Component')
+    self.initOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Init')
+    self.entityOutPin = self:addOutputPin(flat.types['CG.Entity'], 'Entity')
 end
 
 function SpriteComponentNode:execute(runtime)
@@ -41,7 +43,11 @@ function SpriteComponentNode:execute(runtime)
         origin = origin,
         size = size,
         animations = animationsByName,
-        attachPoints = attachPointsByName
+        attachPoints = attachPointsByName,
+        init = function(entity)
+            runtime:writePin(self.entityOutPin, entity)
+            runtime:impulse(self.initOutPin)
+        end
     }
 
     runtime:writePin(self.componentOutPin, component)

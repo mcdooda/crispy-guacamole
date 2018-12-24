@@ -16,6 +16,7 @@ namespace states
 void GameState::enter(Game& game)
 {
 	Super::enter(game);
+	game.time->setNoLimitFrameRate();
 	
 #ifdef FLAT_DEBUG
 	if (!m_isReloading)

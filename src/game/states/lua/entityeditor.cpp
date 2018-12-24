@@ -56,8 +56,7 @@ int l_EntityEditor_openEntity(lua_State* L)
 
 int l_EntityEditor_entitySpawned(lua_State* L)
 {
-	flat::lua::SharedLuaReference<LUA_TFUNCTION> onEntitySpawned;
-	onEntitySpawned.set(L, 1);
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onEntitySpawned(L, 1);
 
 	EntityEditorState& entityEditorState = base::getBaseState(L).to<EntityEditorState>();
 	entityEditorState.entitySpawned.on([L, onEntitySpawned](entity::Entity* entity)

@@ -93,20 +93,19 @@ void Entity::setZ(float z)
 	m_aabbDirty = true;
 }
 
-void Entity::setHeading(float heading)
+void Entity::setHeading(float heading, float epsilon)
 {
-	// keep heading in [0, 2pi) range
-	heading = fmodf(heading, flat::PI2);
-	if (heading < 0.f)
-		heading += flat::PI2;
-	
-	m_heading = heading;
-	if (m_map != nullptr)
+	const float difference = std::abs(flat::angle_clamp_pi(heading - m_heading));
+	if (difference >= epsilon)
 	{
-		headingChanged(m_heading);
-	}
+		m_heading = flat::angle_clamp_0_2pi(heading);
+		if (m_map != nullptr)
+		{
+			headingChanged(m_heading);
+		}
 
-	m_aabbDirty = true;
+		m_aabbDirty = true;
+	}
 }
 
 void Entity::setElevation(float elevation)

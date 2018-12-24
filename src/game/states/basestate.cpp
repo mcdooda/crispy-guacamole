@@ -17,6 +17,7 @@ void BaseState::enter(Game& game)
 	initRender(game);
 	resetViews(game);
 	game.input->clearFrameEvents();
+	game.time->setPreferedFrameRate(60.f);
 }
 
 void BaseState::execute(Game& game)

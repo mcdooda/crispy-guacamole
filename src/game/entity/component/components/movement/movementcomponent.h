@@ -65,7 +65,6 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 		void updateSprite(bool movementStarted, bool movementStopped);
 		bool updateSpritePosition(const flat::Vector3& position);
-		bool updateSpriteHeading(float heading);
 		
 	private:
 		static constexpr float MIN_Z_EPSILON = 0.1f;

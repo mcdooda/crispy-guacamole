@@ -1,10 +1,22 @@
-script {
+return {
   links = {
     {
       1,
       1,
       8,
       1,
+    },
+    {
+      1,
+      2,
+      40,
+      1,
+    },
+    {
+      1,
+      3,
+      40,
+      2,
     },
     {
       2,
@@ -229,6 +241,7 @@ script {
       2,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/spritecomponent',
@@ -460,6 +473,24 @@ script {
     {
       loadArguments = {
         1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/crispy-guacamole/compounds/script/Flip Sprite',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        3.9268999099731,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.7853000164032,
       },
       name = 'number',
     },

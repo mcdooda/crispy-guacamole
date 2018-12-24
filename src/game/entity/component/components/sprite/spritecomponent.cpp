@@ -6,6 +6,7 @@
 #include "../../../entity.h"
 #include "../../../../map/map.h"
 #include "../../../../map/displaymanager.h"
+#include "../../../lua/entity.h"
 
 namespace game
 {
@@ -34,6 +35,17 @@ void SpriteComponent::init()
 	}
 
 	m_owner->addedToMap.on(this, &SpriteComponent::addedToMap);
+
+	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onInit = getTemplate()->getOnInit();
+	if (!onInit.isEmpty())
+	{
+		onInit.callFunction(
+			[this](lua_State* L)
+			{
+				entity::lua::pushEntity(L, m_owner);
+			}
+		);
+	}
 
 	m_preventBusy = false;
 }

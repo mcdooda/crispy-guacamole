@@ -84,6 +84,12 @@ void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::string& 
 	}
 
 	lua_pop(L, 1);
+
+	// init callback
+	lua_getfield(L, -1, "init");
+	m_onInit.setIfNotNil(L, -1);
+
+	lua_pop(L, 1);
 }
 
 } // sprite

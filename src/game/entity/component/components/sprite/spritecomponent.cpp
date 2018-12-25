@@ -39,12 +39,7 @@ void SpriteComponent::init()
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onInit = getTemplate()->getOnInit();
 	if (!onInit.isEmpty())
 	{
-		onInit.callFunction(
-			[this](lua_State* L)
-			{
-				entity::lua::pushEntity(L, m_owner);
-			}
-		);
+		onInit.call(m_owner);
 	}
 
 	m_preventBusy = false;

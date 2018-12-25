@@ -156,14 +156,7 @@ bool ProjectileComponent::collided(Entity* collidedEntity, const map::Tile* coll
 	}
 	else
 	{
-		getTemplate()->getCollidedCallback().callFunction(
-			[this, collidedEntity, &normal](lua_State* L)
-		{
-			lua::pushEntity(L, m_owner);
-			lua::pushEntity(L, collidedEntity);
-			flat::lua::pushVector3(L, normal);
-		}
-		);
+		getTemplate()->getCollidedCallback().call(m_owner, collidedEntity, normal);
 	}
 
 	return true;

@@ -134,6 +134,8 @@ inline T& getComponent(lua_State* L, Entity& entity)
 } // entity
 } // game
 
+FLAT_LUA_PUSHABLE_TYPE(game::entity::Entity*, game::entity::lua::pushEntity(L, value))
+
 #endif // GAME_ENTITY_LUA_ENTITY_H
 
 

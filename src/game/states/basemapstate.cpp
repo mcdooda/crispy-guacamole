@@ -446,10 +446,12 @@ void BaseMapState::addEntityToMap(entity::Entity* entity)
 
 	FLAT_ASSERT(entity->getMap() == nullptr);
 	m_entityUpdater.registerEntity(entity);
+	entity->updateAABBIfDirty();
 	entity->onAddedToMap(&getMap());
 	flat::time::Clock& clock = getGameClock();
 	m_displayManager.addEntity(entity);
 	m_entityUpdater.updateSingleEntity(entity, clock.getTime(), clock.getDT());
+	entity->updateAABBIfDirty();
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)

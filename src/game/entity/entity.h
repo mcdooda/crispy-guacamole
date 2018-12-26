@@ -48,8 +48,6 @@ class Entity final : public map::MapObject
 		
 		inline const map::Map* getMap() const { return m_map; }
 		inline map::Map* getMap() { return m_map; }
-		inline const map::Tile* getTile() const { return m_tile; }
-		inline map::Tile* getTile() { return m_tile; }
 		
 		void setHeading(float heading, float epsilon = 0.f);
 		inline float getHeading() const { return m_heading; }
@@ -138,6 +136,8 @@ class Entity final : public map::MapObject
 
 		inline void setAABBCanChange(bool aabbCanChange) { m_aabbCanChange = aabbCanChange; }
 		void updateAABBIfDirty();
+
+		map::Tile* getTileFromPosition();
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -147,8 +147,6 @@ class Entity final : public map::MapObject
 		flat::Slot<Entity*> removedFromMap;
 		
 	protected:
-		map::Tile* getTileFromPosition();
-
 		template <class ComponentType>
 		inline const ComponentType* findComponent() const;
 		template <class ComponentType>
@@ -173,7 +171,7 @@ class Entity final : public map::MapObject
 		flat::lua::UniqueLuaReference<LUA_TTABLE> m_extraData;
 		
 		map::Map* m_map;
-		map::Tile* m_tile;
+		int m_cellIndex;
 		
 		std::shared_ptr<const EntityTemplate> m_template;
 

@@ -24,7 +24,7 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_heading(0.f),
 	m_elevation(0.f),
 	m_map(nullptr),
-	m_tile(nullptr),
+	m_cellIndex(-1),
 	m_template(entityTemplate),
 	m_canBeSelected(false),
 	m_selected(false),
@@ -50,13 +50,7 @@ void Entity::setPosition(const flat::Vector3& position)
 	m_position = position;
 	if (m_map)
 	{
-		map::Tile* newTile = getTileFromPosition();
-		if (m_tile && m_tile != newTile)
-		{
-			m_tile->removeEntity(this);
-			newTile->addEntity(this);
-		}
-		m_tile = newTile;
+		m_cellIndex = m_map->updateEntityPosition(this, m_cellIndex);
 		positionChanged(m_position);
 	}
 
@@ -69,13 +63,7 @@ void Entity::setXY(const flat::Vector2& xy)
 	m_position.y = xy.y;
 	if (m_map)
 	{
-		map::Tile* newTile = getTileFromPosition();
-		if (m_tile && m_tile != newTile)
-		{
-			m_tile->removeEntity(this);
-			newTile->addEntity(this);
-		}
-		m_tile = newTile;
+		m_cellIndex = m_map->updateEntityPosition(this, m_cellIndex);
 		positionChanged(m_position);
 	}
 
@@ -137,10 +125,9 @@ const flat::render::ProgramSettings& Entity::getProgramSettings() const
 
 void Entity::onAddedToMap(map::Map* map)
 {
-	FLAT_ASSERT(map && !m_map && !m_tile);
+	FLAT_ASSERT(map != nullptr && m_map == nullptr);
 	m_map = map;
-	m_tile = getTileFromPosition();
-	m_tile->addEntity(this);
+	m_cellIndex = m_map->addEntity(this);
 	addedToMap(this, map);
 	positionChanged(m_position);
 	headingChanged(m_heading);
@@ -149,11 +136,11 @@ void Entity::onAddedToMap(map::Map* map)
 
 void Entity::onRemovedFromMap()
 {
-	FLAT_ASSERT(m_map && m_tile);
+	FLAT_ASSERT(m_map != nullptr);
 	removedFromMap(this);
-	m_tile->removeEntity(this);
+	m_map->removeEntity(this, m_cellIndex);
 	m_map = nullptr;
-	m_tile = nullptr;
+	m_cellIndex = -1;
 }
 
 #ifdef FLAT_DEBUG

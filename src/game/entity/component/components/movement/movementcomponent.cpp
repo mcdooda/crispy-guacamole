@@ -243,7 +243,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 		map::Tile* interactionTile = nullptr;
 		if (interactionEntity != nullptr)
 		{
-			map::Tile* tile = interactionEntity->getTile();
+			map::Tile* tile = interactionEntity->getTileFromPosition();
 			if (!tile->isWalkable())
 			{
 				tile->setWalkable(true);
@@ -316,7 +316,7 @@ void MovementComponent::fall(float elapsedTime)
 	if (m_isTouchingGround)
 		return;
 		
-	const map::Tile* tile = m_owner->getTile();
+	const map::Tile* tile = m_owner->getTileFromPosition();
 	const float acceleration = getTemplate()->getWeight();
 	const float oldZSpeed = m_zSpeed;
 	m_zSpeed -= acceleration * elapsedTime;
@@ -334,7 +334,7 @@ bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 
-	const map::Tile* tile = m_owner->getTile();
+	const map::Tile* tile = m_owner->getTileFromPosition();
 	const flat::Vector3& position = m_owner->getPosition();
 
 	m_destination = flat::Vector2(position);

@@ -19,8 +19,8 @@ class Tile;
 
 class DisplayManager final
 {
-	using EntityQuadTree = flat::geometry::QuadTree<MapObject, 11>;
-	using TerrainQuadTree = flat::geometry::QuadTree<MapObject, 11>;
+	using EntityQuadTree = flat::geometry::QuadTree<const MapObject, 11>;
+	using TerrainQuadTree = flat::geometry::QuadTree<const MapObject, 11>;
 	public:
 		DisplayManager();
 		

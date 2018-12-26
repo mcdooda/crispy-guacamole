@@ -52,10 +52,6 @@ class Tile final : public MapObject
 		void removeProp(Map& map);
 		inline const Prop* getProp() const { return m_prop; }
 		
-		void addEntity(entity::Entity* entity);
-		void removeEntity(entity::Entity* entity);
-		const std::vector<entity::Entity*>& getEntities() const { return m_entities; }
-		
 		void setColor(const flat::video::Color& color);
 		const flat::video::Color& getColor() const;
 		
@@ -81,7 +77,6 @@ class Tile final : public MapObject
 
 		static const flat::render::ProgramSettings* tileProgramSettings;
 
-		std::vector<entity::Entity*> m_entities;
 		flat::render::SynchronizedSprite m_sprite;
 		Prop* m_prop;
 		

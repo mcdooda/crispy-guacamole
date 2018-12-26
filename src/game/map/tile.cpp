@@ -176,19 +176,6 @@ void Tile::removeProp(Map& map)
 	}
 }
 
-void Tile::addEntity(entity::Entity* entity)
-{
-	FLAT_ASSERT(std::find(m_entities.begin(), m_entities.end(), entity) == m_entities.end());
-	m_entities.push_back(entity);
-}
-
-void Tile::removeEntity(entity::Entity* entity)
-{
-	std::vector<entity::Entity*>::iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
-	FLAT_ASSERT(it != m_entities.end());
-	m_entities.erase(it);
-}
-
 void Tile::setColor(const flat::video::Color& color)
 {
 	m_sprite.setColor(color);

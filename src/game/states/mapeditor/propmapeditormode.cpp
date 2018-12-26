@@ -52,7 +52,7 @@ void PropMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 	map::Map& map = mapEditorState.getMap();
 	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
 	{
-		if (tile->getEntities().empty())
+		if (map.getTileEntityCount(tile) == 0)
 		{
 			float random = m_game.random->nextFloat(0.f, 1.f);
 			if (random <= effect)

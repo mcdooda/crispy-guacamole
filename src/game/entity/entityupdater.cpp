@@ -123,7 +123,7 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 			{
 				flat::AABB2 spriteAABB;
 				entity->getSprite().getAABB(spriteAABB);
-				FLAT_ASSERT(spriteAABB == entity->getAABB());
+				//FLAT_ASSERT(spriteAABB == entity->getAABB());
 			}
 #endif
 		}

@@ -29,7 +29,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 
-	map::Tile* tile = m_owner->getTile();
+	map::Tile* tile = m_owner->getTileFromPosition();
 
 	// occupy the tile
 	const PropComponentTemplate* propComponentTemplate = getTemplate();
@@ -76,7 +76,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 bool PropComponent::removedFromMap(Entity* entity)
 {
 	map::Map* map = m_owner->getMap();
-	map::Tile* tile = m_owner->getTile();
+	map::Tile* tile = m_owner->getTileFromPosition();
 
 	const PropComponentTemplate* propComponentTemplate = getTemplate();
 	const int width = propComponentTemplate->getWidth();

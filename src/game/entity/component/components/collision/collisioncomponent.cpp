@@ -65,35 +65,37 @@ void CollisionComponent::separateFromNearbyEntities()
 			if (tile)
 			{
 				// we actually need to copy this as it is iterated and modified at the same time
-				const std::vector<Entity*> neighbors = tile->getEntities();
-				for (Entity* neighbor : neighbors)
-				{
-					if (neighbor == m_owner)
-						continue;
-
-					const flat::Vector3& neighborPosition = neighbor->getPosition();
-					const EntityTemplate* neighborTemplate = neighbor->getEntityTemplate().get();
-					const CollisionComponentTemplate* neighborCollisionComponentTemplate = neighborTemplate->getComponentTemplate<CollisionComponent>();
-					if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate())
+				map->eachTileEntity(
+					tile,
+					[this, &position, &collisionBox, weight, &newPosition](entity::Entity* neighbor)
 					{
-						const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
-						flat::Vector3 penetration;
-						if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
+						if (neighbor == m_owner)
+							return;
+
+						const flat::Vector3& neighborPosition = neighbor->getPosition();
+						const EntityTemplate* neighborTemplate = neighbor->getEntityTemplate().get();
+						const CollisionComponentTemplate* neighborCollisionComponentTemplate = neighborTemplate->getComponentTemplate<CollisionComponent>();
+						if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate())
 						{
-							flat::Vector3 normal = flat::normalize(penetration);
-							onCollidedWithEntity(neighbor, normal);
-							const movement::MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<movement::MovementComponent>();
-							const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
-							if (neighborWeight + weight > 0.f)
+							const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
+							flat::Vector3 penetration;
+							if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
 							{
-								const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
-								neighbor->setPosition(neighborPosition + penetration * neighborMoveRatio);
-								const float moveRatio = neighborMoveRatio - 1.f;
-								newPosition += penetration * moveRatio;
+								flat::Vector3 normal = flat::normalize(penetration);
+								onCollidedWithEntity(neighbor, normal);
+								const movement::MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<movement::MovementComponent>();
+								const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
+								if (neighborWeight + weight > 0.f)
+								{
+									const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
+									neighbor->setPosition(neighborPosition + penetration * neighborMoveRatio);
+									const float moveRatio = neighborMoveRatio - 1.f;
+									newPosition += penetration * moveRatio;
+								}
 							}
 						}
 					}
-				}
+				);
 			}
 		}
 	}
@@ -107,7 +109,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 {
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
-	const map::Tile* tile = m_owner->getTile();
+	const map::Tile* tile = m_owner->getTileFromPosition();
 	FLAT_ASSERT(tile != nullptr);
 	const int tileX = tile->getX();
 	const int tileY = tile->getY();

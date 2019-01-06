@@ -6,9 +6,10 @@
 
 #include <flat.h>
 
-#include "../entity/entity.h"
 #include "tile.h"
+#include "../entity/entity.h"
 #include "../debug/debugdisplay.h"
+#include "../entity/entityhelper.h"
 
 namespace game
 {
@@ -101,6 +102,9 @@ class Map
 		template <class Func>
 		inline void eachEntityInRange(const flat::Vector2& center2d, float range, Func func) const;
 
+		template <class Func>
+		inline void eachEntityInCollisionRange(const flat::Vector2& center2d, float range, Func func) const;
+
 		void setTileNormalDirty(Tile& tile);
 		void updateTilesNormals();
 		void updateAllTilesNormals();
@@ -160,7 +164,7 @@ void Map::eachTileEntity(const Tile* tile, Func func) const
 	);
 	m_entityQuadtree->eachObject(
 		tileAABB,
-		[&func, &tileAABB](entity::Entity* entity)
+		[&tileAABB, &func](entity::Entity* entity)
 		{
 			if (tileAABB.isInside(flat::Vector2(entity->getPosition())))
 			{
@@ -178,12 +182,35 @@ inline void Map::eachEntityInRange(const flat::Vector2& center2d, float range, F
 		center2d + flat::Vector2(range, range)
 	);
 	const float range2 = range * range;
+	flat::containers::HybridArray<entity::Entity*, 128> entitiesInRange;
 	m_entityQuadtree->eachObject(
 		rangeAABB,
-		[&func, &center2d, range2](entity::Entity* entity)
+		[&func, &center2d, range2, &entitiesInRange](entity::Entity* entity)
 		{
 			flat::Vector2 entityPosition2d(entity->getPosition());
 			if (flat::length2(center2d - entityPosition2d) <= range2)
+			{
+				func(entity);
+			}
+		}
+	);
+}
+
+
+template <class Func>
+void Map::eachEntityInCollisionRange(const flat::Vector2& center2d, float radius, Func func) const
+{
+	flat::AABB2 radiusAABB(
+		center2d - flat::Vector2(radius, radius),
+		center2d + flat::Vector2(radius, radius)
+	);
+	m_entityQuadtree->eachObject(
+		radiusAABB,
+		[&func, &center2d, radius](entity::Entity* entity)
+		{
+			flat::Vector2 entityPosition2d(entity->getPosition());
+			const float entityRadius = entity::EntityHelper::getRadius(entity);
+			if (flat::length2(center2d - entityPosition2d) < flat::square(radius + entityRadius))
 			{
 				func(entity);
 			}

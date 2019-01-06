@@ -47,58 +47,42 @@ void CollisionComponent::separateFromNearbyEntities()
 	const movement::MovementComponentTemplate* movementComponentTemplate = getTemplate<movement::MovementComponent>();
 	const float weight = movementComponentTemplate ? movementComponentTemplate->getWeight() : 0.f;
 	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
-	const float maxEntityRadius = 0.5f;
 	const float radius = collisionComponentTemplate->getRadius();
-	FLAT_ASSERT(radius <= maxEntityRadius);
-	const int tileMinX = static_cast<int>(std::round(position.x - radius - maxEntityRadius));
-	const int tileMinY = static_cast<int>(std::round(position.y - radius - maxEntityRadius));
-	const int tileMaxX = static_cast<int>(std::round(position.x + radius + maxEntityRadius));
-	const int tileMaxY = static_cast<int>(std::round(position.y + radius + maxEntityRadius));
 	const map::Map* map = m_owner->getMap();
 	flat::Vector3 newPosition = position;
-	// we can't use Map::eachEntityInRange here because we make changes to Tile::m_entities while iterating it
-	for (int x = tileMinX; x <= tileMaxX; ++x)
-	{
-		for (int y = tileMinY; y <= tileMaxY; ++y)
-		{
-			const map::Tile* tile = map->getTileIfWalkable(x, y);
-			if (tile)
-			{
-				// we actually need to copy this as it is iterated and modified at the same time
-				map->eachTileEntity(
-					tile,
-					[this, &position, &collisionBox, weight, &newPosition](entity::Entity* neighbor)
-					{
-						if (neighbor == m_owner)
-							return;
 
-						const flat::Vector3& neighborPosition = neighbor->getPosition();
-						const EntityTemplate* neighborTemplate = neighbor->getEntityTemplate().get();
-						const CollisionComponentTemplate* neighborCollisionComponentTemplate = neighborTemplate->getComponentTemplate<CollisionComponent>();
-						if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate())
-						{
-							const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
-							flat::Vector3 penetration;
-							if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
-							{
-								flat::Vector3 normal = flat::normalize(penetration);
-								onCollidedWithEntity(neighbor, normal);
-								const movement::MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<movement::MovementComponent>();
-								const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
-								if (neighborWeight + weight > 0.f)
-								{
-									const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
-									neighbor->setPosition(neighborPosition + penetration * neighborMoveRatio);
-									const float moveRatio = neighborMoveRatio - 1.f;
-									newPosition += penetration * moveRatio;
-								}
-							}
-						}
+	map->eachEntityInCollisionRange(
+		flat::Vector2(position),
+		radius,
+		[this, &position, &collisionBox, weight, &newPosition](entity::Entity* neighbor)
+		{
+			if (neighbor == m_owner)
+				return;
+
+			const flat::Vector3& neighborPosition = neighbor->getPosition();
+			const EntityTemplate* neighborTemplate = neighbor->getEntityTemplate().get();
+			const CollisionComponentTemplate* neighborCollisionComponentTemplate = neighborTemplate->getComponentTemplate<CollisionComponent>();
+			if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate())
+			{
+				const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
+				flat::Vector3 penetration;
+				if (CollisionBox::collides(position, neighborPosition, collisionBox, neighborCollisionBox, penetration))
+				{
+					flat::Vector3 normal = flat::normalize(penetration);
+					onCollidedWithEntity(neighbor, normal);
+					const movement::MovementComponentTemplate* neighborMovementComponentTemplate = neighborTemplate->getComponentTemplate<movement::MovementComponent>();
+					const float neighborWeight = neighborMovementComponentTemplate ? neighborMovementComponentTemplate->getWeight() : 0.f;
+					if (neighborWeight + weight > 0.f)
+					{
+						const float neighborMoveRatio = neighborWeight / (neighborWeight + weight);
+						const float moveRatio = neighborMoveRatio - 1.f;
+						newPosition += penetration * moveRatio;
 					}
-				);
+				}
 			}
 		}
-	}
+	);
+
 	if (newPosition != position)
 	{
 		m_owner->setPosition(newPosition);

@@ -25,6 +25,9 @@ return {
     -- movement
     'components/movementcomponent',
     'entity/clearpath',
+    'entity/setmoveanimation',
+    'entity/setspeed',
+    'entity/moveto',
 
     -- projectile
     'components/projectilecomponent',

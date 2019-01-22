@@ -41,6 +41,7 @@ int l_Entity_getPosition(lua_State* L);
 
 int l_Entity_setHeading(lua_State* L);
 int l_Entity_getHeading(lua_State* L);
+int l_Entity_headingChanged(lua_State* L);
 
 int l_Entity_setElevation(lua_State* L);
 int l_Entity_getElevation(lua_State* L);
@@ -71,6 +72,7 @@ int l_Entity_interactWith(lua_State* L);
 // sprite
 int l_Entity_playAnimation(lua_State* L);
 int l_Entity_getAttachPoint(lua_State* L);
+int l_Entity_flipSpriteX(lua_State* L);
 
 // detection
 int l_Entity_canSee(lua_State* L);
@@ -118,7 +120,7 @@ Entity* getEntityPtr(lua_State* L, int index);
 void pushEntity(lua_State* L, Entity* entity);
 
 template <class T>
-T& getComponent(lua_State* L, Entity& entity)
+inline T& getComponent(lua_State* L, Entity& entity)
 {
 	T* component = entity.getComponent<T>();
 	if (!component)
@@ -131,6 +133,8 @@ T& getComponent(lua_State* L, Entity& entity)
 } // lua
 } // entity
 } // game
+
+FLAT_LUA_PUSHABLE_TYPE(game::entity::Entity*, game::entity::lua::pushEntity(L, value))
 
 #endif // GAME_ENTITY_LUA_ENTITY_H
 

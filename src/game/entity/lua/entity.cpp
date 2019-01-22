@@ -61,6 +61,7 @@ int open(Game& game)
 
 		{"setHeading",               l_Entity_setHeading},
 		{"getHeading",               l_Entity_getHeading},
+		{"headingChanged",           l_Entity_headingChanged},
 
 		{"setElevation",             l_Entity_setElevation},
 		{"getElevation",             l_Entity_getElevation},
@@ -91,6 +92,7 @@ int open(Game& game)
 		// sprite
 		{"playAnimation",            l_Entity_playAnimation},
 		{"getAttachPoint",           l_Entity_getAttachPoint},
+		{"flipSpriteX",              l_Entity_flipSpriteX},
 
 		// detection
 		{"canSee",                   l_Entity_canSee},
@@ -352,6 +354,30 @@ int l_Entity_getHeading(lua_State* L)
 	return 1;
 }
 
+int l_Entity_headingChanged(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onHeadingChanged(L, 2);
+	entity.headingChanged.on([L, &entity, onHeadingChanged](float heading)
+	{
+		bool keepCallback = true;
+		onHeadingChanged.callFunction(
+			[&entity, heading](lua_State* L)
+			{
+				entity::lua::pushEntity(L, &entity);
+				lua_pushnumber(L, heading);
+			},
+			1,
+			[&keepCallback](lua_State* L)
+			{
+				keepCallback = lua_toboolean(L, -1) == 1;
+			}
+		);
+		return keepCallback;
+	});
+	return 0;
+}
+
 int l_Entity_setElevation(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -580,6 +606,19 @@ int l_Entity_getAttachPoint(lua_State* L)
 		flat::lua::pushVector3(L, attachPoint);
 		return 1;
 	}
+	return 0;
+}
+
+
+int l_Entity_flipSpriteX(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	bool flip = lua_toboolean(L, 2) == 1;
+
+	// check the component is present
+	getComponent<sprite::SpriteComponent>(L, entity);
+
+	entity.getSprite().setFlipX(flip);
 	return 0;
 }
 

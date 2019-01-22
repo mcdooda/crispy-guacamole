@@ -19,9 +19,11 @@ class SpriteComponentTemplate : public ComponentTemplate
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
 		inline const SpriteDescription& getSpriteDescription() const { return m_spriteDescription; }
+		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getOnInit() const { return m_onInit; }
 
 	private:
 		SpriteDescription m_spriteDescription;
+		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_onInit;
 };
 
 } // sprite

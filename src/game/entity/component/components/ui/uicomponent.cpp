@@ -162,13 +162,7 @@ void UiComponent::triggerCallback(const flat::lua::UniqueLuaReference<LUA_TFUNCT
 	
 	lua_State* L = function.getLuaState();
 	{
-		function.callFunction(
-			[this](lua_State* L)
-			{
-				lua::pushEntity(L, m_owner);
-				flat::sharp::ui::lua::pushWidget(L, m_widget);
-			}
-		);
+		function.call(m_owner, m_widget);
 	}
 }
 

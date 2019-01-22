@@ -51,7 +51,7 @@ class Entity final : public map::MapObject
 		inline const map::Tile* getTile() const { return m_tile; }
 		inline map::Tile* getTile() { return m_tile; }
 		
-		void setHeading(float heading);
+		void setHeading(float heading, float epsilon = 0.f);
 		inline float getHeading() const { return m_heading; }
 
 		void setElevation(float elevation);

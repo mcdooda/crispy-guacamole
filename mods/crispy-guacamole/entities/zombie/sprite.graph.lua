@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -7,22 +7,28 @@ script {
       1,
     },
     {
+      1,
       2,
-      1,
-      1,
+      3,
       1,
     },
     {
-      3,
       1,
+      3,
+      3,
       2,
+    },
+    {
+      2,
+      1,
+      1,
       1,
     },
     {
       4,
       1,
-      2,
-      2,
+      20,
+      1,
     },
     {
       5,
@@ -33,20 +39,20 @@ script {
     {
       6,
       1,
-      5,
-      1,
+      2,
+      2,
     },
     {
       7,
       1,
-      5,
       2,
+      1,
     },
     {
       8,
       1,
-      10,
-      3,
+      9,
+      2,
     },
     {
       9,
@@ -63,43 +69,43 @@ script {
     {
       11,
       1,
-      10,
-      2,
+      9,
+      3,
     },
     {
       12,
       1,
-      10,
+      9,
       4,
     },
     {
       13,
       1,
-      9,
-      1,
+      20,
+      3,
     },
     {
       14,
       1,
-      9,
+      20,
       2,
     },
     {
       15,
       1,
-      9,
-      3,
+      5,
+      1,
     },
     {
       16,
       1,
-      9,
-      4,
+      5,
+      2,
     },
     {
       18,
       1,
-      10,
+      9,
       1,
     },
     {
@@ -123,52 +129,59 @@ script {
     {
       22,
       1,
-      20,
-      1,
+      10,
+      3,
     },
     {
       23,
       1,
-      21,
-      1,
+      20,
+      4,
     },
     {
       24,
       1,
-      20,
-      2,
+      10,
+      1,
     },
     {
       25,
       1,
-      20,
-      3,
+      10,
+      4,
     },
     {
       26,
       1,
-      20,
-      4,
+      10,
+      2,
     },
     {
       27,
       1,
       21,
-      2,
+      1,
     },
     {
       28,
       1,
       21,
-      3,
+      2,
     },
     {
       29,
       1,
       21,
+      3,
+    },
+    {
+      30,
+      1,
+      21,
       4,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/spritecomponent',
@@ -178,9 +191,18 @@ script {
     },
     {
       loadArguments = {
-        10.5,
+        'mods/crispy-guacamole/compounds/script/Flip Sprite',
       },
-      name = 'number',
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'despawn',
+      },
+      name = 'string',
+    },
+    {
+      name = 'vector2',
     },
     {
       loadArguments = {
@@ -189,11 +211,38 @@ script {
       name = 'number',
     },
     {
-      name = 'vector2',
+      loadArguments = {
+        10.5,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
-        11,
+        3,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        6,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.11999999731779,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        6,
       },
       name = 'number',
     },
@@ -210,44 +259,8 @@ script {
       name = 'number',
     },
     {
-      name = 'components/spriteanimation',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
       loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
+        4,
       },
       name = 'number',
     },
@@ -262,7 +275,7 @@ script {
     },
     {
       loadArguments = {
-        'spawn',
+        'attack',
       },
       name = 'string',
     },
@@ -295,25 +308,7 @@ script {
     },
     {
       loadArguments = {
-        'despawn',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        'move',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        6,
+        11,
       },
       name = 'number',
     },
@@ -322,6 +317,30 @@ script {
         0.11999999731779,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        'spawn',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.11999999731779,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'move',
+      },
+      name = 'string',
     },
     {
       loadArguments = {

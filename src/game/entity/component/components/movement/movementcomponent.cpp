@@ -142,7 +142,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 
 			FLAT_DEBUG_ONLY(m_steering = steering;)
 			steering = flat::normalize(steering);
-			m_owner->setHeading(flat::vector2_angle(steering));
+			m_owner->setHeading(flat::vector2_angle(steering), flat::PI2 / 64.f);
 			flat::Vector2 newPosition2d = position2d + steering * m_speed * elapsedTime;
 			
 			flat::Vector2 nextTilePosition = position2d + steering * 0.4f;
@@ -352,7 +352,6 @@ bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
 	if (m_owner->hasSprite())
 	{
 		m_owner->positionChanged.on(this, &MovementComponent::updateSpritePosition);
-		m_owner->headingChanged.on(this, &MovementComponent::updateSpriteHeading);
 	}
 
 	return true;
@@ -365,7 +364,6 @@ bool MovementComponent::removedFromMap(Entity* entity)
 	if (m_owner->hasSprite())
 	{
 		m_owner->positionChanged.off(this);
-		m_owner->headingChanged.off(this);
 	}
 
 	return true;
@@ -403,15 +401,6 @@ bool MovementComponent::updateSpritePosition(const flat::Vector3& position)
 
 	flat::Vector2 position2d(map->getTransform() * position);
 	m_owner->getSprite().setPosition(position2d);
-	return true;
-}
-
-bool MovementComponent::updateSpriteHeading(float heading)
-{
-	FLAT_ASSERT(m_owner->hasSprite());
-
-	FLAT_ASSERT(0 <= heading && heading < M_PI * 2.f);
-	m_owner->getSprite().setFlipX(heading < M_PI / 4.f || heading > 5.f * M_PI / 4.f);
 	return true;
 }
 

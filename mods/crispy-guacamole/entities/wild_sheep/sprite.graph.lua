@@ -3,241 +3,241 @@ return {
     {
       1,
       1,
-      8,
+      2,
       1,
     },
     {
       1,
       2,
-      12,
+      40,
       1,
     },
     {
       1,
       3,
-      12,
+      40,
       2,
     },
     {
       3,
       1,
       1,
+      1,
+    },
+    {
+      4,
+      1,
+      3,
       1,
     },
     {
       5,
       1,
-      1,
+      3,
       2,
     },
     {
       6,
       1,
-      3,
       1,
+      2,
     },
     {
       7,
       1,
-      3,
+      6,
+      1,
+    },
+    {
+      8,
+      1,
+      6,
       2,
     },
     {
       9,
       1,
-      10,
-      1,
-    },
-    {
-      10,
-      1,
       1,
       3,
     },
     {
+      10,
+      1,
+      9,
+      1,
+    },
+    {
       11,
       1,
-      5,
+      10,
+      1,
+    },
+    {
+      12,
+      1,
+      10,
       2,
     },
     {
       13,
       1,
-      9,
-      1,
+      10,
+      3,
     },
     {
       14,
       1,
-      5,
-      1,
+      10,
+      4,
     },
     {
       15,
       1,
-      10,
-      3,
+      9,
+      2,
     },
     {
       16,
       1,
-      35,
-      3,
+      15,
+      1,
     },
     {
       17,
       1,
-      35,
-      1,
-    },
-    {
-      18,
-      1,
-      35,
+      15,
       2,
     },
     {
-      19,
-      1,
-      35,
-      4,
-    },
-    {
-      20,
-      1,
-      10,
-      4,
-    },
-    {
-      21,
+      18,
       1,
       15,
       3,
     },
     {
-      22,
+      19,
       1,
       15,
+      4,
+    },
+    {
+      20,
       1,
+      9,
+      3,
+    },
+    {
+      21,
+      1,
+      20,
+      1,
+    },
+    {
+      22,
+      1,
+      20,
+      2,
     },
     {
       23,
       1,
-      15,
-      4,
+      20,
+      3,
     },
     {
       24,
       1,
-      15,
-      2,
-    },
-    {
-      25,
-      1,
-      10,
-      5,
-    },
-    {
-      26,
-      1,
       20,
       4,
     },
     {
+      25,
+      1,
+      9,
+      4,
+    },
+    {
+      26,
+      1,
+      25,
+      1,
+    },
+    {
       27,
       1,
-      20,
+      25,
       2,
     },
     {
       28,
       1,
-      20,
-      1,
-    },
-    {
-      29,
-      1,
-      20,
+      25,
       3,
     },
     {
-      30,
-      1,
-      10,
-      6,
-    },
-    {
-      31,
-      1,
-      25,
-      2,
-    },
-    {
-      32,
+      29,
       1,
       25,
       4,
     },
     {
+      30,
+      1,
+      9,
+      5,
+    },
+    {
+      31,
+      1,
+      30,
+      1,
+    },
+    {
+      32,
+      1,
+      30,
+      2,
+    },
+    {
       33,
       1,
-      25,
+      30,
       3,
     },
     {
       34,
       1,
-      25,
-      1,
+      30,
+      4,
     },
     {
       35,
       1,
-      10,
-      2,
+      9,
+      6,
     },
     {
       36,
       1,
-      9,
-      2,
+      35,
+      1,
     },
     {
       37,
       1,
-      9,
-      4,
+      35,
+      2,
     },
     {
       38,
       1,
-      9,
+      35,
       3,
     },
     {
       39,
       1,
-      30,
-      1,
-    },
-    {
-      40,
-      1,
-      30,
-      2,
-    },
-    {
-      41,
-      1,
-      30,
-      3,
-    },
-    {
-      42,
-      1,
-      30,
+      35,
       4,
     },
   },
@@ -248,107 +248,74 @@ return {
     },
     {
       loadArguments = {
-        0.7853000164032,
-      },
-      name = 'number',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        3.9268999099731,
-      },
-      name = 'number',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        24,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        37,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
         {
           5,
-          'Table',
+          'Component',
         },
       },
       name = 'script/scriptoutput',
     },
     {
-      name = 'components/spriteanimation',
+      name = 'vector2',
     },
     {
       loadArguments = {
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-      },
-      name = 'script/array',
-    },
-    {
-      loadArguments = {
-        5,
+        8,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        'mods/crispy-guacamole/compounds/script/Flip Sprite',
-      },
-      name = 'compound',
-    },
-    {
-      loadArguments = {
-        'move',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        12,
+        13,
       },
       name = 'number',
     },
     {
-      name = 'components/spriteanimation',
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        8,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
         6,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+      },
+      name = 'script/array',
+    },
+    {
+      name = 'components/spriteanimation',
     },
     {
       loadArguments = {
@@ -364,121 +331,28 @@ return {
     },
     {
       loadArguments = {
-        0.029999999329448,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        0.079999998211861,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        0.079999998211861,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'death',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        7,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
         3,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.090000003576279,
+        0.11999999731779,
       },
       name = 'number',
-    },
-    {
-      loadArguments = {
-        9,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'jump',
-      },
-      name = 'string',
     },
     {
       name = 'components/spriteanimation',
     },
     {
       loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.079999998211861,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'rage',
+        'graze',
       },
       name = 'string',
     },
     {
       loadArguments = {
-        5,
+        2,
       },
       name = 'number',
     },
@@ -490,9 +364,123 @@ return {
     },
     {
       loadArguments = {
-        0.079999998211861,
+        0.11999999731779,
       },
       name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'crouch',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.11999999731779,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'standup',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        4,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.11999999731779,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'sleep',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'move',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        6,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/crispy-guacamole/compounds/script/Flip Sprite',
+      },
+      name = 'compound',
     },
   },
 }

@@ -78,7 +78,7 @@ void BaseMapState::enter(Game& game)
 	m_entityRender.settings.positionAttribute           = m_entityRender.program.getAttribute("position");
 	m_entityRender.settings.uvAttribute                 = m_entityRender.program.getAttribute("uv");
 	m_entityRender.settings.colorAttribute              = m_entityRender.program.getAttribute("color");
-	m_entityRender.settings.normalAttribute             = m_entityRender.program.getAttribute("normal");
+	//m_entityRender.settings.normalAttribute             = m_entityRender.program.getAttribute("normal");
 	m_entityRender.settings.depthAttribute              = m_entityRender.program.getAttribute("depth");
 
 	entity::Entity::setEntityProgramSettings(m_entityRender);

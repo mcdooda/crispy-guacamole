@@ -3,20 +3,8 @@ return {
     {
       1,
       1,
-      14,
+      11,
       1,
-    },
-    {
-      1,
-      2,
-      25,
-      1,
-    },
-    {
-      1,
-      3,
-      25,
-      2,
     },
     {
       2,
@@ -27,182 +15,114 @@ return {
     {
       3,
       1,
-      2,
       1,
+      2,
     },
     {
       4,
       1,
-      2,
-      2,
+      1,
+      3,
     },
     {
       5,
       1,
       1,
-      2,
+      4,
     },
     {
       6,
       1,
-      5,
-      1,
+      11,
+      2,
     },
     {
       7,
       1,
-      5,
-      2,
+      6,
+      1,
     },
     {
       8,
       1,
-      1,
-      3,
+      6,
+      2,
     },
     {
       9,
       1,
-      8,
-      1,
+      6,
+      3,
     },
     {
       10,
       1,
-      9,
-      1,
+      6,
+      4,
     },
     {
       11,
       1,
-      9,
-      2,
+      12,
+      3,
     },
     {
       12,
       1,
-      9,
+      19,
+      1,
+    },
+    {
+      12,
+      2,
+      20,
+      1,
+    },
+    {
+      12,
       3,
+      20,
+      2,
     },
     {
       13,
       1,
-      9,
-      4,
+      12,
+      1,
+    },
+    {
+      14,
+      1,
+      13,
+      1,
     },
     {
       15,
       1,
-      8,
+      13,
       2,
     },
     {
       16,
       1,
-      15,
-      1,
+      12,
+      2,
     },
     {
       17,
       1,
-      15,
-      2,
+      16,
+      1,
     },
     {
       18,
       1,
-      15,
-      3,
-    },
-    {
-      19,
-      1,
-      15,
-      4,
-    },
-    {
-      20,
-      1,
-      8,
-      3,
-    },
-    {
-      21,
-      1,
-      20,
-      1,
-    },
-    {
-      22,
-      1,
-      20,
+      16,
       2,
-    },
-    {
-      23,
-      1,
-      20,
-      3,
-    },
-    {
-      24,
-      1,
-      20,
-      4,
     },
   },
   nodeType = 'script',
   nodes = {
-    {
-      name = 'components/spritecomponent',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        17,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        20,
-      },
-      name = 'number',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        10,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-      },
-      name = 'script/array',
-    },
     {
       name = 'components/spriteanimation',
     },
@@ -220,7 +140,34 @@ return {
     },
     {
       loadArguments = {
-        7,
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.11999999731779,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'despawn',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        8,
       },
       name = 'number',
     },
@@ -234,25 +181,20 @@ return {
       loadArguments = {
         {
           5,
-          'Table',
+          '',
+        },
+        {
+          5,
+          '',
         },
       },
-      name = 'script/scriptoutput',
+      name = 'script/array',
     },
     {
-      name = 'components/spriteanimation',
+      name = 'components/spritecomponent',
     },
     {
-      loadArguments = {
-        'death',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
+      name = 'vector2',
     },
     {
       loadArguments = {
@@ -262,36 +204,33 @@ return {
     },
     {
       loadArguments = {
-        0.079999998211861,
+        18,
       },
       name = 'number',
     },
     {
-      name = 'components/spriteanimation',
+      name = 'vector2',
     },
     {
       loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        3,
+        8,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        7,
+        2,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.079999998211861,
+        {
+          5,
+          'Component',
+        },
       },
-      name = 'number',
+      name = 'script/scriptoutput',
     },
     {
       loadArguments = {

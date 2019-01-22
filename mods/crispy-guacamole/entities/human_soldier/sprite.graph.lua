@@ -3,151 +3,151 @@ return {
     {
       1,
       1,
-      14,
+      2,
       1,
     },
     {
       1,
       2,
-      25,
+      3,
       1,
     },
     {
       1,
       3,
-      25,
-      2,
-    },
-    {
-      2,
-      1,
-      1,
-      1,
-    },
-    {
       3,
-      1,
       2,
-      1,
     },
     {
       4,
       1,
-      2,
-      2,
+      1,
+      1,
     },
     {
       5,
       1,
+      4,
       1,
-      2,
     },
     {
       6,
       1,
-      5,
-      1,
+      4,
+      2,
     },
     {
       7,
       1,
-      5,
+      1,
       2,
     },
     {
       8,
       1,
+      7,
       1,
-      3,
     },
     {
       9,
       1,
-      8,
-      1,
+      7,
+      2,
     },
     {
       10,
       1,
-      9,
       1,
-    },
-    {
-      11,
-      1,
-      9,
-      2,
+      3,
     },
     {
       12,
       1,
-      9,
-      3,
+      10,
+      1,
     },
     {
       13,
       1,
-      9,
-      4,
+      12,
+      1,
+    },
+    {
+      14,
+      1,
+      12,
+      2,
     },
     {
       15,
       1,
-      8,
-      2,
+      12,
+      3,
     },
     {
       16,
       1,
-      15,
-      1,
+      12,
+      4,
     },
     {
       17,
       1,
-      15,
+      10,
       2,
     },
     {
       18,
       1,
-      15,
-      3,
+      17,
+      1,
     },
     {
       19,
       1,
-      15,
-      4,
+      17,
+      2,
     },
     {
       20,
       1,
-      8,
+      17,
       3,
     },
     {
       21,
       1,
-      20,
-      1,
+      17,
+      4,
     },
     {
       22,
       1,
-      20,
-      2,
+      10,
+      3,
     },
     {
       23,
       1,
-      20,
-      3,
+      22,
+      1,
     },
     {
       24,
       1,
-      20,
+      22,
+      2,
+    },
+    {
+      25,
+      1,
+      22,
+      3,
+    },
+    {
+      26,
+      1,
+      22,
       4,
     },
   },
@@ -157,17 +157,32 @@ return {
       name = 'components/spritecomponent',
     },
     {
+      loadArguments = {
+        {
+          5,
+          'Component',
+        },
+      },
+      name = 'script/scriptoutput',
+    },
+    {
+      loadArguments = {
+        'mods/crispy-guacamole/compounds/script/Flip Sprite',
+      },
+      name = 'compound',
+    },
+    {
       name = 'vector2',
     },
     {
       loadArguments = {
-        17,
+        16.5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        20,
+        21,
       },
       name = 'number',
     },
@@ -176,7 +191,7 @@ return {
     },
     {
       loadArguments = {
-        10,
+        8,
       },
       name = 'number',
     },
@@ -190,18 +205,24 @@ return {
       loadArguments = {
         {
           5,
-          'Table',
+          '',
         },
         {
           5,
-          'Table',
+          '',
         },
         {
           5,
-          'Table',
+          '',
         },
       },
       name = 'script/array',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
     {
       name = 'components/spriteanimation',
@@ -220,31 +241,22 @@ return {
     },
     {
       loadArguments = {
-        7,
+        3,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.079999998211861,
+        0.059999998658895,
       },
       name = 'number',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
     },
     {
       name = 'components/spriteanimation',
     },
     {
       loadArguments = {
-        'death',
+        'attack',
       },
       name = 'string',
     },
@@ -256,7 +268,7 @@ return {
     },
     {
       loadArguments = {
-        10,
+        8,
       },
       name = 'number',
     },
@@ -271,7 +283,7 @@ return {
     },
     {
       loadArguments = {
-        'attack',
+        'despawn',
       },
       name = 'string',
     },
@@ -289,15 +301,9 @@ return {
     },
     {
       loadArguments = {
-        0.079999998211861,
+        0.10000000149012,
       },
       name = 'number',
-    },
-    {
-      loadArguments = {
-        'mods/crispy-guacamole/compounds/script/Flip Sprite',
-      },
-      name = 'compound',
     },
   },
 }

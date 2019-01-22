@@ -1,10 +1,22 @@
-script {
+return {
   links = {
     {
       1,
       1,
       2,
       1,
+    },
+    {
+      1,
+      2,
+      10,
+      1,
+    },
+    {
+      1,
+      3,
+      10,
+      2,
     },
     {
       3,
@@ -45,160 +57,161 @@ script {
     {
       9,
       1,
-      34,
-      1,
-    },
-    {
-      10,
-      1,
-      9,
+      13,
       1,
     },
     {
       11,
       1,
-      9,
-      2,
+      25,
+      4,
     },
     {
       12,
       1,
-      9,
-      3,
+      30,
+      1,
     },
     {
       13,
       1,
-      9,
-      4,
+      1,
+      3,
     },
     {
       14,
       1,
-      30,
-      4,
+      25,
+      2,
     },
     {
       15,
       1,
-      34,
+      13,
       2,
     },
     {
       16,
       1,
-      15,
+      9,
       1,
     },
     {
       17,
       1,
-      15,
-      2,
+      9,
+      3,
     },
     {
       18,
       1,
-      15,
-      3,
+      9,
+      2,
     },
     {
       19,
       1,
-      15,
+      9,
       4,
     },
     {
       20,
       1,
-      34,
+      13,
       3,
     },
     {
       21,
       1,
-      20,
+      15,
       1,
     },
     {
       22,
       1,
-      20,
+      15,
       2,
     },
     {
       23,
       1,
-      20,
-      3,
+      15,
+      4,
     },
     {
       24,
       1,
-      20,
-      4,
+      15,
+      3,
     },
     {
       25,
       1,
-      34,
+      13,
       4,
     },
     {
       26,
       1,
-      25,
+      20,
       1,
     },
     {
       27,
       1,
-      25,
-      2,
+      20,
+      4,
     },
     {
       28,
       1,
-      25,
+      20,
       3,
     },
     {
       29,
       1,
-      25,
-      4,
+      20,
+      2,
     },
     {
       30,
       1,
-      34,
+      13,
       5,
     },
     {
       31,
       1,
-      30,
+      25,
       1,
     },
     {
       32,
       1,
-      30,
-      2,
+      25,
+      3,
     },
     {
       33,
       1,
       30,
-      3,
+      2,
     },
     {
       34,
       1,
-      1,
+      30,
       3,
     },
+    {
+      35,
+      1,
+      30,
+      4,
+    },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/spritecomponent',
@@ -247,15 +260,61 @@ script {
     },
     {
       loadArguments = {
-        'move',
+        'mods/crispy-guacamole/compounds/script/Flip Sprite',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        0.079999998211861,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'death',
       },
       name = 'string',
     },
     {
       loadArguments = {
-        1,
+        {
+          5,
+          'Table',
+        },
+        {
+          5,
+          'Table',
+        },
+        {
+          5,
+          'Table',
+        },
+        {
+          5,
+          'Table',
+        },
+        {
+          5,
+          'Table',
+        },
+      },
+      name = 'script/array',
+    },
+    {
+      loadArguments = {
+        4,
       },
       name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'move',
+      },
+      name = 'string',
     },
     {
       loadArguments = {
@@ -265,7 +324,7 @@ script {
     },
     {
       loadArguments = {
-        0.090000003576279,
+        1,
       },
       name = 'number',
     },
@@ -292,13 +351,13 @@ script {
     },
     {
       loadArguments = {
-        5,
+        0.090000003576279,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.090000003576279,
+        5,
       },
       name = 'number',
     },
@@ -313,7 +372,7 @@ script {
     },
     {
       loadArguments = {
-        3,
+        0.079999998211861,
       },
       name = 'number',
     },
@@ -325,7 +384,7 @@ script {
     },
     {
       loadArguments = {
-        0.079999998211861,
+        3,
       },
       name = 'number',
     },
@@ -340,30 +399,9 @@ script {
     },
     {
       loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
         5,
       },
       name = 'number',
-    },
-    {
-      loadArguments = {
-        0.079999998211861,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'death',
-      },
-      name = 'string',
     },
     {
       loadArguments = {
@@ -379,28 +417,9 @@ script {
     },
     {
       loadArguments = {
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
+        0.090000003576279,
       },
-      name = 'script/array',
+      name = 'number',
     },
   },
 }

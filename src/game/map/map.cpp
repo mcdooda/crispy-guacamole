@@ -1,12 +1,10 @@
 #include "map.h"
-#include "tile.h"
 #include "tiletemplate.h"
 #include "prop.h"
 #include "zone.h"
 #include "io/reader.h"
 #include "io/writer.h"
 #include "../mod/mod.h"
-#include "../entity/entity.h"
 
 namespace game
 {
@@ -74,6 +72,12 @@ void Map::setBounds(int minX, int maxX, int minY, int maxY)
 	m_maxX = maxX;
 	m_minY = minY;
 	m_maxY = maxY;
+
+	flat::AABB2 aabb(
+		flat::Vector2(static_cast<float>(minX) - 0.5f, static_cast<float>(minY) - 0.5f),
+		flat::Vector2(static_cast<float>(maxX) + 0.5f, static_cast<float>(maxY) + 0.5f)
+	);
+	m_entityQuadtree = std::move(std::make_unique<flat::geometry::QuadTree<entity::Entity, 10, getEntityAABB>>(aabb));
 }
 
 void Map::getBounds(int& minX, int& maxX, int& minY, int& maxY) const
@@ -244,30 +248,32 @@ const std::shared_ptr<const TileTemplate> Map::getTileTemplate(const Tile* tile)
 	return nullptr;
 }
 
-void Map::eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const
+int Map::addEntity(entity::Entity* entity)
 {
-	const int tileMinX = static_cast<int>(std::round(center2d.x - range));
-	const int tileMinY = static_cast<int>(std::round(center2d.y - range));
-	const int tileMaxX = static_cast<int>(std::round(center2d.x + range));
-	const int tileMaxY = static_cast<int>(std::round(center2d.y + range));
-	const float range2 = range * range;
-	for (int x = tileMinX; x <= tileMaxX; ++x)
-	{
-		for (int y = tileMinY; y <= tileMaxY; ++y)
+	return m_entityQuadtree->addObject(entity);
+}
+
+void Map::removeEntity(entity::Entity* entity, int cellIndex)
+{
+	m_entityQuadtree->removeObject(entity, cellIndex);
+}
+
+int Map::updateEntityPosition(entity::Entity* entity, int cellIndex)
+{
+	return m_entityQuadtree->updateObject(entity, cellIndex);
+}
+
+int Map::getTileEntityCount(const Tile* tile) const
+{
+	int entityCount = 0;
+	eachTileEntity(
+		tile,
+		[&entityCount](entity::Entity* entity)
 		{
-			if (const map::Tile* tile = getTileIfExists(x, y))
-			{
-				for (entity::Entity* entity : tile->getEntities())
-				{
-					flat::Vector2 entityPosition2d(entity->getPosition());
-					if (flat::length2(center2d - entityPosition2d) <= range2)
-					{
-						func(entity);
-					}
-				}
-			}
+			++entityCount;
 		}
-	}
+	);
+	return entityCount;
 }
 
 void Map::setTileNormalDirty(Tile& tile)

@@ -1,5 +1,6 @@
 #include "zone.h"
 #include "../zone.h"
+#include "../map.h"
 #include "../tile.h"
 #include "../../entity/lua/entity.h"
 #include "../../game.h"
@@ -51,14 +52,19 @@ int l_Zone_getEntities(lua_State* L)
 	Zone* zone = getZone(L, 1);
 	lua_newtable(L);
 	int index = 1;
-	zone->eachTileIfExists([L, &index](const Tile* tile)
+
+	const Map& map = zone->getMap();
+	zone->eachTileIfExists([L, &index, &map](const Tile* tile)
 	{
-		for (entity::Entity* entity : tile->getEntities())
-		{
-			entity::lua::pushEntity(L, entity);
-			lua_rawseti(L, -2, index);
-			++index;
-		}
+		map.eachTileEntity(
+			tile,
+			[L, &index](entity::Entity* entity)
+			{
+				entity::lua::pushEntity(L, entity);
+				lua_rawseti(L, -2, index);
+				++index;
+			}
+		);
 	});
 	return 1;
 }
@@ -67,9 +73,10 @@ int l_Zone_getEntitiesCount(lua_State* L)
 {
 	Zone* zone = getZone(L, 1);
 	lua_Integer count = 0;
-	zone->eachTileIfExists([&count](const Tile* tile)
+	const Map& map = zone->getMap();
+	zone->eachTileIfExists([&count, &map](const Tile* tile)
 	{
-		count += tile->getEntities().size();
+		count += map.getTileEntityCount(tile);
 	});
 	lua_pushinteger(L, count);
 	return 1;

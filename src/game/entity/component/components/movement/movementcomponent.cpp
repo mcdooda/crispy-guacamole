@@ -86,45 +86,49 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 				float entityToAvoidDistance = std::numeric_limits<float>::max();
 
 				// find entities moving in the opposite direction
-				map->eachEntityInRange(position2d, 3.f, [this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance](Entity* entity)
-				{
-					if (entity == m_owner)
-						return;
-
-					// in front of the component owner?
-					flat::Vector2 entityPosition2d(entity->getPosition());
-					if (flat::dot(move, entityPosition2d - position2d) > 0.f
-						&& flat::length2(entityPosition2d - position2d) < moveLen2)
+				map->eachEntityInRange(
+					position2d,
+					3.f,
+					[this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance](Entity* entity)
 					{
-						movement::MovementComponent* entityMovementComponent = entity->getComponent<movement::MovementComponent>();
-						// moving in opposite direction?
-						// TODO: also avoid if the other entity moves slower than the current entity
-						if (!entityMovementComponent
-							|| !entityMovementComponent->followsPath()
-							|| flat::dot(getCurrentDirection(), entityMovementComponent->getCurrentDirection()) < 0.f)
-						{
-							const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
-							const collision::CollisionComponentTemplate* collisionComponentTemplate = entityTemplate->getComponentTemplate<collision::CollisionComponent>();
-							if (collisionComponentTemplate != nullptr && collisionComponentTemplate->getSeparate())
-							{
-								const float entityRadius = collisionComponentTemplate->getRadius();
-								const float avoidDistance = (radius + entityRadius) * flat::SQRT2;
+						if (entity == m_owner)
+							return;
 
-								// compute the other entity's position relatively to the current entity's position and heading
-								flat::Vector2 relativeEntityPosition2d = flat::Vector2(transform2dInverse * flat::Vector4(entityPosition2d, 0.f, 1.f));
-								//FLAT_ASSERT(relativeEntityPosition2d.x > 0.f);
-								if (std::abs(relativeEntityPosition2d.y) <= avoidDistance)
+						// in front of the component owner?
+						flat::Vector2 entityPosition2d(entity->getPosition());
+						if (flat::dot(move, entityPosition2d - position2d) > 0.f
+							&& flat::length2(entityPosition2d - position2d) < moveLen2)
+						{
+							movement::MovementComponent* entityMovementComponent = entity->getComponent<movement::MovementComponent>();
+							// moving in opposite direction?
+							// TODO: also avoid if the other entity moves slower than the current entity
+							if (!entityMovementComponent
+								|| !entityMovementComponent->followsPath()
+								|| flat::dot(getCurrentDirection(), entityMovementComponent->getCurrentDirection()) < 0.f)
+							{
+								const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
+								const collision::CollisionComponentTemplate* collisionComponentTemplate = entityTemplate->getComponentTemplate<collision::CollisionComponent>();
+								if (collisionComponentTemplate != nullptr && collisionComponentTemplate->getSeparate())
 								{
-									if (relativeEntityPosition2d.x < entityToAvoidDistance)
+									const float entityRadius = collisionComponentTemplate->getRadius();
+									const float avoidDistance = (radius + entityRadius) * flat::SQRT2;
+
+									// compute the other entity's position relatively to the current entity's position and heading
+									flat::Vector2 relativeEntityPosition2d = flat::Vector2(transform2dInverse * flat::Vector4(entityPosition2d, 0.f, 1.f));
+									//FLAT_ASSERT(relativeEntityPosition2d.x > 0.f);
+									if (std::abs(relativeEntityPosition2d.y) <= avoidDistance)
 									{
-										entityToAvoidDistance = relativeEntityPosition2d.x;
-										entityToAvoid = entity;
+										if (relativeEntityPosition2d.x < entityToAvoidDistance)
+										{
+											entityToAvoidDistance = relativeEntityPosition2d.x;
+											entityToAvoid = entity;
+										}
 									}
 								}
 							}
 						}
 					}
-				});
+				);
 
 				if (entityToAvoid != nullptr)
 				{
@@ -243,7 +247,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 		map::Tile* interactionTile = nullptr;
 		if (interactionEntity != nullptr)
 		{
-			map::Tile* tile = interactionEntity->getTile();
+			map::Tile* tile = interactionEntity->getTileFromPosition();
 			if (!tile->isWalkable())
 			{
 				tile->setWalkable(true);
@@ -316,7 +320,7 @@ void MovementComponent::fall(float elapsedTime)
 	if (m_isTouchingGround)
 		return;
 		
-	const map::Tile* tile = m_owner->getTile();
+	const map::Tile* tile = m_owner->getTileFromPosition();
 	const float acceleration = getTemplate()->getWeight();
 	const float oldZSpeed = m_zSpeed;
 	m_zSpeed -= acceleration * elapsedTime;
@@ -334,7 +338,7 @@ bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 
-	const map::Tile* tile = m_owner->getTile();
+	const map::Tile* tile = m_owner->getTileFromPosition();
 	const flat::Vector3& position = m_owner->getPosition();
 
 	m_destination = flat::Vector2(position);

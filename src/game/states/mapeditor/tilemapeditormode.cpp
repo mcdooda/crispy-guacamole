@@ -226,10 +226,13 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 		eachSelectedTileIfExists([this, &map](map::Tile* tile, float effect)
 		{
 			tile->setExists(map, false);
-			for (entity::Entity* entity : tile->getEntities())
-			{
-				entity->markForDelete();
-			}
+			map.eachTileEntity(
+				tile,
+				[](entity::Entity* entity)
+				{
+					entity->markForDelete();
+				}
+			);
 		});
 	}
 

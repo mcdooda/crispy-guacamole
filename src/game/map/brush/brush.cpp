@@ -64,8 +64,6 @@ void Brush::getEntities(Map& map, const flat::Vector2& center, std::vector<entit
 	
 	entities.clear();
 	
-	flat::Vector2 positionFromCenter;
-	
 	for (int x = minX; x <= maxX; ++x)
 	{
 		for (int y = minY; y <= maxY; ++y)
@@ -75,8 +73,13 @@ void Brush::getEntities(Map& map, const flat::Vector2& center, std::vector<entit
 				float effect = getTileEffect(center, tile);
 				if (effect > minEffect)
 				{
-					const std::vector<entity::Entity*> tileEntities = tile->getEntities();
-					entities.insert(entities.end(), tileEntities.begin(), tileEntities.end());
+					map.eachTileEntity(
+						tile,
+						[&entities](entity::Entity* entity)
+						{
+							entities.push_back(entity);
+						}
+					);
 				}
 			}
 		}

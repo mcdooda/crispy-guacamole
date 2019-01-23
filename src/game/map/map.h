@@ -6,7 +6,10 @@
 
 #include <flat.h>
 
+#include "tile.h"
+#include "../entity/entity.h"
 #include "../debug/debugdisplay.h"
+#include "../entity/entityhelper.h"
 
 namespace game
 {
@@ -14,10 +17,6 @@ class Game;
 namespace mod
 {
 class Mod;
-}
-namespace entity
-{
-class Entity;
 }
 namespace map
 {
@@ -28,6 +27,15 @@ class TileTemplate;
 namespace io
 {
 class Reader;
+}
+
+inline void getEntityAABB(entity::Entity* entity, flat::AABB2& aabb)
+{
+	const flat::AABB3& aabb3 = entity->getWorldSpaceAABB();
+	aabb.min.x = aabb3.min.x;
+	aabb.min.y = aabb3.min.y;
+	aabb.max.x = aabb3.max.x;
+	aabb.max.y = aabb3.max.y;
 }
 
 class Map
@@ -83,7 +91,19 @@ class Map
 		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
 		
 		// entities
-		void eachEntityInRange(const flat::Vector2& center2d, float range, std::function<void(entity::Entity*)> func) const;
+		int addEntity(entity::Entity* entity);
+		void removeEntity(entity::Entity* entity, int cellIndex);
+		int updateEntityPosition(entity::Entity* entity, int cellIndex);
+
+		template <typename Func>
+		void eachTileEntity(const Tile* tile, Func func) const;
+		int getTileEntityCount(const Tile* tile) const;
+
+		template <class Func>
+		inline void eachEntityInRange(const flat::Vector2& center2d, float range, Func func) const;
+
+		template <class Func>
+		inline void eachEntityInCollisionRange(const flat::Vector2& center2d, float range, Func func) const;
 
 		void setTileNormalDirty(Tile& tile);
 		void updateTilesNormals();
@@ -126,10 +146,77 @@ class Map
 			flat::render::SpriteSynchronizer spriteSynchronizer;
 		};
 		std::deque<TileSpriteSynchronizer> m_tileSpriteSynchronizers;
+
+		std::unique_ptr<flat::geometry::QuadTree<entity::Entity, 10, getEntityAABB>> m_entityQuadtree;
 		
 	private:
 		friend class io::Reader;
 };
+
+
+template <typename Func>
+void Map::eachTileEntity(const Tile* tile, Func func) const
+{
+	const flat::AABB3& aabb3 = tile->getWorldSpaceAABB();
+	flat::AABB2 tileAABB(
+		flat::Vector2(aabb3.min),
+		flat::Vector2(aabb3.max)
+	);
+	m_entityQuadtree->eachObject(
+		tileAABB,
+		[&tileAABB, &func](entity::Entity* entity)
+		{
+			if (tileAABB.isInside(flat::Vector2(entity->getPosition())))
+			{
+				func(entity);
+			}
+		}
+	);
+}
+
+template <class Func>
+inline void Map::eachEntityInRange(const flat::Vector2& center2d, float range, Func func) const
+{
+	flat::AABB2 rangeAABB(
+		center2d - flat::Vector2(range, range),
+		center2d + flat::Vector2(range, range)
+	);
+	const float range2 = range * range;
+	flat::containers::HybridArray<entity::Entity*, 128> entitiesInRange;
+	m_entityQuadtree->eachObject(
+		rangeAABB,
+		[&func, &center2d, range2, &entitiesInRange](entity::Entity* entity)
+		{
+			flat::Vector2 entityPosition2d(entity->getPosition());
+			if (flat::length2(center2d - entityPosition2d) <= range2)
+			{
+				func(entity);
+			}
+		}
+	);
+}
+
+
+template <class Func>
+void Map::eachEntityInCollisionRange(const flat::Vector2& center2d, float radius, Func func) const
+{
+	flat::AABB2 radiusAABB(
+		center2d - flat::Vector2(radius, radius),
+		center2d + flat::Vector2(radius, radius)
+	);
+	m_entityQuadtree->eachObject(
+		radiusAABB,
+		[&func, &center2d, radius](entity::Entity* entity)
+		{
+			flat::Vector2 entityPosition2d(entity->getPosition());
+			const float entityRadius = entity::EntityHelper::getRadius(entity);
+			if (flat::length2(center2d - entityPosition2d) < flat::square(radius + entityRadius))
+			{
+				func(entity);
+			}
+		}
+	);
+}
 
 } // map
 } // game

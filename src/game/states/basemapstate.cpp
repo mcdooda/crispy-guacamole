@@ -369,6 +369,10 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 
 	addEntityToMap(entity);
 
+#ifdef FLAT_DEBUG
+	entity->checkSpriteAABB();
+#endif
+
 	return entity;
 }
 
@@ -443,22 +447,18 @@ void BaseMapState::destroyEntity(entity::Entity* entity)
 void BaseMapState::addEntityToMap(entity::Entity* entity)
 {
 	FLAT_PROFILE("Add entity to map");
-
-	FLAT_ASSERT(entity->getMap() == nullptr);
 	m_entityUpdater.registerEntity(entity);
-	entity->updateAABBIfDirty();
-	entity->onAddedToMap(&getMap());
+	entity->addToMap(&getMap());
 	flat::time::Clock& clock = getGameClock();
 	m_displayManager.addEntity(entity);
 	m_entityUpdater.updateSingleEntity(entity, clock.getTime(), clock.getDT());
-	entity->updateAABBIfDirty();
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)
 {
 	FLAT_ASSERT(entity->getMap() != nullptr);
 	m_entityUpdater.unregisterEntity(entity);
-	entity->onRemovedFromMap();
+	entity->removeFromMap();
 	m_displayManager.removeEntity(entity);
 }
 

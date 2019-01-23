@@ -44,7 +44,7 @@ void DisplayManager::removeEntity(const entity::Entity* entity)
 {
 	if (entity->hasSprite())
 	{
-		int cellIndex = m_entityCellIndices[entity];
+		int cellIndex = m_entityCellIndices.at(entity);
 		m_entityQuadtree->removeObject(entity, cellIndex);
 		m_entityCellIndices.erase(entity);
 	}
@@ -54,7 +54,7 @@ void DisplayManager::updateEntity(const entity::Entity* entity)
 {
 	if (entity->hasSprite())
 	{
-		int cellIndex = m_entityCellIndices[entity];
+		int cellIndex = m_entityCellIndices.at(entity);
 		int newCellIndex = m_entityQuadtree->updateObject(entity, cellIndex);
 		if (cellIndex != newCellIndex)
 		{

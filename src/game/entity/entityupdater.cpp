@@ -34,6 +34,8 @@ void EntityUpdater::registerEntity(Entity* entity)
 {
 	FLAT_PROFILE("Register entity");
 
+	FLAT_ASSERT(entity->getMap() == nullptr);
+
 	FLAT_ASSERT(std::find(m_registeredEntities.begin(), m_registeredEntities.end(), entity) == m_registeredEntities.end());
 	m_registeredEntities.push_back(entity);
 
@@ -80,6 +82,8 @@ void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 {
 	FLAT_PROFILE("Update single entity");
 
+	FLAT_ASSERT(entity->getMap() != nullptr);
+
 	for (component::Component* component : entity->getComponents())
 	{
 		if (component->componentRequiresUpdate() && component->isEnabled())
@@ -117,15 +121,6 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 		for (entity::Entity* entity : m_registeredEntities)
 		{
 			entity->updateAABBIfDirty();
-#ifdef FLAT_DEBUG
-			// ensure all AABBs are up to date
-			if (entity->hasSprite())
-			{
-				flat::AABB2 spriteAABB;
-				entity->getSprite().getAABB(spriteAABB);
-				//FLAT_ASSERT(spriteAABB == entity->getAABB());
-			}
-#endif
 		}
 	}
 }

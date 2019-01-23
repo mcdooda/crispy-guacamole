@@ -123,18 +123,27 @@ const flat::render::ProgramSettings& Entity::getProgramSettings() const
 	return getEntityProgramSettings();
 }
 
-void Entity::onAddedToMap(map::Map* map)
+void Entity::addToMap(map::Map* map)
 {
 	FLAT_ASSERT(map != nullptr && m_map == nullptr);
 	m_map = map;
+
+	updateAABB();
+
 	m_cellIndex = m_map->addEntity(this);
 	addedToMap(this, map);
 	positionChanged(m_position);
 	headingChanged(m_heading);
 	elevationChanged(m_elevation);
+
+	updateAABB();
+
+#ifdef FLAT_DEBUG
+	checkSpriteAABB();
+#endif
 }
 
-void Entity::onRemovedFromMap()
+void Entity::removeFromMap()
 {
 	FLAT_ASSERT(m_map != nullptr);
 	removedFromMap(this);
@@ -296,35 +305,48 @@ map::Tile* Entity::getTileFromPosition()
 	return tile;
 }
 
+void Entity::updateAABB()
+{
+	if (m_aabbCanChange)
+	{
+		if (m_collisionComponent != nullptr)
+		{
+			m_collisionComponent->getAABB(m_worldSpaceAABB);
+		}
+		else
+		{
+			m_worldSpaceAABB.min = m_position;
+			m_worldSpaceAABB.max = m_position;
+		}
+	}
+
+	if (m_sprite != nullptr)
+	{
+		m_sprite->getAABB(m_spriteAABB);
+	}
+
+#ifdef FLAT_DEBUG
+	checkSpriteAABB();
+#endif
+}
+
 void Entity::updateAABBIfDirty()
 {
 	if (m_aabbDirty)
 	{
 		m_aabbDirty = false;
 
-		if (m_aabbCanChange)
-		{
-			if (m_collisionComponent != nullptr)
-			{
-				m_collisionComponent->getAABB(m_worldSpaceAABB);
-			}
-			else
-			{
-				m_worldSpaceAABB.min = m_position;
-				m_worldSpaceAABB.max = m_position;
-			}
-		}
+		updateAABB();
 
-		if (m_sprite != nullptr)
-		{
-			m_sprite->getAABB(m_spriteAABB);
-		}
-
-		if (m_map != nullptr)
+		if (m_map)
 		{
 			m_map->getDisplayManager().updateEntity(this);
 		}
 	}
+
+#ifdef FLAT_DEBUG
+	checkSpriteAABB();
+#endif
 }
 
 bool Entity::canInteract() const
@@ -409,6 +431,19 @@ component::Component* Entity::findComponent(component::ComponentFlags componentF
 	}
 	return nullptr;
 }
+
+#ifdef FLAT_DEBUG
+void Entity::checkSpriteAABB()
+{
+	// ensure the sprite AABB is up to date
+	if (hasSprite())
+	{
+		flat::AABB2 spriteAABB;
+		getSprite().getAABB(spriteAABB);
+		FLAT_ASSERT(spriteAABB == getAABB());
+	}
+}
+#endif
 
 } // entity
 } // game

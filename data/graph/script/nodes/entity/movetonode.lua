@@ -1,7 +1,7 @@
 local ScriptNode = flat.require 'graph/script/scriptnode'
 local PinTypes = flat.require 'graph/pintypes'
 
-local MoveToNode = ScriptNode:inherit 'Look At Entity'
+local MoveToNode = ScriptNode:inherit 'Move To'
 
 function MoveToNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')

@@ -39,6 +39,7 @@ class Component : public flat::util::Convertible<Component>
 		virtual void cancelCurrentAction();
 
 		virtual bool componentRequiresUpdate() const = 0;
+		virtual int getComponentUpdatePeriod() const = 0;
 
 #ifdef FLAT_DEBUG
 		virtual void debugDraw(debug::DebugDisplay& debugDisplay) const;
@@ -90,6 +91,7 @@ class ComponentImpl : public Component
 		inline static bool allowEntityInEditor() { return true; }
 
 		inline static bool requiresUpdate() { return true; }
+		inline static int getUpdatePeriod() { return 1; }
 
 		inline static void setType(const std::shared_ptr<const ComponentType>& type) { ComponentImpl::type = type; }
 		inline static ComponentFlags getFlag() { return getType().getComponentTypeFlag(); }
@@ -107,7 +109,8 @@ class ComponentImpl : public Component
 		template <class T>
 		inline void disableComponent() const;
 
-		virtual bool componentRequiresUpdate() const { return getType().requiresUpdate(); }
+		bool componentRequiresUpdate() const override { return getType().requiresUpdate(); }
+		int getComponentUpdatePeriod() const override { return getType().getUpdatePeriod(); }
 
 	private:
 		inline static const ComponentType& getType();

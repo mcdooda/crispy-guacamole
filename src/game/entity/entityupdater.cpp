@@ -10,10 +10,22 @@ namespace game
 namespace entity
 {
 
-EntityUpdater::EntityUpdater(const component::ComponentRegistry& componentRegistry)
+EntityUpdater::EntityUpdater(const component::ComponentRegistry& componentRegistry) :
+	m_componentRegistry(componentRegistry),
+	m_updateIndex(0)
 {
 	size_t numComponentTypes = componentRegistry.getNumComponentTypes();
 	m_registeredComponents.resize(numComponentTypes);
+	componentRegistry.eachComponentType(
+		[this](component::ComponentType& componentType)
+		{
+			if (componentType.requiresUpdate())
+			{
+				FLAT_ASSERT(componentType.getUpdatePeriod() >= 1);
+				m_registeredComponents[componentType.getComponentTypeId() - 1].resize(componentType.getUpdatePeriod());
+			}
+		}
+	);
 }
 
 EntityUpdater::~EntityUpdater()
@@ -21,9 +33,12 @@ EntityUpdater::~EntityUpdater()
 #ifdef FLAT_DEBUG
 	FLAT_ASSERT(m_registeredEntities.size() == 0);
 
-	for (const std::deque<component::Component*>& componentList : m_registeredComponents)
+	for (const ComponentBucketList& componentBucketList : m_registeredComponents)
 	{
-		FLAT_ASSERT(componentList.size() == 0);
+		for (const ComponentBucket& bucket : componentBucketList)
+		{
+			FLAT_ASSERT(bucket.size() == 0);
+		}
 	}
 #endif
 
@@ -42,7 +57,9 @@ void EntityUpdater::registerEntity(Entity* entity)
 		if (component->componentRequiresUpdate())
 		{
 			component::ComponentTypeId componentTypeId = component->getComponentType().getComponentTypeId();
-			m_registeredComponents[componentTypeId - 1].push_back(component);
+			ComponentBucketList& componentBucketList = m_registeredComponents[componentTypeId - 1];
+			ComponentBucket& bucket = componentBucketList[entity->getId() % component->getComponentUpdatePeriod()];
+			bucket.push_back(component);
 		}
 	}
 }
@@ -58,10 +75,12 @@ void EntityUpdater::unregisterEntity(Entity* entity)
 		if (component->componentRequiresUpdate())
 		{
 			component::ComponentTypeId componentTypeId = component->getComponentType().getComponentTypeId();
-			std::deque<component::Component*>& componentList = m_registeredComponents[componentTypeId - 1];
-			std::deque<component::Component*>::iterator it = std::find(componentList.begin(), componentList.end(), component);
-			FLAT_ASSERT(it != componentList.end());
-			componentList.erase(it);
+			ComponentBucketList& componentBucketList = m_registeredComponents[componentTypeId - 1];
+			ComponentBucket& bucket = componentBucketList[entity->getId() % component->getComponentUpdatePeriod()];
+			ComponentBucket::iterator it = std::find(bucket.begin(), bucket.end(), component);
+			FLAT_ASSERT(it != bucket.end());
+			*it = bucket.back();
+			bucket.pop_back();
 		}
 	}
 }
@@ -70,9 +89,12 @@ void EntityUpdater::unregisterAllEntities()
 {
 	m_registeredEntities.clear();
 
-	for (std::deque<component::Component*>& componentList : m_registeredComponents)
+	for (ComponentBucketList& componentBucketList : m_registeredComponents)
 	{
-		componentList.clear();
+		for (ComponentBucket& componentBucket : componentBucketList)
+		{
+			componentBucket.clear();
+		}
 	}
 }
 
@@ -96,17 +118,26 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 {
 	FLAT_PROFILE("Update all entities");
 
-	for (const std::deque<component::Component*>& componentList : m_registeredComponents)
+	for (int i = 0; i < m_registeredComponents.size(); ++i)
 	{
-		if (componentList.size() > 0)
+		const ComponentBucketList& componentBucketList = m_registeredComponents[i];
+		const component::ComponentFlags componentFlag = 1 << (i + 1);
+		const component::ComponentType& componentType = m_componentRegistry.getComponentType(componentFlag);
+		if (componentType.requiresUpdate())
 		{
-			FLAT_PROFILE(componentList.front()->getComponentType().getConfigName());
-
-			for (component::Component* component : componentList)
+			const int updatePeriod = componentType.getUpdatePeriod();
+			FLAT_ASSERT(componentBucketList.size() > 0);
+			const ComponentBucket& bucket = componentBucketList[m_updateIndex % updatePeriod];
+			if (bucket.size() > 0)
 			{
-				if (component->isEnabled())
+				FLAT_PROFILE(componentType.getConfigName());
+
+				for (component::Component* component : bucket)
 				{
-					component->update(time, dt);
+					if (component->isEnabled())
+					{
+						component->update(time, dt);
+					}
 				}
 			}
 		}
@@ -128,6 +159,8 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 #endif
 		}
 	}
+
+	++m_updateIndex;
 }
 
 #ifdef FLAT_DEBUG

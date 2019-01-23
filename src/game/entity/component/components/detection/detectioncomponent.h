@@ -19,6 +19,7 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "detection"; }
+		inline static int getUpdatePeriod() { return 5; }
 
 		void init() override;
 		void deinit() override;

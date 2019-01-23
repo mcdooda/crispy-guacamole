@@ -1,7 +1,6 @@
 #ifndef GAME_ENTITY_ENTITYUPDATER_H
 #define GAME_ENTITY_ENTITYUPDATER_H
 
-#include <deque>
 #include <vector>
 
 namespace game
@@ -23,6 +22,10 @@ class ComponentRegistry;
 
 class EntityUpdater final
 {
+	private:
+		using ComponentBucket = std::vector<component::Component*>;
+		using ComponentBucketList = std::vector<ComponentBucket>;
+
 	public:
 		EntityUpdater() = delete;
 		EntityUpdater(const EntityUpdater&) = delete;
@@ -47,8 +50,10 @@ class EntityUpdater final
 #endif
 
 	private:
-		std::vector<std::deque<component::Component*>> m_registeredComponents;
+		const component::ComponentRegistry& m_componentRegistry;
+		std::vector<ComponentBucketList> m_registeredComponents;
 		std::vector<Entity*> m_registeredEntities;
+		int m_updateIndex;
 
 };
 

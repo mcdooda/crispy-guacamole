@@ -6,7 +6,6 @@
 #include "../../../entitytemplate.h"
 #include "../../../entityhelper.h"
 #include "../detection/detectioncomponent.h"
-#include "../interaction/interactioncomponent.h"
 
 namespace game
 {

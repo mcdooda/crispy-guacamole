@@ -61,8 +61,8 @@ class Entity final : public map::MapObject
 		flat::render::BaseSprite& getSprite() override;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
-		void onAddedToMap(map::Map* map);
-		void onRemovedFromMap();
+		void addToMap(map::Map* map);
+		void removeFromMap();
 
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
@@ -135,7 +135,12 @@ class Entity final : public map::MapObject
 		}
 
 		inline void setAABBCanChange(bool aabbCanChange) { m_aabbCanChange = aabbCanChange; }
+		void updateAABB();
 		void updateAABBIfDirty();
+
+#ifdef FLAT_DEBUG
+		void checkSpriteAABB();
+#endif
 
 		map::Tile* getTileFromPosition();
 		

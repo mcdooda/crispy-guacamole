@@ -127,10 +127,15 @@ do
         do
             local newEntityLabel = Widget.makeText('New', table.unpack(UiSettings.titleFont))
             newEntityLabel:setMargin(5)
-            newEntityLabel:click(function()
-                EntityEditor.newEntity()
+            newEntityLabel:click(flat.ui.task(function()
+                local entityName = flat.ui.prompt 'Entity name:'
+                if entityName and entityName ~= '' then
+                    entityName = entityName:lower()
+                    loadfile('data/editor/tools/newentity.lua')(entityName)
+                    EntityEditor.openEntity(modPath, 'sandbox', entityName)
+                end
                 return true
-            end)
+            end))
             entitiesTitleLine:addChild(newEntityLabel)
         end
 

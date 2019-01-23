@@ -19,7 +19,6 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 1);
 	static const luaL_Reg EntityEditor_lib_f[] = {
-		{"newEntity",       l_EntityEditor_newEntity},
 		{"openEntity",      l_EntityEditor_openEntity},
 
 		{"entitySpawned",   l_EntityEditor_entitySpawned},
@@ -30,12 +29,6 @@ int open(lua_State* L)
 	luaL_setfuncs(L, EntityEditor_lib_f, 0);
 	lua_setglobal(L, "EntityEditor");
 
-	return 0;
-}
-
-int l_EntityEditor_newEntity(lua_State* L)
-{
-	FLAT_ASSERT_MSG(false, "not implemented");
 	return 0;
 }
 

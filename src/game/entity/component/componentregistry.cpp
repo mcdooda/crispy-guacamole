@@ -7,6 +7,7 @@
 #include "components/interaction/interactioncomponent.h"
 #include "components/life/lifecomponent.h"
 #include "components/movement/movementcomponent.h"
+#include "components/playercontroller/playercontrollercomponent.h"
 #include "components/projectile/projectilecomponent.h"
 #include "components/prop/propcomponent.h"
 #include "components/selection/selectioncomponent.h"
@@ -35,6 +36,7 @@ ComponentRegistry::~ComponentRegistry()
 void ComponentRegistry::registerComponentTypes()
 {
 	// components are updated in the order they are declared
+	registerComponentType<playercontroller::PlayerControllerComponent>();
 	registerComponentType<detection::DetectionComponent>();
 	registerComponentType<behavior::BehaviorComponent>();
 	registerComponentType<life::LifeComponent>();

@@ -14,15 +14,49 @@ setmetatable(
     }
 )
 
+function flat.debug.monitorAccesses(t, read, write)
+    local mt = {}
+    local values = {}
+    if read then
+        mt.__index = function(t, k)
+            print '=============='
+            print('Reading ' .. tostring(t) .. ': ' ..tostring(k) .. ' (' .. values[k] .. ')')
+            flat.debug.printstack()
+            print '=============='
+            return values[k]
+        end
+    end
+    if write then
+        mt.__nweindex = function(t, k, v)
+            print '=============='
+            print('Writing ' .. tostring(t) .. ': ' ..tostring(k) .. ' = ' .. tostring(v) .. ')')
+            flat.debug.printstack()
+            print '=============='
+            values[k] = v
+        end
+    end
+    setmetatable(t, mt)
+end
+
 local UiSettings = require 'data/scripts/ui/uisettings'
 
 local root = Widget.getRoot()
 local debugContainer = Widget.makeColumnFlow()
+debugContainer:setBackgroundColor(0xFFFFFF40)
 debugContainer:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
+debugContainer:setPadding(5, 5, 0, 5)
+
+local hideDebugButton = Widget.makeText('<Hide>', table.unpack(UiSettings.defaultFont))
+hideDebugButton:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
+hideDebugButton:setTextColor(0x000000FF)
+hideDebugButton:click(function()
+    debugContainer:removeFromParent()
+end)
+debugContainer:addChild(hideDebugButton)
 
 local function addContainer(title)
     local widget = Widget.makeColumnFlow()
-    widget:setMargin(5, 5, 0, 5)
+    widget:setMargin(0, 0, 5, 0)
     widget:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
     widget:setBackgroundColor(0xFFFFFFFF)
     

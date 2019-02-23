@@ -27,7 +27,11 @@ return {
     'entity/clearpath',
     'entity/setmoveanimation',
     'entity/setspeed',
+    'entity/getspeed',
     'entity/moveto',
+
+    -- player controller
+    'components/playercontrollercomponent',
 
     -- projectile
     'components/projectilecomponent',
@@ -55,9 +59,19 @@ return {
     'entity/despawnentity',
 
     'entity/lookatentity',
+    'entity/jump',
+
     'entity/getheading',
     'entity/headingchanged',
     'entity/getposition',
 
     'entity/isvalidentity',
+
+    -- flow
+    'flow/eachframe',
+
+    -- controller
+    'controller/buttonpressed',
+    'controller/buttonjustpressed',
+    'controller/leftstickdirection',
 }

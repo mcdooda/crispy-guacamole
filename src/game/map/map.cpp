@@ -74,8 +74,8 @@ void Map::setBounds(int minX, int maxX, int minY, int maxY)
 	m_maxY = maxY;
 
 	flat::AABB2 aabb(
-		flat::Vector2(static_cast<float>(minX) - 0.5f, static_cast<float>(minY) - 0.5f),
-		flat::Vector2(static_cast<float>(maxX) + 0.5f, static_cast<float>(maxY) + 0.5f)
+		flat::Vector2(static_cast<float>(minX) - 1.f, static_cast<float>(minY) - 1.f),
+		flat::Vector2(static_cast<float>(maxX) + 1.f, static_cast<float>(maxY) + 1.f)
 	);
 	m_entityQuadtree = std::move(std::make_unique<flat::geometry::QuadTree<entity::Entity, 10, getEntityAABB>>(aabb));
 }

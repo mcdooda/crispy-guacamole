@@ -62,8 +62,12 @@ return {
     'entity/jump',
 
     'entity/getheading',
+    'entity/setheading',
     'entity/headingchanged',
+    'entity/getelevation',
+    'entity/setelevation',
     'entity/getposition',
+    'entity/setposition',
 
     'entity/isvalidentity',
 

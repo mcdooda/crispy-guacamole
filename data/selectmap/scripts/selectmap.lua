@@ -29,7 +29,7 @@ do
     modPathLabel:click(flat.ui.task(function()
         local mods = getModDirectories()
         local modToOpen = flat.ui.choice('Open mod:', mods, modPath)
-        if modToOpen ~= modPath then
+        if modToOpen and modToOpen ~= modPath then
             Mod.openEditor(modToOpen)
         end
     end))

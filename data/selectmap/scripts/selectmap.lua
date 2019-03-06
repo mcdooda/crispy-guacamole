@@ -5,6 +5,18 @@ assert(modPath and #modPath > 0)
 local maps = Mod.getMaps()
 local entities = Mod.getEntities()
 
+local function getModDirectories()
+    local mods = {}
+    local modDirectoryPath = flat.Directory(modPath):getParentPath()
+    local modDirectory = flat.Directory(modDirectoryPath)
+    modDirectory:eachSubFile(function(file)
+        if file:isDirectory() then
+            mods[#mods + 1] = file:getPath()
+        end
+    end)
+    return mods
+end
+
 local boxContainer = Widget.makeLineFlow()
 boxContainer:setPositionPolicy(Widget.PositionPolicy.CENTER)
 boxContainer:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
@@ -14,6 +26,13 @@ boxContainer:setMargin(20)
 do
     local modPathLabel = Widget.makeText(modPath, table.unpack(UiSettings.defaultFont))
     modPathLabel:setMargin(5)
+    modPathLabel:click(flat.ui.task(function()
+        local mods = getModDirectories()
+        local modToOpen = flat.ui.choice('Open mod:', mods, modPath)
+        if modToOpen ~= modPath then
+            Mod.openEditor(modToOpen)
+        end
+    end))
     Widget.getRoot():addChild(modPathLabel)
 end
 

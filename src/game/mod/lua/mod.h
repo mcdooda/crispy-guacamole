@@ -20,6 +20,8 @@ int l_Mod_getMaps(lua_State* L);
 int l_Mod_getProps(lua_State* L);
 int l_Mod_getTiles(lua_State* L);
 
+int l_Mod_openEditor(lua_State* L);
+
 } // lua
 } // mod
 } // game

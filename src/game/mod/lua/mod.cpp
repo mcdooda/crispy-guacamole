@@ -1,5 +1,6 @@
 #include "mod.h"
 #include "../../game.h"
+#include "../../states/selectmapstate.h"
 
 namespace game
 {
@@ -21,6 +22,9 @@ int open(lua_State* L)
 		{"getMaps",           l_Mod_getMaps},
 		{"getProps",          l_Mod_getProps},
 		{"getTiles",          l_Mod_getTiles},
+
+		{"openEditor",        l_Mod_openEditor},
+
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Mod_lib_m, 0);
@@ -88,6 +92,19 @@ int l_Mod_getProps(lua_State* L)
 int l_Mod_getTiles(lua_State* L)
 {
 	return locGetAssetsTable(L, "tiles");
+}
+
+
+int l_Mod_openEditor(lua_State* L)
+{
+	const char* modPath = luaL_checkstring(L, 1);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	game.modPath = modPath;
+	game.mapName = "";
+	game.entityName = "";
+	std::unique_ptr<states::SelectMapState> selectMapState = std::make_unique<states::SelectMapState>();
+	game.getStateMachine().setNextState(std::move(selectMapState));
+	return 0;
 }
 
 } // lua

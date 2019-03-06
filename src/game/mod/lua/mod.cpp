@@ -1,4 +1,3 @@
-#include <filesystem>
 #include "mod.h"
 #include "../../game.h"
 
@@ -49,19 +48,23 @@ namespace
 static int locGetAssetsTable(lua_State* L, const char* assetDirectory)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	const std::string entitiesDirectory = game.modPath + "/" + assetDirectory;
 
-	using namespace std::experimental::filesystem;
+	std::shared_ptr<flat::file::Directory> directory = flat::file::Directory::open(game.modPath + "/" + assetDirectory);
 
 	lua_createtable(L, 4, 0);
 	int i = 1;
-	for (directory_entry entityDirectory : directory_iterator(entitiesDirectory))
-	{
-		path directoryName = entityDirectory.path().filename();
-		lua_pushstring(L, directoryName.generic_string().c_str());
-		lua_rawseti(L, -2, i);
-		++i;
-	}
+	directory->eachSubFile(
+		[L, &i](const std::shared_ptr<flat::file::File>& file)
+		{
+			if (file->is<flat::file::Directory>())
+			{
+				std::string directoryName = file->getFileName();
+				lua_pushstring(L, directoryName.c_str());
+				lua_rawseti(L, -2, i);
+				++i;
+			}
+		}
+	);
 
 	return 1;
 }

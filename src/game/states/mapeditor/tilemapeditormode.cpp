@@ -107,6 +107,10 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 			addToTilesToUpdate(0, -1);
 			addToTilesToUpdate(1, 0);
 			addToTilesToUpdate(0, 1);
+			addToTilesToUpdate(-1, -1);
+			addToTilesToUpdate(-1, 1);
+			addToTilesToUpdate(1, 1);
+			addToTilesToUpdate(1, -1);
 		}
 	});
 
@@ -136,6 +140,10 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 					pushTileTemplateName(-1, 0);
 					pushTileTemplateName(1, 0);
 					pushTileTemplateName(0, 1);
+					pushTileTemplateName(-1, -1);
+					pushTileTemplateName(-1, 1);
+					pushTileTemplateName(1, 1);
+					pushTileTemplateName(1, -1);
 				},
 				1,
 				[this, &tileVariantIndex, &tileTemplate](lua_State* L)

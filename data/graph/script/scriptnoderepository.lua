@@ -70,9 +70,14 @@ return {
     'entity/setposition',
 
     'entity/isvalidentity',
+    'entity/iscomponentenabled',
 
     -- flow
     'flow/eachframe',
+
+    -- game
+    'game/gamedt',
+    'game/gametime',
 
     -- controller
     'controller/buttonpressed',

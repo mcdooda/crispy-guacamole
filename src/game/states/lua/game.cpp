@@ -21,6 +21,7 @@ int open(lua_State* L)
 	lua_createtable(L, 0, 1);
 	static const luaL_Reg game_lib_f[] = {
 		{"getTime",                    l_game_getTime},
+		{"getDT",                      l_game_getDT},
 		{"Timer",                      l_game_Timer},
 
 #ifdef FLAT_DEBUG
@@ -35,6 +36,7 @@ int open(lua_State* L)
 		{"debug_reloadComponent",      l_game_debug_reloadComponent},
 		{"debug_removeComponent",      l_game_debug_removeComponent},
 #endif
+
 		{"setCameraCenter",            l_game_setCameraCenter},
 		{"getCameraCenter",            l_game_getCameraCenter},
 		{"setCameraZoom",              l_game_setCameraZoom},
@@ -60,6 +62,14 @@ int l_game_getTime(lua_State* L)
 	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
 	flat::time::Clock& clock = baseMapState.getGameClock();
 	lua_pushnumber(L, clock.getTime());
+	return 1;
+}
+
+int l_game_getDT(lua_State* L)
+{
+	BaseMapState& baseMapState = base::getBaseState(L).to<BaseMapState>();
+	flat::time::Clock& clock = baseMapState.getGameClock();
+	lua_pushnumber(L, clock.getDT());
 	return 1;
 }
 

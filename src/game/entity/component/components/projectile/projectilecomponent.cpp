@@ -49,10 +49,50 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	FLAT_ASSERT(map != nullptr);
 
 	const float weight = getTemplate()->getWeight();
-	const flat::Vector3 oldSpeed = m_speed;
-	m_speed.z -= weight * elapsedTime;
 	const flat::Vector3& position = m_owner->getPosition();
-	flat::Vector3 newPosition = position + (oldSpeed + m_speed) * 0.5f * elapsedTime;
+	flat::Vector3 newPosition;
+	if (weight == 0.f)
+	{
+		const float speed = flat::length(m_speed);
+		const float heading = m_owner->getHeading();
+		const float elevation = m_owner->getElevation();
+
+		/*
+#ifdef GLM_FORCE_RADIANS
+			T const latitude(polar.x);
+			T const longitude(polar.y);
+#else
+#		pragma message("GLM: euclidean function taking degrees as parameters is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+			T const latitude(radians(polar.x));
+			T const longitude(radians(polar.y));
+#endif
+
+			return detail::tvec3<T, P>(
+				cos(latitude) * sin(longitude),
+				sin(latitude),
+				cos(latitude) * cos(longitude));
+			*/
+
+		flat::Vector3 moveDirection;
+		moveDirection.x = std::cos(heading) * std::cos(elevation);
+		moveDirection.y = std::sin(heading) * std::cos(elevation);
+		moveDirection.z = std::sin(elevation);
+
+		/*flat::Vector3 moveDirection(
+			std::cos(elevation) * std::sin(heading),
+			std::sin(elevation),
+			-std::cos(elevation) * std::cos(heading)
+		);*/
+
+		m_speed = moveDirection * speed;
+		newPosition = position + m_speed * elapsedTime;
+	}
+	else
+	{
+		const flat::Vector3 oldSpeed = m_speed;
+		m_speed.z -= weight * elapsedTime;
+		newPosition = position + (oldSpeed + m_speed) * 0.5f * elapsedTime;
+	}
 
 	const map::Tile* tile = map->getTileIfExists(newPosition.x, newPosition.y);
 	if (tile == nullptr)
@@ -62,9 +102,12 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	else
 	{
 		m_owner->setPosition(newPosition);
-		const float speedXY = getSpeedXY();
-		const float elevation = std::atan2(m_speed.z, speedXY);
-		m_owner->setElevation(elevation);
+		if (weight != 0.f)
+		{
+			const float speedXY = getSpeedXY();
+			const float elevation = std::atan2(m_speed.z, speedXY);
+			m_owner->setElevation(elevation);
+		}
 	}
 }
 

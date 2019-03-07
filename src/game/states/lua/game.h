@@ -16,6 +16,8 @@ namespace game
 int open(lua_State* L);
 
 int l_game_getTime(lua_State* L);
+int l_game_getDT(lua_State* L);
+
 int l_game_Timer(lua_State* L);
 
 #ifdef FLAT_DEBUG

@@ -1,7 +1,7 @@
-local FunctionScriptNode = flat.require 'graph/script/functionalscriptnode'
+local FunctionalScriptNode = flat.require 'graph/script/functionalscriptnode'
 local PinTypes = flat.require 'graph/pintypes'
 
-local LeftStickDirectionNode = FunctionScriptNode:inherit 'Left Stick Direction'
+local LeftStickDirectionNode = FunctionalScriptNode:inherit 'Left Stick Direction'
 
 function LeftStickDirectionNode:buildPins()
     self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')

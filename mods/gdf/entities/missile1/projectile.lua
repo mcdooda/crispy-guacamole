@@ -1,0 +1,1 @@
+return flat.graph.script.run 'mods/gdf/entities/missile1/projectile'

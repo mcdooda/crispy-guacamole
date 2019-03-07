@@ -118,6 +118,7 @@ void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 	entity->updateAABBIfDirty();
 }
 
+FLAT_OPTIMIZE_OFF()
 void EntityUpdater::updateAllEntities(float time, float dt)
 {
 	FLAT_PROFILE("Update all entities");
@@ -132,12 +133,16 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 			const int updatePeriod = componentType.getUpdatePeriod();
 			FLAT_ASSERT(componentBucketList.size() > 0);
 			const ComponentBucket& bucket = componentBucketList[m_updateIndex % updatePeriod];
-			if (bucket.size() > 0)
+
+			const size_t bucketComponentCount = bucket.size();
+			if (bucketComponentCount > 0)
 			{
 				FLAT_PROFILE(componentType.getConfigName());
 
-				for (component::Component* component : bucket)
+				// the bucket can be modified during the update calls so it's not possible to iterate with a modern for loop
+				for (size_t i = 0; i < bucketComponentCount; ++i)
 				{
+					component::Component* component = bucket[i];
 					if (component->isEnabled())
 					{
 						component->update(time, dt);
@@ -157,6 +162,7 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 
 	++m_updateIndex;
 }
+FLAT_OPTIMIZE_ON()
 
 #ifdef FLAT_DEBUG
 void EntityUpdater::debugDraw(debug::DebugDisplay& debugDisplay) const

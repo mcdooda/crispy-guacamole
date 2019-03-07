@@ -3,14 +3,8 @@ return {
     {
       2,
       1,
-      13,
+      5,
       1,
-    },
-    {
-      2,
-      2,
-      13,
-      2,
     },
     {
       3,
@@ -96,18 +90,6 @@ return {
       2,
       4,
     },
-    {
-      13,
-      1,
-      5,
-      1,
-    },
-    {
-      14,
-      1,
-      13,
-      3,
-    },
   },
   nodeType = 'script',
   nodes = {
@@ -183,15 +165,6 @@ return {
     },
     {
       name = 'math/add',
-    },
-    {
-      name = 'entity/setelevation',
-    },
-    {
-      loadArguments = {
-        'pi / 6',
-      },
-      name = 'math/formula',
     },
   },
 }

@@ -49,6 +49,24 @@ return {
       2,
     },
     {
+      1,
+      3,
+      26,
+      2,
+    },
+    {
+      1,
+      3,
+      29,
+      2,
+    },
+    {
+      1,
+      3,
+      36,
+      2,
+    },
+    {
       3,
       1,
       11,
@@ -58,6 +76,24 @@ return {
       3,
       2,
       14,
+      1,
+    },
+    {
+      3,
+      3,
+      21,
+      1,
+    },
+    {
+      3,
+      4,
+      27,
+      1,
+    },
+    {
+      3,
+      5,
+      35,
       1,
     },
     {
@@ -127,7 +163,7 @@ return {
       1,
     },
     {
-      14,
+      15,
       1,
       18,
       1,
@@ -156,6 +192,96 @@ return {
       18,
       4,
     },
+    {
+      21,
+      1,
+      26,
+      1,
+    },
+    {
+      22,
+      1,
+      23,
+      1,
+    },
+    {
+      23,
+      1,
+      21,
+      2,
+    },
+    {
+      24,
+      1,
+      26,
+      4,
+    },
+    {
+      25,
+      1,
+      26,
+      3,
+    },
+    {
+      27,
+      1,
+      29,
+      1,
+    },
+    {
+      28,
+      1,
+      32,
+      1,
+    },
+    {
+      30,
+      1,
+      29,
+      3,
+    },
+    {
+      31,
+      1,
+      29,
+      4,
+    },
+    {
+      32,
+      1,
+      27,
+      2,
+    },
+    {
+      33,
+      1,
+      35,
+      2,
+    },
+    {
+      34,
+      1,
+      33,
+      1,
+    },
+    {
+      35,
+      1,
+      36,
+      1,
+    },
+    {
+      37,
+      1,
+      36,
+      3,
+    },
+    {
+      38,
+      1,
+      36,
+      4,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -173,7 +299,7 @@ return {
     },
     {
       loadArguments = {
-        3,
+        6,
       },
       name = 'script/impulseall',
     },
@@ -249,6 +375,96 @@ return {
     {
       loadArguments = {
         0.20000000298023,
+      },
+      name = 'number',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        'B',
+      },
+      name = 'string',
+    },
+    {
+      name = 'controller/buttonpressed',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'missile2',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        'Y',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile3',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      name = 'controller/buttonpressed',
+    },
+    {
+      name = 'controller/buttonpressed',
+    },
+    {
+      loadArguments = {
+        'X',
+      },
+      name = 'string',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0,
       },
       name = 'number',
     },

@@ -188,7 +188,7 @@ return {
     },
     {
       loadArguments = {
-        'mods/gdf/compounds/script/Flip Sprite',
+        'data/compounds/script/Flip Sprite',
       },
       name = 'compound',
     },

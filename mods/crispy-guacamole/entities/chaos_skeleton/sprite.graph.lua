@@ -295,7 +295,7 @@ return {
     },
     {
       loadArguments = {
-        'mods/crispy-guacamole/compounds/script/Flip Sprite',
+        'data/compounds/script/Flip Sprite',
       },
       name = 'compound',
     },

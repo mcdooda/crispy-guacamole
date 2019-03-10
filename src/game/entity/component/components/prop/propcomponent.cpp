@@ -39,11 +39,11 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	{
 		for (int j = 0; j < height; ++j)
 		{
-			map::Tile* tileToOccupy = map->getTileIfWalkable(tile->getX() - i, tile->getY() - j);
+			map::Tile* tileToOccupy = map->getTileIfNavigable(tile->getX() - i, tile->getY() - j, map::Navigability::ALL);
 			//FLAT_ASSERT(tileToOccupy != nullptr);
 			if (tileToOccupy != nullptr)
 			{
-				tileToOccupy->setWalkable(false);
+				tileToOccupy->setNavigability(map::Navigability::NONE);
 			}
 		}
 	}
@@ -89,7 +89,7 @@ bool PropComponent::removedFromMap(Entity* entity)
 			//FLAT_ASSERT(tileToOccupy != nullptr);
 			if (tileToOccupy != nullptr)
 			{
-				tileToOccupy->setWalkable(true);
+				tileToOccupy->setNavigability(map::Navigability::ALL);
 			}
 		}
 	}

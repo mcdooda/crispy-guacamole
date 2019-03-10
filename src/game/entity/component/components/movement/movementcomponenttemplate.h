@@ -2,6 +2,7 @@
 #define GAME_ENTITY_COMPONENT_MOVEMENT_MOVEMENTCOMPONENTTEMPLATE_H
 
 #include "../../componenttemplate.h"
+#include "../../../../map/navigability.h"
 
 namespace game
 {
@@ -28,6 +29,8 @@ class MovementComponentTemplate : public ComponentTemplate
 
 		inline bool getSnapToGround() const { return m_snapToGround; }
 
+		inline map::Navigability getNavigabilityMask() const { return m_navigabilityMask; }
+
 	private:
 		float m_speed;
 		float m_jumpForce;
@@ -36,6 +39,8 @@ class MovementComponentTemplate : public ComponentTemplate
 		float m_jumpMaxHeight;
 		float m_jumpDuration;
 		float m_jumpDistance;
+
+		map::Navigability m_navigabilityMask;
 
 		bool m_snapToGround : 1;
 };

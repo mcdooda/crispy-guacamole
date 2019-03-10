@@ -16,10 +16,10 @@ class ZonePathfinder : public Pathfinder
 	using Super = Pathfinder;
 public:
 	ZonePathfinder() = delete;
-	ZonePathfinder(const Map& map, float jumpHeight, const Zone* zone);
+	ZonePathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask, const Zone* zone);
 
 protected:
-	const Tile* getTileIfWalkable(float x, float y) const override;
+	const Tile* getTileIfNavigable(float x, float y, map::Navigability navigabilityMask) const override;
 	void eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const override;
 
 protected:

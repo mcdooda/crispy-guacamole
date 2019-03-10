@@ -150,7 +150,8 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			flat::Vector2 newPosition2d = position2d + steering * m_speed * elapsedTime;
 			
 			flat::Vector2 nextTilePosition = position2d + steering * 0.4f;
-			const map::Tile* nextTile = map->getTileIfWalkable(nextTilePosition.x, nextTilePosition.y);
+			const map::Navigability navigabilityMask = getTemplate()->getNavigabilityMask();
+			const map::Tile* nextTile = map->getTileIfNavigable(nextTilePosition.x, nextTilePosition.y, navigabilityMask);
 			
 			// jump if necessary
 			if (nextTile && (nextTile->getZ() > position.z + MIN_Z_EPSILON || nextTile->getZ() < position.z - MIN_Z_EPSILON))
@@ -230,27 +231,33 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 	if (flat::length2(point - startingPoint) > flat::square(MIN_DISTANCE_TO_DESTINATION))
 	{
 		const map::Map& map = *m_owner->getMap();
-		const float jumpHeight = getTemplate()->getJumpMaxHeight();
+
+		const MovementComponentTemplate* movementComponentTemplate = getTemplate();
+		const float jumpHeight = movementComponentTemplate->getJumpMaxHeight();
+		map::Navigability navigabilityMask = movementComponentTemplate->getNavigabilityMask();
 
 		map::pathfinder::Pathfinder* pathfinder = nullptr;
 		if (const map::Zone* zone = m_restrictToZone.lock().get())
 		{
 			pathfinder = static_cast<map::pathfinder::ZonePathfinder*>(alloca(sizeof(map::pathfinder::ZonePathfinder)));
-			new (pathfinder) map::pathfinder::ZonePathfinder(map, jumpHeight, zone);
+			new (pathfinder) map::pathfinder::ZonePathfinder(map, jumpHeight, navigabilityMask, zone);
 		}
 		else
 		{
 			pathfinder = static_cast<map::pathfinder::Pathfinder*>(alloca(sizeof(map::pathfinder::Pathfinder)));
-			new (pathfinder) map::pathfinder::Pathfinder(map, jumpHeight);
+			new (pathfinder) map::pathfinder::Pathfinder(map, jumpHeight, navigabilityMask);
 		}
+
+		map::Navigability initialTileNavigability;
 
 		map::Tile* interactionTile = nullptr;
 		if (interactionEntity != nullptr)
 		{
 			map::Tile* tile = interactionEntity->getTileFromPosition();
-			if (!tile->isWalkable())
+			if (!tile->isNavigable(navigabilityMask))
 			{
-				tile->setWalkable(true);
+				initialTileNavigability = tile->getNavigability();
+				tile->setNavigability(navigabilityMask); // it's cheating because we are setting a mask instead of single navigability
 				interactionTile = tile;
 			}
 		}
@@ -273,7 +280,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 
 		if (interactionTile != nullptr)
 		{
-			interactionTile->setWalkable(false);
+			interactionTile->setNavigability(initialTileNavigability);
 		}
 	}
 }

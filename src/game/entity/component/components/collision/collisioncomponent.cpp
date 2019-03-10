@@ -1,5 +1,4 @@
 #include "collisioncomponent.h"
-#include "collisioncomponenttemplate.h"
 #include "../movement/movementcomponent.h"
 #include "../../componenttype.h"
 #include "../../../entity.h"
@@ -105,6 +104,8 @@ void CollisionComponent::separateFromAdjacentTiles()
 	
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
 	const float radius = collisionComponentTemplate->getRadius();
+
+	map::Navigability navigabilityMask = EntityHelper::getNavigabilityMask(m_owner);
 	
 	const map::Tile* collidedTile = nullptr;
 	flat::Vector3 normal;
@@ -112,7 +113,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	// directly adjacent tiles
 	// top right
 	{
-		const map::Tile* tile2 = map->getTileIfWalkable(tileX - 1, tileY);
+		const map::Tile* tile2 = map->getTileIfNavigable(tileX - 1, tileY, navigabilityMask);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
 			newPosition2d.x = std::max(newPosition2d.x, static_cast<float>(tileX) - 0.5f + radius);
@@ -123,7 +124,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	// bottom left
 	if (collidedTile == nullptr)
 	{
-		const map::Tile* tile2 = map->getTileIfWalkable(tileX + 1, tileY);
+		const map::Tile* tile2 = map->getTileIfNavigable(tileX + 1, tileY, navigabilityMask);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
 			newPosition2d.x = std::min(newPosition2d.x, static_cast<float>(tileX) + 0.5f - radius);
@@ -134,7 +135,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	// top left
 	if (collidedTile == nullptr)
 	{
-		const map::Tile* tile2 = map->getTileIfWalkable(tileX, tileY - 1);
+		const map::Tile* tile2 = map->getTileIfNavigable(tileX, tileY - 1, navigabilityMask);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
 			newPosition2d.y = std::max(newPosition2d.y, static_cast<float>(tileY) - 0.5f + radius);
@@ -145,7 +146,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	// bottom right
 	if (collidedTile == nullptr)
 	{
-		const map::Tile* tile2 = map->getTileIfWalkable(tileX, tileY + 1);
+		const map::Tile* tile2 = map->getTileIfNavigable(tileX, tileY + 1, navigabilityMask);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
 			newPosition2d.y = std::min(newPosition2d.y, static_cast<float>(tileY) + 0.5f - radius);
@@ -158,7 +159,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	// top
 	if (collidedTile == nullptr)
 	{
-		const map::Tile* tile2 = map->getTileIfWalkable(tileX - 1, tileY - 1);
+		const map::Tile* tile2 = map->getTileIfNavigable(tileX - 1, tileY - 1, navigabilityMask);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
 			flat::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) - 0.5f);
@@ -174,7 +175,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	// bottom
 	if (collidedTile == nullptr)
 	{
-		const map::Tile* tile2 = map->getTileIfWalkable(tileX + 1, tileY + 1);
+		const map::Tile* tile2 = map->getTileIfNavigable(tileX + 1, tileY + 1, navigabilityMask);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
 			flat::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) + 0.5f);
@@ -190,7 +191,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	// left
 	if (collidedTile == nullptr)
 	{
-		const map::Tile* tile2 = map->getTileIfWalkable(tileX + 1, tileY - 1);
+		const map::Tile* tile2 = map->getTileIfNavigable(tileX + 1, tileY - 1, navigabilityMask);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
 			flat::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) - 0.5f);
@@ -206,7 +207,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	// right
 	if (collidedTile == nullptr)
 	{
-		const map::Tile* tile2 = map->getTileIfWalkable(tileX - 1, tileY + 1);
+		const map::Tile* tile2 = map->getTileIfNavigable(tileX - 1, tileY + 1, navigabilityMask);
 		if (!tile2 || tile2->getZ() > minZ)
 		{
 			flat::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) + 0.5f);

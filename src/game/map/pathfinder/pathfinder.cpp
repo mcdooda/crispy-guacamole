@@ -11,9 +11,10 @@ namespace map
 namespace pathfinder
 {
 
-Pathfinder::Pathfinder(const Map& map, float jumpHeight) :
+Pathfinder::Pathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask) :
 	m_map(map),
-	m_jumpHeight(jumpHeight)
+	m_jumpHeight(jumpHeight),
+	m_navigabilityMask(navigabilityMask)
 {
 	
 }
@@ -22,7 +23,7 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 {
 	FLAT_PROFILE("Find path");
 
-	const map::Tile* firstTile = getTileIfWalkable(from.x, from.y);
+	const map::Tile* firstTile = getTileIfNavigable(from.x, from.y, m_navigabilityMask);
 	if (!firstTile)
 	{
 		return false;
@@ -92,9 +93,9 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 	return false;
 }
 
-const Tile* Pathfinder::getTileIfWalkable(float x, float y) const
+const Tile* Pathfinder::getTileIfNavigable(float x, float y, map::Navigability navigabilityMask) const
 {
-	return m_map.getTileIfWalkable(x, y);
+	return m_map.getTileIfNavigable(x, y, navigabilityMask);
 }
 
 void Pathfinder::reconstructPath(
@@ -166,13 +167,13 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 	flat::Vector2 move = to - from;
 	flat::Vector2 segment = flat::normalize(move) * delta;
 	float numSegments = flat::length(move) / delta;
-	const map::Tile* fromTile = getTileIfWalkable(from.x, from.y);
+	const map::Tile* fromTile = getTileIfNavigable(from.x, from.y, m_navigabilityMask);
 	FLAT_ASSERT(fromTile != nullptr);
 	float previousZ = fromTile->getZ();
 	for (float f = 1.f; f <= numSegments; ++f)
 	{
 		flat::Vector2 point = from + segment * f;
-		const map::Tile* tile = getTileIfWalkable(point.x, point.y);
+		const map::Tile* tile = getTileIfNavigable(point.x, point.y, m_navigabilityMask);
 		if (!tile || tile->getZ() > previousZ + m_jumpHeight)
 			return false;
 		
@@ -184,7 +185,7 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 
 void Pathfinder::eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const
 {
-	tile->eachWalkableNeighborTiles(m_map, m_jumpHeight, func);
+	tile->eachNeighborTilesWithNavigability(m_map, m_jumpHeight, m_navigabilityMask, func);
 }
 
 } // pathfinder

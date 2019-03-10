@@ -100,7 +100,17 @@ void TileTemplate::loadTileConfig(Game& game, const std::string& path)
 		lua_getfield(L, -4, "selectTile");
 		m_selectTile.setIfNotNil(L, -1);
 
-		lua_pop(L, 5);
+		lua_getfield(L, -5, "navigability");
+		if (!lua_isnil(L, -1))
+		{
+			m_navigability = static_cast<Navigability>(luaL_checkinteger(L, -1));
+		}
+		else
+		{
+			m_navigability = Navigability::GROUND;
+		}
+
+		lua_pop(L, 6);
 	}
 }
 

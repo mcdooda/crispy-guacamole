@@ -41,6 +41,19 @@ int open(lua_State* L)
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Map_lib_m, 0);
+
+	lua_pushstring(L, "Navigability");
+	static const flat::lua::table::KeyValuePair<int> navigabilityTable[] = {
+		{"NONE",   Navigability::NONE},
+		{"GROUND", Navigability::GROUND},
+		{"WATER",  Navigability::WATER},
+		{"ALL",    Navigability::ALL},
+
+		{nullptr, 0},
+	};
+	flat::lua::table::pushTable(L, navigabilityTable);
+	lua_settable(L, -3);
+
 	lua_setglobal(L, "Map");
 	
 	return 0;

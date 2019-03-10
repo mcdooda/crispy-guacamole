@@ -13,7 +13,7 @@ const flat::render::ProgramSettings* Tile::tileProgramSettings = nullptr;
 Tile::Tile() :
 	m_prop(nullptr),
 	m_exists(false),
-	m_walkable(true)
+	m_navigability(Navigability::GROUND)
 {
 	m_sprite.setColor(flat::video::Color::WHITE);
 }
@@ -141,7 +141,7 @@ void Tile::setPropTexture(Map& map, const std::shared_ptr<const flat::video::Tex
 	const flat::Vector2& textureSize = propTexture->getSize();
 	flat::Vector2 origin(textureSize.x / 2.f, textureSize.y - textureSize.x / 4.f);
 	prop->setSpriteOrigin(origin);
-	setWalkable(false);
+	setNavigability(Navigability::NONE);
 
 	if (m_exists)
 	{
@@ -162,7 +162,7 @@ void Tile::setPropTexture(Map& map, const std::shared_ptr<const flat::video::Tex
 
 void Tile::removeProp(Map& map)
 {
-	setWalkable(true);
+	setNavigability(Navigability::ALL); // TODO: grab navigability from the tile template
 
 	if (m_prop != nullptr)
 	{
@@ -190,29 +190,29 @@ const flat::video::Color& Tile::getColor() const
 	return m_sprite.getColor();
 }
 
-void Tile::eachWalkableNeighborTiles(const Map & map, float jumpHeight, std::function<void(const Tile*)> func) const
+void Tile::eachNeighborTilesWithNavigability(const Map& map, float jumpHeight, Navigability navigabilityMask, std::function<void(const Tile*)> func) const
 {
 	const float maxZ = m_z + jumpHeight;
 
-	if (const Tile* tile = map.getTileIfWalkable(m_x - 1, m_y))
+	if (const Tile* tile = map.getTileIfNavigable(m_x - 1, m_y, navigabilityMask))
 	{
 		if (tile->getZ() <= maxZ)
 			func(tile);
 	}
 
-	if (const Tile* tile = map.getTileIfWalkable(m_x + 1, m_y))
+	if (const Tile* tile = map.getTileIfNavigable(m_x + 1, m_y, navigabilityMask))
 	{
 		if (tile->getZ() <= maxZ)
 			func(tile);
 	}
 
-	if (const Tile* tile = map.getTileIfWalkable(m_x, m_y - 1))
+	if (const Tile* tile = map.getTileIfNavigable(m_x, m_y - 1, navigabilityMask))
 	{
 		if (tile->getZ() <= maxZ)
 			func(tile);
 	}
 
-	if (const Tile* tile = map.getTileIfWalkable(m_x, m_y + 1))
+	if (const Tile* tile = map.getTileIfNavigable(m_x, m_y + 1, navigabilityMask))
 	{
 		if (tile->getZ() <= maxZ)
 			func(tile);

@@ -4,6 +4,8 @@
 #include <functional>
 #include <flat.h>
 
+#include "../navigability.h"
+
 namespace game
 {
 namespace map
@@ -27,13 +29,13 @@ public:
 
 public:
 	Pathfinder() = delete;
-	Pathfinder(const Map& map, float jumpHeight);
+	Pathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask);
 	virtual ~Pathfinder() {}
 
 	bool findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const;
 
 protected:
-	virtual const Tile* getTileIfWalkable(float x, float y) const;
+	virtual const Tile* getTileIfNavigable(float x, float y, map::Navigability navigabilityMask) const;
 	void reconstructPath(
 		const std::map<const map::Tile*, const map::Tile*>& previous,
 		const map::Tile* last,
@@ -47,6 +49,7 @@ protected:
 protected:
 	const Map& m_map;
 	float m_jumpHeight;
+	map::Navigability m_navigabilityMask;
 };
 
 } // pathfinder

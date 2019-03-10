@@ -35,7 +35,17 @@ void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string
 	lua_getfield(L, -4, "snapToGround");
 	m_snapToGround = lua_toboolean(L, -1) == 1;
 
-	lua_pop(L, 4);
+	lua_getfield(L, -5, "navigabilityMask");
+	if (!lua_isnil(L, -1))
+	{
+		m_navigabilityMask = static_cast<map::Navigability>(luaL_checkinteger(L, -1));
+	}
+	else
+	{
+		m_navigabilityMask = map::Navigability::GROUND;
+	}
+
+	lua_pop(L, 5);
 }
 
 } // movement

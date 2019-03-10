@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "component/components/collision/collisioncomponent.h"
 #include "component/components/prop/propcomponent.h"
+#include "component/components/movement/movementcomponent.h"
 
 namespace game
 {
@@ -59,6 +60,21 @@ float EntityHelper::getDistanceBetweenEntitiesWithRadius(const Entity* a, const 
 	}
 
 	return distance;
+}
+
+map::Navigability EntityHelper::getNavigabilityMask(const Entity* entity)
+{
+	return getNavigabilityMask(entity->getEntityTemplate().get());
+}
+
+map::Navigability EntityHelper::getNavigabilityMask(const EntityTemplate* entityTemplate)
+{
+	const component::movement::MovementComponentTemplate* movementComponentTemplate = entityTemplate->getComponentTemplate<component::movement::MovementComponent>();
+	if (movementComponentTemplate != nullptr)
+	{
+		return movementComponentTemplate->getNavigabilityMask();
+	}
+	return map::Navigability::ALL;
 }
 
 } // entity

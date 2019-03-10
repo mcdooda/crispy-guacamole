@@ -147,29 +147,29 @@ Tile* Map::getTileIfExists(float x, float y)
 	return getTileIfExists(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
-const Tile* Map::getTileIfWalkable(int x, int y) const
+const Tile* Map::getTileIfNavigable(int x, int y, Navigability navigabilityMask) const
 {
-	return const_cast<Map*>(this)->getTileIfWalkable(x, y);
+	return const_cast<Map*>(this)->getTileIfNavigable(x, y, navigabilityMask);
 }
 
-Tile* Map::getTileIfWalkable(int x, int y)
+Tile* Map::getTileIfNavigable(int x, int y, Navigability navigabilityMask)
 {
 	Tile* tile = getTileIfExists(x, y);
 
-	if (!tile || !tile->isWalkable())
+	if (!tile || !tile->isNavigable(navigabilityMask))
 		return nullptr;
 
 	return tile;
 }
 
-const Tile* Map::getTileIfWalkable(float x, float y) const
+const Tile* Map::getTileIfNavigable(float x, float y, Navigability navigabilityMask) const
 {
-	return const_cast<Map*>(this)->getTileIfWalkable(x, y);
+	return const_cast<Map*>(this)->getTileIfNavigable(x, y, navigabilityMask);
 }
 
-Tile* Map::getTileIfWalkable(float x, float y)
+Tile* Map::getTileIfNavigable(float x, float y, Navigability navigabilityMask)
 {
-	return getTileIfWalkable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));;
+	return getTileIfNavigable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)), navigabilityMask);
 }
 
 void Map::eachTile(std::function<void(const Tile*)> func) const

@@ -5,6 +5,7 @@
 #include <memory>
 #include <flat.h>
 #include "mapobject.h"
+#include "navigability.h"
 
 namespace game
 {
@@ -30,8 +31,9 @@ class Tile final : public MapObject
 		inline bool exists() const { return m_exists; }
 		void setExists(Map& map, bool exists);
 		
-		inline bool isWalkable() const { return m_walkable; }
-		inline void setWalkable(bool walkable) { m_walkable = walkable; }
+		inline Navigability getNavigability() const { return m_navigability; }
+		inline void setNavigability(Navigability navigability) { m_navigability = navigability; }
+		inline bool isNavigable(Navigability navigabilityMask) const { return (m_navigability & navigabilityMask) != 0; }
 		
 		inline bool hasSprite() const { return m_sprite.getTexture() != nullptr; }
 
@@ -55,7 +57,7 @@ class Tile final : public MapObject
 		void setColor(const flat::video::Color& color);
 		const flat::video::Color& getColor() const;
 		
-		void eachWalkableNeighborTiles(const Map& map, float jumpHeight, std::function<void(const Tile*)> func) const;
+		void eachNeighborTilesWithNavigability(const Map& map, float jumpHeight, Navigability navigabilityMask, std::function<void(const Tile*)> func) const;
 
 		inline static void setTileProgramSettings(const flat::render::ProgramSettings& programSettings)
 		{
@@ -83,9 +85,10 @@ class Tile final : public MapObject
 		int m_x;
 		int m_y;
 		float m_z;
+
+		Navigability m_navigability;
 		
 		bool m_exists : 1;
-		bool m_walkable : 1;
 
 		bool m_normalDirty : 1;
 };

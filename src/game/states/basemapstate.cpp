@@ -19,6 +19,7 @@
 #include "../entity/component/components/interaction/interactioncomponent.h"
 #include "../entity/faction/lua/faction.h"
 #include "../entity/entitytemplate.h"
+#include "../entity/entityhelper.h"
 
 namespace game
 {
@@ -520,7 +521,8 @@ void BaseMapState::addGhostEntity(game::Game& game)
 		flat::Vector2 cursorPosition = getCursorMapPosition(game, isOnTile);
 		if (isOnTile)
 		{
-			const map::Tile* tile = getMap().getTileIfWalkable(cursorPosition.x, cursorPosition.y);
+			map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostEntity);
+			const map::Tile* tile = getMap().getTileIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
 			if (tile != nullptr)
 			{
 				m_ghostEntity->resetComponents();
@@ -1012,7 +1014,8 @@ void BaseMapState::handleGameActionInputs(Game& game)
 				flat::Vector2 position2d = getCursorMapPosition(game, cursorOnTile);
 				if (cursorOnTile)
 				{
-					const map::Tile* tile = getMap().getTileIfWalkable(position2d.x, position2d.y);
+					map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
+					const map::Tile* tile = getMap().getTileIfNavigable(position2d.x, position2d.y, navigabilityMask);
 					if (tile != nullptr && canPlaceGhostEntity(tile))
 					{
 						if (onGhostEntityPlaced())

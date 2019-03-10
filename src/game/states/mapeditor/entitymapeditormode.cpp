@@ -1,6 +1,8 @@
 #include "entitymapeditormode.h"
 #include "../mapeditorstate.h"
 #include "../../game.h"
+#include "../../entity/entitytemplate.h"
+#include "../../entity/component/components/movement/movementcomponent.h"
 
 namespace game
 {
@@ -30,7 +32,13 @@ void EntityMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState
 		position2d.x += m_game.random->nextFloat(-0.001f, 0.001f);
 		position2d.y += m_game.random->nextFloat(-0.001f, 0.001f);
 		const map::Map& map = mapEditorState.getMap();
-		const map::Tile* tile = map.getTileIfWalkable(position2d.x, position2d.y);
+		map::Navigability navigabilityMask = map::Navigability::ALL;
+		const entity::component::movement::MovementComponentTemplate* movementComponentTemplate = m_entityTemplate->getComponentTemplate<entity::component::movement::MovementComponent>();
+		if (movementComponentTemplate != nullptr)
+		{
+			navigabilityMask = movementComponentTemplate->getNavigabilityMask();
+		}
+		const map::Tile* tile = map.getTileIfNavigable(position2d.x, position2d.y, navigabilityMask);
 		if (tile != nullptr)
 		{
 			flat::Vector3 position(position2d.x, position2d.y, tile->getZ());

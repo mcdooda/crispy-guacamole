@@ -28,5 +28,6 @@ return {
 	probabilities = probabilities,
 	frameDuration = 0.2,
 	numFrames = 3,
+	navigability = Map.Navigability.WATER,
 	selectTile = selectTile
 }

@@ -2,13 +2,16 @@
 #define GAME_MAP_TILETEMPLATE_H
 
 #include <string>
+
 #include "texturepack.h"
+#include "navigability.h"
 
 namespace game
 {
 class Game;
 namespace map
 {
+
 class TileTemplate
 {
 	public:
@@ -30,6 +33,8 @@ class TileTemplate
 
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile() const { return m_selectTile; }
 
+		inline Navigability getNavigability() const { return m_navigability; }
+
 	private:
 		void loadTileConfig(Game& game, const std::string& path);
 
@@ -41,11 +46,10 @@ class TileTemplate
 		float m_tileVariantProbabilitiesSum;
 		float m_frameDuration;
 		int m_numFrames;
+		Navigability m_navigability;
 };
-}
-}
 
+} // map
+} // game
 
 #endif // GAME_MAP_TILETEMPLATE_H
-
-

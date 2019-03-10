@@ -70,10 +70,10 @@ class Map
 		const Tile* getTileIfExists(float x, float y) const;
 		Tile* getTileIfExists(float x, float y);
 
-		const Tile* getTileIfWalkable(int x, int y) const;
-		Tile* getTileIfWalkable(int x, int y);
-		const Tile* getTileIfWalkable(float x, float y) const;
-		Tile* getTileIfWalkable(float x, float y);
+		const Tile* getTileIfNavigable(int x, int y, Navigability navigabilityMask) const;
+		Tile* getTileIfNavigable(int x, int y, Navigability navigabilityMask);
+		const Tile* getTileIfNavigable(float x, float y, Navigability navigabilityMask) const;
+		Tile* getTileIfNavigable(float x, float y, Navigability navigabilityMask);
 
 		void eachTile(std::function<void(const Tile*)> func) const;
 		virtual void eachTile(std::function<void(Tile*)> func) = 0;

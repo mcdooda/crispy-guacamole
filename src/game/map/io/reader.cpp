@@ -2,6 +2,7 @@
 #include "reader.h"
 #include "../map.h"
 #include "../tile.h"
+#include "../tiletemplate.h"
 #include "../zone.h"
 #include "../../game.h"
 #include "../../mod/mod.h"
@@ -99,15 +100,18 @@ void Reader::readConfig()
 
 void Reader::readHeaders()
 {
+	states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
+
 	// tile textures
 	uint16_t numTiles;
 	read(numTiles);
-	m_tileTemplateNames.reserve(numTiles);
+	m_tileTemplates.reserve(numTiles);
 	for (int i = 0; i < numTiles; ++i)
 	{
 		std::string tileTemplateName;
 		read(tileTemplateName);
-		m_tileTemplateNames.push_back(tileTemplateName);
+		std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(m_game, tileTemplateName);
+		m_tileTemplates.push_back(tileTemplate);
 	}
 
 	// prop textures
@@ -160,12 +164,12 @@ void Reader::readTiles()
 				uint16_t tileIndex = tileId & 0x0FFF;
 				uint16_t tileVariantIndex = tileId >> 12;
 
-				states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
-				const std::string& tileTemplateName = m_tileTemplateNames[tileIndex];
-				std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(m_game, tileTemplateName);
+				std::shared_ptr<const TileTemplate> tileTemplate = m_tileTemplates[tileIndex];
 
 				flat::render::SpriteSynchronizer& spriteSynchronizer = m_map.getTileSpriteSynchronizer(tileTemplate, tileVariantIndex);
 				tile->synchronizeSpriteTo(m_map, spriteSynchronizer);
+
+				tile->setNavigability(tileTemplate->getNavigability());
 				
 				bool hasProp;
 				read(hasProp);

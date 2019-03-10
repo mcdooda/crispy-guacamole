@@ -49,7 +49,7 @@ void EntityEditorState::spawnEntity(Game& game)
 	map.getZone("Start", zone);
 	FLAT_ASSERT_MSG(zone != nullptr, "The entity editor map must have a 'Start' zone on a walkable tile");
 	flat::Vector2 zoneCenter = zone->getCenter();
-	const map::Tile* centerTile = map.getTileIfWalkable(zoneCenter.x, zoneCenter.y);
+	const map::Tile* centerTile = map.getTileIfExists(zoneCenter.x, zoneCenter.y);
 	FLAT_ASSERT_MSG(centerTile != nullptr, "The entity editor map must have a 'Start' zone on a walkable tile");
 	flat::Vector3 position(zoneCenter, centerTile->getZ() + 1.f);
 

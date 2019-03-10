@@ -8,14 +8,14 @@ namespace map
 namespace pathfinder
 {
 
-ZonePathfinder::ZonePathfinder(const Map& map, float jumpHeight, const Zone * zone) : Pathfinder(map, jumpHeight),
+ZonePathfinder::ZonePathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask, const Zone* zone) : Pathfinder(map, jumpHeight, navigabilityMask),
 	m_zone(zone)
 {
 }
 
-const Tile* ZonePathfinder::getTileIfWalkable(float x, float y) const
+const Tile* ZonePathfinder::getTileIfNavigable(float x, float y, map::Navigability navigabilityMask) const
 {
-	const Tile* tile = Super::getTileIfWalkable(x, y);
+	const Tile* tile = Super::getTileIfNavigable(x, y, navigabilityMask);
 	if (m_zone->isTileInside(tile))
 	{
 		return tile;

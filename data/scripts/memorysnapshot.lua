@@ -1,5 +1,34 @@
 return function(addContainer, makeSeparator, font)
-	local memorySnapshotContainer = addContainer 'Lua Memory'
+    local format = string.format
+    local collectgarbage = collectgarbage
+
+    local memorySnapshotContainer = addContainer 'Lua Memory'
+
+    local usedMemoryLabel = Widget.makeText('X KB', table.unpack(font))
+    usedMemoryLabel:setTextColor(0x000000FF)
+    memorySnapshotContainer:addChild(usedMemoryLabel)
+
+    local autoGC = false
+    local autoGCLabel = Widget.makeText('Auto GC: off', table.unpack(font))
+    autoGCLabel:setTextColor(0x000000FF)
+    autoGCLabel:click(function()
+        autoGC = not autoGC
+        if autoGC then
+            autoGCLabel:setText 'Auto GC: on'
+        else
+            autoGCLabel:setText 'Auto GC: off'
+        end
+    end)
+    memorySnapshotContainer:addChild(autoGCLabel)
+    
+    local timer = flat.Timer()
+    timer:onUpdate(function()
+        if autoGC then
+            collectgarbage 'collect'
+        end
+        usedMemoryLabel:setText(format('%.1f KB', collectgarbage 'count'))
+    end)
+    timer:start(0, true)
 
     local snapshot
 

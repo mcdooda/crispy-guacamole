@@ -31,9 +31,11 @@ int open(lua_State* L)
 		{"getNumEntities",     l_Map_getNumEntities},
 		{"getEntitiesInRange", l_Map_getEntitiesInRange},
 		{"eachSelectedEntity", l_Map_eachSelectedEntity},
+		{"getEntitiesOfType",  l_Map_getEntitiesOfType},
 
 		{"getZone",            l_Map_getZone},
 
+		{"getTilePosition",    l_Map_getTilePosition},
 		{"getTileZ",           l_Map_getTileZ},
 		{"setTileZ",           l_Map_setTileZ},
 		{"moveTileZBy",        l_Map_moveTileZBy},
@@ -164,6 +166,25 @@ int l_Map_eachSelectedEntity(lua_State* L)
 	return 3;
 }
 
+
+int l_Map_getEntitiesOfType(lua_State* L)
+{
+	const char* entityTemplateName = luaL_checkstring(L, 1);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	flat::state::State* state = game.getStateMachine().getState();
+	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
+	std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
+	lua_newtable(L);
+	int i = 1;
+	baseMapState.eachEntityOfType(entityTemplate, [L, &i](entity::Entity* entity)
+	{
+		entity::lua::pushEntity(L, entity);
+		lua_rawseti(L, -2, i);
+		++i;
+	});
+	return 1;
+}
+
 int l_Map_getZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
@@ -177,6 +198,15 @@ int l_Map_getZone(lua_State* L)
 	}
 	zone::pushZone(L, zone);
 	return 1;
+}
+
+int l_Map_getTilePosition(lua_State* L)
+{
+	Tile* tile = static_cast<Tile*>(lua_touserdata(L, 1));
+	lua_pushinteger(L, tile->getX());
+	lua_pushinteger(L, tile->getY());
+	lua_pushnumber(L, tile->getZ());
+	return 3;
 }
 
 int l_Map_getTileZ(lua_State* L)

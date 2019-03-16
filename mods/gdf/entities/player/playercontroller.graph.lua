@@ -67,6 +67,48 @@ return {
       2,
     },
     {
+      1,
+      3,
+      39,
+      2,
+    },
+    {
+      1,
+      3,
+      42,
+      2,
+    },
+    {
+      1,
+      3,
+      45,
+      2,
+    },
+    {
+      1,
+      3,
+      48,
+      2,
+    },
+    {
+      1,
+      3,
+      51,
+      2,
+    },
+    {
+      1,
+      3,
+      54,
+      2,
+    },
+    {
+      1,
+      3,
+      57,
+      2,
+    },
+    {
       3,
       1,
       11,
@@ -181,6 +223,12 @@ return {
       4,
     },
     {
+      18,
+      1,
+      39,
+      1,
+    },
+    {
       19,
       1,
       18,
@@ -271,6 +319,12 @@ return {
       1,
     },
     {
+      36,
+      1,
+      45,
+      1,
+    },
+    {
       37,
       1,
       36,
@@ -280,6 +334,120 @@ return {
       38,
       1,
       36,
+      4,
+    },
+    {
+      39,
+      1,
+      42,
+      1,
+    },
+    {
+      40,
+      1,
+      39,
+      3,
+    },
+    {
+      41,
+      1,
+      39,
+      4,
+    },
+    {
+      43,
+      1,
+      42,
+      3,
+    },
+    {
+      44,
+      1,
+      42,
+      4,
+    },
+    {
+      45,
+      1,
+      48,
+      1,
+    },
+    {
+      46,
+      1,
+      45,
+      3,
+    },
+    {
+      47,
+      1,
+      45,
+      4,
+    },
+    {
+      48,
+      1,
+      51,
+      1,
+    },
+    {
+      49,
+      1,
+      48,
+      3,
+    },
+    {
+      50,
+      1,
+      48,
+      4,
+    },
+    {
+      51,
+      1,
+      54,
+      1,
+    },
+    {
+      52,
+      1,
+      51,
+      3,
+    },
+    {
+      53,
+      1,
+      51,
+      4,
+    },
+    {
+      54,
+      1,
+      57,
+      1,
+    },
+    {
+      55,
+      1,
+      54,
+      3,
+    },
+    {
+      56,
+      1,
+      54,
+      4,
+    },
+    {
+      58,
+      1,
+      57,
+      3,
+    },
+    {
+      59,
+      1,
+      57,
       4,
     },
   },
@@ -464,7 +632,133 @@ return {
     },
     {
       loadArguments = {
-        0,
+        -0.050000000745058,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile1',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        -0.60000002384186,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile1',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.60000002384186,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.050000000745058,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        -0.15000000596046,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.15000000596046,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        -0.25,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.25,
       },
       name = 'number',
     },

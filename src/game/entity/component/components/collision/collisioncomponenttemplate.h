@@ -24,9 +24,12 @@ class CollisionComponentTemplate : public ComponentTemplate
 
 		inline bool getSeparate() const { return m_separate; }
 
+		inline bool getSeparateSameType() const { return m_separateSameType; }
+
 	private:
 		CollisionBox m_collisionBox;
 		bool m_separate;
+		bool m_separateSameType;
 };
 
 } // collision

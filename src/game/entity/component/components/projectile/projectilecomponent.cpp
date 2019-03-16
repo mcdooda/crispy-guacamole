@@ -57,32 +57,10 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 		const float heading = m_owner->getHeading();
 		const float elevation = m_owner->getElevation();
 
-		/*
-#ifdef GLM_FORCE_RADIANS
-			T const latitude(polar.x);
-			T const longitude(polar.y);
-#else
-#		pragma message("GLM: euclidean function taking degrees as parameters is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
-			T const latitude(radians(polar.x));
-			T const longitude(radians(polar.y));
-#endif
-
-			return detail::tvec3<T, P>(
-				cos(latitude) * sin(longitude),
-				sin(latitude),
-				cos(latitude) * cos(longitude));
-			*/
-
 		flat::Vector3 moveDirection;
 		moveDirection.x = std::cos(heading) * std::cos(elevation);
 		moveDirection.y = std::sin(heading) * std::cos(elevation);
 		moveDirection.z = std::sin(elevation);
-
-		/*flat::Vector3 moveDirection(
-			std::cos(elevation) * std::sin(heading),
-			std::sin(elevation),
-			-std::cos(elevation) * std::cos(heading)
-		);*/
 
 		m_speed = moveDirection * speed;
 		newPosition = position + m_speed * elapsedTime;

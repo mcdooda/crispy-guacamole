@@ -8,6 +8,7 @@ function CollisionComponentNode:buildPins()
     self.radiusInPin = self:addInputPin(flat.types.NUMBER, 'Radius')
     self.heightInPin = self:addInputPin(flat.types.NUMBER, 'Height')
     self.separateInPin = self:addInputPin(flat.types.BOOLEAN, 'Separate')
+    self.separateSameTypeInPin = self:addInputPin(flat.types.BOOLEAN, 'Separate Same Type')
 
     self.componentOutPin = self:addOutputPin(flat.types.TABLE, 'Component')
 end
@@ -17,12 +18,14 @@ function CollisionComponentNode:execute(runtime)
     local radius = runtime:readPin(self.radiusInPin)
     local height = runtime:readOptionalPin(self.heightInPin)
     local separate = runtime:readPin(self.separateInPin)
+    local separateSameType = runtime:readPin(self.separateSameTypeInPin)
 
     local component = {
         type = type,
         radius = radius,
         height = height,
-        separate = separate
+        separate = separate,
+        separateSameType = separateSameType
     }
 
     runtime:writePin(self.componentOutPin, component)

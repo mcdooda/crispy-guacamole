@@ -44,13 +44,13 @@ return {
     },
     {
       loadArguments = {
-        1,
+        7,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        20,
       },
       name = 'number',
     },

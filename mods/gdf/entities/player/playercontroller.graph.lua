@@ -133,6 +133,66 @@ return {
       2,
     },
     {
+      1,
+      3,
+      69,
+      1,
+    },
+    {
+      1,
+      3,
+      68,
+      2,
+    },
+    {
+      1,
+      3,
+      81,
+      2,
+    },
+    {
+      1,
+      3,
+      83,
+      2,
+    },
+    {
+      1,
+      3,
+      86,
+      2,
+    },
+    {
+      1,
+      3,
+      89,
+      2,
+    },
+    {
+      1,
+      3,
+      92,
+      2,
+    },
+    {
+      1,
+      3,
+      95,
+      2,
+    },
+    {
+      1,
+      3,
+      98,
+      2,
+    },
+    {
+      1,
+      3,
+      106,
+      2,
+    },
+    {
       3,
       1,
       11,
@@ -160,6 +220,12 @@ return {
       3,
       5,
       35,
+      1,
+    },
+    {
+      3,
+      6,
+      80,
       1,
     },
     {
@@ -197,6 +263,18 @@ return {
       1,
       9,
       3,
+    },
+    {
+      9,
+      1,
+      72,
+      1,
+    },
+    {
+      9,
+      1,
+      101,
+      1,
     },
     {
       10,
@@ -522,6 +600,240 @@ return {
       66,
       3,
     },
+    {
+      69,
+      1,
+      71,
+      1,
+    },
+    {
+      69,
+      1,
+      74,
+      1,
+    },
+    {
+      70,
+      1,
+      68,
+      3,
+    },
+    {
+      71,
+      1,
+      70,
+      2,
+    },
+    {
+      71,
+      2,
+      70,
+      1,
+    },
+    {
+      72,
+      1,
+      68,
+      1,
+    },
+    {
+      73,
+      1,
+      75,
+      2,
+    },
+    {
+      74,
+      1,
+      75,
+      1,
+    },
+    {
+      75,
+      1,
+      72,
+      2,
+    },
+    {
+      76,
+      1,
+      78,
+      1,
+    },
+    {
+      77,
+      1,
+      76,
+      1,
+    },
+    {
+      78,
+      1,
+      80,
+      2,
+    },
+    {
+      79,
+      1,
+      78,
+      2,
+    },
+    {
+      80,
+      1,
+      81,
+      1,
+    },
+    {
+      81,
+      1,
+      83,
+      1,
+    },
+    {
+      82,
+      1,
+      81,
+      3,
+    },
+    {
+      83,
+      1,
+      86,
+      1,
+    },
+    {
+      84,
+      1,
+      83,
+      3,
+    },
+    {
+      85,
+      1,
+      83,
+      4,
+    },
+    {
+      86,
+      1,
+      89,
+      1,
+    },
+    {
+      87,
+      1,
+      86,
+      3,
+    },
+    {
+      88,
+      1,
+      86,
+      4,
+    },
+    {
+      89,
+      1,
+      92,
+      1,
+    },
+    {
+      90,
+      1,
+      89,
+      3,
+    },
+    {
+      91,
+      1,
+      89,
+      4,
+    },
+    {
+      92,
+      1,
+      95,
+      1,
+    },
+    {
+      93,
+      1,
+      92,
+      3,
+    },
+    {
+      94,
+      1,
+      92,
+      4,
+    },
+    {
+      95,
+      1,
+      98,
+      1,
+    },
+    {
+      96,
+      1,
+      95,
+      3,
+    },
+    {
+      97,
+      1,
+      95,
+      4,
+    },
+    {
+      99,
+      1,
+      98,
+      3,
+    },
+    {
+      100,
+      1,
+      98,
+      4,
+    },
+    {
+      101,
+      1,
+      106,
+      1,
+    },
+    {
+      102,
+      1,
+      105,
+      2,
+    },
+    {
+      103,
+      1,
+      105,
+      1,
+    },
+    {
+      104,
+      1,
+      103,
+      1,
+    },
+    {
+      105,
+      1,
+      101,
+      2,
+    },
+    {
+      107,
+      1,
+      106,
+      3,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -539,7 +851,7 @@ return {
     },
     {
       loadArguments = {
-        6,
+        7,
       },
       name = 'script/impulseall',
     },
@@ -869,6 +1181,204 @@ return {
         0.050000000745058,
       },
       name = 'number',
+    },
+    {
+      name = 'entity/setheading',
+    },
+    {
+      name = 'controller/rightstickdirection',
+    },
+    {
+      loadArguments = {
+        'atan(y,x)',
+      },
+      name = 'math/formula',
+    },
+    {
+      name = 'math/vector2/vector2split',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      name = 'math/vector2/vector2length',
+    },
+    {
+      name = 'math/greaterthan',
+    },
+    {
+      name = 'controller/axisvalue',
+    },
+    {
+      loadArguments = {
+        'TRIGGERRIGHT',
+      },
+      name = 'string',
+    },
+    {
+      name = 'math/greaterthan',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'flow/cooldown',
+    },
+    {
+      loadArguments = {
+        0.050000000745058,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        -0.050000000745058,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.050000000745058,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        -0.15000000596046,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.15000000596046,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        -0.25,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        'missile4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.25,
+      },
+      name = 'number',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      name = 'controller/axisvalue',
+    },
+    {
+      loadArguments = {
+        'TRIGGERLEFT',
+      },
+      name = 'string',
+    },
+    {
+      name = 'math/greaterthan',
+    },
+    {
+      name = 'entity/jump',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
   },
 }

@@ -84,4 +84,6 @@ return {
     'controller/buttonpressed',
     'controller/buttonjustpressed',
     'controller/leftstickdirection',
+    'controller/rightstickdirection',
+    'controller/axisvalue',
 }

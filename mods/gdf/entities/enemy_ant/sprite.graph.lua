@@ -90,6 +90,36 @@ return {
       11,
       4,
     },
+    {
+      16,
+      1,
+      10,
+      2,
+    },
+    {
+      17,
+      1,
+      16,
+      1,
+    },
+    {
+      18,
+      1,
+      16,
+      2,
+    },
+    {
+      19,
+      1,
+      16,
+      3,
+    },
+    {
+      20,
+      1,
+      16,
+      4,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -116,7 +146,7 @@ return {
     },
     {
       loadArguments = {
-        48,
+        42,
       },
       name = 'number',
     },
@@ -137,12 +167,16 @@ return {
     },
     {
       loadArguments = {
-        1,
+        2,
       },
       name = 'number',
     },
     {
       loadArguments = {
+        {
+          5,
+          '',
+        },
         {
           5,
           '',
@@ -162,6 +196,33 @@ return {
     {
       loadArguments = {
         1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        4,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.079999998211861,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'attack',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        2,
       },
       name = 'number',
     },

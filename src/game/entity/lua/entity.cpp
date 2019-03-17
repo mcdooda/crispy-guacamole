@@ -78,6 +78,7 @@ int open(Game& game)
 		{"setSpeed",                 l_Entity_setSpeed},
 		{"getSpeed",                 l_Entity_getSpeed},
 		{"jump",                     l_Entity_jump},
+		{"isTouchingGround",         l_Entity_isTouchingGround},
 		{"restrictToZone",           l_Entity_restrictToZone},
 		{"setMoveAnimation",         l_Entity_setMoveAnimation},
 		{"setDefaultMoveAnimation",  l_Entity_setDefaultMoveAnimation},
@@ -466,12 +467,16 @@ int l_Entity_jump(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	bool yield = locGetOptBool(L, 2, true);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	if (!movementComponent.isTouchingGround())
-	{
-		luaL_error(L, "Cannot jump midair");
-	}
 	movementComponent.jump();
 	return locYieldIf(L, yield, 0);
+}
+
+int l_Entity_isTouchingGround(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	lua_pushboolean(L, movementComponent.isTouchingGround());
+	return 1;
 }
 
 int l_Entity_restrictToZone(lua_State* L)

@@ -207,13 +207,13 @@ return {
     },
     {
       loadArguments = {
-        'sin(heading)',
+        'sin(heading)*0.5',
       },
       name = 'math/formula',
     },
     {
       loadArguments = {
-        'cos(heading)',
+        'cos(heading)*0.5',
       },
       name = 'math/formula',
     },

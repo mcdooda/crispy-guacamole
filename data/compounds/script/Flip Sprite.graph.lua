@@ -105,15 +105,15 @@ return {
     },
     {
       loadArguments = {
-        3.9268999099731,
+        '5 * pi / 4',
       },
-      name = 'number',
+      name = 'math/formula',
     },
     {
       loadArguments = {
-        0.7853000164032,
+        'pi / 8',
       },
-      name = 'number',
+      name = 'math/formula',
     },
     {
       loadArguments = {

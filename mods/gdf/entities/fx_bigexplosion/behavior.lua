@@ -4,11 +4,11 @@ local states = {}
 
 function states:init(explosion)
     local position = explosion:getPosition()
-    local nearbyEntities = Map.getEntitiesInRange(position:toVector2(), 2)
+    local nearbyEntities = Map.getEntitiesInRange(position:toVector2(), 3)
     for i = 1, #nearbyEntities do
         local entity = nearbyEntities[i]
         if entity:isLiving() then
-            entity:dealDamage(4)
+            entity:dealDamage(25)
         end
     end
     explosion:playAnimation 'explode'

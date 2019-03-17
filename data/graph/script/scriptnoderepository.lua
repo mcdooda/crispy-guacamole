@@ -74,6 +74,7 @@ return {
 
     -- flow
     'flow/eachframe',
+    'flow/cooldown',
 
     -- game
     'game/gamedt',

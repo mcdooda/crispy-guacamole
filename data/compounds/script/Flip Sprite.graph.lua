@@ -111,7 +111,7 @@ return {
     },
     {
       loadArguments = {
-        'pi / 8',
+        'pi / 4',
       },
       name = 'math/formula',
     },

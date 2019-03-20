@@ -35,6 +35,7 @@ void MovementComponent::init()
 	setDefaultMoveAnimation();
 
 	m_isMoving = false;
+	m_isStrafing = false;
 }
 
 void MovementComponent::deinit()
@@ -151,7 +152,10 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 
 			FLAT_DEBUG_ONLY(m_steering = steering;)
 			steering = flat::normalize(steering);
-			m_owner->setHeading(flat::vector2_angle(steering), flat::PI2 / 64.f);
+			if (!m_isStrafing)
+			{
+				m_owner->setHeading(flat::vector2_angle(steering), flat::PI2 / 64.f);
+			}
 			flat::Vector2 newPosition2d = position2d + steering * m_speed * elapsedTime;
 			
 			flat::Vector2 nextTilePosition = position2d + steering * 0.4f;

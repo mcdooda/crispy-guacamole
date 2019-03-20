@@ -15,14 +15,16 @@ local function makeWave(...)
 end
 
 local waves = {
-    makeWave('enemy_ant', 5),
-    makeWave('enemy_ant', 10),
-    makeWave('enemy_ant', 20),
-    makeWave('enemy_ant', 40),
-    makeWave('enemy_ant', 80),
-    makeWave('enemy_ant', 160),
-    makeWave('enemy_ant', 320),
-    makeWave('enemy_ant', 640),
+    makeWave('enemy_redant', 5),
+    makeWave('enemy_redant', 10),
+    makeWave('enemy_redant', 20),
+    makeWave('enemy_redant', 40),
+    makeWave('enemy_redant', 80),
+    makeWave('enemy_redant', 160),
+    makeWave('enemy_redant', 320),
+    makeWave('enemy_blackant', 40),
+    makeWave('enemy_redant', 40, 'enemy_blackant', 40),
+    makeWave('enemy_blackant', 80)
 }
 
 local spawnedEntityCount = 0

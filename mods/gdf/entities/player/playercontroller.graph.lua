@@ -9,7 +9,7 @@ return {
     {
       1,
       2,
-      3,
+      108,
       1,
     },
     {
@@ -190,6 +190,12 @@ return {
       1,
       3,
       106,
+      2,
+    },
+    {
+      1,
+      3,
+      108,
       2,
     },
     {
@@ -834,6 +840,18 @@ return {
       106,
       3,
     },
+    {
+      108,
+      1,
+      3,
+      1,
+    },
+    {
+      109,
+      1,
+      108,
+      3,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -1377,6 +1395,15 @@ return {
     {
       loadArguments = {
         false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/setstrafing',
+    },
+    {
+      loadArguments = {
+        true,
       },
       name = 'boolean',
     },

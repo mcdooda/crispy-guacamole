@@ -1,1 +1,0 @@
-return flat.graph.script.run 'mods/gdf/entities/enemy_ant/collision'

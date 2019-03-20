@@ -50,6 +50,9 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		inline void setSpeed(float speed) { m_speed = speed; }
 		inline float getSpeed() const { return m_speed; }
 
+		inline void setIsStrafing(bool isStrafing) { m_isStrafing = isStrafing; }
+		inline bool getIsStrafing() const { return m_isStrafing; }
+
 		inline void restrictToZone(const std::shared_ptr<const map::Zone>& zone) { m_restrictToZone = zone; }
 
 		bool setMoveAnimationByName(const std::string& animationName);
@@ -83,6 +86,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 		bool m_isTouchingGround : 1;
 		bool m_isMoving : 1; // should not be set directly, only used to trigger movementStarted/movementStopped when needed
+		bool m_isStrafing : 1; // don't update the heading in this situation
 
 		FLAT_DEBUG_ONLY(flat::Vector2 m_steering;)
 };

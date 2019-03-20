@@ -29,6 +29,8 @@ return {
     'entity/setspeed',
     'entity/getspeed',
     'entity/moveto',
+    'entity/setstrafing',
+    'entity/getstrafing',
 
     -- player controller
     'components/playercontrollercomponent',

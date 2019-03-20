@@ -82,6 +82,8 @@ int open(Game& game)
 		{"restrictToZone",           l_Entity_restrictToZone},
 		{"setMoveAnimation",         l_Entity_setMoveAnimation},
 		{"setDefaultMoveAnimation",  l_Entity_setDefaultMoveAnimation},
+		{"setIsStrafing",            l_Entity_setIsStrafing},
+		{"getIsStrafing",            l_Entity_getIsStrafing},
 
 		// behavior
 		{"enterState",               l_Entity_enterState},
@@ -519,6 +521,26 @@ int l_Entity_setDefaultMoveAnimation(lua_State* L)
 		luaL_error(L, "%s has no default move animation", entity.getTemplateName().c_str());
 	}
 	return 0;
+}
+
+FLAT_OPTIMIZE_OFF()
+int l_Entity_setIsStrafing(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	bool isStrafing = lua_toboolean(L, 2) == 1;
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	movementComponent.setIsStrafing(isStrafing);
+	return 0;
+}
+FLAT_OPTIMIZE_ON()
+
+int l_Entity_getIsStrafing(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	bool isStrafing = movementComponent.getIsStrafing();
+	lua_pushboolean(L, isStrafing);
+	return 1;
 }
 
 // BEHAVIOR

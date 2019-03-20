@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -24,7 +24,20 @@ script {
       1,
       4,
     },
+    {
+      6,
+      1,
+      1,
+      3,
+    },
+    {
+      7,
+      1,
+      1,
+      5,
+    },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/collisioncomponent',
@@ -37,7 +50,7 @@ script {
     },
     {
       loadArguments = {
-        0.01,
+        0.0099999997764826,
       },
       name = 'number',
     },
@@ -55,6 +68,18 @@ script {
         },
       },
       name = 'script/scriptoutput',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
   },
 }

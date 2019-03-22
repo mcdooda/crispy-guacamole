@@ -44,20 +44,13 @@ for i = 1, #waves do
         entity:died(function()
             spawnedEntityCount = spawnedEntityCount - 1
         end)
-    
-        local delay = 0.05
-        local endTime = game.getTime() + delay
-        while game.getTime() < endTime do
-            coroutine.yield()
-        end
+
+        game.sleep(0.05)
     end
 
     repeat
         coroutine.yield()
     until spawnedEntityCount == 0
 
-    local endTime = game.getTime() + 2
-    while game.getTime() < endTime do
-        coroutine.yield()
-    end
+    game.sleep(2)
 end

@@ -29,6 +29,8 @@ return {
     'entity/setspeed',
     'entity/getspeed',
     'entity/moveto',
+    'entity/setstrafing',
+    'entity/getstrafing',
 
     -- player controller
     'components/playercontrollercomponent',
@@ -74,6 +76,7 @@ return {
 
     -- flow
     'flow/eachframe',
+    'flow/cooldown',
 
     -- game
     'game/gamedt',
@@ -83,4 +86,6 @@ return {
     'controller/buttonpressed',
     'controller/buttonjustpressed',
     'controller/leftstickdirection',
+    'controller/rightstickdirection',
+    'controller/axisvalue',
 }

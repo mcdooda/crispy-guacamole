@@ -30,6 +30,7 @@ int open(Game& game)
 		{"getCenter",        l_Zone_getCenter},
 
 		{"isTileInside",     l_Zone_isTileInside},
+		{"getRandomTile",    l_Zone_getRandomTile},
 
 		{nullptr, nullptr}
 	};
@@ -94,6 +95,15 @@ int l_Zone_isTileInside(lua_State* L)
 	Zone* zone = getZone(L, 1);
 	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 2));
 	lua_pushboolean(L, zone->isTileInside(tileIndex));
+	return 1;
+}
+
+int l_Zone_getRandomTile(lua_State* L)
+{
+	Zone* zone = getZone(L, 1);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	const Tile* tile = zone->getRandomTile(game);
+	lua_pushlightuserdata(L, const_cast<Tile*>(tile));
 	return 1;
 }
 

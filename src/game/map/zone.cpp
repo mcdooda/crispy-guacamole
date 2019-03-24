@@ -1,5 +1,6 @@
 #include "zone.h"
 #include "map.h"
+#include "../game.h"
 
 namespace game
 {
@@ -56,6 +57,19 @@ void Zone::eachTile(std::function<void(TileIndex tileIndex)> func)
 	{
 		func(tileIndex);
 	}
+}
+
+const Tile* Zone::getRandomTile(Game& game) const
+{
+	if (m_tiles.empty())
+		return nullptr;
+
+	int randomIndex = game.random->nextInt(0, static_cast<int>(m_tiles.size()) - 1);
+	std::set<const Tile*>::iterator it = m_tiles.begin();
+	std::advance(it, randomIndex);
+	const Tile* tile = *it;
+	FLAT_ASSERT(tile != nullptr);
+	return tile;
 }
 
 const Zone::Rectangle* Zone::selectRectangle(const flat::Vector2& position) const

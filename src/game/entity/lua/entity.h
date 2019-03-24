@@ -58,9 +58,12 @@ int l_Entity_clearPath(lua_State* L);
 int l_Entity_setSpeed(lua_State* L);
 int l_Entity_getSpeed(lua_State* L);
 int l_Entity_jump(lua_State* L);
+int l_Entity_isTouchingGround(lua_State* L);
 int l_Entity_restrictToZone(lua_State* L);
 int l_Entity_setMoveAnimation(lua_State* L);
 int l_Entity_setDefaultMoveAnimation(lua_State* L);
+int l_Entity_setIsStrafing(lua_State* L);
+int l_Entity_getIsStrafing(lua_State* L);
 
 // behavior
 int l_Entity_enterState(lua_State* L);

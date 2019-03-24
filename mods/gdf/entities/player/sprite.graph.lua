@@ -90,18 +90,6 @@ return {
       10,
       4,
     },
-    {
-      15,
-      2,
-      16,
-      1,
-    },
-    {
-      15,
-      3,
-      16,
-      2,
-    },
   },
   nodeType = 'script',
   nodes = {
@@ -179,12 +167,9 @@ return {
     },
     {
       loadArguments = {
-        0.10000000149012,
+        0.050000000745058,
       },
       name = 'number',
-    },
-    {
-      name = 'entity/headingchanged',
     },
     {
       loadArguments = {

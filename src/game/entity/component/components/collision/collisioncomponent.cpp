@@ -53,7 +53,7 @@ void CollisionComponent::separateFromNearbyEntities()
 	map->eachEntityInCollisionRange(
 		flat::Vector2(position),
 		radius,
-		[this, &position, &collisionBox, weight, &newPosition](entity::Entity* neighbor)
+		[this, &position, &collisionBox, weight, &newPosition, collisionComponentTemplate](entity::Entity* neighbor)
 		{
 			if (neighbor == m_owner)
 				return;
@@ -61,7 +61,8 @@ void CollisionComponent::separateFromNearbyEntities()
 			const flat::Vector3& neighborPosition = neighbor->getPosition();
 			const EntityTemplate* neighborTemplate = neighbor->getEntityTemplate().get();
 			const CollisionComponentTemplate* neighborCollisionComponentTemplate = neighborTemplate->getComponentTemplate<CollisionComponent>();
-			if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate())
+			if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate()
+				&& !(neighborCollisionComponentTemplate == collisionComponentTemplate && !collisionComponentTemplate->getSeparateSameType()))
 			{
 				const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
 				flat::Vector3 penetration;

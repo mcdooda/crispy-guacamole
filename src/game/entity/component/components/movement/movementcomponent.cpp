@@ -2,6 +2,7 @@
 #include "movementcomponenttemplate.h"
 #include "../collision/collisioncomponent.h"
 #include "../sprite/spritecomponent.h"
+#include "../projectile/projectilecomponent.h"
 #include "../../componenttype.h"
 #include "../../../entity.h"
 #include "../../../entityhelper.h"
@@ -34,6 +35,7 @@ void MovementComponent::init()
 	setDefaultMoveAnimation();
 
 	m_isMoving = false;
+	m_isStrafing = false;
 }
 
 void MovementComponent::deinit()
@@ -89,9 +91,12 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 				map->eachEntityInRange(
 					position2d,
 					3.f,
-					[this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance](Entity* entity)
+					[this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance, collisionComponentTemplate](Entity* entity)
 					{
 						if (entity == m_owner)
+							return;
+
+						if (entity->getComponent<projectile::ProjectileComponent>() != nullptr)
 							return;
 
 						// in front of the component owner?
@@ -107,8 +112,9 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 								|| flat::dot(getCurrentDirection(), entityMovementComponent->getCurrentDirection()) < 0.f)
 							{
 								const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
-								const collision::CollisionComponentTemplate* collisionComponentTemplate = entityTemplate->getComponentTemplate<collision::CollisionComponent>();
-								if (collisionComponentTemplate != nullptr && collisionComponentTemplate->getSeparate())
+								const collision::CollisionComponentTemplate* otherCollisionComponentTemplate = entityTemplate->getComponentTemplate<collision::CollisionComponent>();
+								if (otherCollisionComponentTemplate != nullptr && otherCollisionComponentTemplate->getSeparate()
+									&& !(otherCollisionComponentTemplate == collisionComponentTemplate && !collisionComponentTemplate->getSeparateSameType()))
 								{
 									const float entityRadius = collisionComponentTemplate->getRadius();
 									const float avoidDistance = (radius + entityRadius) * flat::SQRT2;
@@ -146,7 +152,10 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 
 			FLAT_DEBUG_ONLY(m_steering = steering;)
 			steering = flat::normalize(steering);
-			m_owner->setHeading(flat::vector2_angle(steering), flat::PI2 / 64.f);
+			if (!m_isStrafing)
+			{
+				m_owner->setHeading(flat::vector2_angle(steering), flat::PI2 / 64.f);
+			}
 			flat::Vector2 newPosition2d = position2d + steering * m_speed * elapsedTime;
 			
 			flat::Vector2 nextTilePosition = position2d + steering * 0.4f;

@@ -11,6 +11,7 @@
 #include "../entity/faction/faction.h"
 #include "../debug/debugdisplay.h"
 #include "../map/displaymanager.h"
+#include "../entity/entity.h"
 
 namespace game
 {
@@ -74,6 +75,9 @@ class BaseMapState : public BaseState
 		void despawnEntities();
 
 		inline const std::vector<entity::Entity*>& getSelectedEntities() const { return m_selectedEntities; }
+
+		template <class Func>
+		inline void eachEntityOfType(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, Func func) const;
 
 		void setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate);
 		void clearGhostTemplate();
@@ -216,7 +220,23 @@ class BaseMapStateImpl : public BaseMapState
 		MapType m_map;
 };
 
+FLAT_OPTIMIZE_OFF()
+template <class Func>
+void BaseMapState::eachEntityOfType(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, Func func) const
+{
+	const std::vector<entity::Entity*>& entities = m_entityUpdater.getEntities();
+	for (entity::Entity* entity : entities)
+	{
+		if (entity->getEntityTemplate() == entityTemplate)
+		{
+			func(entity);
+		}
+	}
+}
+FLAT_OPTIMIZE_ON()
+
 #ifdef FLAT_DEBUG
+
 template<class T>
 inline void BaseMapState::reloadToState(Game& game)
 {

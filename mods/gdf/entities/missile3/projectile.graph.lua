@@ -9,7 +9,7 @@ return {
     {
       1,
       2,
-      7,
+      11,
       1,
     },
     {
@@ -41,12 +41,6 @@ return {
       1,
       1,
       3,
-    },
-    {
-      7,
-      1,
-      6,
-      1,
     },
     {
       8,
@@ -65,6 +59,18 @@ return {
       1,
       7,
       3,
+    },
+    {
+      11,
+      1,
+      7,
+      1,
+    },
+    {
+      11,
+      2,
+      6,
+      1,
     },
   },
   nodeType = 'script',
@@ -107,7 +113,7 @@ return {
     },
     {
       loadArguments = {
-        'fx_explosion',
+        'fx_bigexplosion',
       },
       name = 'string',
     },
@@ -119,6 +125,12 @@ return {
     },
     {
       name = 'entity/getposition',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'script/impulseall',
     },
   },
 }

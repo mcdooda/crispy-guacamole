@@ -16,7 +16,9 @@ function JumpNode:execute(runtime, inputPin)
     local entity = runtime:readPin(self.entityInPin)
     local yield = runtime:readPin(self.yieldInPin)
 
-    entity:jump(yield)
+    if entity:isTouchingGround() then
+        entity:jump(yield)
+    end
 
     runtime:impulse(self.impulseOutPin)
 end

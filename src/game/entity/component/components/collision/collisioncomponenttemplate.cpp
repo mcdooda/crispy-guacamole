@@ -66,6 +66,19 @@ void CollisionComponentTemplate::load(Game& game, lua_State* L, const std::strin
 	m_separate = lua_toboolean(L, -1) == 1;
 
 	lua_pop(L, 1);
+
+	lua_getfield(L, -1, "separateSameType");
+	if (lua_isnil(L, -1))
+	{
+		m_separateSameType = m_separate;
+	}
+	else
+	{
+		luaL_checktype(L, -1, LUA_TBOOLEAN);
+		m_separateSameType = lua_toboolean(L, -1) == 1;
+	}
+
+	lua_pop(L, 1);
 }
 
 } // collision

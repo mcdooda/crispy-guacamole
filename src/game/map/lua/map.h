@@ -26,9 +26,11 @@ int l_Map_debug_getDrawStats(lua_State* L);
 int l_Map_getNumEntities(lua_State* L);
 int l_Map_getEntitiesInRange(lua_State* L);
 int l_Map_eachSelectedEntity(lua_State* L);
+int l_Map_getEntitiesOfType(lua_State* L);
 
 int l_Map_getZone(lua_State* L);
 
+int l_Map_getTilePosition(lua_State* L);
 int l_Map_getTileZ(lua_State* L);
 int l_Map_setTileZ(lua_State* L);
 int l_Map_moveTileZBy(lua_State* L);

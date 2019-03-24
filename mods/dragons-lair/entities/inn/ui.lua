@@ -66,7 +66,7 @@ function ui.addedToMap(entity, widget)
 		buildItemList(itemContainer, ShopKeeper:getStock())
 		avatar:startAnimation('speaking', 2)
 		entity:setUiVisible(true)
-		Camera.moveTo(entity:getPosition(), 1)
+		Camera.lockAndMoveTo(entity:getPosition(), 1)
 	end)
 	
 	entity:deselected(function(entity)

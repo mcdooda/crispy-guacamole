@@ -9,7 +9,7 @@ return {
     {
       1,
       2,
-      6,
+      11,
       1,
     },
     {
@@ -17,6 +17,12 @@ return {
       3,
       6,
       2,
+    },
+    {
+      1,
+      3,
+      10,
+      1,
     },
     {
       2,
@@ -36,6 +42,36 @@ return {
       1,
       3,
     },
+    {
+      8,
+      1,
+      7,
+      2,
+    },
+    {
+      9,
+      1,
+      7,
+      4,
+    },
+    {
+      10,
+      1,
+      7,
+      3,
+    },
+    {
+      11,
+      1,
+      7,
+      1,
+    },
+    {
+      11,
+      2,
+      6,
+      1,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -50,7 +86,7 @@ return {
     },
     {
       loadArguments = {
-        20,
+        40,
       },
       name = 'number',
     },
@@ -71,6 +107,30 @@ return {
     },
     {
       name = 'entity/despawnentity',
+    },
+    {
+      name = 'entity/spawnentity',
+    },
+    {
+      loadArguments = {
+        'fx_bigexplosion',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      name = 'entity/getposition',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'script/impulseall',
     },
   },
 }

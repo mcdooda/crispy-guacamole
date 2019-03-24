@@ -43,6 +43,18 @@ return {
       2,
     },
     {
+      6,
+      1,
+      14,
+      1,
+    },
+    {
+      6,
+      1,
+      15,
+      1,
+    },
+    {
       7,
       1,
       10,
@@ -57,14 +69,14 @@ return {
     {
       9,
       1,
-      10,
+      13,
       1,
     },
     {
       9,
       2,
-      10,
-      2,
+      16,
+      1,
     },
     {
       9,
@@ -89,6 +101,30 @@ return {
       1,
       2,
       4,
+    },
+    {
+      13,
+      1,
+      10,
+      1,
+    },
+    {
+      14,
+      1,
+      16,
+      2,
+    },
+    {
+      15,
+      1,
+      13,
+      2,
+    },
+    {
+      16,
+      1,
+      10,
+      2,
     },
   },
   nodeType = 'script',
@@ -162,6 +198,24 @@ return {
         1,
       },
       name = 'number',
+    },
+    {
+      name = 'math/add',
+    },
+    {
+      name = 'math/add',
+    },
+    {
+      loadArguments = {
+        'sin(heading)*0.5',
+      },
+      name = 'math/formula',
+    },
+    {
+      loadArguments = {
+        'cos(heading)*0.5',
+      },
+      name = 'math/formula',
     },
     {
       name = 'math/add',

@@ -10,6 +10,7 @@
 
 namespace game
 {
+class Game;
 namespace map
 {
 
@@ -42,6 +43,8 @@ class Zone
 		inline const flat::video::Color& getColor() const { return m_color; }
 
 		void eachTile(std::function<void(TileIndex tileIndex)> func);
+
+		const Tile* getRandomTile(Game& game) const;
 
 		const Rectangle* selectRectangle(const flat::Vector2& position) const;
 

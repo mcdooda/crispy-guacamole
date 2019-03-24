@@ -141,14 +141,11 @@ void Reader::readHeaders()
 void Reader::readTiles()
 {
 	m_map.setBounds(m_minX, m_maxX, m_minY, m_maxY);
-	m_map.createTiles();
 	
 	for (int x = m_minX; x <= m_maxX; ++x)
 	{
 		for (int y = m_minY; y <= m_maxY; ++y)
 		{
-			Tile* tile = m_map.getTile(x, y);
-			
 			// tile actually exists?
 			bool exists;
 			read(exists);
@@ -156,20 +153,18 @@ void Reader::readTiles()
 			{
 				float z;
 				read(z);
-				tile->setCoordinates(m_map, x, y, z);
 				
-				uint16_t tileId;
-				read(tileId);
+				uint16_t tileTemplateId;
+				read(tileTemplateId);
 
-				uint16_t tileIndex = tileId & 0x0FFF;
-				uint16_t tileVariantIndex = tileId >> 12;
+				uint16_t tileTemplateIndex = tileTemplateId & 0x0FFF;
+				uint16_t tileTemplateVariantIndex = tileTemplateId >> 12;
 
-				std::shared_ptr<const TileTemplate> tileTemplate = m_tileTemplates[tileIndex];
+				std::shared_ptr<const TileTemplate> tileTemplate = m_tileTemplates[tileTemplateIndex];
+				flat::render::SpriteSynchronizer& spriteSynchronizer = m_map.getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
 
-				flat::render::SpriteSynchronizer& spriteSynchronizer = m_map.getTileSpriteSynchronizer(tileTemplate, tileVariantIndex);
-				tile->synchronizeSpriteTo(m_map, spriteSynchronizer);
-
-				tile->setNavigability(tileTemplate->getNavigability());
+				TileIndex tileIndex = m_map.createTile(x, y, z, spriteSynchronizer);
+				m_map.setTileNavigability(tileIndex, tileTemplate->getNavigability());
 				
 				bool hasProp;
 				read(hasProp);
@@ -178,10 +173,8 @@ void Reader::readTiles()
 					uint16_t propIndex;
 					read(propIndex);
 					const std::shared_ptr<const flat::video::FileTexture>& texture = m_propTextures[propIndex];
-					tile->setPropTexture(m_map, texture);
+					m_map.setTilePropTexture(tileIndex, texture);
 				}
-
-				tile->setExists(m_map, true);
 			}
 		}
 	}
@@ -225,9 +218,9 @@ void Reader::readEntities()
 
 		if (entityTemplate != nullptr)
 		{
-			Tile* tile = m_map.getTile(x, y);
-			FLAT_ASSERT(tile != nullptr);
-			flat::Vector3 position(x, y, tile->getZ());
+			TileIndex tileIndex = m_map.getTileIndex(x, y);
+			FLAT_ASSERT(tileIndex != TileIndex::INVALID);
+			flat::Vector3 position(x, y, m_map.getTileZ(tileIndex));
 			baseMapState.spawnEntityAtPosition(m_game, entityTemplate, position);
 		}
 	}

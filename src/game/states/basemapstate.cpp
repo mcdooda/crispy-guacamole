@@ -135,7 +135,7 @@ void BaseMapState::enter(Game& game)
 	resetViews(game);
 
 	m_mouseOverEntity = nullptr;
-	m_mouseOverTile = nullptr;
+	m_mouseOverTileIndex = map::TileIndex::INVALID;
 	m_ghostEntity = nullptr;
 }
 
@@ -220,12 +220,13 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 	flat::Vector2 mapPosition = gameViewToMap(gameViewPosition);
 	isOnTile = false;
 
-	if (m_mouseOverTile != nullptr)
+	if (m_mouseOverTileIndex != map::TileIndex::INVALID)
 	{
-		const flat::Vector2& spritePosition = m_mouseOverTile->getSprite().getPosition();
+		const flat::Vector2& spritePosition = getMap().getTileSprite(m_mouseOverTileIndex).getPosition();
 		flat::Vector2 delta = gameViewToMap(gameViewPosition - spritePosition);
 
-		flat::Vector2 tileCenter = flat::Vector2(m_mouseOverTile->getX(), m_mouseOverTile->getY());
+		const flat::Vector2i& xy = getMap().getTileXY(m_mouseOverTileIndex);
+		flat::Vector2 tileCenter = flat::Vector2(xy.x, xy.y);
 		flat::Vector2 mapPositionOnTile = tileCenter + delta;
 		if (mapPositionOnTile.x <= tileCenter.x + 0.5f && mapPositionOnTile.y <= tileCenter.y + 0.5f)
 		{
@@ -245,8 +246,8 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 				adjacentTilePosition = flat::Vector2(tileCenter.x, tileCenter.y + 0.5f + flat::EPSILON);
 			}
 
-			const map::Tile* adjacentTile = map.getTileIfExists(adjacentTilePosition.x, adjacentTilePosition.y);
-			if (adjacentTile != nullptr)
+			map::TileIndex adjacentTileIndex = map.getTileIndex(adjacentTilePosition.x, adjacentTilePosition.y);
+			if (adjacentTileIndex != map::TileIndex::INVALID)
 			{
 				mapPosition = adjacentTilePosition;
 				isOnTile = true;
@@ -269,14 +270,17 @@ void BaseMapState::debugCursorPosition(Game& game)
 	flat::Vector2 position2d = getCursorMapPosition(game, cursorOnTile);
 	flat::Vector3 position3d(position2d, 0.f);
 	flat::video::Color color = flat::video::Color::RED;
-	const map::Tile* tile = getMap().getTileIfExists(position2d.x, position2d.y);
-	if (tile != nullptr && cursorOnTile)
+	map::Map& map = getMap();
+	map::TileIndex tileIndex = map.getTileIndex(position2d.x, position2d.y);
+	if (tileIndex != map::TileIndex::INVALID && cursorOnTile)
 	{
-		position3d.z = tile->getZ();
+		const float tileZ = map.getTileZ(tileIndex);
+		position3d.z = tileZ;
 		color = flat::video::Color::BLUE;
 
 		{
-			flat::Vector3 position3d(tile->getX(), tile->getY(), tile->getZ());
+			const flat::Vector2i& xy = map.getTileXY(tileIndex);
+			flat::Vector3 position3d(xy.x, xy.y, tileZ);
 			m_debugDisplay.add3dLine(position3d + flat::Vector3(-0.5f, -0.5f, 0.f), position3d + flat::Vector3(0.5f, -0.5f, 0.f));
 			m_debugDisplay.add3dLine(position3d + flat::Vector3(0.5f, -0.5f, 0.f), position3d + flat::Vector3(0.5f, 0.5f, 0.f));
 			m_debugDisplay.add3dLine(position3d + flat::Vector3(0.5f, 0.5f, 0.f), position3d + flat::Vector3(-0.5f, 0.5f, 0.f));
@@ -420,8 +424,9 @@ void BaseMapState::clearGhostTemplate()
 	m_ghostEntity = nullptr;
 }
 
-bool BaseMapState::canPlaceGhostEntity(const map::Tile* tile) const
+bool BaseMapState::canPlaceGhostEntity(map::TileIndex tileIndex) const
 {
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
 	return true;
 }
 
@@ -522,18 +527,18 @@ void BaseMapState::addGhostEntity(game::Game& game)
 		if (isOnTile)
 		{
 			map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostEntity);
-			const map::Tile* tile = getMap().getTileIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
-			if (tile != nullptr)
+			map::TileIndex tileIndex = getMap().getTileIndexIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
+			if (tileIndex != map::TileIndex::INVALID)
 			{
 				m_ghostEntity->resetComponents();
 				m_ghostEntity->setHeading(0.f);
 				m_ghostEntity->setElevation(0.f);
-				flat::Vector3 ghostPosition(cursorPosition, tile->getZ());
+				flat::Vector3 ghostPosition(cursorPosition, getMap().getTileZ(tileIndex));
 				m_ghostEntity->setPosition(ghostPosition);
 				addEntityToMap(m_ghostEntity);
 				flat::render::BaseSprite& sprite = m_ghostEntity->getSprite();
 				flat::video::Color color;
-				if (canPlaceGhostEntity(tile))
+				if (canPlaceGhostEntity(tileIndex))
 				{
 					color = flat::video::Color::WHITE;
 					color.a = 0.6f;
@@ -705,7 +710,7 @@ bool BaseMapState::isSelecting() const
 
 void BaseMapState::updateMouseOverEntity(Game& game)
 {
-	m_mouseOverTile = nullptr;
+	m_mouseOverTileIndex = map::TileIndex::INVALID;
 
 	if ((isSelecting() && !isSmallSelection()) || isMouseOverUi(game))
 	{
@@ -730,11 +735,11 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 		
 		if (mouseOverObject->isTile())
 		{
-			m_mouseOverTile = static_cast<const map::Tile*>(mouseOverObject);
+			m_mouseOverTileIndex = getMap().getTileIndex(static_cast<const map::Tile*>(mouseOverObject));
 		}
 		else
 		{
-			m_mouseOverTile = m_displayManager.getTileAtPosition(viewMousePosition);
+			m_mouseOverTileIndex = getMap().getTileIndex(m_displayManager.getTileAtPosition(viewMousePosition));
 		}
 	}
 
@@ -1015,12 +1020,12 @@ void BaseMapState::handleGameActionInputs(Game& game)
 				if (cursorOnTile)
 				{
 					map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
-					const map::Tile* tile = getMap().getTileIfNavigable(position2d.x, position2d.y, navigabilityMask);
-					if (tile != nullptr && canPlaceGhostEntity(tile))
+					map::TileIndex tileIndex = getMap().getTileIndexIfNavigable(position2d.x, position2d.y, navigabilityMask);
+					if (tileIndex != map::TileIndex::INVALID && canPlaceGhostEntity(tileIndex))
 					{
 						if (onGhostEntityPlaced())
 						{
-							flat::Vector3 position(position2d.x, position2d.y, tile->getZ());
+							flat::Vector3 position(position2d.x, position2d.y, getMap().getTileZ(tileIndex));
 							spawnEntityAtPosition(game, m_ghostTemplate, position);
 						}
 						if (!keyboard.isPressed(K(LSHIFT)))

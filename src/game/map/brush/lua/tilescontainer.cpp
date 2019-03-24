@@ -36,7 +36,7 @@ int l_TilesContainer_eachTile(lua_State* L)
 	for (TileEffect& tileEffect : tilesContainer)
 	{
 		lua_pushvalue(L, 2);
-		lua_pushlightuserdata(L, tileEffect.tile);
+		lua_pushinteger(L, tileEffect.tileIndex);
 		lua_pushnumber(L, tileEffect.effect);
 		lua_call(L, 2, 0);
 	}

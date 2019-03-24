@@ -3,16 +3,16 @@
 
 #include <flat.h>
 #include "basemapstate.h"
-#include "../map/gamemap.h"
+#include "../map/map.h"
 
 namespace game
 {
 namespace states
 {
 
-class GameState : public BaseMapStateImpl<map::GameMap>
+class GameState : public BaseMapStateImpl<map::Map>
 {
-	using Super = BaseMapStateImpl<map::GameMap>;
+	using Super = BaseMapStateImpl<map::Map>;
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
@@ -20,7 +20,7 @@ class GameState : public BaseMapStateImpl<map::GameMap>
 		void setCanPlaceGhostEntity(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& canPlaceGhostEntity);
 		void setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& onGhostEntityPlaced);
 
-		bool canPlaceGhostEntity(const map::Tile* tile) const override;
+		bool canPlaceGhostEntity(map::TileIndex tileIndex) const override;
 		bool onGhostEntityPlaced() override;
 
 	protected:

@@ -1,3 +1,5 @@
+#include <type_traits>
+
 #include "map.h"
 #include "tiletemplate.h"
 #include "prop.h"
@@ -50,7 +52,6 @@ bool Map::load(Game& game, const mod::Mod& mod)
 	else
 	{
 		setBounds(0, 1, 0, 1);
-		createTiles();
 		return false;
 	}
 }
@@ -68,6 +69,9 @@ bool Map::save(const mod::Mod& mod, const std::string& mapName, const std::vecto
 
 void Map::setBounds(int minX, int maxX, int minY, int maxY)
 {
+	FLAT_ASSERT(minX <= maxX);
+	FLAT_ASSERT(minY <= maxY);
+
 	m_minX = minX;
 	m_maxX = maxX;
 	m_minY = minY;
@@ -78,6 +82,9 @@ void Map::setBounds(int minX, int maxX, int minY, int maxY)
 		flat::Vector2(static_cast<float>(maxX) + 1.f, static_cast<float>(maxY) + 1.f)
 	);
 	m_entityQuadtree = std::move(std::make_unique<flat::geometry::QuadTree<entity::Entity, 10, getEntityAABB>>(aabb));
+
+	int maxTileCount = (m_maxX - m_minX + 1) * (m_maxY - m_minY + 1);
+	m_tiles.reserve(maxTileCount);
 }
 
 void Map::getBounds(int& minX, int& maxX, int& minY, int& maxY) const
@@ -93,23 +100,68 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 	// note that min and max are swapped
 	getBounds(maxX, minX, maxY, minY);
 
-	eachTile([&](const Tile* tile)
+	eachTile([&](TileIndex tileIndex)
 	{
-		if (tile->exists())
-		{
-			const int x = tile->getX();
-			const int y = tile->getY();
-			minX = std::min(minX, x);
-			maxX = std::max(maxX, x);
-			minY = std::min(minY, y);
-			maxY = std::max(maxY, y);
-		}
+		const flat::Vector2i& xy = m_tiles[tileIndex].getXY();
+		minX = std::min(minX, xy.x);
+		maxX = std::max(maxX, xy.x);
+		minY = std::min(minY, xy.y);
+		maxY = std::max(maxY, xy.y);
 	});
+}
+
+TileIndex Map::createTile(int x, int y, float z, flat::render::SpriteSynchronizer& spriteSynchronizer)
+{
+	TileIndex tileIndex = static_cast<TileIndex>(m_tiles.size());
+	Tile& tile = m_tiles.emplace_back();
+	tile.synchronizeSpriteTo(*this, spriteSynchronizer);
+	tile.setCoordinates(*this, flat::Vector2i(x, y), z, true);
+	size_t positionHash = getTileHashFromPosition(x, y);
+	FLAT_ASSERT(m_tilePositionToIndex.find(positionHash) == m_tilePositionToIndex.end());
+	m_tilePositionToIndex[positionHash] = tileIndex;
+	return tileIndex;
+}
+
+
+void Map::deleteTile(Tile* tile)
+{
+
+}
+
+void Map::deleteTile(TileIndex tileIndex)
+{
+
+}
+
+size_t Map::getTileHashFromPosition(int x, int y) const
+{
+	return x * 1'000'000 + y;
+}
+
+const Tile* Map::getTileByIndex(TileIndex tileIndex) const
+{
+	return &m_tiles.at(tileIndex);
+}
+
+
+game::map::Tile* Map::getTileByIndex(TileIndex tileIndex)
+{
+	return &m_tiles.at(tileIndex);
 }
 
 const Tile* Map::getTile(int x, int y) const
 {
 	return const_cast<Map*>(this)->getTile(x, y);
+}
+
+Tile* Map::getTile(int x, int y)
+{
+	TileIndex tileIndex = getTileIndex(x, y);
+	if (tileIndex != TileIndex::INVALID)
+	{
+		return &m_tiles[tileIndex];
+	}
+	return nullptr;
 }
 
 const Tile* Map::getTile(float x, float y) const
@@ -122,29 +174,47 @@ Tile* Map::getTile(float x, float y)
 	return getTile(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
-const Tile* Map::getTileIfExists(int x, int y) const
+TileIndex Map::getTileIndex(int x, int y) const
 {
-	return const_cast<Map*>(this)->getTileIfExists(x, y);
+	size_t positionHash = getTileHashFromPosition(x, y);
+	std::unordered_map<size_t, TileIndex>::const_iterator it = m_tilePositionToIndex.find(positionHash);
+	if (it != m_tilePositionToIndex.end())
+	{
+		return it->second;
+	}
+	return TileIndex::INVALID;
 }
 
-Tile* Map::getTileIfExists(int x, int y)
+TileIndex Map::getTileIndex(float x, float y) const
 {
-	Tile* tile = getTile(x, y);
-
-	if (!tile || !tile->exists())
-		return nullptr;
-
-	return tile;
+	return getTileIndex(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
-const Tile* Map::getTileIfExists(float x, float y) const
+TileIndex Map::getTileIndex(const Tile* tile) const
 {
-	return const_cast<Map*>(this)->getTileIfExists(x, y);
+	return static_cast<TileIndex>(tile - &m_tiles[0]);
 }
 
-Tile* Map::getTileIfExists(float x, float y)
+const flat::Vector2i& Map::getTileXY(TileIndex tileIndex) const
 {
-	return getTileIfExists(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
+	return m_tiles.at(tileIndex).getXY();
+}
+
+void Map::setTileZ(TileIndex tileIndex, float z)
+{
+	m_tiles[tileIndex].setZ(*this, z);
+}
+
+
+void Map::moveTileZBy(TileIndex tileIndex, float dz)
+{
+	Tile& tile = m_tiles[tileIndex];
+	tile.setZ(*this, tile.getZ() + dz);
+}
+
+float Map::getTileZ(TileIndex tileIndex) const
+{
+	return m_tiles.at(tileIndex).getZ();
 }
 
 const Tile* Map::getTileIfNavigable(int x, int y, Navigability navigabilityMask) const
@@ -154,7 +224,7 @@ const Tile* Map::getTileIfNavigable(int x, int y, Navigability navigabilityMask)
 
 Tile* Map::getTileIfNavigable(int x, int y, Navigability navigabilityMask)
 {
-	Tile* tile = getTileIfExists(x, y);
+	Tile* tile = getTile(x, y);
 
 	if (!tile || !tile->isNavigable(navigabilityMask))
 		return nullptr;
@@ -172,31 +242,83 @@ Tile* Map::getTileIfNavigable(float x, float y, Navigability navigabilityMask)
 	return getTileIfNavigable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)), navigabilityMask);
 }
 
-void Map::eachTile(std::function<void(const Tile*)> func) const
+TileIndex Map::getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const
 {
-	const_cast<Map*>(this)->eachTile([func](Tile* tile)
+	TileIndex tileIndex = getTileIndex(x, y);
+	if (tileIndex == TileIndex::INVALID)
 	{
-		func(tile);
-	});
+		return TileIndex::INVALID;
+	}
+	const Tile& tile = m_tiles.at(tileIndex);
+	if (tile.isNavigable(navigabilityMask))
+	{
+		return tileIndex;
+	}
+	return TileIndex::INVALID;
 }
 
-void Map::eachTileIfExists(std::function<void(const Tile*)> func) const
+
+TileIndex Map::getTileIndexIfNavigable(float x, float y, Navigability navigabilityMask) const
 {
-	const_cast<Map*>(this)->eachTileIfExists([func](Tile* tile)
-	{
-		func(tile);
-	});
+	return getTileIndexIfNavigable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)), navigabilityMask);
 }
 
-void Map::eachTileIfExists(std::function<void(Tile*)> func)
+bool Map::isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) const
 {
-	eachTile([func](Tile* tile)
+	return m_tiles.at(tileIndex).isNavigable(navigabilityMask);
+}
+
+map::Navigability Map::getTileNavigability(TileIndex tileIndex) const
+{
+	return m_tiles.at(tileIndex).getNavigability();
+}
+
+void Map::setTileNavigability(TileIndex tileIndex, Navigability navigability)
+{
+	m_tiles[tileIndex].setNavigability(navigability);
+}
+
+void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color)
+{
+	m_tiles[tileIndex].setColor(color);
+}
+
+const flat::video::Color& Map::getTileColor(TileIndex tileIndex) const
+{
+	return m_tiles.at(tileIndex).getColor();
+}
+
+void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::video::Texture> texture)
+{
+	m_tiles[tileIndex].setPropTexture(*this, texture);
+}
+
+void Map::removeTileProp(TileIndex tileIndex)
+{
+	m_tiles[tileIndex].removeProp(*this);
+}
+
+const map::Prop* Map::getTileProp(TileIndex tileIndex) const
+{
+	return m_tiles.at(tileIndex).getProp();
+}
+
+void Map::eachTile(std::function<void(TileIndex)> func) const
+{
+	for (TileIndex i = static_cast<TileIndex>(0), e = static_cast<TileIndex>(m_tiles.size()); i < e; ++(std::uint32_t&)i)
 	{
-		if (tile->exists())
-		{
-			func(tile);
-		}
-	});
+		func(i);
+	}
+}
+
+const flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex) const
+{
+	return m_tiles.at(tileIndex).getSprite();
+}
+
+void Map::synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer)
+{
+	m_tiles[tileIndex].synchronizeSpriteTo(*this, synchronizer);
 }
 
 flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex)
@@ -248,6 +370,11 @@ const std::shared_ptr<const TileTemplate> Map::getTileTemplate(const Tile* tile)
 	return nullptr;
 }
 
+const std::shared_ptr<const TileTemplate> Map::getTileTemplate(TileIndex tileIndex) const
+{
+	return getTileTemplate(&m_tiles.at(tileIndex));
+}
+
 int Map::addEntity(entity::Entity* entity)
 {
 	return m_entityQuadtree->addObject(entity);
@@ -263,11 +390,11 @@ int Map::updateEntityPosition(entity::Entity* entity, int cellIndex)
 	return m_entityQuadtree->updateObject(entity, cellIndex);
 }
 
-int Map::getTileEntityCount(const Tile* tile) const
+int Map::getTileEntityCount(TileIndex tileIndex) const
 {
 	int entityCount = 0;
 	eachTileEntity(
-		tile,
+		tileIndex,
 		[&entityCount](entity::Entity* entity)
 		{
 			++entityCount;
@@ -276,9 +403,13 @@ int Map::getTileEntityCount(const Tile* tile) const
 	return entityCount;
 }
 
+void Map::eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const
+{
+	m_tiles.at(tileIndex).eachNeighborTilesWithNavigability(*this, jumpHeight, navigabilityMask, func);
+}
+
 void Map::setTileNormalDirty(Tile& tile)
 {
-	FLAT_ASSERT(tile.exists());
 	if (!tile.isNormalDirty())
 	{
 		tile.setNormalDirty();
@@ -298,9 +429,9 @@ void Map::updateTilesNormals()
 void Map::updateAllTilesNormals()
 {
 	m_dirtyNormalTiles.clear();
-	eachTileIfExists([this](Tile* tile)
+	eachTile([this](TileIndex tileIndex)
 	{
-		tile->updateNormal(*this);
+		m_tiles[tileIndex].updateNormal(*this);
 	});
 }
 

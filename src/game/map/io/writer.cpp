@@ -47,20 +47,17 @@ void Writer::writeHeaders()
 	// tile textures
 	FLAT_ASSERT(m_tileTextures.empty());
 	std::vector<const flat::video::Texture*> tileTexturesOrdered;
-	m_map.eachTile([this, &tileTexturesOrdered](const Tile* tile)
+	m_map.eachTile([this, &tileTexturesOrdered](TileIndex tileIndex)
 	{
-		if (tile->exists())
+		const flat::render::BaseSprite& sprite = m_map.getTileSprite(tileIndex);
+		const flat::video::Texture* tileTexture = sprite.getTexture().get();
+		FLAT_ASSERT(tileTexture != nullptr);
+		std::map<const flat::video::Texture*, uint16_t>::iterator it = m_tileTextures.find(tileTexture);
+		if (it == m_tileTextures.end())
 		{
-			const flat::render::BaseSprite& sprite = tile->getSprite();
-			const flat::video::Texture* tileTexture = sprite.getTexture().get();
-			FLAT_ASSERT(tileTexture != nullptr);
-			std::map<const flat::video::Texture*, uint16_t>::iterator it = m_tileTextures.find(tileTexture);
-			if (it == m_tileTextures.end())
-			{
-				uint16_t index = static_cast<uint16_t>(m_tileTextures.size());
-				m_tileTextures[tileTexture] = index;
-				tileTexturesOrdered.push_back(tileTexture);
-			}
+			uint16_t index = static_cast<uint16_t>(m_tileTextures.size());
+			m_tileTextures[tileTexture] = index;
+			tileTexturesOrdered.push_back(tileTexture);
 		}
 	});
 
@@ -76,22 +73,19 @@ void Writer::writeHeaders()
 	// prop textures
 	FLAT_ASSERT(m_propTextures.empty());
 	std::vector<const flat::video::Texture*> propTexturesOrdered;
-	m_map.eachTile([this, &propTexturesOrdered](const Tile* tile)
+	m_map.eachTile([this, &propTexturesOrdered](TileIndex tileIndex)
 	{
-		if (tile->exists())
+		if (const Prop* prop = m_map.getTileProp(tileIndex))
 		{
-			if (const Prop* prop = tile->getProp())
+			const flat::render::BaseSprite& sprite = prop->getSprite();
+			const flat::video::Texture* propTexture = sprite.getTexture().get();
+			FLAT_ASSERT(propTexture != nullptr);
+			std::map<const flat::video::Texture*, uint16_t>::iterator it = m_propTextures.find(propTexture);
+			if (it == m_propTextures.end())
 			{
-				const flat::render::BaseSprite& sprite = prop->getSprite();
-				const flat::video::Texture* propTexture = sprite.getTexture().get();
-				FLAT_ASSERT(propTexture != nullptr);
-				std::map<const flat::video::Texture*, uint16_t>::iterator it = m_propTextures.find(propTexture);
-				if (it == m_propTextures.end())
-				{
-					uint16_t index = static_cast<uint16_t>(m_propTextures.size());
-					m_propTextures[propTexture] = index;
-					propTexturesOrdered.push_back(propTexture);
-				}
+				uint16_t index = static_cast<uint16_t>(m_propTextures.size());
+				m_propTextures[propTexture] = index;
+				propTexturesOrdered.push_back(propTexture);
 			}
 		}
 	});
@@ -123,26 +117,24 @@ void Writer::writeTiles()
 	{
 		for (int y = minY; y <= maxY; ++y)
 		{
-			const Tile* tile = m_map.getTile(x, y);
+			TileIndex tileIndex = m_map.getTileIndex(x, y);
 
-			// tile actually exists?
-			bool exists = tile->exists();
-			write(exists);
-			if (exists)
+			write(tileIndex != TileIndex::INVALID);
+			if (tileIndex != TileIndex::INVALID)
 			{
-				write(tile->getZ());
+				write(m_map.getTileZ(tileIndex));
 
-				const flat::render::SynchronizedSprite& tileSprite = static_cast<const flat::render::SynchronizedSprite&>(tile->getSprite());
+				const flat::render::SynchronizedSprite& tileSprite = static_cast<const flat::render::SynchronizedSprite&>(m_map.getTileSprite(tileIndex));
 				const flat::render::SpriteSynchronizer& tileSpriteSynchronizer = tileSprite.getSynchronizer();
 
 				const flat::video::Texture* tileTexture = tileSprite.getTexture().get();
-				uint16_t tileIndex = m_tileTextures.at(tileTexture);
-				FLAT_ASSERT((tileIndex & 0x0FFF) == tileIndex);
-				uint16_t tileVariantIndex = tileSpriteSynchronizer.getCurrentLine();
-				FLAT_ASSERT((tileVariantIndex & 0x000F) == tileVariantIndex);
-				write<uint16_t>((tileIndex & 0x0FFF) | (tileVariantIndex << 12));
+				uint16_t tileTemplateIndex = m_tileTextures.at(tileTexture);
+				FLAT_ASSERT((tileTemplateIndex & 0x0FFF) == tileTemplateIndex);
+				uint16_t tileTemplateVariantIndex = tileSpriteSynchronizer.getCurrentLine();
+				FLAT_ASSERT((tileTemplateVariantIndex & 0x000F) == tileTemplateVariantIndex);
+				write<uint16_t>((tileTemplateIndex & 0x0FFF) | (tileTemplateVariantIndex << 12));
 
-				const Prop* prop = tile->getProp();
+				const Prop* prop = m_map.getTileProp(tileIndex);
 				bool hasProp = prop != nullptr;
 				write(hasProp);
 				if (hasProp)

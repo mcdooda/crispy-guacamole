@@ -151,12 +151,16 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			
 			flat::Vector2 nextTilePosition = position2d + steering * 0.4f;
 			const map::Navigability navigabilityMask = getTemplate()->getNavigabilityMask();
-			const map::Tile* nextTile = map->getTileIfNavigable(nextTilePosition.x, nextTilePosition.y, navigabilityMask);
+			const map::TileIndex nextTileIndex = map->getTileIndexIfNavigable(nextTilePosition.x, nextTilePosition.y, navigabilityMask);
 			
 			// jump if necessary
-			if (nextTile && (nextTile->getZ() > position.z + MIN_Z_EPSILON || nextTile->getZ() < position.z - MIN_Z_EPSILON))
+			if (nextTileIndex != map::TileIndex::INVALID)
 			{
-				jump();
+				const float nextTileZ = map->getTileZ(nextTileIndex);
+				if (nextTileZ > position.z + MIN_Z_EPSILON || nextTileZ < position.z - MIN_Z_EPSILON)
+				{
+					jump();
+				}
 			}
 			
 			// has the entity reached the next point on the planned path?
@@ -230,7 +234,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 	
 	if (flat::length2(point - startingPoint) > flat::square(MIN_DISTANCE_TO_DESTINATION))
 	{
-		const map::Map& map = *m_owner->getMap();
+		map::Map& map = *m_owner->getMap();
 
 		const MovementComponentTemplate* movementComponentTemplate = getTemplate();
 		const float jumpHeight = movementComponentTemplate->getJumpMaxHeight();
@@ -250,15 +254,15 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 
 		map::Navigability initialTileNavigability;
 
-		map::Tile* interactionTile = nullptr;
+		map::TileIndex interactionTileIndex = map::TileIndex::INVALID;
 		if (interactionEntity != nullptr)
 		{
-			map::Tile* tile = interactionEntity->getTileFromPosition();
-			if (!tile->isNavigable(navigabilityMask))
+			map::TileIndex tileIndex = interactionEntity->getTileIndexFromPosition();
+			if (!map.isTileNavigable(tileIndex, navigabilityMask))
 			{
-				initialTileNavigability = tile->getNavigability();
-				tile->setNavigability(navigabilityMask); // it's cheating because we are setting a mask instead of single navigability
-				interactionTile = tile;
+				initialTileNavigability = map.getTileNavigability(tileIndex);
+				map.setTileNavigability(tileIndex, navigabilityMask); // it's cheating because we are setting a mask instead of single navigability
+				interactionTileIndex = tileIndex;
 			}
 		}
 
@@ -278,9 +282,9 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 
 		pathfinder->~Pathfinder();
 
-		if (interactionTile != nullptr)
+		if (interactionTileIndex != map::TileIndex::INVALID)
 		{
-			interactionTile->setNavigability(initialTileNavigability);
+			map.setTileNavigability(interactionTileIndex, initialTileNavigability);
 		}
 	}
 }
@@ -327,15 +331,17 @@ void MovementComponent::fall(float elapsedTime)
 	if (m_isTouchingGround)
 		return;
 		
-	const map::Tile* tile = m_owner->getTileFromPosition();
+	const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+	map::Map& map = *m_owner->getMap();
+	const float tileZ = map.getTileZ(tileIndex);
 	const float acceleration = getTemplate()->getWeight();
 	const float oldZSpeed = m_zSpeed;
 	m_zSpeed -= acceleration * elapsedTime;
 	const flat::Vector3& position = m_owner->getPosition();
 	float z = position.z + (oldZSpeed + m_zSpeed) * 0.5f * elapsedTime;
-	if (z < tile->getZ())
+	if (z < tileZ)
 	{
-		z = tile->getZ();
+		z = tileZ;
 		m_isTouchingGround = true;
 	}
 	m_owner->setZ(z);
@@ -345,16 +351,17 @@ bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 
-	const map::Tile* tile = m_owner->getTileFromPosition();
+	const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+	const float tileZ = m_owner->getMap()->getTileZ(tileIndex);
 	const flat::Vector3& position = m_owner->getPosition();
 
 	m_destination = flat::Vector2(position);
 
 	// m_isTouchingGround already set is init()
 	FLAT_ASSERT(m_isTouchingGround == getTemplate()->getSnapToGround());
-	if (m_isTouchingGround || tile->getZ() >= position.z)
+	if (m_isTouchingGround || tileZ >= position.z)
 	{
-		m_owner->setZ(tile->getZ());
+		m_owner->setZ(tileZ);
 		m_isTouchingGround = true; // in case the entity was below its tile
 	}
 	m_zSpeed = 0.f;
@@ -423,9 +430,9 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	flat::Vector3 previousPoint = m_owner->getPosition();
 	for (flat::Vector2 point2d : m_path)
 	{
-		const map::Tile* tile = map->getTileIfExists(point2d.x, point2d.y);
-		FLAT_ASSERT(tile != nullptr);
-		flat::Vector3 point(point2d, tile->getZ());
+		const map::TileIndex tileIndex = map->getTileIndex(point2d.x, point2d.y);
+		FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+		flat::Vector3 point(point2d, map->getTileZ(tileIndex));
 		debugDisplay.add3dLine(previousPoint, point);
 		previousPoint = point;
 	}

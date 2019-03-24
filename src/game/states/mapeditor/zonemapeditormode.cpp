@@ -22,28 +22,28 @@ void ZoneMapEditorMode::enter(MapEditorState& mapEditorState)
 
 void ZoneMapEditorMode::clearBrush(MapEditorState& mapEditorState) const
 {
+	map::Map& map = mapEditorState.getMap();
 	map::Zone* previousZone = m_currentZone.lock().get();
 
 	if (previousZone != nullptr)
 	{
-		previousZone->eachTileIfExists([previousZone](const map::Tile* tile)
+		previousZone->eachTile([&map](map::TileIndex tileIndex)
 		{
-			// TODO: fix this shit
-			const_cast<map::Tile*>(tile)->setColor(flat::video::Color::WHITE);
+			map.setTileColor(tileIndex, flat::video::Color::WHITE);
 		});
 	}
 
 	if (m_drawingRectangle
 		&& (m_currentRectangle.minX < m_currentRectangle.maxX || m_currentRectangle.minY < m_currentRectangle.maxY))
 	{
-		map::Map& map = mapEditorState.getMap();
 		for (int x = m_currentRectangle.minX; x <= m_currentRectangle.maxX; ++x)
 		{
 			for (int y = m_currentRectangle.minY; y <= m_currentRectangle.maxY; ++y)
 			{
-				if (map::Tile* tile = map.getTileIfExists(x, y))
+				map::TileIndex tileIndex = map.getTileIndex(x, y);
+				if (tileIndex != map::TileIndex::INVALID)
 				{
-					tile->setColor(flat::video::Color::WHITE);
+					map.setTileColor(tileIndex, flat::video::Color::WHITE);
 				}
 			}
 		}
@@ -56,9 +56,10 @@ void ZoneMapEditorMode::clearBrush(MapEditorState& mapEditorState) const
 		{
 			for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
 			{
-				if (map::Tile* tile = map.getTileIfExists(x, y))
+				map::TileIndex tileIndex = map.getTileIndex(x, y);
+				if (tileIndex != map::TileIndex::INVALID)
 				{
-					tile->setColor(flat::video::Color::WHITE);
+					map.setTileColor(tileIndex, flat::video::Color::WHITE);
 				}
 			}
 		}
@@ -67,13 +68,14 @@ void ZoneMapEditorMode::clearBrush(MapEditorState& mapEditorState) const
 
 void ZoneMapEditorMode::displayBrush(MapEditorState& mapEditorState) const
 {
+	map::Map& map = mapEditorState.getMap();
+
 	map::Zone* currentZone = m_currentZone.lock().get();
 	if (currentZone != nullptr)
 	{
-		currentZone->eachTileIfExists([currentZone](const map::Tile* tile)
+		currentZone->eachTile([currentZone, &map](map::TileIndex tileIndex)
 		{
-			// TODO: fix this shit
-			const_cast<map::Tile*>(tile)->setColor(currentZone->getColor());
+			map.setTileColor(tileIndex, currentZone->getColor());
 		});
 	}
 
@@ -85,9 +87,10 @@ void ZoneMapEditorMode::displayBrush(MapEditorState& mapEditorState) const
 		{
 			for (int y = m_currentRectangle.minY; y <= m_currentRectangle.maxY; ++y)
 			{
-				if (map::Tile* tile = map.getTileIfExists(x, y))
+				map::TileIndex tileIndex = map.getTileIndex(x, y);
+				if (tileIndex != map::TileIndex::INVALID)
 				{
-					tile->setColor(currentZone->getColor());
+					map.setTileColor(tileIndex, currentZone->getColor());
 				}
 			}
 		}
@@ -95,14 +98,14 @@ void ZoneMapEditorMode::displayBrush(MapEditorState& mapEditorState) const
 
 	if (m_selectedRectangle != nullptr)
 	{
-		map::Map& map = mapEditorState.getMap();
 		for (int x = m_selectedRectangle->minX; x <= m_selectedRectangle->maxX; ++x)
 		{
 			for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
 			{
-				if (map::Tile* tile = map.getTileIfExists(x, y))
+				map::TileIndex tileIndex = map.getTileIndex(x, y);
+				if (tileIndex != map::TileIndex::INVALID)
 				{
-					tile->setColor(flat::video::Color::RED);
+					map.setTileColor(tileIndex, flat::video::Color::RED);
 				}
 			}
 		}
@@ -175,9 +178,10 @@ void ZoneMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 			{
 				for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
 				{
-					if (map::Tile* tile = map.getTileIfExists(x, y))
+					map::TileIndex tileIndex = map.getTileIndex(x, y);
+					if (tileIndex != map::TileIndex::INVALID)
 					{
-						tile->setColor(flat::video::Color::WHITE);
+						map.setTileColor(tileIndex, flat::video::Color::WHITE);
 					}
 				}
 			}

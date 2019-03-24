@@ -19,8 +19,8 @@ public:
 	ZonePathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask, const Zone* zone);
 
 protected:
-	const Tile* getTileIfNavigable(float x, float y, map::Navigability navigabilityMask) const override;
-	void eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const override;
+	TileIndex getTileIndexIfNavigable(float x, float y, map::Navigability navigabilityMask) const override;
+	void eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const override;
 
 protected:
 	const Zone* m_zone;

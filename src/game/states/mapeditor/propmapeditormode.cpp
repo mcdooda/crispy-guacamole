@@ -50,15 +50,15 @@ void PropMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 void PropMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {
 	map::Map& map = mapEditorState.getMap();
-	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
+	eachBrushTile([this, &map](map::TileIndex tileIndex, float effect)
 	{
-		if (map.getTileEntityCount(tile) == 0)
+		if (map.getTileEntityCount(tileIndex) == 0)
 		{
 			float random = m_game.random->nextFloat(0.f, 1.f);
 			if (random <= effect)
 			{
 				std::shared_ptr<const flat::video::Texture> texture = m_propTemplate->getRandomTexture(m_game);
-				tile->setPropTexture(map, texture);
+				map.setTilePropTexture(tileIndex, texture);
 			}
 		}
 	});
@@ -67,15 +67,12 @@ void PropMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 void PropMapEditorMode::applyBrushSecondaryEffect(MapEditorState& mapEditorState, bool justPressed)
 {
 	map::Map& map = mapEditorState.getMap();
-	eachBrushTileIfExists([this, &map](map::Tile* tile, float effect)
+	eachBrushTile([this, &map](map::TileIndex tileIndex, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
-			if (tile->getProp() != nullptr)
-			{
-				tile->removeProp(map);
-			}
+			map.removeTileProp(tileIndex);
 		}
 	});
 }

@@ -3,16 +3,13 @@
 
 #include <queue>
 #include <flat.h>
+
 #include "collisioncomponenttemplate.h"
 #include "../../component.h"
+#include "../../../../map/tile.h"
 
 namespace game
 {
-namespace map
-{
-class Map;
-class Tile;
-}
 namespace entity
 {
 namespace component
@@ -34,7 +31,7 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 
 	public:
 		flat::Slot<Entity*, const flat::Vector3&> onCollidedWithEntity;
-		flat::Slot<const map::Tile*, const flat::Vector3&> onCollidedWithMap;
+		flat::Slot<map::TileIndex, const flat::Vector3&> onCollidedWithMap;
 
 	private:
 		void separateFromNearbyEntities();

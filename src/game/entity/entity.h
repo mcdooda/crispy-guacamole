@@ -2,19 +2,16 @@
 #define GAME_ENTITY_ENTITY_H
 
 #include <memory>
+
 #include "entityhandle.h"
-#include "../map/mapobject.h"
 #include "component/componenttype.h"
 #include "../debug/debugdisplay.h"
+#include "../map/mapobject.h"
+#include "../map/tile.h"
 
 namespace game
 {
 class Game;
-namespace map
-{
-class Map;
-class Tile;
-}
 namespace entity
 {
 class EntityTemplate;
@@ -142,7 +139,7 @@ class Entity final : public map::MapObject
 		void checkSpriteAABB();
 #endif
 
-		map::Tile* getTileFromPosition();
+		map::TileIndex getTileIndexFromPosition();
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;

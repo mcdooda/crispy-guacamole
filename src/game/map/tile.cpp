@@ -12,10 +12,19 @@ const flat::render::ProgramSettings* Tile::tileProgramSettings = nullptr;
 
 Tile::Tile() :
 	m_prop(nullptr),
-	m_exists(false),
 	m_navigability(Navigability::GROUND)
 {
 	m_sprite.setColor(flat::video::Color::WHITE);
+}
+
+Tile::Tile(Tile&& tile)
+{
+	m_sprite = std::move(tile.m_sprite);
+	m_prop = tile.m_prop;
+	tile.m_prop = nullptr;
+	m_xy = tile.m_xy;
+	m_z = tile.m_z;
+	m_navigability = tile.m_navigability;
 }
 
 Tile::~Tile()
@@ -30,47 +39,11 @@ void Tile::synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer&
 	m_sprite.setOrigin(origin);
 	m_sprite.getAABB(m_spriteAABB);
 
-	if (m_exists)
-	{
-		updateRenderHash();
-
-		DisplayManager& displayManager = map.getDisplayManager();
-		displayManager.updateTerrainObject(this);
-	}
-}
-
-void Tile::setExists(Map& map, bool exists)
-{
-	if (m_exists != exists)
-	{
-		DisplayManager& displayManager = map.getDisplayManager();
-		if (exists)
-		{
-			FLAT_ASSERT(m_sprite.isSynchronized());
-			m_exists = true;
-			displayManager.addTerrainObject(this);
-			setNearbyTilesDirty(map);
-			if (m_prop != nullptr)
-			{
-				m_prop->getSprite().setNormal(flat::Vector3(0.f, 0.f, 1.f));
-				displayManager.addTerrainObject(m_prop);
-			}
-		}
-		else
-		{
-			displayManager.removeTerrainObject(this);
-			m_exists = false;
-			if (m_prop != nullptr)
-			{
-				displayManager.removeTerrainObject(m_prop);
-			}
-		}
-	}
+	updateRenderHash();
 }
 
 flat::render::BaseSprite& Tile::getSprite()
 {
-	FLAT_ASSERT(m_exists);
 	FLAT_ASSERT(m_sprite.isSynchronized());
 	return m_sprite;
 }
@@ -82,39 +55,46 @@ const flat::render::ProgramSettings& Tile::getProgramSettings() const
 
 void Tile::updateWorldSpaceAABB()
 {
-	m_worldSpaceAABB.max = flat::Vector3(m_x + 0.5f, m_y + 0.5f, m_z);
-	m_worldSpaceAABB.min = flat::Vector3(m_x - 0.5f, m_y - 0.5f, m_z - 100.f);
+	m_worldSpaceAABB.max = flat::Vector3(m_xy.x + 0.5f, m_xy.y + 0.5f, m_z);
+	m_worldSpaceAABB.min = flat::Vector3(m_xy.x - 0.5f, m_xy.y - 0.5f, m_z - 100.f);
 }
 
-void Tile::setCoordinates(Map& map, int x, int y, float z)
+void Tile::setCoordinates(Map& map, const flat::Vector2i& xy, float z, bool init)
 {
-	m_x = x;
-	m_y = y;
+	m_xy = xy;
 	m_z = z;
 	updateWorldSpaceAABB();
 	
-	flat::Vector3 position(x, y, z);
+	flat::Vector3 position(m_xy.x, m_xy.y, z);
 
 	flat::Vector2 position2d(map.getTransform() * position);
 	m_sprite.setPosition(position2d);
 
-	if (m_exists)
-	{
-		m_sprite.getAABB(m_spriteAABB);
+	m_sprite.getAABB(m_spriteAABB);
 
-		DisplayManager& displayManager = map.getDisplayManager();
-		displayManager.updateTerrainObject(this);
-		setNearbyTilesDirty(map);
+	DisplayManager& displayManager = map.getDisplayManager();
+	if (init)
+	{
+		displayManager.addTerrainObject(this);
 	}
+	else
+	{
+		displayManager.updateTerrainObject(this);
+	}
+	setNearbyTilesDirty(map);
 
 	if (m_prop)
 	{
 		m_prop->setSpritePosition(position2d);
 		m_prop->updateWorldSpaceAABB(position);
 
-		if (m_exists)
+		DisplayManager& displayManager = map.getDisplayManager();
+		if (init)
 		{
-			DisplayManager& displayManager = map.getDisplayManager();
+			displayManager.addTerrainObject(m_prop);
+		}
+		else
+		{
 			displayManager.updateTerrainObject(m_prop);
 		}
 	}
@@ -135,7 +115,7 @@ void Tile::setPropTexture(Map& map, const std::shared_ptr<const flat::video::Tex
 	{
 		prop = new Prop();
 		prop->setSpritePosition(m_sprite.getPosition());
-		prop->updateWorldSpaceAABB(flat::Vector3(m_x, m_y, m_z));
+		prop->updateWorldSpaceAABB(flat::Vector3(m_xy.x, m_xy.y, m_z));
 	}
 	prop->setSpriteTexture(propTexture);
 	const flat::Vector2& textureSize = propTexture->getSize();
@@ -143,18 +123,15 @@ void Tile::setPropTexture(Map& map, const std::shared_ptr<const flat::video::Tex
 	prop->setSpriteOrigin(origin);
 	setNavigability(Navigability::NONE);
 
-	if (m_exists)
-	{
-		prop->updateRenderHash();
+	prop->updateRenderHash();
 
-		if (m_prop != nullptr)
-		{
-			displayManager.updateTerrainObject(prop);
-		}
-		else
-		{
-			displayManager.addTerrainObject(prop);
-		}
+	if (m_prop != nullptr)
+	{
+		displayManager.updateTerrainObject(prop);
+	}
+	else
+	{
+		displayManager.addTerrainObject(prop);
 	}
 
 	m_prop = prop;
@@ -166,11 +143,8 @@ void Tile::removeProp(Map& map)
 
 	if (m_prop != nullptr)
 	{
-		if (m_exists)
-		{
-			DisplayManager& displayManager = map.getDisplayManager();
-			displayManager.removeTerrainObject(m_prop);
-		}
+		DisplayManager& displayManager = map.getDisplayManager();
+		displayManager.removeTerrainObject(m_prop);
 
 		FLAT_DELETE(m_prop);
 	}
@@ -190,58 +164,49 @@ const flat::video::Color& Tile::getColor() const
 	return m_sprite.getColor();
 }
 
-void Tile::eachNeighborTilesWithNavigability(const Map& map, float jumpHeight, Navigability navigabilityMask, std::function<void(const Tile*)> func) const
+void Tile::eachNeighborTilesWithNavigability(const Map& map, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const
 {
 	const float maxZ = m_z + jumpHeight;
 
-	if (const Tile* tile = map.getTileIfNavigable(m_x - 1, m_y, navigabilityMask))
+	auto checkTile = [&](int x, int y)
 	{
-		if (tile->getZ() <= maxZ)
-			func(tile);
-	}
+		TileIndex tileIndex = map.getTileIndexIfNavigable(x, y, navigabilityMask);
+		if (tileIndex != TileIndex::INVALID)
+		{
+			if (map.getTileZ(tileIndex) <= maxZ)
+				func(tileIndex);
+		}
+	};
 
-	if (const Tile* tile = map.getTileIfNavigable(m_x + 1, m_y, navigabilityMask))
-	{
-		if (tile->getZ() <= maxZ)
-			func(tile);
-	}
-
-	if (const Tile* tile = map.getTileIfNavigable(m_x, m_y - 1, navigabilityMask))
-	{
-		if (tile->getZ() <= maxZ)
-			func(tile);
-	}
-
-	if (const Tile* tile = map.getTileIfNavigable(m_x, m_y + 1, navigabilityMask))
-	{
-		if (tile->getZ() <= maxZ)
-			func(tile);
-	}
+	checkTile(m_xy.x - 1, m_xy.y);
+	checkTile(m_xy.x + 1, m_xy.y);
+	checkTile(m_xy.x, m_xy.y - 1);
+	checkTile(m_xy.x, m_xy.y + 1);
 }
 
 void Tile::setNearbyTilesDirty(Map& map)
 {
 	map.setTileNormalDirty(*this);
 
-	Tile* topLeftTile = map.getTileIfExists(m_x, m_y - 1);
+	Tile* topLeftTile = map.getTile(m_xy.x, m_xy.y - 1);
 	if (topLeftTile != nullptr)
 	{
 		map.setTileNormalDirty(*topLeftTile);
 	}
 
-	Tile* topRightTile = map.getTileIfExists(m_x - 1, m_y);
+	Tile* topRightTile = map.getTile(m_xy.x - 1, m_xy.y);
 	if (topRightTile != nullptr)
 	{
 		map.setTileNormalDirty(*topRightTile);
 	}
 
-	Tile* bottomLeftTile = map.getTileIfExists(m_x + 1, m_y);
+	Tile* bottomLeftTile = map.getTile(m_xy.x + 1, m_xy.y);
 	if (bottomLeftTile != nullptr)
 	{
 		map.setTileNormalDirty(*bottomLeftTile);
 	}
 
-	Tile* bottomRightTile = map.getTileIfExists(m_x, m_y + 1);
+	Tile* bottomRightTile = map.getTile(m_xy.x, m_xy.y + 1);
 	if (bottomRightTile != nullptr)
 	{
 		map.setTileNormalDirty(*bottomRightTile);
@@ -259,8 +224,8 @@ void Tile::updateNormal(Map& map)
 
 	// compute dx
 	{
-		Tile* bottomLeftTile = map.getTileIfExists(m_x + 1, m_y);
-		Tile* topRightTile = map.getTileIfExists(m_x - 1, m_y);
+		Tile* bottomLeftTile = map.getTile(m_xy.x + 1, m_xy.y);
+		Tile* topRightTile = map.getTile(m_xy.x - 1, m_xy.y);
 		if (bottomLeftTile != nullptr && topRightTile != nullptr)
 		{
 			if (std::abs(m_z - bottomLeftTile->m_z) > minZDifference
@@ -293,8 +258,8 @@ void Tile::updateNormal(Map& map)
 
 	// compute dy
 	{
-		Tile* bottomRightTile = map.getTileIfExists(m_x, m_y + 1);
-		Tile* topLeftTile = map.getTileIfExists(m_x, m_y - 1);
+		Tile* bottomRightTile = map.getTile(m_xy.x, m_xy.y + 1);
+		Tile* topLeftTile = map.getTile(m_xy.x, m_xy.y - 1);
 		if (bottomRightTile != nullptr && topLeftTile != nullptr)
 		{
 			if (std::abs(m_z - bottomRightTile->m_z) > minZDifference
@@ -325,7 +290,7 @@ void Tile::updateNormal(Map& map)
 		}
 	}
 
-	flat::Vector3 normal = flat::cross(flat::normalize(dx), flat::normalize(dy));
+	flat::Vector3 normal = flat::normalize(flat::cross(flat::normalize(dx), flat::normalize(dy)));
 	m_sprite.setNormal(normal);
 }
 

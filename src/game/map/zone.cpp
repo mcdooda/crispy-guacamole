@@ -19,9 +19,9 @@ const Zone::Rectangle& Zone::addRectangle(const Rectangle& rectangle)
 
 	m_rectangles.push_back(rectangle);
 
-	eachRectangleTileIfExists(rectangle, [this](const Tile* tile)
+	eachRectangleTile(rectangle, [this](TileIndex tileIndex)
 	{
-		m_tiles.insert(tile);
+		m_tiles.insert(tileIndex);
 	});
 
 	return m_rectangles.back();
@@ -37,24 +37,24 @@ void Zone::removeRectangle(const Rectangle& rectangle)
 	m_tiles.clear();
 	for (const Rectangle& rectangle : m_rectangles)
 	{
-		eachRectangleTileIfExists(rectangle, [this](const Tile* tile)
+		eachRectangleTile(rectangle, [this](TileIndex tileIndex)
 		{
-			m_tiles.insert(tile);
+			m_tiles.insert(tileIndex);
 		});
 	}
 }
 
 bool Zone::isInside(const flat::Vector2& point) const
 {
-	const Tile* tile = m_map.getTileIfExists(point.x, point.y);
-	return tile != nullptr && m_tiles.count(tile) > 0;
+	TileIndex tileIndex = m_map.getTileIndex(point.x, point.y);
+	return tileIndex != TileIndex::INVALID && m_tiles.count(tileIndex) > 0;
 }
 
-void Zone::eachTileIfExists(std::function<void(const Tile*)> func)
+void Zone::eachTile(std::function<void(TileIndex tileIndex)> func)
 {
-	for (const Tile* tile : m_tiles)
+	for (TileIndex tileIndex : m_tiles)
 	{
-		func(tile);
+		func(tileIndex);
 	}
 }
 
@@ -91,7 +91,7 @@ flat::Vector2 Zone::getCenter() const
 	return center;
 }
 
-void Zone::eachRectangleTileIfExists(const Rectangle& rectangle, std::function<void(const Tile*)> func)
+void Zone::eachRectangleTile(const Rectangle& rectangle, std::function<void(TileIndex)> func)
 {
 	FLAT_ASSERT(isValidRectangle(rectangle));
 
@@ -99,10 +99,10 @@ void Zone::eachRectangleTileIfExists(const Rectangle& rectangle, std::function<v
 	{
 		for (int y = rectangle.minY; y <= rectangle.maxY; ++y)
 		{
-			const Tile* tile = m_map.getTileIfExists(x, y);
-			if (tile != nullptr)
+			TileIndex tileIndex = m_map.getTileIndex(x, y);
+			if (tileIndex != TileIndex::INVALID)
 			{
-				func(tile);
+				func(tileIndex);
 			}
 		}
 	}

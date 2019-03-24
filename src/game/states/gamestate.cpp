@@ -54,16 +54,17 @@ void GameState::setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTI
 	m_onGhostEntityPlaced = std::move(onGhostEntityPlaced);
 }
 
-bool GameState::canPlaceGhostEntity(const map::Tile* tile) const
+bool GameState::canPlaceGhostEntity(map::TileIndex tileIndex) const
 {
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
 	if (m_canPlaceGhostEntity)
 	{
 		bool canPlaceEntity = false;
 		m_canPlaceGhostEntity.callFunction(
-			[tile](lua_State* L)
+			[tileIndex](lua_State* L)
 			{
 				map::brush::TilesContainer* tilesContainer = new map::brush::TilesContainer();
-				tilesContainer->emplace_back(const_cast<map::Tile*>(tile), 1.f);
+				tilesContainer->emplace_back(tileIndex, 1.f);
 				map::brush::lua::pushTilesContainer(L, tilesContainer);
 			},
 			1,

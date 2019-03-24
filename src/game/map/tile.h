@@ -9,27 +9,27 @@
 
 namespace game
 {
-namespace entity
-{
-class Entity;
-}
 namespace map
 {
 class Map;
 class Prop;
 
+enum TileIndex : std::uint32_t
+{
+	INVALID = 0xFFFFFFFF
+};
+
 class Tile final : public MapObject
 {
 	public:
 		Tile();
+		Tile(const Tile&) = delete;
+		Tile(Tile&& tile);
 		~Tile() override;
 
 		void synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer& spriteSynchronizer);
 
 		bool isTile() const override { return true; }
-		
-		inline bool exists() const { return m_exists; }
-		void setExists(Map& map, bool exists);
 		
 		inline Navigability getNavigability() const { return m_navigability; }
 		inline void setNavigability(Navigability navigability) { m_navigability = navigability; }
@@ -43,11 +43,10 @@ class Tile final : public MapObject
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		void updateWorldSpaceAABB();
 		
-		void setCoordinates(Map& map, int x, int y, float z);
-		inline int getX() const { return m_x; }
-		inline int getY() const { return m_y; }
+		void setCoordinates(Map& map, const flat::Vector2i& xy, float z, bool init = false);
+		inline const flat::Vector2i& getXY() const { return m_xy; }
 		inline float getZ() const { return m_z; }
-		inline void setZ(Map& map, float z) { setCoordinates(map, m_x, m_y, z); }
+		inline void setZ(Map& map, float z) { setCoordinates(map, m_xy, z); }
 		
 		void setTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& tileTexture);
 		void setPropTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& propTexture);
@@ -57,7 +56,7 @@ class Tile final : public MapObject
 		void setColor(const flat::video::Color& color);
 		const flat::video::Color& getColor() const;
 		
-		void eachNeighborTilesWithNavigability(const Map& map, float jumpHeight, Navigability navigabilityMask, std::function<void(const Tile*)> func) const;
+		void eachNeighborTilesWithNavigability(const Map& map, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const;
 
 		inline static void setTileProgramSettings(const flat::render::ProgramSettings& programSettings)
 		{
@@ -82,13 +81,10 @@ class Tile final : public MapObject
 		flat::render::SynchronizedSprite m_sprite;
 		Prop* m_prop;
 		
-		int m_x;
-		int m_y;
+		flat::Vector2i m_xy;
 		float m_z;
 
 		Navigability m_navigability;
-		
-		bool m_exists : 1;
 
 		bool m_normalDirty : 1;
 };

@@ -29,7 +29,9 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
 
-	map::Tile* tile = m_owner->getTileFromPosition();
+	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+	const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
 
 	// occupy the tile
 	const PropComponentTemplate* propComponentTemplate = getTemplate();
@@ -39,11 +41,11 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	{
 		for (int j = 0; j < height; ++j)
 		{
-			map::Tile* tileToOccupy = map->getTileIfNavigable(tile->getX() - i, tile->getY() - j, map::Navigability::ALL);
+			map::TileIndex tileToOccupyIndex = map->getTileIndexIfNavigable(tilePosition.x - i, tilePosition.y - j, map::Navigability::ALL);
 			//FLAT_ASSERT(tileToOccupy != nullptr);
-			if (tileToOccupy != nullptr)
+			if (tileToOccupyIndex != map::TileIndex::INVALID)
 			{
-				tileToOccupy->setNavigability(map::Navigability::NONE);
+				map->setTileNavigability(tileToOccupyIndex, map::Navigability::NONE);
 			}
 		}
 	}
@@ -52,7 +54,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	flat::Vector3 position = m_owner->getPosition();
 	position.x = std::round(position.x);
 	position.y = std::round(position.y);
-	position.z = tile->getZ();
+	position.z = map->getTileZ(tileIndex);
 	m_owner->setPosition(position);
 
 	// set aabb
@@ -76,7 +78,9 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 bool PropComponent::removedFromMap(Entity* entity)
 {
 	map::Map* map = m_owner->getMap();
-	map::Tile* tile = m_owner->getTileFromPosition();
+	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+	const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
 
 	const PropComponentTemplate* propComponentTemplate = getTemplate();
 	const int width = propComponentTemplate->getWidth();
@@ -85,11 +89,11 @@ bool PropComponent::removedFromMap(Entity* entity)
 	{
 		for (int j = 0; j < height; ++j)
 		{
-			map::Tile* tileToOccupy = map->getTileIfExists(tile->getX() - i, tile->getY() - j);
+			map::TileIndex tileToOccupyIndex = map->getTileIndex(tilePosition.x - i, tilePosition.y - j);
 			//FLAT_ASSERT(tileToOccupy != nullptr);
-			if (tileToOccupy != nullptr)
+			if (tileToOccupyIndex != map::TileIndex::INVALID)
 			{
-				tileToOccupy->setNavigability(map::Navigability::ALL);
+				map->setTileNavigability(tileToOccupyIndex, map::Navigability::ALL);
 			}
 		}
 	}

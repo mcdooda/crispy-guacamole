@@ -4,6 +4,8 @@
 #include <vector>
 #include <flat.h>
 
+#include "../tile.h"
+
 namespace game
 {
 namespace entity
@@ -12,16 +14,14 @@ class Entity;
 }
 namespace map
 {
-class Map;
-class Tile;
 namespace brush
 {
 
 struct TileEffect
 {
-	TileEffect(Tile* tile, float effect) : tile(tile), effect(effect) {}
+	TileEffect(TileIndex tileIndex, float effect) : tileIndex(tileIndex), effect(effect) {}
 
-	Tile* tile;
+	TileIndex tileIndex;
 	float effect;
 };
 
@@ -41,7 +41,7 @@ class Brush
 		virtual float getEffect(const flat::Vector2& positionFromCenter) const = 0;
 		
 		void getTiles(Map& map, const flat::Vector2& center, TilesContainer& tiles, float minEffect = 0.f) const;
-		float getTileEffect(const flat::Vector2& center, const map::Tile* tile) const;
+		float getTileEffect(const Map& map, const flat::Vector2& center, TileIndex tileIndex) const;
 		
 		void getEntities(Map& map, const flat::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect = 0.f) const;
 		

@@ -43,11 +43,8 @@ public:
 	virtual void draw() const {}
 
 protected:
-	void eachSelectedTile(std::function<void(map::Tile*, float)> func) const;
-	void eachSelectedTileIfExists(std::function<void(map::Tile*, float)> func) const;
-	void eachBrushTile(std::function<void(map::Tile*, float)> func) const;
-	void eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const;
-	void clearSelectedTiles();
+	void eachSelectedTile(std::function<void(map::TileIndex, float)> func) const;
+	void eachBrushTile(std::function<void(map::TileIndex, float)> func) const;
 	void applyBrush(MapEditorState& mapEditorState);
 
 protected:

@@ -23,21 +23,24 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 {
 	FLAT_PROFILE("Find path");
 
-	const map::Tile* firstTile = getTileIfNavigable(from.x, from.y, m_navigabilityMask);
-	if (!firstTile)
+	map::TileIndex firstTileIndex = getTileIndexIfNavigable(from.x, from.y, m_navigabilityMask);
+	if (firstTileIndex == TileIndex::INVALID)
+	{
+		return false;
+	}
+
+	map::TileIndex lastTileIndex = getTileIndexIfNavigable(to.x, to.y, m_navigabilityMask);
+	if (lastTileIndex == TileIndex::INVALID)
 	{
 		return false;
 	}
 	
-	const int toX = static_cast<int>(std::round(to.x));
-	const int toY = static_cast<int>(std::round(to.y));
-	
-	std::set<const map::Tile*> closedList;
+	std::set<TileIndex> closedList;
 	std::vector<Node> openList;
-	std::map<const map::Tile*, const map::Tile*> previous;
+	std::map<TileIndex, TileIndex> previous;
 	
 	Node firstNode;
-	firstNode.tile = firstTile;
+	firstNode.tileIndex = firstTileIndex;
 	firstNode.distance = 0.f;
 	firstNode.heuristic = 0.f;
 	
@@ -48,28 +51,29 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 		Node current = openList.front();
 		openList.erase(openList.begin());
 		
-		const map::Tile* tile = current.tile;
-		//FLAT_DEBUG_ONLY(const_cast<map::Tile*>(tile)->setColor(flat::video::Color::BLUE);)
-		closedList.insert(tile);
+		TileIndex tileIndex = current.tileIndex;
+		//FLAT_DEBUG_ONLY(->setColor(flat::video::Color::BLUE);)
+		closedList.insert(tileIndex);
 		
-		if (tile->getX() == toX && tile->getY() == toY)
+		if (tileIndex == lastTileIndex)
 		{
-			reconstructPath(previous, tile, from, to, path);
+			reconstructPath(previous, tileIndex, from, to, path);
 			return !path.empty();
 		}
 		else
 		{
-			eachNeighborTiles(tile, [&](const map::Tile* neighborTile)
+			eachNeighborTiles(tileIndex, [&](TileIndex neighborTileIndex)
 			{
-				if (closedList.count(neighborTile) > 0)
+				if (closedList.count(neighborTileIndex) > 0)
 				{
 					return;
 				}
 
 				Node neighbor;
-				neighbor.tile = neighborTile;
+				neighbor.tileIndex = neighborTileIndex;
 				neighbor.distance = current.distance + 1.f;
-				float estimatedDistance = flat::length(to - flat::Vector2(static_cast<float>(neighborTile->getX()), static_cast<float>(neighborTile->getY())));
+				const flat::Vector2i& xy = m_map.getTileXY(neighborTileIndex);
+				float estimatedDistance = flat::distance(to, flat::Vector2(xy));
 				neighbor.heuristic = neighbor.distance + estimatedDistance;
 
 				std::vector<Node>::iterator it = std::find(openList.begin(), openList.end(), neighbor);
@@ -78,13 +82,13 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 					// sorted insertion to mimic a priority queue
 					std::vector<Node>::iterator it = std::upper_bound(openList.begin(), openList.end(), neighbor);
 					openList.insert(it, neighbor);
-					previous.emplace(neighborTile, tile);
+					previous.emplace(neighborTileIndex, tileIndex);
 				}
 				else if (neighbor.distance < it->distance)
 				{
 					it->distance = neighbor.distance;
 					it->heuristic = neighbor.heuristic;
-					previous.emplace(neighborTile, tile);
+					previous.emplace(neighborTileIndex, tileIndex);
 				}
 			});
 		}
@@ -93,28 +97,29 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 	return false;
 }
 
-const Tile* Pathfinder::getTileIfNavigable(float x, float y, map::Navigability navigabilityMask) const
+TileIndex Pathfinder::getTileIndexIfNavigable(float x, float y, map::Navigability navigabilityMask) const
 {
-	return m_map.getTileIfNavigable(x, y, navigabilityMask);
+	return m_map.getTileIndexIfNavigable(x, y, navigabilityMask);
 }
 
 void Pathfinder::reconstructPath(
-	const std::map<const map::Tile*, const map::Tile*>& previous,
-	const map::Tile* last,
+	const std::map<TileIndex, TileIndex>& previous,
+	TileIndex lastIndex,
 	const flat::Vector2& from,
 	const flat::Vector2& to,
 	std::vector<flat::Vector2>& path) const
 {
 	path.clear();
-	std::map<const map::Tile*, const map::Tile*>::const_iterator it;
-	const map::Tile* current = last;
+	std::map<TileIndex, TileIndex>::const_iterator it;
+	map::TileIndex currentIndex = lastIndex;
 	while (true)
 	{
-		it = previous.find(current);
+		it = previous.find(currentIndex);
 		if (it != previous.end())
 		{
-			current = it->second;
-			path.insert(path.begin(), flat::Vector2(static_cast<float>(current->getX()), static_cast<float>(current->getY())));
+			currentIndex = it->second;
+			const flat::Vector2i& xy = m_map.getTileXY(currentIndex);
+			path.insert(path.begin(), flat::Vector2(xy));
 		}
 		else
 		{
@@ -131,7 +136,7 @@ void Pathfinder::reconstructPath(
 		/*FLAT_DEBUG_ONLY(
 			for (const flat::Vector2& p : path)
 			{
-				const_cast<map::Tile*>(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::GREEN);
+				(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::GREEN);
 			}
 		)*/
 	
@@ -140,7 +145,7 @@ void Pathfinder::reconstructPath(
 		/*FLAT_DEBUG_ONLY(
 			for (const flat::Vector2& p : path)
 			{
-				const_cast<map::Tile*>(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::RED);
+				(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::RED);
 			}
 		)*/
 	}
@@ -167,25 +172,25 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 	flat::Vector2 move = to - from;
 	flat::Vector2 segment = flat::normalize(move) * delta;
 	float numSegments = flat::length(move) / delta;
-	const map::Tile* fromTile = getTileIfNavigable(from.x, from.y, m_navigabilityMask);
-	FLAT_ASSERT(fromTile != nullptr);
-	float previousZ = fromTile->getZ();
+	TileIndex fromTileIndex = getTileIndexIfNavigable(from.x, from.y, m_navigabilityMask);
+	FLAT_ASSERT(fromTileIndex != TileIndex::INVALID);
+	float previousZ = m_map.getTileZ(fromTileIndex);
 	for (float f = 1.f; f <= numSegments; ++f)
 	{
 		flat::Vector2 point = from + segment * f;
-		const map::Tile* tile = getTileIfNavigable(point.x, point.y, m_navigabilityMask);
-		if (!tile || tile->getZ() > previousZ + m_jumpHeight)
+		map::TileIndex tileIndex = getTileIndexIfNavigable(point.x, point.y, m_navigabilityMask);
+		if (tileIndex == TileIndex::INVALID || m_map.getTileZ(tileIndex) > previousZ + m_jumpHeight)
 			return false;
 		
-		previousZ = tile->getZ();
+		previousZ = m_map.getTileZ(tileIndex);
 	}
 	
 	return true;
 }
 
-void Pathfinder::eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const
+void Pathfinder::eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const
 {
-	tile->eachNeighborTilesWithNavigability(m_map, m_jumpHeight, m_navigabilityMask, func);
+	m_map.eachNeighborTilesWithNavigability(tileIndex, m_jumpHeight, m_navigabilityMask, func);
 }
 
 } // pathfinder

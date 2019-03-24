@@ -13,23 +13,23 @@ ZonePathfinder::ZonePathfinder(const Map& map, float jumpHeight, map::Navigabili
 {
 }
 
-const Tile* ZonePathfinder::getTileIfNavigable(float x, float y, map::Navigability navigabilityMask) const
+TileIndex ZonePathfinder::getTileIndexIfNavigable(float x, float y, map::Navigability navigabilityMask) const
 {
-	const Tile* tile = Super::getTileIfNavigable(x, y, navigabilityMask);
-	if (m_zone->isTileInside(tile))
+	TileIndex tileIndex = Super::getTileIndexIfNavigable(x, y, navigabilityMask);
+	if (m_zone->isTileInside(tileIndex))
 	{
-		return tile;
+		return tileIndex;
 	}
-	return nullptr;
+	return TileIndex::INVALID;
 }
 
-void ZonePathfinder::eachNeighborTiles(const Tile* tile, std::function<void(const Tile*)> func) const
+void ZonePathfinder::eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const
 {
-	Super::eachNeighborTiles(tile, [this, &func](const Tile* tile)
+	Super::eachNeighborTiles(tileIndex, [this, &func](TileIndex neighborTileIndex)
 	{
-		if (m_zone->isTileInside(tile))
+		if (m_zone->isTileInside(neighborTileIndex))
 		{
-			func(tile);
+			func(neighborTileIndex);
 		}
 	});
 }

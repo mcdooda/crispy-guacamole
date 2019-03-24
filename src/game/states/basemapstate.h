@@ -77,7 +77,7 @@ class BaseMapState : public BaseState
 
 		void setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate);
 		void clearGhostTemplate();
-		virtual bool canPlaceGhostEntity(const map::Tile* tile) const;
+		virtual bool canPlaceGhostEntity(map::TileIndex tileIndex) const;
 		virtual bool onGhostEntityPlaced();
 
 		entity::Entity* createEntity(
@@ -177,7 +177,7 @@ class BaseMapState : public BaseState
 
 		std::vector<entity::Entity*> m_selectedEntities;
 		entity::EntityHandle m_mouseOverEntity;
-		const map::Tile* m_mouseOverTile;
+		map::TileIndex m_mouseOverTileIndex;
 
 		std::shared_ptr<const entity::EntityTemplate> m_ghostTemplate;
 		entity::Entity* m_ghostEntity;

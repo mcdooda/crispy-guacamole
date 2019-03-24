@@ -54,19 +54,19 @@ void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 			m_selectedTiles.clear();
 		}
 
-		eachBrushTile([this](map::Tile* tile, float effect)
+		eachBrushTile([this](map::TileIndex tileIndex, float effect)
 		{
 			map::brush::TilesContainer::iterator it = std::find_if(
 				m_selectedTiles.begin(),
 				m_selectedTiles.end(),
-				[tile](const map::brush::TileEffect& tileEffect)
+				[tileIndex](const map::brush::TileEffect& tileEffect)
 				{
-					return tileEffect.tile == tile;
+					return tileEffect.tileIndex == tileIndex;
 				}
 			);
 			if (it == m_selectedTiles.end() || effect > it->effect)
 			{
-				m_selectedTiles.emplace_back(tile, effect);
+				m_selectedTiles.emplace_back(tileIndex, effect);
 			}
 		});
 	}
@@ -78,28 +78,29 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 
 	map::Map& map = mapEditorState.getMap();
 
-	std::unordered_set<map::Tile*> tilesToUpdate;
-	eachBrushTileIfExists([this, &map, &tilesToUpdate](map::Tile* tile, float effect)
+	std::unordered_set<map::TileIndex> tilesToUpdate;
+	eachBrushTile([this, &map, &tilesToUpdate](map::TileIndex tileIndex, float effect)
 	{
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
 			flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, 0);
-			tile->synchronizeSpriteTo(map, spriteSynchronizer);
+			map.synchronizeTileSpriteTo(tileIndex, spriteSynchronizer);
 
-			tilesToUpdate.insert(tile);
+			tilesToUpdate.insert(tileIndex);
 
 			// add adjacent tiles
-			auto addToTilesToUpdate = [&tilesToUpdate, &map, tile](int dx, int dy)
+			auto addToTilesToUpdate = [&tilesToUpdate, &map, tileIndex](int dx, int dy)
 			{
-				map::Tile* adjacentTile = map.getTileIfExists(tile->getX() + dx, tile->getY() + dy);
-				if (adjacentTile != nullptr)
+				const flat::Vector2i& xy = map.getTileXY(tileIndex);
+				map::TileIndex adjacentTileIndex = map.getTileIndex(xy.x + dx, xy.y + dy);
+				if (adjacentTileIndex != map::TileIndex::INVALID)
 				{
-					std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(adjacentTile);
+					std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(adjacentTileIndex);
 					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
 					if (getSelectTile)
 					{
-						tilesToUpdate.insert(adjacentTile);
+						tilesToUpdate.insert(adjacentTileIndex);
 					}
 				}
 			};
@@ -114,22 +115,23 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 		}
 	});
 
-	for (map::Tile* tile : tilesToUpdate)
+	for (map::TileIndex tileIndex : tilesToUpdate)
 	{
 		int tileVariantIndex = -1;
-		std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(tile);
+		std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(tileIndex);
 		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
 		if (getSelectTile)
 		{
 			getSelectTile.callFunction(
-				[&map, tile](lua_State* L)
+				[&map, tileIndex](lua_State* L)
 				{
-					auto pushTileTemplateName = [&map, tile, L](int dx, int dy)
+					auto pushTileTemplateName = [&map, tileIndex, L](int dx, int dy)
 					{
-						const map::Tile* adjacentTile = map.getTileIfExists(tile->getX() + dx, tile->getY() + dy);
-						if (adjacentTile != nullptr)
+						const flat::Vector2i& xy = map.getTileXY(tileIndex);
+						map::TileIndex adjacentTileIndex = map.getTileIndex(xy.x + dx, xy.y + dy);
+						if (adjacentTileIndex != map::TileIndex::INVALID)
 						{
-							lua_pushstring(L, map.getTileTemplate(adjacentTile)->getName().c_str());
+							lua_pushstring(L, map.getTileTemplate(adjacentTileIndex)->getName().c_str());
 						}
 						else
 						{
@@ -168,7 +170,7 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 		}
 		FLAT_ASSERT(tileVariantIndex >= 0);
 		flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(tileTemplate, tileVariantIndex);
-		tile->synchronizeSpriteTo(map, spriteSynchronizer);
+		map.synchronizeTileSpriteTo(tileIndex, spriteSynchronizer);
 	}
 }
 
@@ -198,9 +200,9 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 		{
 			displacement *= 0.2f;
 		}
-		eachSelectedTileIfExists([this, &map, displacement](map::Tile* tile, float effect)
+		eachSelectedTile([this, &map, displacement](map::TileIndex tileIndex, float effect)
 		{
-			tile->setZ(map, tile->getZ() + displacement * effect);
+			map.setTileZ(tileIndex, map.getTileZ(tileIndex) + displacement * effect);
 		});
 	}
 
@@ -208,61 +210,45 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 	{
 		float mean = 0.f;
 		float n = 0.f;
-		eachSelectedTileIfExists([&mean, &n](map::Tile* tile, float effect)
+		eachSelectedTile([&mean, &n, &map](map::TileIndex tileIndex, float effect)
 		{
-			mean += tile->getZ() * effect;
+			mean += map.getTileZ(tileIndex) * effect;
 			n += effect;
 		});
 		mean /= n;
-		eachSelectedTileIfExists([this, &map, mean, dt](map::Tile* tile, float effect)
+		eachSelectedTile([this, &map, mean, dt](map::TileIndex tileIndex, float effect)
 		{
-			float z = tile->getZ();
-			tile->setZ(map, z + (mean - z) * effect * dt * 5.f);
+			float z = map.getTileZ(tileIndex);
+			map.setTileZ(tileIndex, z + (mean - z) * effect * dt * 5.f);
 		});
 	}
 
 	if (keyboard.isJustPressed(K(R)))
 	{
-		map.eachTileIfExists([&map](map::Tile* tile)
+		map.eachTile([&map](map::TileIndex tileIndex)
 		{
-			tile->setZ(map, 0.f);
+			map.setTileZ(tileIndex, 0.f);
 		});
 	}
 
 	if (keyboard.isJustPressed(K(DELETE)))
 	{
-		eachSelectedTileIfExists([this, &map](map::Tile* tile, float effect)
+		std::vector<map::TileIndex> tilesToDelete;
+		eachSelectedTile([this, &map, &tilesToDelete](map::TileIndex tileIndex, float effect)
 		{
-			tile->setExists(map, false);
 			map.eachTileEntity(
-				tile,
+				tileIndex,
 				[](entity::Entity* entity)
 				{
 					entity->markForDelete();
 				}
 			);
+			tilesToDelete.push_back(tileIndex);
 		});
-	}
-
-	if (keyboard.isPressed(K(SPACE)))
-	{
-		eachBrushTile([this, &map](map::Tile* tile, float effect)
+		for (map::TileIndex tileIndex : tilesToDelete)
 		{
-			if (!tile->exists())
-			{
-				float random = m_game.random->nextFloat(0.f, 1.f);
-				if (random <= effect)
-				{
-					if (!tile->hasSprite())
-					{
-						int tileVariantIndex = m_tileTemplate->getRandomTileVariantIndex(m_game);
-						flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, tileVariantIndex);
-						tile->synchronizeSpriteTo(map, spriteSynchronizer);
-					}
-					tile->setExists(map, true);
-				}
-			}
-		});
+			map.deleteTile(tileIndex);
+		}
 	}
 }
 

@@ -88,223 +88,184 @@ void CollisionComponent::separateFromNearbyEntities()
 	}
 }
 
+FLAT_OPTIMIZE_OFF()
 void CollisionComponent::separateFromAdjacentTiles()
 {
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
-	const map::Tile* tile = m_owner->getTileFromPosition();
-	FLAT_ASSERT(tile != nullptr);
-	const int tileX = tile->getX();
-	const int tileY = tile->getY();
+
+	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+	flat::Vector2i tilePosition = map->getTileXY(tileIndex);
 	
 	const flat::Vector3& position = m_owner->getPosition();
-	const float minZ = position.z + MIN_Z_EPSILON;
 	
-	flat::Vector2 newPosition2d(position.x, position.y);
+	flat::Vector3 newPosition = position;
 	
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
 	const float radius = collisionComponentTemplate->getRadius();
+	const float radius2 = flat::square(radius);
 
 	map::Navigability navigabilityMask = EntityHelper::getNavigabilityMask(m_owner);
-	
-	const map::Tile* collidedTile = nullptr;
+
+	const int minX = static_cast<int>(std::round(m_owner->getPosition().x - radius));
+	const int maxX = static_cast<int>(std::round(m_owner->getPosition().x + radius));
+	const int minY = static_cast<int>(std::round(m_owner->getPosition().y - radius));
+	const int maxY = static_cast<int>(std::round(m_owner->getPosition().y + radius));
+
+	map::TileIndex collidedTileIndex = map::TileIndex::INVALID;
+	float collidedTileZ = -FLT_MAX;
 	flat::Vector3 normal;
+	float closestCollisionDistance2 = FLT_MAX;
 
-	// directly adjacent tiles
-	// top right
+	auto computeTileCollision = [&](int x, int y)
 	{
-		const map::Tile* tile2 = map->getTileIfNavigable(tileX - 1, tileY, navigabilityMask);
-		if (!tile2 || tile2->getZ() > minZ)
+		if (x < minX || x > maxX || y < minY || y > maxY)
 		{
-			newPosition2d.x = std::max(newPosition2d.x, static_cast<float>(tileX) - 0.5f + radius);
-			collidedTile = tile2;
-			normal = flat::Vector3(1.f, 0.f, 0.f);
+			return;
 		}
-	}
-	// bottom left
-	if (collidedTile == nullptr)
-	{
-		const map::Tile* tile2 = map->getTileIfNavigable(tileX + 1, tileY, navigabilityMask);
-		if (!tile2 || tile2->getZ() > minZ)
-		{
-			newPosition2d.x = std::min(newPosition2d.x, static_cast<float>(tileX) + 0.5f - radius);
-			collidedTile = tile2;
-			normal = flat::Vector3(-1.f, 0.f, 0.f);
-		}
-	}
-	// top left
-	if (collidedTile == nullptr)
-	{
-		const map::Tile* tile2 = map->getTileIfNavigable(tileX, tileY - 1, navigabilityMask);
-		if (!tile2 || tile2->getZ() > minZ)
-		{
-			newPosition2d.y = std::max(newPosition2d.y, static_cast<float>(tileY) - 0.5f + radius);
-			collidedTile = tile2;
-			normal = flat::Vector3(0.f, -1.f, 0.f);
-		}
-	}
-	// bottom right
-	if (collidedTile == nullptr)
-	{
-		const map::Tile* tile2 = map->getTileIfNavigable(tileX, tileY + 1, navigabilityMask);
-		if (!tile2 || tile2->getZ() > minZ)
-		{
-			newPosition2d.y = std::min(newPosition2d.y, static_cast<float>(tileY) + 0.5f - radius);
-			collidedTile = tile2;
-			normal = flat::Vector3(0.f, 1.f, 0.f);
-		}
-	}
-	
-	// diagonals
-	// top
-	if (collidedTile == nullptr)
-	{
-		const map::Tile* tile2 = map->getTileIfNavigable(tileX - 1, tileY - 1, navigabilityMask);
-		if (!tile2 || tile2->getZ() > minZ)
-		{
-			flat::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) - 0.5f);
-			flat::Vector2 toCorner = corner - newPosition2d;
-			if (flat::length2(toCorner) < radius * radius)
-			{
-				newPosition2d = corner - flat::normalize(toCorner) * radius;
-			}
-			collidedTile = tile2;
-			normal = flat::Vector3(-flat::SQRT2 / 2.f, -flat::SQRT2 / 2.f, 0.f);
-		}
-	}
-	// bottom
-	if (collidedTile == nullptr)
-	{
-		const map::Tile* tile2 = map->getTileIfNavigable(tileX + 1, tileY + 1, navigabilityMask);
-		if (!tile2 || tile2->getZ() > minZ)
-		{
-			flat::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) + 0.5f);
-			flat::Vector2 toCorner = corner - newPosition2d;
-			if (flat::length2(toCorner) < radius * radius)
-			{
-				newPosition2d = corner - flat::normalize(toCorner) * radius;
-			}
-			collidedTile = tile2;
-			normal = flat::Vector3(flat::SQRT2 / 2.f, flat::SQRT2 / 2.f, 0.f);
-		}
-	}
-	// left
-	if (collidedTile == nullptr)
-	{
-		const map::Tile* tile2 = map->getTileIfNavigable(tileX + 1, tileY - 1, navigabilityMask);
-		if (!tile2 || tile2->getZ() > minZ)
-		{
-			flat::Vector2 corner(static_cast<float>(tileX) + 0.5f, static_cast<float>(tileY) - 0.5f);
-			flat::Vector2 toCorner = corner - newPosition2d;
-			if (flat::length2(toCorner) < radius * radius)
-			{
-				newPosition2d = corner - flat::normalize(toCorner) * radius;
-			}
-			collidedTile = tile2;
-			normal = flat::Vector3(-flat::SQRT2 / 2.f, flat::SQRT2 / 2.f, 0.f);
-		}
-	}
-	// right
-	if (collidedTile == nullptr)
-	{
-		const map::Tile* tile2 = map->getTileIfNavigable(tileX - 1, tileY + 1, navigabilityMask);
-		if (!tile2 || tile2->getZ() > minZ)
-		{
-			flat::Vector2 corner(static_cast<float>(tileX) - 0.5f, static_cast<float>(tileY) + 0.5f);
-			flat::Vector2 toCorner = corner - newPosition2d;
-			if (flat::length2(toCorner) < radius * radius)
-			{
-				newPosition2d = corner - flat::normalize(toCorner) * radius;
-			}
-			collidedTile = tile2;
-			normal = flat::Vector3(flat::SQRT2 / 2.f, -flat::SQRT2 / 2.f, 0.f);
-		}
-	}
-	
-	flat::Vector3 newPosition(newPosition2d, position.z);
 
-	// check collision with the current tile
-	const float tileZ = tile->getZ();
-	const float bottom = getBottom();
-	bool collidedWithCurrentTile = false;
-	flat::Vector3 currentTileCollisionNormal;
-	if (bottom < tileZ)
-	{
-		collidedWithCurrentTile = true;
-		if (bottom > tileZ - 0.5f)
+		if (newPosition.x + radius < static_cast<float>(tilePosition.x) - 0.5f
+		 || newPosition.x - radius > static_cast<float>(tilePosition.x) + 0.5f
+		 || newPosition.y + radius < static_cast<float>(tilePosition.y) - 0.5f
+		 || newPosition.y - radius > static_cast<float>(tilePosition.y) + 0.5f)
 		{
-			newPosition.z += tileZ - bottom;
-			currentTileCollisionNormal = flat::Vector3(0.f, 0.f, 1.f);
+			return;
+		}
+
+		map::TileIndex tileIndex2 = map->getTileIndexIfNavigable(x, y, navigabilityMask);
+		
+		float tileZ = -FLT_MAX;
+		if (tileIndex2 != map::TileIndex::INVALID)
+		{
+			tileZ = map->getTileZ(tileIndex2);
+
+			const float bottom = getBottom();
+
+			if (tileZ < bottom)
+			{
+				return;
+			}
+
+			if (x == tilePosition.x
+			 && y == tilePosition.y
+			 && bottom > tileZ - 0.5f)
+			{
+				newPosition.z = tileZ;
+				collidedTileIndex = tileIndex2;
+				normal = flat::Vector3(0.f, 0.f, 1.f);
+				return;
+			}
+		}
+
+		// find collision point
+		flat::Vector3 closestPointOnEdge;
+		closestPointOnEdge.z = newPosition.z;
+		const flat::Vector2 locationOnTile(newPosition.x - static_cast<float>(x), newPosition.y - static_cast<float>(y));
+
+		if (locationOnTile.y < locationOnTile.x) // bottom and right
+		{
+			if (locationOnTile.y < -locationOnTile.x) // bottom
+			{
+				closestPointOnEdge.x = std::clamp(newPosition.x, static_cast<float>(x) - 0.5f, static_cast<float>(x) + 0.5f);
+				closestPointOnEdge.y = static_cast<float>(y) - 0.5f;
+			}
+			else // right
+			{
+				closestPointOnEdge.x = static_cast<float>(x) + 0.5f;
+				closestPointOnEdge.y = std::clamp(newPosition.y, static_cast<float>(y) - 0.5f, static_cast<float>(y) + 0.5f);
+			}
+		}
+		else // top and left
+		{
+			if (locationOnTile.y > -locationOnTile.x) // top
+			{
+				closestPointOnEdge.x = std::clamp(newPosition.x, static_cast<float>(x) - 0.5f, static_cast<float>(x) + 0.5f);
+				closestPointOnEdge.y = static_cast<float>(y) + 0.5f;
+			}
+			else // left
+			{
+				closestPointOnEdge.x = static_cast<float>(x) - 0.5f;
+				closestPointOnEdge.y = std::clamp(newPosition.y, static_cast<float>(y) - 0.5f, static_cast<float>(y) + 0.5f);
+			}
+		}
+
+		// deduce collision normal and new position
+		float distance2;
+		if (std::abs(locationOnTile.x) < 0.5f && std::abs(locationOnTile.y) < 0.5f)
+		{
+			distance2 = 0.f;
 		}
 		else
 		{
-			currentTileCollisionNormal.z = 0.f;
-
-			const float tileX = static_cast<float>(tile->getX());
-			const float tileY = static_cast<float>(tile->getY());
-
-			if (std::abs(tileX - newPosition.x) > std::abs(tileY - newPosition.y))
-			{
-				if (tileX < newPosition.x)
-				{
-					newPosition.x = tileX + 0.5f + radius;
-					currentTileCollisionNormal.x = 1.f;
-				}
-				else
-				{
-					newPosition.x = tileX - 0.5f - radius;
-					currentTileCollisionNormal.x = -1.f;
-				}
-			}
-			else
-			{
-				if (tileY < newPosition.y)
-				{
-					newPosition.y = tileY + 0.5f + radius;
-					currentTileCollisionNormal.y = 1.f;
-				}
-				else
-				{
-					newPosition.y = tileY - 0.5f - radius;
-					currentTileCollisionNormal.y = -1.f;
-				}
-			}
-
-			const map::Tile* newTile = map->getTileIfExists(newPosition.x, newPosition.y);
-			if (newTile != nullptr)
-			{
-				const float newTileZ = newTile->getZ();
-				if (bottom < newTileZ)
-				{
-					newPosition.z += newTileZ - bottom;
-				}
-			}
-
-			currentTileCollisionNormal = flat::normalize(currentTileCollisionNormal);
+			distance2 = flat::distance2(newPosition, closestPointOnEdge);
 		}
+
+		if (distance2 < radius2)
+		{
+			if (tileIndex2 != map::TileIndex::INVALID)
+			{
+				const float distance = std::sqrt(distance2);
+				if (distance < radius - 1.f && tileZ > newPosition.z)
+				{
+					normal = flat::Vector3(0.f, 0.f, 1.f);
+					newPosition.z = tileZ;
+					collidedTileIndex = tileIndex2;
+					return;
+				}
+			}
+
+			if (distance2 < closestCollisionDistance2)
+			{
+				closestCollisionDistance2 = distance2;
+
+				const flat::Vector3 tileCenter(x, y, newPosition.z);
+				normal = newPosition - tileCenter;
+				if (std::max(std::abs(locationOnTile.x), std::abs(locationOnTile.y)) > 0.5f)
+				{
+					if (std::abs(normal.x) < 0.5f)
+					{
+						normal.x = 0.f;
+					}
+					if (std::abs(normal.y) < 0.5f)
+					{
+						normal.y = 0.f;
+					}
+				}
+				normal = flat::normalize(normal);
+
+				newPosition = closestPointOnEdge + normal * radius;
+				collidedTileIndex = tileIndex2;
+			}
+		}
+	};
+
+	computeTileCollision(tilePosition.x, tilePosition.y);
+	for (int i = 1, e = static_cast<int>(std::ceil(radius)); i < e; ++i)
+	{
+		computeTileCollision(tilePosition.x - i, tilePosition.y);
+		computeTileCollision(tilePosition.x + i, tilePosition.y);
+		computeTileCollision(tilePosition.x, tilePosition.y - i);
+		computeTileCollision(tilePosition.x, tilePosition.y + i);
 	}
+
+	map::TileIndex newTileIndex = map->getTileIndex(newPosition.x, newPosition.y);
 
 	if (position != newPosition)
 	{
+		map::TileIndex newTileIndex = map->getTileIndex(newPosition.x, newPosition.y);
+		if (newTileIndex != map::TileIndex::INVALID)
+		{
+			const float newTileZ = map->getTileZ(newTileIndex);
+			newPosition.z = std::max(newPosition.z, newTileZ);
+		}
+
 		m_owner->setPosition(newPosition);
-		FLAT_ASSERT(flat::length2(normal) > 0.f || collidedTile == nullptr);
-		if (collidedTile == nullptr && !collidedWithCurrentTile) // collided with the border of the map
-		{
-			onCollidedWithMap(nullptr, normal);
-		}
-		else
-		{
-			if (collidedTile != nullptr && collidedTile->getZ() >= minZ) // collided with an adjacent tile
-			{
-				onCollidedWithMap(collidedTile, normal);
-			}
-			if (collidedWithCurrentTile) // collided with the tile the entity is already above
-			{
-				onCollidedWithMap(tile, currentTileCollisionNormal);
-			}
-		}
+		FLAT_ASSERT(flat::length2(normal) > 0.f || collidedTileIndex == map::TileIndex::INVALID);
+		onCollidedWithMap(collidedTileIndex, normal);
 	}
 }
+FLAT_OPTIMIZE_ON()
 
 #ifdef FLAT_DEBUG
 void CollisionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const

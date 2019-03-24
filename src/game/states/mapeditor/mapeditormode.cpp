@@ -36,9 +36,9 @@ void MapEditorMode::exit(MapEditorState& mapEditorState)
 {
 	map::Map& map = mapEditorState.getMap();
 
-	map.eachTileIfExists([](map::Tile* tile)
+	map.eachTile([&map](map::TileIndex tileIndex)
 	{
-		tile->setColor(flat::video::Color::WHITE);
+		map.setTileColor(tileIndex, flat::video::Color::WHITE);
 	});
 }
 
@@ -55,9 +55,10 @@ void MapEditorMode::updateBrushPosition(MapEditorState& mapEditorState)
 
 void MapEditorMode::clearBrush(MapEditorState& mapEditorState) const
 {
-	auto clearTiles = [](map::Tile* tile, float effect)
+	map::Map& map = mapEditorState.getMap();
+	auto clearTiles = [&map](map::TileIndex tileIndex, float effect)
 	{
-		tile->setColor(flat::video::Color::WHITE);
+		map.setTileColor(tileIndex, flat::video::Color::WHITE);
 	};
 	eachSelectedTile(clearTiles);
 	eachBrushTile(clearTiles);
@@ -68,72 +69,42 @@ void MapEditorMode::displayBrush(MapEditorState& mapEditorState) const
 	for (const map::brush::TileEffect& tileEffect : m_selectedTiles)
 	{
 		flat::video::Color color(1.f - tileEffect.effect, 1.f - tileEffect.effect, 1.f, 1.f);
-		tileEffect.tile->setColor(color);
+		mapEditorState.getMap().setTileColor(tileEffect.tileIndex, color);
 	}
 
 	if (!mapEditorState.isMouseOverUi(m_game))
 	{
-		eachBrushTile([](map::Tile* tile, float effect)
+		map::Map& map = mapEditorState.getMap();
+		eachBrushTile([&map](map::TileIndex tileIndex, float effect)
 		{
-			const flat::video::Color& currentColor = tile->getColor();
+			const flat::video::Color& currentColor = map.getTileColor(tileIndex);
 			flat::video::Color color(currentColor.r, (1.f - effect) * currentColor.g, (1.f - effect) * currentColor.b, 1.f);
-			tile->setColor(color);
+			map.setTileColor(tileIndex, color);
 		});
 	}
 }
 
-void MapEditorMode::eachSelectedTile(std::function<void(map::Tile*, float)> func) const
+void MapEditorMode::eachSelectedTile(std::function<void(map::TileIndex, float)> func) const
 {
 	const map::brush::TilesContainer& selectedTiles = !m_selectedTiles.empty() ? m_selectedTiles : m_brushTiles;
 	for (const map::brush::TileEffect& tileEffect : selectedTiles)
 	{
 		if (tileEffect.effect > 0.f)
 		{
-			func(tileEffect.tile, tileEffect.effect);
+			func(tileEffect.tileIndex, tileEffect.effect);
 		}
 	}
 }
 
-void MapEditorMode::eachSelectedTileIfExists(std::function<void(map::Tile*, float)> func) const
-{
-	eachSelectedTile([func](map::Tile* tile, float effect)
-	{
-		if (tile->exists())
-		{
-			func(tile, effect);
-		}
-	});
-}
-
-void MapEditorMode::eachBrushTile(std::function<void(map::Tile*, float)> func) const
+void MapEditorMode::eachBrushTile(std::function<void(map::TileIndex, float)> func) const
 {
 	for (const map::brush::TileEffect& tileEffect : m_brushTiles)
 	{
 		if (tileEffect.effect > 0.f)
 		{
-			func(tileEffect.tile, tileEffect.effect);
+			func(tileEffect.tileIndex, tileEffect.effect);
 		}
 	}
-}
-
-void MapEditorMode::eachBrushTileIfExists(std::function<void(map::Tile*, float)> func) const
-{
-	eachBrushTile([func](map::Tile* tile, float effect)
-	{
-		if (tile->exists())
-		{
-			func(tile, effect);
-		}
-	});
-}
-
-void MapEditorMode::clearSelectedTiles()
-{
-	for (const map::brush::TileEffect& tileEffect : m_selectedTiles)
-	{
-		tileEffect.tile->setColor(flat::video::Color::WHITE);
-	}
-	m_selectedTiles.clear();
 }
 
 void MapEditorMode::applyBrush(MapEditorState& mapEditorState)

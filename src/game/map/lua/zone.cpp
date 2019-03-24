@@ -54,10 +54,10 @@ int l_Zone_getEntities(lua_State* L)
 	int index = 1;
 
 	const Map& map = zone->getMap();
-	zone->eachTileIfExists([L, &index, &map](const Tile* tile)
+	zone->eachTile([L, &index, &map](TileIndex tileIndex)
 	{
 		map.eachTileEntity(
-			tile,
+			tileIndex,
 			[L, &index](entity::Entity* entity)
 			{
 				entity::lua::pushEntity(L, entity);
@@ -74,9 +74,9 @@ int l_Zone_getEntitiesCount(lua_State* L)
 	Zone* zone = getZone(L, 1);
 	lua_Integer count = 0;
 	const Map& map = zone->getMap();
-	zone->eachTileIfExists([&count, &map](const Tile* tile)
+	zone->eachTile([&count, &map](TileIndex tileIndex)
 	{
-		count += map.getTileEntityCount(tile);
+		count += map.getTileEntityCount(tileIndex);
 	});
 	lua_pushinteger(L, count);
 	return 1;
@@ -92,8 +92,8 @@ int l_Zone_getCenter(lua_State* L)
 int l_Zone_isTileInside(lua_State* L)
 {
 	Zone* zone = getZone(L, 1);
-	Tile* tile = static_cast<Tile*>(lua_touserdata(L, 2));
-	lua_pushboolean(L, zone->isTileInside(tile));
+	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 2));
+	lua_pushboolean(L, zone->isTileInside(tileIndex));
 	return 1;
 }
 

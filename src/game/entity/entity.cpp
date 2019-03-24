@@ -297,12 +297,12 @@ void Entity::setDebuggedComponentFlags(component::ComponentFlags debuggedCompone
 }
 #endif
 
-map::Tile* Entity::getTileFromPosition()
+map::TileIndex Entity::getTileIndexFromPosition()
 {
 	FLAT_ASSERT(m_map != nullptr);
-	map::Tile* tile = m_map->getTileIfExists(m_position.x, m_position.y);
-	FLAT_ASSERT_MSG(tile != nullptr, "Trying to get a tile that does not exist at position (%f, %f)", m_position.x, m_position.y);
-	return tile;
+	map::TileIndex tileIndex = m_map->getTileIndex(m_position.x, m_position.y);
+	FLAT_ASSERT_MSG(tileIndex != map::TileIndex::INVALID, "Trying to get a tile that does not exist at position (%f, %f)", m_position.x, m_position.y);
+	return tileIndex;
 }
 
 void Entity::updateAABB()
@@ -443,6 +443,7 @@ void Entity::checkSpriteAABB()
 		FLAT_ASSERT(spriteAABB == getAABB());
 	}
 }
+
 #endif
 
 } // entity

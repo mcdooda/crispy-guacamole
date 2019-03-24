@@ -32,25 +32,27 @@ void Brush::getTiles(Map& map, const flat::Vector2& center, TilesContainer& tile
 	{
 		for (int y = minY; y <= maxY; ++y)
 		{
-			if (map::Tile* tile = map.getTile(x, y))
+			map::TileIndex tileIndex = map.getTileIndex(x, y);
+			if (tileIndex != map::TileIndex::INVALID)
 			{
 				positionFromCenter.x = static_cast<float>(x) - center.x;
 				positionFromCenter.y = static_cast<float>(y) - center.y;
 				float effect = getEffect(positionFromCenter);
 				if (effect > minEffect)
 				{
-					tiles.emplace_back(tile, effect);
+					tiles.emplace_back(tileIndex, effect);
 				}
 			}
 		}
 	}
 }
 
-float Brush::getTileEffect(const flat::Vector2& center, const map::Tile* tile) const
+float Brush::getTileEffect(const Map& map, const flat::Vector2& center, TileIndex tileIndex) const
 {
+	const flat::Vector2i& xy = map.getTileXY(tileIndex);
 	flat::Vector2 positionFromCenter(
-		static_cast<float>(tile->getX()) - center.x,
-		static_cast<float>(tile->getY()) - center.y
+		static_cast<float>(xy.x) - center.x,
+		static_cast<float>(xy.y) - center.y
 	);
 	return getEffect(positionFromCenter);
 }
@@ -68,13 +70,14 @@ void Brush::getEntities(Map& map, const flat::Vector2& center, std::vector<entit
 	{
 		for (int y = minY; y <= maxY; ++y)
 		{
-			if (map::Tile* tile = map.getTileIfExists(x, y))
+			const map::TileIndex tileIndex = map.getTileIndex(x, y);
+			if (tileIndex != map::TileIndex::INVALID)
 			{
-				float effect = getTileEffect(center, tile);
+				float effect = getTileEffect(map, center, tileIndex);
 				if (effect > minEffect)
 				{
 					map.eachTileEntity(
-						tile,
+						tileIndex,
 						[&entities](entity::Entity* entity)
 						{
 							entities.push_back(entity);

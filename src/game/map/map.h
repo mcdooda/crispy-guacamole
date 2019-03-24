@@ -42,7 +42,7 @@ class Map
 {
 	public:
 		Map();
-		virtual ~Map();
+		~Map();
 
 		void update(float currentTime);
 
@@ -60,28 +60,56 @@ class Map
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		
 		// get tiles
+		TileIndex createTile(int x, int y, float z, flat::render::SpriteSynchronizer& spriteSynchronizer);
+		void deleteTile(Tile* tile);
+		void deleteTile(TileIndex tileIndex);
+
+		size_t getTileHashFromPosition(int x, int y) const;
+
+		const Tile* getTileByIndex(TileIndex tileIndex) const;
+		Tile* getTileByIndex(TileIndex tileIndex);
+
 		const Tile* getTile(int x, int y) const;
-		virtual Tile* getTile(int x, int y) = 0;
+		Tile* getTile(int x, int y);
 		const Tile* getTile(float x, float y) const;
 		Tile* getTile(float x, float y);
 
-		const Tile* getTileIfExists(int x, int y) const;
-		Tile* getTileIfExists(int x, int y);
-		const Tile* getTileIfExists(float x, float y) const;
-		Tile* getTileIfExists(float x, float y);
+		TileIndex getTileIndex(int x, int y) const;
+		TileIndex getTileIndex(float x, float y) const;
+		TileIndex getTileIndex(const Tile* tile) const;
+
+		const flat::Vector2i& getTileXY(TileIndex tileIndex) const;
+		void setTileZ(TileIndex tileIndex, float z);
+		void moveTileZBy(TileIndex tileIndex, float dz);
+		float getTileZ(TileIndex tileIndex) const;
 
 		const Tile* getTileIfNavigable(int x, int y, Navigability navigabilityMask) const;
 		Tile* getTileIfNavigable(int x, int y, Navigability navigabilityMask);
 		const Tile* getTileIfNavigable(float x, float y, Navigability navigabilityMask) const;
 		Tile* getTileIfNavigable(float x, float y, Navigability navigabilityMask);
 
-		void eachTile(std::function<void(const Tile*)> func) const;
-		virtual void eachTile(std::function<void(Tile*)> func) = 0;
-		void eachTileIfExists(std::function<void(const Tile*)> func) const;
-		void eachTileIfExists(std::function<void(Tile*)> func);
+		TileIndex getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const;
+		TileIndex getTileIndexIfNavigable(float x, float y, Navigability navigabilityMask) const;
+
+		bool isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) const;
+		Navigability getTileNavigability(TileIndex tileIndex) const;
+		void setTileNavigability(TileIndex tileIndex, Navigability navigability);
+
+		void setTileColor(TileIndex tileIndex, const flat::video::Color& color);
+		const flat::video::Color& getTileColor(TileIndex tileIndex) const;
+
+		void setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::video::Texture> texture);
+		void removeTileProp(TileIndex tileIndex);
+		const Prop* getTileProp(TileIndex tileIndex) const;
+
+		void eachTile(std::function<void(TileIndex)> func) const;
+
+		const flat::render::BaseSprite& getTileSprite(TileIndex tileIndex) const;
+		void synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer);
 
 		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
 		const std::shared_ptr<const TileTemplate> getTileTemplate(const Tile* tile) const;
+		const std::shared_ptr<const TileTemplate> getTileTemplate(TileIndex tileIndex) const;
 		
 		// axes
 		inline const flat::Matrix3& getTransform() const { return m_transform; }
@@ -96,8 +124,10 @@ class Map
 		int updateEntityPosition(entity::Entity* entity, int cellIndex);
 
 		template <typename Func>
-		void eachTileEntity(const Tile* tile, Func func) const;
-		int getTileEntityCount(const Tile* tile) const;
+		void eachTileEntity(TileIndex tileIndex, Func func) const;
+		int getTileEntityCount(TileIndex tileIndex) const;
+
+		void eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const;
 
 		template <class Func>
 		inline void eachEntityInRange(const flat::Vector2& center2d, float range, Func func) const;
@@ -119,8 +149,6 @@ class Map
 		             const flat::Vector2& yAxis,
 		             const flat::Vector2& zAxis);
 		
-		virtual void createTiles() = 0;
-		
 	protected:
 		DisplayManager* m_displayManager;
 
@@ -134,6 +162,10 @@ class Map
 		int m_maxX;
 		int m_minY;
 		int m_maxY;
+
+		std::vector<Tile> m_tiles;
+
+		std::unordered_map<size_t, TileIndex> m_tilePositionToIndex;
 
 		std::vector<Tile*> m_dirtyNormalTiles;
 
@@ -155,9 +187,11 @@ class Map
 
 
 template <typename Func>
-void Map::eachTileEntity(const Tile* tile, Func func) const
+void Map::eachTileEntity(TileIndex tileIndex, Func func) const
 {
-	const flat::AABB3& aabb3 = tile->getWorldSpaceAABB();
+	FLAT_ASSERT(tileIndex != TileIndex::INVALID);
+	const Tile& tile = m_tiles.at(tileIndex);
+	const flat::AABB3& aabb3 = tile.getWorldSpaceAABB();
 	flat::AABB2 tileAABB(
 		flat::Vector2(aabb3.min),
 		flat::Vector2(aabb3.max)

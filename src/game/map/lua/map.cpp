@@ -202,10 +202,15 @@ int l_Map_getZone(lua_State* L)
 
 int l_Map_getTilePosition(lua_State* L)
 {
-	Tile* tile = static_cast<Tile*>(lua_touserdata(L, 1));
-	lua_pushinteger(L, tile->getX());
-	lua_pushinteger(L, tile->getY());
-	lua_pushnumber(L, tile->getZ());
+	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
+	game::map::Map& map = baseMapState.getMap();
+	const flat::Vector2i& position = map.getTileXY(tileIndex);
+	float z = map.getTileZ(tileIndex);
+	lua_pushinteger(L, position.x);
+	lua_pushinteger(L, position.y);
+	lua_pushnumber(L, z);
 	return 3;
 }
 

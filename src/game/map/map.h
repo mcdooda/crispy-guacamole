@@ -73,18 +73,7 @@ class Map
 		
 		// get tiles
 		TileIndex createTile(int x, int y, float z, flat::render::SpriteSynchronizer& spriteSynchronizer);
-		void deleteTile(Tile* tile);
 		void deleteTile(TileIndex tileIndex);
-
-		size_t getTileHashFromPosition(int x, int y) const;
-
-		const Tile* getTileByIndex(TileIndex tileIndex) const;
-		Tile* getTileByIndex(TileIndex tileIndex);
-
-		const Tile* getTile(int x, int y) const;
-		Tile* getTile(int x, int y);
-		const Tile* getTile(float x, float y) const;
-		Tile* getTile(float x, float y);
 
 		TileIndex getTileIndex(int x, int y) const;
 		TileIndex getTileIndex(const flat::Vector2i& position) const;
@@ -95,11 +84,6 @@ class Map
 		void setTileZ(TileIndex tileIndex, float z);
 		void moveTileZBy(TileIndex tileIndex, float dz);
 		float getTileZ(TileIndex tileIndex) const;
-
-		const Tile* getTileIfNavigable(int x, int y, Navigability navigabilityMask) const;
-		Tile* getTileIfNavigable(int x, int y, Navigability navigabilityMask);
-		const Tile* getTileIfNavigable(float x, float y, Navigability navigabilityMask) const;
-		Tile* getTileIfNavigable(float x, float y, Navigability navigabilityMask);
 
 		TileIndex getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const;
 		TileIndex getTileIndexIfNavigable(float x, float y, Navigability navigabilityMask) const;
@@ -115,13 +99,14 @@ class Map
 		void removeTileProp(TileIndex tileIndex);
 		const Prop* getTileProp(TileIndex tileIndex) const;
 
+		flat::render::BaseSprite& getTileSprite(TileIndex tileIndex);
+
 		void eachTile(std::function<void(TileIndex)> func) const;
 
 		const flat::render::BaseSprite& getTileSprite(TileIndex tileIndex) const;
 		void synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer);
 
 		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
-		const std::shared_ptr<const TileTemplate> getTileTemplate(const Tile* tile) const;
 		const std::shared_ptr<const TileTemplate> getTileTemplate(TileIndex tileIndex) const;
 		
 		// axes
@@ -150,7 +135,8 @@ class Map
 		template <class Func>
 		inline void eachEntityInCollisionRange(const flat::Vector2& center2d, float range, Func func) const;
 
-		void setTileNormalDirty(Tile& tile);
+		void setNeighborTilesDirty(TileIndex tileIndex);
+		void setTileNormalDirty(TileIndex tileIndex);
 		void updateTilesNormals();
 		void updateAllTilesNormals();
 
@@ -166,6 +152,8 @@ class Map
 
 		void addTileNeighbor(TileIndex tileIndex, const flat::Vector2i& neighborTilePosition);
 		void addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex);
+
+		void updateTileNormal(TileIndex tileIndex);
 		
 	protected:
 		DisplayManager* m_displayManager;
@@ -186,7 +174,7 @@ class Map
 
 		std::unordered_map<flat::Vector2i, TileIndex> m_tilePositionToIndex;
 
-		std::vector<Tile*> m_dirtyNormalTiles;
+		std::set<TileIndex> m_dirtyNormalTiles;
 
 		std::map<std::string, std::shared_ptr<Zone>> m_zones;
 

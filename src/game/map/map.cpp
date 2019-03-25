@@ -122,56 +122,9 @@ TileIndex Map::createTile(int x, int y, float z, flat::render::SpriteSynchronize
 	return tileIndex;
 }
 
-
-void Map::deleteTile(Tile* tile)
-{
-
-}
-
 void Map::deleteTile(TileIndex tileIndex)
 {
 
-}
-
-size_t Map::getTileHashFromPosition(int x, int y) const
-{
-	return x * 1'000'000 + y;
-}
-
-const Tile* Map::getTileByIndex(TileIndex tileIndex) const
-{
-	return &m_tiles.at(tileIndex);
-}
-
-
-game::map::Tile* Map::getTileByIndex(TileIndex tileIndex)
-{
-	return &m_tiles.at(tileIndex);
-}
-
-const Tile* Map::getTile(int x, int y) const
-{
-	return const_cast<Map*>(this)->getTile(x, y);
-}
-
-Tile* Map::getTile(int x, int y)
-{
-	TileIndex tileIndex = getTileIndex(x, y);
-	if (tileIndex != TileIndex::INVALID)
-	{
-		return &m_tiles[tileIndex];
-	}
-	return nullptr;
-}
-
-const Tile* Map::getTile(float x, float y) const
-{
-	return const_cast<Map*>(this)->getTile(x, y);
-}
-
-Tile* Map::getTile(float x, float y)
-{
-	return getTile(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
 TileIndex Map::getTileIndex(int x, int y) const
@@ -219,31 +172,6 @@ void Map::moveTileZBy(TileIndex tileIndex, float dz)
 float Map::getTileZ(TileIndex tileIndex) const
 {
 	return m_tiles.at(tileIndex).getZ();
-}
-
-const Tile* Map::getTileIfNavigable(int x, int y, Navigability navigabilityMask) const
-{
-	return const_cast<Map*>(this)->getTileIfNavigable(x, y, navigabilityMask);
-}
-
-Tile* Map::getTileIfNavigable(int x, int y, Navigability navigabilityMask)
-{
-	Tile* tile = getTile(x, y);
-
-	if (!tile || !tile->isNavigable(navigabilityMask))
-		return nullptr;
-
-	return tile;
-}
-
-const Tile* Map::getTileIfNavigable(float x, float y, Navigability navigabilityMask) const
-{
-	return const_cast<Map*>(this)->getTileIfNavigable(x, y, navigabilityMask);
-}
-
-Tile* Map::getTileIfNavigable(float x, float y, Navigability navigabilityMask)
-{
-	return getTileIfNavigable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)), navigabilityMask);
 }
 
 TileIndex Map::getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const
@@ -320,6 +248,11 @@ const flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex) const
 	return m_tiles.at(tileIndex).getSprite();
 }
 
+flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex)
+{
+	return m_tiles[tileIndex].getSprite();
+}
+
 void Map::synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer)
 {
 	m_tiles[tileIndex].synchronizeSpriteTo(*this, synchronizer);
@@ -360,9 +293,10 @@ flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(const std::shar
 	return spriteSynchronizer;
 }
 
-const std::shared_ptr<const TileTemplate> Map::getTileTemplate(const Tile* tile) const
+const std::shared_ptr<const TileTemplate> Map::getTileTemplate(TileIndex tileIndex) const
 {
-	const flat::render::SynchronizedSprite& sprite = static_cast<const flat::render::SynchronizedSprite&>(tile->getSprite());
+	const Tile& tile = m_tiles.at(tileIndex);
+	const flat::render::SynchronizedSprite& sprite = static_cast<const flat::render::SynchronizedSprite&>(tile.getSprite());
 	flat::render::SpriteSynchronizer& synchronizer = sprite.getSynchronizer();
 	for (const TileSpriteSynchronizer& tileSpriteSynchronizer : m_tileSpriteSynchronizers)
 	{
@@ -372,11 +306,6 @@ const std::shared_ptr<const TileTemplate> Map::getTileTemplate(const Tile* tile)
 		}
 	}
 	return nullptr;
-}
-
-const std::shared_ptr<const TileTemplate> Map::getTileTemplate(TileIndex tileIndex) const
-{
-	return getTileTemplate(&m_tiles.at(tileIndex));
 }
 
 int Map::addEntity(entity::Entity* entity)
@@ -415,7 +344,7 @@ void Map::addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex)
 		if (neighborTiles.neighbors[i] == TileIndex::INVALID)
 		{
 			neighborTiles.neighbors[i] = neighborTileIndex;
-			break;
+			return;
 		}
 	}
 	FLAT_ASSERT_MSG(false, "Cannot add more than %d neighbors", NeighborTiles::MAX_NEIGHBORS);
@@ -428,6 +357,96 @@ void Map::addTileNeighbor(TileIndex tileIndex, const flat::Vector2i& neighborTil
 	{
 		addTileNeighbor(tileIndex, neighborTileIndex);
 	}
+}
+
+void Map::updateTileNormal(TileIndex tileIndex)
+{
+	flat::Vector3 dx(1.f, 0.f, 0.f);
+	flat::Vector3 dy(0.f, 1.f, 0.f);
+
+	constexpr float minZDifference = 0.05f;
+
+	const flat::Vector2i& xy = getTileXY(tileIndex);
+	const float z = getTileZ(tileIndex);
+
+	// compute dx
+	{
+		TileIndex bottomLeftTileIndex = getTileIndex(xy.x + 1, xy.y);
+		TileIndex topRightTileIndex = getTileIndex(xy.x - 1, xy.y);
+		if (bottomLeftTileIndex != TileIndex::INVALID && topRightTileIndex != TileIndex::INVALID)
+		{
+			const float bottomLeftTileZ = getTileZ(bottomLeftTileIndex);
+			const float topRightTileZ = getTileZ(topRightTileIndex);
+			if (std::abs(z - bottomLeftTileZ) > minZDifference
+				&& std::abs(z - topRightTileZ) > minZDifference)
+			{
+				dx.x = 2.f;
+				dx.y = 0.f;
+				dx.z = bottomLeftTileZ - topRightTileZ;
+			}
+		}
+		else if (bottomLeftTileIndex != TileIndex::INVALID)
+		{
+			const float bottomLeftTileZ = getTileZ(bottomLeftTileIndex);
+			if (std::abs(z - bottomLeftTileZ) > minZDifference)
+			{
+				dx.x = 1.f;
+				dx.y = 0.f;
+				dx.z = bottomLeftTileZ - z;
+			}
+		}
+		else if (topRightTileIndex != TileIndex::INVALID)
+		{
+			const float topRightTileZ = getTileZ(topRightTileIndex);
+			if (std::abs(z - topRightTileZ) > minZDifference)
+			{
+				dx.x = 1.f;
+				dx.y = 0.f;
+				dx.z = z - topRightTileZ;
+			}
+		}
+	}
+
+	// compute dy
+	{
+		TileIndex bottomRightTileIndex = getTileIndex(xy.x, xy.y + 1);
+		TileIndex topLeftTileIndex = getTileIndex(xy.x, xy.y - 1);
+		if (bottomRightTileIndex != TileIndex::INVALID && topLeftTileIndex != TileIndex::INVALID)
+		{
+			const float bottomRightTileZ = getTileZ(bottomRightTileIndex);
+			const float topLeftTileZ = getTileZ(topLeftTileIndex);
+			if (std::abs(z - bottomRightTileZ) > minZDifference
+				&& std::abs(z - topLeftTileZ) > minZDifference)
+			{
+				dy.x = 0.f;
+				dy.y = 2.f;
+				dy.z = bottomRightTileZ - topLeftTileZ;
+			}
+		}
+		else if (bottomRightTileIndex != TileIndex::INVALID)
+		{
+			const float bottomRightTileZ = getTileZ(bottomRightTileIndex);
+			if (std::abs(z - bottomRightTileZ) > minZDifference)
+			{
+				dy.x = 0.f;
+				dy.y = 1.f;
+				dy.z = bottomRightTileZ - z;
+			}
+		}
+		else if (topLeftTileIndex != TileIndex::INVALID)
+		{
+			const float topLeftTileZ = getTileZ(topLeftTileIndex);
+			if (std::abs(z - topLeftTileZ) > minZDifference)
+			{
+				dy.x = 0.f;
+				dy.y = 1.f;
+				dy.z = z - topLeftTileZ;
+			}
+		}
+	}
+
+	flat::Vector3 normal = flat::normalize(flat::cross(flat::normalize(dx), flat::normalize(dy)));
+	getTileSprite(tileIndex).setNormal(normal);
 }
 
 void Map::buildNeighborTiles()
@@ -468,20 +487,25 @@ void Map::eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeigh
 	});
 }
 
-void Map::setTileNormalDirty(Tile& tile)
+void Map::setNeighborTilesDirty(TileIndex tileIndex)
 {
-	if (!tile.isNormalDirty())
+	setTileNormalDirty(tileIndex);
+	eachNeighborTiles(tileIndex, [this](TileIndex neighborTileIndex)
 	{
-		tile.setNormalDirty();
-		m_dirtyNormalTiles.push_back(&tile);
-	}
+		setTileNormalDirty(neighborTileIndex);
+	});
+}
+
+void Map::setTileNormalDirty(TileIndex tileIndex)
+{
+	m_dirtyNormalTiles.insert(tileIndex);
 }
 
 void Map::updateTilesNormals()
 {
-	for (Tile* tile : m_dirtyNormalTiles)
+	for (TileIndex tileIndex : m_dirtyNormalTiles)
 	{
-		tile->updateNormal(*this);
+		updateTileNormal(tileIndex);
 	}
 	m_dirtyNormalTiles.clear();
 }
@@ -491,7 +515,7 @@ void Map::updateAllTilesNormals()
 	m_dirtyNormalTiles.clear();
 	eachTile([this](TileIndex tileIndex)
 	{
-		m_tiles[tileIndex].updateNormal(*this);
+		updateTileNormal(tileIndex);
 	});
 }
 

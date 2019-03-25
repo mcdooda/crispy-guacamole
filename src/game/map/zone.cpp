@@ -59,17 +59,17 @@ void Zone::eachTile(std::function<void(TileIndex tileIndex)> func)
 	}
 }
 
-const Tile* Zone::getRandomTile(Game& game) const
+TileIndex Zone::getRandomTile(Game& game) const
 {
 	if (m_tiles.empty())
-		return nullptr;
+		return TileIndex::INVALID;
 
 	int randomIndex = game.random->nextInt(0, static_cast<int>(m_tiles.size()) - 1);
-	std::set<const Tile*>::iterator it = m_tiles.begin();
+	std::set<TileIndex>::iterator it = m_tiles.begin();
 	std::advance(it, randomIndex);
-	const Tile* tile = *it;
-	FLAT_ASSERT(tile != nullptr);
-	return tile;
+	TileIndex tileIndex = *it;
+	FLAT_ASSERT(tileIndex != TileIndex::INVALID);
+	return tileIndex;
 }
 
 const Zone::Rectangle* Zone::selectRectangle(const flat::Vector2& position) const

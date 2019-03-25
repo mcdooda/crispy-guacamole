@@ -66,14 +66,8 @@ class Tile final : public MapObject
 			FLAT_ASSERT(tileProgramSettings != nullptr);
 			return *tileProgramSettings;
 		}
-	
-		void updateNormal(Map& map);
-		inline void setNormalDirty() { FLAT_ASSERT(!m_normalDirty); m_normalDirty = true; }
-		inline bool isNormalDirty() const { return m_normalDirty; }
 
 	private:
-		void setNearbyTilesDirty(Map& map);
-
 		static const flat::render::ProgramSettings* tileProgramSettings;
 
 		flat::render::SynchronizedSprite m_sprite;
@@ -83,8 +77,6 @@ class Tile final : public MapObject
 		float m_z;
 
 		Navigability m_navigability;
-
-		bool m_normalDirty : 1;
 };
 
 } // map

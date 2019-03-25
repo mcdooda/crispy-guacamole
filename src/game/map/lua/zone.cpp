@@ -102,8 +102,8 @@ int l_Zone_getRandomTile(lua_State* L)
 {
 	Zone* zone = getZone(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	const Tile* tile = zone->getRandomTile(game);
-	lua_pushlightuserdata(L, const_cast<Tile*>(tile));
+	TileIndex tileIndex = zone->getRandomTile(game);
+	lua_pushinteger(L, tileIndex);
 	return 1;
 }
 

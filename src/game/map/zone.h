@@ -44,7 +44,7 @@ class Zone
 
 		void eachTile(std::function<void(TileIndex tileIndex)> func);
 
-		const Tile* getRandomTile(Game& game) const;
+		TileIndex getRandomTile(Game& game) const;
 
 		const Rectangle* selectRectangle(const flat::Vector2& position) const;
 

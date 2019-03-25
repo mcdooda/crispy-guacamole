@@ -81,7 +81,6 @@ void Tile::setCoordinates(Map& map, const flat::Vector2i& xy, float z, bool init
 	{
 		displayManager.updateTerrainObject(this);
 	}
-	setNearbyTilesDirty(map);
 
 	if (m_prop)
 	{
@@ -162,116 +161,6 @@ void Tile::setColor(const flat::video::Color& color)
 const flat::video::Color& Tile::getColor() const
 {
 	return m_sprite.getColor();
-}
-
-void Tile::setNearbyTilesDirty(Map& map)
-{
-	map.setTileNormalDirty(*this);
-
-	Tile* topLeftTile = map.getTile(m_xy.x, m_xy.y - 1);
-	if (topLeftTile != nullptr)
-	{
-		map.setTileNormalDirty(*topLeftTile);
-	}
-
-	Tile* topRightTile = map.getTile(m_xy.x - 1, m_xy.y);
-	if (topRightTile != nullptr)
-	{
-		map.setTileNormalDirty(*topRightTile);
-	}
-
-	Tile* bottomLeftTile = map.getTile(m_xy.x + 1, m_xy.y);
-	if (bottomLeftTile != nullptr)
-	{
-		map.setTileNormalDirty(*bottomLeftTile);
-	}
-
-	Tile* bottomRightTile = map.getTile(m_xy.x, m_xy.y + 1);
-	if (bottomRightTile != nullptr)
-	{
-		map.setTileNormalDirty(*bottomRightTile);
-	}
-}
-
-void Tile::updateNormal(Map& map)
-{
-	m_normalDirty = false;
-
-	flat::Vector3 dx(1.f, 0.f, 0.f);
-	flat::Vector3 dy(0.f, 1.f, 0.f);
-
-	constexpr float minZDifference = 0.05f;
-
-	// compute dx
-	{
-		Tile* bottomLeftTile = map.getTile(m_xy.x + 1, m_xy.y);
-		Tile* topRightTile = map.getTile(m_xy.x - 1, m_xy.y);
-		if (bottomLeftTile != nullptr && topRightTile != nullptr)
-		{
-			if (std::abs(m_z - bottomLeftTile->m_z) > minZDifference
-				&& std::abs(m_z - topRightTile->m_z) > minZDifference)
-			{
-				dx.x = 2.f;
-				dx.y = 0.f;
-				dx.z = bottomLeftTile->m_z - topRightTile->m_z;
-			}
-		}
-		else if (bottomLeftTile != nullptr)
-		{
-			if (std::abs(m_z - bottomLeftTile->m_z) > minZDifference)
-			{
-				dx.x = 1.f;
-				dx.y = 0.f;
-				dx.z = bottomLeftTile->m_z - m_z;
-			}
-		}
-		else if (topRightTile != nullptr)
-		{
-			if (std::abs(m_z - topRightTile->m_z) > minZDifference)
-			{
-				dx.x = 1.f;
-				dx.y = 0.f;
-				dx.z = m_z - topRightTile->m_z;
-			}
-		}
-	}
-
-	// compute dy
-	{
-		Tile* bottomRightTile = map.getTile(m_xy.x, m_xy.y + 1);
-		Tile* topLeftTile = map.getTile(m_xy.x, m_xy.y - 1);
-		if (bottomRightTile != nullptr && topLeftTile != nullptr)
-		{
-			if (std::abs(m_z - bottomRightTile->m_z) > minZDifference
-			 && std::abs(m_z - topLeftTile->m_z) > minZDifference)
-			{
-				dy.x = 0.f;
-				dy.y = 2.f;
-				dy.z = bottomRightTile->m_z - topLeftTile->m_z;
-			}
-		}
-		else if (bottomRightTile != nullptr)
-		{
-			if (std::abs(m_z - bottomRightTile->m_z) > minZDifference)
-			{
-				dy.x = 0.f;
-				dy.y = 1.f;
-				dy.z = bottomRightTile->m_z - m_z;
-			}
-		}
-		else if (topLeftTile != nullptr)
-		{
-			if (std::abs(m_z - topLeftTile->m_z) > minZDifference)
-			{
-				dy.x = 0.f;
-				dy.y = 1.f;
-				dy.z = m_z - topLeftTile->m_z;
-			}
-		}
-	}
-
-	flat::Vector3 normal = flat::normalize(flat::cross(flat::normalize(dx), flat::normalize(dy)));
-	m_sprite.setNormal(normal);
 }
 
 } // map

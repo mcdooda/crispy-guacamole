@@ -27,6 +27,7 @@ void GameState::enter(Game& game)
 	}
 #endif
 	
+	getMap().buildNeighborTiles();
 	startLevelScript(game);
 }
 

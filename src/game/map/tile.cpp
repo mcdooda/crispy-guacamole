@@ -164,26 +164,6 @@ const flat::video::Color& Tile::getColor() const
 	return m_sprite.getColor();
 }
 
-void Tile::eachNeighborTilesWithNavigability(const Map& map, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const
-{
-	const float maxZ = m_z + jumpHeight;
-
-	auto checkTile = [&](int x, int y)
-	{
-		TileIndex tileIndex = map.getTileIndexIfNavigable(x, y, navigabilityMask);
-		if (tileIndex != TileIndex::INVALID)
-		{
-			if (map.getTileZ(tileIndex) <= maxZ)
-				func(tileIndex);
-		}
-	};
-
-	checkTile(m_xy.x - 1, m_xy.y);
-	checkTile(m_xy.x + 1, m_xy.y);
-	checkTile(m_xy.x, m_xy.y - 1);
-	checkTile(m_xy.x, m_xy.y + 1);
-}
-
 void Tile::setNearbyTilesDirty(Map& map)
 {
 	map.setTileNormalDirty(*this);

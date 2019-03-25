@@ -116,9 +116,9 @@ TileIndex Map::createTile(int x, int y, float z, flat::render::SpriteSynchronize
 	Tile& tile = m_tiles.emplace_back();
 	tile.synchronizeSpriteTo(*this, spriteSynchronizer);
 	tile.setCoordinates(*this, flat::Vector2i(x, y), z, true);
-	size_t positionHash = getTileHashFromPosition(x, y);
-	FLAT_ASSERT(m_tilePositionToIndex.find(positionHash) == m_tilePositionToIndex.end());
-	m_tilePositionToIndex[positionHash] = tileIndex;
+	flat::Vector2i position(x, y);
+	FLAT_ASSERT(m_tilePositionToIndex.find(position) == m_tilePositionToIndex.end());
+	m_tilePositionToIndex[position] = tileIndex;
 	return tileIndex;
 }
 
@@ -176,8 +176,12 @@ Tile* Map::getTile(float x, float y)
 
 TileIndex Map::getTileIndex(int x, int y) const
 {
-	size_t positionHash = getTileHashFromPosition(x, y);
-	std::unordered_map<size_t, TileIndex>::const_iterator it = m_tilePositionToIndex.find(positionHash);
+	return getTileIndex(flat::Vector2i(x, y));
+}
+
+map::TileIndex Map::getTileIndex(const flat::Vector2i& position) const
+{
+	std::unordered_map<flat::Vector2i, TileIndex>::const_iterator it = m_tilePositionToIndex.find(position);
 	if (it != m_tilePositionToIndex.end())
 	{
 		return it->second;
@@ -403,9 +407,65 @@ int Map::getTileEntityCount(TileIndex tileIndex) const
 	return entityCount;
 }
 
+void Map::addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex)
+{
+	NeighborTiles& neighborTiles = m_neighborTiles[tileIndex];
+	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
+	{
+		if (neighborTiles.neighbors[i] == TileIndex::INVALID)
+		{
+			neighborTiles.neighbors[i] = neighborTileIndex;
+			break;
+		}
+	}
+	FLAT_ASSERT_MSG(false, "Cannot add more than %d neighbors", NeighborTiles::MAX_NEIGHBORS);
+}
+
+void Map::addTileNeighbor(TileIndex tileIndex, const flat::Vector2i& neighborTilePosition)
+{
+	TileIndex neighborTileIndex = getTileIndex(neighborTilePosition);
+	if (neighborTileIndex != TileIndex::INVALID)
+	{
+		addTileNeighbor(tileIndex, neighborTileIndex);
+	}
+}
+
+void Map::buildNeighborTiles()
+{
+	m_neighborTiles.resize(m_tiles.size());
+	for (const std::pair<flat::Vector2i, TileIndex>& pair : m_tilePositionToIndex)
+	{
+		const flat::Vector2i& tilePosition = pair.first;
+		const TileIndex tileIndex = pair.second;
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(-1, 0));
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(1, 0));
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, -1));
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, 1));
+	}
+}
+
+void Map::eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const
+{
+	FLAT_ASSERT(m_neighborTiles.size() == m_tiles.size());
+	const NeighborTiles& neighborTiles = m_neighborTiles.at(tileIndex);
+	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
+	{
+		TileIndex neighborTileIndex = neighborTiles.neighbors.at(i);
+		if (neighborTileIndex == TileIndex::INVALID)
+			break;
+
+		func(neighborTileIndex);
+	}
+}
+
 void Map::eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const
 {
-	m_tiles.at(tileIndex).eachNeighborTilesWithNavigability(*this, jumpHeight, navigabilityMask, func);
+	const float maxZ = getTileZ(tileIndex) + jumpHeight;
+	eachNeighborTiles(tileIndex, [this, maxZ, navigabilityMask, &func](TileIndex neighborTileIndex)
+	{
+		if (getTileZ(neighborTileIndex) <= maxZ && isTileNavigable(neighborTileIndex, navigabilityMask))
+			func(neighborTileIndex);
+	});
 }
 
 void Map::setTileNormalDirty(Tile& tile)

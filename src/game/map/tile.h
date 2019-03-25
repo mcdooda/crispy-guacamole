@@ -55,8 +55,6 @@ class Tile final : public MapObject
 		
 		void setColor(const flat::video::Color& color);
 		const flat::video::Color& getColor() const;
-		
-		void eachNeighborTilesWithNavigability(const Map& map, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const;
 
 		inline static void setTileProgramSettings(const flat::render::ProgramSettings& programSettings)
 		{

@@ -48,7 +48,7 @@ Entity::~Entity()
 void Entity::setPosition(const flat::Vector3& position)
 {
 	m_position = position;
-	FLAT_ASSERT(m_map == nullptr || getTileFromPosition() != nullptr);
+	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID);
 	if (m_map)
 	{
 		m_cellIndex = m_map->updateEntityPosition(this, m_cellIndex);
@@ -62,7 +62,7 @@ void Entity::setXY(const flat::Vector2& xy)
 {
 	m_position.x = xy.x;
 	m_position.y = xy.y;
-	FLAT_ASSERT(m_map == nullptr || getTileFromPosition() != nullptr);
+	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID);
 	if (m_map)
 	{
 		m_cellIndex = m_map->updateEntityPosition(this, m_cellIndex);

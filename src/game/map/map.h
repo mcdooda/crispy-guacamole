@@ -40,6 +40,18 @@ inline void getEntityAABB(entity::Entity* entity, flat::AABB2& aabb)
 
 class Map
 {
+	private:
+		struct NeighborTiles
+		{
+			static constexpr int MAX_NEIGHBORS = 4;
+			std::array<TileIndex, MAX_NEIGHBORS> neighbors;
+			NeighborTiles()
+			{
+				for (int i = 0; i < MAX_NEIGHBORS; ++i)
+					neighbors[i] = TileIndex::INVALID;
+			}
+		};
+
 	public:
 		Map();
 		~Map();
@@ -75,6 +87,7 @@ class Map
 		Tile* getTile(float x, float y);
 
 		TileIndex getTileIndex(int x, int y) const;
+		TileIndex getTileIndex(const flat::Vector2i& position) const;
 		TileIndex getTileIndex(float x, float y) const;
 		TileIndex getTileIndex(const Tile* tile) const;
 
@@ -127,6 +140,8 @@ class Map
 		void eachTileEntity(TileIndex tileIndex, Func func) const;
 		int getTileEntityCount(TileIndex tileIndex) const;
 
+		void buildNeighborTiles();
+		void eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const;
 		void eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const;
 
 		template <class Func>
@@ -148,6 +163,9 @@ class Map
 		void setAxes(const flat::Vector2& xAxis,
 		             const flat::Vector2& yAxis,
 		             const flat::Vector2& zAxis);
+
+		void addTileNeighbor(TileIndex tileIndex, const flat::Vector2i& neighborTilePosition);
+		void addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex);
 		
 	protected:
 		DisplayManager* m_displayManager;
@@ -164,8 +182,9 @@ class Map
 		int m_maxY;
 
 		std::vector<Tile> m_tiles;
+		std::vector<NeighborTiles> m_neighborTiles;
 
-		std::unordered_map<size_t, TileIndex> m_tilePositionToIndex;
+		std::unordered_map<flat::Vector2i, TileIndex> m_tilePositionToIndex;
 
 		std::vector<Tile*> m_dirtyNormalTiles;
 

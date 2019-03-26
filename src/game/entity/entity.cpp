@@ -109,7 +109,10 @@ void Entity::setElevation(float elevation)
 		elevation -= flat::PI2;
 
 	m_elevation = elevation;
-	elevationChanged(m_elevation);
+	if (m_map != nullptr)
+	{
+		elevationChanged(m_elevation);
+	}
 
 	m_aabbDirty = true;
 }

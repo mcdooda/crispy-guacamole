@@ -137,6 +137,7 @@ class Entity final : public map::MapObject
 		inline void setAABBCanChange(bool aabbCanChange) { m_aabbCanChange = aabbCanChange; }
 		void updateAABB();
 		void updateAABBIfDirty();
+		inline void setAABBDirty() { m_aabbDirty = true; }
 
 #ifdef FLAT_DEBUG
 		void checkSpriteAABB();

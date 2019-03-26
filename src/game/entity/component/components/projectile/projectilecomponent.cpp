@@ -20,6 +20,10 @@ void ProjectileComponent::init()
 	m_owner->addedToMap.on(this, &ProjectileComponent::addedToMap);
 	m_owner->removedFromMap.on(this, &ProjectileComponent::removedFromMap);
 	m_owner->headingChanged.on(this, &ProjectileComponent::headingChanged);
+	if (getTemplate()->getWeight() != 0.f)
+	{
+		m_owner->elevationChanged.on(this, &ProjectileComponent::elevationChanged);
+	}
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
@@ -34,6 +38,10 @@ void ProjectileComponent::deinit()
 	m_owner->addedToMap.off(this);
 	m_owner->removedFromMap.off(this);
 	m_owner->headingChanged.off(this);
+	if (getTemplate()->getWeight() != 0.f)
+	{
+		m_owner->elevationChanged.off(this);
+	}
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
@@ -155,6 +163,24 @@ bool ProjectileComponent::headingChanged(float heading)
 	const float speedXY = getSpeedXY();
 	m_speed.x = std::cos(heading) * speedXY;
 	m_speed.y = std::sin(heading) * speedXY;
+
+	if (m_owner->hasSprite() && getTemplate()->getRotateSprite())
+	{
+		updateSpriteRotation();
+	}
+
+	return true;
+}
+
+bool ProjectileComponent::elevationChanged(float elevation)
+{
+	FLAT_ASSERT(getTemplate()->getWeight() != 0.f);
+	const float speed = getTemplate()->getSpeed();
+	const float horizontalSpeed = speed * std::cos(elevation);
+	const float heading = m_owner->getHeading();
+	m_speed.x = std::cos(heading) * horizontalSpeed;
+	m_speed.y = std::sin(heading) * horizontalSpeed;
+	m_speed.z = std::sin(elevation) * speed;
 
 	if (m_owner->hasSprite() && getTemplate()->getRotateSprite())
 	{

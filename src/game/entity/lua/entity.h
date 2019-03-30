@@ -76,6 +76,7 @@ int l_Entity_interactWith(lua_State* L);
 int l_Entity_playAnimation(lua_State* L);
 int l_Entity_getAttachPoint(lua_State* L);
 int l_Entity_flipSpriteX(lua_State* L);
+int l_Entity_setSpriteRotation(lua_State* L);
 
 // detection
 int l_Entity_canSee(lua_State* L);

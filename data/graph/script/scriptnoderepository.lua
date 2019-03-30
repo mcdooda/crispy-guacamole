@@ -53,6 +53,7 @@ return {
     'components/spritecomponent',
     'entity/playanimation',
     'entity/flipspritex',
+    'entity/setspriterotation',
 
     -- entity
     'entity/gettemplatename',
@@ -73,6 +74,7 @@ return {
 
     'entity/isvalidentity',
     'entity/iscomponentenabled',
+    'entity/disablecomponent',
 
     -- flow
     'flow/eachframe',
@@ -85,6 +87,7 @@ return {
     -- controller
     'controller/buttonpressed',
     'controller/buttonjustpressed',
+    'controller/buttonjustreleased',
     'controller/leftstickdirection',
     'controller/rightstickdirection',
     'controller/axisvalue',

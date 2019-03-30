@@ -1,0 +1,3 @@
+return {
+	house = 1
+}

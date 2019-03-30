@@ -40,6 +40,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		bool addedToMap(Entity* entity, map::Map* map);
 		bool removedFromMap(Entity* entity);
 		bool headingChanged(float heading);
+		bool elevationChanged(float heading);
 		bool collided(Entity* collidedEntity, map::TileIndex collidedTileIndex, const flat::Vector3& normal);
 		bool collidedWithEntity(Entity* collidedEntity, const flat::Vector3& normal);
 		bool collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal);

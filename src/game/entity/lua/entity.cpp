@@ -96,6 +96,7 @@ int open(Game& game)
 		{"playAnimation",            l_Entity_playAnimation},
 		{"getAttachPoint",           l_Entity_getAttachPoint},
 		{"flipSpriteX",              l_Entity_flipSpriteX},
+		{"setSpriteRotation",        l_Entity_setSpriteRotation},
 
 		// detection
 		{"canSee",                   l_Entity_canSee},
@@ -646,6 +647,19 @@ int l_Entity_flipSpriteX(lua_State* L)
 	getComponent<sprite::SpriteComponent>(L, entity);
 
 	entity.getSprite().setFlipX(flip);
+	return 0;
+}
+
+int l_Entity_setSpriteRotation(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	float angle = static_cast<float>(luaL_checknumber(L, 2));
+
+	// check the component is present
+	getComponent<sprite::SpriteComponent>(L, entity);
+
+	entity.getSprite().setRotationZ(angle);
+	entity.setAABBDirty();
 	return 0;
 }
 

@@ -523,7 +523,6 @@ int l_Entity_setDefaultMoveAnimation(lua_State* L)
 	return 0;
 }
 
-FLAT_OPTIMIZE_OFF()
 int l_Entity_setIsStrafing(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -532,7 +531,6 @@ int l_Entity_setIsStrafing(lua_State* L)
 	movementComponent.setIsStrafing(isStrafing);
 	return 0;
 }
-FLAT_OPTIMIZE_ON()
 
 int l_Entity_getIsStrafing(lua_State* L)
 {

@@ -82,6 +82,7 @@ void BaseState::initLua(Game& game)
 	}
 	game.ui->reset();
 	game.notify->reset();
+	game.message->reset();
 }
 
 void BaseState::updateUi(Game& game)

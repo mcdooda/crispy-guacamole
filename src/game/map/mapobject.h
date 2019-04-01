@@ -23,6 +23,7 @@ class MapObject
 		inline const flat::AABB3& getWorldSpaceAABB() const { return m_worldSpaceAABB; }
 
 		inline const flat::AABB2& getAABB() const { return m_spriteAABB; }
+		inline flat::AABB2& getAABB() { return m_spriteAABB; }
 
 		void updateRenderHash() const;
 		inline std::uint32_t getRenderHash() const { return m_renderHash; }

@@ -202,7 +202,7 @@ int l_Map_getZone(lua_State* L)
 
 int l_Map_getTilePosition(lua_State* L)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	TileIndex tileIndex = static_cast<TileIndex::Type>(luaL_checkinteger(L, 1));
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
 	game::map::Map& map = baseMapState.getMap();
@@ -216,7 +216,7 @@ int l_Map_getTilePosition(lua_State* L)
 
 int l_Map_getTileZ(lua_State* L)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	TileIndex tileIndex = static_cast<TileIndex::Type>(luaL_checkinteger(L, 1));
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
 	game::map::Map& map = baseMapState.getMap();
@@ -226,7 +226,7 @@ int l_Map_getTileZ(lua_State* L)
 
 int l_Map_setTileZ(lua_State* L)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	TileIndex tileIndex = static_cast<TileIndex::Type>(luaL_checkinteger(L, 1));
 	float z = static_cast<float>(luaL_checknumber(L, 2));
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
@@ -237,7 +237,7 @@ int l_Map_setTileZ(lua_State* L)
 
 int l_Map_moveTileZBy(lua_State* L)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	TileIndex tileIndex = static_cast<TileIndex::Type>(luaL_checkinteger(L, 1));
 	float dz = static_cast<float>(luaL_checknumber(L, 2));
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();

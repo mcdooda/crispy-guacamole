@@ -54,6 +54,11 @@ DebugDisplayText::DebugDisplayText(const flat::Vector2& pos, const std::string& 
 
 void DebugDisplayText::draw(const flat::render::RenderSettings& renderSettings) const
 {
+	if (getVertices().empty())
+	{
+		return;
+	}
+
 	renderSettings.textureUniform.set(getFont()->getAtlasId());
 	renderSettings.modelMatrixUniform.set(m_transform);
 

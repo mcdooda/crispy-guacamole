@@ -566,7 +566,7 @@ return {
     },
     {
       loadArguments = {
-        0.5,
+        0.30000001192093,
       },
       name = 'number',
     },

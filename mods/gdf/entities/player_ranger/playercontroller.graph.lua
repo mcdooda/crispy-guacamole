@@ -85,6 +85,18 @@ return {
       2,
     },
     {
+      1,
+      3,
+      39,
+      2,
+    },
+    {
+      1,
+      3,
+      40,
+      1,
+    },
+    {
       3,
       1,
       11,
@@ -312,6 +324,30 @@ return {
       21,
       1,
     },
+    {
+      38,
+      1,
+      39,
+      1,
+    },
+    {
+      40,
+      1,
+      41,
+      1,
+    },
+    {
+      41,
+      1,
+      39,
+      3,
+    },
+    {
+      42,
+      1,
+      41,
+      2,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -410,7 +446,7 @@ return {
     },
     {
       loadArguments = {
-        0.20000000298023,
+        1,
       },
       name = 'number',
     },
@@ -425,7 +461,7 @@ return {
     },
     {
       loadArguments = {
-        'missile4',
+        'missile3',
       },
       name = 'string',
     },
@@ -476,6 +512,21 @@ return {
     },
     {
       name = 'entity/jump',
+    },
+    {
+      name = 'entity/setmidairacceleration',
+    },
+    {
+      name = 'entity/getforward',
+    },
+    {
+      name = 'math/vector3/vector3numbermultiply',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
     },
   },
 }

@@ -894,7 +894,7 @@ int l_Entity_getProjectileSpeed(lua_State * L)
 int l_Entity_setGamepadIndex(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	flat::input::GamepadIndex gamepadIndex = luaL_checkinteger(L, 2);
+	flat::input::GamepadIndex gamepadIndex = static_cast<flat::input::GamepadIndex>(luaL_checkinteger(L, 2));
 	luaL_argcheck(L, gamepadIndex >= 1, 2, "invalid gamepad index");
 	playercontroller::PlayerControllerComponent& playerControllerComponent = getComponent<playercontroller::PlayerControllerComponent>(L, entity);
 	playerControllerComponent.setGamepadIndex(gamepadIndex - 1);

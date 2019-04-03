@@ -40,6 +40,7 @@ inline void getEntityAABB(entity::Entity* entity, flat::AABB2& aabb)
 
 class Map
 {
+	using EntityQuadTree = flat::geometry::QuadTree<entity::Entity*, 10, getEntityAABB>;
 	public:
 		Map();
 		virtual ~Map();
@@ -147,7 +148,7 @@ class Map
 		};
 		std::deque<TileSpriteSynchronizer> m_tileSpriteSynchronizers;
 
-		std::unique_ptr<flat::geometry::QuadTree<entity::Entity, 10, getEntityAABB>> m_entityQuadtree;
+		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
 		
 	private:
 		friend class io::Reader;

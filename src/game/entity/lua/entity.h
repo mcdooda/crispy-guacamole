@@ -46,6 +46,8 @@ int l_Entity_headingChanged(lua_State* L);
 int l_Entity_setElevation(lua_State* L);
 int l_Entity_getElevation(lua_State* L);
 
+int l_Entity_getForward(lua_State* L);
+
 int l_Entity_lookAtEntity(lua_State* L);
 
 // ui
@@ -59,6 +61,8 @@ int l_Entity_setSpeed(lua_State* L);
 int l_Entity_getSpeed(lua_State* L);
 int l_Entity_jump(lua_State* L);
 int l_Entity_isTouchingGround(lua_State* L);
+int l_Entity_setMidairAcceleration(lua_State* L);
+int l_Entity_getMidairAcceleration(lua_State* L);
 int l_Entity_restrictToZone(lua_State* L);
 int l_Entity_setMoveAnimation(lua_State* L);
 int l_Entity_setDefaultMoveAnimation(lua_State* L);

@@ -346,7 +346,7 @@ bool MovementComponent::setDefaultMoveAnimation()
 
 void MovementComponent::fall(float elapsedTime)
 {
-	if (m_isTouchingGround)
+	if (m_isTouchingGround && flat::length2(m_midairAcceleration) < FLT_EPSILON)
 		return;
 		
 	const map::Tile* tile = m_owner->getTileFromPosition();

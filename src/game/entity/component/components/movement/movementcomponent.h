@@ -50,6 +50,9 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		inline void setMovementSpeed(float speed) { m_movementSpeed = speed; }
 		inline float getMovementSpeed() const { return m_movementSpeed; }
 
+		inline void setMidairAcceleration(const flat::Vector3& midairAcceleration) { m_midairAcceleration = midairAcceleration; }
+		inline const flat::Vector3& getMidairAcceleration() const { return m_midairAcceleration; }
+
 		inline void setIsStrafing(bool isStrafing) { m_isStrafing = isStrafing; }
 		inline bool getIsStrafing() const { return m_isStrafing; }
 

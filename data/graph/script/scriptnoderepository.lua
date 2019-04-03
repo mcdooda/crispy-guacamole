@@ -31,6 +31,8 @@ return {
     'entity/moveto',
     'entity/setstrafing',
     'entity/getstrafing',
+    'entity/setmidairacceleration',
+    'entity/getmidairacceleration',
 
     -- player controller
     'components/playercontrollercomponent',
@@ -71,6 +73,7 @@ return {
     'entity/setelevation',
     'entity/getposition',
     'entity/setposition',
+    'entity/getforward',
 
     'entity/isvalidentity',
     'entity/iscomponentenabled',

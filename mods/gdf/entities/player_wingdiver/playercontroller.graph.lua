@@ -45,7 +45,7 @@ return {
     {
       1,
       3,
-      43,
+      48,
       2,
     },
     {
@@ -111,7 +111,19 @@ return {
     {
       1,
       3,
-      48,
+      53,
+      2,
+    },
+    {
+      1,
+      3,
+      51,
+      1,
+    },
+    {
+      1,
+      3,
+      54,
       2,
     },
     {
@@ -201,13 +213,13 @@ return {
     {
       14,
       1,
-      43,
+      54,
       1,
     },
     {
       15,
       1,
-      53,
+      43,
       2,
     },
     {
@@ -243,7 +255,7 @@ return {
     {
       21,
       1,
-      53,
+      43,
       1,
     },
     {
@@ -379,6 +391,12 @@ return {
       3,
     },
     {
+      43,
+      1,
+      17,
+      2,
+    },
+    {
       44,
       1,
       19,
@@ -403,6 +421,12 @@ return {
       1,
     },
     {
+      48,
+      1,
+      56,
+      1,
+    },
+    {
       49,
       1,
       14,
@@ -417,8 +441,8 @@ return {
     {
       51,
       1,
-      43,
-      3,
+      60,
+      1,
     },
     {
       52,
@@ -427,9 +451,57 @@ return {
       1,
     },
     {
+      54,
+      1,
       53,
       1,
-      17,
+    },
+    {
+      55,
+      1,
+      54,
+      3,
+    },
+    {
+      56,
+      1,
+      59,
+      3,
+    },
+    {
+      57,
+      1,
+      56,
+      2,
+    },
+    {
+      58,
+      1,
+      59,
+      1,
+    },
+    {
+      58,
+      2,
+      59,
+      2,
+    },
+    {
+      59,
+      1,
+      53,
+      3,
+    },
+    {
+      60,
+      1,
+      58,
+      1,
+    },
+    {
+      61,
+      1,
+      60,
       2,
     },
   },
@@ -593,7 +665,7 @@ return {
     },
     {
       loadArguments = {
-        0.5,
+        0.20000000298023,
       },
       name = 'number',
     },
@@ -634,7 +706,7 @@ return {
       name = 'string',
     },
     {
-      name = 'entity/jump',
+      name = 'math/greaterthan',
     },
     {
       loadArguments = {
@@ -673,10 +745,7 @@ return {
       name = 'string',
     },
     {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
+      name = 'entity/getforward',
     },
     {
       loadArguments = {
@@ -685,7 +754,40 @@ return {
       name = 'string',
     },
     {
-      name = 'math/greaterthan',
+      name = 'entity/setmidairacceleration',
+    },
+    {
+      name = 'entity/jump',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'math/multiply',
+    },
+    {
+      loadArguments = {
+        30,
+      },
+      name = 'number',
+    },
+    {
+      name = 'math/vector3/vector3split',
+    },
+    {
+      name = 'vector3',
+    },
+    {
+      name = 'math/vector3/vector3numbermultiply',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
   },
 }

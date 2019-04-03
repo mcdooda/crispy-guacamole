@@ -1,3 +1,4 @@
+local gdf = require 'mods/gdf/scripts/gdf'
 local Camera = require 'data/game/scripts/camera'
 
 local math = math
@@ -53,7 +54,7 @@ local function smoothDamp(current, target, currentVelocity, smoothTime, maxSpeed
     return output, currentVelocity
 end
 
-local players = Map.getEntitiesOfType('player')
+local players = gdf.getPlayers()
 
 local function getCameraTargetPosition()
     local positions = flat.Vector3(0, 0, 0)

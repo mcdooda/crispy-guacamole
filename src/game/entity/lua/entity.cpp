@@ -67,6 +67,8 @@ int open(Game& game)
 		{"setElevation",             l_Entity_setElevation},
 		{"getElevation",             l_Entity_getElevation},
 
+		{"getForward",               l_Entity_getForward},
+
 		{"lookAtEntity",             l_Entity_lookAtEntity},
 
 		// ui
@@ -80,6 +82,8 @@ int open(Game& game)
 		{"getSpeed",                 l_Entity_getSpeed},
 		{"jump",                     l_Entity_jump},
 		{"isTouchingGround",         l_Entity_isTouchingGround},
+		{"setMidairAcceleration",    l_Entity_setMidairAcceleration},
+		{"getMidairAcceleration",    l_Entity_getMidairAcceleration},
 		{"restrictToZone",           l_Entity_restrictToZone},
 		{"setMoveAnimation",         l_Entity_setMoveAnimation},
 		{"setDefaultMoveAnimation",  l_Entity_setDefaultMoveAnimation},
@@ -402,6 +406,13 @@ int l_Entity_getElevation(lua_State* L)
 	return 1;
 }
 
+int l_Entity_getForward(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::lua::pushVector3(L, entity.getForward());
+	return 1;
+}
+
 int l_Entity_lookAtEntity(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -484,6 +495,23 @@ int l_Entity_isTouchingGround(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	lua_pushboolean(L, movementComponent.isTouchingGround());
+	return 1;
+}
+
+int l_Entity_setMidairAcceleration(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::Vector3& midairAcceleration = flat::lua::getVector3(L, 2);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	movementComponent.setMidairAcceleration(midairAcceleration);
+	return 0;
+}
+
+int l_Entity_getMidairAcceleration(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	flat::lua::pushVector3(L, movementComponent.getMidairAcceleration());
 	return 1;
 }
 

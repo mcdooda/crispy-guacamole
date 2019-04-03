@@ -119,8 +119,8 @@ void Writer::writeTiles()
 		{
 			TileIndex tileIndex = m_map.getTileIndex(x, y);
 
-			write(tileIndex != TileIndex::INVALID);
-			if (tileIndex != TileIndex::INVALID)
+			write(tileIndex != TileIndex::INVALID_TILE);
+			if (tileIndex != TileIndex::INVALID_TILE)
 			{
 				write(m_map.getTileZ(tileIndex));
 

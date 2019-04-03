@@ -20,7 +20,7 @@ TileIndex ZonePathfinder::getTileIndexIfNavigable(float x, float y, map::Navigab
 	{
 		return tileIndex;
 	}
-	return TileIndex::INVALID;
+	return TileIndex::INVALID_TILE;
 }
 
 void ZonePathfinder::eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const

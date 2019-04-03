@@ -163,7 +163,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			const map::TileIndex nextTileIndex = map->getTileIndexIfNavigable(nextTilePosition.x, nextTilePosition.y, navigabilityMask);
 			
 			// jump if necessary
-			if (nextTileIndex != map::TileIndex::INVALID)
+			if (nextTileIndex != map::TileIndex::INVALID_TILE)
 			{
 				const float nextTileZ = map->getTileZ(nextTileIndex);
 				if (nextTileZ > position.z + MIN_Z_EPSILON || nextTileZ < position.z - MIN_Z_EPSILON)
@@ -263,7 +263,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 
 		map::Navigability initialTileNavigability;
 
-		map::TileIndex interactionTileIndex = map::TileIndex::INVALID;
+		map::TileIndex interactionTileIndex = map::TileIndex::INVALID_TILE;
 		if (interactionEntity != nullptr)
 		{
 			map::TileIndex tileIndex = interactionEntity->getTileIndexFromPosition();
@@ -291,7 +291,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 
 		pathfinder->~Pathfinder();
 
-		if (interactionTileIndex != map::TileIndex::INVALID)
+		if (interactionTileIndex != map::TileIndex::INVALID_TILE)
 		{
 			map.setTileNavigability(interactionTileIndex, initialTileNavigability);
 		}
@@ -440,7 +440,7 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	for (flat::Vector2 point2d : m_path)
 	{
 		const map::TileIndex tileIndex = map->getTileIndex(point2d.x, point2d.y);
-		FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+		FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 		flat::Vector3 point(point2d, map->getTileZ(tileIndex));
 		debugDisplay.add3dLine(previousPoint, point);
 		previousPoint = point;

@@ -14,38 +14,14 @@ namespace map
 class Map;
 class Prop;
 
-class TileIndex
+enum TileIndex
 {
-public:
-	using Type = std::uint32_t;
-
-	enum : Type { INVALID = 0xFFFFFFFF };
-
-	TileIndex() : m_value(INVALID) {}
-	TileIndex(Type value) : m_value(value) {}
-	void operator=(Type value) { m_value = value; }
-	
-	inline operator Type() const { return m_value; }
-
-private:
-	Type m_value;
+	INVALID_TILE = 0xFFFFFFFF
 };
 
-class PropIndex
+enum PropIndex
 {
-public:
-	using Type = std::uint32_t;
-
-	enum : Type { INVALID = 0xFFFFFFFF };
-
-	PropIndex() : m_value(INVALID) {}
-	PropIndex(Type value) : m_value(value) {}
-	void operator=(Type value) { m_value = value; }
-
-	inline operator Type() const { return m_value; }
-
-private:
-	Type m_value;
+	INVALID_PROP = 0xFFFFFFFF
 };
 
 class Tile final : public MapObject
@@ -94,19 +70,4 @@ class Tile final : public MapObject
 } // map
 } // game
 
-namespace std
-{
-	template <>
-	struct hash<game::map::TileIndex>
-	{
-		size_t operator()(game::map::TileIndex k) const
-		{
-			return static_cast<game::map::TileIndex::Type>(k);
-		}
-	};
-}
-
 #endif // GAME_MAP_TILE_H
-
-
-

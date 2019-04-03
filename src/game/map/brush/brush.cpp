@@ -33,7 +33,7 @@ void Brush::getTiles(Map& map, const flat::Vector2& center, TilesContainer& tile
 		for (int y = minY; y <= maxY; ++y)
 		{
 			map::TileIndex tileIndex = map.getTileIndex(x, y);
-			if (tileIndex != map::TileIndex::INVALID)
+			if (tileIndex != map::TileIndex::INVALID_TILE)
 			{
 				positionFromCenter.x = static_cast<float>(x) - center.x;
 				positionFromCenter.y = static_cast<float>(y) - center.y;
@@ -71,7 +71,7 @@ void Brush::getEntities(Map& map, const flat::Vector2& center, std::vector<entit
 		for (int y = minY; y <= maxY; ++y)
 		{
 			const map::TileIndex tileIndex = map.getTileIndex(x, y);
-			if (tileIndex != map::TileIndex::INVALID)
+			if (tileIndex != map::TileIndex::INVALID_TILE)
 			{
 				float effect = getTileEffect(map, center, tileIndex);
 				if (effect > minEffect)

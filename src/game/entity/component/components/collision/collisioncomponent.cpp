@@ -95,7 +95,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	FLAT_ASSERT(map != nullptr);
 
 	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 	flat::Vector2i tilePosition = map->getTileXY(tileIndex);
 	
 	const flat::Vector3& position = m_owner->getPosition();
@@ -113,7 +113,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	const int minY = static_cast<int>(std::round(m_owner->getPosition().y - radius));
 	const int maxY = static_cast<int>(std::round(m_owner->getPosition().y + radius));
 
-	map::TileIndex collidedTileIndex = map::TileIndex::INVALID;
+	map::TileIndex collidedTileIndex = map::TileIndex::INVALID_TILE;
 	float collidedTileZ = -FLT_MAX;
 	flat::Vector3 normal;
 	float closestCollisionDistance2 = FLT_MAX;
@@ -136,7 +136,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 		map::TileIndex tileIndex2 = map->getTileIndexIfNavigable(x, y, navigabilityMask);
 		
 		float tileZ = -FLT_MAX;
-		if (tileIndex2 != map::TileIndex::INVALID)
+		if (tileIndex2 != map::TileIndex::INVALID_TILE)
 		{
 			tileZ = map->getTileZ(tileIndex2);
 
@@ -203,7 +203,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 
 		if (distance2 < radius2)
 		{
-			if (tileIndex2 != map::TileIndex::INVALID)
+			if (tileIndex2 != map::TileIndex::INVALID_TILE)
 			{
 				const float distance = std::sqrt(distance2);
 				if (distance < radius - 1.f && tileZ > newPosition.z)
@@ -254,14 +254,14 @@ void CollisionComponent::separateFromAdjacentTiles()
 	if (position != newPosition)
 	{
 		map::TileIndex newTileIndex = map->getTileIndex(newPosition.x, newPosition.y);
-		if (newTileIndex != map::TileIndex::INVALID)
+		if (newTileIndex != map::TileIndex::INVALID_TILE)
 		{
 			const float newTileZ = map->getTileZ(newTileIndex);
 			newPosition.z = std::max(newPosition.z, newTileZ);
 		}
 
 		m_owner->setPosition(newPosition);
-		FLAT_ASSERT(flat::length2(normal) > 0.f || collidedTileIndex == map::TileIndex::INVALID);
+		FLAT_ASSERT(flat::length2(normal) > 0.f || collidedTileIndex == map::TileIndex::INVALID_TILE);
 		onCollidedWithMap(collidedTileIndex, normal);
 	}
 }

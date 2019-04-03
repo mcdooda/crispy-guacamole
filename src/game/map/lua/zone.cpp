@@ -93,7 +93,7 @@ int l_Zone_getCenter(lua_State* L)
 int l_Zone_isTileInside(lua_State* L)
 {
 	Zone* zone = getZone(L, 1);
-	TileIndex tileIndex = static_cast<TileIndex::Type>(luaL_checkinteger(L, 2));
+	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 2));
 	lua_pushboolean(L, zone->isTileInside(tileIndex));
 	return 1;
 }

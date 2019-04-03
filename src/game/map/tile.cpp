@@ -11,7 +11,7 @@ namespace map
 const flat::render::ProgramSettings* Tile::tileProgramSettings = nullptr;
 
 Tile::Tile() :
-	m_propIndex(PropIndex::INVALID)
+	m_propIndex(PropIndex::INVALID_PROP)
 {
 	m_sprite.setColor(flat::video::Color::WHITE);
 }
@@ -20,7 +20,7 @@ Tile::Tile(Tile&& tile)
 {
 	m_sprite = std::move(tile.m_sprite);
 	m_propIndex = tile.m_propIndex;
-	tile.m_propIndex = PropIndex::INVALID;
+	tile.m_propIndex = PropIndex::INVALID_PROP;
 }
 
 Tile::~Tile()

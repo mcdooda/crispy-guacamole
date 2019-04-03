@@ -58,6 +58,14 @@ class Map
 		{
 			static constexpr int MAX_NEIGHBORS = 4;
 			std::array<TileIndex, MAX_NEIGHBORS> neighbors;
+			NeighborTiles() :
+				neighbors{
+					TileIndex::INVALID_TILE,
+					TileIndex::INVALID_TILE,
+					TileIndex::INVALID_TILE,
+					TileIndex::INVALID_TILE
+				}
+			{}
 		};
 
 	public:
@@ -213,7 +221,7 @@ void Map::eachTile(Func func) const
 {
 	for (size_t i = 0, e = m_tiles.size(); i < e; ++i)
 	{
-		func(static_cast<TileIndex::Type>(i));
+		func(static_cast<TileIndex>(i));
 	}
 }
 
@@ -226,7 +234,7 @@ void Map::eachNeighborTiles(TileIndex tileIndex, Func func) const
 	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
 	{
 		TileIndex neighborTileIndex = neighborTiles.neighbors[i];
-		if (neighborTileIndex == TileIndex::INVALID)
+		if (neighborTileIndex == TileIndex::INVALID_TILE)
 			break;
 
 		func(neighborTileIndex);
@@ -248,7 +256,7 @@ void Map::eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeigh
 template <typename Func>
 void Map::eachTileEntity(TileIndex tileIndex, Func func) const
 {
-	FLAT_ASSERT(tileIndex != TileIndex::INVALID);
+	FLAT_ASSERT(tileIndex != TileIndex::INVALID_TILE);
 	const Tile& tile = m_tiles.at(tileIndex);
 	const flat::AABB3& aabb3 = tile.getWorldSpaceAABB();
 	flat::AABB2 tileAABB(

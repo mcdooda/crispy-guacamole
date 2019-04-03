@@ -94,7 +94,7 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 			{
 				const flat::Vector2i& xy = map.getTileXY(tileIndex);
 				map::TileIndex adjacentTileIndex = map.getTileIndex(xy.x + dx, xy.y + dy);
-				if (adjacentTileIndex != map::TileIndex::INVALID)
+				if (adjacentTileIndex != map::TileIndex::INVALID_TILE)
 				{
 					std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(adjacentTileIndex);
 					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
@@ -129,7 +129,7 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 					{
 						const flat::Vector2i& xy = map.getTileXY(tileIndex);
 						map::TileIndex adjacentTileIndex = map.getTileIndex(xy.x + dx, xy.y + dy);
-						if (adjacentTileIndex != map::TileIndex::INVALID)
+						if (adjacentTileIndex != map::TileIndex::INVALID_TILE)
 						{
 							lua_pushstring(L, map.getTileTemplate(adjacentTileIndex)->getName().c_str());
 						}

@@ -56,7 +56,7 @@ void GameState::setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTI
 
 bool GameState::canPlaceGhostEntity(map::TileIndex tileIndex) const
 {
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 	if (m_canPlaceGhostEntity)
 	{
 		bool canPlaceEntity = false;

@@ -117,7 +117,7 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 
 TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTemplateVariantIndex, std::shared_ptr<const TileTemplate> tileTemplate)
 {
-	TileIndex tileIndex = static_cast<TileIndex::Type>(m_tiles.size());
+	TileIndex tileIndex = static_cast<TileIndex>(m_tiles.size());
 
 	Tile& tile = m_tiles.emplace_back();
 	flat::render::SpriteSynchronizer& spriteSynchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
@@ -161,7 +161,7 @@ map::TileIndex Map::getTileIndex(const flat::Vector2i& position) const
 	{
 		return it->second;
 	}
-	return TileIndex::INVALID;
+	return TileIndex::INVALID_TILE;
 }
 
 TileIndex Map::getTileIndex(float x, float y) const
@@ -171,7 +171,7 @@ TileIndex Map::getTileIndex(float x, float y) const
 
 TileIndex Map::getTileIndex(const Tile* tile) const
 {
-	return static_cast<TileIndex::Type>(tile - &m_tiles[0]);
+	return static_cast<TileIndex>(tile - &m_tiles[0]);
 }
 
 const flat::Vector2i& Map::getTileXY(TileIndex tileIndex) const
@@ -195,7 +195,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 
 	// prop
 	PropIndex propIndex = tile.getPropIndex();
-	if (propIndex != PropIndex::INVALID)
+	if (propIndex != PropIndex::INVALID_PROP)
 	{
 		Prop& prop = m_props[propIndex];
 		prop.setSpritePosition(position2d);
@@ -217,15 +217,15 @@ float Map::getTileZ(TileIndex tileIndex) const
 TileIndex Map::getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const
 {
 	TileIndex tileIndex = getTileIndex(x, y);
-	if (tileIndex == TileIndex::INVALID)
+	if (tileIndex == TileIndex::INVALID_TILE)
 	{
-		return TileIndex::INVALID;
+		return TileIndex::INVALID_TILE;
 	}
 	if (isTileNavigable(tileIndex, navigabilityMask))
 	{
 		return tileIndex;
 	}
-	return TileIndex::INVALID;
+	return TileIndex::INVALID_TILE;
 }
 
 
@@ -253,7 +253,7 @@ void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color)
 {
 	m_tiles[tileIndex].getSprite().setColor(color);
 	PropIndex propIndex = m_tiles[tileIndex].getPropIndex();
-	if (propIndex != PropIndex::INVALID)
+	if (propIndex != PropIndex::INVALID_PROP)
 	{
 		m_props[propIndex].setSpriteColor(color);
 	}
@@ -270,9 +270,9 @@ void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::vi
 	PropIndex propIndex = tile.getPropIndex();
 	bool isNewProp;
 	Prop* prop = nullptr;
-	if (propIndex == PropIndex::INVALID)
+	if (propIndex == PropIndex::INVALID_PROP)
 	{
-		propIndex = static_cast<PropIndex::Type>(m_props.size());
+		propIndex = static_cast<PropIndex>(m_props.size());
 		isNewProp = true;
 		prop = &m_props.emplace_back();
 		prop->setSpritePosition(tile.getSprite().getPosition());
@@ -312,7 +312,7 @@ void Map::removeTileProp(TileIndex tileIndex)
 {
 	Tile& tile = m_tiles[tileIndex];
 	PropIndex propIndex = tile.getPropIndex();
-	if (propIndex != PropIndex::INVALID)
+	if (propIndex != PropIndex::INVALID_PROP)
 	{
 		FLAT_ASSERT(false); // TODO
 		
@@ -323,7 +323,7 @@ void Map::removeTileProp(TileIndex tileIndex)
 const map::Prop* Map::getTileProp(TileIndex tileIndex) const
 {
 	PropIndex propIndex = m_tiles[tileIndex].getPropIndex();
-	if (propIndex != PropIndex::INVALID)
+	if (propIndex != PropIndex::INVALID_PROP)
 	{
 		return &m_props[m_tiles[tileIndex].getPropIndex()];
 	}
@@ -428,7 +428,7 @@ void Map::addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex)
 	NeighborTiles& neighborTiles = m_neighborTiles[tileIndex];
 	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
 	{
-		if (neighborTiles.neighbors[i] == TileIndex::INVALID)
+		if (neighborTiles.neighbors[i] == TileIndex::INVALID_TILE)
 		{
 			neighborTiles.neighbors[i] = neighborTileIndex;
 			return;
@@ -440,7 +440,7 @@ void Map::addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex)
 void Map::addTileNeighbor(TileIndex tileIndex, const flat::Vector2i& neighborTilePosition)
 {
 	TileIndex neighborTileIndex = getTileIndex(neighborTilePosition);
-	if (neighborTileIndex != TileIndex::INVALID)
+	if (neighborTileIndex != TileIndex::INVALID_TILE)
 	{
 		addTileNeighbor(tileIndex, neighborTileIndex);
 	}
@@ -460,7 +460,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 	{
 		TileIndex bottomLeftTileIndex = getTileIndex(xy.x + 1, xy.y);
 		TileIndex topRightTileIndex = getTileIndex(xy.x - 1, xy.y);
-		if (bottomLeftTileIndex != TileIndex::INVALID && topRightTileIndex != TileIndex::INVALID)
+		if (bottomLeftTileIndex != TileIndex::INVALID_TILE && topRightTileIndex != TileIndex::INVALID_TILE)
 		{
 			const float bottomLeftTileZ = getTileZ(bottomLeftTileIndex);
 			const float topRightTileZ = getTileZ(topRightTileIndex);
@@ -472,7 +472,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 				dx.z = bottomLeftTileZ - topRightTileZ;
 			}
 		}
-		else if (bottomLeftTileIndex != TileIndex::INVALID)
+		else if (bottomLeftTileIndex != TileIndex::INVALID_TILE)
 		{
 			const float bottomLeftTileZ = getTileZ(bottomLeftTileIndex);
 			if (std::abs(z - bottomLeftTileZ) > minZDifference)
@@ -482,7 +482,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 				dx.z = bottomLeftTileZ - z;
 			}
 		}
-		else if (topRightTileIndex != TileIndex::INVALID)
+		else if (topRightTileIndex != TileIndex::INVALID_TILE)
 		{
 			const float topRightTileZ = getTileZ(topRightTileIndex);
 			if (std::abs(z - topRightTileZ) > minZDifference)
@@ -498,7 +498,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 	{
 		TileIndex bottomRightTileIndex = getTileIndex(xy.x, xy.y + 1);
 		TileIndex topLeftTileIndex = getTileIndex(xy.x, xy.y - 1);
-		if (bottomRightTileIndex != TileIndex::INVALID && topLeftTileIndex != TileIndex::INVALID)
+		if (bottomRightTileIndex != TileIndex::INVALID_TILE && topLeftTileIndex != TileIndex::INVALID_TILE)
 		{
 			const float bottomRightTileZ = getTileZ(bottomRightTileIndex);
 			const float topLeftTileZ = getTileZ(topLeftTileIndex);
@@ -510,7 +510,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 				dy.z = bottomRightTileZ - topLeftTileZ;
 			}
 		}
-		else if (bottomRightTileIndex != TileIndex::INVALID)
+		else if (bottomRightTileIndex != TileIndex::INVALID_TILE)
 		{
 			const float bottomRightTileZ = getTileZ(bottomRightTileIndex);
 			if (std::abs(z - bottomRightTileZ) > minZDifference)
@@ -520,7 +520,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 				dy.z = bottomRightTileZ - z;
 			}
 		}
-		else if (topLeftTileIndex != TileIndex::INVALID)
+		else if (topLeftTileIndex != TileIndex::INVALID_TILE)
 		{
 			const float topLeftTileZ = getTileZ(topLeftTileIndex);
 			if (std::abs(z - topLeftTileZ) > minZDifference)

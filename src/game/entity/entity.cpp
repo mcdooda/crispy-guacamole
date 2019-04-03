@@ -48,7 +48,7 @@ Entity::~Entity()
 void Entity::setPosition(const flat::Vector3& position)
 {
 	m_position = position;
-	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID);
+	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID_TILE);
 	if (m_map)
 	{
 		m_cellIndex = m_map->updateEntityPosition(this, m_cellIndex);
@@ -62,7 +62,7 @@ void Entity::setXY(const flat::Vector2& xy)
 {
 	m_position.x = xy.x;
 	m_position.y = xy.y;
-	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID);
+	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID_TILE);
 	if (m_map)
 	{
 		m_cellIndex = m_map->updateEntityPosition(this, m_cellIndex);
@@ -306,7 +306,7 @@ map::TileIndex Entity::getTileIndexFromPosition()
 {
 	FLAT_ASSERT(m_map != nullptr);
 	map::TileIndex tileIndex = m_map->getTileIndex(m_position.x, m_position.y);
-	FLAT_ASSERT_MSG(tileIndex != map::TileIndex::INVALID, "Trying to get a tile that does not exist at position (%f, %f)", m_position.x, m_position.y);
+	FLAT_ASSERT_MSG(tileIndex != map::TileIndex::INVALID_TILE, "Trying to get a tile that does not exist at position (%f, %f)", m_position.x, m_position.y);
 	return tileIndex;
 }
 

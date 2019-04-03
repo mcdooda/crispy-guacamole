@@ -221,7 +221,7 @@ void Reader::readEntities()
 		if (entityTemplate != nullptr)
 		{
 			TileIndex tileIndex = m_map.getTileIndex(x, y);
-			FLAT_ASSERT(tileIndex != TileIndex::INVALID);
+			FLAT_ASSERT(tileIndex != TileIndex::INVALID_TILE);
 			flat::Vector3 position(x, y, m_map.getTileZ(tileIndex));
 			baseMapState.spawnEntityAtPosition(m_game, entityTemplate, position);
 		}

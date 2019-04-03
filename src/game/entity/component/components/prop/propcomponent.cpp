@@ -30,7 +30,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	FLAT_ASSERT(entity == m_owner);
 
 	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 	const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
 
 	// occupy the tile
@@ -43,7 +43,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 		{
 			map::TileIndex tileToOccupyIndex = map->getTileIndexIfNavigable(tilePosition.x - i, tilePosition.y - j, map::Navigability::ALL);
 			//FLAT_ASSERT(tileToOccupy != nullptr);
-			if (tileToOccupyIndex != map::TileIndex::INVALID)
+			if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
 			{
 				map->setTileNavigability(tileToOccupyIndex, map::Navigability::NONE);
 			}
@@ -79,7 +79,7 @@ bool PropComponent::removedFromMap(Entity* entity)
 {
 	map::Map* map = m_owner->getMap();
 	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID);
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 	const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
 
 	const PropComponentTemplate* propComponentTemplate = getTemplate();
@@ -91,7 +91,7 @@ bool PropComponent::removedFromMap(Entity* entity)
 		{
 			map::TileIndex tileToOccupyIndex = map->getTileIndex(tilePosition.x - i, tilePosition.y - j);
 			//FLAT_ASSERT(tileToOccupy != nullptr);
-			if (tileToOccupyIndex != map::TileIndex::INVALID)
+			if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
 			{
 				map->setTileNavigability(tileToOccupyIndex, map::Navigability::ALL);
 			}

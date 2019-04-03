@@ -81,7 +81,7 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	}
 
 	const map::TileIndex tileIndex = map->getTileIndex(newPosition.x, newPosition.y);
-	if (tileIndex == map::TileIndex::INVALID)
+	if (tileIndex == map::TileIndex::INVALID_TILE)
 	{
 		m_owner->markForDelete();
 	}
@@ -197,7 +197,7 @@ bool ProjectileComponent::collided(Entity* collidedEntity, map::TileIndex collid
 		return true;
 	}
 
-	if (collidedTileIndex == map::TileIndex::INVALID && collidedEntity == nullptr)
+	if (collidedTileIndex == map::TileIndex::INVALID_TILE && collidedEntity == nullptr)
 	{
 		m_owner->markForDelete();
 	}
@@ -211,7 +211,7 @@ bool ProjectileComponent::collided(Entity* collidedEntity, map::TileIndex collid
 
 bool ProjectileComponent::collidedWithEntity(Entity* collidedEntity, const flat::Vector3& normal)
 {
-	return collided(collidedEntity, map::TileIndex::INVALID, normal);
+	return collided(collidedEntity, map::TileIndex::INVALID_TILE, normal);
 }
 
 bool ProjectileComponent::collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal)

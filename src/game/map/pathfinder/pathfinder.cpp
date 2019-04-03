@@ -24,13 +24,13 @@ bool Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, st
 	FLAT_PROFILE("Find path");
 
 	map::TileIndex firstTileIndex = getTileIndexIfNavigable(from.x, from.y, m_navigabilityMask);
-	if (firstTileIndex == TileIndex::INVALID)
+	if (firstTileIndex == TileIndex::INVALID_TILE)
 	{
 		return false;
 	}
 
 	map::TileIndex lastTileIndex = getTileIndexIfNavigable(to.x, to.y, m_navigabilityMask);
-	if (lastTileIndex == TileIndex::INVALID)
+	if (lastTileIndex == TileIndex::INVALID_TILE)
 	{
 		return false;
 	}
@@ -173,13 +173,13 @@ bool Pathfinder::isStraightPath(const flat::Vector2& from, const flat::Vector2& 
 	flat::Vector2 segment = flat::normalize(move) * delta;
 	float numSegments = flat::length(move) / delta;
 	TileIndex fromTileIndex = getTileIndexIfNavigable(from.x, from.y, m_navigabilityMask);
-	FLAT_ASSERT(fromTileIndex != TileIndex::INVALID);
+	FLAT_ASSERT(fromTileIndex != TileIndex::INVALID_TILE);
 	float previousZ = m_map.getTileZ(fromTileIndex);
 	for (float f = 1.f; f <= numSegments; ++f)
 	{
 		flat::Vector2 point = from + segment * f;
 		map::TileIndex tileIndex = getTileIndexIfNavigable(point.x, point.y, m_navigabilityMask);
-		if (tileIndex == TileIndex::INVALID || m_map.getTileZ(tileIndex) > previousZ + m_jumpHeight)
+		if (tileIndex == TileIndex::INVALID_TILE || m_map.getTileZ(tileIndex) > previousZ + m_jumpHeight)
 			return false;
 		
 		previousZ = m_map.getTileZ(tileIndex);

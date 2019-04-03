@@ -41,7 +41,7 @@ void ZoneMapEditorMode::clearBrush(MapEditorState& mapEditorState) const
 			for (int y = m_currentRectangle.minY; y <= m_currentRectangle.maxY; ++y)
 			{
 				map::TileIndex tileIndex = map.getTileIndex(x, y);
-				if (tileIndex != map::TileIndex::INVALID)
+				if (tileIndex != map::TileIndex::INVALID_TILE)
 				{
 					map.setTileColor(tileIndex, flat::video::Color::WHITE);
 				}
@@ -57,7 +57,7 @@ void ZoneMapEditorMode::clearBrush(MapEditorState& mapEditorState) const
 			for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
 			{
 				map::TileIndex tileIndex = map.getTileIndex(x, y);
-				if (tileIndex != map::TileIndex::INVALID)
+				if (tileIndex != map::TileIndex::INVALID_TILE)
 				{
 					map.setTileColor(tileIndex, flat::video::Color::WHITE);
 				}
@@ -88,7 +88,7 @@ void ZoneMapEditorMode::displayBrush(MapEditorState& mapEditorState) const
 			for (int y = m_currentRectangle.minY; y <= m_currentRectangle.maxY; ++y)
 			{
 				map::TileIndex tileIndex = map.getTileIndex(x, y);
-				if (tileIndex != map::TileIndex::INVALID)
+				if (tileIndex != map::TileIndex::INVALID_TILE)
 				{
 					map.setTileColor(tileIndex, currentZone->getColor());
 				}
@@ -103,7 +103,7 @@ void ZoneMapEditorMode::displayBrush(MapEditorState& mapEditorState) const
 			for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
 			{
 				map::TileIndex tileIndex = map.getTileIndex(x, y);
-				if (tileIndex != map::TileIndex::INVALID)
+				if (tileIndex != map::TileIndex::INVALID_TILE)
 				{
 					map.setTileColor(tileIndex, flat::video::Color::RED);
 				}
@@ -179,7 +179,7 @@ void ZoneMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 				for (int y = m_selectedRectangle->minY; y <= m_selectedRectangle->maxY; ++y)
 				{
 					map::TileIndex tileIndex = map.getTileIndex(x, y);
-					if (tileIndex != map::TileIndex::INVALID)
+					if (tileIndex != map::TileIndex::INVALID_TILE)
 					{
 						map.setTileColor(tileIndex, flat::video::Color::WHITE);
 					}

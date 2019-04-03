@@ -9,6 +9,7 @@
 #include "../component/components/interaction/interactioncomponent.h"
 #include "../component/components/life/lifecomponent.h"
 #include "../component/components/movement/movementcomponent.h"
+#include "../component/components/playercontroller/playercontrollercomponent.h"
 #include "../component/components/projectile/projectilecomponent.h"
 #include "../component/components/selection/selectioncomponent.h"
 #include "../component/components/sprite/spritecomponent.h"
@@ -129,6 +130,10 @@ int open(Game& game)
 		// projectile
 		{"setProjectileSpeed",       l_Entity_setProjectileSpeed},
 		{"getProjectileSpeed",       l_Entity_getProjectileSpeed},
+
+		// player controller
+		{"setGamepadIndex",          l_Entity_setGamepadIndex},
+		{"getGamepadIndex",          l_Entity_getGamepadIndex},
 		
 		{nullptr, nullptr}
 	};
@@ -881,6 +886,24 @@ int l_Entity_getProjectileSpeed(lua_State * L)
 	Entity& entity = getEntity(L, 1);
 	projectile::ProjectileComponent& projectileComponent = getComponent<projectile::ProjectileComponent>(L, entity);
 	flat::lua::pushVector3(L, projectileComponent.getSpeed());
+	return 1;
+}
+
+int l_Entity_setGamepadIndex(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::input::GamepadIndex gamepadIndex = static_cast<flat::input::GamepadIndex>(luaL_checkinteger(L, 2));
+	luaL_argcheck(L, gamepadIndex >= 1, 2, "invalid gamepad index");
+	playercontroller::PlayerControllerComponent& playerControllerComponent = getComponent<playercontroller::PlayerControllerComponent>(L, entity);
+	playerControllerComponent.setGamepadIndex(gamepadIndex - 1);
+	return 0;
+}
+
+int l_Entity_getGamepadIndex(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	playercontroller::PlayerControllerComponent& playerControllerComponent = getComponent<playercontroller::PlayerControllerComponent>(L, entity);
+	lua_pushinteger(L, playerControllerComponent.getGamepadIndex() + 1);
 	return 1;
 }
 

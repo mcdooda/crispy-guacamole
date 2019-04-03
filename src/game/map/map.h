@@ -41,15 +41,21 @@ inline void getEntityAABB(entity::Entity* entity, flat::AABB2& aabb)
 class Map
 {
 	private:
+		struct TileNavigation
+		{
+			float z;
+			Navigability navigability;
+		};
+
+		struct TilePosition
+		{
+			flat::Vector2i xy;
+		};
+
 		struct NeighborTiles
 		{
 			static constexpr int MAX_NEIGHBORS = 4;
 			std::array<TileIndex, MAX_NEIGHBORS> neighbors;
-			NeighborTiles()
-			{
-				for (int i = 0; i < MAX_NEIGHBORS; ++i)
-					neighbors[i] = TileIndex::INVALID;
-			}
 		};
 
 	public:
@@ -72,7 +78,7 @@ class Map
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		
 		// get tiles
-		TileIndex createTile(int x, int y, float z, flat::render::SpriteSynchronizer& spriteSynchronizer);
+		TileIndex createTile(const flat::Vector2i& xy, float z, uint16_t tileTemplateVariantIndex, std::shared_ptr<const TileTemplate> tileTemplate);
 		void deleteTile(TileIndex tileIndex);
 
 		TileIndex getTileIndex(int x, int y) const;
@@ -99,11 +105,8 @@ class Map
 		void removeTileProp(TileIndex tileIndex);
 		const Prop* getTileProp(TileIndex tileIndex) const;
 
-		flat::render::BaseSprite& getTileSprite(TileIndex tileIndex);
-
-		void eachTile(std::function<void(TileIndex)> func) const;
-
 		const flat::render::BaseSprite& getTileSprite(TileIndex tileIndex) const;
+		flat::render::BaseSprite& getTileSprite(TileIndex tileIndex);
 		void synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer);
 
 		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
@@ -125,9 +128,16 @@ class Map
 		void eachTileEntity(TileIndex tileIndex, Func func) const;
 		int getTileEntityCount(TileIndex tileIndex) const;
 
+		template <class Func>
+		void eachTile(Func func) const;
+
 		void buildNeighborTiles();
-		void eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const;
-		void eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const;
+
+		template <class Func>
+		void eachNeighborTiles(TileIndex tileIndex, Func func) const;
+
+		template <class Func>
+		void eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, Func func) const;
 
 		template <class Func>
 		inline void eachEntityInRange(const flat::Vector2& center2d, float range, Func func) const;
@@ -169,10 +179,13 @@ class Map
 		int m_minY;
 		int m_maxY;
 
+		// tiles
 		std::vector<Tile> m_tiles;
+		std::vector<TileNavigation> m_tileNavigations;
+		std::vector<TilePosition> m_tilePositions;
 		std::vector<NeighborTiles> m_neighborTiles;
-
 		std::unordered_map<flat::Vector2i, TileIndex> m_tilePositionToIndex;
+		std::vector<Prop> m_props;
 
 		std::set<TileIndex> m_dirtyNormalTiles;
 
@@ -192,6 +205,43 @@ class Map
 		friend class io::Reader;
 };
 
+
+template <class Func>
+void Map::eachTile(Func func) const
+{
+	for (size_t i = 0, e = m_tiles.size(); i < e; ++i)
+	{
+		func(static_cast<TileIndex::Type>(i));
+	}
+}
+
+
+template <class Func>
+void Map::eachNeighborTiles(TileIndex tileIndex, Func func) const
+{
+	FLAT_ASSERT(m_neighborTiles.size() == m_tiles.size());
+	const NeighborTiles& neighborTiles = m_neighborTiles[tileIndex];
+	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
+	{
+		TileIndex neighborTileIndex = neighborTiles.neighbors[i];
+		if (neighborTileIndex == TileIndex::INVALID)
+			break;
+
+		func(neighborTileIndex);
+	}
+}
+
+
+template <class Func>
+void Map::eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, Func func) const
+{
+	const float maxZ = getTileZ(tileIndex) + jumpHeight;
+	eachNeighborTiles(tileIndex, [this, maxZ, navigabilityMask, &func](TileIndex neighborTileIndex)
+	{
+		if (getTileZ(neighborTileIndex) <= maxZ && isTileNavigable(neighborTileIndex, navigabilityMask))
+			func(neighborTileIndex);
+	});
+}
 
 template <typename Func>
 void Map::eachTileEntity(TileIndex tileIndex, Func func) const

@@ -150,8 +150,14 @@ void BaseMapState::execute(Game& game)
 
 	if (input->keyboard->isJustPressed(K(ESCAPE)))
 	{
-		std::unique_ptr<SelectMapState> selectMapState = std::make_unique<SelectMapState>();
-		game.getStateMachine().setNextState(std::move(selectMapState));
+		game.message->confirm("Are you sure you want to quit?", [&game](bool result)
+		{
+			if (result)
+			{
+				std::unique_ptr<SelectMapState> selectMapState = std::make_unique<SelectMapState>();
+				game.getStateMachine().setNextState(std::move(selectMapState));
+			}
+		});
 	}
 	
 	update(game);

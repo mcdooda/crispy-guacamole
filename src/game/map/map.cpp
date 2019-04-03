@@ -6,6 +6,7 @@
 #include "zone.h"
 #include "io/reader.h"
 #include "io/writer.h"
+#include "displaymanager.h"
 #include "../mod/mod.h"
 
 namespace game
@@ -85,6 +86,9 @@ void Map::setBounds(int minX, int maxX, int minY, int maxY)
 
 	int maxTileCount = (m_maxX - m_minX + 1) * (m_maxY - m_minY + 1);
 	m_tiles.reserve(maxTileCount);
+	m_tileNavigations.reserve(maxTileCount);
+	m_tilePositions.reserve(maxTileCount);
+	m_props.reserve(maxTileCount);
 }
 
 void Map::getBounds(int& minX, int& maxX, int& minY, int& maxY) const
@@ -102,7 +106,7 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 
 	eachTile([&](TileIndex tileIndex)
 	{
-		const flat::Vector2i& xy = m_tiles[tileIndex].getXY();
+		const flat::Vector2i& xy = getTileXY(tileIndex);
 		minX = std::min(minX, xy.x);
 		maxX = std::max(maxX, xy.x);
 		minY = std::min(minY, xy.y);
@@ -110,15 +114,32 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 	});
 }
 
-TileIndex Map::createTile(int x, int y, float z, flat::render::SpriteSynchronizer& spriteSynchronizer)
+TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTemplateVariantIndex, std::shared_ptr<const TileTemplate> tileTemplate)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(m_tiles.size());
+	TileIndex tileIndex = static_cast<TileIndex::Type>(m_tiles.size());
+
 	Tile& tile = m_tiles.emplace_back();
+	flat::render::SpriteSynchronizer& spriteSynchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
 	tile.synchronizeSpriteTo(*this, spriteSynchronizer);
-	tile.setCoordinates(*this, flat::Vector2i(x, y), z, true);
-	flat::Vector2i position(x, y);
-	FLAT_ASSERT(m_tilePositionToIndex.find(position) == m_tilePositionToIndex.end());
-	m_tilePositionToIndex[position] = tileIndex;
+
+	// move sprite and update aabb
+	flat::Vector3 position(xy.x, xy.y, z);
+	flat::Vector2 position2d(getTransform() * position);
+	tile.setSpritePosition(position2d);
+	tile.updateWorldSpaceAABB(position);
+	m_displayManager->addTerrainObject(&tile);
+
+	// navigation
+	FLAT_ASSERT(m_tilePositionToIndex.find(xy) == m_tilePositionToIndex.end());
+	m_tilePositionToIndex[xy] = tileIndex;
+
+	TileNavigation& tileNavigation = m_tileNavigations.emplace_back();
+	tileNavigation.z = z;
+	tileNavigation.navigability = tileTemplate->getNavigability();
+
+	TilePosition& tilePosition = m_tilePositions.emplace_back();
+	tilePosition.xy = xy;
+
 	return tileIndex;
 }
 
@@ -149,29 +170,47 @@ TileIndex Map::getTileIndex(float x, float y) const
 
 TileIndex Map::getTileIndex(const Tile* tile) const
 {
-	return static_cast<TileIndex>(tile - &m_tiles[0]);
+	return static_cast<TileIndex::Type>(tile - &m_tiles[0]);
 }
 
 const flat::Vector2i& Map::getTileXY(TileIndex tileIndex) const
 {
-	return m_tiles.at(tileIndex).getXY();
+	return m_tilePositions[tileIndex].xy;
 }
 
 void Map::setTileZ(TileIndex tileIndex, float z)
 {
-	m_tiles[tileIndex].setZ(*this, z);
-}
+	// navigation
+	m_tileNavigations[tileIndex].z = z;
 
+	// move sprite and update aabb
+	const flat::Vector2i& xy = getTileXY(tileIndex);
+	Tile& tile = m_tiles[tileIndex];
+	flat::Vector3 position(xy.x, xy.y, z);
+	flat::Vector2 position2d(getTransform() * position);
+	tile.setSpritePosition(position2d);
+	tile.updateWorldSpaceAABB(position);
+	m_displayManager->updateTerrainObject(&tile);
+
+	// prop
+	PropIndex propIndex = tile.getPropIndex();
+	if (propIndex != PropIndex::INVALID)
+	{
+		Prop& prop = m_props[propIndex];
+		prop.setSpritePosition(position2d);
+		prop.updateWorldSpaceAABB(position);
+		m_displayManager->updateTerrainObject(&prop);
+	}
+}
 
 void Map::moveTileZBy(TileIndex tileIndex, float dz)
 {
-	Tile& tile = m_tiles[tileIndex];
-	tile.setZ(*this, tile.getZ() + dz);
+	setTileZ(tileIndex, m_tileNavigations[tileIndex].z + dz);
 }
 
 float Map::getTileZ(TileIndex tileIndex) const
 {
-	return m_tiles.at(tileIndex).getZ();
+	return m_tileNavigations[tileIndex].z;
 }
 
 TileIndex Map::getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const
@@ -181,8 +220,7 @@ TileIndex Map::getTileIndexIfNavigable(int x, int y, Navigability navigabilityMa
 	{
 		return TileIndex::INVALID;
 	}
-	const Tile& tile = m_tiles.at(tileIndex);
-	if (tile.isNavigable(navigabilityMask))
+	if (isTileNavigable(tileIndex, navigabilityMask))
 	{
 		return tileIndex;
 	}
@@ -197,55 +235,103 @@ TileIndex Map::getTileIndexIfNavigable(float x, float y, Navigability navigabili
 
 bool Map::isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) const
 {
-	return m_tiles.at(tileIndex).isNavigable(navigabilityMask);
+	return (m_tileNavigations[tileIndex].navigability & navigabilityMask) != 0;
 }
 
 map::Navigability Map::getTileNavigability(TileIndex tileIndex) const
 {
-	return m_tiles.at(tileIndex).getNavigability();
+	return m_tileNavigations[tileIndex].navigability;
 }
 
 void Map::setTileNavigability(TileIndex tileIndex, Navigability navigability)
 {
-	m_tiles[tileIndex].setNavigability(navigability);
+	m_tileNavigations[tileIndex].navigability = navigability;
 }
 
 void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color)
 {
-	m_tiles[tileIndex].setColor(color);
+	m_tiles[tileIndex].getSprite().setColor(color);
+	PropIndex propIndex = m_tiles[tileIndex].getPropIndex();
+	if (propIndex != PropIndex::INVALID)
+	{
+		m_props[propIndex].setSpriteColor(color);
+	}
 }
 
 const flat::video::Color& Map::getTileColor(TileIndex tileIndex) const
 {
-	return m_tiles.at(tileIndex).getColor();
+	return m_tiles[tileIndex].getSprite().getColor();
 }
 
 void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::video::Texture> texture)
 {
-	m_tiles[tileIndex].setPropTexture(*this, texture);
+	Tile& tile = m_tiles[tileIndex];
+	PropIndex propIndex = tile.getPropIndex();
+	bool isNewProp;
+	Prop* prop = nullptr;
+	if (propIndex == PropIndex::INVALID)
+	{
+		propIndex = static_cast<PropIndex::Type>(m_props.size());
+		isNewProp = true;
+		prop = &m_props.emplace_back();
+		prop->setSpritePosition(tile.getSprite().getPosition());
+		const flat::Vector2i& xy = getTileXY(tileIndex);
+		const float z = getTileZ(tileIndex);
+		prop->updateWorldSpaceAABB(flat::Vector3(xy.x, xy.y, z));
+		tile.setPropIndex(propIndex);
+
+		// remove all navigability
+		setTileNavigability(tileIndex, Navigability::NONE);
+	}
+	else
+	{
+		isNewProp = false;
+		prop = &m_props[propIndex];
+	}
+
+	prop->setSpriteTexture(texture);
+	const flat::Vector2& textureSize = texture->getSize();
+	flat::Vector2 origin(textureSize.x / 2.f, textureSize.y - textureSize.x / 4.f);
+	prop->setSpriteOrigin(origin);
+	prop->updateRenderHash();
+
+	FLAT_ASSERT(prop->getAABB().isValid());
+
+	if (isNewProp)
+	{
+		m_displayManager->addTerrainObject(prop);
+	}
+	else
+	{
+		m_displayManager->updateTerrainObject(prop);
+	}
 }
 
 void Map::removeTileProp(TileIndex tileIndex)
 {
-	m_tiles[tileIndex].removeProp(*this);
+	Tile& tile = m_tiles[tileIndex];
+	PropIndex propIndex = tile.getPropIndex();
+	if (propIndex != PropIndex::INVALID)
+	{
+		FLAT_ASSERT(false); // TODO
+		
+		setTileNavigability(tileIndex, Navigability::GROUND); // TODO: grab navigability from the tile template
+	}
 }
 
 const map::Prop* Map::getTileProp(TileIndex tileIndex) const
 {
-	return m_tiles.at(tileIndex).getProp();
-}
-
-void Map::eachTile(std::function<void(TileIndex)> func) const
-{
-	for (TileIndex i = static_cast<TileIndex>(0), e = static_cast<TileIndex>(m_tiles.size()); i < e; ++(std::uint32_t&)i)
+	PropIndex propIndex = m_tiles[tileIndex].getPropIndex();
+	if (propIndex != PropIndex::INVALID)
 	{
-		func(i);
+		return &m_props[m_tiles[tileIndex].getPropIndex()];
 	}
+	return nullptr;
 }
 
 const flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex) const
 {
-	return m_tiles.at(tileIndex).getSprite();
+	return m_tiles[tileIndex].getSprite();
 }
 
 flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex)
@@ -295,7 +381,7 @@ flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(const std::shar
 
 const std::shared_ptr<const TileTemplate> Map::getTileTemplate(TileIndex tileIndex) const
 {
-	const Tile& tile = m_tiles.at(tileIndex);
+	const Tile& tile = m_tiles[tileIndex];
 	const flat::render::SynchronizedSprite& sprite = static_cast<const flat::render::SynchronizedSprite&>(tile.getSprite());
 	flat::render::SpriteSynchronizer& synchronizer = sprite.getSynchronizer();
 	for (const TileSpriteSynchronizer& tileSpriteSynchronizer : m_tileSpriteSynchronizers)
@@ -461,30 +547,6 @@ void Map::buildNeighborTiles()
 		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, -1));
 		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, 1));
 	}
-}
-
-void Map::eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const
-{
-	FLAT_ASSERT(m_neighborTiles.size() == m_tiles.size());
-	const NeighborTiles& neighborTiles = m_neighborTiles.at(tileIndex);
-	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
-	{
-		TileIndex neighborTileIndex = neighborTiles.neighbors.at(i);
-		if (neighborTileIndex == TileIndex::INVALID)
-			break;
-
-		func(neighborTileIndex);
-	}
-}
-
-void Map::eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, std::function<void(TileIndex)> func) const
-{
-	const float maxZ = getTileZ(tileIndex) + jumpHeight;
-	eachNeighborTiles(tileIndex, [this, maxZ, navigabilityMask, &func](TileIndex neighborTileIndex)
-	{
-		if (getTileZ(neighborTileIndex) <= maxZ && isTileNavigable(neighborTileIndex, navigabilityMask))
-			func(neighborTileIndex);
-	});
 }
 
 void Map::setNeighborTilesDirty(TileIndex tileIndex)

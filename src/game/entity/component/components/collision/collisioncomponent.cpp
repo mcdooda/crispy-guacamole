@@ -89,7 +89,6 @@ void CollisionComponent::separateFromNearbyEntities()
 	}
 }
 
-FLAT_OPTIMIZE_OFF()
 void CollisionComponent::separateFromAdjacentTiles()
 {
 	const map::Map* map = m_owner->getMap();
@@ -266,7 +265,6 @@ void CollisionComponent::separateFromAdjacentTiles()
 		onCollidedWithMap(collidedTileIndex, normal);
 	}
 }
-FLAT_OPTIMIZE_ON()
 
 #ifdef FLAT_DEBUG
 void CollisionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const

@@ -118,7 +118,6 @@ void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 	entity->updateAABBIfDirty();
 }
 
-FLAT_OPTIMIZE_OFF()
 void EntityUpdater::updateAllEntities(float time, float dt)
 {
 	FLAT_PROFILE("Update all entities");
@@ -162,7 +161,6 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 
 	++m_updateIndex;
 }
-FLAT_OPTIMIZE_ON()
 
 #ifdef FLAT_DEBUG
 void EntityUpdater::debugDraw(debug::DebugDisplay& debugDisplay) const

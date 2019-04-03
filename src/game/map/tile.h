@@ -14,9 +14,38 @@ namespace map
 class Map;
 class Prop;
 
-enum TileIndex : std::uint32_t
+class TileIndex
 {
-	INVALID = 0xFFFFFFFF
+public:
+	using Type = std::uint32_t;
+
+	enum : Type { INVALID = 0xFFFFFFFF };
+
+	TileIndex() : m_value(INVALID) {}
+	TileIndex(Type value) : m_value(value) {}
+	void operator=(Type value) { m_value = value; }
+	
+	inline operator Type() const { return m_value; }
+
+private:
+	Type m_value;
+};
+
+class PropIndex
+{
+public:
+	using Type = std::uint32_t;
+
+	enum : Type { INVALID = 0xFFFFFFFF };
+
+	PropIndex() : m_value(INVALID) {}
+	PropIndex(Type value) : m_value(value) {}
+	void operator=(Type value) { m_value = value; }
+
+	inline operator Type() const { return m_value; }
+
+private:
+	Type m_value;
 };
 
 class Tile final : public MapObject
@@ -31,30 +60,18 @@ class Tile final : public MapObject
 
 		bool isTile() const override { return true; }
 		
-		inline Navigability getNavigability() const { return m_navigability; }
-		inline void setNavigability(Navigability navigability) { m_navigability = navigability; }
-		inline bool isNavigable(Navigability navigabilityMask) const { return (m_navigability & navigabilityMask) != 0; }
-		
 		inline bool hasSprite() const { return m_sprite.getTexture() != nullptr; }
 
 		flat::render::BaseSprite& getSprite() override;
 		using MapObject::getSprite;
 
 		const flat::render::ProgramSettings& getProgramSettings() const override;
-		void updateWorldSpaceAABB();
-		
-		void setCoordinates(Map& map, const flat::Vector2i& xy, float z, bool init = false);
-		inline const flat::Vector2i& getXY() const { return m_xy; }
-		inline float getZ() const { return m_z; }
-		inline void setZ(Map& map, float z) { setCoordinates(map, m_xy, z); }
-		
-		void setTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& tileTexture);
-		void setPropTexture(Map& map, const std::shared_ptr<const flat::video::Texture>& propTexture);
-		void removeProp(Map& map);
-		inline const Prop* getProp() const { return m_prop; }
-		
-		void setColor(const flat::video::Color& color);
-		const flat::video::Color& getColor() const;
+		void updateWorldSpaceAABB(const flat::Vector3& position);
+
+		inline void setSpritePosition(const flat::Vector2& spritePosition) { m_sprite.setPosition(spritePosition); m_sprite.getAABB(m_spriteAABB); }
+
+		inline void setPropIndex(PropIndex propIndex) { m_propIndex = propIndex; }
+		inline PropIndex getPropIndex() const { return m_propIndex; }
 
 		inline static void setTileProgramSettings(const flat::render::ProgramSettings& programSettings)
 		{
@@ -71,16 +88,23 @@ class Tile final : public MapObject
 		static const flat::render::ProgramSettings* tileProgramSettings;
 
 		flat::render::SynchronizedSprite m_sprite;
-		Prop* m_prop;
-		
-		flat::Vector2i m_xy;
-		float m_z;
-
-		Navigability m_navigability;
+		PropIndex m_propIndex;
 };
 
 } // map
 } // game
+
+namespace std
+{
+	template <>
+	struct hash<game::map::TileIndex>
+	{
+		size_t operator()(game::map::TileIndex k) const
+		{
+			return static_cast<game::map::TileIndex::Type>(k);
+		}
+	};
+}
 
 #endif // GAME_MAP_TILE_H
 

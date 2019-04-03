@@ -161,10 +161,9 @@ void Reader::readTiles()
 				uint16_t tileTemplateVariantIndex = tileTemplateId >> 12;
 
 				std::shared_ptr<const TileTemplate> tileTemplate = m_tileTemplates[tileTemplateIndex];
-				flat::render::SpriteSynchronizer& spriteSynchronizer = m_map.getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
 
-				TileIndex tileIndex = m_map.createTile(x, y, z, spriteSynchronizer);
-				m_map.setTileNavigability(tileIndex, tileTemplate->getNavigability());
+				flat::Vector2i xy(x, y);
+				TileIndex tileIndex = m_map.createTile(xy, z, tileTemplateVariantIndex, tileTemplate);
 				
 				bool hasProp;
 				read(hasProp);

@@ -220,7 +220,6 @@ class BaseMapStateImpl : public BaseMapState
 		MapType m_map;
 };
 
-FLAT_OPTIMIZE_OFF()
 template <class Func>
 void BaseMapState::eachEntityOfType(const std::shared_ptr<const entity::EntityTemplate>& entityTemplate, Func func) const
 {
@@ -233,7 +232,6 @@ void BaseMapState::eachEntityOfType(const std::shared_ptr<const entity::EntityTe
 		}
 	}
 }
-FLAT_OPTIMIZE_ON()
 
 #ifdef FLAT_DEBUG
 

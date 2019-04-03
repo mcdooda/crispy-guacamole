@@ -47,8 +47,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void jump();
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
 
-		inline void setSpeed(float speed) { m_speed = speed; }
-		inline float getSpeed() const { return m_speed; }
+		inline void setMovementSpeed(float speed) { m_movementSpeed = speed; }
+		inline float getMovementSpeed() const { return m_movementSpeed; }
 
 		inline void setIsStrafing(bool isStrafing) { m_isStrafing = isStrafing; }
 		inline bool getIsStrafing() const { return m_isStrafing; }
@@ -62,9 +62,12 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		
 	private:
 		void fall(float elapsedTime);
+		void land();
 
 		bool addedToMap(Entity* entity, map::Map* map);
 		bool removedFromMap(Entity* entity);
+
+		bool collidedWithMap(const map::Tile* tile, const flat::Vector3& normal);
 
 		void updateSprite(bool movementStarted, bool movementStopped);
 		bool updateSpritePosition(const flat::Vector3& position);
@@ -78,8 +81,9 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		std::weak_ptr<const map::Zone> m_restrictToZone;
 		flat::Vector2 m_destination;
 		float m_returnToDestinationTime;
-		float m_speed;
-		float m_zSpeed;
+		float m_movementSpeed;
+		flat::Vector3 m_midairVelocity;
+		flat::Vector3 m_midairAcceleration;
 
 		// sprite data
 		const sprite::AnimationDescription* m_moveAnimationDescription;

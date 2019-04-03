@@ -458,7 +458,7 @@ int l_Entity_setSpeed(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	float speed = static_cast<float>(luaL_checknumber(L, 2));
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	movementComponent.setSpeed(speed);
+	movementComponent.setMovementSpeed(speed);
 	return 0;
 }
 
@@ -466,7 +466,7 @@ int l_Entity_getSpeed(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	lua_pushnumber(L, movementComponent.getSpeed());
+	lua_pushnumber(L, movementComponent.getMovementSpeed());
 	return 1;
 }
 

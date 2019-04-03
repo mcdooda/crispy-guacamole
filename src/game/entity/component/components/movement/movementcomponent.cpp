@@ -24,12 +24,18 @@ namespace movement
 void MovementComponent::init()
 {
 	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
-	m_speed = movementComponentTemplate->getSpeed();
+	m_movementSpeed = movementComponentTemplate->getSpeed();
 	// not yet in the map but makes the component not busy
 	m_isTouchingGround = movementComponentTemplate->getSnapToGround();
 
 	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
 	m_owner->removedFromMap.on(this, &MovementComponent::removedFromMap);
+
+	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
+	if (collisionComponent != nullptr)
+	{
+		collisionComponent->onCollidedWithMap.on(this, &MovementComponent::collidedWithMap);
+	}
 
 	m_moveAnimationDescription = nullptr;
 	setDefaultMoveAnimation();
@@ -42,6 +48,12 @@ void MovementComponent::deinit()
 {
 	m_owner->addedToMap.off(this);
 	m_owner->removedFromMap.off(this);
+
+	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
+	if (collisionComponent != nullptr)
+	{
+		collisionComponent->onCollidedWithMap.off(this);
+	}
 }
 
 void MovementComponent::update(float currentTime, float elapsedTime)
@@ -156,7 +168,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 			{
 				m_owner->setHeading(flat::vector2_angle(steering), flat::PI2 / 64.f);
 			}
-			flat::Vector2 newPosition2d = position2d + steering * m_speed * elapsedTime;
+			flat::Vector2 newPosition2d = position2d + steering * m_movementSpeed * elapsedTime;
 			
 			flat::Vector2 nextTilePosition = position2d + steering * 0.4f;
 			const map::Navigability navigabilityMask = getTemplate()->getNavigabilityMask();
@@ -305,7 +317,8 @@ void MovementComponent::jump()
 {
 	if (m_isTouchingGround)
 	{
-		m_zSpeed = getTemplate()->getJumpForce();
+		m_midairVelocity = flat::Vector3(0.f, 0.f, getTemplate()->getJumpForce());
+		m_midairAcceleration = flat::Vector3(0.f, 0.f, 0.f);
 		m_isTouchingGround = false;
 	}
 }
@@ -337,17 +350,26 @@ void MovementComponent::fall(float elapsedTime)
 		return;
 		
 	const map::Tile* tile = m_owner->getTileFromPosition();
-	const float acceleration = getTemplate()->getWeight();
-	const float oldZSpeed = m_zSpeed;
-	m_zSpeed -= acceleration * elapsedTime;
+
+	const flat::Vector3 gravityForce = flat::Vector3(0.f, 0.f, -getTemplate()->getWeight());
+	const flat::Vector3 oldVelocity = m_midairVelocity;
+
+	m_midairVelocity += (gravityForce + m_midairAcceleration) * elapsedTime;
+
+	// reset the additional acceleration, has to be set every frame if needed
+	m_midairAcceleration = flat::Vector3(0.f, 0.f, 0.f);
+
 	const flat::Vector3& position = m_owner->getPosition();
-	float z = position.z + (oldZSpeed + m_zSpeed) * 0.5f * elapsedTime;
-	if (z < tile->getZ())
-	{
-		z = tile->getZ();
-		m_isTouchingGround = true;
-	}
-	m_owner->setZ(z);
+	flat::Vector3 newPosition = position + (oldVelocity + m_midairVelocity) * 0.5f * elapsedTime;
+	m_owner->setPosition(newPosition);
+}
+
+
+void MovementComponent::land()
+{
+	m_isTouchingGround = true;
+	m_midairVelocity = flat::Vector3(0.f, 0.f, 0.f);
+	m_midairAcceleration = flat::Vector3(0.f, 0.f, 0.f);
 }
 
 bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
@@ -361,12 +383,13 @@ bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
 
 	// m_isTouchingGround already set is init()
 	FLAT_ASSERT(m_isTouchingGround == getTemplate()->getSnapToGround());
-	if (m_isTouchingGround || tile->getZ() >= position.z)
+	if (m_isTouchingGround)
 	{
 		m_owner->setZ(tile->getZ());
 		m_isTouchingGround = true; // in case the entity was below its tile
 	}
-	m_zSpeed = 0.f;
+	m_midairVelocity = flat::Vector3(0.f, 0.f, 0.f);
+	m_midairAcceleration = flat::Vector3(0.f, 0.f, 0.f);
 
 	// connect to position and heading changed slots
 	if (m_owner->hasSprite())
@@ -386,6 +409,19 @@ bool MovementComponent::removedFromMap(Entity* entity)
 		m_owner->positionChanged.off(this);
 	}
 
+	return true;
+}
+
+bool MovementComponent::collidedWithMap(const map::Tile* tile, const flat::Vector3& normal)
+{
+	if (!m_isTouchingGround)
+	{
+		if (normal.z > 0.7f && m_midairVelocity.z < 0.f)
+		{
+			m_owner->setZ(tile->getZ());
+			land();
+		}
+	}
 	return true;
 }
 
@@ -447,6 +483,15 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	else
 	{
 		debugDisplay.add3dText(m_owner->getPosition(), "no move animation", flat::video::Color::RED);
+	}
+
+	if (m_isTouchingGround)
+	{
+		debugDisplay.add3dCircle(m_owner->getPosition(), 0.25f, flat::video::Color::BLUE);
+	}
+	else
+	{
+		debugDisplay.add3dCircle(m_owner->getPosition(), 0.4f, flat::video::Color::RED);
 	}
 }
 #endif

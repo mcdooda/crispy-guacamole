@@ -263,6 +263,7 @@ function ComponentDetailsPanel:build()
 
     do
         local detailsPanel = Widget.makeColumnFlow()
+        detailsPanel:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
         detailsPanel:setPadding(5)
         panel:addChild(detailsPanel)
         self.detailsPanel = detailsPanel

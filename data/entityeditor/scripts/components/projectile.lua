@@ -29,6 +29,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
     end
     do
         local shootContainer = Widget.makeColumnFlow()
+        shootContainer:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
         shootContainer:setMargin(2)
         shootContainer:setBackgroundColor(0x888888FF)
         do
@@ -38,7 +39,6 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
             do
                 local elevationLine = Widget.makeLineFlow()
                 elevationLine:setMargin(2)
-                elevationLine:setPositionPolicy(Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.CENTER_Y)
 
                 local elevationLabel = Widget.makeText(
                     'Elevation:',
@@ -57,8 +57,15 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 elevationInput:setSize(40, 15)
                 elevationInput:setTextColor(0x000000FF)
                 elevationInput:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.FIXED_Y)
-                elevationInput:setMin(-math.pi);
-                elevationInput:setMax(math.pi);
+                elevationInput:setMin(-math.pi)
+                elevationInput:setMax(math.pi)
+
+                elevationInput:valueChanged(function(widget, value)
+                    local entity = getEntity()
+                    if not entity:isComponentEnabled(Component.projectile) then
+                        entity:setElevation(value)
+                    end
+                end)
 
                 elevationContainer:addChild(elevationInput)
                 elevationLine:addChild(elevationLabel)
@@ -88,7 +95,14 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 headingInput:setTextColor(0x000000FF)
                 headingInput:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.FIXED_Y)
                 headingInput:setMin(0);
-                headingInput:setMax(2 * math.pi);
+                headingInput:setMax(2 * math.pi)
+
+                headingInput:valueChanged(function(widget, value)
+                    local entity = getEntity()
+                    if not entity:isComponentEnabled(Component.projectile) then
+                        entity:setHeading(value)
+                    end
+                end)
 
                 headingContainer:addChild(headingInput)
                 headingLine:addChild(headingLabel)
@@ -113,8 +127,6 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 shootLabel:click(function()
                     local entity = getEntity()
                     if not entity:isComponentEnabled(Component.projectile) then
-                        entity:setElevation(elevationInput:getValue())
-                        entity:setHeading(headingInput:getValue())
                         entity:decComponentDisableLevel(Component.projectile)
                     end
                 end)

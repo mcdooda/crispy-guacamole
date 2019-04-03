@@ -5,6 +5,7 @@ local ButtonPressedNode = FunctionalScriptNode:inherit 'Button Pressed'
 
 function ButtonPressedNode:buildPins()
     self.buttonInPin = self:addInputPin(flat.types.STRING, 'Button')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
 
     self.pressedOutPin = self:addOutputPin(flat.types.BOOLEAN, 'Pressed')
 end

@@ -20,10 +20,15 @@ class PlayerControllerComponent : public ComponentImpl<PlayerControllerComponent
 		inline static bool enableInMapEditor() { return false; }
 		inline static int getUpdatePeriod() { return 1; }
 
+		void init() override;
+
 		void update(float time, float dt) override;
 
+		inline void setGamepadIndex(flat::input::GamepadIndex gamepadIndex) { m_gamepadIndex = gamepadIndex; }
+		inline flat::input::GamepadIndex getGamepadIndex() const { return m_gamepadIndex; }
+
 	private:
-		
+		flat::input::GamepadIndex m_gamepadIndex;
 };
 
 } // playercontroller

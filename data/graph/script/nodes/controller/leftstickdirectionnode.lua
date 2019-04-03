@@ -10,9 +10,10 @@ function LeftStickDirectionNode:buildPins()
 end
 
 function LeftStickDirectionNode:execute(runtime)
-    local gamepadId = 0
+    local entity = runtime:readPin(self.entityInPin)
+    local gamepadIndex = entity:getGamepadIndex()
 
-    local rawX, rawY = Gamepads.getLeftStickValue(gamepadId)
+    local rawX, rawY = Gamepads.getLeftStickValue(gamepadIndex)
 
     local function rotate(x, y, a)
         local s = math.sin(a);

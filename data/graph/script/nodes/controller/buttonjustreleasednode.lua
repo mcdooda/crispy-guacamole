@@ -5,15 +5,18 @@ local ButtonJustReleasedNode = FunctionalScriptNode:inherit 'Button Just Release
 
 function ButtonJustReleasedNode:buildPins()
     self.buttonInPin = self:addInputPin(flat.types.STRING, 'Button')
+    self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
 
     self.justReleasedOutPin = self:addOutputPin(flat.types.BOOLEAN, 'Just Released')
 end
 
 function ButtonJustReleasedNode:execute(runtime)
     local button = runtime:readPin(self.buttonInPin)
+    local entity = runtime:readPin(self.entityInPin)
+    local gamepadIndex = entity:getGamepadIndex()
 
     local buttonId = assert(Gamepads.GamepadButton[button])
-    local justReleased = Gamepads.isJustReleased(0, buttonId)
+    local justReleased = Gamepads.isJustReleased(gamepadIndex, buttonId)
 
     runtime:writePin(self.justReleasedOutPin, justReleased)
 end

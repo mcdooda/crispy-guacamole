@@ -9,7 +9,7 @@ return {
     {
       1,
       2,
-      12,
+      3,
       1,
     },
     {
@@ -147,13 +147,13 @@ return {
     {
       9,
       1,
-      28,
+      14,
       1,
     },
     {
       9,
       1,
-      14,
+      12,
       1,
     },
     {
@@ -171,14 +171,14 @@ return {
     {
       12,
       1,
-      3,
+      28,
       1,
     },
     {
       13,
       1,
-      12,
-      3,
+      41,
+      2,
     },
     {
       14,
@@ -313,6 +313,12 @@ return {
       2,
     },
     {
+      34,
+      1,
+      12,
+      3,
+    },
+    {
       35,
       1,
       30,
@@ -341,12 +347,6 @@ return {
       1,
       39,
       3,
-    },
-    {
-      42,
-      1,
-      41,
-      2,
     },
   },
   nodeType = 'script',
@@ -401,9 +401,9 @@ return {
     },
     {
       loadArguments = {
-        true,
+        10,
       },
-      name = 'boolean',
+      name = 'number',
     },
     {
       name = 'script/condition',
@@ -521,12 +521,6 @@ return {
     },
     {
       name = 'math/vector3/vector3numbermultiply',
-    },
-    {
-      loadArguments = {
-        10,
-      },
-      name = 'number',
     },
   },
 }

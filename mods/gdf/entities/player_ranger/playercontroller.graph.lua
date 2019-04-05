@@ -542,7 +542,7 @@ return {
             {
               1,
               1,
-              2,
+              10,
               2,
             },
             {
@@ -593,6 +593,18 @@ return {
               8,
               1,
             },
+            {
+              10,
+              1,
+              2,
+              2,
+            },
+            {
+              11,
+              1,
+              10,
+              1,
+            },
           },
           nodeType = 'statemachine',
           nodes = {
@@ -608,7 +620,7 @@ return {
                     {
                       1,
                       1,
-                      8,
+                      2,
                       1,
                     },
                     {
@@ -621,24 +633,18 @@ return {
                       3,
                       1,
                       2,
-                      3,
-                    },
-                    {
-                      4,
-                      1,
-                      2,
-                      2,
-                    },
-                    {
-                      4,
-                      1,
-                      5,
                       2,
                     },
                     {
                       4,
                       1,
                       6,
+                      2,
+                    },
+                    {
+                      4,
+                      1,
+                      5,
                       2,
                     },
                     {
@@ -653,18 +659,6 @@ return {
                       6,
                       3,
                     },
-                    {
-                      8,
-                      1,
-                      2,
-                      1,
-                    },
-                    {
-                      9,
-                      1,
-                      8,
-                      2,
-                    },
                   },
                   nodeType = 'script',
                   nodes = {
@@ -672,11 +666,11 @@ return {
                       name = 'script/init',
                     },
                     {
-                      name = 'entity/setcycleanimation',
+                      name = 'print',
                     },
                     {
                       loadArguments = {
-                        'move',
+                        'idle',
                       },
                       name = 'string',
                     },
@@ -694,15 +688,6 @@ return {
                         false,
                       },
                       name = 'boolean',
-                    },
-                    {
-                      name = 'print',
-                    },
-                    {
-                      loadArguments = {
-                        'idle',
-                      },
-                      name = 'string',
                     },
                   },
                 },
@@ -724,7 +709,7 @@ return {
                     {
                       1,
                       1,
-                      7,
+                      2,
                       1,
                     },
                     {
@@ -735,12 +720,6 @@ return {
                     },
                     {
                       3,
-                      1,
-                      2,
-                      3,
-                    },
-                    {
-                      4,
                       1,
                       2,
                       2,
@@ -757,18 +736,6 @@ return {
                       5,
                       3,
                     },
-                    {
-                      7,
-                      1,
-                      2,
-                      1,
-                    },
-                    {
-                      8,
-                      1,
-                      7,
-                      2,
-                    },
                   },
                   nodeType = 'script',
                   nodes = {
@@ -776,11 +743,11 @@ return {
                       name = 'script/init',
                     },
                     {
-                      name = 'entity/setcycleanimation',
+                      name = 'print',
                     },
                     {
                       loadArguments = {
-                        'move',
+                        'walk',
                       },
                       name = 'string',
                     },
@@ -795,15 +762,6 @@ return {
                         true,
                       },
                       name = 'boolean',
-                    },
-                    {
-                      name = 'print',
-                    },
-                    {
-                      loadArguments = {
-                        'walk',
-                      },
-                      name = 'string',
                     },
                   },
                 },
@@ -940,6 +898,59 @@ return {
             {
               loadArguments = {
                 'not moving',
+              },
+              name = 'string',
+            },
+            {
+              loadArguments = {
+                2,
+                5,
+                {
+                  links = {
+                    {
+                      1,
+                      1,
+                      2,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      2,
+                      3,
+                    },
+                    {
+                      4,
+                      1,
+                      2,
+                      2,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      name = 'script/init',
+                    },
+                    {
+                      name = 'entity/setcycleanimation',
+                    },
+                    {
+                      loadArguments = {
+                        'move',
+                      },
+                      name = 'string',
+                    },
+                    {
+                      name = 'script/getcontext',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/state',
+            },
+            {
+              loadArguments = {
+                'init animation',
               },
               name = 'string',
             },

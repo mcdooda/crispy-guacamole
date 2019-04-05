@@ -36,7 +36,7 @@ local states = BehaviorHelper.customAttacker(
 local init = states.init
 function states:init(spearman)
 	local moveAnimation = math.random(1, 2) == 1 and 'move2' or 'move'
-	spearman:setMoveAnimation(moveAnimation)
+	spearman:setCycleAnimation(moveAnimation)
 	spearman:getExtraData().mineralsAmount = 0
 	init(self, spearman)
 end

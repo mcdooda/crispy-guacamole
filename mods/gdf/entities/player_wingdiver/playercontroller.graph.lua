@@ -127,6 +127,12 @@ return {
       2,
     },
     {
+      1,
+      3,
+      61,
+      2,
+    },
+    {
       3,
       1,
       11,
@@ -134,8 +140,14 @@ return {
     },
     {
       3,
-      6,
+      2,
       17,
+      1,
+    },
+    {
+      3,
+      3,
+      61,
       1,
     },
     {
@@ -521,7 +533,7 @@ return {
     },
     {
       loadArguments = {
-        7,
+        4,
       },
       name = 'script/impulseall',
     },
@@ -782,6 +794,836 @@ return {
     },
     {
       name = 'math/vector3/vector3numbermultiply',
+    },
+    {
+      loadArguments = {
+        1,
+        {
+          links = {
+            {
+              1,
+              1,
+              2,
+              2,
+            },
+            {
+              2,
+              2,
+              12,
+              2,
+            },
+            {
+              2,
+              2,
+              16,
+              2,
+            },
+            {
+              3,
+              1,
+              2,
+              1,
+            },
+            {
+              4,
+              2,
+              10,
+              2,
+            },
+            {
+              4,
+              2,
+              16,
+              3,
+            },
+            {
+              5,
+              1,
+              4,
+              1,
+            },
+            {
+              6,
+              2,
+              10,
+              3,
+            },
+            {
+              6,
+              2,
+              16,
+              4,
+            },
+            {
+              6,
+              2,
+              12,
+              4,
+            },
+            {
+              7,
+              1,
+              6,
+              1,
+            },
+            {
+              8,
+              2,
+              10,
+              4,
+            },
+            {
+              8,
+              2,
+              12,
+              3,
+            },
+            {
+              8,
+              2,
+              14,
+              2,
+            },
+            {
+              9,
+              1,
+              8,
+              1,
+            },
+            {
+              10,
+              1,
+              2,
+              3,
+            },
+            {
+              11,
+              1,
+              10,
+              1,
+            },
+            {
+              12,
+              1,
+              4,
+              2,
+            },
+            {
+              13,
+              1,
+              12,
+              1,
+            },
+            {
+              14,
+              1,
+              6,
+              2,
+            },
+            {
+              15,
+              1,
+              14,
+              1,
+            },
+            {
+              16,
+              1,
+              8,
+              2,
+            },
+            {
+              17,
+              1,
+              16,
+              1,
+            },
+          },
+          nodeType = 'statemachine',
+          nodes = {
+            {
+              name = 'statemachine/enter',
+            },
+            {
+              loadArguments = {
+                3,
+                1,
+                {
+                  links = {
+                    {
+                      1,
+                      1,
+                      2,
+                      1,
+                    },
+                    {
+                      2,
+                      1,
+                      4,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      2,
+                      2,
+                    },
+                    {
+                      4,
+                      1,
+                      6,
+                      1,
+                    },
+                    {
+                      5,
+                      1,
+                      4,
+                      3,
+                    },
+                    {
+                      6,
+                      1,
+                      7,
+                      1,
+                    },
+                    {
+                      8,
+                      1,
+                      7,
+                      3,
+                    },
+                    {
+                      9,
+                      1,
+                      4,
+                      2,
+                    },
+                    {
+                      9,
+                      1,
+                      6,
+                      2,
+                    },
+                    {
+                      9,
+                      1,
+                      7,
+                      2,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      name = 'script/init',
+                    },
+                    {
+                      name = 'print',
+                    },
+                    {
+                      loadArguments = {
+                        'idle',
+                      },
+                      name = 'string',
+                    },
+                    {
+                      name = 'entity/setcycleanimation',
+                    },
+                    {
+                      loadArguments = {
+                        'move',
+                      },
+                      name = 'string',
+                    },
+                    {
+                      name = 'entity/resetcycleanimation',
+                    },
+                    {
+                      name = 'entity/setcycleanimated',
+                    },
+                    {
+                      loadArguments = {
+                        false,
+                      },
+                      name = 'boolean',
+                    },
+                    {
+                      name = 'script/getcontext',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/state',
+            },
+            {
+              loadArguments = {
+                'idle',
+              },
+              name = 'string',
+            },
+            {
+              loadArguments = {
+                2,
+                2,
+                {
+                  links = {
+                    {
+                      1,
+                      1,
+                      2,
+                      1,
+                    },
+                    {
+                      2,
+                      1,
+                      4,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      2,
+                      2,
+                    },
+                    {
+                      4,
+                      1,
+                      7,
+                      1,
+                    },
+                    {
+                      5,
+                      1,
+                      4,
+                      3,
+                    },
+                    {
+                      6,
+                      1,
+                      4,
+                      2,
+                    },
+                    {
+                      6,
+                      1,
+                      7,
+                      2,
+                    },
+                    {
+                      8,
+                      1,
+                      7,
+                      3,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      name = 'script/init',
+                    },
+                    {
+                      name = 'print',
+                    },
+                    {
+                      loadArguments = {
+                        'walk',
+                      },
+                      name = 'string',
+                    },
+                    {
+                      name = 'entity/setcycleanimation',
+                    },
+                    {
+                      loadArguments = {
+                        'move',
+                      },
+                      name = 'string',
+                    },
+                    {
+                      name = 'script/getcontext',
+                    },
+                    {
+                      name = 'entity/setcycleanimated',
+                    },
+                    {
+                      loadArguments = {
+                        true,
+                      },
+                      name = 'boolean',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/state',
+            },
+            {
+              loadArguments = {
+                'walk',
+              },
+              name = 'string',
+            },
+            {
+              loadArguments = {
+                2,
+                3,
+                {
+                  links = {
+                    {
+                      1,
+                      1,
+                      2,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      2,
+                      2,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      name = 'script/init',
+                    },
+                    {
+                      name = 'print',
+                    },
+                    {
+                      loadArguments = {
+                        'midair',
+                      },
+                      name = 'string',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/state',
+            },
+            {
+              loadArguments = {
+                'midair',
+              },
+              name = 'string',
+            },
+            {
+              loadArguments = {
+                2,
+                4,
+                {
+                  links = {
+                    {
+                      1,
+                      1,
+                      2,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      2,
+                      2,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      name = 'script/init',
+                    },
+                    {
+                      name = 'print',
+                    },
+                    {
+                      loadArguments = {
+                        'jetpack',
+                      },
+                      name = 'string',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/state',
+            },
+            {
+              loadArguments = {
+                'jetpack',
+              },
+              name = 'string',
+            },
+            {
+              loadArguments = {
+                4,
+                5,
+                {
+                  links = {
+                    {
+                      1,
+                      1,
+                      2,
+                      1,
+                    },
+                    {
+                      1,
+                      1,
+                      4,
+                      1,
+                    },
+                    {
+                      2,
+                      1,
+                      3,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      7,
+                      1,
+                    },
+                    {
+                      4,
+                      1,
+                      5,
+                      1,
+                    },
+                    {
+                      5,
+                      1,
+                      7,
+                      2,
+                    },
+                    {
+                      7,
+                      1,
+                      6,
+                      1,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      name = 'script/getcontext',
+                    },
+                    {
+                      name = 'entity/ismidair',
+                    },
+                    {
+                      name = 'math/not',
+                    },
+                    {
+                      name = 'entity/isfollowingpath',
+                    },
+                    {
+                      name = 'math/not',
+                    },
+                    {
+                      loadArguments = {
+                        {
+                          1,
+                          'Result',
+                        },
+                      },
+                      name = 'script/scriptoutput',
+                    },
+                    {
+                      name = 'math/and',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/rule',
+            },
+            {
+              loadArguments = {
+                'ground + not moving',
+              },
+              name = 'string',
+            },
+            {
+              loadArguments = {
+                4,
+                6,
+                {
+                  links = {
+                    {
+                      2,
+                      1,
+                      3,
+                      1,
+                    },
+                    {
+                      2,
+                      1,
+                      5,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      4,
+                      1,
+                    },
+                    {
+                      4,
+                      1,
+                      6,
+                      1,
+                    },
+                    {
+                      5,
+                      1,
+                      6,
+                      2,
+                    },
+                    {
+                      6,
+                      1,
+                      1,
+                      1,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      loadArguments = {
+                        {
+                          1,
+                          'Result',
+                        },
+                      },
+                      name = 'script/scriptoutput',
+                    },
+                    {
+                      name = 'script/getcontext',
+                    },
+                    {
+                      name = 'entity/ismidair',
+                    },
+                    {
+                      name = 'math/not',
+                    },
+                    {
+                      name = 'entity/isfollowingpath',
+                    },
+                    {
+                      name = 'math/and',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/rule',
+            },
+            {
+              loadArguments = {
+                'ground + moving',
+              },
+              name = 'string',
+            },
+            {
+              loadArguments = {
+                2,
+                7,
+                {
+                  links = {
+                    {
+                      1,
+                      1,
+                      2,
+                      1,
+                    },
+                    {
+                      1,
+                      1,
+                      3,
+                      1,
+                    },
+                    {
+                      2,
+                      1,
+                      7,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      4,
+                      1,
+                    },
+                    {
+                      4,
+                      3,
+                      5,
+                      1,
+                    },
+                    {
+                      5,
+                      1,
+                      7,
+                      2,
+                    },
+                    {
+                      6,
+                      1,
+                      5,
+                      2,
+                    },
+                    {
+                      7,
+                      1,
+                      8,
+                      1,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      name = 'script/getcontext',
+                    },
+                    {
+                      name = 'entity/ismidair',
+                    },
+                    {
+                      name = 'entity/getmidairacceleration',
+                    },
+                    {
+                      name = 'math/vector3/vector3split',
+                    },
+                    {
+                      name = 'math/equal',
+                    },
+                    {
+                      loadArguments = {
+                        0,
+                      },
+                      name = 'number',
+                    },
+                    {
+                      name = 'math/and',
+                    },
+                    {
+                      loadArguments = {
+                        {
+                          1,
+                          'Result',
+                        },
+                      },
+                      name = 'script/scriptoutput',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/rule',
+            },
+            {
+              loadArguments = {
+                'midair + not boosting',
+              },
+              name = 'string',
+            },
+            {
+              loadArguments = {
+                4,
+                8,
+                {
+                  links = {
+                    {
+                      1,
+                      1,
+                      2,
+                      1,
+                    },
+                    {
+                      1,
+                      1,
+                      6,
+                      1,
+                    },
+                    {
+                      2,
+                      1,
+                      3,
+                      1,
+                    },
+                    {
+                      3,
+                      1,
+                      5,
+                      1,
+                    },
+                    {
+                      4,
+                      1,
+                      8,
+                      2,
+                    },
+                    {
+                      6,
+                      1,
+                      7,
+                      1,
+                    },
+                    {
+                      7,
+                      3,
+                      8,
+                      1,
+                    },
+                    {
+                      8,
+                      1,
+                      3,
+                      2,
+                    },
+                  },
+                  nodeType = 'script',
+                  nodes = {
+                    {
+                      name = 'script/getcontext',
+                    },
+                    {
+                      name = 'entity/ismidair',
+                    },
+                    {
+                      name = 'math/and',
+                    },
+                    {
+                      loadArguments = {
+                        0,
+                      },
+                      name = 'number',
+                    },
+                    {
+                      loadArguments = {
+                        {
+                          1,
+                          'Result',
+                        },
+                      },
+                      name = 'script/scriptoutput',
+                    },
+                    {
+                      name = 'entity/getmidairacceleration',
+                    },
+                    {
+                      name = 'math/vector3/vector3split',
+                    },
+                    {
+                      name = 'math/greaterthan',
+                    },
+                  },
+                },
+              },
+              name = 'statemachine/rule',
+            },
+            {
+              loadArguments = {
+                'midair + boosting',
+              },
+              name = 'string',
+            },
+          },
+        },
+      },
+      name = 'statemachine',
     },
   },
 }

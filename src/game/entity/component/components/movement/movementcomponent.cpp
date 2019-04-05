@@ -1,7 +1,6 @@
 #include "movementcomponent.h"
 #include "movementcomponenttemplate.h"
 #include "../collision/collisioncomponent.h"
-#include "../sprite/spritecomponent.h"
 #include "../projectile/projectilecomponent.h"
 #include "../../componenttype.h"
 #include "../../../entity.h"
@@ -37,10 +36,7 @@ void MovementComponent::init()
 		collisionComponent->onCollidedWithMap.on(this, &MovementComponent::collidedWithMap);
 	}
 
-	m_moveAnimationDescription = nullptr;
-	setDefaultMoveAnimation();
-
-	m_isMoving = false;
+	m_isFollowingPath = false;
 	m_isStrafing = false;
 }
 
@@ -198,18 +194,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	
 	fall(elapsedTime);
 
-	const bool wasMoving = m_isMoving;
-	m_isMoving = followsPath();
-
-	const bool movementStarted = !wasMoving && m_isMoving;
-	const bool movementStopped = !m_isMoving && wasMoving;
-
-	if (movementStopped)
-	{
-		m_returnToDestinationTime = currentTime + RETURN_TO_DESTINATION_DURATION;
-	}
-
-	updateSprite(movementStarted, movementStopped);
+	m_isFollowingPath = followsPath();
 }
 
 bool MovementComponent::isBusy() const
@@ -323,27 +308,6 @@ void MovementComponent::jump()
 	}
 }
 
-bool MovementComponent::setMoveAnimationByName(const std::string& animationName)
-{
-	const sprite::SpriteComponentTemplate* spriteComponentTemplate = getTemplate<sprite::SpriteComponent>();
-	if (spriteComponentTemplate != nullptr)
-	{
-		const sprite::SpriteDescription& spriteDescription = spriteComponentTemplate->getSpriteDescription();
-		const sprite::AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
-		if (animationDescription != nullptr)
-		{
-			m_moveAnimationDescription = animationDescription;
-			return true;
-		}
-	}
-	return false;
-}
-
-bool MovementComponent::setDefaultMoveAnimation()
-{
-	return setMoveAnimationByName("move");
-}
-
 void MovementComponent::fall(float elapsedTime)
 {
 	if (m_isTouchingGround && flat::length2(m_midairAcceleration) < FLT_EPSILON)
@@ -425,29 +389,6 @@ bool MovementComponent::collidedWithMap(const map::Tile* tile, const flat::Vecto
 	return true;
 }
 
-void MovementComponent::updateSprite(bool /*movementStarted*/, bool movementStopped)
-{
-	if (m_owner->hasSprite())
-	{
-		sprite::SpriteComponent* spriteComponent = m_owner->getComponent<sprite::SpriteComponent>();
-		FLAT_ASSERT(spriteComponent != nullptr);
-		flat::render::AnimatedSprite& sprite = static_cast<flat::render::AnimatedSprite&>(m_owner->getSprite());
-		if (m_isMoving)
-		{
-			if (m_moveAnimationDescription != nullptr
-				&& (!sprite.isAnimated() || (m_moveAnimationDescription != spriteComponent->getCurrentAnimationDescription() && spriteComponent->hasInfiniteLoop())))
-			{
-				sprite.setAnimated(true);
-				spriteComponent->playAnimation(*m_moveAnimationDescription, flat::render::AnimatedSprite::INFINITE_LOOP, true);
-			}
-		}
-		else if (movementStopped && spriteComponent->getCurrentAnimationDescription() == m_moveAnimationDescription)
-		{
-			sprite.setAnimated(false);
-		}
-	}
-}
-
 bool MovementComponent::updateSpritePosition(const flat::Vector3& position)
 {
 	FLAT_ASSERT(m_owner->hasSprite());
@@ -476,14 +417,6 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	}
 
 	debugDisplay.add3dLine(m_owner->getPosition(), m_owner->getPosition() + flat::Vector3(m_steering, 0.f), flat::video::Color::RED);
-	if (m_moveAnimationDescription != nullptr)
-	{
-		debugDisplay.add3dText(m_owner->getPosition(), m_moveAnimationDescription->getName());
-	}
-	else
-	{
-		debugDisplay.add3dText(m_owner->getPosition(), "no move animation", flat::video::Color::RED);
-	}
 
 	if (m_isTouchingGround)
 	{

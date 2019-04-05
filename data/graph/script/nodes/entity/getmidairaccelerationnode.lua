@@ -6,13 +6,13 @@ local GetMidairAccelerationNode = FunctionalScriptNode:inherit 'Get Midair Accel
 function GetMidairAccelerationNode:buildPins()
     self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
     
-    self.accelerationOutPin = self:addOutputPin(flat.types.NUMBER, 'Acceleration')
+    self.accelerationOutPin = self:addOutputPin(flat.types['flat.Vector3'], 'Acceleration')
 end
 
 function GetMidairAccelerationNode:execute(runtime)
     local entity = runtime:readPin(self.entityInPin)
 
-    local acceleration = entity:getAcceleration()
+    local acceleration = entity:getMidairAcceleration()
 
     runtime:writePin(self.accelerationOutPin, acceleration)
 end

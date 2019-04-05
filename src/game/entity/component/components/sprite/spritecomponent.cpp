@@ -25,6 +25,7 @@ void SpriteComponent::init()
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
 	m_owner->setSprite(&m_sprite);
 
+	m_cycleAnimationDescription = nullptr;
 	m_currentAnimationDescription = nullptr;
 
 	selection::SelectionComponent* selectionComponent = m_owner->getComponent<selection::SelectionComponent>();
@@ -59,6 +60,40 @@ void SpriteComponent::deinit()
 	m_owner->addedToMap.off(this);
 }
 
+void SpriteComponent::setCycleAnimation(const AnimationDescription& animationDescription)
+{
+	m_cycleAnimationDescription = &animationDescription;
+}
+
+bool SpriteComponent::setCycleAnimationByName(const std::string& animationName)
+{
+	const SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
+	const AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
+	if (animationDescription != nullptr)
+	{
+		setCycleAnimation(*animationDescription);
+		return true;
+	}
+	return false;
+}
+
+void SpriteComponent::setCycleAnimated(bool isCycleAnimated)
+{
+	m_isCycleAnimated = isCycleAnimated;
+	if (m_currentAnimationDescription == nullptr)
+	{
+		m_sprite.setAnimated(isCycleAnimated);
+	}
+}
+
+void SpriteComponent::resetCycleAnimation()
+{
+	if (m_currentAnimationDescription == nullptr)
+	{
+		m_sprite.setColumn(0);
+	}
+}
+
 void SpriteComponent::playAnimation(const AnimationDescription& animationDescription, int numLoops, bool preventBusy)
 {
 	if (numLoops == flat::render::AnimatedSprite::INFINITE_LOOP
@@ -78,15 +113,22 @@ void SpriteComponent::playAnimation(const AnimationDescription& animationDescrip
 			numLoops
 		);
 	}
-	m_currentAnimationDescription = &animationDescription;
-	m_preventBusy = preventBusy;
+	if (&animationDescription != m_cycleAnimationDescription)
+	{
+		m_currentAnimationDescription = &animationDescription;
+		m_preventBusy = preventBusy;
+	}
+	else
+	{
+		m_preventBusy = true;
+	}
 }
 
 bool SpriteComponent::playAnimationByName(const std::string& animationName, int numLoops, bool preventBusy)
 {
 	const SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
 	const AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
-	if (animationDescription)
+	if (animationDescription != nullptr)
 	{
 		playAnimation(*animationDescription, numLoops, preventBusy);
 		return true;
@@ -119,6 +161,13 @@ bool SpriteComponent::getAttachPoint(const std::string& attachPointName, flat::V
 void SpriteComponent::update(float currentTime, float elapsedTime)
 {
 	m_sprite.update(currentTime);
+
+	if (!m_sprite.isAnimated() && m_cycleAnimationDescription != nullptr)
+	{
+		m_currentAnimationDescription = nullptr;
+		playAnimation(*m_cycleAnimationDescription);
+		m_sprite.setAnimated(m_isCycleAnimated);
+	}
 }
 
 bool SpriteComponent::isBusy() const

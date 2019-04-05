@@ -27,6 +27,7 @@ void SpriteComponent::init()
 
 	m_cycleAnimationDescription = nullptr;
 	m_currentAnimationDescription = nullptr;
+	m_isCycleAnimated = true;
 
 	selection::SelectionComponent* selectionComponent = m_owner->getComponent<selection::SelectionComponent>();
 	if (selectionComponent != nullptr)
@@ -162,17 +163,20 @@ void SpriteComponent::update(float currentTime, float elapsedTime)
 {
 	m_sprite.update(currentTime);
 
-	if (!m_sprite.isAnimated() && m_cycleAnimationDescription != nullptr)
+	if (!m_sprite.isAnimated())
 	{
 		m_currentAnimationDescription = nullptr;
-		playAnimation(*m_cycleAnimationDescription);
-		m_sprite.setAnimated(m_isCycleAnimated);
+		if (m_cycleAnimationDescription != nullptr)
+		{
+			playAnimation(*m_cycleAnimationDescription);
+			m_sprite.setAnimated(m_isCycleAnimated);
+		}
 	}
 }
 
 bool SpriteComponent::isBusy() const
 {
-	return !m_preventBusy && m_sprite.isAnimated();
+	return !m_preventBusy && m_currentAnimationDescription != nullptr;
 }
 
 #ifdef FLAT_DEBUG

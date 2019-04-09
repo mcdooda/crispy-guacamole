@@ -1,20 +1,20 @@
 local FunctionalScriptNode = flat.require 'graph/script/functionalscriptnode'
 local PinTypes = flat.require 'graph/pintypes'
 
-local GetStrafingNode = FunctionalScriptNode:inherit 'Get Strafing'
+local IsStrafingNode = FunctionalScriptNode:inherit 'Is Strafing'
 
-function GetStrafingNode:buildPins()
+function IsStrafingNode:buildPins()
     self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
 
     self.strafingOutPin = self:addOutputPin(flat.types.BOOLEAN, 'Strafing')
 end
 
-function GetStrafingNode:execute(runtime)
+function IsStrafingNode:execute(runtime)
     local entity = runtime:readPin(self.entityInPin)
 
-    local strafing = entity:getIsStrafing()
+    local strafing = entity:isStrafing()
 
     runtime:writePin(self.strafingOutPin, strafing)
 end
 
-return GetStrafingNode
+return IsStrafingNode

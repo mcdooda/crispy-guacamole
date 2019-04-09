@@ -19,6 +19,18 @@ return {
       2,
     },
     {
+      1,
+      3,
+      21,
+      2,
+    },
+    {
+      3,
+      1,
+      21,
+      1,
+    },
+    {
       4,
       1,
       1,
@@ -119,6 +131,12 @@ return {
       1,
       16,
       4,
+    },
+    {
+      22,
+      1,
+      21,
+      3,
     },
   },
   nodeType = 'script',
@@ -237,6 +255,15 @@ return {
         0.079999998211861,
       },
       name = 'number',
+    },
+    {
+      name = 'entity/setcycleanimation',
+    },
+    {
+      loadArguments = {
+        'move',
+      },
+      name = 'string',
     },
   },
 }

@@ -1,3 +1,4 @@
+local gdf = require 'mods/gdf/scripts/gdf'
 local Camera = require 'data/game/scripts/camera'
 
 local math = math
@@ -16,15 +17,6 @@ local function clamp(value, min, max)
         return value
     end
 end
-
-local players = Map.getEntitiesOfType('player')
-local player = players[1]
-
-local cameraDistanceToPlayer = player:getSpeed() * 3
-
-local playerHeading = player:getHeading()
-local cameraPosition = player:getPosition()
-local cameraVelocity = flat.Vector3(0, 0, 0)
 
 local function clampMagnitude(v, max)
     local length2 = v:length2()
@@ -62,17 +54,44 @@ local function smoothDamp(current, target, currentVelocity, smoothTime, maxSpeed
     return output, currentVelocity
 end
 
-while player:isValid() do
-    local playerHeading = player:getHeading()
-    local cameraTargetPosition = player:getPosition() + flat.Vector3(cos(playerHeading), sin(playerHeading), 0) * cameraDistanceToPlayer
+local players = gdf.getPlayers()
 
+local function getCameraTargetPosition()
+    local positions = flat.Vector3(0, 0, 0)
+    local numAlivePlayers = 0
+    for i = 1, #players do
+        local player = players[i]
+        if player:isValid() then
+            local cameraDistanceToPlayer = player:getSpeed() * 1.5
+            local playerHeading = player:getHeading()
+            local cameraTargetPosition = player:getPosition() + flat.Vector3(cos(playerHeading), sin(playerHeading), 0) * cameraDistanceToPlayer
+            positions = positions + cameraTargetPosition
+            numAlivePlayers = numAlivePlayers + 1
+        end
+    end
+    if numAlivePlayers > 0 then
+        return positions / numAlivePlayers
+    end 
+end
+
+game.setCameraZoom(2)
+
+local cameraPosition = getCameraTargetPosition() 
+Camera.lockAndMoveTo(cameraPosition, 0)
+local cameraVelocity = flat.Vector3(0, 0, 0)
+
+while true do
+    local cameraTargetPosition = getCameraTargetPosition()
+    if not cameraTargetPosition then
+        break
+    end
+    
     local dt = game.getDT()
     if dt > 0 then
         cameraPosition, cameraVelocity = smoothDamp(cameraPosition, cameraTargetPosition, cameraVelocity, 0.5, 10000, dt)
     else
         cameraPosition = cameraTargetPosition
     end
-
     Camera.lockAndMoveTo(cameraPosition, 0)
 
     coyield()

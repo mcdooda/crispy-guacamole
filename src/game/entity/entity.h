@@ -51,6 +51,16 @@ class Entity final : public map::MapObject
 
 		void setElevation(float elevation);
 		inline float getElevation() const { return m_elevation; }
+
+		inline flat::Vector3 getForward() const
+		{
+			flat::Vector3 forward;
+			const float ce = std::cos(m_elevation);
+			forward.x = std::cos(m_heading) * ce;
+			forward.y = std::sin(m_heading) * ce;
+			forward.z = std::sin(m_elevation);
+			return forward;
+		}
 		
 		inline void setSprite(flat::render::Sprite* sprite) { FLAT_ASSERT(sprite != nullptr); m_sprite = sprite; }
 		inline void clearSprite() { m_sprite = nullptr; }

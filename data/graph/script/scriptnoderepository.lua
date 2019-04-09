@@ -25,12 +25,15 @@ return {
     -- movement
     'components/movementcomponent',
     'entity/clearpath',
-    'entity/setmoveanimation',
     'entity/setspeed',
     'entity/getspeed',
     'entity/moveto',
     'entity/setstrafing',
-    'entity/getstrafing',
+    'entity/isstrafing',
+    'entity/setmidairacceleration',
+    'entity/getmidairacceleration',
+    'entity/ismidair',
+    'entity/isfollowingpath',
 
     -- player controller
     'components/playercontrollercomponent',
@@ -51,6 +54,9 @@ return {
     'components/spriteanimation',
     'components/spriteattachpoint',
     'components/spritecomponent',
+    'entity/setcycleanimation',
+    'entity/setcycleanimated',
+    'entity/resetcycleanimation',
     'entity/playanimation',
     'entity/flipspritex',
     'entity/setspriterotation',
@@ -71,6 +77,7 @@ return {
     'entity/setelevation',
     'entity/getposition',
     'entity/setposition',
+    'entity/getforward',
 
     'entity/isvalidentity',
     'entity/iscomponentenabled',
@@ -83,6 +90,7 @@ return {
     -- game
     'game/gamedt',
     'game/gametime',
+    'game/sleep',
 
     -- controller
     'controller/buttonpressed',

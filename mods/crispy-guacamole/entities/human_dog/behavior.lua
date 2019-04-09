@@ -16,7 +16,7 @@ function states:idle(dog)
 end
 
 function states:wander(dog)
-	dog:setDefaultMoveAnimation()
+	dog:setCycleAnimation 'move'
 	dog:setSpeed(movement.speed)
 
 	local initialPosition = dog:getPosition()
@@ -46,7 +46,7 @@ function states:wander(dog)
 end
 
 function states:followTarget(dog)
-	dog:setMoveAnimation 'run'
+	dog:setCycleAnimation 'run'
 	dog:setSpeed(movement.speed * 3)
 
 	local target = dog:getExtraData().target

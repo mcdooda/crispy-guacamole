@@ -65,7 +65,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool addedToMap(Entity* entity, map::Map* map);
 		bool removedFromMap(Entity* entity);
 
-		bool collidedWithMap(const map::Tile* tile, const flat::Vector3& normal);
+		bool collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal);
 
 		void updateSprite(bool movementStarted, bool movementStopped);
 		bool updateSpritePosition(const flat::Vector3& position);

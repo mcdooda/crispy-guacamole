@@ -378,13 +378,13 @@ bool MovementComponent::removedFromMap(Entity* entity)
 	return true;
 }
 
-bool MovementComponent::collidedWithMap(const map::Tile* tile, const flat::Vector3& normal)
+bool MovementComponent::collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal)
 {
 	if (!m_isTouchingGround)
 	{
 		if (normal.z > 0.7f && m_midairVelocity.z < 0.f)
 		{
-			m_owner->setZ(tile->getZ());
+			m_owner->setZ(m_owner->getMap()->getTileZ(tileIndex));
 			land();
 		}
 	}

@@ -1,3 +1,5 @@
+#include <execution>
+
 #include "displaymanager.h"
 #include "mapobject.h"
 #include "map.h"
@@ -130,6 +132,7 @@ void DisplayManager::sortAndDraw(Game& game, const flat::video::View& view)
 		), opaqueObjects.end());
 
 		std::sort(
+			std::execution::par,
 			opaqueObjects.begin(),
 			opaqueObjects.end(),
 			[](const MapObject* a, const MapObject* b)
@@ -282,7 +285,7 @@ inline bool spritesOverlap(const MapObject* a, const MapObject* b)
 
 void DisplayManager::sortObjects(std::vector<const MapObject*>& objects)
 {
-	std::sort(objects.begin(), objects.end(), locSortByDepth);
+	std::sort(std::execution::par, objects.begin(), objects.end(), locSortByDepth);
 	FLAT_ASSERT(std::is_sorted(objects.begin(), objects.end(), locSortByDepth));
 
 	{

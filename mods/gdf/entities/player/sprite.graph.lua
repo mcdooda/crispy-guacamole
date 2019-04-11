@@ -90,6 +90,36 @@ return {
       10,
       4,
     },
+    {
+      16,
+      1,
+      9,
+      2,
+    },
+    {
+      17,
+      1,
+      16,
+      1,
+    },
+    {
+      18,
+      1,
+      16,
+      2,
+    },
+    {
+      19,
+      1,
+      16,
+      3,
+    },
+    {
+      20,
+      1,
+      16,
+      4,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -110,13 +140,13 @@ return {
     },
     {
       loadArguments = {
-        16,
+        12,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        28,
+        22,
       },
       name = 'number',
     },
@@ -125,13 +155,13 @@ return {
     },
     {
       loadArguments = {
-        8,
+        7,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        2,
       },
       name = 'number',
     },
@@ -140,6 +170,10 @@ return {
         {
           5,
           'Table',
+        },
+        {
+          5,
+          '',
         },
       },
       name = 'script/array',
@@ -161,7 +195,7 @@ return {
     },
     {
       loadArguments = {
-        8,
+        7,
       },
       name = 'number',
     },
@@ -176,6 +210,33 @@ return {
         'data/compounds/script/Flip Sprite',
       },
       name = 'compound',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'shoot',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        4,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.070000000298023,
+      },
+      name = 'number',
     },
   },
 }

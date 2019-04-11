@@ -65,12 +65,9 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 		const float heading = m_owner->getHeading();
 		const float elevation = m_owner->getElevation();
 
-		flat::Vector3 moveDirection;
-		moveDirection.x = std::cos(heading) * std::cos(elevation);
-		moveDirection.y = std::sin(heading) * std::cos(elevation);
-		moveDirection.z = std::sin(elevation);
+		flat::Vector3 forward = m_owner->getForward();
 
-		m_speed = moveDirection * speed;
+		m_speed = forward * speed;
 		newPosition = position + m_speed * elapsedTime;
 	}
 	else

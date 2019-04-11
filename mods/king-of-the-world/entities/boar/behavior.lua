@@ -3,7 +3,7 @@ local random = math.random
 local states = {}
 
 function states:init(boar)
-    boar:setMoveAnimation 'run'
+    boar:setCycleAnimation 'run'
 	boar:enterState 'wander'
 end
 

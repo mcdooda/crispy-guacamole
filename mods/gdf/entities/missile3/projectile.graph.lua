@@ -80,13 +80,13 @@ return {
     },
     {
       loadArguments = {
-        15,
+        5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        20,
+        35,
       },
       name = 'number',
     },
@@ -113,7 +113,7 @@ return {
     },
     {
       loadArguments = {
-        'fx_bigexplosion',
+        'fx_multipleexplosions',
       },
       name = 'string',
     },

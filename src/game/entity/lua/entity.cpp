@@ -67,6 +67,8 @@ int open(Game& game)
 		{"setElevation",             l_Entity_setElevation},
 		{"getElevation",             l_Entity_getElevation},
 
+		{"getForward",               l_Entity_getForward},
+
 		{"lookAtEntity",             l_Entity_lookAtEntity},
 
 		// ui
@@ -80,11 +82,13 @@ int open(Game& game)
 		{"getSpeed",                 l_Entity_getSpeed},
 		{"jump",                     l_Entity_jump},
 		{"isTouchingGround",         l_Entity_isTouchingGround},
+		{"setMidairAcceleration",    l_Entity_setMidairAcceleration},
+		{"getMidairAcceleration",    l_Entity_getMidairAcceleration},
 		{"restrictToZone",           l_Entity_restrictToZone},
-		{"setMoveAnimation",         l_Entity_setMoveAnimation},
-		{"setDefaultMoveAnimation",  l_Entity_setDefaultMoveAnimation},
 		{"setIsStrafing",            l_Entity_setIsStrafing},
-		{"getIsStrafing",            l_Entity_getIsStrafing},
+		{"isStrafing",               l_Entity_isStrafing},
+		{"isFollowingPath",          l_Entity_isFollowingPath},
+		{"isMidair",                 l_Entity_isMidair},
 
 		// behavior
 		{"enterState",               l_Entity_enterState},
@@ -94,6 +98,9 @@ int open(Game& game)
 		{"interactWith",             l_Entity_interactWith},
 
 		// sprite
+		{"setCycleAnimation",        l_Entity_setCycleAnimation},
+		{"setCycleAnimated",         l_Entity_setCycleAnimated},
+		{"resetCycleAnimation",      l_Entity_resetCycleAnimation},
 		{"playAnimation",            l_Entity_playAnimation},
 		{"getAttachPoint",           l_Entity_getAttachPoint},
 		{"flipSpriteX",              l_Entity_flipSpriteX},
@@ -402,6 +409,13 @@ int l_Entity_getElevation(lua_State* L)
 	return 1;
 }
 
+int l_Entity_getForward(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::lua::pushVector3(L, entity.getForward());
+	return 1;
+}
+
 int l_Entity_lookAtEntity(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -458,7 +472,7 @@ int l_Entity_setSpeed(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	float speed = static_cast<float>(luaL_checknumber(L, 2));
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	movementComponent.setSpeed(speed);
+	movementComponent.setMovementSpeed(speed);
 	return 0;
 }
 
@@ -466,7 +480,7 @@ int l_Entity_getSpeed(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	lua_pushnumber(L, movementComponent.getSpeed());
+	lua_pushnumber(L, movementComponent.getMovementSpeed());
 	return 1;
 }
 
@@ -487,6 +501,23 @@ int l_Entity_isTouchingGround(lua_State* L)
 	return 1;
 }
 
+int l_Entity_setMidairAcceleration(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::Vector3& midairAcceleration = flat::lua::getVector3(L, 2);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	movementComponent.setMidairAcceleration(midairAcceleration);
+	return 0;
+}
+
+int l_Entity_getMidairAcceleration(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	flat::lua::pushVector3(L, movementComponent.getMidairAcceleration());
+	return 1;
+}
+
 int l_Entity_restrictToZone(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -504,32 +535,6 @@ int l_Entity_restrictToZone(lua_State* L)
 	return 0;
 }
 
-int l_Entity_setMoveAnimation(lua_State* L)
-{
-	Entity& entity = getEntity(L, 1);
-	const char* moveAnimationName = luaL_checkstring(L, 2);
-	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	bool animationExists = movementComponent.setMoveAnimationByName(moveAnimationName);
-	if (!animationExists)
-	{
-		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), moveAnimationName);
-	}
-	return 0;
-}
-
-int l_Entity_setDefaultMoveAnimation(lua_State* L)
-{
-	Entity& entity = getEntity(L, 1);
-	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	bool defaultMoveAnimationExists = movementComponent.setDefaultMoveAnimation();
-	if (!defaultMoveAnimationExists)
-	{
-		luaL_error(L, "%s has no default move animation", entity.getTemplateName().c_str());
-	}
-	return 0;
-}
-
-FLAT_OPTIMIZE_OFF()
 int l_Entity_setIsStrafing(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
@@ -538,14 +543,31 @@ int l_Entity_setIsStrafing(lua_State* L)
 	movementComponent.setIsStrafing(isStrafing);
 	return 0;
 }
-FLAT_OPTIMIZE_ON()
 
-int l_Entity_getIsStrafing(lua_State* L)
+int l_Entity_isStrafing(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	bool isStrafing = movementComponent.getIsStrafing();
+	bool isStrafing = movementComponent.isStrafing();
 	lua_pushboolean(L, isStrafing);
+	return 1;
+}
+
+int l_Entity_isFollowingPath(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	bool isFollowingPath = movementComponent.isFollowingPath();
+	lua_pushboolean(L, isFollowingPath);
+	return 1;
+}
+
+int l_Entity_isMidair(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	bool isMidair = !movementComponent.isTouchingGround();
+	lua_pushboolean(L, isMidair);
 	return 1;
 }
 
@@ -612,6 +634,36 @@ int l_Entity_interactWith(lua_State * L)
 }
 
 // SPRITE
+
+int l_Entity_setCycleAnimation(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const char* animationName = luaL_checkstring(L, 2);
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
+	bool animationExists = spriteComponent.setCycleAnimationByName(animationName);
+	if (!animationExists)
+	{
+		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
+	}
+	return 0;
+}
+
+int l_Entity_setCycleAnimated(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const bool isCycleAnimated = lua_toboolean(L, 2) == 1;
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
+	spriteComponent.setCycleAnimated(isCycleAnimated);
+	return 0;
+}
+
+int l_Entity_resetCycleAnimation(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
+	spriteComponent.resetCycleAnimation();
+	return 0;
+}
 
 int l_Entity_playAnimation(lua_State* L)
 {

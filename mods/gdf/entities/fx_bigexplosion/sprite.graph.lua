@@ -95,13 +95,13 @@ return {
     },
     {
       loadArguments = {
-        18,
+        19.5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        12,
+        10.5,
       },
       name = 'number',
     },

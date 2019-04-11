@@ -46,6 +46,8 @@ int l_Entity_headingChanged(lua_State* L);
 int l_Entity_setElevation(lua_State* L);
 int l_Entity_getElevation(lua_State* L);
 
+int l_Entity_getForward(lua_State* L);
+
 int l_Entity_lookAtEntity(lua_State* L);
 
 // ui
@@ -59,11 +61,13 @@ int l_Entity_setSpeed(lua_State* L);
 int l_Entity_getSpeed(lua_State* L);
 int l_Entity_jump(lua_State* L);
 int l_Entity_isTouchingGround(lua_State* L);
+int l_Entity_setMidairAcceleration(lua_State* L);
+int l_Entity_getMidairAcceleration(lua_State* L);
 int l_Entity_restrictToZone(lua_State* L);
-int l_Entity_setMoveAnimation(lua_State* L);
-int l_Entity_setDefaultMoveAnimation(lua_State* L);
 int l_Entity_setIsStrafing(lua_State* L);
-int l_Entity_getIsStrafing(lua_State* L);
+int l_Entity_isStrafing(lua_State* L);
+int l_Entity_isFollowingPath(lua_State* L);
+int l_Entity_isMidair(lua_State* L);
 
 // behavior
 int l_Entity_enterState(lua_State* L);
@@ -73,6 +77,9 @@ int l_Entity_getInteractionStateName(lua_State* L);
 int l_Entity_interactWith(lua_State* L);
 
 // sprite
+int l_Entity_setCycleAnimation(lua_State* L);
+int l_Entity_setCycleAnimated(lua_State* L);
+int l_Entity_resetCycleAnimation(lua_State* L);
 int l_Entity_playAnimation(lua_State* L);
 int l_Entity_getAttachPoint(lua_State* L);
 int l_Entity_flipSpriteX(lua_State* L);

@@ -8,7 +8,7 @@ local movement = require 'mods/crispy-guacamole/entities/sheep/movement'
 local states = {}
 
 function states:init(sheep)
-    sheep:setMoveAnimation 'test'
+    sheep:setCycleAnimation 'test'
 end
 
 

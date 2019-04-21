@@ -15,6 +15,12 @@ namespace map
 {
 
 DisplayManager::DisplayManager()
+#ifdef FLAT_DEBUG
+	: m_numOpaqueObjects(0)
+	, m_numOpaqueDrawCalls(0)
+	, m_numTransparentObjects(0)
+	, m_numTransparentDrawCalls(0)
+#endif
 {
 	m_spriteBatch = std::make_unique<flat::render::SpriteBatch>();
 	const float quadtreeSize = 16384.f;

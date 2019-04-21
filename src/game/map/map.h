@@ -206,6 +206,8 @@ class Map
 			std::shared_ptr<const map::TileTemplate> tileTemplate;
 			int tileVariantIndex;
 			flat::render::SpriteSynchronizer spriteSynchronizer;
+
+			TileSpriteSynchronizer() : tileVariantIndex(0) {}
 		};
 		std::deque<TileSpriteSynchronizer> m_tileSpriteSynchronizers;
 

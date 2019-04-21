@@ -426,13 +426,13 @@ int Map::getTileEntityCount(TileIndex tileIndex) const
 void Map::addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex)
 {
 	NeighborTiles& neighborTiles = m_neighborTiles[tileIndex];
-	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
+	for (size_t i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
 	{
 		if (neighborTiles.neighbors[i] == TileIndex::INVALID_TILE)
 		{
 			neighborTiles.neighbors[i] = neighborTileIndex;
 
-			for (int j = i; j > 0 && neighborTiles.neighbors[j] < neighborTiles.neighbors[j - 1]; --j)
+			for (size_t j = i; j > 0 && neighborTiles.neighbors[j] < neighborTiles.neighbors[j - 1]; --j)
 			{
 				std::swap(neighborTiles.neighbors[j], neighborTiles.neighbors[j - 1]);
 			}

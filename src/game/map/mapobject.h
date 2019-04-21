@@ -11,7 +11,7 @@ namespace map
 class MapObject
 {
 	public:
-		MapObject() {}
+		MapObject() : m_renderHash(0) {}
 		virtual ~MapObject() {}
 		
 		virtual flat::render::BaseSprite& getSprite() = 0;

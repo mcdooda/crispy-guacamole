@@ -48,7 +48,7 @@ void main()
 	}
 	if (textureGiven)
 	{
-		inputColor *= texture(objectTexture, vec2(uv2.x, uv2.y));
+		inputColor *= texture(objectTexture, uv2);
 	}
 	vec3 min = inputColor.rgb;
 	vec3 max = lighten(inputColor.rgb);

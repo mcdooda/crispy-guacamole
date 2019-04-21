@@ -5,20 +5,42 @@ return function(addContainer, makeSeparator, font)
 
 	-- fps
 	do
-		local label = Widget.makeText('X fps', table.unpack(font))
-		label:setTextColor(0x000000FF)
-		statsContainer:addChild(label)
+		local averageFpsLabel = Widget.makeText('Average: X fps', table.unpack(font))
+		averageFpsLabel:setTextColor(0x000000FF)
+		statsContainer:addChild(averageFpsLabel)
+
+		local highestFpsLabel = Widget.makeText('Highest: X fps', table.unpack(font))
+		highestFpsLabel:setTextColor(0x000000FF)
+		statsContainer:addChild(highestFpsLabel)
+
+		local lowestFpsLabel = Widget.makeText('Lowest: X fps', table.unpack(font))
+		lowestFpsLabel:setTextColor(0x000000FF)
+		statsContainer:addChild(lowestFpsLabel)
+
+		local highestFps = -math.huge
+		local lowestFps = math.huge
+
+		local resetButton = Widget.makeText('Reset', table.unpack(font))
+		resetButton:setTextColor(0x000000FF)
+		resetButton:click(function()
+			highestFps = -math.huge
+			lowestFps = math.huge
+		end)
+		statsContainer:addChild(resetButton)
 		
 		local getFrameRate = Time.getFrameRate
+
 		local medianNumFrames = 50
 		local medianFps = {}
 		for j = 1, medianNumFrames do
 			medianFps[j] = getFrameRate()
 		end
+
 		local i = 1
 		local timer = flat.Timer()
 		timer:onUpdate(function()
 			local fps = getFrameRate()
+
 			medianFps[i] = nil
 			medianFps[i + medianNumFrames] = fps
 			local displayedFps = 0
@@ -26,8 +48,18 @@ return function(addContainer, makeSeparator, font)
 				displayedFps = displayedFps + medianFps[j]
 			end
 			displayedFps = displayedFps / medianNumFrames
-			label:setText(format('%.1f fps', displayedFps))
+			averageFpsLabel:setText(format('Average: %.1f fps', displayedFps))
 			i = i + 1
+
+			if fps > highestFps then
+				highestFps = fps
+				highestFpsLabel:setText(format('Highest: %.1f fps', highestFps))
+			end
+
+			if fps < lowestFps then
+				lowestFps = fps
+				lowestFpsLabel:setText(format('Lowest: %.1f fps', lowestFps))
+			end
 		end)
 		timer:start(0, true)
 	end

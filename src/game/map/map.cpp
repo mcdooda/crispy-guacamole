@@ -431,6 +431,11 @@ void Map::addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex)
 		if (neighborTiles.neighbors[i] == TileIndex::INVALID_TILE)
 		{
 			neighborTiles.neighbors[i] = neighborTileIndex;
+
+			for (int j = i; j > 0 && neighborTiles.neighbors[j] < neighborTiles.neighbors[j - 1]; --j)
+			{
+				std::swap(neighborTiles.neighbors[j], neighborTiles.neighbors[j - 1]);
+			}
 			return;
 		}
 	}
@@ -544,9 +549,9 @@ void Map::buildNeighborTiles()
 		const flat::Vector2i& tilePosition = pair.first;
 		const TileIndex tileIndex = pair.second;
 		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(-1, 0));
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(1, 0));
 		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, -1));
 		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, 1));
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(1, 0));
 	}
 }
 

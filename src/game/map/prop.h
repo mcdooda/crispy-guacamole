@@ -9,7 +9,7 @@ namespace game
 namespace map
 {
 
-class Prop : public MapObject
+class Prop final : public MapObject
 {
 public:
 	Prop() {}

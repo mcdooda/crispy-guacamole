@@ -4,6 +4,7 @@
 #include "mapobject.h"
 #include "map.h"
 #include "tile.h"
+#include "prop.h"
 #include "../entity/entity.h"
 #include "../game.h"
 
@@ -24,18 +25,10 @@ DisplayManager::DisplayManager()
 {
 	m_spriteBatch = std::make_unique<flat::render::SpriteBatch>();
 	const float quadtreeSize = 16384.f;
-	m_entityQuadtree = std::make_unique<EntityQuadTree>(
-		flat::AABB2(
-			flat::Vector2(-quadtreeSize / 2.f, -quadtreeSize / 2.f),
-			flat::Vector2( quadtreeSize / 2.f,  quadtreeSize / 2.f)
-		)
-	);
-	m_terrainQuadtree = std::make_unique<TerrainQuadTree>(
-		flat::AABB2(
-			flat::Vector2(-quadtreeSize / 2.f, -quadtreeSize / 2.f),
-			flat::Vector2(quadtreeSize / 2.f, quadtreeSize / 2.f)
-		)
-	);
+	const flat::AABB2 quadtreeAABB(flat::Vector2(-quadtreeSize / 2.f, -quadtreeSize / 2.f), flat::Vector2(quadtreeSize / 2.f, quadtreeSize / 2.f));
+	m_entityQuadtree = std::make_unique<EntityQuadTree>(quadtreeAABB);
+	m_tileQuadtree = std::make_unique<TileQuadTree>(quadtreeAABB);
+	m_propQuadtree = std::make_unique<PropQuadTree>(quadtreeAABB);
 }
 
 void DisplayManager::addEntity(const entity::Entity* entity)
@@ -71,49 +64,94 @@ void DisplayManager::updateEntity(const entity::Entity* entity)
 	}
 }
 
-void DisplayManager::addTerrainObject(const MapObject* mapObject)
+void DisplayManager::addTile(TileIndex tileIndex, const Tile* tile)
 {
-	FLAT_ASSERT(!mapObject->isEntity());
-	mapObject->updateRenderHash();
-	int cellIndex = m_terrainQuadtree->addObject(mapObject);
-	m_TerrainObjectCellIndices[mapObject] = cellIndex;
+	tile->updateRenderHash();
+	int cellIndex = m_tileQuadtree->addObject(tileIndex, tile->getAABB());
+	m_tileCellIndices[tileIndex] = cellIndex;
 }
 
-void DisplayManager::removeTerrainObject(const MapObject* mapObject)
+void DisplayManager::removeTile(TileIndex tileIndex)
 {
-	FLAT_ASSERT(!mapObject->isEntity());
-	int cellIndex = m_TerrainObjectCellIndices[mapObject];
-	m_terrainQuadtree->removeObject(mapObject, cellIndex);
-	m_TerrainObjectCellIndices.erase(mapObject);
+	int cellIndex = m_tileCellIndices[tileIndex];
+	m_tileQuadtree->removeObject(tileIndex, cellIndex);
+	m_tileCellIndices.erase(tileIndex);
 }
 
-void DisplayManager::updateTerrainObject(const MapObject* mapObject)
+void DisplayManager::updateTile(TileIndex tileIndex, const Tile* tile)
 {
-	FLAT_ASSERT(!mapObject->isEntity());
-	int cellIndex = m_TerrainObjectCellIndices[mapObject];
-	int newCellIndex = m_terrainQuadtree->updateObject(mapObject, cellIndex);
+	int cellIndex = m_tileCellIndices[tileIndex];
+	int newCellIndex = m_tileQuadtree->updateObject(tileIndex, cellIndex, tile->getAABB());
 	if (cellIndex != newCellIndex)
 	{
-		m_TerrainObjectCellIndices[mapObject] = newCellIndex;
+		m_tileCellIndices[tileIndex] = newCellIndex;
 	}
 }
 
-void DisplayManager::sortAndDraw(Game& game, const flat::video::View& view)
+void DisplayManager::addProp(PropIndex propIndex, const Prop* prop)
+{
+	prop->updateRenderHash();
+	int cellIndex = m_propQuadtree->addObject(propIndex, prop->getAABB());
+	m_propCellIndices[propIndex] = cellIndex;
+}
+
+void DisplayManager::removeProp(PropIndex propIndex)
+{
+	int cellIndex = m_propCellIndices[propIndex];
+	m_propQuadtree->removeObject(propIndex, cellIndex);
+	m_propCellIndices.erase(propIndex);
+}
+
+void DisplayManager::updateProp(PropIndex propIndex, const Prop* prop)
+{
+	int cellIndex = m_propCellIndices[propIndex];
+	int newCellIndex = m_propQuadtree->updateObject(propIndex, cellIndex, prop->getAABB());
+	if (cellIndex != newCellIndex)
+	{
+		m_propCellIndices[propIndex] = newCellIndex;
+	}
+}
+
+void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
 
 	std::vector<const MapObject*> objects;
-	objects.reserve(128);
+	objects.reserve(1024);
 
 	m_entityQuadtree->getObjects(screenAABB, objects);
 #ifdef DEBUG_DRAW
 	int numEntities = static_cast<int>(objects.size());
 #endif
-	m_terrainQuadtree->getObjects(screenAABB, objects);
+
+	std::vector<TileIndex> tileIndices;
+	tileIndices.reserve(1024);
+	m_tileQuadtree->getObjects(screenAABB, tileIndices);
 #ifdef DEBUG_DRAW
-	int numTerrainObjects = static_cast<int>(objects.size()) - numEntities;
+	int numTiles = static_cast<int>(tileIndices.size());
 #endif
+	std::vector<const Tile*> tiles;
+	map.getTilesFromIndices(tileIndices, tiles);
+
+	std::vector<PropIndex> propIndices;
+	propIndices.reserve(1024);
+	m_propQuadtree->getObjects(screenAABB, propIndices);
+#ifdef DEBUG_DRAW
+	int numProps = static_cast<int>(propIndices.size());
+#endif
+	std::vector<const Prop*> props;
+	map.getPropsFromIndices(propIndices, props);
+
+	objects.reserve(objects.size() + tiles.size() + props.size());
+	for (const Tile* tile : tiles)
+	{
+		objects.push_back(tile);
+	}
+	for (const Prop* prop : props)
+	{
+		objects.push_back(prop);
+	}
 
 	sortObjects(objects);
 
@@ -176,12 +214,28 @@ void DisplayManager::sortAndDraw(Game& game, const flat::video::View& view)
 	glDisable(GL_DEPTH_TEST);
 }
 
-const MapObject* DisplayManager::getObjectAtPosition(const flat::Vector2& position) const
+const MapObject* DisplayManager::getObjectAtPosition(const Map& map, const flat::Vector2& position) const
 {
 	std::vector<const MapObject*> objects;
 	objects.reserve(16);
 	m_entityQuadtree->getObjects(position, objects);
-	m_terrainQuadtree->getObjects(position, objects);
+
+	std::vector<TileIndex> tileIndices;
+	tileIndices.reserve(8);
+	m_tileQuadtree->getObjects(position, tileIndices);
+	std::vector<const Tile*> tiles;
+	map.getTilesFromIndices(tileIndices, tiles);
+
+	std::vector<PropIndex> propIndices;
+	propIndices.reserve(8);
+	m_propQuadtree->getObjects(position, propIndices);
+	std::vector<const Prop*> props;
+	map.getPropsFromIndices(propIndices, props);
+
+	objects.reserve(objects.size() + tiles.size() + props.size());
+	objects.insert(objects.end(), tiles.begin(), tiles.end());
+	objects.insert(objects.end(), props.begin(), props.end());
+
 	sortObjects(objects);
 	
 	// look for a visible pixel in the objects' sprite
@@ -207,32 +261,32 @@ void DisplayManager::getEntitiesInAABB(const flat::AABB2& aabb, std::vector<cons
 	m_entityQuadtree->getObjects(aabb, entities);
 }
 
-const Tile* DisplayManager::getTileAtPosition(const flat::Vector2& position) const
+TileIndex DisplayManager::getTileIndexAtPosition(const Map& map, const flat::Vector2& position) const
 {
-	std::vector<const MapObject*> objects;
-	objects.reserve(16);
-	m_terrainQuadtree->getObjects(position, objects);
-	sortObjects(objects);
+	std::vector<TileIndex> tileIndices;
+	tileIndices.reserve(8);
+	m_tileQuadtree->getObjects(position, tileIndices);
+
+	std::vector<const Tile*> tiles;
+	map.getTilesFromIndices(tileIndices, tiles);
+	sortTiles(tiles);
 
 	// look for a visible pixel in the objects' sprite
-	const MapObject* objectAtPosition = nullptr;
-	for (int i = static_cast<int>(objects.size()) - 1; objectAtPosition == nullptr && i >= 0; --i)
+	const Tile* tileAtPosition = nullptr;
+	for (int i = static_cast<int>(tiles.size()) - 1; i >= 0; --i)
 	{
-		const MapObject* object = objects[i];
-		if (object->isTile())
-		{
-			const flat::render::BaseSprite& sprite = object->getSprite();
+		const Tile* tile = tiles[i];
+		const flat::render::BaseSprite& sprite = tile->getSprite();
 
-			flat::video::Color color;
-			sprite.getPixel(position, color);
-			if (color.a > 0.5f)
-			{
-				objectAtPosition = object;
-			}
+		flat::video::Color color;
+		sprite.getPixel(position, color);
+		if (color.a > 0.5f)
+		{
+			return tileIndices[i];
 		}
 	}
 
-	return static_cast<const Tile*>(objectAtPosition);
+	return TileIndex::INVALID_TILE;
 }
 
 #ifdef FLAT_DEBUG
@@ -364,6 +418,11 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects)
 		std::cout << "swaps: " << numSwaps << std::endl;
 #endif
 	}
+}
+
+void DisplayManager::sortTiles(std::vector<const Tile*>& tiles)
+{
+	std::sort(std::execution::par, tiles.begin(), tiles.end(), locSortByDepth);
 }
 
 #ifdef FLAT_DEBUG

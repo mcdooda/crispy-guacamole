@@ -128,7 +128,7 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTempla
 	flat::Vector2 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
 	tile.updateWorldSpaceAABB(position);
-	m_displayManager->addTerrainObject(&tile);
+	m_displayManager->addTile(tileIndex, &tile);
 
 	// navigation
 	FLAT_ASSERT(m_tilePositionToIndex.find(xy) == m_tilePositionToIndex.end());
@@ -174,6 +174,24 @@ TileIndex Map::getTileIndex(const Tile* tile) const
 	return static_cast<TileIndex>(tile - &m_tiles[0]);
 }
 
+void Map::getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const
+{
+	tiles.reserve(tileIndices.size());
+	for (TileIndex tileIndex : tileIndices)
+	{
+		tiles.push_back(&m_tiles[tileIndex]);
+	}
+}
+
+void Map::getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::vector<const Prop*>& props) const
+{
+	props.reserve(propIndices.size());
+	for (PropIndex propIndex : propIndices)
+	{
+		props.push_back(&m_props[propIndex]);
+	}
+}
+
 const flat::Vector2i& Map::getTileXY(TileIndex tileIndex) const
 {
 	return m_tilePositions[tileIndex].xy;
@@ -191,7 +209,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 	flat::Vector2 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
 	tile.updateWorldSpaceAABB(position);
-	m_displayManager->updateTerrainObject(&tile);
+	m_displayManager->updateTile(tileIndex, &tile);
 
 	// prop
 	PropIndex propIndex = tile.getPropIndex();
@@ -200,7 +218,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 		Prop& prop = m_props[propIndex];
 		prop.setSpritePosition(position2d);
 		prop.updateWorldSpaceAABB(position);
-		m_displayManager->updateTerrainObject(&prop);
+		m_displayManager->updateProp(propIndex, &prop);
 	}
 }
 
@@ -300,11 +318,11 @@ void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::vi
 
 	if (isNewProp)
 	{
-		m_displayManager->addTerrainObject(prop);
+		m_displayManager->addProp(propIndex, prop);
 	}
 	else
 	{
-		m_displayManager->updateTerrainObject(prop);
+		m_displayManager->updateProp(propIndex, prop);
 	}
 }
 

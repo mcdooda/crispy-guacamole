@@ -4,6 +4,8 @@
 #include <vector>
 #include <flat.h>
 
+#include "tile.h"
+
 namespace game
 {
 class Game;
@@ -16,28 +18,35 @@ namespace map
 class Map;
 class MapObject;
 class Tile;
+class Prop;
 
 class DisplayManager final
 {
-	using EntityQuadTree = flat::geometry::QuadTree<const MapObject*, 2, flat::geometry::getDefaultAABB<const MapObject*>>;
-	using TerrainQuadTree = flat::geometry::QuadTree<const MapObject*, 7, flat::geometry::getDefaultAABB<const MapObject*>>;
+	using EntityQuadTree = flat::geometry::QuadTree<const entity::Entity*, 2, flat::geometry::getDefaultAABB<const entity::Entity*>>;
+	using TileQuadTree = flat::geometry::QuadTree<TileIndex, 7>;
+	using PropQuadTree = flat::geometry::QuadTree<PropIndex, 7>;
+
 	public:
 		DisplayManager();
 		
-		void addEntity(const entity::Entity* mapObject);
-		void removeEntity(const entity::Entity* mapObject);
-		void updateEntity(const entity::Entity* mapObject);
+		void addEntity(const entity::Entity* entity);
+		void removeEntity(const entity::Entity* entity);
+		void updateEntity(const entity::Entity* entity);
 
-		void addTerrainObject(const MapObject* mapObject);
-		void removeTerrainObject(const MapObject* mapObject);
-		void updateTerrainObject(const MapObject* mapObject);
+		void addTile(TileIndex tileIndex, const Tile* tile);
+		void removeTile(TileIndex tileIndex);
+		void updateTile(TileIndex tileIndex, const Tile* tile);
 
-		void sortAndDraw(Game& game, const flat::video::View& view);
+		void addProp(PropIndex propIndex, const Prop* prop);
+		void removeProp(PropIndex propIndex);
+		void updateProp(PropIndex propIndex, const Prop* prop);
 
-		const MapObject* getObjectAtPosition(const flat::Vector2& position) const;
+		void sortAndDraw(Game& game, const Map& map, const flat::video::View& view);
+
+		const MapObject* getObjectAtPosition(const Map& map, const flat::Vector2& position) const;
 		void getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const;
 
-		const Tile* getTileAtPosition(const flat::Vector2& position) const;
+		TileIndex getTileIndexAtPosition(const Map& map, const flat::Vector2& position) const;
 
 #ifdef FLAT_DEBUG
 		const flat::AABB2& getEntityCellAABB(const entity::Entity* entity) const;
@@ -51,6 +60,7 @@ class DisplayManager final
 
 	private:
 		static void sortObjects(std::vector<const MapObject*>& objects);
+		static void sortTiles(std::vector<const Tile*>& tiles);
 
 #ifdef FLAT_DEBUG
 		void drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls);
@@ -62,10 +72,13 @@ class DisplayManager final
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
 
 		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
-		std::unordered_map<const MapObject*, int> m_entityCellIndices;
+		std::unordered_map<const entity::Entity*, int> m_entityCellIndices;
 
-		std::unique_ptr<TerrainQuadTree> m_terrainQuadtree;
-		std::unordered_map<const MapObject*, int> m_TerrainObjectCellIndices;
+		std::unique_ptr<TileQuadTree> m_tileQuadtree;
+		std::unordered_map<TileIndex, int> m_tileCellIndices;
+
+		std::unique_ptr<PropQuadTree> m_propQuadtree;
+		std::unordered_map<PropIndex, int> m_propCellIndices;
 
 #ifdef FLAT_DEBUG
 		size_t m_numOpaqueObjects;

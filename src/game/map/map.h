@@ -96,6 +96,9 @@ class Map
 		TileIndex getTileIndex(float x, float y) const;
 		TileIndex getTileIndex(const Tile* tile) const;
 
+		void getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const;
+		void getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::vector<const Prop*>& props) const;
+
 		const flat::Vector2i& getTileXY(TileIndex tileIndex) const;
 		void setTileZ(TileIndex tileIndex, float z);
 		void moveTileZBy(TileIndex tileIndex, float dz);

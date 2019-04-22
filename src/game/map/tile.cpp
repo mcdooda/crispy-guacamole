@@ -16,7 +16,7 @@ Tile::Tile() :
 	m_sprite.setColor(flat::video::Color::WHITE);
 }
 
-Tile::Tile(Tile&& tile)
+Tile::Tile(Tile&& tile) : MapObject(std::move(tile))
 {
 	m_sprite = std::move(tile.m_sprite);
 	m_propIndex = tile.m_propIndex;

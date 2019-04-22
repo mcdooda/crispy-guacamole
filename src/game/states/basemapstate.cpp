@@ -671,7 +671,7 @@ void BaseMapState::draw(game::Game& game)
 		FLAT_PROFILE("Draw map");
 
 		addGhostEntity(game);
-		m_displayManager.sortAndDraw(game, m_gameView);
+		m_displayManager.sortAndDraw(game, getMap(), m_gameView);
 		removeGhostEntity(game);
 	}
 	
@@ -730,7 +730,9 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
 	entity::Entity* newMouseOverEntity = nullptr;
 
-	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(m_displayManager.getObjectAtPosition(viewMousePosition));
+	const map::Map& map = getMap();
+
+	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(m_displayManager.getObjectAtPosition(map, viewMousePosition));
 	if (mouseOverObject != nullptr)
 	{
 		if (mouseOverObject->isEntity())
@@ -741,11 +743,11 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 		
 		if (mouseOverObject->isTile())
 		{
-			m_mouseOverTileIndex = getMap().getTileIndex(static_cast<const map::Tile*>(mouseOverObject));
+			m_mouseOverTileIndex = map.getTileIndex(static_cast<const map::Tile*>(mouseOverObject));
 		}
 		else
 		{
-			m_mouseOverTileIndex = getMap().getTileIndex(m_displayManager.getTileAtPosition(viewMousePosition));
+			m_mouseOverTileIndex = m_displayManager.getTileIndexAtPosition(map, viewMousePosition);
 		}
 	}
 

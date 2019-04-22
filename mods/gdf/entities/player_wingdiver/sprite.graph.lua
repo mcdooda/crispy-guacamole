@@ -90,6 +90,96 @@ return {
       10,
       4,
     },
+    {
+      16,
+      1,
+      9,
+      2,
+    },
+    {
+      17,
+      1,
+      16,
+      1,
+    },
+    {
+      18,
+      1,
+      16,
+      2,
+    },
+    {
+      19,
+      1,
+      16,
+      3,
+    },
+    {
+      20,
+      1,
+      16,
+      4,
+    },
+    {
+      21,
+      1,
+      9,
+      3,
+    },
+    {
+      22,
+      1,
+      21,
+      1,
+    },
+    {
+      23,
+      1,
+      21,
+      2,
+    },
+    {
+      24,
+      1,
+      21,
+      3,
+    },
+    {
+      25,
+      1,
+      21,
+      4,
+    },
+    {
+      26,
+      1,
+      9,
+      4,
+    },
+    {
+      27,
+      1,
+      26,
+      1,
+    },
+    {
+      28,
+      1,
+      26,
+      2,
+    },
+    {
+      29,
+      1,
+      26,
+      3,
+    },
+    {
+      30,
+      1,
+      26,
+      4,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -110,13 +200,13 @@ return {
     },
     {
       loadArguments = {
-        16,
+        8,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        28,
+        20,
       },
       name = 'number',
     },
@@ -131,7 +221,7 @@ return {
     },
     {
       loadArguments = {
-        1,
+        4,
       },
       name = 'number',
     },
@@ -140,6 +230,18 @@ return {
         {
           5,
           'Table',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
         },
       },
       name = 'script/array',
@@ -176,6 +278,87 @@ return {
         'data/compounds/script/Flip Sprite',
       },
       name = 'compound',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'fly',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        4,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'shoot',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.059999998658895,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'fly-shoot',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        4,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.059999998658895,
+      },
+      name = 'number',
     },
   },
 }

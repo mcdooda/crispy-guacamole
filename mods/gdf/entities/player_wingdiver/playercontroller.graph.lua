@@ -133,6 +133,24 @@ return {
       2,
     },
     {
+      1,
+      3,
+      66,
+      1,
+    },
+    {
+      1,
+      3,
+      70,
+      2,
+    },
+    {
+      1,
+      3,
+      62,
+      2,
+    },
+    {
       3,
       1,
       11,
@@ -233,6 +251,12 @@ return {
       1,
       43,
       2,
+    },
+    {
+      16,
+      1,
+      67,
+      1,
     },
     {
       16,
@@ -516,6 +540,60 @@ return {
       58,
       1,
     },
+    {
+      63,
+      1,
+      62,
+      3,
+    },
+    {
+      64,
+      1,
+      62,
+      4,
+    },
+    {
+      65,
+      1,
+      62,
+      5,
+    },
+    {
+      66,
+      1,
+      67,
+      2,
+    },
+    {
+      67,
+      1,
+      62,
+      1,
+    },
+    {
+      67,
+      2,
+      70,
+      1,
+    },
+    {
+      68,
+      1,
+      70,
+      4,
+    },
+    {
+      69,
+      1,
+      70,
+      5,
+    },
+    {
+      71,
+      1,
+      70,
+      3,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -617,7 +695,7 @@ return {
     },
     {
       loadArguments = {
-        0.050000000745058,
+        0.10000000149012,
       },
       name = 'number',
     },
@@ -1174,10 +1252,34 @@ return {
                       1,
                     },
                     {
+                      2,
+                      1,
+                      5,
+                      1,
+                    },
+                    {
                       3,
                       1,
                       2,
                       2,
+                    },
+                    {
+                      3,
+                      1,
+                      5,
+                      2,
+                    },
+                    {
+                      4,
+                      1,
+                      2,
+                      3,
+                    },
+                    {
+                      6,
+                      1,
+                      5,
+                      3,
                     },
                   },
                   nodeType = 'script',
@@ -1186,13 +1288,25 @@ return {
                       name = 'script/init',
                     },
                     {
-                      name = 'print',
+                      name = 'entity/setcycleanimation',
+                    },
+                    {
+                      name = 'script/getcontext',
                     },
                     {
                       loadArguments = {
-                        'midair',
+                        'fly',
                       },
                       name = 'string',
+                    },
+                    {
+                      name = 'entity/setcycleanimated',
+                    },
+                    {
+                      loadArguments = {
+                        true,
+                      },
+                      name = 'boolean',
                     },
                   },
                 },
@@ -1218,10 +1332,34 @@ return {
                       1,
                     },
                     {
+                      2,
+                      1,
+                      5,
+                      1,
+                    },
+                    {
                       3,
                       1,
                       2,
                       2,
+                    },
+                    {
+                      3,
+                      1,
+                      5,
+                      2,
+                    },
+                    {
+                      4,
+                      1,
+                      2,
+                      3,
+                    },
+                    {
+                      6,
+                      1,
+                      5,
+                      3,
                     },
                   },
                   nodeType = 'script',
@@ -1230,13 +1368,25 @@ return {
                       name = 'script/init',
                     },
                     {
-                      name = 'print',
+                      name = 'entity/setcycleanimation',
+                    },
+                    {
+                      name = 'script/getcontext',
                     },
                     {
                       loadArguments = {
-                        'jetpack',
+                        'fly',
                       },
                       name = 'string',
+                    },
+                    {
+                      name = 'entity/setcycleanimated',
+                    },
+                    {
+                      loadArguments = {
+                        true,
+                      },
+                      name = 'boolean',
                     },
                   },
                 },
@@ -1624,6 +1774,54 @@ return {
         },
       },
       name = 'statemachine',
+    },
+    {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        'fly-shoot',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/ismidair',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        'shoot',
+      },
+      name = 'string',
     },
   },
 }

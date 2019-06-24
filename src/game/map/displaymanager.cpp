@@ -88,6 +88,14 @@ void DisplayManager::updateTile(TileIndex tileIndex, const Tile* tile)
 	}
 }
 
+void DisplayManager::moveTileIndex(TileIndex fromIndex, TileIndex toIndex)
+{
+	int cellIndex = m_tileCellIndices[fromIndex];
+	m_tileQuadtree->replaceObject(fromIndex, toIndex, cellIndex);
+	m_tileCellIndices[toIndex] = cellIndex;
+	m_tileCellIndices.erase(fromIndex);
+}
+
 void DisplayManager::addProp(PropIndex propIndex, const Prop* prop)
 {
 	prop->updateRenderHash();

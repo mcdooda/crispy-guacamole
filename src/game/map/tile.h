@@ -32,6 +32,8 @@ class Tile final : public MapObject
 		Tile(Tile&& tile);
 		~Tile() override;
 
+		Tile& operator=(Tile&& tile);
+
 		void synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer& spriteSynchronizer);
 
 		bool isTile() const override { return true; }

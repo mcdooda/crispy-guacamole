@@ -64,9 +64,13 @@ void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 					return tileEffect.tileIndex == tileIndex;
 				}
 			);
-			if (it == m_selectedTiles.end() || effect > it->effect)
+			if (it == m_selectedTiles.end())
 			{
 				m_selectedTiles.emplace_back(tileIndex, effect);
+			}
+			else if (effect > it->effect)
+			{
+				it->effect = effect;
 			}
 		});
 	}
@@ -245,8 +249,44 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 			);
 			tilesToDelete.push_back(tileIndex);
 		});
+
+		// sort indices in reverse order to avoid invalidating a further index with deleteTile()
+		std::sort(
+			tilesToDelete.begin(),
+			tilesToDelete.end(),
+			[](map::TileIndex a, map::TileIndex b)
+			{
+				return a > b;
+			}
+		);
 		for (map::TileIndex tileIndex : tilesToDelete)
 		{
+			// remove from brush tiles
+			for (map::brush::TilesContainer::iterator it = m_brushTiles.begin(); it != m_brushTiles.end(); )
+			{
+				if (it->tileIndex == tileIndex)
+				{
+					it = m_brushTiles.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
+
+			// remove from selected tiles
+			for (map::brush::TilesContainer::iterator it = m_selectedTiles.begin(); it != m_selectedTiles.end(); )
+			{
+				if (it->tileIndex == tileIndex)
+				{
+					it = m_selectedTiles.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
+
 			map.deleteTile(tileIndex);
 		}
 	}

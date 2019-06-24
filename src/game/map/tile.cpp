@@ -28,6 +28,15 @@ Tile::~Tile()
 	
 }
 
+Tile& Tile::operator=(Tile&& tile)
+{
+	MapObject::operator=(std::move(tile));
+	m_sprite = std::move(tile.m_sprite);
+	m_propIndex = tile.m_propIndex;
+	tile.m_propIndex = PropIndex::INVALID_PROP;
+	return *this;
+}
+
 void Tile::synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer& spriteSynchronizer)
 {
 	m_sprite.synchronizeTo(spriteSynchronizer);

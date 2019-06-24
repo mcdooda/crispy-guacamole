@@ -89,10 +89,8 @@ void MapEditorMode::eachSelectedTile(std::function<void(map::TileIndex, float)> 
 	const map::brush::TilesContainer& selectedTiles = !m_selectedTiles.empty() ? m_selectedTiles : m_brushTiles;
 	for (const map::brush::TileEffect& tileEffect : selectedTiles)
 	{
-		if (tileEffect.effect > 0.f)
-		{
-			func(tileEffect.tileIndex, tileEffect.effect);
-		}
+		FLAT_ASSERT(tileEffect.effect > 0.f);
+		func(tileEffect.tileIndex, tileEffect.effect);
 	}
 }
 
@@ -100,10 +98,8 @@ void MapEditorMode::eachBrushTile(std::function<void(map::TileIndex, float)> fun
 {
 	for (const map::brush::TileEffect& tileEffect : m_brushTiles)
 	{
-		if (tileEffect.effect > 0.f)
-		{
-			func(tileEffect.tileIndex, tileEffect.effect);
-		}
+		FLAT_ASSERT(tileEffect.effect > 0.f);
+		func(tileEffect.tileIndex, tileEffect.effect);
 	}
 }
 

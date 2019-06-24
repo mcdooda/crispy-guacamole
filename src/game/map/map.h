@@ -90,6 +90,7 @@ class Map
 		// get tiles
 		TileIndex createTile(const flat::Vector2i& xy, float z, uint16_t tileTemplateVariantIndex, std::shared_ptr<const TileTemplate> tileTemplate);
 		void deleteTile(TileIndex tileIndex);
+		void deleteTile(const flat::Vector2i& tilePosition);
 
 		TileIndex getTileIndex(int x, int y) const;
 		TileIndex getTileIndex(const flat::Vector2i& position) const;

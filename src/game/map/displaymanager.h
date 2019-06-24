@@ -36,6 +36,7 @@ class DisplayManager final
 		void addTile(TileIndex tileIndex, const Tile* tile);
 		void removeTile(TileIndex tileIndex);
 		void updateTile(TileIndex tileIndex, const Tile* tile);
+		void moveTileIndex(TileIndex fromIndex, TileIndex toIndex);
 
 		void addProp(PropIndex propIndex, const Prop* prop);
 		void removeProp(PropIndex propIndex);

@@ -146,7 +146,37 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTempla
 
 void Map::deleteTile(TileIndex tileIndex)
 {
+	// TODO remove prop
+	FLAT_ASSERT(tileIndex < m_tiles.size());
+	TilePosition tilePosition = m_tilePositions.at(tileIndex);
+	if (tileIndex == m_tiles.size() - 1)
+	{
+		m_tiles.pop_back();
+		m_displayManager->removeTile(tileIndex);
+		m_tilePositionToIndex.erase(tilePosition.xy);
+		m_tileNavigations.pop_back();
+		m_tilePositions.pop_back();
+	}
+	else
+	{
+		TileIndex movedTileIndex = static_cast<TileIndex>(m_tiles.size() - 1);
+		TilePosition movedTilePosition = m_tilePositions.at(movedTileIndex);
+		m_tiles[tileIndex] = std::move(m_tiles[movedTileIndex]);
+		m_displayManager->removeTile(tileIndex);
+		m_displayManager->moveTileIndex(movedTileIndex, tileIndex);
+		m_tiles.pop_back();
+		m_tilePositionToIndex[movedTilePosition.xy] = tileIndex;
+		m_tilePositionToIndex.erase(tilePosition.xy);
+		m_tileNavigations[tileIndex] = m_tileNavigations[movedTileIndex];
+		m_tileNavigations.pop_back();
+		m_tilePositions[tileIndex] = m_tilePositions[movedTileIndex];
+		m_tilePositions.pop_back();
+	}
+}
 
+void Map::deleteTile(const flat::Vector2i& tilePosition)
+{
+	deleteTile(m_tilePositionToIndex.at(tilePosition));
 }
 
 TileIndex Map::getTileIndex(int x, int y) const

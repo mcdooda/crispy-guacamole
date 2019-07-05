@@ -41,6 +41,7 @@ class DisplayManager final
 		void addProp(PropIndex propIndex, const Prop* prop);
 		void removeProp(PropIndex propIndex);
 		void updateProp(PropIndex propIndex, const Prop* prop);
+		void movePropIndex(PropIndex fromIndex, PropIndex toIndex);
 
 		void sortAndDraw(Game& game, const Map& map, const flat::video::View& view);
 

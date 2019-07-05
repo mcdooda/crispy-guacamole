@@ -3,6 +3,7 @@
 
 #include <flat.h>
 #include "mapobject.h"
+#include "tile.h"
 
 namespace game
 {
@@ -12,7 +13,7 @@ namespace map
 class Prop final : public MapObject
 {
 public:
-	Prop() {}
+	Prop() : m_tileIndex(TileIndex::INVALID_TILE) {}
 
 	flat::render::BaseSprite& getSprite() override;
 	using MapObject::getSprite;
@@ -26,8 +27,12 @@ public:
 	inline void setSpriteOrigin(const flat::Vector2& spriteOrigin) { m_sprite.setOrigin(spriteOrigin); m_sprite.getAABB(m_spriteAABB); }
 	inline void setSpriteColor(const flat::video::Color& spriteColor) { m_sprite.setColor(spriteColor); }
 
+	inline void setTileIndex(TileIndex tileIndex) { m_tileIndex = tileIndex; }
+	inline TileIndex getTileIndex() const { return m_tileIndex; }
+
 private:
 	flat::render::Sprite m_sprite;
+	TileIndex m_tileIndex;
 };
 
 } // map

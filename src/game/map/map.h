@@ -125,6 +125,10 @@ class Map
 
 		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
 		const std::shared_ptr<const TileTemplate> getTileTemplate(TileIndex tileIndex) const;
+
+#ifdef FLAT_DEBUG
+		void checkTilePropIndicesIntegrity() const;
+#endif
 		
 		// axes
 		inline const flat::Matrix3& getTransform() const { return m_transform; }

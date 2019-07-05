@@ -120,6 +120,14 @@ void DisplayManager::updateProp(PropIndex propIndex, const Prop* prop)
 	}
 }
 
+void DisplayManager::movePropIndex(PropIndex fromIndex, PropIndex toIndex)
+{
+	int cellIndex = m_propCellIndices[fromIndex];
+	m_propQuadtree->replaceObject(fromIndex, toIndex, cellIndex);
+	m_propCellIndices[toIndex] = cellIndex;
+	m_propCellIndices.erase(fromIndex);
+}
+
 void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;
@@ -127,15 +135,20 @@ void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::
 
 	std::vector<const MapObject*> objects;
 	objects.reserve(1024);
-
-	m_entityQuadtree->getObjects(screenAABB, objects);
+	{
+		FLAT_PROFILE("Display Manager Get Entities");
+		m_entityQuadtree->getObjects(screenAABB, objects);
+	}
 #ifdef DEBUG_DRAW
 	int numEntities = static_cast<int>(objects.size());
 #endif
 
 	std::vector<TileIndex> tileIndices;
 	tileIndices.reserve(1024);
-	m_tileQuadtree->getObjects(screenAABB, tileIndices);
+	{
+		FLAT_PROFILE("Display Manager Get Tiles");
+		m_tileQuadtree->getObjects(screenAABB, tileIndices);
+	}
 #ifdef DEBUG_DRAW
 	int numTiles = static_cast<int>(tileIndices.size());
 #endif
@@ -144,7 +157,10 @@ void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::
 
 	std::vector<PropIndex> propIndices;
 	propIndices.reserve(1024);
-	m_propQuadtree->getObjects(screenAABB, propIndices);
+	{
+		FLAT_PROFILE("Display Manager Get Props");
+		m_propQuadtree->getObjects(screenAABB, propIndices);
+	}
 #ifdef DEBUG_DRAW
 	int numProps = static_cast<int>(propIndices.size());
 #endif
@@ -161,21 +177,30 @@ void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::
 		objects.push_back(prop);
 	}
 
-	sortObjects(objects);
-
-	// set the object depth according to its index
-	const int numObjects = static_cast<int>(objects.size());
-	for (int i = 0; i < numObjects; ++i)
 	{
-		const MapObject* mapObject = objects[i];
-		const float depth = static_cast<float>(numObjects - i) / numObjects;
-		const_cast<flat::render::BaseSprite&>(mapObject->getSprite()).setDepth(depth);
+		FLAT_PROFILE("Display Manager Sort Objects");
+		sortObjects(objects);
+	}
+
+	{
+		FLAT_PROFILE("Display Manager Set Objects Depth");
+
+		// set the object depth according to its index
+		const int numObjects = static_cast<int>(objects.size());
+		for (int i = 0; i < numObjects; ++i)
+		{
+			const MapObject* mapObject = objects[i];
+			const float depth = static_cast<float>(numObjects - i) / numObjects;
+			const_cast<flat::render::BaseSprite&>(mapObject->getSprite()).setDepth(depth);
+		}
 	}
 
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	{
+		FLAT_PROFILE("Display Manager Draw Opaque Objects");
+
 		std::vector<const MapObject*> opaqueObjects = objects;
 		opaqueObjects.erase(std::remove_if(
 			opaqueObjects.begin(),
@@ -203,6 +228,8 @@ void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::
 	}
 
 	{
+		FLAT_PROFILE("Display Manager Draw Transparent Objects");
+
 		std::vector<const MapObject*> transparentObjects = objects;
 		transparentObjects.erase(std::remove_if(
 			transparentObjects.begin(),
@@ -439,6 +466,7 @@ void DisplayManager::drawBatches(Game& game, const flat::video::View& view, cons
 void DisplayManager::drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects)
 #endif
 {
+	FLAT_PROFILE("Display Manager Draw Batches");
 
 #ifdef FLAT_DEBUG
 	numObjects = objects.size();

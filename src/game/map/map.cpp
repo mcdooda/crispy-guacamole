@@ -146,8 +146,14 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTempla
 
 void Map::deleteTile(TileIndex tileIndex)
 {
-	// TODO remove prop
 	FLAT_ASSERT(tileIndex < m_tiles.size());
+
+#ifdef FLAT_DEBUG
+	//checkTilePropIndicesIntegrity();
+#endif
+
+	removeTileProp(tileIndex);
+
 	TilePosition tilePosition = m_tilePositions.at(tileIndex);
 	if (tileIndex == m_tiles.size() - 1)
 	{
@@ -160,6 +166,14 @@ void Map::deleteTile(TileIndex tileIndex)
 	else
 	{
 		TileIndex movedTileIndex = static_cast<TileIndex>(m_tiles.size() - 1);
+
+		PropIndex movedTilePropIndex = m_tiles[movedTileIndex].getPropIndex();
+		if (movedTilePropIndex != PropIndex::INVALID_PROP)
+		{
+			FLAT_ASSERT(m_props[movedTilePropIndex].getTileIndex() == movedTileIndex);
+			m_props[movedTilePropIndex].setTileIndex(tileIndex);
+		}
+
 		TilePosition movedTilePosition = m_tilePositions.at(movedTileIndex);
 		m_tiles[tileIndex] = std::move(m_tiles[movedTileIndex]);
 		m_displayManager->removeTile(tileIndex);
@@ -172,6 +186,10 @@ void Map::deleteTile(TileIndex tileIndex)
 		m_tilePositions[tileIndex] = m_tilePositions[movedTileIndex];
 		m_tilePositions.pop_back();
 	}
+
+#ifdef FLAT_DEBUG
+		//checkTilePropIndicesIntegrity();
+#endif
 }
 
 void Map::deleteTile(const flat::Vector2i& tilePosition)
@@ -206,6 +224,8 @@ TileIndex Map::getTileIndex(const Tile* tile) const
 
 void Map::getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const
 {
+	FLAT_PROFILE("Map Get Tiles From Indices");
+
 	tiles.reserve(tileIndices.size());
 	for (TileIndex tileIndex : tileIndices)
 	{
@@ -215,6 +235,8 @@ void Map::getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::ve
 
 void Map::getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::vector<const Prop*>& props) const
 {
+	FLAT_PROFILE("Map Get Props From Indices");
+
 	props.reserve(propIndices.size());
 	for (PropIndex propIndex : propIndices)
 	{
@@ -338,6 +360,7 @@ void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::vi
 		prop = &m_props[propIndex];
 	}
 
+	prop->setTileIndex(tileIndex);
 	prop->setSpriteTexture(texture);
 	const flat::Vector2& textureSize = texture->getSize();
 	flat::Vector2 origin(textureSize.x / 2.f, textureSize.y - textureSize.x / 4.f);
@@ -354,18 +377,48 @@ void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::vi
 	{
 		m_displayManager->updateProp(propIndex, prop);
 	}
+
+#ifdef FLAT_DEBUG
+	//checkTilePropIndicesIntegrity();
+#endif
 }
 
 void Map::removeTileProp(TileIndex tileIndex)
 {
 	Tile& tile = m_tiles[tileIndex];
 	PropIndex propIndex = tile.getPropIndex();
-	if (propIndex != PropIndex::INVALID_PROP)
+	if (propIndex == PropIndex::INVALID_PROP)
 	{
-		FLAT_ASSERT(false); // TODO
-		
-		setTileNavigability(tileIndex, Navigability::GROUND); // TODO: grab navigability from the tile template
+		return;
 	}
+
+	Navigability navigability = getTileTemplate(tileIndex)->getNavigability();
+	setTileNavigability(tileIndex, navigability);
+
+	tile.setPropIndex(PropIndex::INVALID_PROP);
+
+	if (propIndex == m_props.size() - 1)
+	{
+		m_props.pop_back();
+		m_displayManager->removeProp(propIndex);
+	}
+	else
+	{
+		PropIndex movedPropIndex = static_cast<PropIndex>(m_props.size() - 1);
+
+		TileIndex movedPropTileIndex = m_props[movedPropIndex].getTileIndex();
+		FLAT_ASSERT(m_tiles[movedPropTileIndex].getPropIndex() == movedPropIndex);
+		m_tiles[movedPropTileIndex].setPropIndex(propIndex);
+
+		m_props[propIndex] = std::move(m_props[movedPropIndex]);
+		m_displayManager->removeProp(propIndex);
+		m_displayManager->movePropIndex(movedPropIndex, propIndex);
+		m_props.pop_back();
+	}
+
+#ifdef FLAT_DEBUG
+		//checkTilePropIndicesIntegrity();
+#endif
 }
 
 const map::Prop* Map::getTileProp(TileIndex tileIndex) const
@@ -442,6 +495,29 @@ const std::shared_ptr<const TileTemplate> Map::getTileTemplate(TileIndex tileInd
 	}
 	return nullptr;
 }
+
+#ifdef FLAT_DEBUG
+void Map::checkTilePropIndicesIntegrity() const
+{
+	for (int i = 0; i < m_tiles.size(); ++i)
+	{
+		PropIndex propIndex = m_tiles[i].getPropIndex();
+		if (propIndex != PropIndex::INVALID_PROP)
+		{
+			FLAT_ASSERT(m_props[propIndex].getTileIndex() == i);
+		}
+	}
+
+	for (int i = 0; i < m_props.size(); ++i)
+	{
+		TileIndex tileIndex = m_props[i].getTileIndex();
+		if (tileIndex != TileIndex::INVALID_TILE)
+		{
+			FLAT_ASSERT(m_tiles[tileIndex].getPropIndex() == i);
+		}
+	}
+}
+#endif // FLAT_DEBUG
 
 int Map::addEntity(entity::Entity* entity)
 {

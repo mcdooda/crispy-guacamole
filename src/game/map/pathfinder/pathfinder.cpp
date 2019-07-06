@@ -133,21 +133,27 @@ void Pathfinder::reconstructPath(
 		path[0] = from;
 		path.push_back(to);
 		
-		/*FLAT_DEBUG_ONLY(
+		/*
+#ifdef FLAT_DEBUG
 			for (const flat::Vector2& p : path)
 			{
-				(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::GREEN);
+				const TileIndex tileIndex = m_map.getTileIndex(p.x, p.y);
+				const_cast<Map&>(m_map).setTileColor(tileIndex, flat::video::Color::GREEN);
 			}
-		)*/
+#endif // FLAT_DEBUG
+		*/
 	
 		simplifyPath(path);
 		
-		/*FLAT_DEBUG_ONLY(
-			for (const flat::Vector2& p : path)
-			{
-				(m_map.getTile(p.x, p.y))->setColor(flat::video::Color::RED);
-			}
-		)*/
+		/*
+#ifdef FLAT_DEBUG
+		for (const flat::Vector2& p : path)
+		{
+			const TileIndex tileIndex = m_map.getTileIndex(p.x, p.y);
+			const_cast<Map&>(m_map).setTileColor(tileIndex, flat::video::Color::RED);
+		}
+#endif // FLAT_DEBUG
+		*/
 	}
 }
 

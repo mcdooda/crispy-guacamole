@@ -111,6 +111,12 @@ class Map
 		bool isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) const;
 		Navigability getTileNavigability(TileIndex tileIndex) const;
 		void setTileNavigability(TileIndex tileIndex, Navigability navigability);
+		void resetTileNavigabilityFromTemplate(TileIndex tileIndex);
+
+#ifdef FLAT_DEBUG
+		void enableNavigabilityDebug(bool enable);
+		void updateTileNavigabilityDebug(TileIndex tileIndex);
+#endif
 
 		void setTileColor(TileIndex tileIndex, const flat::video::Color& color);
 		const flat::video::Color& getTileColor(TileIndex tileIndex) const;
@@ -172,6 +178,11 @@ class Map
 		bool removeZone(const std::string& zoneName);
 		bool getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) const;
 		inline const std::map<std::string, std::shared_ptr<Zone>>& getZones() const { return m_zones; }
+
+#ifdef FLAT_DEBUG
+		void enableTileIndicesDebug(bool enable) { m_enableTileIndicesDebug = enable; }
+		void debugDraw(debug::DebugDisplay& debugDisplay) const;
+#endif // FLAT_DEBUG
 		
 	protected:
 		void setAxes(const flat::Vector2& xAxis,
@@ -220,6 +231,11 @@ class Map
 		std::deque<TileSpriteSynchronizer> m_tileSpriteSynchronizers;
 
 		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
+
+#ifdef FLAT_DEBUG
+		bool m_enableTileIndicesDebug;
+		bool m_enableNavigabilityDebug;
+#endif
 		
 	private:
 		friend class io::Reader;

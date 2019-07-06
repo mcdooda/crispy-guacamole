@@ -93,7 +93,7 @@ bool PropComponent::removedFromMap(Entity* entity)
 			//FLAT_ASSERT(tileToOccupy != nullptr);
 			if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
 			{
-				map->setTileNavigability(tileToOccupyIndex, map::Navigability::ALL);
+				map->resetTileNavigabilityFromTemplate(tileToOccupyIndex);
 			}
 		}
 	}

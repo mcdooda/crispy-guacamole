@@ -96,6 +96,7 @@ local debugFiles = {
     'drawstats',
     'profiler',
     'entitydebug',
+    'map',
     'memorysnapshot',
     'gamespeed'
 }

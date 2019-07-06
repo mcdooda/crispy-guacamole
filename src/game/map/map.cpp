@@ -21,7 +21,10 @@ Map::Map() :
 	m_maxY(0),
 	m_displayManager(nullptr)
 {
-	
+#ifdef FLAT_DEBUG
+	m_enableTileIndicesDebug = false;
+	m_enableNavigabilityDebug = false;
+#endif
 }
 
 Map::~Map()
@@ -317,7 +320,63 @@ map::Navigability Map::getTileNavigability(TileIndex tileIndex) const
 void Map::setTileNavigability(TileIndex tileIndex, Navigability navigability)
 {
 	m_tileNavigations[tileIndex].navigability = navigability;
+#ifdef FLAT_DEBUG
+	if (m_enableNavigabilityDebug)
+	{
+		updateTileNavigabilityDebug(tileIndex);
+	}
+#endif // FLAT_DEBUG
 }
+
+void Map::resetTileNavigabilityFromTemplate(TileIndex tileIndex)
+{
+	Navigability navigability = getTileTemplate(tileIndex)->getNavigability();
+	setTileNavigability(tileIndex, navigability);
+}
+
+#ifdef FLAT_DEBUG
+void Map::enableNavigabilityDebug(bool enable)
+{
+	m_enableNavigabilityDebug = enable;
+	if (m_enableNavigabilityDebug)
+	{
+		for (int i = 0, e = static_cast<int>(m_tileNavigations.size()); i < e; ++i)
+		{
+			updateTileNavigabilityDebug(static_cast<TileIndex>(i));
+		}
+	}
+	else
+	{
+		for (Tile& tile : m_tiles)
+		{
+			tile.getSprite().setColor(flat::video::Color::WHITE);
+		}
+	}
+}
+
+void Map::updateTileNavigabilityDebug(TileIndex tileIndex)
+{
+	Navigability navigability = m_tileNavigations[tileIndex].navigability;
+	flat::video::Color color = flat::video::Color::WHITE;
+	switch (navigability)
+	{
+	case Navigability::NONE:
+		color = flat::video::Color::BLACK;
+		break;
+	case Navigability::GROUND:
+		color = flat::video::Color::GREEN;
+		break;
+	case Navigability::WATER:
+		color = flat::video::Color::BLUE;
+		break;
+	case Navigability::ALL:
+		color = flat::video::Color::RED;
+		break;
+	}
+	m_tiles[tileIndex].getSprite().setColor(color);
+}
+
+#endif
 
 void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color)
 {
@@ -392,8 +451,7 @@ void Map::removeTileProp(TileIndex tileIndex)
 		return;
 	}
 
-	Navigability navigability = getTileTemplate(tileIndex)->getNavigability();
-	setTileNavigability(tileIndex, navigability);
+	resetTileNavigabilityFromTemplate(tileIndex);
 
 	tile.setPropIndex(PropIndex::INVALID_PROP);
 
@@ -749,6 +807,25 @@ void Map::setAxes(const flat::Vector2& xAxis,
 	m_yAxis = yAxis;
 	m_zAxis = zAxis;
 }
+
+#ifdef FLAT_DEBUG
+void Map::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	if (m_enableTileIndicesDebug)
+	{
+		for (int i = 0, e = static_cast<int>(m_tilePositions.size()); i < e; ++i)
+		{
+			const TilePosition& tilePosition = m_tilePositions[i];
+			flat::Vector3 position;
+			position.x = tilePosition.xy.x;
+			position.y = tilePosition.xy.y;
+			position.z = m_tileNavigations[i].z;
+			std::string str = std::to_string(i);
+			debugDisplay.add3dText(position, str);
+		}
+	}
+}
+#endif
 
 } // map
 } // game

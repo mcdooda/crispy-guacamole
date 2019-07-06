@@ -8,6 +8,7 @@ namespace game
 namespace map
 {
 class Zone;
+class Map;
 namespace lua
 {
 namespace map
@@ -21,6 +22,8 @@ int l_Map_save(lua_State* L);
 
 #ifdef FLAT_DEBUG
 int l_Map_debug_getDrawStats(lua_State* L);
+int l_Map_debug_enableNavigabilityDebug(lua_State* L);
+int l_Map_debug_enableTileIndicesDebug(lua_State* L);
 #endif
 
 int l_Map_getNumEntities(lua_State* L);
@@ -34,6 +37,9 @@ int l_Map_getTilePosition(lua_State* L);
 int l_Map_getTileZ(lua_State* L);
 int l_Map_setTileZ(lua_State* L);
 int l_Map_moveTileZBy(lua_State* L);
+
+// private
+Map& getMap(lua_State* L);
 
 } // map
 } // lua

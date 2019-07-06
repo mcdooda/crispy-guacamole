@@ -18,7 +18,7 @@ function states:init(minerals)
 	EntitiesByType:add(minerals)
 
 	local extraData = minerals:getExtraData()
-	extraData.amount = 5
+	extraData.amount = 1
 	extraData.withdraw = withdraw
 	extraData.amountChanged = flat.Slot:new()
 end

@@ -2,6 +2,7 @@
 #include "movementcomponenttemplate.h"
 #include "../collision/collisioncomponent.h"
 #include "../projectile/projectilecomponent.h"
+#include "../prop/propcomponent.h"
 #include "../../componenttype.h"
 #include "../../../entity.h"
 #include "../../../entityhelper.h"
@@ -238,7 +239,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 		startingPoint = m_path.back();
 	}
 	
-	if (flat::length2(point - startingPoint) > flat::square(MIN_DISTANCE_TO_DESTINATION))
+	if (flat::distance2(point, startingPoint) > flat::square(MIN_DISTANCE_TO_DESTINATION))
 	{
 		map::Map& map = *m_owner->getMap();
 
@@ -258,7 +259,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 			new (pathfinder) map::pathfinder::Pathfinder(map, jumpHeight, navigabilityMask);
 		}
 
-		map::Navigability initialTileNavigability;
+		map::Navigability initialTileNavigability = map::Navigability::NONE;
 
 		map::TileIndex interactionTileIndex = map::TileIndex::INVALID_TILE;
 		if (interactionEntity != nullptr)

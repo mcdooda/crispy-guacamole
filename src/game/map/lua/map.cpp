@@ -20,25 +20,27 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 3);
 	static const luaL_Reg Map_lib_m[] = {
-		{"getName",            l_Map_getName},
-		{"load",               l_Map_load},
-		{"save",               l_Map_save},
+		{"getName",                       l_Map_getName},
+		{"load",                          l_Map_load},
+		{"save",                          l_Map_save},
 
 #ifdef FLAT_DEBUG
-		{"debug_getDrawStats", l_Map_debug_getDrawStats},
+		{"debug_getDrawStats",            l_Map_debug_getDrawStats},
+		{"debug_enableNavigabilityDebug", l_Map_debug_enableNavigabilityDebug},
+		{"debug_enableTileIndicesDebug",  l_Map_debug_enableTileIndicesDebug},
 #endif
 
-		{"getNumEntities",     l_Map_getNumEntities},
-		{"getEntitiesInRange", l_Map_getEntitiesInRange},
-		{"eachSelectedEntity", l_Map_eachSelectedEntity},
-		{"getEntitiesOfType",  l_Map_getEntitiesOfType},
+		{"getNumEntities",                l_Map_getNumEntities},
+		{"getEntitiesInRange",            l_Map_getEntitiesInRange},
+		{"eachSelectedEntity",            l_Map_eachSelectedEntity},
+		{"getEntitiesOfType",             l_Map_getEntitiesOfType},
 
-		{"getZone",            l_Map_getZone},
+		{"getZone",                       l_Map_getZone},
 
-		{"getTilePosition",    l_Map_getTilePosition},
-		{"getTileZ",           l_Map_getTileZ},
-		{"setTileZ",           l_Map_setTileZ},
-		{"moveTileZBy",        l_Map_moveTileZBy},
+		{"getTilePosition",               l_Map_getTilePosition},
+		{"getTileZ",                      l_Map_getTileZ},
+		{"setTileZ",                      l_Map_setTileZ},
+		{"moveTileZBy",                   l_Map_moveTileZBy},
 
 		{nullptr, nullptr}
 	};
@@ -92,10 +94,7 @@ int l_Map_save(lua_State* L)
 #ifdef FLAT_DEBUG
 int l_Map_debug_getDrawStats(lua_State* L)
 {
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	flat::state::State* state = game.getStateMachine().getState();
-	states::BaseMapState& mapState = state->as<states::BaseMapState>();
-	const Map& map = mapState.getMap();
+	const Map& map = getMap(L);
 	const DisplayManager& displayManager = map.getDisplayManager();
 	lua_pushnumber(L, static_cast<lua_Number>(displayManager.getNumOpaqueObjects()));
 	lua_pushnumber(L, static_cast<lua_Number>(displayManager.getNumOpaqueDrawCalls()));
@@ -103,7 +102,23 @@ int l_Map_debug_getDrawStats(lua_State* L)
 	lua_pushnumber(L, static_cast<lua_Number>(displayManager.getNumTransparentDrawCalls()));
 	return 4;
 }
-#endif
+
+int l_Map_debug_enableNavigabilityDebug(lua_State* L)
+{
+	bool enable = lua_toboolean(L, 1) == 1;
+	Map& map = getMap(L);
+	map.enableNavigabilityDebug(enable);
+	return 0;
+}
+
+int l_Map_debug_enableTileIndicesDebug(lua_State* L)
+{
+	bool enable = lua_toboolean(L, 1) == 1;
+	Map& map = getMap(L);
+	map.enableTileIndicesDebug(enable);
+	return 0;
+}
+#endif // FLAT_DEBUG
 
 int l_Map_getNumEntities(lua_State* L)
 {
@@ -118,10 +133,7 @@ int l_Map_getEntitiesInRange(lua_State* L)
 {
 	flat::Vector2& position = flat::lua::getVector2(L, 1);
 	float range = static_cast<float>(luaL_checknumber(L, 2));
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	flat::state::State* state = game.getStateMachine().getState();
-	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
-	const game::map::Map& map = baseMapState.getMap();
+	const Map& map = getMap(L);
 	lua_newtable(L);
 	int i = 1;
 	map.eachEntityInRange(position, range, [L, &i](entity::Entity* entity)
@@ -188,9 +200,7 @@ int l_Map_getEntitiesOfType(lua_State* L)
 int l_Map_getZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
-	const game::map::Map& map = baseMapState.getMap();
+	const Map& map = getMap(L);
 	std::shared_ptr<Zone> zone;
 	if (!map.getZone(zoneName, zone))
 	{
@@ -203,9 +213,7 @@ int l_Map_getZone(lua_State* L)
 int l_Map_getTilePosition(lua_State* L)
 {
 	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
-	game::map::Map& map = baseMapState.getMap();
+	const Map& map = getMap(L);
 	const flat::Vector2i& position = map.getTileXY(tileIndex);
 	float z = map.getTileZ(tileIndex);
 	lua_pushinteger(L, position.x);
@@ -217,9 +225,7 @@ int l_Map_getTilePosition(lua_State* L)
 int l_Map_getTileZ(lua_State* L)
 {
 	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
-	game::map::Map& map = baseMapState.getMap();
+	const Map& map = getMap(L);
 	lua_pushnumber(L, map.getTileZ(tileIndex));
 	return 1;
 }
@@ -228,9 +234,7 @@ int l_Map_setTileZ(lua_State* L)
 {
 	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
 	float z = static_cast<float>(luaL_checknumber(L, 2));
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
-	game::map::Map& map = baseMapState.getMap();
+	Map& map = getMap(L);
 	map.setTileZ(tileIndex, z);
 	return 0;
 }
@@ -239,11 +243,17 @@ int l_Map_moveTileZBy(lua_State* L)
 {
 	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
 	float dz = static_cast<float>(luaL_checknumber(L, 2));
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->as<states::BaseMapState>();
-	game::map::Map& map = baseMapState.getMap();
+	Map& map = getMap(L);
 	map.moveTileZBy(tileIndex, dz);
 	return 0;
+}
+
+game::map::Map& getMap(lua_State* L)
+{
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	flat::state::State* state = game.getStateMachine().getState();
+	states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	return mapState.getMap();
 }
 
 } // map

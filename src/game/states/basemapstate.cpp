@@ -294,6 +294,9 @@ void BaseMapState::debugCursorPosition(Game& game)
 		}
 	}
 	m_debugDisplay.add3dCircle(position3d, 0.1f, color, 1.f);
+
+	std::string str = std::to_string(position3d.x) + "," + std::to_string(position3d.y) + "\n" + std::to_string(tileIndex);
+	m_debugDisplay.add3dText(position3d + flat::Vector3(0.f, 0.f, -1.f), str);
 }
 #endif
 
@@ -679,6 +682,7 @@ void BaseMapState::draw(game::Game& game)
 	{
 		FLAT_PROFILE("Draw debug");
 
+		getMap().debugDraw(m_debugDisplay);
 		m_entityUpdater.debugDraw(m_debugDisplay);
 		m_debugDisplay.drawElements(game, m_gameView);
 	}

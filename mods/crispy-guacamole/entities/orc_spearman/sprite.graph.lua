@@ -9,13 +9,13 @@ return {
     {
       1,
       2,
-      10,
+      35,
       1,
     },
     {
       1,
       3,
-      10,
+      35,
       2,
     },
     {
@@ -59,6 +59,12 @@ return {
       1,
       13,
       1,
+    },
+    {
+      10,
+      1,
+      30,
+      4,
     },
     {
       11,
@@ -204,12 +210,6 @@ return {
       30,
       3,
     },
-    {
-      35,
-      1,
-      30,
-      4,
-    },
   },
   nodeType = 'script',
   nodes = {
@@ -260,9 +260,9 @@ return {
     },
     {
       loadArguments = {
-        'data/compounds/script/Flip Sprite',
+        0.090000003576279,
       },
-      name = 'compound',
+      name = 'number',
     },
     {
       loadArguments = {
@@ -417,9 +417,9 @@ return {
     },
     {
       loadArguments = {
-        0.090000003576279,
+        'data/compounds/script/Init Sprite',
       },
-      name = 'number',
+      name = 'compound',
     },
   },
 }

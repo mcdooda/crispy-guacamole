@@ -7,6 +7,18 @@ return {
       1,
     },
     {
+      1,
+      2,
+      15,
+      1,
+    },
+    {
+      1,
+      3,
+      15,
+      2,
+    },
+    {
       2,
       1,
       1,
@@ -89,7 +101,7 @@ return {
     },
     {
       loadArguments = {
-        6,
+        8,
       },
       name = 'number',
     },
@@ -158,6 +170,12 @@ return {
         0.20000000298023,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        'data/compounds/script/Init Sprite',
+      },
+      name = 'compound',
     },
   },
 }

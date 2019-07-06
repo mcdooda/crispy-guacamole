@@ -3,68 +3,56 @@ return {
     {
       1,
       1,
-      7,
-      1,
-    },
-    {
-      2,
-      1,
-      1,
-      1,
-    },
-    {
-      3,
-      1,
-      1,
-      2,
-    },
-    {
-      4,
-      1,
-      1,
-      3,
-    },
-    {
-      5,
-      1,
-      1,
-      4,
-    },
-    {
       6,
       1,
+    },
+    {
+      2,
       1,
+      1,
+      1,
+    },
+    {
+      3,
+      1,
+      1,
+      2,
+    },
+    {
+      4,
+      1,
+      1,
+      3,
+    },
+    {
       5,
+      1,
+      1,
+      4,
     },
   },
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/collisioncomponent',
+      name = 'components/movementcomponent',
     },
     {
       loadArguments = {
-        'cylinder',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        0.20000000298023,
+        5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.40000000596046,
+        5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        true,
+        5,
       },
-      name = 'boolean',
+      name = 'number',
     },
     {
       loadArguments = {

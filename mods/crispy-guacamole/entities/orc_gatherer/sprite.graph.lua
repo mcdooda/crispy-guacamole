@@ -180,7 +180,7 @@ return {
     },
     {
       loadArguments = {
-        7,
+        8,
       },
       name = 'number',
     },
@@ -210,7 +210,7 @@ return {
     },
     {
       loadArguments = {
-        'empty',
+        'move',
       },
       name = 'string',
     },
@@ -234,7 +234,7 @@ return {
     },
     {
       loadArguments = {
-        'data/compounds/script/Flip Sprite',
+        'data/compounds/script/Init Sprite',
       },
       name = 'compound',
     },

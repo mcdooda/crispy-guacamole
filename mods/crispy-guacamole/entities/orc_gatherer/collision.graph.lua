@@ -50,13 +50,13 @@ return {
     },
     {
       loadArguments = {
-        0.20000000298023,
+        0.15000000596046,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.40000000596046,
+        0.5,
       },
       name = 'number',
     },
@@ -68,7 +68,7 @@ return {
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
     },

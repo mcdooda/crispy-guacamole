@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/compounds/script/flipsprite'
+return flat.graph.script.run 'mods/crispy-guacamole/compounds/script/Flip Sprite'

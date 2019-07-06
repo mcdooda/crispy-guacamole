@@ -374,7 +374,7 @@ return {
     },
     {
       loadArguments = {
-        'data/compounds/script/Flip Sprite',
+        'data/compounds/script/Init Sprite',
       },
       name = 'compound',
     },

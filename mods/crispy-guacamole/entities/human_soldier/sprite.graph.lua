@@ -9,14 +9,20 @@ return {
     {
       1,
       2,
-      3,
+      26,
       1,
     },
     {
       1,
       3,
-      3,
+      26,
       2,
+    },
+    {
+      3,
+      1,
+      22,
+      4,
     },
     {
       4,
@@ -144,12 +150,6 @@ return {
       22,
       3,
     },
-    {
-      26,
-      1,
-      22,
-      4,
-    },
   },
   nodeType = 'script',
   nodes = {
@@ -167,9 +167,9 @@ return {
     },
     {
       loadArguments = {
-        'data/compounds/script/Flip Sprite',
+        0.10000000149012,
       },
-      name = 'compound',
+      name = 'number',
     },
     {
       name = 'vector2',
@@ -301,9 +301,9 @@ return {
     },
     {
       loadArguments = {
-        0.10000000149012,
+        'data/compounds/script/Init Sprite',
       },
-      name = 'number',
+      name = 'compound',
     },
   },
 }

@@ -59,19 +59,19 @@ return {
     },
     {
       loadArguments = {
-        0.20000000298023,
+        0.30000001192093,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        0.60000002384186,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        false,
+        true,
       },
       name = 'boolean',
     },

@@ -260,7 +260,7 @@ return {
     },
     {
       loadArguments = {
-        8,
+        10,
       },
       name = 'number',
     },
@@ -472,13 +472,13 @@ return {
     },
     {
       loadArguments = {
-        0.5,
+        0.25,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        'data/compounds/script/Flip Sprite',
+        'data/compounds/script/Init Sprite',
       },
       name = 'compound',
     },

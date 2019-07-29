@@ -63,7 +63,15 @@ void SpriteComponent::deinit()
 
 void SpriteComponent::setCycleAnimation(const AnimationDescription& animationDescription)
 {
-	m_cycleAnimationDescription = &animationDescription;
+	if (m_cycleAnimationDescription != &animationDescription)
+	{
+		m_cycleAnimationDescription = &animationDescription;
+		if (m_currentAnimationDescription == nullptr)
+		{
+			playAnimation(*m_cycleAnimationDescription);
+			m_sprite.setAnimated(m_isCycleAnimated);
+		}
+	}
 }
 
 bool SpriteComponent::setCycleAnimationByName(const std::string& animationName)

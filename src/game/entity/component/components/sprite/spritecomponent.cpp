@@ -203,6 +203,11 @@ void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 		debugDisplay.add3dText(m_owner->getPosition(), m_currentAnimationDescription->getName()
 			+ " " + std::to_string(m_sprite.getCurrentColumn() + 1) + "/" + std::to_string(m_currentAnimationDescription->getNumFrames()));
 	}
+	else if (m_cycleAnimationDescription != nullptr)
+	{
+		debugDisplay.add3dText(m_owner->getPosition(), m_cycleAnimationDescription->getName()
+			+ " " + std::to_string(m_sprite.getCurrentColumn() + 1) + "/" + std::to_string(m_cycleAnimationDescription->getNumFrames()) + " (cycle)");
+	}
 }
 #endif
 

@@ -817,8 +817,8 @@ void Map::debugDraw(debug::DebugDisplay& debugDisplay) const
 		{
 			const TilePosition& tilePosition = m_tilePositions[i];
 			flat::Vector3 position;
-			position.x = tilePosition.xy.x;
-			position.y = tilePosition.xy.y;
+			position.x = static_cast<float>(tilePosition.xy.x);
+			position.y = static_cast<float>(tilePosition.xy.y);
 			position.z = m_tileNavigations[i].z;
 			std::string str = std::to_string(i);
 			debugDisplay.add3dText(position, str);

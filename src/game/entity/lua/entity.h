@@ -15,6 +15,7 @@ namespace lua
 int open(Game& game);
 
 int l_Entity_eq(lua_State* L);
+int l_Entity_tostring(lua_State* L);
 
 int l_Entity_isValid(lua_State* L);
 int l_Entity_delete(lua_State* L);

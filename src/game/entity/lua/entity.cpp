@@ -36,6 +36,7 @@ int open(Game& game)
 	
 	static const luaL_Reg Entity_lib_m[] = {
 		{"__eq",                     l_Entity_eq},
+		{"__tostring",               l_Entity_tostring},
 
 		{"isValid",                  l_Entity_isValid},
 		{"delete",                   l_Entity_delete},
@@ -179,6 +180,13 @@ int l_Entity_eq(lua_State* L)
 	EntityHandle entityHandle1 = getEntityHandle(L, 1);
 	EntityHandle entityHandle2 = getEntityHandle(L, 2);
 	lua_pushboolean(L, entityHandle1 == entityHandle2);
+	return 1;
+}
+
+int l_Entity_tostring(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	lua_pushfstring(L, "Entity '%s' (%p)", entity.getTemplateName().c_str(), &entity);
 	return 1;
 }
 

@@ -32,8 +32,10 @@ return {
     'entity/isstrafing',
     'entity/setmidairacceleration',
     'entity/getmidairacceleration',
-    'entity/ismidair',
     'entity/isfollowingpath',
+    'entity/ismidair',
+    'entity/movementstarted',
+    'entity/movementstopped',
 
     -- player controller
     'components/playercontrollercomponent',

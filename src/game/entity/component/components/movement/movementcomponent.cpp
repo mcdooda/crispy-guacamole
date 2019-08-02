@@ -199,7 +199,16 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	
 	fall(elapsedTime);
 
+	const bool wasFollowingPath = m_isFollowingPath;
 	m_isFollowingPath = followsPath();
+	if (wasFollowingPath != m_isFollowingPath)
+	{
+		if (m_isFollowingPath)
+			movementStarted();
+
+		else
+			movementStopped();
+	}
 }
 
 bool MovementComponent::isBusy() const

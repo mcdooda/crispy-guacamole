@@ -69,6 +69,8 @@ int l_Entity_setIsStrafing(lua_State* L);
 int l_Entity_isStrafing(lua_State* L);
 int l_Entity_isFollowingPath(lua_State* L);
 int l_Entity_isMidair(lua_State* L);
+int l_Entity_movementStarted(lua_State* L);
+int l_Entity_movementStopped(lua_State* L);
 
 // behavior
 int l_Entity_enterState(lua_State* L);

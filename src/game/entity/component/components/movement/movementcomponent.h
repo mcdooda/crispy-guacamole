@@ -57,6 +57,10 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		inline void restrictToZone(const std::shared_ptr<const map::Zone>& zone) { m_restrictToZone = zone; }
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
+
+	public:
+		flat::Slot<> movementStarted;
+		flat::Slot<> movementStopped;
 		
 	private:
 		void fall(float elapsedTime);

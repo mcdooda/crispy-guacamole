@@ -90,6 +90,8 @@ int open(Game& game)
 		{"isStrafing",               l_Entity_isStrafing},
 		{"isFollowingPath",          l_Entity_isFollowingPath},
 		{"isMidair",                 l_Entity_isMidair},
+		{"movementStarted",          l_Entity_movementStarted},
+		{"movementStopped",          l_Entity_movementStopped},
 
 		// behavior
 		{"enterState",               l_Entity_enterState},
@@ -577,6 +579,54 @@ int l_Entity_isMidair(lua_State* L)
 	bool isMidair = !movementComponent.isTouchingGround();
 	lua_pushboolean(L, isMidair);
 	return 1;
+}
+
+int l_Entity_movementStarted(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onMovementStarted(L, 2);
+	movementComponent.movementStarted.on([L, &entity, onMovementStarted]()
+	{
+		bool keepCallback = true;
+		onMovementStarted.callFunction(
+			[&entity](lua_State* L)
+			{
+				entity::lua::pushEntity(L, &entity);
+			},
+			1,
+			[&keepCallback](lua_State* L)
+			{
+				keepCallback = lua_toboolean(L, -1) == 1;
+			}
+		);
+		return keepCallback;
+	});
+	return 0;
+}
+
+int l_Entity_movementStopped(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	flat::lua::SharedLuaReference<LUA_TFUNCTION> onMovementStopped(L, 2);
+	movementComponent.movementStopped.on([L, &entity, onMovementStopped]()
+	{
+		bool keepCallback = true;
+		onMovementStopped.callFunction(
+			[&entity](lua_State* L)
+			{
+				entity::lua::pushEntity(L, &entity);
+			},
+			1,
+			[&keepCallback](lua_State* L)
+			{
+				keepCallback = lua_toboolean(L, -1) == 1;
+			}
+		);
+		return keepCallback;
+	});
+	return 0;
 }
 
 // BEHAVIOR

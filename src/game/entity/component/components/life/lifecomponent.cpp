@@ -60,7 +60,7 @@ void LifeComponent::update(float currentTime, float elapsedTime)
 	
 	if (m_spawnDespawnThread.isRunning()) // the thread might be finished but we still update because the entity was busy
 	{
-		m_spawnDespawnThread.update(0);
+		m_spawnDespawnThread.resume(0, 0);
 		checkSpawnDespawnThreadFinished();
 	}
 }

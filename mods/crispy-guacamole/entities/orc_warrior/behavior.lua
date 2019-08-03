@@ -1,34 +1,21 @@
-local states = {}
+local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 
-local function isValidAttackTarget(warrior, target)
-	return target:hasComponent(Component.life) and (warrior:isHostile(target) or target:isHostile(warrior))
-end
+local states = BehaviorHelper.basicAttacker()
 
+local init = states.init
 function states:init(warrior)
     warrior:setSpeed(2.5)
+    return init(self, warrior)
 end
 
-function states:followTarget(warrior)
-    warrior:playAnimation('rage', 1, false)
-    warrior:clearPath()
-    warrior:setSpeed(4)
-    while true do
-        local followTarget = warrior:getAttackTarget()
-        if not followTarget or not followTarget:isValid() then
-            return 'init'
-        end
-        local targetPosition = followTarget:getPosition()
-        warrior:moveTo(targetPosition:toVector2())
+local followAttackTarget = states.followAttackTarget
+function states:followAttackTarget(warrior)
+    local currentAttackTarget = warrior:getAttackTarget()
+    if currentAttackTarget and currentAttackTarget:isValid() then
+        warrior:setSpeed(4)
+        warrior:playAnimation('rage', 1, false)
     end
-end
-
-function states:onEntityEnteredVisionRange(warrior, target)
-    local currentTarget = warrior:getAttackTarget()
-    if currentTarget and currentTarget:isValid() and isValidAttackTarget(warrior, target) then
-        return
-    end
-    warrior:setAttackTarget(target)
-    return 'followTarget'
+    return followAttackTarget(self, warrior)
 end
 
 return states

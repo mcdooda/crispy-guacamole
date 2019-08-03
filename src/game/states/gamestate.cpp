@@ -109,7 +109,7 @@ void GameState::startLevelScript(Game& game)
 		{
 			luaL_checktype(L, -1, LUA_TFUNCTION);
 			m_levelThread.set(L, -1);
-			m_levelThread.start(0);
+			m_levelThread.resume(0, 0);
 		}
 
 		lua_pop(L, 1);
@@ -122,7 +122,7 @@ void GameState::updateLevelScript()
 
 	if (!m_levelThread.isFinished())
 	{
-		m_levelThread.update(0);
+		m_levelThread.resume(0, 0);
 	}
 }
 

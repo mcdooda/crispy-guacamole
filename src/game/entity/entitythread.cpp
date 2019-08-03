@@ -12,7 +12,7 @@ void EntityThread::start(Entity* entity)
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 		lua::pushEntity(L, entity);
-		Super::start(1);
+		resume(1, 0);
 	}
 }
 

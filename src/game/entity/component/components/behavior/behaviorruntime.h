@@ -35,7 +35,7 @@ class BehaviorRuntime final
 		template <class EventType>
 		bool isEventHandled();
 
-		void updateCurrentState(float time);
+		void updateCurrentState();
 		void update(float time);
 
 		FLAT_DEBUG_ONLY(inline const std::string& getCurrentStateName() const { return m_currentStateName; })
@@ -43,8 +43,6 @@ class BehaviorRuntime final
 		
 	private:
 		const Behavior& getBehavior() const;
-
-		void startThread();
 		
 	private:
 		Entity* m_entity;

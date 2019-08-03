@@ -61,6 +61,7 @@ class Reader
 template <class T>
 inline void Reader::read(T& value)
 {
+	static_assert(std::is_pod<T>::value, "Generic implementation only for pod types");
 	m_file.read(reinterpret_cast<char*>(&value), sizeof(T));
 }
 

@@ -62,6 +62,7 @@ return {
     'entity/playanimation',
     'entity/flipspritex',
     'entity/setspriterotation',
+    'entity/directionalsprite',
 
     -- entity
     'entity/gettemplatename',

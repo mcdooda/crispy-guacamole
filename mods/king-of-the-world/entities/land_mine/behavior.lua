@@ -8,7 +8,7 @@ function states:idle(landmine)
     for i = 1, #entities do
         local entity = entities[i]
         if entity ~= landmine and entity:isLiving() then
-            landmine:enterState 'timeout'
+            return 'timeout'
         end
     end
 end
@@ -26,7 +26,7 @@ function states:explode(landmine)
         if  entity:isValid() and entity ~= landmine and entity:isLiving() then
             local fire = Entity.spawn('fire', entity:getPosition())
             fire:getExtraData().attachedEntity = entity
-            fire:enterState 'updatePosition'
+            return 'updatePosition'
         end
     end
 end

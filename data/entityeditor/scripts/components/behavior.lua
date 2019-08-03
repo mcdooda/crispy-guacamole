@@ -50,7 +50,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                         entity:decComponentDisableLevel(Component.behavior)
                     end
                     local enteredState, errorMessage = pcall(function()
-                        entity:enterState(stateName, false)
+                        entity:enterState(stateName)
                     end)
                     if not enteredState then
                         flat.ui.error(errorMessage)

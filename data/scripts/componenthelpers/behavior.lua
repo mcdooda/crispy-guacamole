@@ -11,7 +11,7 @@ local max = math.max
 
 local function init(initialState)
 	return function(states, entity)
-		entity:enterState(initialState)
+		return initialState
 	end
 end
 
@@ -104,9 +104,9 @@ local function findAttackTargetOrFallback(findTarget, isValidTarget, targetFound
 		local newAttackTarget = findTarget(entity, isValidTarget)
 		if newAttackTarget then
 			entity:setAttackTarget(newAttackTarget)
-			entity:enterState(targetFoundState)
+			return targetFoundState
 		else
-			entity:enterState(fallbackState)
+			return fallbackState
 		end
 	end
 end
@@ -117,7 +117,7 @@ local function followAttackTarget(findTargetState)
 		while true do
 			local currentAttackTarget = entity:getAttackTarget()
 			if not currentAttackTarget then
-				entity:enterState(findTargetState)
+				return findTargetState
 			else
 				-- current attack target is too far -> clear it
 				local position = entity:getPosition()
@@ -129,7 +129,7 @@ local function followAttackTarget(findTargetState)
 				
 				if distance2 > visionRange2 then
 					entity:setAttackTarget(nil)
-					entity:enterState(findTargetState)
+					return findTargetState
 				else
 					local distance = sqrt(distance2)
 					local attackRange = AttackHelper.getTemplate(entity).attackRange

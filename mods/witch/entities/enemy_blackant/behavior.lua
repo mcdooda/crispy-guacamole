@@ -5,14 +5,14 @@ local states = {}
 function states:init(ant)
     coroutine.yield()
     coroutine.yield()
-    ant:enterState 'followTarget'
+    return 'followTarget'
 end
 
 function states:followTarget(ant)
     local players = Map.getEntitiesOfType('player')
     local target = players[1]
     if not target then
-        ant:enterState 'wander'
+        return 'wander'
     end
     ant:setAttackTarget(target)
     while target:isValid() do
@@ -21,7 +21,7 @@ function states:followTarget(ant)
         local moveDirection = (targetPosition - antPosition):getNormalized() * 3
         ant:moveTo(antPosition + moveDirection)
     end
-    ant:enterState 'wander'
+    return 'wander'
 end
 
 states.wander = BehaviorHelper.wander

@@ -4,7 +4,7 @@ local states = {}
 
 function states:init(boar)
     boar:setCycleAnimation 'run'
-	boar:enterState 'wander'
+	return 'wander'
 end
 
 function states:idle(boar)

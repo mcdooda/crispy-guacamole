@@ -8,7 +8,7 @@ local movement = require 'mods/crispy-guacamole/entities/human_dog/movement'
 local states = {}
 
 function states:init(dog)
-	dog:enterState 'wander'
+	return 'wander'
 end
 
 function states:idle(dog)
@@ -64,7 +64,7 @@ function states:followTarget(dog)
 		dog:playAnimation 'sit'
 	end
 
-	dog:enterState 'wander'
+	return 'wander'
 end
 
 function states:onEntityEnteredVisionRange(dog, entity)

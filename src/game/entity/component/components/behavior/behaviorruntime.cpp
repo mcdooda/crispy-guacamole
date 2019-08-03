@@ -57,15 +57,10 @@ void BehaviorRuntime::enterState(const char* stateName)
 		// set thread function
 		m_thread.set(L, -1);
 
-		// states table
-		lua_pop(L, 1);
-
-		// entity
-		lua::pushEntity(L, m_entity);
-
-		// actually start the thread, with 2 arguments: the states table and the entity
-		m_thread.start(2);
+		lua_pop(L, 2);
 	}
+
+	startThread();
 }
 
 bool BehaviorRuntime::hasState(const char* stateName)
@@ -95,9 +90,39 @@ void BehaviorRuntime::sleep(float time, float duration)
 
 void BehaviorRuntime::updateCurrentState(float time)
 {
-	if (m_thread.isRunning() && time >= m_endSleepTime)
+	if (time < m_endSleepTime)
 	{
-		m_thread.update();
+		return;
+	}
+
+	if (m_thread.isRunning())
+	{
+		int status = m_thread.update(1);
+
+		if (status == LUA_OK)
+		{
+			const Behavior& behavior = getBehavior();
+			lua_State* L = behavior.getLuaState();
+			{
+				m_thread.reset();
+				if (lua_type(L, -1) == LUA_TSTRING)
+				{
+					behavior.pushStates(L);
+
+					// state name
+					lua_pushvalue(L, -2);
+
+					// get function
+					lua_rawget(L, -2);
+
+					m_thread.set(L, -1);
+				}
+				else if (!lua_isnil(L, -1))
+				{
+					luaL_error(L, "Behavior thread returned invalid value '%s'", lua_tostring(L, -1));
+				}
+			}
+		}
 	}
 }
 
@@ -105,7 +130,11 @@ void BehaviorRuntime::update(float time)
 {
 	if (m_thread.isFinished())
 	{
-		if (m_hasIdle)
+		if (!m_thread.isEmpty())
+		{
+			startThread();
+		}
+		else if (m_hasIdle)
 		{
 			enterState("idle");
 		}
@@ -122,6 +151,24 @@ const Behavior& BehaviorRuntime::getBehavior() const
 	const EntityTemplate& entityTemplate = *m_entity->getEntityTemplate().get();
 	const BehaviorComponentTemplate* behaviorComponentTemplate = entityTemplate.getComponentTemplate<BehaviorComponent>();
 	return behaviorComponentTemplate->getBehavior();
+}
+
+void BehaviorRuntime::startThread()
+{
+	const Behavior& behavior = getBehavior();
+	lua_State* L = behavior.getLuaState();
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		// states table
+		behavior.pushStates(L);
+
+		// entity
+		lua::pushEntity(L, m_entity);
+
+		// actually start the thread, with 2 arguments: the states table and the entity
+		m_thread.start(2);
+	}
 }
 
 } // behavior

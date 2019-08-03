@@ -8,13 +8,13 @@ local states = {}
 function states:init(ant)
     coroutine.yield()
     coroutine.yield()
-    ant:enterState 'followTarget'
+    return 'followTarget'
 end
 
 function states:followTarget(ant)
     local players = gdf.getPlayers()
     if #players == 0 then
-        ant:enterState 'wander'
+        return 'wander'
     end
     local target = players[random(1, #players)]
     ant:setAttackTarget(target)
@@ -24,7 +24,7 @@ function states:followTarget(ant)
         local moveDirection = (targetPosition - antPosition):getNormalized() * 3
         ant:moveTo(antPosition + moveDirection)
     end
-    ant:enterState 'followTarget'
+    return 'followTarget'
 end
 
 states.wander = BehaviorHelper.wander

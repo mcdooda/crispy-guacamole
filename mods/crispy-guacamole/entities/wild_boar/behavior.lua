@@ -3,7 +3,7 @@ local random = math.random
 local states = {}
 
 function states:init(boar)
-	boar:enterState 'wander'
+	return 'wander'
 end
 
 function states:idle(boar)

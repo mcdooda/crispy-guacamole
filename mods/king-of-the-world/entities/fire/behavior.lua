@@ -21,7 +21,7 @@ function states:updatePosition(fire)
             betterPosition:z(betterPosition:z() + 0.6)
             fire:setPosition(entity:getPosition())
         else
-            fire:enterState 'burnOut'
+            return 'burnOut'
         end
         coroutine.yield()
     end

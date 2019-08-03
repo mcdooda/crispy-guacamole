@@ -43,6 +43,8 @@ class BehaviorRuntime final
 		
 	private:
 		const Behavior& getBehavior() const;
+
+		void startThread();
 		
 	private:
 		Entity* m_entity;

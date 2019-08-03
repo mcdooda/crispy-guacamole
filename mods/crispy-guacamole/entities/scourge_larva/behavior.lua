@@ -5,7 +5,7 @@ local random = math.random
 local states = {}
 
 function states:init(larva)
-    larva:enterState 'wander'
+    return 'wander'
 end
 
 function states:idle(larva)

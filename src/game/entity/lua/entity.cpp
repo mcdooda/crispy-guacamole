@@ -432,8 +432,11 @@ int l_Entity_lookAtEntity(lua_State* L)
 	Entity& target = getEntity(L, 2);
 	flat::Vector2 entityPosition2d(entity.getPosition());
 	flat::Vector2 targetPosition2d(target.getPosition());
-	float heading = flat::vector2_angle(targetPosition2d - entityPosition2d);
-	entity.setHeading(heading);
+	if (targetPosition2d != entityPosition2d)
+	{
+		const float heading = flat::vector2_angle(targetPosition2d - entityPosition2d);
+		entity.setHeading(heading);
+	}
 	return 0;
 }
 
@@ -637,9 +640,8 @@ int l_Entity_enterState(lua_State* L)
 
 	Entity& entity = getEntity(L, 1);
 	const char* stateName = luaL_checkstring(L, 2);
-	bool yield = locGetOptBool(L, 3, true);
 	entity.enterState(stateName);
-	return locYieldIf(L, yield, 0);
+	return 0;
 }
 
 int l_Entity_sleep(lua_State* L)

@@ -122,7 +122,7 @@ void GameState::updateLevelScript()
 
 	if (!m_levelThread.isFinished())
 	{
-		m_levelThread.update();
+		m_levelThread.update(0);
 	}
 }
 

@@ -9,19 +9,19 @@ return {
     {
       1,
       2,
-      22,
+      12,
       1,
     },
     {
       1,
       3,
       8,
-      1,
+      2,
     },
     {
       1,
       3,
-      20,
+      15,
       1,
     },
     {
@@ -55,99 +55,45 @@ return {
       5,
     },
     {
-      8,
-      1,
       9,
       1,
+      8,
+      3,
     },
     {
-      9,
+      10,
       1,
-      14,
-      1,
+      8,
+      4,
     },
     {
       11,
       1,
-      10,
-      3,
+      8,
+      5,
     },
     {
       12,
       1,
-      10,
-      4,
+      8,
+      1,
     },
     {
       13,
       1,
-      10,
-      5,
+      12,
+      3,
     },
     {
       14,
       1,
-      22,
-      2,
-    },
-    {
-      15,
-      2,
-      10,
-      1,
-    },
-    {
-      16,
-      1,
-      15,
+      12,
       4,
     },
     {
-      17,
-      1,
-      15,
-      5,
-    },
-    {
-      18,
-      1,
-      15,
-      6,
-    },
-    {
-      19,
-      1,
-      15,
-      7,
-    },
-    {
-      20,
-      1,
-      21,
-      1,
-    },
-    {
-      21,
-      1,
-      15,
-      2,
-    },
-    {
-      22,
-      1,
       15,
       1,
-    },
-    {
-      22,
-      2,
-      15,
-      3,
-    },
-    {
-      22,
-      2,
-      10,
+      12,
       2,
     },
   },
@@ -158,13 +104,13 @@ return {
     },
     {
       loadArguments = {
-        12,
+        0.5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        3,
+        0.80000001192093,
       },
       name = 'number',
     },
@@ -182,7 +128,7 @@ return {
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
     },
@@ -196,70 +142,43 @@ return {
       name = 'script/scriptoutput',
     },
     {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        'attack',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/dealdamage',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.20000000298023,
+      },
+      name = 'number',
+    },
+    {
       name = 'entity/getattacktarget',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'gameplay/makecircularwave',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      name = 'math/vector3/vector3tovector2',
-    },
-    {
-      name = 'gameplay/makelinearwave',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        20,
-      },
-      name = 'number',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'math/vector3/vector3tovector2',
-    },
-    {
-      name = 'script/holdvalue',
     },
   },
 }

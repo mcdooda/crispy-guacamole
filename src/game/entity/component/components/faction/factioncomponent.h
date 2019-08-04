@@ -24,6 +24,8 @@ class FactionComponent : public ComponentImpl<FactionComponentTemplate>
 		inline static bool requiresUpdate() { return false; }
 
 		const entity::faction::Faction& getFaction() const;
+
+		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 };
 
 } // faction

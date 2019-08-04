@@ -3,11 +3,11 @@ return {
     {
       1,
       1,
-      2,
+      3,
       1,
     },
     {
-      3,
+      2,
       1,
       1,
       1,
@@ -20,18 +20,18 @@ return {
     },
     {
       loadArguments = {
-        {
-          5,
-          'Table',
-        },
+        'orc',
       },
-      name = 'script/scriptoutput',
+      name = 'string',
     },
     {
       loadArguments = {
-        'chaos',
+        {
+          5,
+          'Component',
+        },
       },
-      name = 'string',
+      name = 'script/scriptoutput',
     },
   },
 }

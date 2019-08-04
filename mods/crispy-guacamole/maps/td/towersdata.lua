@@ -8,12 +8,9 @@ return {
         cost = 1000
     },
     {
-        template = 'sleeping_dragon',
-        name = 'Sleeping Dragon',
-        description = 'Increases income',
-        cost = 5000,
-        onPlace = function()
-            Money:addIncome(100)
-        end
+        template = 'canon',
+        name = 'Magical canon',
+        description = 'Magical canon',
+        cost = 100
     }
 }

@@ -222,6 +222,192 @@ return {
       35,
       1,
     },
+    {
+      38,
+      1,
+      35,
+      6,
+    },
+    {
+      39,
+      1,
+      38,
+      1,
+    },
+    {
+      40,
+      1,
+      38,
+      2,
+    },
+    {
+      41,
+      1,
+      38,
+      3,
+    },
+    {
+      42,
+      1,
+      38,
+      4,
+    },
+    {
+      43,
+      1,
+      46,
+      2,
+    },
+    {
+      44,
+      1,
+      46,
+      3,
+    },
+    {
+      45,
+      1,
+      46,
+      4,
+    },
+    {
+      46,
+      1,
+      35,
+      9,
+    },
+    {
+      47,
+      1,
+      46,
+      1,
+    },
+    {
+      48,
+      1,
+      51,
+      2,
+    },
+    {
+      49,
+      1,
+      51,
+      3,
+    },
+    {
+      50,
+      1,
+      51,
+      4,
+    },
+    {
+      51,
+      1,
+      35,
+      8,
+    },
+    {
+      52,
+      1,
+      51,
+      1,
+    },
+    {
+      53,
+      1,
+      56,
+      2,
+    },
+    {
+      54,
+      1,
+      56,
+      3,
+    },
+    {
+      55,
+      1,
+      56,
+      4,
+    },
+    {
+      56,
+      1,
+      35,
+      7,
+    },
+    {
+      57,
+      1,
+      56,
+      1,
+    },
+    {
+      58,
+      1,
+      35,
+      10,
+    },
+    {
+      59,
+      1,
+      58,
+      1,
+    },
+    {
+      60,
+      1,
+      58,
+      2,
+    },
+    {
+      61,
+      1,
+      58,
+      3,
+    },
+    {
+      62,
+      1,
+      58,
+      4,
+    },
+    {
+      63,
+      1,
+      1,
+      4,
+    },
+    {
+      64,
+      1,
+      63,
+      1,
+    },
+    {
+      65,
+      1,
+      64,
+      1,
+    },
+    {
+      66,
+      1,
+      64,
+      2,
+    },
+    {
+      67,
+      1,
+      66,
+      1,
+    },
+    {
+      68,
+      1,
+      66,
+      2,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -248,13 +434,13 @@ return {
     },
     {
       loadArguments = {
-        17,
+        20,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        20,
+        22,
       },
       name = 'number',
     },
@@ -269,7 +455,7 @@ return {
     },
     {
       loadArguments = {
-        8,
+        16,
       },
       name = 'number',
     },
@@ -433,6 +619,26 @@ return {
           5,
           '',
         },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
       },
       name = 'script/array',
     },
@@ -444,6 +650,174 @@ return {
         'data/compounds/script/Init Directional Sprite',
       },
       name = 'compound',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'fire_1',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        9,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'fire_4',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        11,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'fire_3',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        12,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'fire_2',
+      },
+      name = 'string',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'fire_5',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        13,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          'Attach Point',
+        },
+      },
+      name = 'script/array',
+    },
+    {
+      name = 'components/spriteattachpoint',
+    },
+    {
+      loadArguments = {
+        'canon',
+      },
+      name = 'string',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        19,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        13,
+      },
+      name = 'number',
     },
   },
 }

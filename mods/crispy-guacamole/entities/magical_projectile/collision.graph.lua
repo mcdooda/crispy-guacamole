@@ -3,7 +3,7 @@ return {
     {
       1,
       1,
-      6,
+      7,
       1,
     },
     {
@@ -30,33 +30,45 @@ return {
       1,
       4,
     },
+    {
+      6,
+      1,
+      1,
+      5,
+    },
   },
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/movementcomponent',
+      name = 'components/collisioncomponent',
     },
     {
       loadArguments = {
-        5,
+        'sphere',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.0099999997764826,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        0,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        false,
       },
-      name = 'number',
+      name = 'boolean',
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
     },

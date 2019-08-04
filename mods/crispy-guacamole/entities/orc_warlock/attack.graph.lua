@@ -212,7 +212,7 @@ return {
     },
     {
       loadArguments = {
-        3,
+        4,
       },
       name = 'number',
     },
@@ -230,25 +230,25 @@ return {
     },
     {
       loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
         0.5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        10,
+        20,
       },
       name = 'number',
     },

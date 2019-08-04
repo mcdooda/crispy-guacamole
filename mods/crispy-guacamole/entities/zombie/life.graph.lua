@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -15,7 +15,7 @@ script {
     {
       1,
       3,
-      10,
+      12,
       1,
     },
     {
@@ -27,7 +27,7 @@ script {
     {
       1,
       4,
-      10,
+      12,
       2,
     },
     {
@@ -40,7 +40,7 @@ script {
       4,
       1,
       10,
-      5,
+      4,
     },
     {
       6,
@@ -64,15 +64,28 @@ script {
       9,
       1,
       10,
-      4,
+      3,
     },
     {
       11,
       1,
       10,
-      3,
+      5,
+    },
+    {
+      12,
+      1,
+      10,
+      1,
+    },
+    {
+      12,
+      2,
+      10,
+      2,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/lifecomponent',
@@ -94,9 +107,9 @@ script {
     },
     {
       loadArguments = {
-        true,
+        1,
       },
-      name = 'boolean',
+      name = 'number',
     },
     {
       name = 'entity/playanimation',
@@ -121,18 +134,21 @@ script {
     },
     {
       loadArguments = {
-        1,
+        'despawn',
       },
-      name = 'number',
+      name = 'string',
     },
     {
       name = 'entity/playanimation',
     },
     {
       loadArguments = {
-        'despawn',
+        true,
       },
-      name = 'string',
+      name = 'boolean',
+    },
+    {
+      name = 'entity/clearcycleanimation',
     },
   },
 }

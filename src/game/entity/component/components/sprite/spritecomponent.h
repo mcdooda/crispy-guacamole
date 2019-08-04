@@ -28,6 +28,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 
 		void setCycleAnimation(const AnimationDescription& animationDescription);
 		bool setCycleAnimationByName(const std::string& animationName);
+		void clearCycleAnimation();
 
 		void setCycleAnimated(bool isCycleAnimated);
 		void resetCycleAnimation();

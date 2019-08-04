@@ -86,6 +86,11 @@ bool SpriteComponent::setCycleAnimationByName(const std::string& animationName)
 	return false;
 }
 
+void SpriteComponent::clearCycleAnimation()
+{
+	m_cycleAnimationDescription = nullptr;
+}
+
 void SpriteComponent::setCycleAnimated(bool isCycleAnimated)
 {
 	m_isCycleAnimated = isCycleAnimated;

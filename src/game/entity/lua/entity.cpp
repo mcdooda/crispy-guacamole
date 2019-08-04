@@ -102,6 +102,7 @@ int open(Game& game)
 
 		// sprite
 		{"setCycleAnimation",        l_Entity_setCycleAnimation},
+		{"clearCycleAnimation",      l_Entity_clearCycleAnimation},
 		{"setCycleAnimated",         l_Entity_setCycleAnimated},
 		{"resetCycleAnimation",      l_Entity_resetCycleAnimation},
 		{"playAnimation",            l_Entity_playAnimation},
@@ -705,6 +706,14 @@ int l_Entity_setCycleAnimation(lua_State* L)
 	{
 		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
 	}
+	return 0;
+}
+
+int l_Entity_clearCycleAnimation(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
+	spriteComponent.clearCycleAnimation();
 	return 0;
 }
 

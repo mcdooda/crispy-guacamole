@@ -57,6 +57,7 @@ return {
     'components/spriteattachpoint',
     'components/spritecomponent',
     'entity/setcycleanimation',
+    'entity/clearcycleanimation',
     'entity/setcycleanimated',
     'entity/resetcycleanimation',
     'entity/playanimation',

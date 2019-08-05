@@ -16,6 +16,13 @@ const entity::faction::Faction& FactionComponent::getFaction() const
 	return getTemplate()->getFaction();
 }
 
+#ifdef FLAT_DEBUG
+void FactionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
+{
+	debugDisplay.add3dText(m_owner->getPosition(), getTemplate()->getFaction().getName());
+}
+#endif
+
 } // faction
 } // component
 } // entity

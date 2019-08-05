@@ -12,7 +12,7 @@ local function craterShape(age, distance, progression, effect)
     )
 end
 
-local function new(position2d, radius, height, duration, onEnd, shape)
+local function circular(position2d, radius, height, duration, onEnd, shape)
     local brush = Brush.sphere()
     brush:setRadius(radius)
 
@@ -59,6 +59,32 @@ local function new(position2d, radius, height, duration, onEnd, shape)
     timer:start(duration)
 end
 
+local function linear(startPosition, endPosition, width, height, duration, speed, onEnd, shape)
+    local length = (endPosition - startPosition):length()
+    local direction = (endPosition - startPosition):getNormalized()
+    local totalDuration = length / speed
+    local timerStep = 1 / speed
+
+    local distance = 0
+
+    local timer = game.Timer()
+    timer:onEnd(function()
+        local position = startPosition + direction * distance
+        circular(position, width, height, duration, nil, shape)
+
+        distance = distance + 1
+        if distance > length then
+            if onEnd then
+                onEnd()
+            end
+            timer:stop()
+            return
+        end
+    end)
+    timer:start(timerStep, true)
+end
+
 return {
-    new = new
+    circular = circular,
+    linear   = linear
 }

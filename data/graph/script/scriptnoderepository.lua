@@ -87,6 +87,10 @@ return {
     'entity/iscomponentenabled',
     'entity/disablecomponent',
 
+    -- gameplay
+    'gameplay/makecircularwave',
+    'gameplay/makelinearwave',
+
     -- flow
     'flow/eachframe',
     'flow/cooldown',

@@ -3,20 +3,26 @@ return {
     {
       1,
       1,
+      7,
+      1,
+    },
+    {
+      1,
+      2,
+      12,
+      1,
+    },
+    {
+      1,
+      3,
       8,
-      1,
-    },
-    {
-      1,
       2,
-      15,
-      1,
     },
     {
       1,
       3,
       15,
-      2,
+      1,
     },
     {
       2,
@@ -27,104 +33,104 @@ return {
     {
       3,
       1,
-      2,
       1,
+      2,
     },
     {
       4,
       1,
-      2,
-      2,
+      1,
+      3,
     },
     {
       5,
       1,
       1,
-      2,
+      4,
     },
     {
       6,
       1,
-      5,
-      1,
-    },
-    {
-      7,
       1,
       5,
-      2,
     },
     {
       9,
       1,
-      1,
+      8,
       3,
     },
     {
       10,
       1,
-      9,
-      1,
+      8,
+      4,
     },
     {
       11,
       1,
-      10,
-      1,
+      8,
+      5,
     },
     {
       12,
       1,
-      10,
-      2,
+      8,
+      1,
     },
     {
       13,
       1,
-      10,
+      12,
       3,
     },
     {
       14,
       1,
-      10,
+      12,
       4,
+    },
+    {
+      15,
+      1,
+      12,
+      2,
     },
   },
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/spritecomponent',
-    },
-    {
-      name = 'vector2',
+      name = 'components/attackcomponent',
     },
     {
       loadArguments = {
-        8,
+        0.5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        16,
-      },
-      name = 'number',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        3,
+        0.80000001192093,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        true,
       },
-      name = 'number',
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
     {
       loadArguments = {
@@ -136,20 +142,11 @@ return {
       name = 'script/scriptoutput',
     },
     {
-      loadArguments = {
-        {
-          5,
-          '',
-        },
-      },
-      name = 'script/array',
-    },
-    {
-      name = 'components/spriteanimation',
+      name = 'entity/playanimation',
     },
     {
       loadArguments = {
-        'move',
+        'attack',
       },
       name = 'string',
     },
@@ -161,21 +158,27 @@ return {
     },
     {
       loadArguments = {
-        3,
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/dealdamage',
+    },
+    {
+      loadArguments = {
+        10,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.15000000596046,
+        0.20000000298023,
       },
       name = 'number',
     },
     {
-      loadArguments = {
-        'data/compounds/script/Init Sprite',
-      },
-      name = 'compound',
+      name = 'entity/getattacktarget',
     },
   },
 }

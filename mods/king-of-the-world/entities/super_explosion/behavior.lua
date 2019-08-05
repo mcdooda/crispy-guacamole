@@ -4,7 +4,7 @@ local states = {}
 local moveTileZBy = Map.moveTileZBy
 
 local function moveTile(position2d, height)
-    -- Wave.new(position2d, 0.5, height, 0.25)
+    -- Wave.circular(position2d, 0.5, height, 0.25)
 end
 
 local function dealDamage(position, damage)
@@ -43,7 +43,7 @@ local function spreadExplosion(position, distance)
 end
 
 function states:init(explosion)
-    -- Wave.new(explosion:getPosition():toVector2(), 3,0.7, 0.3)
+    -- Wave.circular(explosion:getPosition():toVector2(), 3,0.7, 0.3)
 
     spreadExplosion(explosion:getPosition(), 0.5)
     explosion:sleep(0.1)

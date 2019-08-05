@@ -3,11 +3,11 @@ return {
     {
       1,
       1,
-      2,
+      3,
       1,
     },
     {
-      3,
+      2,
       1,
       1,
       1,
@@ -16,22 +16,22 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/factioncomponent',
+      name = 'components/detectioncomponent',
+    },
+    {
+      loadArguments = {
+        12,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
         {
           5,
-          'Table',
+          'Component',
         },
       },
       name = 'script/scriptoutput',
-    },
-    {
-      loadArguments = {
-        'chaos',
-      },
-      name = 'string',
     },
   },
 }

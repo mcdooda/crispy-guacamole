@@ -113,25 +113,23 @@ end
 
 local function followAttackTarget(findTargetState)
 	return function(states, entity)
-		local visionRange2 = 6 * 6
 		while true do
 			local currentAttackTarget = entity:getAttackTarget()
 			if not currentAttackTarget then
 				return findTargetState
 			else
 				-- current attack target is too far -> clear it
-				local position = entity:getPosition()
-				local position2d = position:toVector2()
-				local targetPosition = currentAttackTarget:getPosition()
-				local targetPosition2d = targetPosition:toVector2()
-				local move = targetPosition2d - position2d
-				local distance2 = move:length2()
-				
-				if distance2 > visionRange2 then
+				if not entity:canSee(currentAttackTarget) then
 					entity:setAttackTarget(nil)
 					return findTargetState
 				else
-					local distance = sqrt(distance2)
+					local position = entity:getPosition()
+					local position2d = position:toVector2()
+					local targetPosition = currentAttackTarget:getPosition()
+					local targetPosition2d = targetPosition:toVector2()
+					local move = targetPosition2d - position2d
+					local distance = move:length()
+
 					local attackRange = AttackHelper.getTemplate(entity).attackRange
 					local _, entityRadius = CollisionHelper.getRadius(entity)
 					local _, targetRadius = CollisionHelper.getRadius(currentAttackTarget)

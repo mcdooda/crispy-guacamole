@@ -16,7 +16,7 @@ local cornerRight = {8}
 local cornerBottom = {9}
 local cornerTop = {10}
 
-local function selectTile(tl, tr, br, bl, t, r, b, l)
+local function selectTile(tl, tr, bl, br, t, r, b, l)
 	if (not tr or tr == 'water') and (not tl or tl == 'water') and (t and t ~= 'water') then
 		return cornerBottom
 	elseif (not tl or tl == 'water') and (not tr or tr == 'water') then

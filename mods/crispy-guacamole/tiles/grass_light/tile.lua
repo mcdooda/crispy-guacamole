@@ -140,7 +140,7 @@ end
 
 return {
     probabilities = probabilities ,
-    frameDuration = 1,
+    frameDuration = 0.4,
     numFrames = 1,
     selectTile = selectTile
 }

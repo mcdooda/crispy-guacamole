@@ -96,10 +96,10 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 				Entity* entityToAvoid = nullptr;
 				float entityToAvoidDistance = std::numeric_limits<float>::max();
 
-				// find entities moving in the opposite direction
+				// find entities moving in the opposite direction and avoid them
 				map->eachEntityInRange(
-					position2d,
-					3.f,
+					position2d + flat::normalize(move) * AVOIDANCE_DISTANCE,
+					AVOIDANCE_RADIUS,
 					[this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance, collisionComponentTemplate](Entity* entity)
 					{
 						if (entity == m_owner)
@@ -429,6 +429,16 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	}
 
 	debugDisplay.add3dLine(m_owner->getPosition(), m_owner->getPosition() + flat::Vector3(m_steering, 0.f), flat::video::Color::RED);
+
+	if (followsPath())
+	{
+		const flat::Vector3& position = m_owner->getPosition();
+		const flat::Vector2& pathNextPoint = m_path.front();
+		flat::Vector2 position2d = flat::Vector2(position.x, position.y);
+		const flat::Vector2 move = pathNextPoint - position2d;
+		const flat::Vector3 avoidanceCenter = position + flat::Vector3(flat::normalize(move), 0.f) * AVOIDANCE_DISTANCE;
+		debugDisplay.add3dCircle(avoidanceCenter, AVOIDANCE_RADIUS, flat::video::Color::BLUE);
+	}
 
 	if (m_isTouchingGround)
 	{

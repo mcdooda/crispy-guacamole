@@ -92,6 +92,10 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool m_isStrafing : 1; // don't update the heading in this situation
 
 		FLAT_DEBUG_ONLY(flat::Vector2 m_steering;)
+
+	private:
+		static constexpr float AVOIDANCE_DISTANCE = 0.8f;
+		static constexpr float AVOIDANCE_RADIUS = 1.f;
 };
 
 } // movement

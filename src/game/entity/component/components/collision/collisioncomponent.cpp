@@ -209,19 +209,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 				closestCollisionDistance2 = distance2;
 
 				const flat::Vector3 tileCenter(x, y, newPosition.z);
-				normal = newPosition - tileCenter;
-				if (std::max(std::abs(locationOnTile.x), std::abs(locationOnTile.y)) > 0.5f)
-				{
-					if (std::abs(normal.x) < 0.5f)
-					{
-						normal.x = 0.f;
-					}
-					if (std::abs(normal.y) < 0.5f)
-					{
-						normal.y = 0.f;
-					}
-				}
-				normal = flat::normalize(normal);
+				normal = flat::normalize(newPosition - closestPointOnEdge);
 
 				newPosition = closestPointOnEdge + normal * radius;
 				collidedTileIndex = tileIndex2;

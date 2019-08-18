@@ -83,18 +83,42 @@ local function setBuilding(building)
     end
 
     do
+        local function spawnEntities(buildingPosition, numEntities, entityTemplateName)
+            for i = 1, numEntities do
+                local position = flat.Vector2(buildingPosition:x(), buildingPosition:y())
+                position:x(position:x() + 1 + (math.random() - 0.5) * 0.01)
+                position:y(position:y() + 1 + (math.random() - 0.5) * 0.01)
+                Entity.spawn(entityTemplateName, position)
+            end
+        end
+
         for i = 1, #buildingData.units do
             local unit = buildingData.units[i]
             local unitData = EntityData.get(unit)
-            local label = Widget.makeText(unitData.name, table.unpack(Theme.defaultFont))
-            label:setTextColor(Theme.TEXT_COLOR)
-            label:click(function()
+
+            local lineFlow = Widget.makeLineFlow()
+
+            do
+                local label = Widget.makeText(unitData.name, table.unpack(Theme.defaultFont))
+                label:setTextColor(Theme.TEXT_COLOR)
                 local position = building:getPosition():toVector2()
-                position:x(position:x() + 1 + (math.random() - 0.5) * 0.01)
-                position:y(position:y() + 1 + (math.random() - 0.5) * 0.01)
-                local entity = Entity.spawn(unit, position)
-            end)
-            unitsContainer.addContent(label)
+                label:click(function()
+                    spawnEntities(position, 1, unit)
+                end)
+                lineFlow:addChild(label)
+            end
+
+            do
+                local label = Widget.makeText(' x10', table.unpack(Theme.defaultFont))
+                label:setTextColor(Theme.TEXT_COLOR)
+                local position = building:getPosition():toVector2()
+                label:click(function()
+                    spawnEntities(position, 10, unit)
+                end)
+                lineFlow:addChild(label)
+            end
+
+            unitsContainer.addContent(lineFlow)
         end
     end
 end

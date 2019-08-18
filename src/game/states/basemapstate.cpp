@@ -1122,16 +1122,23 @@ void BaseMapState::handleGameActionInputs(Game& game)
 
 void BaseMapState::moveToFormation(Game& game)
 {
+	// 0. filter out entities with no movement component
+	std::vector<entity::Entity*> formationEntities = m_selectedEntities;
+	formationEntities.erase(std::remove_if(
+		formationEntities.begin(),
+		formationEntities.end(),
+		[](const entity::Entity* a) { return a->getComponent<entity::component::movement::MovementComponent>() == nullptr; }
+	), formationEntities.end());
+
 	// 1. compute centroid
 	flat::Vector2 centroid(0.f, 0.f);
-	for (entity::Entity* entity : m_selectedEntities)
+	for (entity::Entity* entity : formationEntities)
 	{
 		centroid += flat::Vector2(entity->getPosition());
 	}
-	centroid /= m_selectedEntities.size();
+	centroid /= formationEntities.size();
 
 	// 2. sort by farthest to closest
-	std::vector<entity::Entity*> formationEntities = m_selectedEntities;
 	std::sort(formationEntities.begin(), formationEntities.end(),
 		[centroid](entity::Entity* a, entity::Entity* b)
 	{

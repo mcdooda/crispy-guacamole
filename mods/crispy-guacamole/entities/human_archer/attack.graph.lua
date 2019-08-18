@@ -1,96 +1,4 @@
-script {
-  nodes = {
-    {
-      name = 'components/attackcomponent',
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        5,
-      },
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        1,
-      },
-    },
-    {
-      name = 'boolean',
-      loadArguments = {
-        true,
-      },
-    },
-    {
-      name = 'boolean',
-      loadArguments = {
-        true,
-      },
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        0,
-      },
-    },
-    {
-      name = 'script/scriptoutput',
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-    },
-    {
-      name = 'entity/lookatentity',
-    },
-    {
-      name = 'entity/getattacktarget',
-    },
-    {
-      name = 'entity/playanimation',
-    },
-    {
-      name = 'string',
-      loadArguments = {
-        'shoot',
-      },
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        1,
-      },
-    },
-    {
-      name = 'boolean',
-      loadArguments = {
-        false,
-      },
-    },
-    {
-      name = 'entity/fireprojectile',
-    },
-    {
-      name = 'string',
-      loadArguments = {
-        'arrow',
-      },
-    },
-    {
-      name = 'string',
-      loadArguments = {
-        'crossbow',
-      },
-    },
-    {
-      name = 'boolean',
-      loadArguments = {
-        true,
-      },
-    },
-  },
+return {
   links = {
     {
       1,
@@ -156,7 +64,7 @@ script {
       6,
       1,
       14,
-      6,
+      4,
     },
     {
       8,
@@ -186,37 +94,130 @@ script {
       11,
       1,
       10,
-      3,
+      4,
     },
     {
       12,
       1,
       10,
-      4,
+      5,
     },
     {
       13,
       1,
       10,
-      5,
+      3,
     },
     {
       15,
       1,
       14,
-      4,
+      5,
     },
     {
       16,
       1,
       14,
-      5,
+      6,
     },
     {
       17,
       1,
       1,
       5,
+    },
+  },
+  nodeType = 'script',
+  nodes = {
+    {
+      name = 'components/attackcomponent',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        'arrow',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          'Table',
+        },
+      },
+      name = 'script/scriptoutput',
+    },
+    {
+      name = 'entity/lookatentity',
+    },
+    {
+      name = 'entity/getattacktarget',
+    },
+    {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        'shoot',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/fireprojectile',
+    },
+    {
+      loadArguments = {
+        'crossbow',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.30000001192093,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
   },
 }

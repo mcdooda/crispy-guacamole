@@ -19,7 +19,7 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "detection"; }
-		inline static int getUpdatePeriod() { return 5; }
+		inline static int getUpdatePeriod() { return 20; } // TODO: detection component quadtree, update self/nearby when moving 
 
 		void init() override;
 		void deinit() override;

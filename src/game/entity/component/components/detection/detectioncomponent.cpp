@@ -58,10 +58,9 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 			return;
 		}
 
-		std::set<Entity*>::iterator it = m_visibleEntities.find(entity);
-		if (it == m_visibleEntities.end())
+		std::pair<std::set<Entity*>::iterator, bool> inserted = m_visibleEntities.insert(entity);
+		if (inserted.second)
 		{
-			m_visibleEntities.insert(entity);
 			entityEnteredVisionRange(entity);
 			entity->removedFromMap.on(this, &DetectionComponent::visibleEntityRemovedFromMap);
 		}

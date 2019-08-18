@@ -49,7 +49,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
 
         do
             local playIcon = Icon:new('play', 10)
-            playIcon.container:setMargin(0, 0, 0, 3)
+            playIcon.container:setMargin(0, 0, 0, 5)
             playIcon.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
             playIcon.container:click(function()
                 local entity = getEntity()
@@ -57,7 +57,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 local targetZone = Map.getZone 'Target'
                 local zoneCenter = targetZone:getCenter()
 
-                local target = Entity.spawn('wild_sheep', zoneCenter)
+                local target = Entity.spawn('zombie', zoneCenter)
                 entity:setAttackTarget(target)
             end)
             attackLine:addChild(playIcon.container)

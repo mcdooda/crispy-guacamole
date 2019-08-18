@@ -1,10 +1,10 @@
-local yield = coroutine.yield
+local BuildingSelection = require 'mods/crispy-guacamole/scripts/buildingselection'
 
 local states = {}
 
 function states:init(barracks)
     barracks:setCycleAnimation 'stand'
-    yield() -- avoid entering init()
+    BuildingSelection.init(barracks)
 end
 
 return states

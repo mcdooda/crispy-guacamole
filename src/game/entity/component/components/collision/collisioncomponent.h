@@ -25,7 +25,7 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 		void update(float currentTime, float elapsedTime) override;
 
 		void getAABB(flat::AABB3& aabb) const;
-		float getBottom() const;
+		float getBottom(float z) const;
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 

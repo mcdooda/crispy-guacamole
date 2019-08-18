@@ -29,11 +29,11 @@ void CollisionComponent::getAABB(flat::AABB3& aabb) const
 	collisionBox.getAABB(m_owner->getPosition(), aabb);
 }
 
-float CollisionComponent::getBottom() const
+float CollisionComponent::getBottom(float z) const
 {
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
 	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
-	return collisionBox.getBottom(m_owner->getPosition());
+	return collisionBox.getBottom(z);
 }
 
 void CollisionComponent::separateFromNearbyEntities()
@@ -127,42 +127,24 @@ void CollisionComponent::separateFromAdjacentTiles()
 
 	auto computeTileCollision = [&](int x, int y)
 	{
-		if (x < minX || x > maxX || y < minY || y > maxY)
-		{
-			return;
-		}
-
-		if (newPosition.x + radius < static_cast<float>(tilePosition.x) - 0.5f
-		 || newPosition.x - radius > static_cast<float>(tilePosition.x) + 0.5f
-		 || newPosition.y + radius < static_cast<float>(tilePosition.y) - 0.5f
-		 || newPosition.y - radius > static_cast<float>(tilePosition.y) + 0.5f)
-		{
-			return;
-		}
-
 		map::TileIndex tileIndex2 = map->getTileIndexIfNavigable(x, y, navigabilityMask);
-		
-		float tileZ = -FLT_MAX;
-		if (tileIndex2 != map::TileIndex::INVALID_TILE)
+		if (tileIndex2 == tileIndex)
 		{
-			tileZ = map->getTileZ(tileIndex2);
-
-			const float bottom = getBottom();
-
-			if (tileZ < bottom)
-			{
-				return;
-			}
-
-			if (x == tilePosition.x
-			 && y == tilePosition.y
-			 && bottom > tileZ - 0.5f)
+			const float bottom = getBottom(newPosition.z);
+			const float tileZ = map->getTileZ(tileIndex);
+			if (bottom < tileZ && bottom > tileZ - 0.5f)
 			{
 				newPosition.z = tileZ;
-				collidedTileIndex = tileIndex2;
+				collidedTileIndex = tileIndex;
 				normal = flat::Vector3(0.f, 0.f, 1.f);
 				return;
 			}
+		}
+		
+		float tileZ = -FLT_MAX;
+		if (tileIndex2 != map::TileIndex::INVALID_TILE && map->getTileZ(tileIndex2) < getBottom(newPosition.z) + MIN_Z_EPSILON)
+		{
+			return;
 		}
 
 		// find collision point
@@ -247,20 +229,17 @@ void CollisionComponent::separateFromAdjacentTiles()
 		}
 	};
 
-	computeTileCollision(tilePosition.x, tilePosition.y);
-	for (int i = 1, e = static_cast<int>(std::ceil(radius)); i < e; ++i)
+	for (int x = minX; x <= maxX; ++x)
 	{
-		computeTileCollision(tilePosition.x - i, tilePosition.y);
-		computeTileCollision(tilePosition.x + i, tilePosition.y);
-		computeTileCollision(tilePosition.x, tilePosition.y - i);
-		computeTileCollision(tilePosition.x, tilePosition.y + i);
+		for (int y = minY; y <= maxY; ++y)
+		{
+			computeTileCollision(x, y);
+		}
 	}
-
-	map::TileIndex newTileIndex = map->getTileIndex(newPosition.x, newPosition.y);
 
 	if (position != newPosition)
 	{
-		map::TileIndex newTileIndex = map->getTileIndex(newPosition.x, newPosition.y);
+		const map::TileIndex newTileIndex = map->getTileIndex(newPosition.x, newPosition.y);
 		if (newTileIndex != map::TileIndex::INVALID_TILE)
 		{
 			const float newTileZ = map->getTileZ(newTileIndex);

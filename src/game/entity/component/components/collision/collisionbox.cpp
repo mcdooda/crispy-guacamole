@@ -28,15 +28,15 @@ void CollisionBox::getAABB(const flat::Vector3& position, flat::AABB3& aabb) con
 	}
 }
 
-float CollisionBox::getBottom(const flat::Vector3& position) const
+float CollisionBox::getBottom(float z) const
 {
 	switch (type)
 	{
 	case CollisionType::SPHERE:
-		return position.z - sphere.radius;
+		return z - sphere.radius;
 
 	case CollisionType::CYLINDER:
-		return position.z;
+		return z;
 
 	default:
 		FLAT_ASSERT(false);

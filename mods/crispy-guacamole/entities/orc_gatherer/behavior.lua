@@ -1,5 +1,6 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
+local UnitSelection = require 'mods/crispy-guacamole/scripts/unitselection'
 local Money = require 'mods/crispy-guacamole/scripts/money'
 
 local function getClosestHut(gatherer)
@@ -35,6 +36,7 @@ local states = BehaviorHelper.customAttacker(
 
 local init = states.init
 function states:init(gatherer)
+	UnitSelection.init(gatherer)
 	gatherer:setCycleAnimation 'move'
 	gatherer:getExtraData().mineralsAmount = 0
 	init(self, gatherer)
@@ -116,6 +118,19 @@ function states:missingInteractionEntity(gatherer)
 	else
 		error('missing interaction entity for state: ' .. interactionStateName)
 	end
+end
+
+function states:build(gatherer)
+	local building = gatherer:getInteractionEntity()
+	local extraData = building:getExtraData()
+	print('Building', building)
+	gatherer:playAnimation 'full'
+	gatherer:sleep(0.5)
+	if not building:isValid() or not extraData.buildingProgression then
+		return
+	end
+	extraData.buildingProgression = extraData.buildingProgression + 1
+	gatherer:interactWith(building)
 end
 
 return states

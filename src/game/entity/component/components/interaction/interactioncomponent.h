@@ -21,7 +21,13 @@ class InteractionComponent : public ComponentImpl<InteractionComponentTemplate>
 
 		const std::string& getBehaviorStateName() const;
 
+		void setInteractionState(const std::string& interactionState);
+		void resetInteractionState();
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
+
+	private:
+		std::unique_ptr<std::string> m_interactionState;
 };
 
 } // interaction

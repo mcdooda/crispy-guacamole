@@ -1,6 +1,8 @@
 local CollisionHelper = require 'data/scripts/componenthelpers/collision'
 local AttackHelper = require 'data/scripts/componenthelpers/attack'
 
+local BuildingSelection = require 'mods/crispy-guacamole/scripts/buildingselection'
+
 local yield = coroutine.yield
 local huge = math.huge
 local random = math.random
@@ -194,6 +196,44 @@ local function basicAttacker()
 	return customAttacker(doNothing, findClosestTarget, isValidHostileAttackTarget)
 end
 
+--[[
+	Building
+]]
+local function basicBuilding()
+	local states = {}
+
+	local function init(building)
+		BuildingSelection.init(building)
+		building:setCycleAnimation 'stand'
+	end
+
+	function states:init(building)
+		coroutine.yield() -- give external code a chance to change state immediately
+		init(building)
+	end
+
+	function states:under_construction(building)
+		print(building, 'under construction')
+		building:setInteractionState 'build'
+		local extraData = building:getExtraData()
+		extraData.buildingProgression = 0
+		while extraData.buildingProgression < 100 do
+			print('...', extraData.buildingProgression)
+			building:sleep(0.1)
+		end
+		return 'construction_finished'
+	end
+
+	function states:construction_finished(building)
+		print(building, 'construction finished')
+		building:resetInteractionState()
+		building:getExtraData().buildingProgression = nil
+		init(building)
+	end
+
+	return states
+end
+
 return {
 	init                             = init,
 
@@ -211,5 +251,7 @@ return {
 	followAttackTarget               = followAttackTarget,
 
 	customAttacker                   = customAttacker,
-	basicAttacker                    = basicAttacker
+	basicAttacker                    = basicAttacker,
+
+	basicBuilding                    = basicBuilding
 }

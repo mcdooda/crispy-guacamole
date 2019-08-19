@@ -21,7 +21,7 @@ class GameState : public BaseMapStateImpl<map::Map>
 		void setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& onGhostEntityPlaced);
 
 		bool canPlaceGhostEntity(map::TileIndex tileIndex) const override;
-		bool onGhostEntityPlaced() override;
+		bool onGhostEntityPlaced(map::TileIndex tileIndex) override;
 
 	protected:
 		void startLevelScript(Game& game);

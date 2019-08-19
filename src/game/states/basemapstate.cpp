@@ -439,8 +439,9 @@ bool BaseMapState::canPlaceGhostEntity(map::TileIndex tileIndex) const
 	return true;
 }
 
-bool BaseMapState::onGhostEntityPlaced()
+bool BaseMapState::onGhostEntityPlaced(map::TileIndex tileIndex)
 {
+	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 	return true;
 }
 
@@ -1035,7 +1036,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 					map::TileIndex tileIndex = getMap().getTileIndexIfNavigable(position2d.x, position2d.y, navigabilityMask);
 					if (tileIndex != map::TileIndex::INVALID_TILE && canPlaceGhostEntity(tileIndex))
 					{
-						if (onGhostEntityPlaced())
+						if (onGhostEntityPlaced(tileIndex))
 						{
 							flat::Vector3 position(position2d.x, position2d.y, getMap().getTileZ(tileIndex));
 							spawnEntityAtPosition(game, m_ghostTemplate, position);

@@ -15,7 +15,17 @@ namespace interaction
 
 const std::string& InteractionComponent::getBehaviorStateName() const
 {
-	return getTemplate()->getBehaviorStateName();
+	return m_interactionState ? *m_interactionState : getTemplate()->getBehaviorStateName();
+}
+
+void InteractionComponent::setInteractionState(const std::string& interactionState)
+{
+	m_interactionState = std::make_unique<std::string>(interactionState);
+}
+
+void InteractionComponent::resetInteractionState()
+{
+	m_interactionState.reset();
 }
 
 #ifdef FLAT_DEBUG

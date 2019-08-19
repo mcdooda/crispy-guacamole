@@ -78,13 +78,18 @@ bool GameState::canPlaceGhostEntity(map::TileIndex tileIndex) const
 	return true;
 }
 
-bool GameState::onGhostEntityPlaced()
+bool GameState::onGhostEntityPlaced(map::TileIndex tileIndex)
 {
 	if (m_canPlaceGhostEntity)
 	{
 		bool placeEntity = false;
 		m_onGhostEntityPlaced.callFunction(
-			[](lua_State* L) {},
+			[tileIndex](lua_State* L)
+			{
+				map::brush::TilesContainer* tilesContainer = new map::brush::TilesContainer();
+				tilesContainer->emplace_back(tileIndex, 1.f);
+				map::brush::lua::pushTilesContainer(L, tilesContainer);
+			},
 			1,
 			[&placeEntity](lua_State* L)
 			{

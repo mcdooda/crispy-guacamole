@@ -51,6 +51,8 @@ int l_Entity_getForward(lua_State* L);
 
 int l_Entity_lookAtEntity(lua_State* L);
 
+int l_Entity_cancelCurrentActions(lua_State* L);
+
 // ui
 int l_Entity_setUiOffset(lua_State* L);
 int l_Entity_setUiVisible(lua_State* L);
@@ -78,6 +80,10 @@ int l_Entity_sleep(lua_State* L);
 int l_Entity_getInteractionEntity(lua_State* L);
 int l_Entity_getInteractionStateName(lua_State* L);
 int l_Entity_interactWith(lua_State* L);
+
+// interaction
+int l_Entity_setInteractionState(lua_State* L);
+int l_Entity_resetInteractionState(lua_State* L);
 
 // sprite
 int l_Entity_setCycleAnimation(lua_State* L);

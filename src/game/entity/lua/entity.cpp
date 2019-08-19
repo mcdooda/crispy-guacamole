@@ -72,6 +72,8 @@ int open(Game& game)
 
 		{"lookAtEntity",             l_Entity_lookAtEntity},
 
+		{"cancelCurrentActions",     l_Entity_cancelCurrentActions},
+
 		// ui
 		{"setUiOffset",              l_Entity_setUiOffset},
 		{"setUiVisible",             l_Entity_setUiVisible},
@@ -99,6 +101,10 @@ int open(Game& game)
 		{"getInteractionEntity",     l_Entity_getInteractionEntity},
 		{"getInteractionStateName",  l_Entity_getInteractionStateName},
 		{"interactWith",             l_Entity_interactWith},
+
+		// interaction
+		{"setInteractionState",      l_Entity_setInteractionState},
+		{"resetInteractionState",    l_Entity_resetInteractionState},
 
 		// sprite
 		{"setCycleAnimation",        l_Entity_setCycleAnimation},
@@ -200,7 +206,7 @@ int l_Entity_isValid(lua_State* L)
 	return 1;
 }
 
-int l_Entity_delete(lua_State * L)
+int l_Entity_delete(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	entity.markForDelete();
@@ -246,7 +252,7 @@ int l_Entity_incComponentDisableLevel(lua_State* L)
 	return 0;
 }
 
-int l_Entity_isComponentEnabled(lua_State * L)
+int l_Entity_isComponentEnabled(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	component::ComponentFlags componentFlag = static_cast<component::ComponentFlags>(luaL_checkinteger(L, 2));
@@ -438,6 +444,13 @@ int l_Entity_lookAtEntity(lua_State* L)
 		const float heading = flat::vector2_angle(targetPosition2d - entityPosition2d);
 		entity.setHeading(heading);
 	}
+	return 0;
+}
+
+int l_Entity_cancelCurrentActions(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	entity.cancelCurrentActions();
 	return 0;
 }
 
@@ -661,7 +674,7 @@ int l_Entity_sleep(lua_State* L)
 	return lua_yield(L, 0);
 }
 
-int l_Entity_getInteractionEntity(lua_State * L)
+int l_Entity_getInteractionEntity(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
@@ -670,7 +683,7 @@ int l_Entity_getInteractionEntity(lua_State * L)
 	return 1;
 }
 
-int l_Entity_getInteractionStateName(lua_State * L)
+int l_Entity_getInteractionStateName(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
@@ -678,7 +691,7 @@ int l_Entity_getInteractionStateName(lua_State * L)
 	return 1;
 }
 
-int l_Entity_interactWith(lua_State * L)
+int l_Entity_interactWith(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	Entity& interactionEntity = getEntity(L, 2);
@@ -691,6 +704,25 @@ int l_Entity_interactWith(lua_State * L)
 
 	entity.moveTo(flat::Vector2(interactionEntity.getPosition()), &interactionEntity);
 
+	return 0;
+}
+
+// INTERACTION
+
+int l_Entity_setInteractionState(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const char* interactionState = luaL_checkstring(L, 2);
+	interaction::InteractionComponent& interactionComponent = getComponent<interaction::InteractionComponent>(L, entity);
+	interactionComponent.setInteractionState(interactionState);
+	return 0;
+}
+
+int l_Entity_resetInteractionState(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	interaction::InteractionComponent& interactionComponent = getComponent<interaction::InteractionComponent>(L, entity);
+	interactionComponent.resetInteractionState();
 	return 0;
 }
 
@@ -959,7 +991,7 @@ int l_Entity_healthChanged(lua_State* L)
 	return 0;
 }
 
-int l_Entity_died(lua_State * L)
+int l_Entity_died(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
@@ -995,7 +1027,7 @@ int l_Entity_click(lua_State* L)
 
 // PROJECTILE
 
-int l_Entity_setProjectileSpeed(lua_State * L)
+int l_Entity_setProjectileSpeed(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	flat::Vector3& speed = flat::lua::getVector3(L, 2);
@@ -1004,7 +1036,7 @@ int l_Entity_setProjectileSpeed(lua_State * L)
 	return 0;
 }
 
-int l_Entity_getProjectileSpeed(lua_State * L)
+int l_Entity_getProjectileSpeed(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	projectile::ProjectileComponent& projectileComponent = getComponent<projectile::ProjectileComponent>(L, entity);

@@ -5,8 +5,8 @@ local EntityData = require 'mods/crispy-guacamole/scripts/entitydata'
 local root = Widget.getRoot()
 
 local bottomPanel
-local buildingContainer
-local unitsContainer
+local selectedEntityContainer
+local buildEntitiesContainer
 
 local function makeBottomPanelContainer(title)
     local container = Widget.makeColumnFlow()
@@ -51,14 +51,14 @@ local function buildWidgets()
     bottomPanel:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.FIXED_Y)
     bottomPanel:setSize(0, 100)
 
-    -- buildings
+    -- selected entity
     do
-        buildingContainer = makeBottomPanelContainer 'Building'
+        selectedEntityContainer = makeBottomPanelContainer 'Selection'
     end
 
-    -- money
+    -- build entities
     do
-        unitsContainer = makeBottomPanelContainer 'Units'
+        buildEntitiesContainer = makeBottomPanelContainer 'Build'
     end
 
     root:addChild(bottomPanel)
@@ -72,13 +72,13 @@ local function setBuilding(building)
             local label = Widget.makeText(buildingData.name, table.unpack(Theme.defaultFont))
             label:setPositionPolicy(Widget.PositionPolicy.CENTER)
             label:setTextColor(Theme.TEXT_COLOR)
-            buildingContainer.addContent(label)
+            selectedEntityContainer.addContent(label)
         end
 
         do
-            local buildingPreview = Preview.entity(building:getTemplateName(), nil, true)
-            buildingPreview:setPositionPolicy(Widget.PositionPolicy.CENTER)
-            buildingContainer.addContent(buildingPreview)
+            local unitPreview = Preview.entity(building:getTemplateName(), nil, true)
+            unitPreview:setPositionPolicy(Widget.PositionPolicy.CENTER)
+            selectedEntityContainer.addContent(unitPreview)
         end
     end
 
@@ -118,18 +118,86 @@ local function setBuilding(building)
                 lineFlow:addChild(label)
             end
 
-            unitsContainer.addContent(lineFlow)
+            buildEntitiesContainer.addContent(lineFlow)
         end
     end
 end
 
 local function clearBuilding()
-    buildingContainer.clearContent()
-    unitsContainer.clearContent()
+    selectedEntityContainer.clearContent()
+    buildEntitiesContainer.clearContent()
+end
+
+local function setUnit(unit)
+    local unitData = EntityData.get(unit:getTemplateName())
+
+    do
+        do
+            local label = Widget.makeText(unitData.name, table.unpack(Theme.defaultFont))
+            label:setPositionPolicy(Widget.PositionPolicy.CENTER)
+            label:setTextColor(Theme.TEXT_COLOR)
+            selectedEntityContainer.addContent(label)
+        end
+
+        do
+            local unitPreview = Preview.entity(unit:getTemplateName(), nil, true, 3)
+            unitPreview:setPositionPolicy(Widget.PositionPolicy.CENTER)
+            selectedEntityContainer.addContent(unitPreview)
+        end
+    end
+
+    do
+        local function build(entityTemplateName)
+            game.setGhostEntity(
+                entityTemplateName,
+                    function(tiles)
+                        -- TODO: check same altitude and ground navigation capability
+                        return true
+                    end,
+                    function(tiles)
+                        local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
+                        tiles:eachTile(function(tile)
+                            local x, y = Map.getTilePosition(tile)
+                            if x + y > bottomTilePosition:x() + bottomTilePosition:y() then
+                                bottomTilePosition:x(x)
+                                bottomTilePosition:y(y)
+                            end
+                        end)
+                        -- spawn construction site and interact
+                        local building = Entity.spawn(entityTemplateName, bottomTilePosition)
+                        building:enterState 'under_construction'
+                        unit:cancelCurrentActions()
+                        unit:interactWith(building)
+                        return false
+                    end
+                )
+        end
+
+        for i = 1, #unitData.buildings do
+            local building = unitData.buildings[i]
+            local buildingData = EntityData.get(building)
+
+            local label = Widget.makeText(buildingData.name, table.unpack(Theme.defaultFont))
+            label:setTextColor(Theme.TEXT_COLOR)
+            label:click(function()
+                build(building)
+            end)
+            buildEntitiesContainer.addContent(label)
+        end
+    end
+end
+
+local function clearUnit()
+    selectedEntityContainer.clearContent()
+    buildEntitiesContainer.clearContent()
 end
 
 return {
     buildWidgets  = buildWidgets,
+
     setBuilding   = setBuilding,
-    clearBuilding = clearBuilding
+    clearBuilding = clearBuilding,
+
+    setUnit       = setUnit,
+    clearUnit     = clearUnit
 }

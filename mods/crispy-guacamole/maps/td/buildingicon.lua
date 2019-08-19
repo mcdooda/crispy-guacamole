@@ -73,7 +73,7 @@ function BuildingIcon:build(parent)
                         end)
                         return isInsideBuildableZone
                     end,
-                    function()
+                    function(tiles)
                         Money:sub(self.towerData.cost)
                         if self.towerData.onPlace then
                             self.towerData.onPlace()

@@ -1,10 +1,3 @@
-local BuildingSelection = require 'mods/crispy-guacamole/scripts/buildingselection'
+local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 
-local states = {}
-
-function states:init(barracks)
-    barracks:setCycleAnimation 'stand'
-    BuildingSelection.init(barracks)
-end
-
-return states
+return BehaviorHelper.basicBuilding()

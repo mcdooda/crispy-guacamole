@@ -78,11 +78,25 @@ void LifeComponent::kill()
 
 void LifeComponent::dealDamage(int damage)
 {
-	if (!m_spawning && !m_despawning && m_health > 0)
+	if (!m_spawning && !m_despawning && m_health > 0 && damage > 0)
 	{
 		damage = std::min(damage, m_health);
-		int previousHealth = m_health;
+		const int previousHealth = m_health;
 		m_health -= damage;
+		healthChanged(previousHealth);
+		if (m_health == 0)
+		{
+			onDie();
+		}
+	}
+}
+
+void LifeComponent::setHealth(int health)
+{
+	if (m_health != health)
+	{
+		const int previousHealth = m_health;
+		m_health = std::max(0, health);
 		healthChanged(previousHealth);
 		if (m_health == 0)
 		{

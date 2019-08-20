@@ -123,13 +123,16 @@ end
 function states:build(gatherer)
 	local building = gatherer:getInteractionEntity()
 	local extraData = building:getExtraData()
-	print('Building', building)
 	gatherer:playAnimation 'full'
 	gatherer:sleep(0.5)
-	if not building:isValid() or not extraData.buildingProgression then
+	if not building:isValid() or not extraData.buildingInProgress then
+		if not gatherer:interactWith(building) then
+			building:cancelCurrentActions()
+		end
 		return
 	end
-	extraData.buildingProgression = extraData.buildingProgression + 1
+	local health = math.min(building:getHealth() + 1, building:getMaxHealth())
+	building:setHealth(health)
 	gatherer:interactWith(building)
 end
 

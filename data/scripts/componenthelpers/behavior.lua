@@ -208,26 +208,20 @@ local function basicBuilding()
 	end
 
 	function states:init(building)
-		coroutine.yield() -- give external code a chance to change state immediately
+		coroutine.yield() -- give external code a chance to change state immediately after spawning
 		init(building)
 	end
 
 	function states:under_construction(building)
-		print(building, 'under construction')
 		building:setInteractionState 'build'
+		building:setHealth(1)
 		local extraData = building:getExtraData()
-		extraData.buildingProgression = 0
-		while extraData.buildingProgression < 100 do
-			print('...', extraData.buildingProgression)
-			building:sleep(0.1)
+		extraData.buildingInProgress = true
+		while building:getHealth() < building:getMaxHealth() do
+			yield()
 		end
-		return 'construction_finished'
-	end
-
-	function states:construction_finished(building)
-		print(building, 'construction finished')
+		extraData.buildingInProgress = false
 		building:resetInteractionState()
-		building:getExtraData().buildingProgression = nil
 		init(building)
 	end
 

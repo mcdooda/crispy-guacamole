@@ -39,7 +39,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		void sleep(float time, float duration);
 
 		inline EntityHandle getInteractionEntity() const { return m_interactionEntity; }
-		inline const char* getInteractionStateName() const { return m_interactionStateName; }
+		inline const std::string& getInteractionStateName() const { return m_interactionStateName; }
 
 #ifdef FLAT_DEBUG
 		void getThreadDebugInfo(std::string& file, int& line) const;
@@ -57,7 +57,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 	private:
 		BehaviorRuntime m_behaviorRuntime;
 		EntityHandle m_interactionEntity;
-		const char* m_interactionStateName;
+		std::string m_interactionStateName;
 };
 
 } // behavior

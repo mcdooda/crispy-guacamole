@@ -65,6 +65,11 @@ void BehaviorRuntime::enterState(const char* stateName)
 
 bool BehaviorRuntime::hasState(const char* stateName)
 {
+	if (*stateName == 0)
+	{
+		return false;
+	}
+
 	const Behavior& behavior = getBehavior();
 	lua_State* L = behavior.getLuaState();
 	{

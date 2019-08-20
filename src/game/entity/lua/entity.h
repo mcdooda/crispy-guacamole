@@ -113,6 +113,7 @@ int l_Entity_isInAttackRange(lua_State* L);
 int l_Entity_isLiving(lua_State* L);
 int l_Entity_kill(lua_State* L);
 int l_Entity_dealDamage(lua_State* L);
+int l_Entity_setHealth(lua_State* L);
 int l_Entity_getHealth(lua_State* L);
 int l_Entity_getMaxHealth(lua_State* L);
 int l_Entity_healthChanged(lua_State* L);

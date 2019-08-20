@@ -32,6 +32,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		void kill();
 		void dealDamage(int damage);
 
+		void setHealth(int health);
 		inline int getHealth() const { return m_health; }
 		inline int getMaxHealth() const { return getTemplate()->getMaxHealth(); }
 

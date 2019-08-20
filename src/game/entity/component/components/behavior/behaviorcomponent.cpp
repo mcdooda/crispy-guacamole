@@ -133,12 +133,12 @@ void BehaviorComponent::tryInteracting()
 	Entity* interactionEntity = m_interactionEntity.getEntity();
 	if (interactionEntity != nullptr)
 	{
-		FLAT_ASSERT(m_interactionStateName != nullptr && m_behaviorRuntime.hasState(m_interactionStateName));
+		FLAT_ASSERT(!m_interactionStateName.empty() && m_behaviorRuntime.hasState(m_interactionStateName.c_str()));
 		if (EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity) < 0.01f || !m_owner->acceptsMoveOrders())
 		{
 			m_owner->cancelCurrentActions(AllComponents & ~behavior::BehaviorComponent::getFlag());
 
-			enterState(m_interactionStateName);
+			enterState(m_interactionStateName.c_str());
 
 			// if the behavior did not change the interaction entity, cancel the interaction
 			if (m_interactionEntity == interactionEntity)
@@ -147,7 +147,7 @@ void BehaviorComponent::tryInteracting()
 			}
 		}
 	}
-	else if (m_interactionStateName != nullptr)
+	else if (!m_interactionStateName.empty())
 	{
 		enterState("missingInteractionEntity");
 		if (!m_interactionEntity.isValid())
@@ -160,7 +160,7 @@ void BehaviorComponent::tryInteracting()
 void BehaviorComponent::cancelInteraction()
 {
 	m_interactionEntity = nullptr;
-	m_interactionStateName = nullptr;
+	m_interactionStateName.clear();
 }
 
 #ifdef FLAT_DEBUG
@@ -213,7 +213,7 @@ void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	}
 
 	Entity* interactionEntity = m_interactionEntity.getEntity();
-	if (interactionEntity != nullptr || m_interactionStateName != nullptr)
+	if (interactionEntity != nullptr || !m_interactionStateName.empty())
 	{
 		std::string str;
 		if (interactionEntity != nullptr)
@@ -225,7 +225,7 @@ void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 			);
 			str += std::string("Distance: ") + std::to_string(EntityHelper::getDistanceBetweenEntitiesWithRadius(m_owner, interactionEntity));
 		}
-		if (m_interactionStateName != nullptr)
+		if (!m_interactionStateName.empty())
 		{
 			str += std::string("\n") + m_interactionStateName;
 		}

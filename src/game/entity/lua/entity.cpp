@@ -134,6 +134,7 @@ int open(Game& game)
 		{"isLiving",                 l_Entity_isLiving},
 		{"kill",                     l_Entity_kill},
 		{"dealDamage",               l_Entity_dealDamage},
+		{"setHealth",                l_Entity_setHealth},
 		{"getHealth",                l_Entity_getHealth},
 		{"getMaxHealth",             l_Entity_getMaxHealth},
 		{"healthChanged",            l_Entity_healthChanged},
@@ -687,7 +688,7 @@ int l_Entity_getInteractionStateName(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
-	lua_pushstring(L, behaviorComponent.getInteractionStateName());
+	lua_pushstring(L, behaviorComponent.getInteractionStateName().c_str());
 	return 1;
 }
 
@@ -697,7 +698,7 @@ int l_Entity_interactWith(lua_State* L)
 	Entity& interactionEntity = getEntity(L, 2);
 
 	const interaction::InteractionComponent& interactionComponent = getComponent<interaction::InteractionComponent>(L, interactionEntity);
-	const char* stateName = interactionComponent.getBehaviorStateName().data();
+	const char* stateName = interactionComponent.getBehaviorStateName().c_str();
 
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
 	behaviorComponent.setInteractionIfCompatible(stateName, &interactionEntity);
@@ -961,9 +962,18 @@ int l_Entity_dealDamage(lua_State* L)
 	FLAT_PROFILE("entity:dealDamage()");
 
 	Entity& entity = getEntity(L, 1);
-	int damage = static_cast<int>(luaL_checkinteger(L, 2));
+	const int damage = static_cast<int>(luaL_checkinteger(L, 2));
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lifeComponent.dealDamage(damage);
+	return 0;
+}
+
+int l_Entity_setHealth(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const int health = static_cast<int>(luaL_checkinteger(L, 2));
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lifeComponent.setHealth(health);
 	return 0;
 }
 

@@ -78,6 +78,36 @@ return {
       12,
       2,
     },
+    {
+      15,
+      1,
+      3,
+      2,
+    },
+    {
+      16,
+      1,
+      15,
+      1,
+    },
+    {
+      17,
+      1,
+      15,
+      2,
+    },
+    {
+      18,
+      1,
+      15,
+      3,
+    },
+    {
+      19,
+      1,
+      15,
+      4,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -95,6 +125,10 @@ return {
     },
     {
       loadArguments = {
+        {
+          5,
+          '',
+        },
         {
           5,
           '',
@@ -146,6 +180,33 @@ return {
     },
     {
       name = 'vector2',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'build',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
     },
     {
       loadArguments = {

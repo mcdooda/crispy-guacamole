@@ -34,7 +34,10 @@ BaseMapState::BaseMapState() :
 	, m_isReloading(false)
 #endif
 {
-
+	m_selectionChangedSlotProxy.init(
+		&selectionChanged,
+		[](lua_State* L) {}
+	);
 }
 
 void BaseMapState::enter(Game& game)
@@ -870,7 +873,10 @@ void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePos
 	if (mouseOverEntity != nullptr)
 	{
 		clickEntity(mouseOverEntity);
-		addToSelectedEntities(game, mouseOverEntity);
+		if (addToSelectedEntities(game, mouseOverEntity))
+		{
+			selectionChanged();
+		}
 	}
 }
 
@@ -903,6 +909,7 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 					addToSelectedEntities(game, entity);
 				}
 			}
+			selectionChanged();
 		}
 		else
 		{
@@ -927,6 +934,8 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 	std::vector<const map::MapObject*> entitiesInSelectionWidget;
 	m_displayManager.getEntitiesInAABB(selectionAABB, entitiesInSelectionWidget);
 
+	const int numSelectedEntities = static_cast<int>(m_selectedEntities.size());
+
 	for (const map::MapObject* mapObject : entitiesInSelectionWidget)
 	{
 		// TODO: fix these casts
@@ -942,25 +951,36 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 			addToSelectedEntities(game, entity);
 		}
 	}
+
+	if (static_cast<int>(m_selectedEntities.size()) > numSelectedEntities)
+	{
+		selectionChanged();
+	}
 }
 
 void BaseMapState::clearSelection()
 {
-	for (entity::Entity* entity : m_selectedEntities)
+	if (!m_selectedEntities.empty())
 	{
-		entity->setSelected(false);
+		for (entity::Entity* entity : m_selectedEntities)
+		{
+			entity->setSelected(false);
+		}
+		m_selectedEntities.clear();
+		selectionChanged();
 	}
-	m_selectedEntities.clear();
 }
 
-void BaseMapState::addToSelectedEntities(Game& game, entity::Entity* entity)
+bool BaseMapState::addToSelectedEntities(Game& game, entity::Entity* entity)
 {
 	if ((entity->canBeSelected() || forceEntitySelection(game)) && !entity->isSelected())
 	{
 		entity->setSelected(true);
 		FLAT_ASSERT(std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity) == m_selectedEntities.end());
 		m_selectedEntities.push_back(entity);
+		return true;
 	}
+	return false;
 }
 
 void BaseMapState::removeFromSelectedEntities(entity::Entity* entity)
@@ -971,6 +991,7 @@ void BaseMapState::removeFromSelectedEntities(entity::Entity* entity)
 		std::vector<entity::Entity*>::iterator it = std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity);
 		FLAT_ASSERT(it != m_selectedEntities.end());
 		m_selectedEntities.erase(it);
+		selectionChanged();
 	}
 }
 
@@ -1003,6 +1024,16 @@ bool BaseMapState::forceEntitySelection(Game& game) const
 #else
 	return false;
 #endif
+}
+
+int BaseMapState::addSelectionChangedCallback(lua_State* L, int index)
+{
+	return m_selectionChangedSlotProxy.addCallback(L, index);
+}
+
+void BaseMapState::removeSelectionChangedCallback(int index)
+{
+	m_selectionChangedSlotProxy.removeCallback(index);
 }
 
 void BaseMapState::handleGameActionInputs(Game& game)

@@ -25,7 +25,7 @@ class BehaviorRuntime final
 		void setEntity(Entity* entity);
 		
 		void enterState(const char* stateName);
-		bool hasState(const char* stateName);
+		bool hasState(const char* stateName) const;
 
 		void sleep(float time, float duration);
 

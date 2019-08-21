@@ -101,6 +101,7 @@ int open(Game& game)
 		{"getInteractionEntity",     l_Entity_getInteractionEntity},
 		{"getInteractionStateName",  l_Entity_getInteractionStateName},
 		{"interactWith",             l_Entity_interactWith},
+		{"canInteractWith",          l_Entity_canInteractWith},
 
 		// interaction
 		{"setInteractionState",      l_Entity_setInteractionState},
@@ -701,11 +702,34 @@ int l_Entity_interactWith(lua_State* L)
 	const char* stateName = interactionComponent.getBehaviorStateName().c_str();
 
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
-	behaviorComponent.setInteractionIfCompatible(stateName, &interactionEntity);
-
-	entity.moveTo(flat::Vector2(interactionEntity.getPosition()), &interactionEntity);
+	if (behaviorComponent.setInteractionIfCompatible(stateName, &interactionEntity))
+	{
+		entity.moveTo(flat::Vector2(interactionEntity.getPosition()), &interactionEntity);
+	}
 
 	return 0;
+}
+
+int l_Entity_canInteractWith(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+
+	const char* stateName = nullptr;
+	if (lua_isstring(L, 2))
+	{
+		stateName = lua_tostring(L, 2);
+	}
+	else
+	{
+		Entity& interactionEntity = getEntity(L, 2);
+		const interaction::InteractionComponent& interactionComponent = getComponent<interaction::InteractionComponent>(L, interactionEntity);
+		stateName = interactionComponent.getBehaviorStateName().c_str();
+	}
+
+	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
+	lua_pushboolean(L, behaviorComponent.canInteract(stateName));
+
+	return 1;
 }
 
 // INTERACTION

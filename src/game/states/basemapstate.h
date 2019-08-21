@@ -105,6 +105,9 @@ class BaseMapState : public BaseState
 
 		bool isMouseOverUi(game::Game& game) const;
 
+		int addSelectionChangedCallback(lua_State* L, int index);
+		void removeSelectionChangedCallback(int index);
+
 		// time
 		inline const flat::time::Clock& getGameClock() const { FLAT_ASSERT(m_gameClock != nullptr); return *m_gameClock.get(); }
 		inline flat::time::Clock& getGameClock() { FLAT_ASSERT(m_gameClock != nullptr); return *m_gameClock.get(); }
@@ -141,7 +144,7 @@ class BaseMapState : public BaseState
 		void selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);
 		void clearSelection();
-		void addToSelectedEntities(Game& game, entity::Entity* entity);
+		bool addToSelectedEntities(Game& game, entity::Entity* entity);
 		void removeFromSelectedEntities(entity::Entity* entity);
 		bool isSmallSelection() const;
 		void clickEntity(entity::Entity* entity) const;
@@ -158,6 +161,9 @@ class BaseMapState : public BaseState
 		template <class T>
 		void reloadToState(Game& game);
 #endif
+
+	public:
+		flat::Slot<> selectionChanged;
 		
 	protected:
 		// resource loading
@@ -180,6 +186,8 @@ class BaseMapState : public BaseState
 		map::DisplayManager m_displayManager;
 
 		std::vector<entity::Entity*> m_selectedEntities;
+		flat::lua::SlotProxy<> m_selectionChangedSlotProxy;
+
 		entity::EntityHandle m_mouseOverEntity;
 		map::TileIndex m_mouseOverTileIndex;
 

@@ -38,7 +38,7 @@ return {
     },
     {
       loadArguments = {
-        2,
+        3,
       },
       name = 'number',
     },

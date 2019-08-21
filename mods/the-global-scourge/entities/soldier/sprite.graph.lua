@@ -1,10 +1,22 @@
-script {
+return {
   links = {
     {
       1,
       1,
       2,
       1,
+    },
+    {
+      1,
+      2,
+      15,
+      1,
+    },
+    {
+      1,
+      3,
+      15,
+      2,
     },
     {
       3,
@@ -79,6 +91,7 @@ script {
       4,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/spritecomponent',
@@ -157,6 +170,12 @@ script {
         0.10000000149012,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        'data/compounds/script/Init Sprite',
+      },
+      name = 'compound',
     },
   },
 }

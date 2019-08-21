@@ -29,6 +29,7 @@ int l_Map_debug_enableTileIndicesDebug(lua_State* L);
 int l_Map_getNumEntities(lua_State* L);
 int l_Map_getEntitiesInRange(lua_State* L);
 int l_Map_eachSelectedEntity(lua_State* L);
+int l_Map_selectionChanged(lua_State* L);
 int l_Map_getEntitiesOfType(lua_State* L);
 
 int l_Map_getZone(lua_State* L);

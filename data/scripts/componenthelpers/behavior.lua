@@ -213,14 +213,17 @@ local function basicBuilding()
 	end
 
 	function states:under_construction(building)
+		building:setCycleAnimation 'build'
 		building:setInteractionState 'build'
 		building:setHealth(1)
 		local extraData = building:getExtraData()
+
 		extraData.buildingInProgress = true
 		while building:getHealth() < building:getMaxHealth() do
 			yield()
 		end
 		extraData.buildingInProgress = false
+		
 		building:resetInteractionState()
 		init(building)
 	end

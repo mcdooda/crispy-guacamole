@@ -61,6 +61,13 @@ local function buildWidgets()
         buildEntitiesContainer = makeBottomPanelContainer 'Build'
     end
 
+    Map.selectionChanged(function()
+        print 'TODO selection changed'
+        for _, selectedEntity in Map.eachSelectedEntity() do
+            print(selectedEntity)
+        end
+    end)
+
     root:addChild(bottomPanel)
 end
 

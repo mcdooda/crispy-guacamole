@@ -35,6 +35,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		
 		void enterState(const char* stateName);
 		bool setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity);
+		bool canInteract(const char* stateName) const;
 
 		void sleep(float time, float duration);
 

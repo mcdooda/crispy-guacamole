@@ -92,13 +92,18 @@ void BehaviorComponent::enterState(const char* stateName)
 
 bool BehaviorComponent::setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity)
 {
-	if (m_behaviorRuntime.hasState(stateName))
+	if (canInteract(stateName))
 	{
 		m_interactionStateName = stateName;
 		m_interactionEntity = interactionEntity->getHandle();
 		return true;
 	}
 	return false;
+}
+
+bool BehaviorComponent::canInteract(const char* stateName) const
+{
+	return m_behaviorRuntime.hasState(stateName);
 }
 
 void BehaviorComponent::sleep(float time, float duration)

@@ -33,6 +33,7 @@ int open(lua_State* L)
 		{"getNumEntities",                l_Map_getNumEntities},
 		{"getEntitiesInRange",            l_Map_getEntitiesInRange},
 		{"eachSelectedEntity",            l_Map_eachSelectedEntity},
+		{"selectionChanged",              l_Map_selectionChanged},
 		{"getEntitiesOfType",             l_Map_getEntitiesOfType},
 
 		{"getZone",                       l_Map_getZone},
@@ -178,6 +179,14 @@ int l_Map_eachSelectedEntity(lua_State* L)
 	return 3;
 }
 
+int l_Map_selectionChanged(lua_State* L)
+{
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	flat::state::State* state = game.getStateMachine().getState();
+	states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	mapState.addSelectionChangedCallback(L, 1);
+	return 0;
+}
 
 int l_Map_getEntitiesOfType(lua_State* L)
 {

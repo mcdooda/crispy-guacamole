@@ -63,7 +63,7 @@ void BehaviorRuntime::enterState(const char* stateName)
 	updateCurrentState();
 }
 
-bool BehaviorRuntime::hasState(const char* stateName)
+bool BehaviorRuntime::hasState(const char* stateName) const
 {
 	if (*stateName == 0)
 	{

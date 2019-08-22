@@ -143,10 +143,11 @@ void BehaviorComponent::tryInteracting()
 		{
 			m_owner->cancelCurrentActions(AllComponents & ~behavior::BehaviorComponent::getFlag());
 
-			enterState(m_interactionStateName.c_str());
+			const std::string originalInteractionStateName = m_interactionStateName;
+			enterState(originalInteractionStateName.c_str());
 
 			// if the behavior did not change the interaction entity, cancel the interaction
-			if (m_interactionEntity == interactionEntity)
+			if (m_interactionEntity == interactionEntity && m_interactionStateName == originalInteractionStateName)
 			{
 				cancelInteraction();
 			}

@@ -1,7 +1,10 @@
 #ifndef GAME_ENTITY_ENTITYHELPER_H
 #define GAME_ENTITY_ENTITYHELPER_H
 
+#include <flat.h>
+
 #include "../map/navigability.h"
+#include "../map/tile.h"
 
 namespace game
 {
@@ -14,6 +17,8 @@ class EntityHelper
 {
 	public:
 		static float getRadius(const Entity* entity);
+		static flat::Vector3 getCenter(const Entity* entity);
+		static void eachEntityTile(const Entity* entity, std::function<void(map::TileIndex)> func);
 
 		static float getDistanceBetweenEntitiesWithRadius(const Entity* a, const Entity* b);
 

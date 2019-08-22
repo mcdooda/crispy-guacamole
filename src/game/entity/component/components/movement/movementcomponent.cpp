@@ -270,16 +270,23 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 
 		map::Navigability initialTileNavigability = map::Navigability::NONE;
 
-		map::TileIndex interactionTileIndex = map::TileIndex::INVALID_TILE;
+		flat::containers::HybridArray<map::TileIndex, 4> interactionTileIndices;
+		flat::containers::HybridArray<map::Navigability, 4> interactionTileInitialNavigabilities;
+
 		if (interactionEntity != nullptr)
 		{
-			map::TileIndex tileIndex = interactionEntity->getTileIndexFromPosition();
-			if (!map.isTileNavigable(tileIndex, navigabilityMask))
-			{
-				initialTileNavigability = map.getTileNavigability(tileIndex);
-				map.setTileNavigability(tileIndex, navigabilityMask); // it's cheating because we are setting a mask instead of single navigability
-				interactionTileIndex = tileIndex;
-			}
+			EntityHelper::eachEntityTile(
+				interactionEntity,
+				[&map, &interactionTileIndices, &interactionTileInitialNavigabilities, navigabilityMask](map::TileIndex tileIndex)
+				{
+					if (!map.isTileNavigable(tileIndex, navigabilityMask))
+					{
+						interactionTileIndices.add(tileIndex);
+						interactionTileInitialNavigabilities.add(map.getTileNavigability(tileIndex));
+						map.setTileNavigability(tileIndex, navigabilityMask); // it's cheating because we are setting a mask instead of single navigability
+					}
+				}
+			);
 		}
 
 		std::vector<flat::Vector2> path;
@@ -298,9 +305,10 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 
 		pathfinder->~Pathfinder();
 
-		if (interactionTileIndex != map::TileIndex::INVALID_TILE)
+		FLAT_ASSERT(interactionTileIndices.getSize() == interactionTileInitialNavigabilities.getSize());
+		for (unsigned int i = 0, e = interactionTileIndices.getSize(); i < e; ++i)
 		{
-			map.setTileNavigability(interactionTileIndex, initialTileNavigability);
+			map.setTileNavigability(interactionTileIndices[i], interactionTileInitialNavigabilities[i]);
 		}
 	}
 }
@@ -442,7 +450,7 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 
 	if (m_isTouchingGround)
 	{
-		debugDisplay.add3dCircle(m_owner->getPosition(), 0.25f, flat::video::Color::BLUE);
+		debugDisplay.add3dCircle(m_owner->getPosition(), EntityHelper::getRadius(m_owner), flat::video::Color::BLUE);
 	}
 	else
 	{

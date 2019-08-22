@@ -62,10 +62,12 @@ local function buildWidgets()
     end
 
     Map.selectionChanged(function()
+        --[[
         print 'TODO selection changed'
         for _, selectedEntity in Map.eachSelectedEntity() do
             print(selectedEntity)
         end
+        ]]
     end)
 
     root:addChild(bottomPanel)
@@ -173,8 +175,12 @@ local function setUnit(unit)
                         -- spawn construction site and interact
                         local building = Entity.spawn(entityTemplateName, bottomTilePosition)
                         building:enterState 'under_construction'
-                        unit:cancelCurrentActions()
-                        unit:interactWith(building)
+                        for _, entity in Map.eachSelectedEntity() do
+                            if entity:canInteractWith(building) then
+                                entity:cancelCurrentActions()
+                                entity:interactWith(building)
+                            end
+                        end
                         return false
                     end
                 )

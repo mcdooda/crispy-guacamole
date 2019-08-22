@@ -150,7 +150,7 @@ class Entity final : public map::MapObject
 		void checkSpriteAABB();
 #endif
 
-		map::TileIndex getTileIndexFromPosition();
+		map::TileIndex getTileIndexFromPosition() const;
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;

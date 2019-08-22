@@ -704,7 +704,7 @@ int l_Entity_interactWith(lua_State* L)
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
 	if (behaviorComponent.setInteractionIfCompatible(stateName, &interactionEntity))
 	{
-		entity.moveTo(flat::Vector2(interactionEntity.getPosition()), &interactionEntity);
+		entity.moveTo(flat::Vector2(EntityHelper::getCenter(&interactionEntity)), &interactionEntity);
 	}
 
 	return 0;

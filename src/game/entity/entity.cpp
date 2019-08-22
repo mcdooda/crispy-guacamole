@@ -302,7 +302,7 @@ void Entity::setDebuggedComponentFlags(component::ComponentFlags debuggedCompone
 }
 #endif
 
-map::TileIndex Entity::getTileIndexFromPosition()
+map::TileIndex Entity::getTileIndexFromPosition() const
 {
 	FLAT_ASSERT(m_map != nullptr);
 	map::TileIndex tileIndex = m_map->getTileIndex(m_position.x, m_position.y);

@@ -1,6 +1,1 @@
-return {
-	speed = 3,
-	jumpForce = 4.1,
-	weight = 9,
-	snapToGround = true
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human_soldier/movement'

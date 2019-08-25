@@ -1,10 +1,12 @@
 #include "movementcomponent.h"
-#include "movementcomponenttemplate.h"
+
 #include "../collision/collisioncomponent.h"
 #include "../projectile/projectilecomponent.h"
+
 #include "../../../entity.h"
 #include "../../../entityhelper.h"
 #include "../../../entitytemplate.h"
+
 #include "../../../../map/map.h"
 #include "../../../../map/tile.h"
 #include "../../../../map/scopednavigabilityalteration.h"

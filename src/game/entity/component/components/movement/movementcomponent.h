@@ -1,8 +1,8 @@
 #ifndef GAME_ENTITY_COMPONENT_MOVEMENT_MOVEMENTCOMPONENT_H
 #define GAME_ENTITY_COMPONENT_MOVEMENT_MOVEMENTCOMPONENT_H
 
-#include <deque>
 #include <flat.h>
+
 #include "movementcomponenttemplate.h"
 #include "../../component.h"
 

@@ -131,7 +131,7 @@ function states:build(gatherer)
 		return
 	end
 
-	gatherer:playAnimation 'full'
+	gatherer:playAnimation 'build'
 	gatherer:sleep(0.5)
 
 	if not building:isValid() then

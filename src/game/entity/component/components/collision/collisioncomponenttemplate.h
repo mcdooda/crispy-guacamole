@@ -22,9 +22,9 @@ class CollisionComponentTemplate : public ComponentTemplate
 
 		inline float getRadius() const { return m_collisionBox.getRadius(); }
 
-		inline bool getSeparate() const { return m_separate; }
+		inline bool shouldSeparateFromOtherEntities() const { return m_separate; }
 
-		inline bool getSeparateSameType() const { return m_separateSameType; }
+		inline bool shouldSeparateFromSameType() const { return m_separateSameType; }
 
 	private:
 		CollisionBox m_collisionBox;

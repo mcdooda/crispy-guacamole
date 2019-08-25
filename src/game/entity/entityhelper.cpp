@@ -58,6 +58,35 @@ void EntityHelper::eachEntityTile(const Entity* entity, std::function<void(map::
 	func(entity->getTileIndexFromPosition());
 }
 
+
+bool EntityHelper::canCollide(const Entity* a, const Entity* b)
+{
+	if (a == b)
+	{
+		return false;
+	}
+
+	const component::collision::CollisionComponentTemplate* aCollisionComponentTemplate = a->getComponentTemplate<component::collision::CollisionComponent>();
+	if (aCollisionComponentTemplate == nullptr
+		|| !aCollisionComponentTemplate->shouldSeparateFromOtherEntities())
+	{
+		return false;
+	}
+
+	const component::collision::CollisionComponentTemplate* bCollisionComponentTemplate = b->getComponentTemplate<component::collision::CollisionComponent>();
+	if (bCollisionComponentTemplate == nullptr || !bCollisionComponentTemplate->shouldSeparateFromOtherEntities())
+	{
+		return false;
+	}
+
+	if (aCollisionComponentTemplate == bCollisionComponentTemplate)
+	{
+		return aCollisionComponentTemplate->shouldSeparateFromSameType();
+	}
+
+	return true;
+}
+
 namespace
 {
 void locGetPropEntityBounds(const flat::Vector3& position, const component::prop::PropComponentTemplate& propComponentTemplate, flat::AABB2& bounds)

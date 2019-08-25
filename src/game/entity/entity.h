@@ -39,9 +39,10 @@ class Entity final : public map::MapObject
 		inline EntityHandle getHandle() const { return EntityHandle(this); }
 		
 		void setPosition(const flat::Vector3& position);
-		void setXY(const flat::Vector2& xy);
+		void setPosition2d(const flat::Vector2& position2d);
 		void setZ(float z);
 		inline const flat::Vector3& getPosition() const { return m_position; }
+		inline const flat::Vector2& getPosition2d() const { return reinterpret_cast<const flat::Vector2&>(m_position); }
 		
 		inline const map::Map* getMap() const { return m_map; }
 		inline map::Map* getMap() { return m_map; }
@@ -97,8 +98,12 @@ class Entity final : public map::MapObject
 
 		template <class ComponentType>
 		inline const ComponentType* getComponent() const;
+
 		template <class ComponentType>
 		inline ComponentType* getComponent();
+
+		template <class ComponentType>
+		inline bool hasComponent() const { return getComponent<ComponentType>() != nullptr; }
 
 		const component::Component* findComponent(component::ComponentFlags componentFlag) const;
 		component::Component* findComponent(component::ComponentFlags componentFlag);
@@ -111,6 +116,8 @@ class Entity final : public map::MapObject
 		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 		const std::string& getTemplateName() const;
 
+		template <class ComponentType>
+		inline const typename ComponentType::TemplateType* getComponentTemplate() const;
 
 		void setSelected(bool selected);
 		inline bool isSelected() const { return m_selected; }
@@ -196,6 +203,12 @@ class Entity final : public map::MapObject
 		bool m_debug : 1;
 #endif
 };
+
+template <class ComponentType>
+const typename ComponentType::TemplateType* game::entity::Entity::getComponentTemplate() const
+{
+	return m_template->getComponentTemplate<ComponentType>();
+}
 
 template <class ComponentType>
 inline const ComponentType* Entity::findComponent() const

@@ -58,10 +58,10 @@ void Entity::setPosition(const flat::Vector3& position)
 	m_aabbDirty = true;
 }
 
-void Entity::setXY(const flat::Vector2& xy)
+void Entity::setPosition2d(const flat::Vector2& position2d)
 {
-	m_position.x = xy.x;
-	m_position.y = xy.y;
+	m_position.x = position2d.x;
+	m_position.y = position2d.y;
 	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID_TILE);
 	if (m_map)
 	{

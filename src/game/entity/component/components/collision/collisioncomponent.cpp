@@ -39,7 +39,7 @@ float CollisionComponent::getBottom(float z) const
 void CollisionComponent::separateFromNearbyEntities()
 {
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
-	if (!collisionComponentTemplate->getSeparate())
+	if (!collisionComponentTemplate->shouldSeparateFromOtherEntities())
 		return;
 
 	const flat::Vector3& position = m_owner->getPosition();
@@ -69,8 +69,8 @@ void CollisionComponent::separateFromNearbyEntities()
 		const flat::Vector3& neighborPosition = neighbor->getPosition();
 		const EntityTemplate* neighborTemplate = neighbor->getEntityTemplate().get();
 		const CollisionComponentTemplate* neighborCollisionComponentTemplate = neighborTemplate->getComponentTemplate<CollisionComponent>();
-		if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->getSeparate()
-			&& !(neighborCollisionComponentTemplate == collisionComponentTemplate && !collisionComponentTemplate->getSeparateSameType()))
+		if (neighborCollisionComponentTemplate != nullptr && neighborCollisionComponentTemplate->shouldSeparateFromOtherEntities()
+			&& !(neighborCollisionComponentTemplate == collisionComponentTemplate && !collisionComponentTemplate->shouldSeparateFromSameType()))
 		{
 			const CollisionBox& neighborCollisionBox = neighborCollisionComponentTemplate->getCollisionBox();
 			flat::Vector3 penetration;

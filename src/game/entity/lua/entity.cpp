@@ -564,7 +564,7 @@ int l_Entity_setIsStrafing(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	bool isStrafing = lua_toboolean(L, 2) == 1;
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	movementComponent.setIsStrafing(isStrafing);
+	movementComponent.setStrafing(isStrafing);
 	return 0;
 }
 
@@ -581,7 +581,7 @@ int l_Entity_isFollowingPath(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	bool isFollowingPath = movementComponent.isMovingAlongPath();
+	bool isFollowingPath = movementComponent.isBusy();
 	lua_pushboolean(L, isFollowingPath);
 	return 1;
 }

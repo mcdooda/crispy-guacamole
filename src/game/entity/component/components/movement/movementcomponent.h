@@ -26,11 +26,10 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 {
 	private:
 		static constexpr int INVALID_POINT_INDEX = -1;
-
-		static constexpr float MIN_Z_EPSILON = 0.1f;
 		static constexpr float MIN_DISTANCE_TO_DESTINATION = FLT_EPSILON;
-
 		static constexpr float MAX_AVOIDANCE_RADIUS = 1.f;
+		static constexpr float MIN_HEADING_CHANGE = flat::PI_2 / 64.f;
+		static constexpr float JUMP_MIN_Z_DIFFERENCE = 0.1f;
 
 	public:
 		inline static const char* getConfigName() { return "movement"; }
@@ -43,8 +42,6 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool isBusy() const override;
 		void cancelCurrentAction() override;
 		
-		bool isMovingAlongPath() const;
-		flat::Vector2 getCurrentMovementDirection() const;
 		void moveTo(const flat::Vector2& destination, Entity* interactionEntity = nullptr);
 		
 		void jump();
@@ -56,7 +53,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		inline void setMovementSpeed(float movementSpeed) { FLAT_ASSERT(movementSpeed > 0.f); m_movementSpeed = movementSpeed; }
 		inline float getMovementSpeed() const { return m_movementSpeed; }
 
-		inline void setIsStrafing(bool isStrafing) { m_isStrafing = isStrafing; }
+		inline void setStrafing(bool isStrafing) { m_isStrafing = isStrafing; }
 		inline bool isStrafing() const { return m_isStrafing; }
 
 #ifdef FLAT_DEBUG
@@ -68,16 +65,21 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		flat::Slot<> movementStopped;
 		
 	private:
-		void progressAlongPath(float elapsedTime);
+		bool isMovingAlongPath() const;
+		flat::Vector2 getCurrentMovementDirection() const;
 		const flat::Vector2& getNextPathPoint() const;
+		void progressAlongPath(float elapsedTime);
+
+		void avoidClosestEntity(flat::Vector2& steering) const;
+		const Entity* getClosestEntityToAvoid(const flat::Vector2& steering, const flat::Matrix4& transform2dInverse) const;
+		void getAvoidanceArea(flat::Vector2& center, float& radius) const;
 
 		void startMovement();
 		void stopMovement();
 
 		void triggerStartStopCallbacks();
 
-		void getAvoidanceArea(flat::Vector2& center, float& radius) const;
-
+		void jumpIfNecessary(const flat::Vector2& steering);
 		void fall(float elapsedTime);
 
 		bool snapEntityToTile(Entity* entity, map::Map* map);
@@ -112,7 +114,9 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 		bool m_wasMovingLastFrame : 1;
 
-		FLAT_DEBUG_ONLY(flat::Vector2 m_steering;)
+#ifdef FLAT_DEBUG
+		flat::Vector2 m_debugSteering;
+#endif
 };
 
 } // movement

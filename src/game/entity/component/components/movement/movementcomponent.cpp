@@ -238,6 +238,11 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 
 void MovementComponent::avoidClosestEntity(flat::Vector2& steering) const
 {
+	if (!m_isTouchingGround)
+	{
+		return;
+	}
+
 	const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();
 	if (collisionComponentTemplate == nullptr || !collisionComponentTemplate->shouldSeparateFromOtherEntities())
 	{
@@ -309,6 +314,7 @@ const Entity* MovementComponent::getClosestEntityToAvoid(const flat::Vector2& st
 			// check if the other entity is static or moving in the same direction
 			const movement::MovementComponent* otherMovementComponent = otherEntity->getComponent<movement::MovementComponent>();
 			if (otherMovementComponent == nullptr
+				|| !otherMovementComponent->isTouchingGround()
 				|| (otherMovementComponent->isMovingAlongPath() && flat::dot(steering, otherMovementComponent->getCurrentMovementDirection()) > 0.f))
 			{
 				return;
@@ -435,7 +441,7 @@ bool MovementComponent::collidedWithMap(map::TileIndex tileIndex, const flat::Ve
 {
 	if (!m_isTouchingGround)
 	{
-		if (normal.z > flat::SQRT_2_DIV_2) // the collision normal is vertical and upwards
+		if (normal.z > 0.f) // the collision normal is upwards
 		{
 			m_owner->setZ(m_owner->getMap()->getTileZ(tileIndex));
 			m_isTouchingGround = true;

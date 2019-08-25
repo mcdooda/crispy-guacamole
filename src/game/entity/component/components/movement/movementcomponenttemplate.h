@@ -1,8 +1,9 @@
 #ifndef GAME_ENTITY_COMPONENT_MOVEMENT_MOVEMENTCOMPONENTTEMPLATE_H
 #define GAME_ENTITY_COMPONENT_MOVEMENT_MOVEMENTCOMPONENTTEMPLATE_H
 
-#include "../../componenttemplate.h"
-#include "../../../../map/navigability.h"
+#include "entity/component/componenttemplate.h"
+
+#include "map/navigability.h"
 
 namespace game
 {

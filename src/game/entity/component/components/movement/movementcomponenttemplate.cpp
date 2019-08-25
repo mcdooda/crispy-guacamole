@@ -1,5 +1,6 @@
 #include "movementcomponenttemplate.h"
-#include "../../../../game.h"
+
+#include "game.h"
 
 namespace game
 {

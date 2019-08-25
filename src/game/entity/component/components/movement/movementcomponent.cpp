@@ -112,7 +112,7 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 	const float jumpHeight = movementComponentTemplate->getJumpMaxHeight();
 	map::Navigability navigabilityMask = movementComponentTemplate->getNavigabilityMask();
 
-	// get the right pathfinder class depending on if the movement is restricted to a given zone
+	// get the right pathfinder class depending on if the movement is restricted to a given zone or not
 	map::pathfinder::Pathfinder* pathfinder = nullptr;
 	if (const map::Zone* zone = m_restrictionZone.lock().get())
 	{
@@ -195,7 +195,6 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 	m_debugSteering = steering;
 #endif
 
-	const flat::Vector2& position2d = m_owner->getPosition2d();
 
 	steering = flat::normalize(steering);
 
@@ -205,9 +204,11 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 	{
 		m_owner->setHeading(flat::vector2_angle(steering), MIN_HEADING_CHANGE);
 	}
+
+	const flat::Vector2& position2d = m_owner->getPosition2d();
 	flat::Vector2 newPosition2d = position2d + steering * m_movementSpeed * elapsedTime;
 
-	// check if the new position has overtaken the next path point, move it a bit backwards if necessary
+	// check if the new position has overtaken the next path point and move it a bit backwards if necessary
 	const flat::Vector2& nextPathPoint = getNextPathPoint();
 	flat::Vector2 newMovementDirection = nextPathPoint - newPosition2d;
 	const bool nextPathPointOvertaken = flat::dot(currentMovementDirection, newMovementDirection) <= 0.f;

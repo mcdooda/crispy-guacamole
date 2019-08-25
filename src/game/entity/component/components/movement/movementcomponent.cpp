@@ -236,7 +236,6 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 	}
 }
 
-
 void MovementComponent::avoidClosestEntity(flat::Vector2& steering) const
 {
 	const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();

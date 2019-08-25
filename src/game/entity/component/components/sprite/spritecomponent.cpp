@@ -37,6 +37,7 @@ void SpriteComponent::init()
 	}
 
 	m_owner->addedToMap.on(this, &SpriteComponent::addedToMap);
+	m_owner->removedFromMap.on(this, &SpriteComponent::removedFromMap);
 
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& onInit = getTemplate()->getOnInit();
 	if (!onInit.isEmpty())
@@ -234,9 +235,27 @@ bool SpriteComponent::deselected()
 
 bool SpriteComponent::addedToMap(Entity* entity, map::Map* map)
 {
-	const flat::Vector3& position = entity->getPosition();
+	updateSpritePosition(entity->getPosition());
+	m_owner->positionChanged.on(this, &SpriteComponent::updateSpritePosition);
+	return true;
+}
+
+bool SpriteComponent::removedFromMap(Entity* entity)
+{
+	m_owner->positionChanged.off(this);
+	return true;
+}
+
+bool SpriteComponent::updateSpritePosition(const flat::Vector3& position)
+{
+	FLAT_ASSERT(m_owner->hasSprite());
+
+	const map::Map* map = m_owner->getMap();
+	FLAT_ASSERT(map != nullptr);
+
 	flat::Vector2 position2d(map->getTransform() * position);
-	m_sprite.setPosition(position2d);
+	m_owner->getSprite().setPosition(position2d);
+
 	return true;
 }
 

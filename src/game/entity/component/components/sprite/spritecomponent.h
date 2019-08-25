@@ -48,6 +48,9 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool deselected();
 
 		bool addedToMap(Entity* entity, map::Map* map);
+		bool removedFromMap(Entity* entity);
+
+		bool updateSpritePosition(const flat::Vector3& position);
 		
 	private:
 		flat::render::AnimatedSprite m_sprite;

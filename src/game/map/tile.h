@@ -19,10 +19,20 @@ enum TileIndex
 	INVALID_TILE = 0xFFFFFFFF
 };
 
+inline bool isValidTile(TileIndex tileIndex)
+{
+	return tileIndex != TileIndex::INVALID_TILE;
+}
+
 enum PropIndex
 {
 	INVALID_PROP = 0xFFFFFFFF
 };
+
+inline bool isValidProp(PropIndex propIndex)
+{
+	return propIndex != PropIndex::INVALID_PROP;
+}
 
 class Tile final : public MapObject
 {

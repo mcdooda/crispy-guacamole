@@ -94,7 +94,8 @@ class Map
 
 		TileIndex getTileIndex(int x, int y) const;
 		TileIndex getTileIndex(const flat::Vector2i& position) const;
-		TileIndex getTileIndex(float x, float y) const;
+		inline TileIndex getTileIndex(float x, float y) const { return getTileIndex(static_cast<int>(std::round(x)), static_cast<int>(std::round(y))); }
+		inline TileIndex getTileIndex(const flat::Vector2& position) const { return getTileIndex(position.x, position.y); }
 		TileIndex getTileIndex(const Tile* tile) const;
 
 		void getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const;

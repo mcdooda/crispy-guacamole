@@ -31,7 +31,7 @@ flat::Vector3 EntityHelper::getCenter(const Entity* entity)
 void EntityHelper::eachEntityTile(const Entity* entity, std::function<void(map::TileIndex)> func)
 {
 	const map::Map* map = entity->getMap();
-	FLAT_ASSERT(map != nullptr, "Cannot iterate on tile from an entity that is not in a map");
+	FLAT_ASSERT_MSG(map != nullptr, "Cannot iterate on tiles from an entity that is not in a map");
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
 	const component::prop::PropComponentTemplate* propComponentTemplate = entityTemplate->getComponentTemplate<component::prop::PropComponent>();
 	if (propComponentTemplate != nullptr)
@@ -56,6 +56,35 @@ void EntityHelper::eachEntityTile(const Entity* entity, std::function<void(map::
 		return;
 	}
 	func(entity->getTileIndexFromPosition());
+}
+
+
+bool EntityHelper::canCollide(const Entity* a, const Entity* b)
+{
+	if (a == b)
+	{
+		return false;
+	}
+
+	const component::collision::CollisionComponentTemplate* aCollisionComponentTemplate = a->getComponentTemplate<component::collision::CollisionComponent>();
+	if (aCollisionComponentTemplate == nullptr
+		|| !aCollisionComponentTemplate->shouldSeparateFromOtherEntities())
+	{
+		return false;
+	}
+
+	const component::collision::CollisionComponentTemplate* bCollisionComponentTemplate = b->getComponentTemplate<component::collision::CollisionComponent>();
+	if (bCollisionComponentTemplate == nullptr || !bCollisionComponentTemplate->shouldSeparateFromOtherEntities())
+	{
+		return false;
+	}
+
+	if (aCollisionComponentTemplate == bCollisionComponentTemplate)
+	{
+		return aCollisionComponentTemplate->shouldSeparateFromSameType();
+	}
+
+	return true;
 }
 
 namespace

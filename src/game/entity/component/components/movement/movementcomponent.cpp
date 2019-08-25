@@ -361,15 +361,15 @@ void MovementComponent::stopMovement()
 
 void MovementComponent::triggerStartStopCallbacks()
 {
-	if (m_hasStartedMovementThisFrame)
-	{
-		movementStarted();
-		m_hasStartedMovementThisFrame = false;
-	}
 	if (m_hasStoppedMovementThisFrame)
 	{
 		movementStopped();
 		m_hasStoppedMovementThisFrame = false;
+	}
+	if (m_hasStartedMovementThisFrame)
+	{
+		movementStarted();
+		m_hasStartedMovementThisFrame = false;
 	}
 }
 

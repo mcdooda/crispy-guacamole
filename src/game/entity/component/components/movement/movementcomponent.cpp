@@ -94,8 +94,10 @@ flat::Vector2 MovementComponent::getCurrentMovementDirection() const
 	return m_currentPath[m_nextPathPointIndex] - flat::Vector2(m_owner->getPosition());
 }
 
-void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEntity)
+void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interactionEntity)
 {
+	// pathfind to destination from the current path's last point or from the entity position
+
 	flat::Vector2 startingPoint;
 	if (!isMovingAlongPath())
 	{
@@ -107,62 +109,65 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 	{
 		startingPoint = m_currentPath.back();
 	}
-	
-	if (flat::distance2(point, startingPoint) > flat::square(MIN_DISTANCE_TO_DESTINATION))
+
+	if (flat::distance2(destination, startingPoint) < flat::square(MIN_DISTANCE_TO_DESTINATION))
 	{
-		map::Map* map = m_owner->getMap();
-		FLAT_ASSERT(map != nullptr);
-
-		const MovementComponentTemplate* movementComponentTemplate = getTemplate();
-		const float jumpHeight = movementComponentTemplate->getJumpMaxHeight();
-		map::Navigability navigabilityMask = movementComponentTemplate->getNavigabilityMask();
-
-		map::pathfinder::Pathfinder* pathfinder = nullptr;
-		if (const map::Zone* zone = m_restrictionZone.lock().get())
-		{
-			pathfinder = static_cast<map::pathfinder::ZonePathfinder*>(alloca(sizeof(map::pathfinder::ZonePathfinder)));
-			new (pathfinder) map::pathfinder::ZonePathfinder(*map, jumpHeight, navigabilityMask, zone);
-		}
-		else
-		{
-			pathfinder = static_cast<map::pathfinder::Pathfinder*>(alloca(sizeof(map::pathfinder::Pathfinder)));
-			new (pathfinder) map::pathfinder::Pathfinder(*map, jumpHeight, navigabilityMask);
-		}
-
-		map::ScopedNavigabilityAlteration navigabilityAlteration(*map);
-
-		if (interactionEntity != nullptr)
-		{
-			EntityHelper::eachEntityTile(
-				interactionEntity,
-				[&map, &navigabilityAlteration, navigabilityMask](map::TileIndex tileIndex)
-				{
-					navigabilityAlteration.setTileNavigability(tileIndex, navigabilityMask);
-				}
-			);
-		}
-
-		std::vector<flat::Vector2> path;
-		if (pathfinder->findPath(startingPoint, point, path))
-		{
-			FLAT_ASSERT(path.size() >= 2);
-			// insert the new path at the end of the current path
-			// the first point of the new path is not inserted as it is the same as the last point of the current path
-			m_currentPath.insert(m_currentPath.end(), path.begin() + 1, path.end());
-		}
-		else
-		{
-			// if the destination is not reachable, still move towards that direction
-			m_currentPath.push_back(point);
-		}
-
-		if (!isMovingAlongPath())
-		{
-			startMovement();
-		}
-
-		pathfinder->~Pathfinder();
+		// the destination is close, no need to move
+		return;
 	}
+	
+	map::Map* map = m_owner->getMap();
+	FLAT_ASSERT(map != nullptr);
+
+	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
+	const float jumpHeight = movementComponentTemplate->getJumpMaxHeight();
+	map::Navigability navigabilityMask = movementComponentTemplate->getNavigabilityMask();
+
+	// get the right pathfinder class depending on if the movement is restricted to a given zone
+	map::pathfinder::Pathfinder* pathfinder = nullptr;
+	if (const map::Zone* zone = m_restrictionZone.lock().get())
+	{
+		pathfinder = FLAT_STACK_ALLOCATE(map::pathfinder::ZonePathfinder)(*map, jumpHeight, navigabilityMask, zone);
+	}
+	else
+	{
+		pathfinder = FLAT_STACK_ALLOCATE(map::pathfinder::Pathfinder)(*map, jumpHeight, navigabilityMask);
+	}
+
+	// ensure that the interaction entity is reachable by temporarily changing its tiles' navigability to match with the current entity
+	// it happens when a building entity is blocking all navigability
+	map::ScopedNavigabilityAlteration navigabilityAlteration(*map);
+	if (interactionEntity != nullptr)
+	{
+		EntityHelper::eachEntityTile(
+			interactionEntity,
+			[&map, &navigabilityAlteration, navigabilityMask](map::TileIndex tileIndex)
+			{
+				navigabilityAlteration.setTileNavigability(tileIndex, navigabilityMask);
+			}
+		);
+	}
+
+	std::vector<flat::Vector2> path;
+	if (pathfinder->findPath(startingPoint, destination, path))
+	{
+		FLAT_ASSERT(path.size() >= 2);
+		// insert the new path at the end of the current path
+		// the first point of the new path is not inserted as it is the same as the last point of the current path
+		m_currentPath.insert(m_currentPath.end(), path.begin() + 1, path.end());
+	}
+	else
+	{
+		// if the destination is not reachable, still move towards that direction
+		m_currentPath.push_back(destination);
+	}
+
+	if (!isMovingAlongPath())
+	{
+		startMovement();
+	}
+
+	FLAT_STACK_DESTROY(pathfinder, Pathfinder);
 }
 
 void MovementComponent::jump()
@@ -483,6 +488,3 @@ void MovementComponent::debugDrawEntity(debug::DebugDisplay& debugDisplay) const
 } // component
 } // entity
 } // game
-
-
-

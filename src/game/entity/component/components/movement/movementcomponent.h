@@ -45,7 +45,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		
 		bool isMovingAlongPath() const;
 		flat::Vector2 getCurrentMovementDirection() const;
-		void moveTo(const flat::Vector2& point, Entity* interactionEntity = nullptr);
+		void moveTo(const flat::Vector2& destination, Entity* interactionEntity = nullptr);
 		
 		void jump();
 

@@ -7,6 +7,7 @@
 #include "../../../entitytemplate.h"
 #include "../../../../map/map.h"
 #include "../../../../map/tile.h"
+#include "../../../../map/scopednavigabilityalteration.h"
 #include "../../../../map/pathfinder/pathfinder.h"
 #include "../../../../map/pathfinder/zonepathfinder.h"
 
@@ -128,23 +129,15 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 			new (pathfinder) map::pathfinder::Pathfinder(*map, jumpHeight, navigabilityMask);
 		}
 
-		map::Navigability initialTileNavigability = map::Navigability::NONE;
-
-		flat::containers::HybridArray<map::TileIndex, 4> interactionTileIndices;
-		flat::containers::HybridArray<map::Navigability, 4> interactionTileInitialNavigabilities;
+		map::ScopedNavigabilityAlteration navigabilityAlteration(*map);
 
 		if (interactionEntity != nullptr)
 		{
 			EntityHelper::eachEntityTile(
 				interactionEntity,
-				[&map, &interactionTileIndices, &interactionTileInitialNavigabilities, navigabilityMask](map::TileIndex tileIndex)
+				[&map, &navigabilityAlteration, navigabilityMask](map::TileIndex tileIndex)
 				{
-					if (!map->isTileNavigable(tileIndex, navigabilityMask))
-					{
-						interactionTileIndices.add(tileIndex);
-						interactionTileInitialNavigabilities.add(map->getTileNavigability(tileIndex));
-						map->setTileNavigability(tileIndex, navigabilityMask);
-					}
+					navigabilityAlteration.setTileNavigability(tileIndex, navigabilityMask);
 				}
 			);
 		}
@@ -169,12 +162,6 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 		}
 
 		pathfinder->~Pathfinder();
-
-		FLAT_ASSERT(interactionTileIndices.getSize() == interactionTileInitialNavigabilities.getSize());
-		for (unsigned int i = 0, e = interactionTileIndices.getSize(); i < e; ++i)
-		{
-			map->setTileNavigability(interactionTileIndices[i], interactionTileInitialNavigabilities[i]);
-		}
 	}
 }
 

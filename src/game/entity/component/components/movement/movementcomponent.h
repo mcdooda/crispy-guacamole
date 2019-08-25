@@ -4,7 +4,8 @@
 #include <flat.h>
 
 #include "movementcomponenttemplate.h"
-#include "../../component.h"
+
+#include "entity/component/component.h"
 
 namespace game
 {

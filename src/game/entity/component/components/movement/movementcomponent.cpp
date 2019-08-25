@@ -1,17 +1,17 @@
 #include "movementcomponent.h"
 
-#include "../collision/collisioncomponent.h"
-#include "../projectile/projectilecomponent.h"
+#include "entity/entity.h"
+#include "entity/entityhelper.h"
+#include "entity/entitytemplate.h"
 
-#include "../../../entity.h"
-#include "../../../entityhelper.h"
-#include "../../../entitytemplate.h"
+#include "entity/component/components/collision/collisioncomponent.h"
+#include "entity/component/components/projectile/projectilecomponent.h"
 
-#include "../../../../map/map.h"
-#include "../../../../map/tile.h"
-#include "../../../../map/scopednavigabilityalteration.h"
-#include "../../../../map/pathfinder/pathfinder.h"
-#include "../../../../map/pathfinder/zonepathfinder.h"
+#include "map/map.h"
+#include "map/tile.h"
+#include "map/scopednavigabilityalteration.h"
+#include "map/pathfinder/pathfinder.h"
+#include "map/pathfinder/zonepathfinder.h"
 
 namespace game
 {

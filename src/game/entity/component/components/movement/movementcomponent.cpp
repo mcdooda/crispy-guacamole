@@ -295,7 +295,7 @@ const Entity* MovementComponent::getClosestEntityToAvoid(const flat::Vector2& st
 		[&](Entity* otherEntity)
 		{
 			// if the entities cannot collide, nothing to do
-			if (EntityHelper::canCollide(m_owner, otherEntity))
+			if (!EntityHelper::canCollide(m_owner, otherEntity))
 			{
 				return;
 			}

@@ -258,7 +258,7 @@ void CollisionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 			0.5f
 		);
 
-		const float r = radius * flat::SQRT2 / 2.f;
+		const float r = radius * flat::SQRT_2 / 2.f;
 
 		// left
 		debugDisplay.add3dLine(

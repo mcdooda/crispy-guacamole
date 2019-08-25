@@ -101,12 +101,12 @@ void Entity::setHeading(float heading, float epsilon)
 void Entity::setElevation(float elevation)
 {
 	// keep elevation in [-pi, pi) range
-	elevation = fmodf(elevation, flat::PI2);
+	elevation = fmodf(elevation, flat::PI_2);
 	if (elevation < -flat::PI)
-		elevation += flat::PI2;
+		elevation += flat::PI_2;
 
 	else if (elevation > flat::PI)
-		elevation -= flat::PI2;
+		elevation -= flat::PI_2;
 
 	m_elevation = elevation;
 	if (m_map != nullptr)
@@ -238,12 +238,6 @@ void Entity::moveTo(const flat::Vector2& point, Entity* interactionEntity)
 {
 	FLAT_ASSERT(m_movementComponent != nullptr);
 	m_movementComponent->moveTo(point, interactionEntity);
-}
-
-void Entity::clearPath()
-{
-	FLAT_ASSERT(m_movementComponent != nullptr);
-	m_movementComponent->clearPath();
 }
 
 const std::string& Entity::getTemplateName() const

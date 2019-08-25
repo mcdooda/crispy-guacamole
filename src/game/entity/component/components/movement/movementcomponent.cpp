@@ -2,8 +2,6 @@
 #include "movementcomponenttemplate.h"
 #include "../collision/collisioncomponent.h"
 #include "../projectile/projectilecomponent.h"
-#include "../prop/propcomponent.h"
-#include "../../componenttype.h"
 #include "../../../entity.h"
 #include "../../../entityhelper.h"
 #include "../../../entitytemplate.h"
@@ -24,28 +22,31 @@ namespace movement
 void MovementComponent::init()
 {
 	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
-	m_movementSpeed = movementComponentTemplate->getSpeed();
-	// not yet in the map but makes the component not busy
+
+	m_nextPathPointIndex = INVALID_POINT_INDEX;
+	m_movementSpeed = movementComponentTemplate->getDefaultSpeed();
+	m_currentVerticalSpeed = 0.f;
 	m_isTouchingGround = movementComponentTemplate->getSnapToGround();
 
-	m_owner->addedToMap.on(this, &MovementComponent::addedToMap);
-	m_owner->removedFromMap.on(this, &MovementComponent::removedFromMap);
+	m_isStrafing = false;
+	m_hasStartedMovementThisFrame = false;
+	m_hasStoppedMovementThisFrame = false;
+
+	if (m_isTouchingGround)
+	{
+		// snap the entity to the map's collision when it is actually spawned into the map
+		m_owner->addedToMap.on(this, &MovementComponent::snapEntityToTile);
+	}
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
 	{
 		collisionComponent->onCollidedWithMap.on(this, &MovementComponent::collidedWithMap);
 	}
-
-	m_isFollowingPath = false;
-	m_isStrafing = false;
 }
 
 void MovementComponent::deinit()
 {
-	m_owner->addedToMap.off(this);
-	m_owner->removedFromMap.off(this);
-
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
 	{
@@ -57,187 +58,44 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 {
 	FLAT_DEBUG_ONLY(m_steering = flat::Vector2(0.f, 0.f);)
 
-	if (!followsPath())
+	if (isMovingAlongPath())
 	{
-		flat::Vector2 ownerPosition(m_owner->getPosition());
-		if (flat::length2(ownerPosition - m_destination) > MIN_DISTANCE_TO_DESTINATION * MIN_DISTANCE_TO_DESTINATION
-			&& currentTime > m_returnToDestinationTime)
-		{
-			moveTo(m_destination);
-		}
-	}
-
-	if (followsPath())
-	{
-		flat::Vector2& pathNextPoint = m_path.front();
-		const flat::Vector3& position = m_owner->getPosition();
-		flat::Vector2 position2d = flat::Vector2(position.x, position.y);
-		const flat::Vector2 move = pathNextPoint - position2d;
-		const float moveLen2 = flat::length2(move);
-		if (moveLen2 > 0.f)
-		{
-			const map::Map* map = m_owner->getMap();
-
-			// entity relative matrix
-			flat::Matrix4 transform2d;
-			flat::translateBy(transform2d, position2d);
-			flat::rotateZBy(transform2d, flat::vector2_angle(move));
-			flat::Matrix4 transform2dInverse = flat::inverse(transform2d);
-
-			flat::Vector2 steering = move;
-
-			// entity radius
-			const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();
-			float radius = 0.f;
-			if (collisionComponentTemplate != nullptr && collisionComponentTemplate->getSeparate())
-			{
-				radius = collisionComponentTemplate->getRadius();
-
-				Entity* entityToAvoid = nullptr;
-				float entityToAvoidDistance = std::numeric_limits<float>::max();
-
-				// find entities moving in the opposite direction and avoid them
-				map->eachEntityInRange(
-					position2d + flat::normalize(move) * AVOIDANCE_DISTANCE,
-					AVOIDANCE_RADIUS,
-					[this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance, collisionComponentTemplate](Entity* entity)
-					{
-						if (entity == m_owner)
-							return;
-
-						if (entity->getComponent<projectile::ProjectileComponent>() != nullptr)
-							return;
-
-						// in front of the component owner?
-						flat::Vector2 entityPosition2d(entity->getPosition());
-						if (flat::dot(move, entityPosition2d - position2d) > 0.f
-							&& flat::length2(entityPosition2d - position2d) < moveLen2)
-						{
-							movement::MovementComponent* entityMovementComponent = entity->getComponent<movement::MovementComponent>();
-							// moving in opposite direction?
-							// TODO: also avoid if the other entity moves slower than the current entity
-							if (!entityMovementComponent
-								|| !entityMovementComponent->followsPath()
-								|| flat::dot(getCurrentDirection(), entityMovementComponent->getCurrentDirection()) < 0.f)
-							{
-								const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
-								const collision::CollisionComponentTemplate* otherCollisionComponentTemplate = entityTemplate->getComponentTemplate<collision::CollisionComponent>();
-								if (otherCollisionComponentTemplate != nullptr && otherCollisionComponentTemplate->getSeparate()
-									&& !(otherCollisionComponentTemplate == collisionComponentTemplate && !collisionComponentTemplate->getSeparateSameType()))
-								{
-									const float entityRadius = collisionComponentTemplate->getRadius();
-									const float avoidDistance = (radius + entityRadius) * flat::SQRT2;
-
-									// compute the other entity's position relatively to the current entity's position and heading
-									flat::Vector2 relativeEntityPosition2d = flat::Vector2(transform2dInverse * flat::Vector4(entityPosition2d, 0.f, 1.f));
-									//FLAT_ASSERT(relativeEntityPosition2d.x > 0.f);
-									if (std::abs(relativeEntityPosition2d.y) <= avoidDistance)
-									{
-										if (relativeEntityPosition2d.x < entityToAvoidDistance)
-										{
-											entityToAvoidDistance = relativeEntityPosition2d.x;
-											entityToAvoid = entity;
-										}
-									}
-								}
-							}
-						}
-					}
-				);
-
-				if (entityToAvoid != nullptr)
-				{
-					const float entityToAvoidRadius = EntityHelper::getRadius(entityToAvoid);
-
-					flat::Vector2 relativeEntityPosition2d(transform2dInverse * flat::Vector4(entityToAvoid->getPosition(), 1.f));
-					const float avoidDistance = (radius + entityToAvoidRadius) * flat::SQRT2;
-					const float ySign = flat::sign(relativeEntityPosition2d.y);
-					flat::Vector2 relativeAvoidPosition2d(relativeEntityPosition2d.x, relativeEntityPosition2d.y - ySign * avoidDistance);
-
-					flat::Vector2 absoluteAvoidPosition2d(transform2d * flat::Vector4(relativeAvoidPosition2d, 0.f, 1.f));
-					steering = absoluteAvoidPosition2d - position2d;
-				}
-			}
-
-			FLAT_DEBUG_ONLY(m_steering = steering;)
-			steering = flat::normalize(steering);
-			if (!m_isStrafing)
-			{
-				m_owner->setHeading(flat::vector2_angle(steering), flat::PI2 / 64.f);
-			}
-			flat::Vector2 newPosition2d = position2d + steering * m_movementSpeed * elapsedTime;
-			
-			flat::Vector2 nextTilePosition = position2d + steering * 0.4f;
-			const map::Navigability navigabilityMask = getTemplate()->getNavigabilityMask();
-			const map::TileIndex nextTileIndex = map->getTileIndexIfNavigable(nextTilePosition.x, nextTilePosition.y, navigabilityMask);
-			
-			// jump if necessary
-			if (nextTileIndex != map::TileIndex::INVALID_TILE)
-			{
-				const float nextTileZ = map->getTileZ(nextTileIndex);
-				if (nextTileZ > position.z + MIN_Z_EPSILON || nextTileZ < position.z - MIN_Z_EPSILON)
-				{
-					jump();
-				}
-			}
-			
-			// has the entity reached the next point on the planned path?
-			flat::Vector2 newMove = pathNextPoint - newPosition2d;
-			const bool pointOvertook = flat::dot(move, newMove) <= 0.f;
-			const bool lastPoint = m_path.size() == 1;
-			if (pointOvertook || (!lastPoint && flat::length2(newMove) < radius * radius))
-			{
-				if (pointOvertook)
-				{
-					newPosition2d = pathNextPoint;
-				}
-				m_path.pop_front();
-			}
-			m_owner->setXY(newPosition2d);
-		}
+		moveAlongPath(elapsedTime);
 	}
 	
-	fall(elapsedTime);
-
-	const bool wasFollowingPath = m_isFollowingPath;
-	m_isFollowingPath = followsPath();
-	if (wasFollowingPath != m_isFollowingPath)
+	if (!m_isTouchingGround)
 	{
-		if (m_isFollowingPath)
-			movementStarted();
-
-		else
-			movementStopped();
+		fall(elapsedTime);
 	}
+
+	triggerStartStopCallbacks();
 }
 
 bool MovementComponent::isBusy() const
 {
-	return followsPath() || (!isTouchingGround() && getTemplate()->getSnapToGround());
+	return isMovingAlongPath() || (!isTouchingGround() && getTemplate()->getSnapToGround());
 }
 
 void MovementComponent::cancelCurrentAction()
 {
-	clearPath();
+	stopMovement();
 }
 
-bool MovementComponent::followsPath() const
+bool MovementComponent::isMovingAlongPath() const
 {
-	return !m_path.empty();
+	return m_nextPathPointIndex != INVALID_POINT_INDEX;
 }
 
-flat::Vector2 MovementComponent::getCurrentDirection() const
+flat::Vector2 MovementComponent::getCurrentMovementDirection() const
 {
-	FLAT_ASSERT(followsPath());
-	return m_path.front() - flat::Vector2(m_owner->getPosition());
+	FLAT_ASSERT(isMovingAlongPath());
+	return m_currentPath[m_nextPathPointIndex] - flat::Vector2(m_owner->getPosition());
 }
 
 void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEntity)
 {
-	m_destination = point;
-
 	flat::Vector2 startingPoint;
-	if (m_path.empty())
+	if (!isMovingAlongPath())
 	{
 		const flat::Vector3& position = m_owner->getPosition();
 		startingPoint.x = position.x;
@@ -245,7 +103,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 	}
 	else
 	{
-		startingPoint = m_path.back();
+		startingPoint = m_currentPath.back();
 	}
 	
 	if (flat::distance2(point, startingPoint) > flat::square(MIN_DISTANCE_TO_DESTINATION))
@@ -257,7 +115,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 		map::Navigability navigabilityMask = movementComponentTemplate->getNavigabilityMask();
 
 		map::pathfinder::Pathfinder* pathfinder = nullptr;
-		if (const map::Zone* zone = m_restrictToZone.lock().get())
+		if (const map::Zone* zone = m_restrictionZone.lock().get())
 		{
 			pathfinder = static_cast<map::pathfinder::ZonePathfinder*>(alloca(sizeof(map::pathfinder::ZonePathfinder)));
 			new (pathfinder) map::pathfinder::ZonePathfinder(map, jumpHeight, navigabilityMask, zone);
@@ -283,7 +141,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 					{
 						interactionTileIndices.add(tileIndex);
 						interactionTileInitialNavigabilities.add(map.getTileNavigability(tileIndex));
-						map.setTileNavigability(tileIndex, navigabilityMask); // it's cheating because we are setting a mask instead of single navigability
+						map.setTileNavigability(tileIndex, navigabilityMask);
 					}
 				}
 			);
@@ -292,15 +150,20 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 		std::vector<flat::Vector2> path;
 		if (pathfinder->findPath(startingPoint, point, path))
 		{
-			path.erase(path.begin());
-			for (const flat::Vector2& point : path)
-			{
-				m_path.push_back(point);
-			}
+			FLAT_ASSERT(path.size() >= 2);
+			// insert the new path at the end of the current path
+			// the first point of the new path is not inserted as it is the same as the last point of the current path
+			m_currentPath.insert(m_currentPath.end(), path.begin() + 1, path.end());
 		}
 		else
 		{
-			m_path.push_back(point);
+			// if the destination is not reachable, still move towards that direction
+			m_currentPath.push_back(point);
+		}
+
+		if (!isMovingAlongPath())
+		{
+			startMovement();
 		}
 
 		pathfinder->~Pathfinder();
@@ -313,148 +176,297 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 	}
 }
 
-void MovementComponent::clearPath()
-{
-	m_destination = flat::Vector2(m_owner->getPosition());
-	m_returnToDestinationTime = FLT_MAX;
-	m_path.clear();
-}
-
 void MovementComponent::jump()
 {
-	if (m_isTouchingGround)
+	FLAT_ASSERT(m_isTouchingGround);
+	m_isTouchingGround = false;
+	m_currentVerticalSpeed = getTemplate()->getJumpForce();
+}
+
+void MovementComponent::moveAlongPath(float elapsedTime)
+{
+	const flat::Vector2& nextPathPoint = getNextPathPoint();
+	const flat::Vector3& position = m_owner->getPosition();
+	flat::Vector2 position2d = flat::Vector2(position.x, position.y);
+	const flat::Vector2 move = nextPathPoint - position2d;
+	const float moveLen2 = flat::length2(move);
+	if (moveLen2 > 0.f)
 	{
-		m_midairVelocity = flat::Vector3(0.f, 0.f, getTemplate()->getJumpForce());
-		m_midairAcceleration = flat::Vector3(0.f, 0.f, 0.f);
-		m_isTouchingGround = false;
+		const map::Map* map = m_owner->getMap();
+
+		// entity relative matrix
+		flat::Matrix4 transform2d;
+		flat::translateBy(transform2d, position2d);
+		flat::rotateZBy(transform2d, flat::vector2_angle(move));
+		flat::Matrix4 transform2dInverse = flat::inverse(transform2d);
+
+		flat::Vector2 steering = move;
+
+		// entity radius
+		const collision::CollisionComponentTemplate* collisionComponentTemplate = getTemplate<collision::CollisionComponent>();
+		float radius = 0.f;
+		if (collisionComponentTemplate != nullptr && collisionComponentTemplate->getSeparate())
+		{
+			radius = collisionComponentTemplate->getRadius();
+
+			Entity* entityToAvoid = nullptr;
+			float entityToAvoidDistance = std::numeric_limits<float>::max();
+
+			// find entities moving in the opposite direction and avoid them
+			map->eachEntityInRange(
+				position2d + flat::normalize(move) * AVOIDANCE_DISTANCE,
+				AVOIDANCE_RADIUS,
+				[this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance, collisionComponentTemplate](Entity* entity)
+				{
+					if (entity == m_owner)
+						return;
+
+					if (entity->getComponent<projectile::ProjectileComponent>() != nullptr)
+						return;
+
+					// in front of the component owner?
+					flat::Vector2 entityPosition2d(entity->getPosition());
+					if (flat::dot(move, entityPosition2d - position2d) > 0.f
+						&& flat::length2(entityPosition2d - position2d) < moveLen2)
+					{
+						movement::MovementComponent* entityMovementComponent = entity->getComponent<movement::MovementComponent>();
+						// moving in opposite direction?
+						// TODO: also avoid if the other entity moves slower than the current entity
+						if (!entityMovementComponent
+							|| !entityMovementComponent->isMovingAlongPath()
+							|| flat::dot(getCurrentMovementDirection(), entityMovementComponent->getCurrentMovementDirection()) < 0.f)
+						{
+							const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
+							const collision::CollisionComponentTemplate* otherCollisionComponentTemplate = entityTemplate->getComponentTemplate<collision::CollisionComponent>();
+							if (otherCollisionComponentTemplate != nullptr && otherCollisionComponentTemplate->getSeparate()
+								&& !(otherCollisionComponentTemplate == collisionComponentTemplate && !collisionComponentTemplate->getSeparateSameType()))
+							{
+								const float entityRadius = collisionComponentTemplate->getRadius();
+								const float avoidDistance = (radius + entityRadius) * flat::SQRT_2;
+
+								// compute the other entity's position relatively to the current entity's position and heading
+								flat::Vector2 relativeEntityPosition2d = flat::Vector2(transform2dInverse * flat::Vector4(entityPosition2d, 0.f, 1.f));
+								//FLAT_ASSERT(relativeEntityPosition2d.x > 0.f);
+								if (std::abs(relativeEntityPosition2d.y) <= avoidDistance)
+								{
+									if (relativeEntityPosition2d.x < entityToAvoidDistance)
+									{
+										entityToAvoidDistance = relativeEntityPosition2d.x;
+										entityToAvoid = entity;
+									}
+								}
+							}
+						}
+					}
+				}
+			);
+
+			if (entityToAvoid != nullptr)
+			{
+				const float entityToAvoidRadius = EntityHelper::getRadius(entityToAvoid);
+
+				flat::Vector2 relativeEntityPosition2d(transform2dInverse * flat::Vector4(entityToAvoid->getPosition(), 1.f));
+				const float avoidDistance = (radius + entityToAvoidRadius) * flat::SQRT_2;
+				const float ySign = flat::sign(relativeEntityPosition2d.y);
+				flat::Vector2 relativeAvoidPosition2d(relativeEntityPosition2d.x, relativeEntityPosition2d.y - ySign * avoidDistance);
+
+				flat::Vector2 absoluteAvoidPosition2d(transform2d * flat::Vector4(relativeAvoidPosition2d, 0.f, 1.f));
+				steering = absoluteAvoidPosition2d - position2d;
+			}
+		}
+
+		FLAT_DEBUG_ONLY(m_steering = steering;)
+			steering = flat::normalize(steering);
+		if (!m_isStrafing)
+		{
+			m_owner->setHeading(flat::vector2_angle(steering), flat::PI_2 / 64.f);
+		}
+		flat::Vector2 newPosition2d = position2d + steering * m_movementSpeed * elapsedTime;
+
+		flat::Vector2 nextTilePosition = position2d + steering * 0.4f;
+		const map::Navigability navigabilityMask = getTemplate()->getNavigabilityMask();
+		const map::TileIndex nextTileIndex = map->getTileIndexIfNavigable(nextTilePosition.x, nextTilePosition.y, navigabilityMask);
+
+		// jump if necessary
+		if (nextTileIndex != map::TileIndex::INVALID_TILE)
+		{
+			const float nextTileZ = map->getTileZ(nextTileIndex);
+			if (m_isTouchingGround
+				&& (nextTileZ > position.z + MIN_Z_EPSILON || nextTileZ < position.z - MIN_Z_EPSILON))
+			{
+				jump();
+			}
+		}
+
+		// has the entity reached the next point on the planned path?
+		flat::Vector2 newMove = nextPathPoint - newPosition2d;
+		const bool pointOvertook = flat::dot(move, newMove) <= 0.f;
+		const bool lastPoint = m_nextPathPointIndex == m_currentPath.size() - 1;
+		if (pointOvertook || (!lastPoint && flat::length2(newMove) < flat::square(radius)))
+		{
+			if (pointOvertook)
+			{
+				newPosition2d = nextPathPoint;
+			}
+			if (lastPoint)
+			{
+				stopMovement();
+			}
+			else
+			{
+				++m_nextPathPointIndex;
+			}
+		}
+		m_owner->setXY(newPosition2d);
 	}
+}
+
+const flat::Vector2& MovementComponent::getNextPathPoint() const
+{
+	FLAT_ASSERT(isMovingAlongPath());
+	return m_currentPath[m_nextPathPointIndex];
 }
 
 void MovementComponent::fall(float elapsedTime)
 {
-	if (m_isTouchingGround && flat::length2(m_midairAcceleration) < FLT_EPSILON)
-		return;
+	FLAT_ASSERT(!m_isTouchingGround);
 
-	const flat::Vector3 gravityForce = flat::Vector3(0.f, 0.f, -getTemplate()->getWeight());
-	const flat::Vector3 oldVelocity = m_midairVelocity;
+	const float gravityForce = -getTemplate()->getWeight();
 
-	m_midairVelocity += (gravityForce + m_midairAcceleration) * elapsedTime;
+	const float previousVerticalSpeed = m_currentVerticalSpeed;
+	m_currentVerticalSpeed += gravityForce * elapsedTime;
 
-	// reset the additional acceleration, has to be set every frame if needed
-	m_midairAcceleration = flat::Vector3(0.f, 0.f, 0.f);
-
-	const flat::Vector3& position = m_owner->getPosition();
-	flat::Vector3 newPosition = position + (oldVelocity + m_midairVelocity) * 0.5f * elapsedTime;
+	flat::Vector3 newPosition = m_owner->getPosition();
+	newPosition.z += (previousVerticalSpeed + m_currentVerticalSpeed) * 0.5f * elapsedTime;
 	m_owner->setPosition(newPosition);
 }
 
-void MovementComponent::land()
+void MovementComponent::startMovement()
 {
-	m_isTouchingGround = true;
-	m_midairVelocity = flat::Vector3(0.f, 0.f, 0.f);
-	m_midairAcceleration = flat::Vector3(0.f, 0.f, 0.f);
+	FLAT_ASSERT(!isMovingAlongPath());
+	FLAT_ASSERT(!m_currentPath.empty());
+	m_nextPathPointIndex = 0;
+	m_hasStartedMovementThisFrame = true;
 }
 
-bool MovementComponent::addedToMap(Entity* entity, map::Map* map)
+void MovementComponent::stopMovement()
+{
+	if (isMovingAlongPath())
+	{
+		m_currentPath.clear();
+		m_nextPathPointIndex = INVALID_POINT_INDEX;
+		m_hasStoppedMovementThisFrame = true;
+	}
+}
+
+void MovementComponent::triggerStartStopCallbacks()
+{
+	if (m_hasStartedMovementThisFrame)
+	{
+		movementStarted();
+		m_hasStartedMovementThisFrame = false;
+	}
+	if (m_hasStoppedMovementThisFrame)
+	{
+		movementStopped();
+		m_hasStoppedMovementThisFrame = false;
+	}
+}
+
+bool MovementComponent::snapEntityToTile(Entity* entity, map::Map* map)
 {
 	FLAT_ASSERT(entity == m_owner);
+	FLAT_ASSERT(m_isTouchingGround);
 
 	const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-	const float tileZ = m_owner->getMap()->getTileZ(tileIndex);
-	const flat::Vector3& position = m_owner->getPosition();
+	const float tileZ = map->getTileZ(tileIndex);
+	m_owner->setZ(tileZ);
 
-	m_destination = flat::Vector2(position);
-
-	// m_isTouchingGround already set is init()
-	FLAT_ASSERT(m_isTouchingGround == getTemplate()->getSnapToGround());
-	if (m_isTouchingGround)
-	{
-		m_owner->setZ(tileZ);
-		m_isTouchingGround = true; // in case the entity was below its tile
-	}
-	m_midairVelocity = flat::Vector3(0.f, 0.f, 0.f);
-	m_midairAcceleration = flat::Vector3(0.f, 0.f, 0.f);
-
-	// connect to position and heading changed slots
-	if (m_owner->hasSprite())
-	{
-		m_owner->positionChanged.on(this, &MovementComponent::updateSpritePosition);
-	}
-
-	return true;
-}
-
-bool MovementComponent::removedFromMap(Entity* entity)
-{
-	FLAT_ASSERT(entity == m_owner);
-
-	if (m_owner->hasSprite())
-	{
-		m_owner->positionChanged.off(this);
-	}
-
-	return true;
+	return false;
 }
 
 bool MovementComponent::collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal)
 {
 	if (!m_isTouchingGround)
 	{
-		if (normal.z > 0.7f && m_midairVelocity.z < 0.f)
+		if (normal.z > flat::SQRT_2_DIV_2) // the collision normal is vertical and upwards
 		{
 			m_owner->setZ(m_owner->getMap()->getTileZ(tileIndex));
-			land();
+			m_isTouchingGround = true;
+			m_currentVerticalSpeed = 0.f;
 		}
 	}
-	return true;
-}
-
-bool MovementComponent::updateSpritePosition(const flat::Vector3& position)
-{
-	FLAT_ASSERT(m_owner->hasSprite());
-
-	const map::Map* map = m_owner->getMap();
-	FLAT_ASSERT(map != nullptr);
-
-	flat::Vector2 position2d(map->getTransform() * position);
-	m_owner->getSprite().setPosition(position2d);
 	return true;
 }
 
 #ifdef FLAT_DEBUG
 void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
+	debugDrawCurrentPath(debugDisplay);
+	debugDrawSteering(debugDisplay);
+	debugDrawAvoidanceArea(debugDisplay);
+	debugDrawEntity(debugDisplay);
+}
+
+void MovementComponent::debugDrawCurrentPath(debug::DebugDisplay& debugDisplay) const
+{
+	if (!isMovingAlongPath())
+	{
+		return;
+	}
+
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
+
 	flat::Vector3 previousPoint = m_owner->getPosition();
-	for (flat::Vector2 point2d : m_path)
+	for (int i = m_nextPathPointIndex, e = static_cast<int>(m_currentPath.size()); i < e; ++i)
 	{
-		const map::TileIndex tileIndex = map->getTileIndex(point2d.x, point2d.y);
+		const flat::Vector2& point2d = m_currentPath[i];
+		const map::TileIndex tileIndex = map->getTileIndex(point2d);
 		FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 		flat::Vector3 point(point2d, map->getTileZ(tileIndex));
 		debugDisplay.add3dLine(previousPoint, point);
 		previousPoint = point;
 	}
+}
 
-	debugDisplay.add3dLine(m_owner->getPosition(), m_owner->getPosition() + flat::Vector3(m_steering, 0.f), flat::video::Color::RED);
+void MovementComponent::debugDrawSteering(debug::DebugDisplay& debugDisplay) const
+{
+	const flat::Vector3 steering3d(m_steering, 0.f);
+	debugDisplay.add3dLine(m_owner->getPosition(), m_owner->getPosition() + steering3d, flat::video::Color::RED);
+}
 
-	if (followsPath())
+void MovementComponent::debugDrawAvoidanceArea(debug::DebugDisplay& debugDisplay) const
+{
+	if (!isMovingAlongPath())
 	{
-		const flat::Vector3& position = m_owner->getPosition();
-		const flat::Vector2& pathNextPoint = m_path.front();
-		flat::Vector2 position2d = flat::Vector2(position.x, position.y);
-		const flat::Vector2 move = pathNextPoint - position2d;
-		const flat::Vector3 avoidanceCenter = position + flat::Vector3(flat::normalize(move), 0.f) * AVOIDANCE_DISTANCE;
-		debugDisplay.add3dCircle(avoidanceCenter, AVOIDANCE_RADIUS, flat::video::Color::BLUE);
+		return;
 	}
 
-	if (m_isTouchingGround)
+	const flat::Vector3& position = m_owner->getPosition();
+	const flat::Vector2& nextPathPoint = m_currentPath[m_nextPathPointIndex];
+	flat::Vector2 position2d = flat::Vector2(position.x, position.y);
+	const flat::Vector2 move = nextPathPoint - position2d;
+	const flat::Vector3 avoidanceCenter = position + flat::Vector3(flat::normalize(move), 0.f) * AVOIDANCE_DISTANCE;
+	debugDisplay.add3dCircle(avoidanceCenter, AVOIDANCE_RADIUS, flat::video::Color::BLUE);
+}
+
+void MovementComponent::debugDrawEntity(debug::DebugDisplay& debugDisplay) const
+{
+	const map::Map* map = m_owner->getMap();
+	FLAT_ASSERT(map != nullptr);
+
+	flat::video::Color color = m_isTouchingGround ? flat::video::Color::BLUE : flat::video::Color::RED;
+	const flat::Vector3& position = m_owner->getPosition();
+	debugDisplay.add3dCircle(position, EntityHelper::getRadius(m_owner), color);
+
+	if (!m_isTouchingGround)
 	{
-		debugDisplay.add3dCircle(m_owner->getPosition(), EntityHelper::getRadius(m_owner), flat::video::Color::BLUE);
-	}
-	else
-	{
-		debugDisplay.add3dCircle(m_owner->getPosition(), 0.4f, flat::video::Color::RED);
+		const flat::Vector2 position2d(position);
+		const map::TileIndex tileIndex = map->getTileIndex(position2d);
+		FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
+		flat::Vector3 positionOnTile(position2d, map->getTileZ(tileIndex));
+		debugDisplay.add3dLine(position, positionOnTile, flat::video::Color::RED);
 	}
 }
 #endif

@@ -492,7 +492,7 @@ int l_Entity_clearPath(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	movementComponent.clearPath();
+	movementComponent.cancelCurrentAction();
 	return 0;
 }
 
@@ -532,18 +532,13 @@ int l_Entity_isTouchingGround(lua_State* L)
 
 int l_Entity_setMidairAcceleration(lua_State* L)
 {
-	Entity& entity = getEntity(L, 1);
-	flat::Vector3& midairAcceleration = flat::lua::getVector3(L, 2);
-	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	movementComponent.setMidairAcceleration(midairAcceleration);
+	luaL_error(L, "entity:setMidairAcceleration() is deprecated");
 	return 0;
 }
 
 int l_Entity_getMidairAcceleration(lua_State* L)
 {
-	Entity& entity = getEntity(L, 1);
-	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	flat::lua::pushVector3(L, movementComponent.getMidairAcceleration());
+	luaL_error(L, "entity:getMidairAcceleration() is deprecated");
 	return 1;
 }
 
@@ -586,7 +581,7 @@ int l_Entity_isFollowingPath(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	bool isFollowingPath = movementComponent.isFollowingPath();
+	bool isFollowingPath = movementComponent.isMovingAlongPath();
 	lua_pushboolean(L, isFollowingPath);
 	return 1;
 }

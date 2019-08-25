@@ -215,11 +215,6 @@ map::TileIndex Map::getTileIndex(const flat::Vector2i& position) const
 	return TileIndex::INVALID_TILE;
 }
 
-TileIndex Map::getTileIndex(float x, float y) const
-{
-	return getTileIndex(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
-}
-
 TileIndex Map::getTileIndex(const Tile* tile) const
 {
 	return static_cast<TileIndex>(tile - &m_tiles[0]);

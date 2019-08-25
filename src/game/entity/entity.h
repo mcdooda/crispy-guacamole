@@ -83,7 +83,6 @@ class Entity final : public map::MapObject
 		// movement
 		bool acceptsMoveOrders() const;
 		void moveTo(const flat::Vector2& point, Entity* interactionEntity = nullptr);
-		void clearPath();
 		
 		// behavior
 		bool canInteract() const;

@@ -29,8 +29,7 @@ void MovementComponent::init()
 	m_isTouchingGround = movementComponentTemplate->getSnapToGround();
 
 	m_isStrafing = false;
-	m_hasStartedMovementThisFrame = false;
-	m_hasStoppedMovementThisFrame = false;
+	m_wasMovingLastFrame = false;
 
 	if (m_isTouchingGround)
 	{
@@ -60,7 +59,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 
 	if (isMovingAlongPath())
 	{
-		moveAlongPath(elapsedTime);
+		progressAlongPath(elapsedTime);
 	}
 	
 	if (!m_isTouchingGround)
@@ -69,6 +68,8 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	}
 
 	triggerStartStopCallbacks();
+
+	m_wasMovingLastFrame = isMovingAlongPath();
 }
 
 bool MovementComponent::isBusy() const
@@ -108,7 +109,8 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 	
 	if (flat::distance2(point, startingPoint) > flat::square(MIN_DISTANCE_TO_DESTINATION))
 	{
-		map::Map& map = *m_owner->getMap();
+		map::Map* map = m_owner->getMap();
+		FLAT_ASSERT(map != nullptr);
 
 		const MovementComponentTemplate* movementComponentTemplate = getTemplate();
 		const float jumpHeight = movementComponentTemplate->getJumpMaxHeight();
@@ -118,12 +120,12 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 		if (const map::Zone* zone = m_restrictionZone.lock().get())
 		{
 			pathfinder = static_cast<map::pathfinder::ZonePathfinder*>(alloca(sizeof(map::pathfinder::ZonePathfinder)));
-			new (pathfinder) map::pathfinder::ZonePathfinder(map, jumpHeight, navigabilityMask, zone);
+			new (pathfinder) map::pathfinder::ZonePathfinder(*map, jumpHeight, navigabilityMask, zone);
 		}
 		else
 		{
 			pathfinder = static_cast<map::pathfinder::Pathfinder*>(alloca(sizeof(map::pathfinder::Pathfinder)));
-			new (pathfinder) map::pathfinder::Pathfinder(map, jumpHeight, navigabilityMask);
+			new (pathfinder) map::pathfinder::Pathfinder(*map, jumpHeight, navigabilityMask);
 		}
 
 		map::Navigability initialTileNavigability = map::Navigability::NONE;
@@ -137,11 +139,11 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 				interactionEntity,
 				[&map, &interactionTileIndices, &interactionTileInitialNavigabilities, navigabilityMask](map::TileIndex tileIndex)
 				{
-					if (!map.isTileNavigable(tileIndex, navigabilityMask))
+					if (!map->isTileNavigable(tileIndex, navigabilityMask))
 					{
 						interactionTileIndices.add(tileIndex);
-						interactionTileInitialNavigabilities.add(map.getTileNavigability(tileIndex));
-						map.setTileNavigability(tileIndex, navigabilityMask);
+						interactionTileInitialNavigabilities.add(map->getTileNavigability(tileIndex));
+						map->setTileNavigability(tileIndex, navigabilityMask);
 					}
 				}
 			);
@@ -171,7 +173,7 @@ void MovementComponent::moveTo(const flat::Vector2& point, Entity* interactionEn
 		FLAT_ASSERT(interactionTileIndices.getSize() == interactionTileInitialNavigabilities.getSize());
 		for (unsigned int i = 0, e = interactionTileIndices.getSize(); i < e; ++i)
 		{
-			map.setTileNavigability(interactionTileIndices[i], interactionTileInitialNavigabilities[i]);
+			map->setTileNavigability(interactionTileIndices[i], interactionTileInitialNavigabilities[i]);
 		}
 	}
 }
@@ -183,7 +185,7 @@ void MovementComponent::jump()
 	m_currentVerticalSpeed = getTemplate()->getJumpForce();
 }
 
-void MovementComponent::moveAlongPath(float elapsedTime)
+void MovementComponent::progressAlongPath(float elapsedTime)
 {
 	const flat::Vector2& nextPathPoint = getNextPathPoint();
 	const flat::Vector3& position = m_owner->getPosition();
@@ -212,10 +214,14 @@ void MovementComponent::moveAlongPath(float elapsedTime)
 			Entity* entityToAvoid = nullptr;
 			float entityToAvoidDistance = std::numeric_limits<float>::max();
 
+			flat::Vector2 avoidanceCenter;
+			float avoidanceRadius;
+			getAvoidanceArea(avoidanceCenter, avoidanceRadius);
+
 			// find entities moving in the opposite direction and avoid them
 			map->eachEntityInRange(
-				position2d + flat::normalize(move) * AVOIDANCE_DISTANCE,
-				AVOIDANCE_RADIUS,
+				avoidanceCenter,
+				avoidanceRadius,
 				[this, &position2d, &move, moveLen2, &transform2dInverse, radius, &entityToAvoid, &entityToAvoidDistance, collisionComponentTemplate](Entity* entity)
 				{
 					if (entity == m_owner)
@@ -346,7 +352,6 @@ void MovementComponent::startMovement()
 	FLAT_ASSERT(!isMovingAlongPath());
 	FLAT_ASSERT(!m_currentPath.empty());
 	m_nextPathPointIndex = 0;
-	m_hasStartedMovementThisFrame = true;
 }
 
 void MovementComponent::stopMovement()
@@ -355,21 +360,38 @@ void MovementComponent::stopMovement()
 	{
 		m_currentPath.clear();
 		m_nextPathPointIndex = INVALID_POINT_INDEX;
-		m_hasStoppedMovementThisFrame = true;
 	}
 }
 
 void MovementComponent::triggerStartStopCallbacks()
 {
-	if (m_hasStoppedMovementThisFrame)
+	const bool isMovingThisFrame = isMovingAlongPath();
+	if (m_wasMovingLastFrame && !isMovingThisFrame)
 	{
 		movementStopped();
-		m_hasStoppedMovementThisFrame = false;
 	}
-	if (m_hasStartedMovementThisFrame)
+	else if (!m_wasMovingLastFrame && isMovingThisFrame)
 	{
 		movementStarted();
-		m_hasStartedMovementThisFrame = false;
+	}
+}
+
+void MovementComponent::getAvoidanceArea(flat::Vector2& center, float& radius) const
+{
+	FLAT_ASSERT(isMovingAlongPath());
+	const flat::Vector2& nextPathPoint = getNextPathPoint();
+	const flat::Vector2 position2d(m_owner->getPosition());
+	const float nextPathPointDistance = flat::distance(position2d, nextPathPoint);
+	if (nextPathPointDistance > MAX_AVOIDANCE_RADIUS * 2.f)
+	{
+		const flat::Vector2 movementDirection = flat::normalize(getCurrentMovementDirection());
+		center = position2d + movementDirection * MAX_AVOIDANCE_RADIUS;
+		radius = MAX_AVOIDANCE_RADIUS;
+	}
+	else
+	{
+		center = (position2d + nextPathPoint) * 0.5f;
+		radius = nextPathPointDistance * 0.5f;
 	}
 }
 
@@ -443,12 +465,11 @@ void MovementComponent::debugDrawAvoidanceArea(debug::DebugDisplay& debugDisplay
 		return;
 	}
 
-	const flat::Vector3& position = m_owner->getPosition();
-	const flat::Vector2& nextPathPoint = m_currentPath[m_nextPathPointIndex];
-	flat::Vector2 position2d = flat::Vector2(position.x, position.y);
-	const flat::Vector2 move = nextPathPoint - position2d;
-	const flat::Vector3 avoidanceCenter = position + flat::Vector3(flat::normalize(move), 0.f) * AVOIDANCE_DISTANCE;
-	debugDisplay.add3dCircle(avoidanceCenter, AVOIDANCE_RADIUS, flat::video::Color::BLUE);
+	flat::Vector2 avoidanceCenter;
+	float avoidanceRadius;
+	getAvoidanceArea(avoidanceCenter, avoidanceRadius);
+	flat::Vector3 avoidanceCenter3d(avoidanceCenter, m_owner->getPosition().z);
+	debugDisplay.add3dCircle(avoidanceCenter3d, avoidanceRadius, flat::video::Color::BLUE);
 }
 
 void MovementComponent::debugDrawEntity(debug::DebugDisplay& debugDisplay) const

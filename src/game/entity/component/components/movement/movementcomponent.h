@@ -30,8 +30,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		static constexpr float MIN_Z_EPSILON = 0.1f;
 		static constexpr float MIN_DISTANCE_TO_DESTINATION = FLT_EPSILON;
 
-		static constexpr float AVOIDANCE_DISTANCE = 0.8f;
-		static constexpr float AVOIDANCE_RADIUS = 1.f;
+		static constexpr float MAX_AVOIDANCE_RADIUS = 1.f;
 
 	public:
 		inline static const char* getConfigName() { return "movement"; }
@@ -69,13 +68,15 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		flat::Slot<> movementStopped;
 		
 	private:
-		void moveAlongPath(float elapsedTime);
+		void progressAlongPath(float elapsedTime);
 		const flat::Vector2& getNextPathPoint() const;
 
 		void startMovement();
 		void stopMovement();
 
 		void triggerStartStopCallbacks();
+
+		void getAvoidanceArea(flat::Vector2& center, float& radius) const;
 
 		void fall(float elapsedTime);
 
@@ -109,8 +110,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		// when strafing, the heading is not controlled by the movement component
 		bool m_isStrafing : 1;
 
-		bool m_hasStartedMovementThisFrame : 1;
-		bool m_hasStoppedMovementThisFrame : 1;
+		bool m_wasMovingLastFrame : 1;
 
 		FLAT_DEBUG_ONLY(flat::Vector2 m_steering;)
 };

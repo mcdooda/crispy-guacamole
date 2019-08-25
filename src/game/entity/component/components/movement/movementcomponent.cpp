@@ -292,7 +292,7 @@ const Entity* MovementComponent::getClosestEntityToAvoid(const flat::Vector2& st
 	map->eachEntityInRange(
 		avoidanceCenter,
 		avoidanceRadius,
-		[this, &steering, entityPosition2d, entityTransform2dInverse, entityRadius, &entityToAvoid, &entityToAvoidDistance](Entity* otherEntity)
+		[this, &steering, &entityPosition2d, &entityTransform2dInverse, entityRadius, &entityToAvoid, &entityToAvoidDistance](Entity* otherEntity)
 		{
 			// if the entities cannot collide, nothing to do
 			if (EntityHelper::canCollide(m_owner, otherEntity))

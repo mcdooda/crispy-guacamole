@@ -1,9 +1,14 @@
 #include "map.h"
 #include "zone.h"
-#include "../tile.h"
-#include "../../game.h"
-#include "../../states/mapeditorstate.h"
-#include "../../entity/lua/entity.h"
+
+#include "game.h"
+
+#include "map/tile.h"
+#include "map/pathfinder/pathfinder.h"
+
+#include "states/mapeditorstate.h"
+
+#include "entity/lua/entity.h"
 
 namespace game
 {
@@ -28,6 +33,7 @@ int open(lua_State* L)
 		{"debug_getDrawStats",            l_Map_debug_getDrawStats},
 		{"debug_enableNavigabilityDebug", l_Map_debug_enableNavigabilityDebug},
 		{"debug_enableTileIndicesDebug",  l_Map_debug_enableTileIndicesDebug},
+		{"debug_enableSimplifyPath",      l_Map_debug_enableSimplifyPath},
 #endif
 
 		{"getNumEntities",                l_Map_getNumEntities},
@@ -117,6 +123,13 @@ int l_Map_debug_enableTileIndicesDebug(lua_State* L)
 	bool enable = lua_toboolean(L, 1) == 1;
 	Map& map = getMap(L);
 	map.enableTileIndicesDebug(enable);
+	return 0;
+}
+
+int l_Map_debug_enableSimplifyPath(lua_State* L)
+{
+	bool enable = lua_toboolean(L, 1) == 1;
+	pathfinder::Pathfinder::enableSimplifyPath(enable);
 	return 0;
 }
 #endif // FLAT_DEBUG

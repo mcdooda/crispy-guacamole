@@ -33,6 +33,10 @@ public:
 
 	bool findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const;
 
+#ifdef FLAT_DEBUG
+	static void enableSimplifyPath(bool shouldSimplifyPath) { Pathfinder::shouldSimplifyPath = shouldSimplifyPath; }
+#endif
+
 protected:
 	virtual TileIndex getTileIndexIfNavigable(float x, float y, map::Navigability navigabilityMask) const;
 	void reconstructPath(
@@ -46,6 +50,10 @@ protected:
 	virtual void eachNeighborTiles(TileIndex tile, std::function<void(TileIndex)> func) const;
 
 protected:
+#ifdef FLAT_DEBUG
+	static bool shouldSimplifyPath;
+#endif
+
 	const Map& m_map;
 	float m_jumpHeight;
 	map::Navigability m_navigabilityMask;

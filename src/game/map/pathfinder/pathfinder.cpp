@@ -11,6 +11,8 @@ namespace map
 namespace pathfinder
 {
 
+bool Pathfinder::shouldSimplifyPath = true;
+
 Pathfinder::Pathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask) :
 	m_map(map),
 	m_jumpHeight(jumpHeight),
@@ -159,6 +161,13 @@ void Pathfinder::reconstructPath(
 
 void Pathfinder::simplifyPath(std::vector<flat::Vector2>& path) const
 {
+#ifdef FLAT_DEBUG
+	if (!shouldSimplifyPath)
+	{
+		return;
+	}
+#endif
+
 	size_t i = path.size() - 1;
 	
 	while (i >= 2)

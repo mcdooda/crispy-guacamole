@@ -1,8 +1,6 @@
 local CollisionHelper = require 'data/scripts/componenthelpers/collision'
 local AttackHelper = require 'data/scripts/componenthelpers/attack'
 
-local BuildingSelection = require 'mods/crispy-guacamole/scripts/buildingselection'
-
 local yield = coroutine.yield
 local huge = math.huge
 local random = math.random
@@ -203,7 +201,6 @@ local function basicBuilding()
 	local states = {}
 
 	local function init(building)
-		BuildingSelection.init(building)
 		building:setCycleAnimation 'stand'
 	end
 

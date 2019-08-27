@@ -1,6 +1,5 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
-local UnitSelection = require 'mods/crispy-guacamole/scripts/unitselection'
 local Money = require 'mods/crispy-guacamole/scripts/money'
 
 local function getClosestHut(gatherer)
@@ -36,7 +35,6 @@ local states = BehaviorHelper.customAttacker(
 
 local init = states.init
 function states:init(gatherer)
-	UnitSelection.init(gatherer)
 	gatherer:setCycleAnimation 'move'
 	gatherer:getExtraData().mineralsAmount = 0
 	init(self, gatherer)

@@ -1,25 +1,28 @@
-#include <flat.h>
 #include "basemapstate.h"
 #include "selectmapstate.h"
 #include "mapeditor/lua/editor.h"
-#include "../game.h"
-#include "../map/map.h"
-#include "../map/tile.h"
-#include "../map/tiletemplate.h"
-#include "../map/proptemplate.h"
-#include "../map/lua/map.h"
-#include "../map/lua/zone.h"
-#include "../map/brush/lua/brush.h"
-#include "../entity/lua/entity.h"
-#include "../entity/component/lua/componentregistry.h"
-#include "../entity/component/components/attack/attackcomponent.h"
-#include "../entity/component/components/behavior/behaviorcomponent.h"
-#include "../entity/component/components/collision/collisioncomponent.h"
-#include "../entity/component/components/selection/selectioncomponent.h"
-#include "../entity/component/components/interaction/interactioncomponent.h"
-#include "../entity/faction/lua/faction.h"
-#include "../entity/entitytemplate.h"
-#include "../entity/entityhelper.h"
+
+#include "game.h"
+
+#include "map/map.h"
+#include "map/tile.h"
+#include "map/tiletemplate.h"
+#include "map/brush/lua/brush.h"
+#include "map/lua/map.h"
+#include "map/lua/zone.h"
+#include "map/pathfinder/pathfinder.h"
+#include "map/proptemplate.h"
+
+#include "entity/entityhelper.h"
+#include "entity/entitytemplate.h"
+#include "entity/component/components/attack/attackcomponent.h"
+#include "entity/component/components/behavior/behaviorcomponent.h"
+#include "entity/component/components/collision/collisioncomponent.h"
+#include "entity/component/components/interaction/interactioncomponent.h"
+#include "entity/component/components/selection/selectioncomponent.h"
+#include "entity/component/lua/componentregistry.h"
+#include "entity/faction/lua/faction.h"
+#include "entity/lua/entity.h"
 
 namespace game
 {
@@ -140,6 +143,10 @@ void BaseMapState::enter(Game& game)
 	m_mouseOverEntity = nullptr;
 	m_mouseOverTileIndex = map::TileIndex::INVALID_TILE;
 	m_ghostEntity = nullptr;
+
+#ifdef FLAT_DEBUG
+	map::pathfinder::Pathfinder::enableSimplifyPath(true);
+#endif
 }
 
 void BaseMapState::execute(Game& game)

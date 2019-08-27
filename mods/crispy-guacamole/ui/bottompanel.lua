@@ -52,7 +52,7 @@ local function setBuilding(buildingTemplateName, buildings)
 
     do
         do
-            local label = Widget.makeText(buildingData.name, table.unpack(Theme.defaultFont))
+            local label = Widget.makeText(buildingData and buildingData.name or buildingTemplateName, table.unpack(Theme.defaultFont))
             label:setPositionPolicy(Widget.PositionPolicy.CENTER)
             label:setTextColor(Theme.TEXT_COLOR)
             selectedEntityContainer.addContent(label)
@@ -75,33 +75,35 @@ local function setBuilding(buildingTemplateName, buildings)
             end
         end
 
-        for i = 1, #buildingData.units do
-            local unit = buildingData.units[i]
-            local unitData = EntityData.get(unit)
+        if buildingData and buildingData.units then
+            for i = 1, #buildingData.units do
+                local unit = buildingData.units[i]
+                local unitData = EntityData.get(unit)
 
-            local lineFlow = Widget.makeLineFlow()
+                local lineFlow = Widget.makeLineFlow()
 
-            local position = buildings[1]:getPosition():toVector2()
+                local position = buildings[1]:getPosition():toVector2()
 
-            do
-                local label = Widget.makeText(unitData.name, table.unpack(Theme.defaultFont))
-                label:setTextColor(Theme.TEXT_COLOR)
-                label:click(function()
-                    spawnEntities(position, 1, unit)
-                end)
-                lineFlow:addChild(label)
+                do
+                    local label = Widget.makeText(unitData.name, table.unpack(Theme.defaultFont))
+                    label:setTextColor(Theme.TEXT_COLOR)
+                    label:click(function()
+                        spawnEntities(position, 1, unit)
+                    end)
+                    lineFlow:addChild(label)
+                end
+
+                do
+                    local label = Widget.makeText(' x10', table.unpack(Theme.defaultFont))
+                    label:setTextColor(Theme.TEXT_COLOR)
+                    label:click(function()
+                        spawnEntities(position, 10, unit)
+                    end)
+                    lineFlow:addChild(label)
+                end
+
+                buildEntitiesContainer.addContent(lineFlow)
             end
-
-            do
-                local label = Widget.makeText(' x10', table.unpack(Theme.defaultFont))
-                label:setTextColor(Theme.TEXT_COLOR)
-                label:click(function()
-                    spawnEntities(position, 10, unit)
-                end)
-                lineFlow:addChild(label)
-            end
-
-            buildEntitiesContainer.addContent(lineFlow)
         end
     end
 end
@@ -111,7 +113,7 @@ local function setUnit(unitTemplateName, units)
 
     do
         do
-            local label = Widget.makeText(unitData.name, table.unpack(Theme.defaultFont))
+            local label = Widget.makeText(unitData and unitData.name or unitTemplateName, table.unpack(Theme.defaultFont))
             label:setPositionPolicy(Widget.PositionPolicy.CENTER)
             label:setTextColor(Theme.TEXT_COLOR)
             selectedEntityContainer.addContent(label)
@@ -155,16 +157,18 @@ local function setUnit(unitTemplateName, units)
             )
         end
 
-        for i = 1, #unitData.buildings do
-            local building = unitData.buildings[i]
-            local buildingData = EntityData.get(building)
+        if unitData and unitData.buildings then
+            for i = 1, #unitData.buildings do
+                local building = unitData.buildings[i]
+                local buildingData = EntityData.get(building)
 
-            local label = Widget.makeText(buildingData.name, table.unpack(Theme.defaultFont))
-            label:setTextColor(Theme.TEXT_COLOR)
-            label:click(function()
-                build(building)
-            end)
-            buildEntitiesContainer.addContent(label)
+                local label = Widget.makeText(buildingData.name, table.unpack(Theme.defaultFont))
+                label:setTextColor(Theme.TEXT_COLOR)
+                label:click(function()
+                    build(building)
+                end)
+                buildEntitiesContainer.addContent(label)
+            end
         end
     end
 end

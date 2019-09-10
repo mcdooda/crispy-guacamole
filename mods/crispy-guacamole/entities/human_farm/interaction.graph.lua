@@ -1,4 +1,4 @@
-return {
+script {
   links = {
     {
       1,
@@ -13,14 +13,13 @@ return {
       1,
     },
   },
-  nodeType = 'script',
   nodes = {
     {
-      name = 'components/factioncomponent',
+      name = 'components/interactioncomponent',
     },
     {
       loadArguments = {
-        'human',
+        'backToWork',
       },
       name = 'string',
     },
@@ -28,7 +27,7 @@ return {
       loadArguments = {
         {
           5,
-          'Component',
+          'Table',
         },
       },
       name = 'script/scriptoutput',

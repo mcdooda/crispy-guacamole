@@ -3,97 +3,97 @@ return {
     {
       1,
       1,
-      8,
+      2,
       1,
     },
     {
+      1,
       2,
+      30,
       1,
+    },
+    {
       1,
-      1,
+      3,
+      30,
+      2,
     },
     {
       3,
       1,
       1,
-      2,
+      3,
     },
     {
       4,
       1,
       1,
-      3,
+      1,
     },
     {
       5,
       1,
-      1,
       4,
+      1,
     },
     {
       6,
+      1,
+      4,
+      2,
+    },
+    {
+      7,
+      1,
+      1,
+      2,
+    },
+    {
+      8,
       1,
       7,
       1,
     },
     {
-      6,
-      2,
-      20,
-      1,
-    },
-    {
-      6,
-      3,
-      20,
-      2,
-    },
-    {
-      8,
-      1,
-      6,
-      3,
-    },
-    {
       9,
       1,
-      6,
-      1,
+      7,
+      2,
     },
     {
       10,
       1,
-      9,
+      3,
       1,
     },
     {
       11,
       1,
-      9,
-      2,
+      10,
+      1,
     },
     {
       12,
       1,
-      6,
+      10,
       2,
     },
     {
       13,
       1,
-      12,
-      1,
+      10,
+      3,
     },
     {
       14,
       1,
-      12,
-      2,
+      10,
+      4,
     },
     {
       15,
       1,
-      8,
+      3,
       2,
     },
     {
@@ -121,95 +121,68 @@ return {
       4,
     },
     {
+      20,
+      1,
+      29,
+      1,
+    },
+    {
       21,
       1,
-      8,
-      3,
+      29,
+      2,
     },
     {
       22,
       1,
-      21,
-      1,
+      29,
+      3,
     },
     {
       23,
       1,
-      21,
-      2,
+      29,
+      4,
     },
     {
       24,
       1,
-      21,
+      3,
       3,
     },
     {
       25,
       1,
-      21,
-      4,
+      24,
+      1,
     },
     {
       26,
       1,
-      28,
-      3,
+      24,
+      2,
     },
     {
       27,
       1,
-      28,
-      4,
+      24,
+      3,
     },
     {
       28,
       1,
-      8,
+      24,
       4,
     },
     {
       29,
       1,
-      28,
-      1,
-    },
-    {
-      30,
-      1,
-      28,
-      2,
+      3,
+      4,
     },
   },
   nodeType = 'script',
   nodes = {
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'move',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.12999999523163,
-      },
-      name = 'number',
-    },
     {
       name = 'components/spritecomponent',
     },
@@ -248,13 +221,13 @@ return {
     },
     {
       loadArguments = {
-        9,
+        12,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        18,
+        25,
       },
       name = 'number',
     },
@@ -270,6 +243,33 @@ return {
     {
       loadArguments = {
         4,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'move',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
       },
       name = 'number',
     },
@@ -296,40 +296,19 @@ return {
     },
     {
       loadArguments = {
-        0.050000000745058,
+        0.079999998211861,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        'data/compounds/script/Init Sprite',
-      },
-      name = 'compound',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'gather',
+        'death',
       },
       name = 'string',
     },
     {
       loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.079999998211861,
+        4,
       },
       name = 'number',
     },
@@ -350,15 +329,36 @@ return {
     },
     {
       loadArguments = {
-        'death',
+        'gather',
       },
       name = 'string',
     },
     {
       loadArguments = {
-        4,
+        3,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'data/compounds/script/Init Sprite',
+      },
+      name = 'compound',
     },
   },
 }

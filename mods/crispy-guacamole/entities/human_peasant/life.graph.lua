@@ -3,44 +3,56 @@ return {
     {
       1,
       1,
-      2,
-      1,
-    },
-    {
-      1,
-      2,
       3,
       1,
     },
     {
       1,
       3,
-      3,
-      2,
-    },
-    {
       4,
       1,
-      3,
-      3,
+    },
+    {
+      1,
+      4,
+      4,
+      2,
+    },
+    {
+      2,
+      1,
+      1,
+      1,
     },
     {
       5,
       1,
-      3,
       4,
+      3,
     },
     {
       6,
       1,
-      3,
+      4,
+      4,
+    },
+    {
+      7,
+      1,
+      4,
       5,
     },
   },
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/behaviorcomponent',
+      name = 'components/lifecomponent',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
@@ -56,19 +68,19 @@ return {
     },
     {
       loadArguments = {
-        'idle',
+        'death',
       },
       name = 'string',
     },
     {
       loadArguments = {
-        0,
+        1,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        false,
+        true,
       },
       name = 'boolean',
     },

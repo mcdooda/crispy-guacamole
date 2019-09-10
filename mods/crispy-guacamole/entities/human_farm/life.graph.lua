@@ -16,13 +16,13 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/factioncomponent',
+      name = 'components/lifecomponent',
     },
     {
       loadArguments = {
-        'human',
+        10,
       },
-      name = 'string',
+      name = 'number',
     },
     {
       loadArguments = {

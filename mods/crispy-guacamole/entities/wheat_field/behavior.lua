@@ -1,1 +1,11 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/wheat_field/behavior'
+local ResourceBehavior = require 'data/scripts/componenthelpers/behaviors/resource'
+
+local states = ResourceBehavior.basicResource(100)
+
+local init = states.init
+function states:init(wheatField)
+    wheatField:setCycleAnimation 'idle'
+    return init(self, wheatField)
+end
+
+return states

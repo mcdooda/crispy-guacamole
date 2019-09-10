@@ -2,8 +2,12 @@
 #include "lua/game.h"
 #include "lua/mapeditor.h"
 #include "lua/entityeditor.h"
-#include "../game.h"
-#include "../mod/lua/mod.h"
+
+#include "game.h"
+
+#include "mod/lua/mod.h"
+
+#include "map/pathfinder/pathfinder.h"
 
 namespace game
 {
@@ -48,6 +52,8 @@ void BaseState::exit(Game& game)
 void BaseState::update(Game& game)
 {
 	updateUi(game);
+
+	game.lua->collectGarbage();
 }
 
 void BaseState::clearScreen(Game& game)

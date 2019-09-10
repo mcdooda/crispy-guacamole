@@ -27,13 +27,13 @@ return {
     {
       6,
       1,
-      1,
+      26,
       3,
     },
     {
       7,
       1,
-      6,
+      29,
       1,
     },
     {
@@ -78,6 +78,96 @@ return {
       12,
       2,
     },
+    {
+      15,
+      1,
+      29,
+      2,
+    },
+    {
+      16,
+      1,
+      15,
+      1,
+    },
+    {
+      17,
+      1,
+      15,
+      2,
+    },
+    {
+      18,
+      1,
+      15,
+      3,
+    },
+    {
+      19,
+      1,
+      15,
+      4,
+    },
+    {
+      20,
+      1,
+      29,
+      3,
+    },
+    {
+      21,
+      1,
+      20,
+      1,
+    },
+    {
+      22,
+      1,
+      20,
+      2,
+    },
+    {
+      23,
+      1,
+      20,
+      3,
+    },
+    {
+      24,
+      1,
+      20,
+      4,
+    },
+    {
+      25,
+      1,
+      26,
+      4,
+    },
+    {
+      26,
+      1,
+      29,
+      4,
+    },
+    {
+      27,
+      1,
+      26,
+      1,
+    },
+    {
+      28,
+      1,
+      26,
+      2,
+    },
+    {
+      29,
+      1,
+      1,
+      3,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -104,18 +194,15 @@ return {
     },
     {
       loadArguments = {
-        1,
+        4,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        {
-          5,
-          '',
-        },
+        1,
       },
-      name = 'script/array',
+      name = 'number',
     },
     {
       name = 'components/spriteanimation',
@@ -149,7 +236,7 @@ return {
     },
     {
       loadArguments = {
-        19,
+        21,
       },
       name = 'number',
     },
@@ -158,6 +245,102 @@ return {
         20,
       },
       name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'fallow',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'grow_1',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'grow_2',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        4,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+      },
+      name = 'script/array',
     },
   },
 }

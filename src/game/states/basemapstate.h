@@ -2,16 +2,21 @@
 #define GAME_STATES_BASEMAPSTATE_H
 
 #include <flat.h>
+
 #include "basestate.h"
-#include "../mod/mod.h"
-#include "../entity/entitypool.h"
-#include "../entity/entityupdater.h"
-#include "../entity/component/component.h"
-#include "../entity/component/componentregistry.h"
-#include "../entity/faction/faction.h"
-#include "../debug/debugdisplay.h"
-#include "../map/displaymanager.h"
-#include "../entity/entity.h"
+
+#include "mod/mod.h"
+
+#include "entity/entity.h"
+#include "entity/entitypool.h"
+#include "entity/entityupdater.h"
+#include "entity/component/component.h"
+#include "entity/component/componentregistry.h"
+#include "entity/faction/faction.h"
+
+#include "debug/debugdisplay.h"
+
+#include "map/displaymanager.h"
 
 namespace game
 {

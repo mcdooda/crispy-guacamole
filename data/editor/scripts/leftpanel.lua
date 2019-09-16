@@ -73,7 +73,7 @@ do
 			Editor.setTile(ModData.tiles.names[1])
 			for i = 1, #ModData.tiles.names do
 				local tileName = ModData.tiles.names[i]
-				local preview = Preview.tile(tileName, 1)
+				local preview = Preview.tile(tileName, 1, true, 1, true)
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()
 					Editor.setTile(tileName)
@@ -87,10 +87,7 @@ do
 			Editor.setProp(ModData.props.names[1])
 			for i = 1,  #ModData.props.names do
 				local propName = ModData.props.names[i]
-				local propTexturePath = Path.getPropFilePath(propName, ModData.props.getHighest(propName) .. '.png')
-				local preview = Widget.makeImage(propTexturePath)
-				local w, h = preview:getSize()
-				preview:setSize(w * 2, h * 2)
+				local preview = Preview.prop(propName, ModData.props.getHighest(propName), 2, true)
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()
 					Editor.setProp(propName)
@@ -105,7 +102,7 @@ do
 			for i = 1, #ModData.entities.names do
 				local entityName = ModData.entities.names[i]
 
-				local preview = Preview.entity(entityName, nil, false, 2)
+				local preview = Preview.entity(entityName, nil, false, 2, true)
 				preview:setMargin(10, 0, 0, 7)
 				preview:click(function()
 					Editor.setEntity(entityName)

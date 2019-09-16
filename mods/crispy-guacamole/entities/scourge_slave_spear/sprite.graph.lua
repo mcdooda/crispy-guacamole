@@ -9,61 +9,85 @@ return {
     {
       1,
       2,
-      30,
+      32,
       1,
     },
     {
       1,
       3,
-      30,
+      27,
+      2,
+    },
+    {
+      1,
+      3,
+      31,
+      2,
+    },
+    {
+      1,
+      3,
+      26,
+      2,
+    },
+    {
+      1,
+      3,
+      35,
+      2,
+    },
+    {
+      1,
+      3,
+      34,
       2,
     },
     {
       3,
       1,
       1,
-      3,
+      1,
     },
     {
       4,
       1,
-      1,
+      3,
       1,
     },
     {
       5,
       1,
-      4,
-      1,
+      3,
+      2,
     },
     {
       6,
       1,
-      4,
+      1,
       2,
     },
     {
       7,
       1,
+      6,
       1,
-      2,
     },
     {
       8,
       1,
-      7,
-      1,
+      6,
+      2,
     },
     {
       9,
       1,
-      7,
-      2,
+      10,
+      4,
     },
     {
       10,
       1,
-      3,
+      14,
       1,
     },
     {
@@ -87,13 +111,13 @@ return {
     {
       14,
       1,
-      10,
-      4,
+      1,
+      3,
     },
     {
       15,
       1,
-      3,
+      14,
       2,
     },
     {
@@ -123,92 +147,110 @@ return {
     {
       20,
       1,
-      29,
-      1,
+      14,
+      3,
     },
     {
       21,
       1,
-      29,
-      2,
+      20,
+      1,
     },
     {
       22,
       1,
-      29,
-      3,
+      20,
+      2,
     },
     {
       23,
       1,
-      29,
-      4,
+      20,
+      3,
     },
     {
       24,
       1,
-      3,
-      3,
+      20,
+      4,
     },
     {
       25,
       1,
-      24,
-      1,
-    },
-    {
-      26,
-      1,
-      24,
-      2,
+      30,
+      3,
     },
     {
       27,
+      2,
+      29,
       1,
-      24,
+    },
+    {
+      27,
       3,
+      29,
+      2,
     },
     {
       28,
       1,
-      24,
-      4,
-    },
-    {
       29,
-      1,
       3,
-      4,
     },
     {
       31,
+      2,
+      30,
       1,
+    },
+    {
+      31,
       3,
-      5,
+      30,
+      2,
     },
     {
       32,
       1,
+      26,
+      1,
+    },
+    {
+      32,
+      2,
+      35,
+      1,
+    },
+    {
+      32,
+      3,
+      27,
+      1,
+    },
+    {
+      32,
+      4,
       31,
       1,
     },
     {
       33,
       1,
-      31,
-      2,
-    },
-    {
       34,
-      1,
-      31,
       3,
     },
     {
       35,
       1,
-      31,
-      4,
+      34,
+      1,
+    },
+    {
+      36,
+      1,
+      35,
+      3,
     },
   },
   nodeType = 'script',
@@ -226,42 +268,17 @@ return {
       name = 'script/scriptoutput',
     },
     {
-      loadArguments = {
-        {
-          5,
-          '',
-        },
-        {
-          5,
-          '',
-        },
-        {
-          5,
-          '',
-        },
-        {
-          5,
-          '',
-        },
-        {
-          5,
-          '',
-        },
-      },
-      name = 'script/array',
-    },
-    {
       name = 'vector2',
     },
     {
       loadArguments = {
-        12,
+        26,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        25,
+        22,
       },
       name = 'number',
     },
@@ -270,13 +287,19 @@ return {
     },
     {
       loadArguments = {
-        6,
+        13,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        5,
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
       },
       name = 'number',
     },
@@ -303,67 +326,27 @@ return {
     },
     {
       loadArguments = {
-        0.10000000149012,
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
       },
-      name = 'number',
+      name = 'script/array',
     },
     {
       name = 'components/spriteanimation',
     },
     {
       loadArguments = {
-        'build',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.079999998211861,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'death',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.10000000149012,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'gather',
+        'attack',
       },
       name = 'string',
     },
@@ -390,36 +373,81 @@ return {
     },
     {
       loadArguments = {
-        'data/compounds/script/Init Sprite',
-      },
-      name = 'compound',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'reap',
+        'death',
       },
       name = 'string',
     },
     {
       loadArguments = {
-        5,
+        2,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        5,
+        13,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.079999998211861,
+        0.10000000149012,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        'data/compounds/script/Flip Sprite',
+      },
+      name = 'compound',
+    },
+    {
+      name = 'entity/movementstarted',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/setcycleanimated',
+    },
+    {
+      name = 'entity/setcycleanimated',
+    },
+    {
+      name = 'entity/movementstopped',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'script/impulseall',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/setcycleanimated',
+    },
+    {
+      name = 'entity/setcycleanimation',
+    },
+    {
+      loadArguments = {
+        'move',
+      },
+      name = 'string',
     },
   },
 }

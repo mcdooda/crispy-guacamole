@@ -16,13 +16,13 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/interactioncomponent',
+      name = 'components/selectioncomponent',
     },
     {
       loadArguments = {
-        'reapResources',
+        true,
       },
-      name = 'string',
+      name = 'boolean',
     },
     {
       loadArguments = {

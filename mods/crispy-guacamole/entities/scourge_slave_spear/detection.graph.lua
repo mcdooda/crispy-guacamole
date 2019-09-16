@@ -16,13 +16,13 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/interactioncomponent',
+      name = 'components/detectioncomponent',
     },
     {
       loadArguments = {
-        'reapResources',
+        1,
       },
-      name = 'string',
+      name = 'number',
     },
     {
       loadArguments = {

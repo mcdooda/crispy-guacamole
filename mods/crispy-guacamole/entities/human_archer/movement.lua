@@ -1,6 +1,1 @@
-return {
-	speed = 3,
-	jumpForce = 3,
-	weight = 7,
-	snapToGround = true
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human_archer/movement'

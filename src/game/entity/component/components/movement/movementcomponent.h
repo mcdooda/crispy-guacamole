@@ -80,6 +80,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 		void triggerStartStopCallbacks();
 
+		void checkIsMidair();
 		void jumpIfNecessary(const flat::Vector2& steering);
 		void fall(float elapsedTime);
 

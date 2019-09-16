@@ -98,14 +98,26 @@ void CollisionComponent::separateFromNearbyEntities()
 
 void CollisionComponent::separateFromAdjacentTiles()
 {
+	/*
+#ifdef FLAT_DEBUG
+	{
+		const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+		FLAT_ASSERT(map::isValidTile(tileIndex));
+		const float tileZ = m_owner->getMap()->getTileZ(tileIndex);
+		const float z = m_owner->getPosition().z;
+		FLAT_ASSERT(tileZ <= z + 1.f);
+	}
+#endif // FLAT_DEBUG
+	*/
+
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
 
 	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
-	flat::Vector2i tilePosition = map->getTileXY(tileIndex);
+	FLAT_ASSERT(map::isValidTile(tileIndex));
 	
 	const flat::Vector3& position = m_owner->getPosition();
+	const flat::Vector2& position2d = m_owner->getPosition2d();
 	
 	flat::Vector3 newPosition = position;
 	
@@ -123,7 +135,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	map::TileIndex collidedTileIndex = map::TileIndex::INVALID_TILE;
 	float collidedTileZ = -FLT_MAX;
 	flat::Vector3 normal;
-	float closestCollisionDistance2 = FLT_MAX;
+	float closestCollisionDistance = FLT_MAX;
 
 	auto computeTileCollision = [&](int x, int y)
 	{
@@ -142,78 +154,62 @@ void CollisionComponent::separateFromAdjacentTiles()
 		}
 		
 		float tileZ = -FLT_MAX;
-		if (tileIndex2 != map::TileIndex::INVALID_TILE && map->getTileZ(tileIndex2) < getBottom(newPosition.z) + MIN_Z_EPSILON)
+		const bool tileIsValid = map::isValidTile(tileIndex2);
+
+		if (tileIsValid)
+		{
+			tileZ = map->getTileZ(tileIndex2);
+			if (tileZ < getBottom(newPosition.z) + MIN_Z_EPSILON)
+			{
+				return;
+			}
+		}
+
+		flat::AABB2 tileAABB2;
+		if (tileIsValid)
+		{
+			const flat::AABB3& tileAABB3 = map->getTileAABB(tileIndex2);
+			tileAABB2.min.x = tileAABB3.min.x;
+			tileAABB2.min.y = tileAABB3.min.y;
+			tileAABB2.max.x = tileAABB3.max.x;
+			tileAABB2.max.y = tileAABB3.max.y;
+		}
+		else
+		{
+			tileAABB2.min.x = static_cast<float>(x) - 0.5f;
+			tileAABB2.min.y = static_cast<float>(y) - 0.5f;
+			tileAABB2.max.x = static_cast<float>(x) + 0.5f;
+			tileAABB2.max.y = static_cast<float>(y) + 0.5f;
+		}
+
+		if (tileIsValid && tileAABB2.isInside(*reinterpret_cast<flat::Vector2*>(&newPosition)))
+		{
+			normal = flat::Vector3(0.f, 0.f, 1.f);
+			FLAT_ASSERT(newPosition.z > -FLT_MAX / 2.f);
+			newPosition.z = tileZ;
+			collidedTileIndex = tileIndex2;
+			return;
+		}
+
+		flat::Vector2 tileToEntityDirection;
+		const float tileToEntityDistance = flat::geometry::intersection::circleToRectangleDistance(tileAABB2, position2d, radius, &tileToEntityDirection);
+		if (tileToEntityDistance > 0.f)
 		{
 			return;
 		}
 
-		// find collision point
-		flat::Vector3 closestPointOnEdge;
-		closestPointOnEdge.z = newPosition.z;
-		const flat::Vector2 locationOnTile(newPosition.x - static_cast<float>(x), newPosition.y - static_cast<float>(y));
-
-		if (locationOnTile.y < locationOnTile.x) // bottom and right
+		if (tileIsValid && tileToEntityDistance < radius - 1.f && tileZ > newPosition.z)
 		{
-			if (locationOnTile.y < -locationOnTile.x) // bottom
-			{
-				closestPointOnEdge.x = std::clamp(newPosition.x, static_cast<float>(x) - 0.5f, static_cast<float>(x) + 0.5f);
-				closestPointOnEdge.y = static_cast<float>(y) - 0.5f;
-			}
-			else // right
-			{
-				closestPointOnEdge.x = static_cast<float>(x) + 0.5f;
-				closestPointOnEdge.y = std::clamp(newPosition.y, static_cast<float>(y) - 0.5f, static_cast<float>(y) + 0.5f);
-			}
+			normal = flat::Vector3(0.f, 0.f, 1.f);
+			newPosition.z = tileZ;
+			collidedTileIndex = tileIndex2;
 		}
-		else // top and left
+		else if (tileToEntityDistance < closestCollisionDistance)
 		{
-			if (locationOnTile.y > -locationOnTile.x) // top
-			{
-				closestPointOnEdge.x = std::clamp(newPosition.x, static_cast<float>(x) - 0.5f, static_cast<float>(x) + 0.5f);
-				closestPointOnEdge.y = static_cast<float>(y) + 0.5f;
-			}
-			else // left
-			{
-				closestPointOnEdge.x = static_cast<float>(x) - 0.5f;
-				closestPointOnEdge.y = std::clamp(newPosition.y, static_cast<float>(y) - 0.5f, static_cast<float>(y) + 0.5f);
-			}
-		}
-
-		// deduce collision normal and new position
-		float distance2;
-		if (std::abs(locationOnTile.x) < 0.5f && std::abs(locationOnTile.y) < 0.5f)
-		{
-			distance2 = 0.f;
-		}
-		else
-		{
-			distance2 = flat::distance2(newPosition, closestPointOnEdge);
-		}
-
-		if (distance2 < radius2)
-		{
-			if (tileIndex2 != map::TileIndex::INVALID_TILE)
-			{
-				const float distance = std::sqrt(distance2);
-				if (distance < radius - 1.f && tileZ > newPosition.z)
-				{
-					normal = flat::Vector3(0.f, 0.f, 1.f);
-					newPosition.z = tileZ;
-					collidedTileIndex = tileIndex2;
-					return;
-				}
-			}
-
-			if (distance2 < closestCollisionDistance2)
-			{
-				closestCollisionDistance2 = distance2;
-
-				const flat::Vector3 tileCenter(x, y, newPosition.z);
-				normal = flat::normalize(newPosition - closestPointOnEdge);
-
-				newPosition = closestPointOnEdge + normal * radius;
-				collidedTileIndex = tileIndex2;
-			}
+			closestCollisionDistance = tileToEntityDistance;
+			normal = flat::normalize(flat::Vector3(tileToEntityDirection, 0.f));
+			newPosition = newPosition + normal * -tileToEntityDistance;
+			collidedTileIndex = tileIndex2;
 		}
 	};
 
@@ -228,16 +224,27 @@ void CollisionComponent::separateFromAdjacentTiles()
 	if (position != newPosition)
 	{
 		const map::TileIndex newTileIndex = map->getTileIndex(newPosition.x, newPosition.y);
-		if (newTileIndex != map::TileIndex::INVALID_TILE)
+		if (map::isValidTile(newTileIndex))
 		{
 			const float newTileZ = map->getTileZ(newTileIndex);
 			newPosition.z = std::max(newPosition.z, newTileZ);
 		}
 
 		m_owner->setPosition(newPosition);
-		FLAT_ASSERT(flat::length2(normal) > 0.f || collidedTileIndex == map::TileIndex::INVALID_TILE);
+		FLAT_ASSERT(flat::length2(normal) > 0.f || !map::isValidTile(collidedTileIndex));
 		onCollidedWithMap(collidedTileIndex, normal);
 	}
+
+#ifdef FLAT_DEBUG
+	{
+		const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+		FLAT_ASSERT(map::isValidTile(tileIndex));
+		FLAT_ASSERT(map->isTileNavigable(tileIndex, navigabilityMask));
+		const float tileZ = m_owner->getMap()->getTileZ(tileIndex);
+		const float z = m_owner->getPosition().z;
+		FLAT_ASSERT(tileZ <= z);
+	}
+#endif // FLAT_DEBUG
 }
 
 #ifdef FLAT_DEBUG
@@ -283,6 +290,3 @@ void CollisionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 } // component
 } // entity
 } // game
-
-
-

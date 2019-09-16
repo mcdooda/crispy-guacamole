@@ -12,6 +12,9 @@ local function basicResource(baseAmount)
         end
         extraData.amount = amount
         extraData.amountChanged(amount)
+        if amount == 0 then
+            extraData.emptied()
+        end
         return value
     end
 
@@ -22,6 +25,7 @@ local function basicResource(baseAmount)
         extraData.amount = baseAmount
         extraData.withdraw = withdraw
         extraData.amountChanged = flat.Slot:new()
+        extraData.emptied = flat.Slot:new()
     end
 
     return states

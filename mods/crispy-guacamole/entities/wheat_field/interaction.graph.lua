@@ -20,7 +20,7 @@ return {
     },
     {
       loadArguments = {
-        'gatherResources',
+        'reapResources',
       },
       name = 'string',
     },

@@ -180,6 +180,36 @@ return {
       3,
       4,
     },
+    {
+      31,
+      1,
+      3,
+      5,
+    },
+    {
+      32,
+      1,
+      31,
+      1,
+    },
+    {
+      33,
+      1,
+      31,
+      2,
+    },
+    {
+      34,
+      1,
+      31,
+      3,
+    },
+    {
+      35,
+      1,
+      31,
+      4,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -197,6 +227,10 @@ return {
     },
     {
       loadArguments = {
+        {
+          5,
+          '',
+        },
         {
           5,
           '',
@@ -242,7 +276,7 @@ return {
     },
     {
       loadArguments = {
-        4,
+        5,
       },
       name = 'number',
     },
@@ -359,6 +393,33 @@ return {
         'data/compounds/script/Init Sprite',
       },
       name = 'compound',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'reap',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.079999998211861,
+      },
+      name = 'number',
     },
   },
 }

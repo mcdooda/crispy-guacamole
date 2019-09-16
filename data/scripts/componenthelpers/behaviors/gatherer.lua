@@ -71,25 +71,29 @@ local function basicGatherer(buildingName, resourceName)
 		end
 	end
 
-	function states:backToWork(gatherer)
+	function states:addResourceAndGetToNext(gatherer)
 		local building = gatherer:getInteractionEntity()
-
 		local extraData = gatherer:getExtraData()
 
 		extraData.building = building
-
 		if extraData.resourcesAmount > 0 then
 			Money:add(extraData.resourcesAmount)
 			gatherer:setCycleAnimation 'move'
 			extraData.resourcesAmount = 0
 		end
-
 		local resources = extraData.resources
-
 		if not resources or not resources:isValid() then
-			resources = getClosestResource(gatherer)
+			return nil
+		else 
+			return resources
 		end
+	end
 
+	function states:backToWork(gatherer)
+		local resources = states:addResourceAndGetToNext(gatherer)
+		if not resources then
+			resources = getClosestResource(gatherer)
+		end 
 		if resources then
 			gatherer:interactWith(resources)
 		end

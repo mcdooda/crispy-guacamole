@@ -3,7 +3,7 @@ local GathererBehavior = require 'data/scripts/componenthelpers/behaviors/gather
 local Money = require 'mods/crispy-guacamole/scripts/money'
 local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
 
-states = GathererBehavior.basicGatherer('human_farm', 'wheat_field')
+local states = GathererBehavior.basicGatherer('human_farm', 'wheat_field')
 
 local function getClosestBuilding(gatherer)
     return EntitiesByType:getClosests('human_farm', gatherer:getPosition():toVector2())[1]
@@ -27,30 +27,15 @@ local function getClosestResource(gatherer)
     return EntitiesByType:getClosestsValid('wheat_field', gatherer:getPosition():toVector2(), 
         function(entity)
             local extraData = entity:getExtraData()
-            return extraData.amount > 0 and extraData.gatherer == nil
+            return extraData.amount > 0 and (extraData.gatherer == nil or not extraData.gatherer:isValid())
         end)[1]
 end
 
 function states:backToWork(gatherer)
-    local building = gatherer:getInteractionEntity()
-
-    local extraData = gatherer:getExtraData()
-
-    extraData.building = building
-
-    if extraData.resourcesAmount > 0 then
-        Money:add(extraData.resourcesAmount)
-        gatherer:setCycleAnimation 'move'
-        extraData.resourcesAmount = 0
-    end
-
-    local resources = extraData.resources
-    
-    if not resources or not resources:isValid() or resources:getExtraData().amount == 0  then
+    local resources = states:addResourceAndGetToNext(gatherer)
+    if not resources or resources:getExtraData().amount == 0 then
         return 'lookForWheat'
-    end
-
-    if resources then
+    else
         gatherer:interactWith(resources)
     end
 end

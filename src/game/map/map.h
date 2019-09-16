@@ -105,6 +105,7 @@ class Map
 		void setTileZ(TileIndex tileIndex, float z);
 		void moveTileZBy(TileIndex tileIndex, float dz);
 		float getTileZ(TileIndex tileIndex) const;
+		const flat::AABB3& getTileAABB(TileIndex tileIndex) const;
 
 		TileIndex getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const;
 		TileIndex getTileIndexIfNavigable(float x, float y, Navigability navigabilityMask) const;

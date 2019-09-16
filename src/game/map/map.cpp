@@ -270,6 +270,8 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 		prop.updateWorldSpaceAABB(position);
 		m_displayManager->updateProp(propIndex, &prop);
 	}
+
+	setNeighborTilesDirty(tileIndex);
 }
 
 void Map::moveTileZBy(TileIndex tileIndex, float dz)
@@ -280,6 +282,11 @@ void Map::moveTileZBy(TileIndex tileIndex, float dz)
 float Map::getTileZ(TileIndex tileIndex) const
 {
 	return m_tileNavigations[tileIndex].z;
+}
+
+const flat::AABB3& Map::getTileAABB(TileIndex tileIndex) const
+{
+	return m_tiles[tileIndex].getWorldSpaceAABB();
 }
 
 TileIndex Map::getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const

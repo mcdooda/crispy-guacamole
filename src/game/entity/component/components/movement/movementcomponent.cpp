@@ -62,6 +62,8 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	m_debugSteering = flat::Vector2(0.f, 0.f);
 #endif
 
+	checkIsMidair();
+
 	if (isMovingAlongPath())
 	{
 		progressAlongPath(elapsedTime);
@@ -398,6 +400,23 @@ void MovementComponent::triggerStartStopCallbacks()
 		movementStarted();
 	}
 	m_wasMovingLastFrame = isMovingThisFrame;
+}
+
+void MovementComponent::checkIsMidair()
+{
+	if (m_isTouchingGround)
+	{
+		const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+		if (map::isValidTile(tileIndex))
+		{
+			const float tileZ = m_owner->getMap()->getTileZ(tileIndex);
+			if (m_owner->getPosition().z > tileZ + JUMP_MIN_Z_DIFFERENCE)
+			{
+				m_isTouchingGround = false;
+				m_currentVerticalSpeed = 0.f;
+			}
+		}
+	}
 }
 
 void MovementComponent::jumpIfNecessary(const flat::Vector2& steering)

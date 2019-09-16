@@ -19,7 +19,7 @@ script {
     },
     {
       loadArguments = {
-        'gatherMinerals',
+        'gatherResources',
       },
       name = 'string',
     },

@@ -311,7 +311,7 @@ return {
     },
     {
       loadArguments = {
-        'full',
+        'gather',
       },
       name = 'string',
     },

@@ -3,50 +3,56 @@ return {
     {
       1,
       1,
-      2,
-      1,
-    },
-    {
-      1,
-      2,
       3,
       1,
     },
     {
       1,
       3,
-      3,
-      2,
-    },
-    {
-      1,
-      3,
-      5,
-      2,
-    },
-    {
-      3,
-      1,
-      5,
-      1,
-    },
-    {
       4,
       1,
-      3,
+    },
+    {
+      1,
+      4,
+      4,
+      2,
+    },
+    {
+      2,
+      1,
+      1,
+      1,
+    },
+    {
+      5,
+      1,
+      4,
       3,
     },
     {
       6,
       1,
+      4,
+      4,
+    },
+    {
+      7,
+      1,
+      4,
       5,
-      3,
     },
   },
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/behaviorcomponent',
+      name = 'components/lifecomponent',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
@@ -58,16 +64,19 @@ return {
       name = 'script/scriptoutput',
     },
     {
-      name = 'entity/setcycleanimation',
+      name = 'entity/playanimation',
     },
     {
       loadArguments = {
-        'fallow',
+        'death',
       },
       name = 'string',
     },
     {
-      name = 'entity/setcycleanimated',
+      loadArguments = {
+        1,
+      },
+      name = 'number',
     },
     {
       loadArguments = {

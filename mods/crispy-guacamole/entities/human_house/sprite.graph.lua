@@ -205,7 +205,7 @@ return {
     },
     {
       loadArguments = {
-        'idle',
+        'stand',
       },
       name = 'string',
     },

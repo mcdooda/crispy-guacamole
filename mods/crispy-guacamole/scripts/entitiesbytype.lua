@@ -37,7 +37,7 @@ function EntitiesByType:getAll(type)
 end
 
 function EntitiesByType:getClosests(type, position)
-    return getClosestsValid(type, position, function(entity) return true end)
+    return EntitiesByType:getClosestsValid(type, position, function(entity) return true end)
 end
 
 

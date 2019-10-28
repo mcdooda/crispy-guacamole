@@ -30,10 +30,10 @@ class BehaviorRuntime final
 		void sleep(float time, float duration);
 
 		template <class EventType, class... T>
-		void handleEvent(T... params);
+		bool handleEvent(T... params);
 
 		template <class EventType>
-		bool isEventHandled();
+		bool isEventHandled() const;
 
 		void updateCurrentState();
 		void update(float time);
@@ -53,10 +53,10 @@ class BehaviorRuntime final
 };
 
 template <class EventType, class... T>
-void BehaviorRuntime::handleEvent(T... params)
+bool BehaviorRuntime::handleEvent(T... params)
 {
 	const Behavior& behavior = getBehavior();
-
+	bool proceedToAction = true;
 	lua_State* L = behavior.getLuaState();
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -76,18 +76,23 @@ void BehaviorRuntime::handleEvent(T... params)
 
 		lua_call(L, numParams + 2, 1);
 
-		if (!lua_isnil(L, -1))
+		if (lua_isstring(L, -1))
 		{
-			const char* stateName = luaL_checkstring(L, -1);
+			const char* stateName = lua_tostring(L, -1);
 			enterState(stateName);
+		}
+		else if (lua_isboolean(L, -1))
+		{
+			proceedToAction = lua_toboolean(L, -1) == 1;
 		}
 
 		lua_pop(L, 2);
 	}
+	return proceedToAction;
 }
 
 template<class EventType>
-inline bool component::behavior::BehaviorRuntime::isEventHandled()
+inline bool component::behavior::BehaviorRuntime::isEventHandled() const
 {
 	bool eventHandled = false;
 

@@ -1120,7 +1120,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 						const char* behaviorStateName = interactionComponent->getBehaviorStateName().data();
 						for (entity::Entity* entity : m_selectedEntities)
 						{
-							if (entity->acceptsMoveOrders())
+							if (entity->acceptsPlayerMoveOrder(clickedTilePosition, interactionEntity))
 							{
 								if (!shiftPressed)
 								{
@@ -1139,7 +1139,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 				{
 					for (entity::Entity* entity : m_selectedEntities)
 					{
-						if (entity->acceptsMoveOrders())
+						if (entity->acceptsPlayerMoveOrder(clickedTilePosition))
 						{
 							if (!shiftPressed)
 							{

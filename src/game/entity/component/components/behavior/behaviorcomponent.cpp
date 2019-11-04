@@ -117,7 +117,7 @@ bool BehaviorComponent::handlePlayerMoveOrder(const flat::Vector2& point, Entity
 {
 	if (m_behaviorRuntime.isEventHandled<PlayerMoveOrderEvent>())
 	{
-		return m_behaviorRuntime.handleEvent<PlayerMoveOrderEvent>(m_owner, point, interactionEntity);
+		return m_behaviorRuntime.handleEvent<PlayerMoveOrderEvent>(point, interactionEntity);
 	}
 	return true;
 }

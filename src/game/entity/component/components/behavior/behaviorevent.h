@@ -40,7 +40,7 @@ class PlayerMoveOrderEvent : public BehaviorEvent
 	public:
 		inline static const char* getMethodName() { return "onPlayerMoveOrder"; }
 
-		static int push(lua_State* L, Entity* entity, const flat::Vector2& destination, Entity* interactionEntity);
+		static int push(lua_State* L, const flat::Vector2& destination, Entity* interactionEntity);
 };
 
 } // behavior

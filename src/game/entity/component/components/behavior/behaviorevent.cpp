@@ -22,12 +22,11 @@ int EntityLeftVisionRangeBehaviorEvent::push(lua_State* L, Entity* entity)
 	return 1;
 }
 
-int PlayerMoveOrderEvent::push(lua_State* L, Entity* entity, const flat::Vector2& destination, Entity* interactionEntity)
+int PlayerMoveOrderEvent::push(lua_State* L, const flat::Vector2& destination, Entity* interactionEntity)
 {
-	lua::pushEntity(L, entity);
 	flat::lua::pushVector2(L, destination);
 	lua::pushEntity(L, interactionEntity);
-	return 3;
+	return 2;
 }
 
 } // behavior

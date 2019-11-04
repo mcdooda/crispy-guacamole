@@ -103,6 +103,15 @@ void MapEditorMode::eachBrushTile(std::function<void(map::TileIndex, float)> fun
 	}
 }
 
+void MapEditorMode::eachBrushTileSlot(std::function<void(const flat::Vector2i&, float)> func) const
+{
+	for (const map::brush::TileSlotEffect& tileSlotEffect : m_brushTileSlots)
+	{
+		FLAT_ASSERT(tileSlotEffect.effect > 0.f);
+		func(tileSlotEffect.position, tileSlotEffect.effect);
+	}
+}
+
 void MapEditorMode::applyBrush(MapEditorState& mapEditorState)
 {
 	const auto& keyboard = mapEditorState.m_gameInputContext->getKeyboardInputContext();

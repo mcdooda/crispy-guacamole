@@ -24,8 +24,16 @@ struct TileEffect
 	TileIndex tileIndex;
 	float effect;
 };
-
 using TilesContainer = std::vector<TileEffect>;
+
+struct TileSlotEffect
+{
+	TileSlotEffect(const flat::Vector2i& position, float effect) : position(position), effect(effect) {}
+
+	flat::Vector2i position;
+	float effect;
+};
+using TileSlotsContainer = std::vector<TileSlotEffect>;
 
 class Brush
 {
@@ -41,7 +49,10 @@ class Brush
 		virtual float getEffect(const flat::Vector2& positionFromCenter) const = 0;
 		
 		void getTiles(Map& map, const flat::Vector2& center, TilesContainer& tiles, float minEffect = 0.f) const;
+		void getTileSlots(Map& map, const flat::Vector2& center, TileSlotsContainer& tileSlots, float minEffect = 0.f) const;
+
 		float getTileEffect(const Map& map, const flat::Vector2& center, TileIndex tileIndex) const;
+
 		
 		void getEntities(Map& map, const flat::Vector2& center, std::vector<entity::Entity*>& entities, float minEffect = 0.f) const;
 		

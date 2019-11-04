@@ -34,7 +34,7 @@ Map::~Map()
 
 void Map::update(float currentTime)
 {
-	updateTilesNormals();
+	updateDirtyTiles();
 
 	for (TileSpriteSynchronizer& tileSpriteSynchronizer : m_tileSpriteSynchronizers)
 	{
@@ -50,7 +50,6 @@ bool Map::load(Game& game, const mod::Mod& mod)
 	if (reader.canRead())
 	{
 		reader.read();
-		updateAllTilesNormals();
 		return true;
 	}
 	else
@@ -143,6 +142,8 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTempla
 
 	TilePosition& tilePosition = m_tilePositions.emplace_back();
 	tilePosition.xy = xy;
+
+	setTileDirty(tileIndex);
 
 	return tileIndex;
 }
@@ -271,7 +272,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 		m_displayManager->updateProp(propIndex, &prop);
 	}
 
-	setNeighborTilesDirty(tileIndex);
+	setTileDirty(tileIndex);
 }
 
 void Map::moveTileZBy(TileIndex tileIndex, float dz)
@@ -725,36 +726,43 @@ void Map::updateTileNormal(TileIndex tileIndex)
 	getTileSprite(tileIndex).setNormal(normal);
 }
 
-void Map::buildNeighborTiles()
+void Map::setTileDirty(TileIndex tileIndex)
 {
-	m_neighborTiles.resize(m_tiles.size());
-	for (const std::pair<flat::Vector2i, TileIndex>& pair : m_tilePositionToIndex)
-	{
-		const flat::Vector2i& tilePosition = pair.first;
-		const TileIndex tileIndex = pair.second;
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(-1, 0));
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, -1));
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, 1));
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(1, 0));
-	}
-}
-
-void Map::setNeighborTilesDirty(TileIndex tileIndex)
-{
-	setTileNormalDirty(tileIndex);
-	eachNeighborTiles(tileIndex, [this](TileIndex neighborTileIndex)
-	{
-		setTileNormalDirty(neighborTileIndex);
-	});
-}
-
-void Map::setTileNormalDirty(TileIndex tileIndex)
-{
+	m_dirtyTiles.insert(tileIndex);
 	m_dirtyNormalTiles.insert(tileIndex);
+	const flat::Vector2i& tilePosition = getTileXY(tileIndex);
+
+	auto setNeighborNormalTileDirty = [this, &tilePosition](int dx, int dy)
+	{
+		const map::TileIndex neighborTileIndex = getTileIndex(tilePosition + flat::Vector2i(dx, dy));
+		if (neighborTileIndex != map::TileIndex::INVALID_TILE)
+		{
+			m_dirtyNormalTiles.insert(neighborTileIndex);
+		}
+	};
+	setNeighborNormalTileDirty(-1, 0);
+	setNeighborNormalTileDirty(0, -1);
+	setNeighborNormalTileDirty(0, 1);
+	setNeighborNormalTileDirty(1, 0);
 }
 
-void Map::updateTilesNormals()
+void Map::updateDirtyTiles()
 {
+	if (m_neighborTiles.size() < m_tiles.size())
+	{
+		m_neighborTiles.resize(m_tiles.size());
+		for (const std::pair<flat::Vector2i, TileIndex>& pair : m_tilePositionToIndex)
+		{
+			const flat::Vector2i& tilePosition = pair.first;
+			const TileIndex tileIndex = pair.second;
+			m_neighborTiles[tileIndex].clear();
+			addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(-1, 0));
+			addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, -1));
+			addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, 1));
+			addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(1, 0));
+		}
+	}
+
 	for (TileIndex tileIndex : m_dirtyNormalTiles)
 	{
 		updateTileNormal(tileIndex);
@@ -762,8 +770,21 @@ void Map::updateTilesNormals()
 	m_dirtyNormalTiles.clear();
 }
 
-void Map::updateAllTilesNormals()
+void Map::updateAllTiles()
 {
+	m_dirtyNormalTiles.clear();
+	m_neighborTiles.resize(m_tiles.size());
+	for (const std::pair<flat::Vector2i, TileIndex>& pair : m_tilePositionToIndex)
+	{
+		const flat::Vector2i& tilePosition = pair.first;
+		const TileIndex tileIndex = pair.second;
+		m_neighborTiles[tileIndex].clear();
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(-1, 0));
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, -1));
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, 1));
+		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(1, 0));
+	}
+
 	m_dirtyNormalTiles.clear();
 	eachTile([this](TileIndex tileIndex)
 	{

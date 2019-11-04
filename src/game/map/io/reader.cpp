@@ -178,8 +178,7 @@ void Reader::readTiles()
 		}
 	}
 
-	m_map.updateAllTilesNormals();
-	m_map.buildNeighborTiles();
+	m_map.updateAllTiles();
 }
 
 void Reader::readEntities()

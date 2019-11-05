@@ -107,7 +107,19 @@ return function(addContainer, makeSeparator, font)
     end
 
     entityDebugContainer:addChild(makeSeparator())
+    -- print extraData
+    do
+        local label = Widget.makeText('Print extra data', table.unpack(font))
+        label:setTextColor(0x000000FF)
+        entityDebugContainer:addChild(label)
 
+        label:click(function()
+            for _, selectedEntity in Map.eachSelectedEntity() do
+                print(selectedEntity)
+                flat.dump(selectedEntity:getExtraData())
+            end
+        end)
+    end
     -- open in editor
     do
         local label = Widget.makeText('Open in editor', table.unpack(font))

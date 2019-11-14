@@ -13,14 +13,7 @@ function states:init(wheatField)
 end
 
 function states:growing(wheatField)
-    wheatField:setCycleAnimation 'fallow'
-    wheatField:sleep(2)
-    wheatField:setCycleAnimation 'grow_1'
-    wheatField:sleep(2)
-    wheatField:setCycleAnimation 'grow_2'
-    wheatField:sleep(2)
-    wheatField:setCycleAnimation 'grow_3'
-    wheatField:sleep(2)
+    wheatField:playAnimation 'fallow'
     wheatField:setCycleAnimation 'idle'
     local extraData = wheatField:getExtraData()
     extraData.amount = totalAmount

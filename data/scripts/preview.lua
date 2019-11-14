@@ -49,7 +49,7 @@ local function startEntitySpriteAnimationByName(preview, spriteComponentTemplate
     end
 end
 
-local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, animationName, loopForever, scale)
+local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, animationName, loopForever, scale, showTooltip)
     local entityAtlasPath = Path.getEntityFilePath(entityTemplateName, 'atlas.png')
     local preview = Widget.makeImage(entityAtlasPath)
     preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
@@ -77,14 +77,17 @@ local function entitySpritePreview(entityTemplateName, spriteComponentTemplate, 
         preview:setSize(width * scale, height * scale)
         preview:setBackgroundSize(imageWidth * scale, imageHeight * scale)
     end
+    if showTooltip then
+        flat.ui.addTooltip(preview, entityTemplateName)
+    end
     return preview
 end
 
-local function entityPreview(entityTemplateName, animationName, loopForever, scale)
+local function entityPreview(entityTemplateName, animationName, loopForever, scale, showTooltip)
     -- try sprite component first
     local spriteComponentTemplate = Path.requireComponentTemplateIfExists(entityTemplateName, 'sprite')
     if spriteComponentTemplate then
-       return entitySpritePreview(entityTemplateName, spriteComponentTemplate, animationName, loopForever, scale)
+       return entitySpritePreview(entityTemplateName, spriteComponentTemplate, animationName, loopForever, scale, showTooltip)
     end
 
     -- none of them
@@ -120,7 +123,7 @@ local function startTileSpriteAnimation(preview, tileTemplate, tileVariantIndex)
     return stopAnimation
 end
 
-local function tilePreview(tileTemplateName, tileVariantIndex, loopForever, scale)
+local function tilePreview(tileTemplateName, tileVariantIndex, loopForever, scale, showTooltip)
     local tileAtlasPath = Path.getTileFilePath(tileTemplateName, 'atlas.png')
     local preview = Widget.makeImage(tileAtlasPath)
     preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
@@ -151,11 +154,28 @@ local function tilePreview(tileTemplateName, tileVariantIndex, loopForever, scal
         preview:setSize(width * scale, height * scale)
         preview:setBackgroundSize(imageWidth * scale, imageHeight * scale)
     end
+    if showTooltip then
+        flat.ui.addTooltip(preview, tileTemplateName)
+    end
+    return preview
+end
+
+local function propPreview(propName, fileName, scale, showTooltip)
+    local propTexturePath = Path.getPropFilePath(propName, fileName .. '.png')
+    local preview = Widget.makeImage(propTexturePath)
+    if scale then
+        local w, h = preview:getSize()
+        preview:setSize(w * scale, h * scale)
+    end
+    if showTooltip then
+        flat.ui.addTooltip(preview, propName)
+    end
     return preview
 end
 
 return {
     entity = entityPreview,
     sprite = entitySpritePreview,
-    tile = tilePreview
+    tile = tilePreview,
+    prop = propPreview
 }

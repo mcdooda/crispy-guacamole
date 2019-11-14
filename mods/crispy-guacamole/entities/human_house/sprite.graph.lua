@@ -3,32 +3,32 @@ return {
     {
       1,
       1,
+      5,
+      1,
+    },
+    {
       2,
+      1,
+      1,
       1,
     },
     {
       3,
       1,
-      1,
       2,
+      1,
     },
     {
       4,
       1,
-      3,
-      1,
-    },
-    {
-      5,
-      1,
-      3,
+      2,
       2,
     },
     {
       6,
       1,
       1,
-      3,
+      2,
     },
     {
       7,
@@ -39,49 +39,49 @@ return {
     {
       8,
       1,
-      7,
-      1,
+      6,
+      2,
     },
     {
       9,
       1,
-      7,
-      2,
+      1,
+      3,
     },
     {
       10,
       1,
-      7,
-      3,
+      9,
+      1,
     },
     {
       11,
       1,
-      7,
-      4,
+      10,
+      1,
     },
     {
       12,
       1,
-      1,
-      1,
+      10,
+      2,
     },
     {
       13,
       1,
-      12,
-      1,
+      10,
+      3,
     },
     {
       14,
       1,
-      12,
-      2,
+      10,
+      4,
     },
     {
       15,
       1,
-      6,
+      9,
       2,
     },
     {
@@ -108,11 +108,56 @@ return {
       15,
       4,
     },
+    {
+      20,
+      1,
+      9,
+      3,
+    },
+    {
+      21,
+      1,
+      20,
+      1,
+    },
+    {
+      22,
+      1,
+      20,
+      2,
+    },
+    {
+      23,
+      1,
+      20,
+      3,
+    },
+    {
+      24,
+      1,
+      20,
+      4,
+    },
   },
   nodeType = 'script',
   nodes = {
     {
       name = 'components/spritecomponent',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        19,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        39,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
@@ -128,18 +173,22 @@ return {
     },
     {
       loadArguments = {
-        10,
+        5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        2,
+        3,
       },
       name = 'number',
     },
     {
       loadArguments = {
+        {
+          5,
+          '',
+        },
         {
           5,
           '',
@@ -156,7 +205,7 @@ return {
     },
     {
       loadArguments = {
-        'idle',
+        'stand',
       },
       name = 'string',
     },
@@ -168,28 +217,13 @@ return {
     },
     {
       loadArguments = {
-        10,
+        1,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.15000000596046,
-      },
-      name = 'number',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        21,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        20,
+        1,
       },
       name = 'number',
     },
@@ -198,7 +232,7 @@ return {
     },
     {
       loadArguments = {
-        'fallow',
+        'inhabited',
       },
       name = 'string',
     },
@@ -210,13 +244,40 @@ return {
     },
     {
       loadArguments = {
-        4,
+        5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        2,
+        0.20000000298023,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'build',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
       },
       name = 'number',
     },

@@ -22,6 +22,13 @@ int EntityLeftVisionRangeBehaviorEvent::push(lua_State* L, Entity* entity)
 	return 1;
 }
 
+int PlayerMoveOrderEvent::push(lua_State* L, const flat::Vector2& destination, Entity* interactionEntity)
+{
+	flat::lua::pushVector2(L, destination);
+	lua::pushEntity(L, interactionEntity);
+	return 2;
+}
+
 } // behavior
 } // component
 } // entity

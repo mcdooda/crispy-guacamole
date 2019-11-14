@@ -1,11 +1,13 @@
 #include "behaviorcomponent.h"
 #include "behaviorcomponenttemplate.h"
 #include "behaviorevent.h"
-#include "../../componenttype.h"
-#include "../../../entity.h"
-#include "../../../entitytemplate.h"
-#include "../../../entityhelper.h"
-#include "../detection/detectioncomponent.h"
+
+#include "entity/entity.h"
+#include "entity/entitytemplate.h"
+#include "entity/entityhelper.h"
+#include "entity/component/componenttype.h"
+
+#include "entity/component/components/detection/detectioncomponent.h"
 
 namespace game
 {
@@ -109,6 +111,15 @@ bool BehaviorComponent::canInteract(const char* stateName) const
 void BehaviorComponent::sleep(float time, float duration)
 {
 	m_behaviorRuntime.sleep(time, duration);
+}
+
+bool BehaviorComponent::handlePlayerMoveOrder(const flat::Vector2& point, Entity* interactionEntity)
+{
+	if (m_behaviorRuntime.isEventHandled<PlayerMoveOrderEvent>())
+	{
+		return m_behaviorRuntime.handleEvent<PlayerMoveOrderEvent>(point, interactionEntity);
+	}
+	return true;
 }
 
 bool BehaviorComponent::addedToMap(Entity* entity, map::Map* map)

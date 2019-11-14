@@ -67,6 +67,14 @@ class Map
 					TileIndex::INVALID_TILE
 				}
 			{}
+
+			void clear()
+			{
+				for (int i = 0; i < MAX_NEIGHBORS; ++i)
+				{
+					neighbors[i] = TileIndex::INVALID_TILE;
+				}
+			}
 		};
 
 	public:
@@ -158,8 +166,6 @@ class Map
 		template <class Func>
 		void eachTile(Func func) const;
 
-		void buildNeighborTiles();
-
 		template <class Func>
 		void eachNeighborTiles(TileIndex tileIndex, Func func) const;
 
@@ -172,10 +178,10 @@ class Map
 		template <class Func>
 		inline void eachEntityInCollisionRange(const flat::Vector2& center2d, float range, Func func) const;
 
-		void setNeighborTilesDirty(TileIndex tileIndex);
-		void setTileNormalDirty(TileIndex tileIndex);
-		void updateTilesNormals();
-		void updateAllTilesNormals();
+		void setTileDirty(TileIndex tileIndex);
+
+		void updateDirtyTiles();
+		void updateAllTiles();
 
 		std::shared_ptr<Zone>& addZone(const std::string& zoneName);
 		bool removeZone(const std::string& zoneName);
@@ -222,6 +228,7 @@ class Map
 		std::unordered_map<flat::Vector2i, TileIndex> m_tilePositionToIndex;
 		std::vector<Prop> m_props;
 
+		std::set<TileIndex> m_dirtyTiles;
 		std::set<TileIndex> m_dirtyNormalTiles;
 
 		std::map<std::string, std::shared_ptr<Zone>> m_zones;

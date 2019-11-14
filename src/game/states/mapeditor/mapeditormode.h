@@ -45,6 +45,7 @@ public:
 protected:
 	void eachSelectedTile(std::function<void(map::TileIndex, float)> func) const;
 	void eachBrushTile(std::function<void(map::TileIndex, float)> func) const;
+	void eachBrushTileSlot(std::function<void(const flat::Vector2i&, float)> func) const;
 	void applyBrush(MapEditorState& mapEditorState);
 
 protected:
@@ -52,6 +53,7 @@ protected:
 
 	map::brush::TilesContainer m_selectedTiles;
 	map::brush::TilesContainer m_brushTiles;
+	map::brush::TileSlotsContainer m_brushTileSlots;
 	flat::Vector2 m_brushPosition;
 	bool m_brushOnTile;
 	std::unique_ptr<map::brush::Brush> m_brush;

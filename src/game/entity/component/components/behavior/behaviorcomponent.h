@@ -39,6 +39,8 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 
 		void sleep(float time, float duration);
 
+		bool handlePlayerMoveOrder(const flat::Vector2& point, Entity* interactionEntity);
+
 		inline EntityHandle getInteractionEntity() const { return m_interactionEntity; }
 		inline const std::string& getInteractionStateName() const { return m_interactionStateName; }
 
@@ -49,6 +51,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		
 	private:
 		bool addedToMap(Entity* entity, map::Map* map);
+
 		bool entityEnteredVisionRange(Entity* entity);
 		bool entityLeftVisionRange(Entity* entity);
 

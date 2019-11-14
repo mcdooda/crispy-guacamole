@@ -47,6 +47,9 @@ void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 	m_brushTiles.clear();
 	brush->getTiles(mapEditorState.getMap(), m_brushPosition, m_brushTiles);
 
+	m_brushTileSlots.clear();
+	brush->getTileSlots(mapEditorState.getMap(), m_brushPosition, m_brushTileSlots);
+
 	if (mouse.isPressed(M(RIGHT)))
 	{
 		if (mouse.isJustPressed(M(RIGHT)) && !keyboard.isPressed(K(LSHIFT)))
@@ -289,6 +292,19 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 
 			map.deleteTile(tileIndex);
 		}
+	}
+
+	if (keyboard.isPressed(K(INSERT)))
+	{
+		eachBrushTileSlot([this, &map](const flat::Vector2i& position, float effect)
+		{
+			const map::TileIndex tileIndex = map.getTileIndex(position);
+			if (tileIndex == map::TileIndex::INVALID_TILE)
+			{
+				map::TileIndex tileIndex = map.createTile(position, 0.f, 0, m_tileTemplate);
+				map.setTileDirty(tileIndex);
+			}
+		});
 	}
 }
 

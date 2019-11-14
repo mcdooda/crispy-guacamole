@@ -3,7 +3,7 @@ local GathererBehavior = require 'data/scripts/componenthelpers/behaviors/gather
 local Money = require 'mods/crispy-guacamole/scripts/money'
 local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
 
-states = GathererBehavior.basicGatherer('human_farm', 'wheat_field')
+local states = GathererBehavior.basicGatherer('human_farm', 'wheat_field')
 
 local function getClosestBuilding(gatherer)
     return EntitiesByType:getClosests('human_farm', gatherer:getPosition():toVector2())[1]
@@ -11,7 +11,7 @@ end
 function states:gatherResources(gatherer)
     gatherer:setCycleAnimation 'gather'
     local extraData = gatherer:getExtraData()
-    local building = not extraData.resourcesChanged and gatherer:getExtraData().building or nil
+    local building = gatherer:getExtraData().building or nil
 
     if not building or not building:isValid() then
         building = getClosestBuilding(gatherer)
@@ -22,95 +22,92 @@ function states:gatherResources(gatherer)
         gatherer:interactWith(building)
     end
 end
+local function hasAmountAndNoGatherer(wheatField) 
+    local extraData = wheatField:getExtraData()
+    return extraData.amount > 0 and (extraData.gatherer == nil or not extraData.gatherer:isValid())
+end
 
 local function getClosestResource(gatherer)
-    return EntitiesByType:getClosestsValid('wheat_field', gatherer:getPosition():toVector2(), 
-        function(entity)
-            local extraData = entity:getExtraData()
-            return extraData.amount > 0 and extraData.gatherer == nil
-        end)[1]
+    return EntitiesByType:getClosestsValid('wheat_field', gatherer:getPosition():toVector2(), hasAmountAndNoGatherer)[1]
 end
 
 function states:backToWork(gatherer)
-    local building = gatherer:getInteractionEntity()
-
-    local extraData = gatherer:getExtraData()
-
-    extraData.building = building
-
-    if extraData.resourcesAmount > 0 then
-        Money:add(extraData.resourcesAmount)
-        gatherer:setCycleAnimation 'move'
-        extraData.resourcesAmount = 0
-    end
-
-    local resources = extraData.resources
-    
-    if not resources or not resources:isValid() or resources:getExtraData().amount == 0  then
+    local resources = states:addResourceAndGetToNext(gatherer)
+    if not resources or resources:getExtraData().amount == 0 then
         return 'lookForWheat'
-    end
-
-    if resources then
+    else
         gatherer:interactWith(resources)
     end
 end
 
 function states:reapResources(gatherer)
-    local resources = gatherer:getInteractionEntity()
-    local resourceData = resources:getExtraData()
+    local targetResource = gatherer:getInteractionEntity()
+    local targetResourceData = targetResource:getExtraData()
     local extraData = gatherer:getExtraData()
-    if not resources:isValid() then 
+    
+    if extraData.resources and extraData.resources ~= targetResource then
+        unlockResource(gatherer)
+    end
+    if not targetResource:isValid() then 
         return 'lookForWheat'
     end
-    if extraData.resources and extraData.resources ~= resources then
-        extraData.resources:getExtraData().gatherer = nil
-    end
-
-    if resourceData.amount == 0 and resourceData.gatherer ~= nil and resourceData.gatherer == gatherer then
-        resourceData.gatherer = nil 
-        if extraData.resourcesAmount > 0 then
-            return 'gatherResources'
-        else
-            return 'lookForWheat'
+    if hasAmountAndNoGatherer(targetResource) then
+        lockResource(gatherer, targetResource)
+    else 
+        if targetResourceData.gatherer ~= gatherer then
+            if extraData.resourcesAmount > 0 then
+                unlockResource(gatherer)
+                return 'gatherResources'
+            else
+                return 'lookForWheat'
+            end
         end
     end
 
-    if (resourceData.gatherer ~= nil and resourceData.gatherer ~= gatherer) or resourceData.amount== 0 then
-        return 'lookForWheat'
-    end
-
-    extraData.resourcesChanged = false
-    if extraData.resources ~= resources then
-        extraData.resources = resources
-        extraData.resourcesChanged = true
-    end
-    
-    resourceData.gatherer = gatherer
-    if resourceData.amount > 0 and extraData.resourcesAmount < 5 then
+    if targetResourceData.amount > 0 and extraData.resourcesAmount < 5 then
         gatherer:playAnimation 'reap'
         gatherer:sleep(0.2)
-        local collected = resourceData:withdraw(1)
+        local collected = targetResourceData:withdraw(1)
         extraData.resourcesAmount = extraData.resourcesAmount + collected
     else 
+        if targetResourceData.amount == 0 then
+            unlockResource(gatherer)
+        end
         return 'gatherResources'
     end
-    gatherer:interactWith(resources)
+    gatherer:interactWith(targetResource)
+end
+
+function states:onPlayerMoveOrder(gatherer, destination, interactionEntity) 
+    unlockResource(gatherer)
+    if interactionEntity == nil then
+        return 'wander'
+    end
 end
 
 function states:lookForWheat(gatherer)
-    local extraData = gatherer:getExtraData()
-    if extraData.resources and extraData.resources:getExtraData().gatherer == gatherer then
-        extraData.resources:getExtraData().gatherer = nil
-    end
-    if extraData.resources then
-        extraData.resources = nil
-    end
+    unlockResource(gatherer)
     local nextResource = getClosestResource(gatherer)
     if nextResource then
-        nextResource:getExtraData().gatherer = gatherer
+        lockResource(gatherer, nextResource)
         gatherer:interactWith(nextResource)
     else
         return 'lookForWheat'
+    end
+end
+
+function lockResource(gatherer, resource)
+    gatherer:getExtraData().resources = resource
+    resource:getExtraData().gatherer = gatherer
+end
+
+function unlockResource(gatherer) 
+    local extraData = gatherer:getExtraData()
+    if extraData.resources then
+        if extraData.resources:getExtraData().gatherer == gatherer then
+            extraData.resources:getExtraData().gatherer = nil
+        end
+        extraData.resources = nil
     end
 end
 

@@ -234,6 +234,19 @@ bool Entity::acceptsMoveOrders() const
 	return m_movementComponent != nullptr;
 }
 
+bool Entity::acceptsPlayerMoveOrder(const flat::Vector2& point, Entity* interactionEntity) const
+{
+	if (m_movementComponent == nullptr)
+	{
+		return false;
+	}
+	else if (m_behaviorComponent == nullptr)
+	{
+		return true;
+	}
+	return m_behaviorComponent->handlePlayerMoveOrder(point, interactionEntity);
+}
+
 void Entity::moveTo(const flat::Vector2& point, Entity* interactionEntity)
 {
 	FLAT_ASSERT(m_movementComponent != nullptr);
@@ -442,7 +455,6 @@ void Entity::checkSpriteAABB()
 		FLAT_ASSERT(spriteAABB == getAABB());
 	}
 }
-
 #endif
 
 } // entity

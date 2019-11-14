@@ -27,6 +27,7 @@ class TileTemplate;
 namespace io
 {
 class Reader;
+class Writer;
 }
 
 inline void getEntityAABB(entity::Entity* entity, flat::AABB2& aabb)
@@ -190,6 +191,9 @@ class Map
 		void setAxes(const flat::Vector2& xAxis,
 		             const flat::Vector2& yAxis,
 		             const flat::Vector2& zAxis);
+		void getAxes(flat::Vector2& xAxis,
+					 flat::Vector2& yAxis,
+					 flat::Vector2& zAxis) const;
 
 		void addTileNeighbor(TileIndex tileIndex, const flat::Vector2i& neighborTilePosition);
 		void addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex);
@@ -241,6 +245,7 @@ class Map
 		
 	private:
 		friend class io::Reader;
+		friend class io::Writer;
 };
 
 

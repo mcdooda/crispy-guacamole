@@ -45,7 +45,6 @@ void Map::update(float currentTime)
 bool Map::load(Game& game, const mod::Mod& mod)
 {
 	io::Reader reader(game, mod, *this);
-	reader.readConfig();
 
 	if (reader.canRead())
 	{
@@ -808,6 +807,15 @@ void Map::setAxes(const flat::Vector2& xAxis,
 	m_xAxis = xAxis;
 	m_yAxis = yAxis;
 	m_zAxis = zAxis;
+}
+
+void Map::getAxes(flat::Vector2& xAxis,
+				  flat::Vector2& yAxis,
+				  flat::Vector2& zAxis) const
+{
+	 xAxis = m_xAxis;
+	 yAxis = m_yAxis;
+	 zAxis = m_zAxis;
 }
 
 #ifdef FLAT_DEBUG

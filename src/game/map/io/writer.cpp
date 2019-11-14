@@ -42,10 +42,20 @@ void Writer::write(const std::vector<entity::Entity*>& entities)
 	writeZones();
 }
 
+static const double version;
 void Writer::writeHeaders()
 {
 	// tile textures
 	FLAT_ASSERT(m_tileTextures.empty());
+	write(version);
+	flat::Vector2 xAxis;
+	flat::Vector2 yAxis;
+	flat::Vector2 zAxis;
+	m_map.getAxes(xAxis, yAxis, zAxis);
+	write<const flat::Vector2&>(xAxis);
+	write<const flat::Vector2&>(yAxis);
+	write<const flat::Vector2&>(zAxis);
+
 	std::vector<const flat::video::Texture*> tileTexturesOrdered;
 	m_map.eachTile([this, &tileTexturesOrdered](TileIndex tileIndex)
 	{
@@ -132,7 +142,7 @@ void Writer::writeTiles()
 				FLAT_ASSERT((tileTemplateIndex & 0x0FFF) == tileTemplateIndex);
 				uint16_t tileTemplateVariantIndex = tileSpriteSynchronizer.getCurrentLine();
 				FLAT_ASSERT((tileTemplateVariantIndex & 0x000F) == tileTemplateVariantIndex);
-				write<uint16_t>((tileTemplateIndex & 0x0FFF) | (tileTemplateVariantIndex << 12));
+				write<uint16_t>((tileTemplateIndex & 0x03FF) | (tileTemplateVariantIndex << 10));
 
 				const Prop* prop = m_map.getTileProp(tileIndex);
 				bool hasProp = prop != nullptr;

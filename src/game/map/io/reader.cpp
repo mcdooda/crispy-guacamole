@@ -20,14 +20,18 @@ Reader::Reader(Game& game, const mod::Mod& mod, Map& map) :
 	m_game(game),
 	m_mod(mod),
 	m_map(map),
-	m_file(mod.getMapPath(game.mapName).c_str(), std::ofstream::binary)
+	m_file(mod.getMapPath(game.mapName).c_str(), std::ofstream::binary),
+	m_minX(0),
+	m_maxX(0),
+	m_minY(0),
+	m_maxY(0)
 {
-	
+
 }
 
 Reader::~Reader()
 {
-	
+
 }
 
 bool Reader::canRead() const
@@ -37,71 +41,26 @@ bool Reader::canRead() const
 
 void Reader::read()
 {
-	readConfig();
-
 	readHeaders();
 	readTiles();
 	readEntities();
 	readZones();
 }
 
-void Reader::readConfig()
+void Reader::readHeaders()
 {
+	double version;
+	read(version);
 	flat::Vector2 xAxis;
 	flat::Vector2 yAxis;
 	flat::Vector2 zAxis;
-
-	lua_State* L = m_game.lua->state;
-	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-		std::string configFilePath = m_mod.getMapPath(m_game.mapName, "map.lua");
-		luaL_loadfile(L, configFilePath.c_str());
-		lua_call(L, 0, 1);
-
-		{
-			lua_getfield(L, -1, "axes");
-			luaL_checktype(L, -1, LUA_TTABLE);
-			{
-				lua_getfield(L, -1, "x");
-				luaL_checktype(L, -1, LUA_TTABLE);
-				lua_rawgeti(L, -1, 1);
-				xAxis.x = static_cast<float>(luaL_checknumber(L, -1));
-				lua_rawgeti(L, -2, 2);
-				xAxis.y = static_cast<float>(luaL_checknumber(L, -1));
-				lua_pop(L, 3);
-			}
-			{
-				lua_getfield(L, -1, "y");
-				luaL_checktype(L, -1, LUA_TTABLE);
-				lua_rawgeti(L, -1, 1);
-				yAxis.x = static_cast<float>(luaL_checknumber(L, -1));
-				lua_rawgeti(L, -2, 2);
-				yAxis.y = static_cast<float>(luaL_checknumber(L, -1));
-				lua_pop(L, 3);
-			}
-			{
-				lua_getfield(L, -1, "z");
-				luaL_checktype(L, -1, LUA_TTABLE);
-				lua_rawgeti(L, -1, 1);
-				zAxis.x = static_cast<float>(luaL_checknumber(L, -1));
-				lua_rawgeti(L, -2, 2);
-				zAxis.y = static_cast<float>(luaL_checknumber(L, -1));
-				lua_pop(L, 3);
-			}
-			lua_pop(L, 1);
-		}
-
-		lua_pop(L, 1);
-	}
+	read(xAxis);
+	read(yAxis);
+	read(zAxis);
 
 	m_map.setAxes(xAxis, yAxis, zAxis);
-}
 
-void Reader::readHeaders()
-{
 	states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
-
 	// tile textures
 	uint16_t numTiles;
 	read(numTiles);
@@ -141,7 +100,7 @@ void Reader::readHeaders()
 void Reader::readTiles()
 {
 	m_map.setBounds(m_minX, m_maxX, m_minY, m_maxY);
-	
+
 	for (int x = m_minX; x <= m_maxX; ++x)
 	{
 		for (int y = m_minY; y <= m_maxY; ++y)
@@ -153,18 +112,18 @@ void Reader::readTiles()
 			{
 				float z;
 				read(z);
-				
+
 				uint16_t tileTemplateId;
 				read(tileTemplateId);
 
-				uint16_t tileTemplateIndex = tileTemplateId & 0x0FFF;
-				uint16_t tileTemplateVariantIndex = tileTemplateId >> 12;
+				uint16_t tileTemplateIndex = tileTemplateId & 0x03FF;
+				uint16_t tileTemplateVariantIndex = tileTemplateId >> 10;
 
 				std::shared_ptr<const TileTemplate> tileTemplate = m_tileTemplates[tileTemplateIndex];
 
 				flat::Vector2i xy(x, y);
 				TileIndex tileIndex = m_map.createTile(xy, z, tileTemplateVariantIndex, tileTemplate);
-				
+
 				bool hasProp;
 				read(hasProp);
 				if (hasProp)
@@ -205,7 +164,7 @@ void Reader::readEntities()
 			std::cerr << "Entity '" << entityTemplateName << "' does not exist anymore" << std::endl;
 		}
 	}
-	
+
 	uint16_t numEntities;
 	read(numEntities);
 	for (int i = 0; i < numEntities; ++i)

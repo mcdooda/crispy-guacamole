@@ -71,6 +71,13 @@ inline void Writer::write(const std::string& value)
 	m_file.write(value.data(), size);
 }
 
+template <>
+inline void Writer::write(const flat::Vector2& value)
+{
+	write<float>(value.x);
+	write<float>(value.y);
+}
+
 } // io
 } // map
 } // game

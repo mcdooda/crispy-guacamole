@@ -31,8 +31,6 @@ class Reader
 		bool canRead() const;
 		void read();
 
-		void readConfig();
-
 	private:
 		void readHeaders();
 		void readTiles();
@@ -72,6 +70,13 @@ inline void Reader::read(std::string& value)
 	read<uint16_t>(size);
 	value.resize(size);
 	m_file.read(&value[0], size);
+}
+
+template <>
+inline void Reader::read(flat::Vector2& value)
+{
+	read<float>(value.x);
+	read<float>(value.y);
 }
 
 } // io

@@ -823,19 +823,16 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		return false;
 	}
 
-	const auto& keyboard = m_gameInputContext->getKeyboardInputContext();
-	const auto& mouse = m_gameInputContext->getMouseInputContext();
-	const flat::Vector2& mousePosition = mouse.getPosition();
+	flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
 
-	if (mouse.isJustReleased(M(LEFT)))
+	if (game.input->mouse->isJustReleased(M(LEFT)))
 	{
-		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
 		if (!selectionWidget->getParent().expired())
 		{
 			const flat::Vector2& bottomLeft = selectionWidget->getPosition();
 			flat::Vector2 topRight = bottomLeft + selectionWidget->getSize();
 
-			const bool shiftPressed = keyboard.isPressed(K(LSHIFT));
+			const bool shiftPressed = game.input->keyboard->isPressed(K(LSHIFT));
 			if (!isSmallSelection())
 			{
 				updateSelectedEntities(game, bottomLeft, topRight, shiftPressed);
@@ -846,9 +843,10 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 			return !m_selectedEntities.empty();
 		}
 	}
-	else if (mouse.isJustPressed(M(LEFT)))
+	else if (m_gameInputContext->getMouseInputContext().isJustPressed(M(LEFT)))
 	{
-		const bool shiftPressed = keyboard.isPressed(K(LSHIFT));
+		const bool shiftPressed = game.input->keyboard->isPressed(K(LSHIFT));
+		const flat::Vector2& mousePosition = game.input->mouse->getPosition();
 		selectClickedEntity(game, mousePosition, shiftPressed);
 
 		m_mouseDownPosition = mousePosition;
@@ -856,8 +854,10 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		root->addChild(m_selectionWidget);
 	}
 
-	if (mouse.isPressed(M(LEFT)))
+	if (!selectionWidget->getParent().expired())
 	{
+		const flat::Vector2& mousePosition = game.input->mouse->getPosition();
+
 		// update selection bounds
 		flat::Vector2 bottomLeft;
 		bottomLeft.x = std::min(m_mouseDownPosition.x, mousePosition.x);
@@ -867,7 +867,6 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		topRight.y = std::max(m_mouseDownPosition.y, mousePosition.y);
 		flat::Vector2 size = topRight - bottomLeft;
 
-		flat::sharp::ui::Widget* selectionWidget = m_selectionWidget.get();
 		selectionWidget->setPosition(bottomLeft);
 		selectionWidget->setSize(size);
 		selectionWidget->setDirty();

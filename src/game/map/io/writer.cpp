@@ -141,7 +141,7 @@ void Writer::writeTiles()
 				uint16_t tileTemplateIndex = m_tileTextures.at(tileTexture);
 				FLAT_ASSERT((tileTemplateIndex & 0x0FFF) == tileTemplateIndex);
 				uint16_t tileTemplateVariantIndex = tileSpriteSynchronizer.getCurrentLine();
-				FLAT_ASSERT((tileTemplateVariantIndex & 0x000F) == tileTemplateVariantIndex);
+				FLAT_ASSERT((tileTemplateVariantIndex & 0x003F) == tileTemplateVariantIndex);
 				write<uint16_t>((tileTemplateIndex & 0x03FF) | (tileTemplateVariantIndex << 10));
 
 				const Prop* prop = m_map.getTileProp(tileIndex);

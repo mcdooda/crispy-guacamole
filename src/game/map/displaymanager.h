@@ -53,6 +53,8 @@ class DisplayManager final
 #ifdef FLAT_DEBUG
 		const flat::AABB2& getEntityCellAABB(const entity::Entity* entity) const;
 
+		const flat::AABB2& getTileCellAABB(const map::TileIndex tileIndex) const;
+
 		inline size_t getNumOpaqueObjects() const { return m_numOpaqueObjects; }
 		inline size_t getNumOpaqueDrawCalls() const { return m_numOpaqueDrawCalls; }
 

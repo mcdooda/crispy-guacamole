@@ -302,6 +302,14 @@ void BaseMapState::debugCursorPosition(Game& game)
 			m_debugDisplay.add3dLine(position3d + flat::Vector3(0.5f, 0.5f, 0.f), position3d + flat::Vector3(-0.5f, 0.5f, 0.f));
 			m_debugDisplay.add3dLine(position3d + flat::Vector3(-0.5f, 0.5f, 0.f), position3d + flat::Vector3(-0.5f, -0.5f, 0.f));
 		}
+
+		const map::Tile* tile = map.getTileFromIndex(tileIndex);
+		const flat::AABB2& tileAABB = tile->getAABB();
+		m_debugDisplay.add2dAABB(tileAABB, flat::video::Color::GREEN);
+
+		const flat::AABB2& cellAABB = m_displayManager.getTileCellAABB(tileIndex);
+		m_debugDisplay.add2dAABB(cellAABB, flat::video::Color::RED);
+
 	}
 	m_debugDisplay.add3dCircle(position3d, 0.1f, color, 1.f);
 

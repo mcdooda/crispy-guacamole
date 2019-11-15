@@ -231,6 +231,13 @@ void Map::getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::ve
 	}
 }
 
+#ifdef FLAT_DEBUG
+const Tile* Map::getTileFromIndex(TileIndex tileIndex) const
+{
+	return &m_tiles[tileIndex];
+}
+#endif
+
 void Map::getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::vector<const Prop*>& props) const
 {
 	FLAT_PROFILE("Map Get Props From Indices");

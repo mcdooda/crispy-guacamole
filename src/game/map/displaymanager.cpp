@@ -187,10 +187,11 @@ void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::
 
 		// set the object depth according to its index
 		const int numObjects = static_cast<int>(objects.size());
+		const float numObjectsPlusOneInverse = 1.f / (static_cast<float>(numObjects) + 1.f);
 		for (int i = 0; i < numObjects; ++i)
 		{
 			const MapObject* mapObject = objects[i];
-			const float depth = static_cast<float>(numObjects - i) / numObjects;
+			const float depth = static_cast<float>(numObjects - i) * numObjectsPlusOneInverse;
 			const_cast<flat::render::BaseSprite&>(mapObject->getSprite()).setDepth(depth);
 		}
 	}
@@ -327,8 +328,16 @@ TileIndex DisplayManager::getTileIndexAtPosition(const Map& map, const flat::Vec
 #ifdef FLAT_DEBUG
 const flat::AABB2& DisplayManager::getEntityCellAABB(const entity::Entity* entity) const
 {
-	int cellIndex = m_entityCellIndices.at(entity);
+	const int cellIndex = m_entityCellIndices.at(entity);
 	const EntityQuadTree::Cell& cell = m_entityQuadtree->getCell(cellIndex);
+	return cell.getAABB();
+}
+
+
+const flat::AABB2& DisplayManager::getTileCellAABB(const map::TileIndex tileIndex) const
+{
+	const int cellIndex = m_tileCellIndices.at(tileIndex);
+	const TileQuadTree::Cell& cell = m_tileQuadtree->getCell(cellIndex);
 	return cell.getAABB();
 }
 #endif

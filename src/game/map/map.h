@@ -108,6 +108,11 @@ class Map
 		TileIndex getTileIndex(const Tile* tile) const;
 
 		void getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const;
+
+#ifdef FLAT_DEBUG
+		const Tile* getTileFromIndex(TileIndex tileIndex) const;
+#endif
+
 		void getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::vector<const Prop*>& props) const;
 
 		const flat::Vector2i& getTileXY(TileIndex tileIndex) const;

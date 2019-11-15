@@ -288,7 +288,7 @@ void BaseMapState::debugCursorPosition(Game& game)
 	flat::video::Color color = flat::video::Color::RED;
 	map::Map& map = getMap();
 	map::TileIndex tileIndex = map.getTileIndex(position2d.x, position2d.y);
-	if (tileIndex != map::TileIndex::INVALID_TILE && cursorOnTile)
+	if (tileIndex != map::TileIndex::INVALID_TILE)
 	{
 		const float tileZ = map.getTileZ(tileIndex);
 		position3d.z = tileZ;
@@ -751,6 +751,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition);
 
 	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
+	m_mouseOverEntity = nullptr;
 	entity::Entity* newMouseOverEntity = nullptr;
 
 	const map::Map& map = getMap();

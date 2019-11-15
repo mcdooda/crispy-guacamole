@@ -275,8 +275,7 @@ const MapObject* DisplayManager::getObjectAtPosition(const Map& map, const flat:
 	sortObjects(objects);
 	
 	// look for a visible pixel in the objects' sprite
-	const MapObject* objectAtPosition = nullptr;
-	for (int i = static_cast<int>(objects.size()) - 1; objectAtPosition == nullptr && i >= 0; --i)
+	for (int i = static_cast<int>(objects.size()) - 1; i >= 0; --i)
 	{
 		const MapObject* object = objects[i];
 		const flat::render::BaseSprite& sprite = object->getSprite();
@@ -285,11 +284,11 @@ const MapObject* DisplayManager::getObjectAtPosition(const Map& map, const flat:
 		sprite.getPixel(position, color);
 		if (color.a > 0.5f)
 		{
-			objectAtPosition = object;
+			return object;
 		}
 	}
 
-	return objectAtPosition;
+	return nullptr;
 }
 
 void DisplayManager::getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const
@@ -299,13 +298,15 @@ void DisplayManager::getEntitiesInAABB(const flat::AABB2& aabb, std::vector<cons
 
 TileIndex DisplayManager::getTileIndexAtPosition(const Map& map, const flat::Vector2& position) const
 {
-	std::vector<TileIndex> tileIndices;
-	tileIndices.reserve(8);
-	m_tileQuadtree->getObjects(position, tileIndices);
-
 	std::vector<const Tile*> tiles;
-	map.getTilesFromIndices(tileIndices, tiles);
-	sortTiles(tiles);
+	{
+		std::vector<TileIndex> tileIndices;
+		tileIndices.reserve(8);
+		m_tileQuadtree->getObjects(position, tileIndices);
+
+		map.getTilesFromIndices(tileIndices, tiles);
+		sortTiles(tiles);
+	}
 
 	// look for a visible pixel in the objects' sprite
 	const Tile* tileAtPosition = nullptr;
@@ -318,7 +319,7 @@ TileIndex DisplayManager::getTileIndexAtPosition(const Map& map, const flat::Vec
 		sprite.getPixel(position, color);
 		if (color.a > 0.5f)
 		{
-			return tileIndices[i];
+			return map.getTileIndex(tile);
 		}
 	}
 

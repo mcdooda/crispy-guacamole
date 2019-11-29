@@ -50,7 +50,6 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 local elevationContainer = Widget.makeFixedSize(40, 19)
                 elevationContainer:setBackgroundColor(0xFFFFFFFF)
                 elevationContainer:setMargin(0, 0, 0, 2)
-                
                 elevationInput:setValue(0)
                 elevationInput:setPrecision(2)
                 elevationInput:setMargin(2)
@@ -87,7 +86,6 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 local headingContainer = Widget.makeFixedSize(40, 19)
                 headingContainer:setBackgroundColor(0xFFFFFFFF)
                 headingContainer:setMargin(0, 0, 0, 2)
-                
                 headingInput:setValue(0)
                 headingInput:setPrecision(2)
                 headingInput:setMargin(2)
@@ -127,6 +125,8 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 shootLabel:click(function()
                     local entity = getEntity()
                     if not entity:isComponentEnabled(Component.projectile) then
+                        entity:setHeading(headingInput:getValue())
+                        entity:setElevation(elevationInput:getValue())
                         entity:decComponentDisableLevel(Component.projectile)
                     end
                 end)

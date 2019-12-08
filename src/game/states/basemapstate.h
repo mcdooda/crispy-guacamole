@@ -147,6 +147,7 @@ class BaseMapState : public BaseState
 		bool updateSelectionWidget(Game& game);
 		void selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
+		void getEntitiesInSelection(const flat::Vector2& bottomLeft, const flat::Vector2& topRight, std::vector<entity::Entity*>& entities) const;
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);
 		void clearSelection();
 		bool addToSelectedEntities(Game& game, entity::Entity* entity);
@@ -192,6 +193,8 @@ class BaseMapState : public BaseState
 
 		std::vector<entity::Entity*> m_selectedEntities;
 		flat::lua::SlotProxy<> m_selectionChangedSlotProxy;
+
+		std::vector<entity::Entity*> m_entitiesInSelection;
 
 		entity::EntityHandle m_mouseOverEntity;
 		map::TileIndex m_mouseOverTileIndex;

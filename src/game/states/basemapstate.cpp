@@ -853,6 +853,12 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		root->addChild(m_selectionWidget);
 	}
 
+	for (entity::Entity* entity : m_entitiesInSelection)
+	{
+		clearMouseOverColor(entity);
+	}
+	m_entitiesInSelection.clear();
+
 	if (!selectionWidget->getParent().expired())
 	{
 		const flat::Vector2& mousePosition = game.input->mouse->getPosition();
@@ -869,6 +875,17 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		selectionWidget->setPosition(bottomLeft);
 		selectionWidget->setSize(size);
 		selectionWidget->setDirty();
+
+		std::vector<entity::Entity*> entitiesInSelection;
+		getEntitiesInSelection(bottomLeft, topRight, entitiesInSelection);
+		for (entity::Entity* entity : entitiesInSelection)
+		{
+			if (!entity->isSelected())
+			{
+				m_entitiesInSelection.push_back(entity);
+				setMouseOverColor(entity);
+			}
+		}
 		
 		return true;
 	}
@@ -933,13 +950,8 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 	}
 }
 
-void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection)
+void BaseMapState::getEntitiesInSelection(const flat::Vector2& bottomLeft, const flat::Vector2& topRight, std::vector<entity::Entity*>& entities) const
 {
-	if (!addToSelection)
-	{
-		clearSelection();
-	}
-
 	flat::AABB2 selectionAABB;
 	selectionAABB.min = m_gameView.getRelativePosition(bottomLeft);
 	selectionAABB.max = m_gameView.getRelativePosition(topRight);
@@ -948,22 +960,40 @@ void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& botto
 	std::vector<const map::MapObject*> entitiesInSelectionWidget;
 	m_displayManager.getEntitiesInAABB(selectionAABB, entitiesInSelectionWidget);
 
-	const int numSelectedEntities = static_cast<int>(m_selectedEntities.size());
-
+	entities.clear();
+	entities.reserve(entitiesInSelectionWidget.size());
 	for (const map::MapObject* mapObject : entitiesInSelectionWidget)
 	{
-		// TODO: fix these casts
-		entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
+		FLAT_ASSERT(mapObject->isEntity());
+
+		// check that the sprite origin actually is in the AABB
+		if (selectionAABB.isInside(mapObject->getSprite().getPosition()))
+		{
+			// TODO: fix these casts
+			entities.push_back(const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject)));
+		}
+	}
+}
+
+void BaseMapState::updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection)
+{
+	if (!addToSelection)
+	{
+		clearSelection();
+	}
+
+	std::vector<entity::Entity*> entitiesInSelectionWidget;
+	getEntitiesInSelection(bottomLeft, topRight, entitiesInSelectionWidget);
+
+	const int numSelectedEntities = static_cast<int>(m_selectedEntities.size());
+
+	for (entity::Entity* entity : entitiesInSelectionWidget)
+	{
 		if (!entity->canBeSelected() && !forceEntitySelection(game))
 		{
 			continue;
 		}
-
-		// check that the sprite origin actually is in the AABB
-		if (selectionAABB.isInside(entity->getSprite().getPosition()))
-		{
-			addToSelectedEntities(game, entity);
-		}
+		addToSelectedEntities(game, entity);
 	}
 
 	if (static_cast<int>(m_selectedEntities.size()) > numSelectedEntities)

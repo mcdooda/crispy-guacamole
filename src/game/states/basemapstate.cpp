@@ -751,7 +751,6 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	const flat::Vector2 viewMousePosition = m_gameView.getRelativePosition(mousePosition);
 
 	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
-	m_mouseOverEntity = nullptr;
 	entity::Entity* newMouseOverEntity = nullptr;
 
 	const map::Map& map = getMap();
@@ -786,9 +785,9 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 		{
 			setMouseOverColor(newMouseOverEntity);
 		}
-
-		m_mouseOverEntity = newMouseOverEntity;
 	}
+
+	m_mouseOverEntity = newMouseOverEntity;
 }
 
 void BaseMapState::clearMouseOverEntity()

@@ -1,5 +1,5 @@
 return {
-	attackRange = 0.05,
+	attackRange = 0.5,
 	attackCooldown = 1,
 	autoAttack = true,
 	moveDuringAttack = false,

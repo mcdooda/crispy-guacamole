@@ -1,13 +1,15 @@
 #include <type_traits>
 
-#include "map.h"
-#include "tiletemplate.h"
-#include "prop.h"
-#include "zone.h"
-#include "io/reader.h"
-#include "io/writer.h"
-#include "displaymanager.h"
-#include "../mod/mod.h"
+#include "map/map.h"
+#include "map/tiletemplate.h"
+#include "map/prop.h"
+#include "map/zone.h"
+#include "map/io/reader.h"
+#include "map/io/writer.h"
+#include "map/displaymanager.h"
+#include "map/fog/fog.h"
+
+#include "mod/mod.h"
 
 namespace game
 {
@@ -19,7 +21,8 @@ Map::Map() :
 	m_maxX(0),
 	m_minY(0),
 	m_maxY(0),
-	m_displayManager(nullptr)
+	m_displayManager(nullptr),
+	m_isLoaded(false)
 {
 #ifdef FLAT_DEBUG
 	m_enableTileIndicesDebug = false;
@@ -42,13 +45,35 @@ void Map::update(float currentTime)
 	}
 }
 
+void Map::addAllTilesToDisplayManager() const
+{
+	for (int i = 0, e = getTilesCount(); i < e; ++i)
+	{
+		const TileIndex tileIndex = static_cast<TileIndex>(i);
+		m_displayManager->addTile(tileIndex, &m_tiles[tileIndex]);
+	}
+}
+
+void Map::addAllPropsToDisplayManager() const
+{
+	for (int i = 0, e = getPropsCount(); i < e; ++i)
+	{
+		const PropIndex propIndex = static_cast<PropIndex>(i);
+		m_displayManager->addProp(propIndex, &m_props[propIndex]);
+	}
+}
+
 bool Map::load(Game& game, const mod::Mod& mod)
 {
+	FLAT_ASSERT(!m_isLoaded);
+
 	io::Reader reader(game, mod, *this);
 
 	if (reader.canRead())
 	{
 		reader.read();
+		m_isLoaded = true;
+		setFogType(fog::Fog::FogType::NONE);
 		return true;
 	}
 	else
@@ -129,7 +154,6 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTempla
 	flat::Vector2 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
 	tile.updateWorldSpaceAABB(position);
-	m_displayManager->addTile(tileIndex, &tile);
 
 	// navigation
 	FLAT_ASSERT(m_tilePositionToIndex.find(xy) == m_tilePositionToIndex.end());
@@ -161,7 +185,7 @@ void Map::deleteTile(TileIndex tileIndex)
 	if (tileIndex == m_tiles.size() - 1)
 	{
 		m_tiles.pop_back();
-		m_displayManager->removeTile(tileIndex);
+		m_fog->removeTile(tileIndex);
 		m_tilePositionToIndex.erase(tilePosition.xy);
 		m_tileNavigations.pop_back();
 		m_tilePositions.pop_back();
@@ -179,8 +203,8 @@ void Map::deleteTile(TileIndex tileIndex)
 
 		TilePosition movedTilePosition = m_tilePositions.at(movedTileIndex);
 		m_tiles[tileIndex] = std::move(m_tiles[movedTileIndex]);
-		m_displayManager->removeTile(tileIndex);
-		m_displayManager->moveTileIndex(movedTileIndex, tileIndex);
+		m_fog->removeTile(tileIndex);
+		m_fog->moveTileIndex(movedTileIndex, tileIndex);
 		m_tiles.pop_back();
 		m_tilePositionToIndex[movedTilePosition.xy] = tileIndex;
 		m_tilePositionToIndex.erase(tilePosition.xy);
@@ -191,7 +215,7 @@ void Map::deleteTile(TileIndex tileIndex)
 	}
 
 #ifdef FLAT_DEBUG
-		//checkTilePropIndicesIntegrity();
+	//checkTilePropIndicesIntegrity();
 #endif
 }
 
@@ -205,7 +229,7 @@ TileIndex Map::getTileIndex(int x, int y) const
 	return getTileIndex(flat::Vector2i(x, y));
 }
 
-map::TileIndex Map::getTileIndex(const flat::Vector2i& position) const
+TileIndex Map::getTileIndex(const flat::Vector2i& position) const
 {
 	std::unordered_map<flat::Vector2i, TileIndex>::const_iterator it = m_tilePositionToIndex.find(position);
 	if (it != m_tilePositionToIndex.end())
@@ -217,6 +241,7 @@ map::TileIndex Map::getTileIndex(const flat::Vector2i& position) const
 
 TileIndex Map::getTileIndex(const Tile* tile) const
 {
+	FLAT_ASSERT(&m_tiles[0] <= tile && tile <= &m_tiles[m_tiles.size() - 1]);
 	return static_cast<TileIndex>(tile - &m_tiles[0]);
 }
 
@@ -231,12 +256,10 @@ void Map::getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::ve
 	}
 }
 
-#ifdef FLAT_DEBUG
-const Tile* Map::getTileFromIndex(TileIndex tileIndex) const
+const Tile& Map::getTileFromIndex(TileIndex tileIndex) const
 {
-	return &m_tiles[tileIndex];
+	return m_tiles[tileIndex];
 }
-#endif
 
 void Map::getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::vector<const Prop*>& props) const
 {
@@ -266,7 +289,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 	flat::Vector2 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
 	tile.updateWorldSpaceAABB(position);
-	m_displayManager->updateTile(tileIndex, &tile);
+	m_fog->updateTile(tileIndex, &tile);
 
 	// prop
 	PropIndex propIndex = tile.getPropIndex();
@@ -275,7 +298,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 		Prop& prop = m_props[propIndex];
 		prop.setSpritePosition(position2d);
 		prop.updateWorldSpaceAABB(position);
-		m_displayManager->updateProp(propIndex, &prop);
+		m_fog->updateProp(propIndex, &prop);
 	}
 
 	setTileDirty(tileIndex);
@@ -321,7 +344,7 @@ bool Map::isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) co
 	return (m_tileNavigations[tileIndex].navigability & navigabilityMask) != 0;
 }
 
-map::Navigability Map::getTileNavigability(TileIndex tileIndex) const
+Navigability Map::getTileNavigability(TileIndex tileIndex) const
 {
 	return m_tileNavigations[tileIndex].navigability;
 }
@@ -437,13 +460,9 @@ void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::vi
 
 	FLAT_ASSERT(prop->getAABB().isValid());
 
-	if (isNewProp)
+	if (!isNewProp)
 	{
-		m_displayManager->addProp(propIndex, prop);
-	}
-	else
-	{
-		m_displayManager->updateProp(propIndex, prop);
+		m_fog->updateProp(propIndex, prop);
 	}
 
 #ifdef FLAT_DEBUG
@@ -467,7 +486,7 @@ void Map::removeTileProp(TileIndex tileIndex)
 	if (propIndex == m_props.size() - 1)
 	{
 		m_props.pop_back();
-		m_displayManager->removeProp(propIndex);
+		m_fog->removeProp(propIndex);
 	}
 	else
 	{
@@ -478,8 +497,8 @@ void Map::removeTileProp(TileIndex tileIndex)
 		m_tiles[movedPropTileIndex].setPropIndex(propIndex);
 
 		m_props[propIndex] = std::move(m_props[movedPropIndex]);
-		m_displayManager->removeProp(propIndex);
-		m_displayManager->movePropIndex(movedPropIndex, propIndex);
+		m_fog->removeProp(propIndex);
+		m_fog->movePropIndex(movedPropIndex, propIndex);
 		m_props.pop_back();
 	}
 
@@ -488,14 +507,24 @@ void Map::removeTileProp(TileIndex tileIndex)
 #endif
 }
 
-const map::Prop* Map::getTileProp(TileIndex tileIndex) const
+const Prop* Map::getTileProp(TileIndex tileIndex) const
 {
-	PropIndex propIndex = m_tiles[tileIndex].getPropIndex();
-	if (propIndex != PropIndex::INVALID_PROP)
+	PropIndex propIndex = getTilePropIndex(tileIndex);
+	if (isValidProp(propIndex))
 	{
-		return &m_props[m_tiles[tileIndex].getPropIndex()];
+		return &m_props[propIndex];
 	}
 	return nullptr;
+}
+
+PropIndex Map::getTilePropIndex(TileIndex tileIndex) const
+{
+	return m_tiles[tileIndex].getPropIndex();
+}
+
+const Prop& Map::getPropFromIndex(PropIndex propIndex) const
+{
+	return m_props[propIndex];
 }
 
 const flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex) const
@@ -740,8 +769,8 @@ void Map::setTileDirty(TileIndex tileIndex)
 
 	auto setNeighborNormalTileDirty = [this, &tilePosition](int dx, int dy)
 	{
-		const map::TileIndex neighborTileIndex = getTileIndex(tilePosition + flat::Vector2i(dx, dy));
-		if (neighborTileIndex != map::TileIndex::INVALID_TILE)
+		const TileIndex neighborTileIndex = getTileIndex(tilePosition + flat::Vector2i(dx, dy));
+		if (neighborTileIndex != TileIndex::INVALID_TILE)
 		{
 			m_dirtyNormalTiles.insert(neighborTileIndex);
 		}
@@ -824,6 +853,19 @@ bool Map::getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) cons
 		return true;
 	}
 	return false;
+}
+
+void Map::setFogType(fog::Fog::FogType fogType)
+{
+	m_displayManager->clear();
+	m_fog = fog::Fog::createFogFromType(fogType, *this);
+	m_fog->init();
+}
+
+fog::Fog::FogType Map::getFogType() const
+{
+	FLAT_ASSERT(m_fog != nullptr);
+	return m_fog->getFogType();
 }
 
 void Map::setAxes(const flat::Vector2& xAxis,

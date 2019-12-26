@@ -5,6 +5,10 @@
 
 namespace game
 {
+namespace states
+{
+class BaseMapState;
+}
 namespace map
 {
 class Zone;
@@ -40,7 +44,11 @@ int l_Map_getTileZ(lua_State* L);
 int l_Map_setTileZ(lua_State* L);
 int l_Map_moveTileZBy(lua_State* L);
 
+int l_Map_setFogType(lua_State* L);
+int l_Map_getFogType(lua_State* L);
+
 // private
+states::BaseMapState& getMapState(lua_State* L);
 Map& getMap(lua_State* L);
 
 } // map

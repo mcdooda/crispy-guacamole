@@ -19,7 +19,7 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "detection"; }
-		inline static int getUpdatePeriod() { return 20; } // TODO: detection component quadtree, update self/nearby when moving 
+		//inline static int getUpdatePeriod() { return 20; } // TODO: update self/nearby when moving 
 
 		void init() override;
 		void deinit() override;
@@ -35,6 +35,8 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 	private:
 		bool removedFromMap(Entity* entity);
 		bool visibleEntityRemovedFromMap(Entity* entity);
+
+		void discoverFog();
 
 	public:
 		flat::Slot<Entity*> entityEnteredVisionRange;

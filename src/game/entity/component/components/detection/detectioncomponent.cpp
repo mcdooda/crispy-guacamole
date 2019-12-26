@@ -1,8 +1,8 @@
 #include <iostream>
-#include "detectioncomponent.h"
-#include "detectioncomponenttemplate.h"
-#include "../../../entity.h"
-#include "../../../../map/map.h"
+#include "entity/component/components/detection/detectioncomponent.h"
+#include "entity/component/components/detection/detectioncomponenttemplate.h"
+#include "entity/entity.h"
+#include "map/map.h"
 
 namespace game
 {
@@ -70,8 +70,6 @@ void DetectionComponent::update(float currentTime, float elapsedTime)
 			entity->removedFromMap.on(this, &DetectionComponent::visibleEntityRemovedFromMap);
 		}
 	});
-
-	discoverFog();
 }
 
 bool DetectionComponent::isVisible(const Entity& target) const
@@ -94,13 +92,6 @@ bool DetectionComponent::visibleEntityRemovedFromMap(Entity* entity)
 	m_visibleEntities.erase(it);
 	entityLeftVisionRange(entity);
 	return false;
-}
-
-void DetectionComponent::discoverFog()
-{
-	map::fog::Fog& fog = m_owner->getMap()->getFog();
-	const float visionRange = getTemplate()->getVisionRange();
-	fog.discover(m_owner->getPosition2d(), visionRange);
 }
 
 #ifdef FLAT_DEBUG

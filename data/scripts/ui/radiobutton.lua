@@ -1,7 +1,7 @@
 local UiSettings = require 'data/scripts/ui/uisettings'
 
-local Radiobutton = {}
-Radiobutton.__index = Radiobutton
+local RadioButton = {}
+RadioButton.__index = RadioButton
 
 local COLORS = {
     default = 0x0E0E0EFF,
@@ -12,12 +12,9 @@ local STATEPOSITION = {
     default = {{0,0}, {0,0.5}},
     disabled =  {{0.5,0}, {0.5,0.5}},
 }
-function Radiobutton:new(value, text, state)
-    text  = text or ""
-    value = value or text
-    color = color or "blue"
-    path  = 'data/editor/interface/controls/'
-    state = state or "default"
+
+function RadioButton:new(value, text)
+    local path  = 'data/editor/interface/controls/'
     local checkMarkContainer = Widget.makeFixedSize(20,20)
     local checkMark = Widget.makeFixedSize(20,20)
     checkMark:setPosition(0, 0)
@@ -40,7 +37,7 @@ function Radiobutton:new(value, text, state)
         label                 = label,
         value                 = value,
         text                  = text,
-        state                 = state,
+        state                 = 'default',
         path                  = path,
         valueChangedCallbacks = {}
     }, self)
@@ -49,8 +46,7 @@ function Radiobutton:new(value, text, state)
     return o
 end
 
-
-function Radiobutton:setStateColor()
+function RadioButton:setStateColor()
     self.checkMarkContainer:setBackground(self.path .. '/radiobutton.png')
     self.checkMarkContainer:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
     self.checkMarkContainer:setBackgroundPosition(STATEPOSITION[self.state][1][1], STATEPOSITION[self.state][1][2])
@@ -60,27 +56,30 @@ function Radiobutton:setStateColor()
     self.label:setTextColor(COLORS[self.state])
 end
 
-function Radiobutton:getValue()
+function RadioButton:getValue()
     return self.value
 end
-function Radiobutton:getState()
+
+function RadioButton:getState()
     return self.state
 end
 
-function Radiobutton:setState(state)
+function RadioButton:setState(state)
     self.state = state
     self:setStateColor()
 end
-function Radiobutton:toggleState()
-    self.state = self.state == "default" and "disabled" or "default"
+
+function RadioButton:toggleState()
+    self.state = self.state == 'default' and 'disabled' or 'default'
     self:setStateColor()
 end
-function Radiobutton:getText()
+
+function RadioButton:getText()
     return self.text
 end
 
-function Radiobutton:setVisible(visible)
+function RadioButton:setVisible(visible)
     self.checkMark:setVisible(visible)
 end
 
-return Radiobutton
+return RadioButton

@@ -18,12 +18,11 @@ return function(addContainer, makeSeparator, font)
         fogRadioGroup.valueChanged:on(function(value)
             Map.setFogType(value)
         end)
-        
+
         -- monitor external changes
         -- TODO: plug a callback into the code or something better than this
         flat.ui.task(function()
             while true do
-                print(Map.getFogType())
                 fogRadioGroup:setValue(Map.getFogType())
                 coroutine.yield()
             end

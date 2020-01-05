@@ -110,6 +110,11 @@ void HardFog::getPropsFromIndices(const std::vector<PropIndex>& propIndices, std
 	}
 }
 
+void HardFog::addTile(TileIndex tileIndex, const Tile* tile)
+{
+	m_map.getDisplayManager().addTile(tileIndex, tile);
+}
+
 void HardFog::removeTile(TileIndex tileIndex)
 {
 	m_map.getDisplayManager().removeTile(tileIndex);
@@ -135,6 +140,11 @@ void HardFog::moveTileIndex(TileIndex fromIndex, TileIndex toIndex)
 	m_tileDiscoveryLevels[fromIndex] = 0;
 
 	m_map.getDisplayManager().moveTileIndex(fromIndex, toIndex);
+}
+
+void HardFog::addProp(PropIndex propIndex, const Prop* prop)
+{
+	m_map.getDisplayManager().addProp(propIndex, prop);
 }
 
 void HardFog::removeProp(PropIndex propIndex)

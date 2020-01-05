@@ -37,10 +37,12 @@ class Fog
 		virtual void discoverTile(int x, int y, float level) = 0;
 		virtual bool isTileDiscovered(TileIndex tileIndex) const = 0;
 
+		virtual void addTile(TileIndex tileIndex, const Tile* tile) = 0;
 		virtual void removeTile(TileIndex tileIndex) = 0;
 		virtual void updateTile(TileIndex tileIndex, const Tile* tile) = 0;
 		virtual void moveTileIndex(TileIndex fromIndex, TileIndex toIndex) = 0;
 
+		virtual void addProp(PropIndex propIndex, const Prop* prop) = 0;
 		virtual void removeProp(PropIndex propIndex) = 0;
 		virtual void updateProp(PropIndex propIndex, const Prop* prop) = 0;
 		virtual void movePropIndex(PropIndex fromIndex, PropIndex toIndex) = 0;

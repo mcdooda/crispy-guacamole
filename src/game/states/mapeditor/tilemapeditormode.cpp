@@ -104,8 +104,8 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 				if (adjacentTileIndex != map::TileIndex::INVALID_TILE)
 				{
 					std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(adjacentTileIndex);
-					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
-					if (getSelectTile)
+					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectTile = tileTemplate->getSelectTile();
+					if (selectTile)
 					{
 						tilesToUpdate.insert(adjacentTileIndex);
 					}
@@ -126,10 +126,10 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 	{
 		int tileVariantIndex = -1;
 		std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(tileIndex);
-		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
-		if (getSelectTile)
+		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectTile = tileTemplate->getSelectTile();
+		if (selectTile)
 		{
-			getSelectTile.callFunction(
+			selectTile.callFunction(
 				[&map, tileIndex](lua_State* L)
 				{
 					auto pushTileTemplateName = [&map, tileIndex, L](int dx, int dy)

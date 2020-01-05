@@ -143,7 +143,7 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 
 TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTemplateVariantIndex, std::shared_ptr<const TileTemplate> tileTemplate)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(m_tiles.size());
+	const TileIndex tileIndex = static_cast<TileIndex>(m_tiles.size());
 
 	Tile& tile = m_tiles.emplace_back();
 	flat::render::SpriteSynchronizer& spriteSynchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
@@ -167,6 +167,11 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTempla
 	tilePosition.xy = xy;
 
 	setTileDirty(tileIndex);
+
+	if (m_fog != nullptr)
+	{
+		m_fog->addTile(tileIndex, &tile);
+	}
 
 	return tileIndex;
 }
@@ -460,7 +465,14 @@ void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::vi
 
 	FLAT_ASSERT(prop->getAABB().isValid());
 
-	if (!isNewProp)
+	if (isNewProp)
+	{
+		if (m_fog != nullptr) // fog is null during loading
+		{
+			m_fog->addProp(propIndex, prop);
+		}
+	}
+	else
 	{
 		m_fog->updateProp(propIndex, prop);
 	}
@@ -539,7 +551,9 @@ flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex)
 
 void Map::synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer)
 {
-	m_tiles[tileIndex].synchronizeSpriteTo(*this, synchronizer);
+	Tile& tile = m_tiles[tileIndex];
+	tile.synchronizeSpriteTo(*this, synchronizer);
+	m_fog->updateTile(tileIndex, &tile);
 }
 
 flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex)

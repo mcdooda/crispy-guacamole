@@ -28,10 +28,12 @@ class HardFog final : public Fog
 		void getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const override;
 		void getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::vector<const Prop*>& props) const override;
 
+		void addTile(TileIndex tileIndex, const Tile* tile) override;
 		void removeTile(TileIndex tileIndex) override;
 		void updateTile(TileIndex tileIndex, const Tile* tile) override;
 		void moveTileIndex(TileIndex fromIndex, TileIndex toIndex) override;
 
+		void addProp(PropIndex propIndex, const Prop* prop) override;
 		void removeProp(PropIndex propIndex) override;
 		void updateProp(PropIndex propIndex, const Prop* prop) override;
 		void movePropIndex(PropIndex fromIndex, PropIndex toIndex) override;

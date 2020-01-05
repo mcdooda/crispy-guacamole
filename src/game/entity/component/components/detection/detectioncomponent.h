@@ -20,6 +20,7 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "detection"; }
 		inline static const char* getVisualName() { return "Detection"; }
+		inline static bool enableInMapEditor() { return false; }
 		inline static int getUpdatePeriod() { return 20; } // TODO: update self/nearby when moving 
 
 		void init() override;

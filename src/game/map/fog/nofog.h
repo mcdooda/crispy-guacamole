@@ -25,10 +25,12 @@ class NoFog final : public Fog
 		void discoverTile(int x, int y, float level) override;
 		bool isTileDiscovered(TileIndex tileIndex) const override;
 
+		void addTile(TileIndex tileIndex, const Tile* tile) override;
 		void removeTile(TileIndex tileIndex) override;
 		void updateTile(TileIndex tileIndex, const Tile* tile) override;
 		void moveTileIndex(TileIndex fromIndex, TileIndex toIndex) override;
 
+		void addProp(PropIndex propIndex, const Prop* prop) override;
 		void removeProp(PropIndex propIndex) override;
 		void updateProp(PropIndex propIndex, const Prop* prop) override;
 		void movePropIndex(PropIndex fromIndex, PropIndex toIndex) override;

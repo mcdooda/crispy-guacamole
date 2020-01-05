@@ -147,41 +147,55 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
 
-	std::vector<const MapObject*> objects;
-	objects.reserve(1024);
+	// entities
+	std::vector<const entity::Entity*> entities;
+	entities.reserve(1024);
 	{
 		FLAT_PROFILE("Display Manager Get Entities");
-		m_entityQuadtree->getObjects(screenAABB, objects);
+		m_entityQuadtree->getObjects(screenAABB, entities);
 	}
-#ifdef DEBUG_DRAW
-	int numEntities = static_cast<int>(objects.size());
-#endif
+	int numEntities = static_cast<int>(entities.size());
+	for (int i = 0, e = numEntities; i < e; ++i)
+	{
+		const entity::Entity* entity = entities[i];
+		const TileIndex tileIndex = entity->getTileIndexFromPosition();
+		if (!fog.isTileDiscovered(tileIndex))
+		{
+			entities[i] = nullptr;
+			--numEntities;
+		}
+	}
 
+	// tiles
 	std::vector<TileIndex> tileIndices;
 	tileIndices.reserve(1024);
 	{
 		FLAT_PROFILE("Display Manager Get Tiles");
 		m_tileQuadtree->getObjects(screenAABB, tileIndices);
 	}
-#ifdef DEBUG_DRAW
-	int numTiles = static_cast<int>(tileIndices.size());
-#endif
 	std::vector<const Tile*> tiles;
 	fog.getTilesFromIndices(tileIndices, tiles);
 
+	// props
 	std::vector<PropIndex> propIndices;
 	propIndices.reserve(1024);
 	{
 		FLAT_PROFILE("Display Manager Get Props");
 		m_propQuadtree->getObjects(screenAABB, propIndices);
 	}
-#ifdef DEBUG_DRAW
-	int numProps = static_cast<int>(propIndices.size());
-#endif
 	std::vector<const Prop*> props;
 	fog.getPropsFromIndices(propIndices, props);
 
-	objects.reserve(objects.size() + tiles.size() + props.size());
+	// put everything into a single vector
+	std::vector<const MapObject*> objects;
+	objects.reserve(numEntities + tiles.size() + props.size());
+	for (const entity::Entity* entity : entities)
+	{
+		if (entity != nullptr)
+		{
+			objects.push_back(entity);
+		}
+	}
 	for (const Tile* tile : tiles)
 	{
 		objects.push_back(tile);

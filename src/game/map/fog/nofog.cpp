@@ -45,6 +45,11 @@ void NoFog::getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::
 	m_map.getPropsFromIndices(propIndices, props);
 }
 
+void NoFog::addTile(TileIndex tileIndex, const Tile* tile)
+{
+	m_map.getDisplayManager().addTile(tileIndex, tile);
+}
+
 void NoFog::removeTile(TileIndex tileIndex)
 {
 	m_map.getDisplayManager().removeTile(tileIndex);
@@ -58,6 +63,11 @@ void NoFog::updateTile(TileIndex tileIndex, const Tile* tile)
 void NoFog::moveTileIndex(TileIndex fromIndex, TileIndex toIndex)
 {
 	m_map.getDisplayManager().moveTileIndex(fromIndex, toIndex);
+}
+
+void NoFog::addProp(PropIndex propIndex, const Prop* prop)
+{
+	m_map.getDisplayManager().addProp(propIndex, prop);
 }
 
 void NoFog::removeProp(PropIndex propIndex)

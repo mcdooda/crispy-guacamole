@@ -20,7 +20,8 @@ class Fog
 		enum FogType : std::uint8_t
 		{
 			NONE,
-			HARD
+			HARD,
+			SOFT
 		};
 
 	public:

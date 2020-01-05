@@ -14,6 +14,11 @@ HardFog::HardFog(const map::Map& map) : Fog(map)
 
 }
 
+Fog::FogType HardFog::getFogType() const
+{
+	return FogType::HARD;
+}
+
 void HardFog::init()
 {
 	const int tilesCount = m_map.getTilesCount();
@@ -206,11 +211,6 @@ void HardFog::preUpdate()
 void HardFog::postUpdate()
 {
 	
-}
-
-Fog::FogType HardFog::getFogType() const
-{
-	return FogType::HARD;
 }
 
 } // fog

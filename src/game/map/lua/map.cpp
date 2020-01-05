@@ -73,6 +73,7 @@ int open(lua_State* L)
 	static const flat::lua::table::KeyValuePair<int> fogTypeTable[] = {
 		{"NONE", fog::Fog::FogType::NONE},
 		{"HARD", fog::Fog::FogType::HARD},
+		{"SOFT", fog::Fog::FogType::SOFT},
 
 		{nullptr, 0},
 	};

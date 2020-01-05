@@ -12,7 +12,7 @@ class Map;
 namespace fog
 {
 
-class HardFog final : public Fog
+class HardFog : public Fog
 {
 	public:
 		HardFog(const map::Map& map);
@@ -44,7 +44,7 @@ class HardFog final : public Fog
 		void preUpdate() override;
 		void postUpdate() override;
 
-private:
+protected:
 		std::vector<std::uint8_t> m_tileDiscoveryLevels;
 		std::vector<Tile> m_observedTiles;
 		std::vector<Prop> m_observedProps;

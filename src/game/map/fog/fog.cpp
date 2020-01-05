@@ -1,6 +1,6 @@
 #include "map/fog/fog.h"
 #include "map/fog/nofog.h"
-#include "map/fog/hardfog.h"
+#include "map/fog/softfog.h"
 #include "map/map.h"
 #include "map/displaymanager.h"
 
@@ -26,6 +26,8 @@ std::unique_ptr<Fog> Fog::createFogFromType(FogType fogType, const map::Map& map
 		return std::make_unique<NoFog>(map);
 	case FogType::HARD:
 		return std::make_unique<HardFog>(map);
+	case FogType::SOFT:
+		return std::make_unique<SoftFog>(map);
 	default:
 		FLAT_ASSERT(false);
 	}

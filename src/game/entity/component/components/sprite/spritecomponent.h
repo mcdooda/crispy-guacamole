@@ -18,6 +18,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "sprite"; }
+		inline static const char* getVisualName() { return "Sprite"; }
 
 		void init() override;
 		void deinit() override;

@@ -22,6 +22,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "life"; }
+		inline static const char* getVisualName() { return "Life"; }
 		inline static bool enableInMapEditor() { return false; }
 
 		void init() override;

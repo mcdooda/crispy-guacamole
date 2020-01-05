@@ -17,7 +17,8 @@ namespace fogvision
 class FogVisionComponent : public ComponentImpl<FogVisionComponentTemplate>
 {
 	public:
-		inline static const char* getConfigName() { return "detection"; }
+		inline static const char* getConfigName() { return "fogvision"; }
+		inline static const char* getVisualName() { return "Fog Vision"; }
 
 		void update(float currentTime, float elapsedTime) override;
 };

@@ -21,6 +21,7 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "collision"; }
+		inline static const char* getVisualName() { return "Collision"; }
 
 		void update(float currentTime, float elapsedTime) override;
 

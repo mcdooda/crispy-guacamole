@@ -17,6 +17,7 @@ class InteractionComponent : public ComponentImpl<InteractionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "interaction"; }
+		inline static const char* getVisualName() { return "Interaction"; }
 		inline static bool requiresUpdate() { return false; }
 
 		const std::string& getBehaviorStateName() const;

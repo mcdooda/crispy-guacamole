@@ -23,6 +23,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "projectile"; }
+		inline static const char* getVisualName() { return "Projectile"; }
 		inline static bool enableInMapEditor() { return false; }
 		inline static bool enableInEntityEditor() { return false; }
 

@@ -14,14 +14,20 @@ namespace fogvision
 
 void FogVisionComponent::update(float currentTime, float elapsedTime)
 {
+	map::Map* map = m_owner->getMap();
+	if (!map->isLoaded())
+	{
+		return;
+	}
+
 	const detection::DetectionComponentTemplate* detectionComponentTemplate = getTemplate<detection::DetectionComponent>();
 	if (detectionComponentTemplate == nullptr)
 	{
 		return;
 	}
 
-	map::fog::Fog& fog = m_owner->getMap()->getFog();
 	const float visionRange = detectionComponentTemplate->getVisionRange();
+	map::fog::Fog& fog = map->getFog();
 	fog.discover(m_owner->getPosition2d(), visionRange);
 }
 

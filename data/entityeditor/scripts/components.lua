@@ -133,7 +133,7 @@ function ComponentSelectionPanel:buildComponentTabs()
 
         local componentTab = Widget.makeColumnFlow()
         componentTab:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
-        local componentNameLabel = Widget.makeText(componentName, table.unpack(UiSettings.defaultFont))
+        local componentNameLabel = Widget.makeText(Components.getVisualName(Component[componentName]), table.unpack(UiSettings.defaultFont))
 
         self.componentNameLabels[componentName] = componentNameLabel
         self:updateTabColor(componentName)

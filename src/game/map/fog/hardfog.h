@@ -49,6 +49,7 @@ private:
 		std::vector<Tile> m_observedTiles;
 		std::vector<Prop> m_observedProps;
 		std::vector<TileIndex> m_propTiles;
+		std::set<TileIndex> m_frameObservedTiles;
 };
 
 } // fog

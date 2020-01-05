@@ -75,6 +75,7 @@ void HardFog::discoverTile(int x, int y, float level)
 	const flat::video::Color newTileColor(level, level, level, 1.f);
 
 	m_tileDiscoveryLevels[tileIndex] = newLevel;
+	m_frameObservedTiles.insert(tileIndex);
 	m_observedTiles[tileIndex] = m_map.getTileFromIndex(tileIndex);
 	m_observedTiles[tileIndex].getSprite().setColor(newTileColor);
 
@@ -187,22 +188,19 @@ TileIndex HardFog::getTileIndex(float x, float y) const
 
 void HardFog::preUpdate()
 {
-	const int tilesCount = m_map.getTilesCount();
-	for (int i = 0; i < tilesCount; ++i)
+	for (const TileIndex tileIndex : m_frameObservedTiles)
 	{
-		const TileIndex tileIndex = static_cast<TileIndex>(i);
-		if (isTileDiscovered(tileIndex))
-		{
-			m_tileDiscoveryLevels[tileIndex] = 0;
-			m_observedTiles[tileIndex].getSprite().setColor(flat::video::Color::BLACK);
+		FLAT_ASSERT(isTileDiscovered(tileIndex));
+		m_tileDiscoveryLevels[tileIndex] = 0;
+		m_observedTiles[tileIndex].getSprite().setColor(flat::video::Color::BLACK);
 
-			const PropIndex propIndex = m_map.getTilePropIndex(tileIndex);
-			if (isValidProp(propIndex))
-			{
-				m_observedProps[propIndex].getSprite().setColor(flat::video::Color::BLACK);
-			}
+		const PropIndex propIndex = m_map.getTilePropIndex(tileIndex);
+		if (isValidProp(propIndex))
+		{
+			m_observedProps[propIndex].getSprite().setColor(flat::video::Color::BLACK);
 		}
 	}
+	m_frameObservedTiles.clear();
 }
 
 void HardFog::postUpdate()

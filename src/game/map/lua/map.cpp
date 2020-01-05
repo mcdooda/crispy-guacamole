@@ -281,8 +281,6 @@ int l_Map_setFogType(lua_State* L)
 	const fog::Fog::FogType fogType = static_cast<fog::Fog::FogType>(luaL_checkinteger(L, 1));
 	Map& map = getMap(L);
 	map.setFogType(fogType);
-	//states::BaseMapState& mapState = getMapState(L);
-	//mapState.updateEntities();
 	return 0;
 }
 

@@ -62,7 +62,7 @@ void Reader::readHeaders()
 
 	states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
 	// tile textures
-	uint16_t numTiles;
+	std::uint16_t numTiles;
 	read(numTiles);
 	m_tileTemplates.reserve(numTiles);
 	for (int i = 0; i < numTiles; ++i)
@@ -74,7 +74,7 @@ void Reader::readHeaders()
 	}
 
 	// prop textures
-	uint16_t numProps;
+	std::uint16_t numProps;
 	read(numProps);
 	m_propTextures.reserve(numProps);
 	for (int i = 0; i < numProps; ++i)
@@ -113,22 +113,22 @@ void Reader::readTiles()
 				float z;
 				read(z);
 
-				uint16_t tileTemplateId;
+				std::uint16_t tileTemplateId;
 				read(tileTemplateId);
 
-				uint16_t tileTemplateIndex = tileTemplateId & 0x03FF;
-				uint16_t tileTemplateVariantIndex = tileTemplateId >> 10;
+				std::uint16_t tileTemplateIndex = tileTemplateId & 0x03FF;
+				std::uint16_t tileTemplateVariantIndex = tileTemplateId >> 10;
 
 				std::shared_ptr<const TileTemplate> tileTemplate = m_tileTemplates[tileTemplateIndex];
 
 				flat::Vector2i xy(x, y);
-				TileIndex tileIndex = m_map.createTile(xy, z, tileTemplateVariantIndex, tileTemplate);
+				const TileIndex tileIndex = m_map.createTile(xy, z, tileTemplate, tileTemplateVariantIndex);
 
 				bool hasProp;
 				read(hasProp);
 				if (hasProp)
 				{
-					uint16_t propIndex;
+					std::uint16_t propIndex;
 					read(propIndex);
 					const std::shared_ptr<const flat::video::FileTexture>& texture = m_propTextures[propIndex];
 					m_map.setTilePropTexture(tileIndex, texture);
@@ -144,7 +144,7 @@ void Reader::readEntities()
 {
 	states::BaseMapState& baseMapState = m_game.getStateMachine().getState()->to<states::BaseMapState>();
 
-	uint16_t numEntityTemplates;
+	std::uint16_t numEntityTemplates;
 	read(numEntityTemplates);
 	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;
 	entityTemplates.reserve(numEntityTemplates);
@@ -164,11 +164,11 @@ void Reader::readEntities()
 		}
 	}
 
-	uint16_t numEntities;
+	std::uint16_t numEntities;
 	read(numEntities);
 	for (int i = 0; i < numEntities; ++i)
 	{
-		uint16_t entityTemplateIndex;
+		std::uint16_t entityTemplateIndex;
 		read(entityTemplateIndex);
 		std::shared_ptr<const entity::EntityTemplate> entityTemplate = entityTemplates.at(entityTemplateIndex);
 
@@ -188,8 +188,8 @@ void Reader::readEntities()
 
 void Reader::readZones()
 {
-	uint16_t numZones;
-	read<uint16_t>(numZones);
+	std::uint16_t numZones;
+	read<std::uint16_t>(numZones);
 	for (int i = 0; i < numZones; ++i)
 	{
 		std::string zoneName;

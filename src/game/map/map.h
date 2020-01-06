@@ -103,10 +103,12 @@ class Map
 		void getBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		
-		// get tiles
-		TileIndex createTile(const flat::Vector2i& xy, float z, uint16_t tileTemplateVariantIndex, std::shared_ptr<const TileTemplate> tileTemplate);
+		// tiles
+		TileIndex createTile(const flat::Vector2i& xy, float z, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex);
 		void deleteTile(TileIndex tileIndex);
 		void deleteTile(const flat::Vector2i& tilePosition);
+
+		void replaceTile(TileIndex tileIndex, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex);
 
 		TileIndex getTileIndex(int x, int y) const;
 		TileIndex getTileIndex(const flat::Vector2i& position) const;
@@ -142,7 +144,7 @@ class Map
 		void updateTileNavigabilityDebug(TileIndex tileIndex);
 #endif
 
-		void setTileColor(TileIndex tileIndex, const flat::video::Color& color);
+		void setTileColor(TileIndex tileIndex, const flat::video::Color& color, bool updatePropColor = true);
 		const flat::video::Color& getTileColor(TileIndex tileIndex) const;
 
 		void setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::video::Texture> texture);
@@ -153,7 +155,6 @@ class Map
 
 		const flat::render::BaseSprite& getTileSprite(TileIndex tileIndex) const;
 		flat::render::BaseSprite& getTileSprite(TileIndex tileIndex);
-		void synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer);
 
 		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
 		const std::shared_ptr<const TileTemplate> getTileTemplate(TileIndex tileIndex) const;

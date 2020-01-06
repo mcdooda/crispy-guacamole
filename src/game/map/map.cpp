@@ -141,7 +141,7 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 	});
 }
 
-TileIndex Map::createTile(const flat::Vector2i& xy, float z, uint16_t tileTemplateVariantIndex, std::shared_ptr<const TileTemplate> tileTemplate)
+TileIndex Map::createTile(const flat::Vector2i& xy, float z, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex)
 {
 	const TileIndex tileIndex = static_cast<TileIndex>(m_tiles.size());
 
@@ -227,6 +227,17 @@ void Map::deleteTile(TileIndex tileIndex)
 void Map::deleteTile(const flat::Vector2i& tilePosition)
 {
 	deleteTile(m_tilePositionToIndex.at(tilePosition));
+}
+
+void Map::replaceTile(TileIndex tileIndex, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex)
+{
+	flat::render::SpriteSynchronizer& synchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
+	Tile& tile = m_tiles[tileIndex];
+	tile.synchronizeSpriteTo(*this, synchronizer);
+	m_fog->updateTile(tileIndex, &tile);
+
+	TileNavigation& tileNavigation = m_tileNavigations[tileIndex];
+	tileNavigation.navigability = tileTemplate->getNavigability();
 }
 
 TileIndex Map::getTileIndex(int x, int y) const
@@ -377,16 +388,18 @@ void Map::enableNavigabilityDebug(bool enable)
 	m_enableNavigabilityDebug = enable;
 	if (m_enableNavigabilityDebug)
 	{
-		for (int i = 0, e = static_cast<int>(m_tileNavigations.size()); i < e; ++i)
+		for (int i = 0, e = getTilesCount(); i < e; ++i)
 		{
-			updateTileNavigabilityDebug(static_cast<TileIndex>(i));
+			const TileIndex tileIndex = static_cast<TileIndex>(i);
+			updateTileNavigabilityDebug(tileIndex);
 		}
 	}
 	else
 	{
-		for (Tile& tile : m_tiles)
+		for (int i = 0, e = getTilesCount(); i < e; ++i)
 		{
-			tile.getSprite().setColor(flat::video::Color::WHITE);
+			const TileIndex tileIndex = static_cast<TileIndex>(i);
+			setTileColor(tileIndex, flat::video::Color::WHITE, false);
 		}
 	}
 }
@@ -410,18 +423,25 @@ void Map::updateTileNavigabilityDebug(TileIndex tileIndex)
 		color = flat::video::Color::RED;
 		break;
 	}
-	m_tiles[tileIndex].getSprite().setColor(color);
+	setTileColor(tileIndex, color, false);
 }
-
 #endif
 
-void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color)
+void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color, bool updatePropColor)
 {
-	m_tiles[tileIndex].getSprite().setColor(color);
-	PropIndex propIndex = m_tiles[tileIndex].getPropIndex();
-	if (propIndex != PropIndex::INVALID_PROP)
+	Tile& tile = m_tiles[tileIndex];
+	tile.getSprite().setColor(color);
+	m_fog->updateTile(tileIndex, &tile);
+
+	if (updatePropColor)
 	{
-		m_props[propIndex].setSpriteColor(color);
+		const PropIndex propIndex = m_tiles[tileIndex].getPropIndex();
+		if (isValidProp(propIndex))
+		{
+			Prop& prop = m_props[propIndex];
+			prop.setSpriteColor(color);
+			m_fog->updateProp(propIndex, &prop);
+		}
 	}
 }
 
@@ -547,13 +567,6 @@ const flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex) const
 flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex)
 {
 	return m_tiles[tileIndex].getSprite();
-}
-
-void Map::synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer)
-{
-	Tile& tile = m_tiles[tileIndex];
-	tile.synchronizeSpriteTo(*this, synchronizer);
-	m_fog->updateTile(tileIndex, &tile);
 }
 
 flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex)

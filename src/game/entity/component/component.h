@@ -85,6 +85,7 @@ class ComponentImpl : public Component
 
 	public:
 		inline static const char* getConfigName() { FLAT_ASSERT_MSG(false, "ComponentTemplateType::getConfigName() missing"); return nullptr; }
+		inline static const char* getVisualName() { FLAT_ASSERT_MSG(false, "ComponentTemplateType::getVisualName() missing"); return nullptr; }
 
 		inline static bool enableInMapEditor() { return true; }
 		inline static bool enableInEntityEditor() { return true; }

@@ -1,11 +1,9 @@
 #include <unordered_set>
-#include "tilemapeditormode.h"
-#include "../mapeditorstate.h"
-#include "../../game.h"
-#include "../../map/tile.h"
-#include "../../map/prop.h"
-#include "../../map/tiletemplate.h"
-#include "../../map/brush/spherebrush.h"
+#include "states/mapeditor/tilemapeditormode.h"
+#include "states/mapeditorstate.h"
+#include "map/tiletemplate.h"
+#include "map/brush/spherebrush.h"
+#include "game.h"
 
 namespace game
 {
@@ -91,8 +89,7 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
-			flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, 0);
-			map.synchronizeTileSpriteTo(tileIndex, spriteSynchronizer);
+			map.replaceTile(tileIndex, m_tileTemplate, 0);
 
 			tilesToUpdate.insert(tileIndex);
 
@@ -104,8 +101,8 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 				if (adjacentTileIndex != map::TileIndex::INVALID_TILE)
 				{
 					std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(adjacentTileIndex);
-					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
-					if (getSelectTile)
+					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectTile = tileTemplate->getSelectTile();
+					if (selectTile)
 					{
 						tilesToUpdate.insert(adjacentTileIndex);
 					}
@@ -126,10 +123,10 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 	{
 		int tileVariantIndex = -1;
 		std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(tileIndex);
-		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
-		if (getSelectTile)
+		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectTile = tileTemplate->getSelectTile();
+		if (selectTile)
 		{
-			getSelectTile.callFunction(
+			selectTile.callFunction(
 				[&map, tileIndex](lua_State* L)
 				{
 					auto pushTileTemplateName = [&map, tileIndex, L](int dx, int dy)
@@ -177,7 +174,7 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 		}
 		FLAT_ASSERT(tileVariantIndex >= 0);
 		flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(tileTemplate, tileVariantIndex);
-		map.synchronizeTileSpriteTo(tileIndex, spriteSynchronizer);
+		map.replaceTile(tileIndex, tileTemplate, tileVariantIndex);
 	}
 }
 
@@ -301,8 +298,7 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 			const map::TileIndex tileIndex = map.getTileIndex(position);
 			if (tileIndex == map::TileIndex::INVALID_TILE)
 			{
-				map::TileIndex tileIndex = map.createTile(position, 0.f, 0, m_tileTemplate);
-				map.setTileDirty(tileIndex);
+				map::TileIndex tileIndex = map.createTile(position, 0.f, m_tileTemplate, 0);
 			}
 		});
 	}

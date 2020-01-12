@@ -29,6 +29,7 @@ public:
 	virtual size_t getComponentSize() const = 0;
 
 	virtual const char* getConfigName() const = 0;
+	virtual const char* getVisualName() const = 0;
 	virtual bool enableInMapEditor() const = 0;
 	virtual bool allowEntityInEditor() const = 0;
 
@@ -53,6 +54,7 @@ public:
 	size_t getComponentSize() const override;
 
 	const char* getConfigName() const override;
+	const char* getVisualName() const override;
 	bool enableInMapEditor() const override;
 	bool allowEntityInEditor() const override;
 
@@ -75,6 +77,12 @@ template <class T>
 const char* ComponentTypeImpl<T>::getConfigName() const
 {
 	return T::getConfigName();
+}
+
+template <class T>
+const char* ComponentTypeImpl<T>::getVisualName() const
+{
+	return T::getVisualName();
 }
 
 template <class T>

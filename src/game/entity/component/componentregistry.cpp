@@ -1,18 +1,19 @@
-#include "componentregistry.h"
-#include "components/attack/attackcomponent.h"
-#include "components/behavior/behaviorcomponent.h"
-#include "components/collision/collisioncomponent.h"
-#include "components/detection/detectioncomponent.h"
-#include "components/faction/factioncomponent.h"
-#include "components/interaction/interactioncomponent.h"
-#include "components/life/lifecomponent.h"
-#include "components/movement/movementcomponent.h"
-#include "components/playercontroller/playercontrollercomponent.h"
-#include "components/projectile/projectilecomponent.h"
-#include "components/prop/propcomponent.h"
-#include "components/selection/selectioncomponent.h"
-#include "components/sprite/spritecomponent.h"
-#include "components/ui/uicomponent.h"
+#include "entity/component/componentregistry.h"
+#include "entity/component/components/attack/attackcomponent.h"
+#include "entity/component/components/behavior/behaviorcomponent.h"
+#include "entity/component/components/collision/collisioncomponent.h"
+#include "entity/component/components/detection/detectioncomponent.h"
+#include "entity/component/components/faction/factioncomponent.h"
+#include "entity/component/components/fogvision/fogvisioncomponent.h"
+#include "entity/component/components/interaction/interactioncomponent.h"
+#include "entity/component/components/life/lifecomponent.h"
+#include "entity/component/components/movement/movementcomponent.h"
+#include "entity/component/components/playercontroller/playercontrollercomponent.h"
+#include "entity/component/components/projectile/projectilecomponent.h"
+#include "entity/component/components/prop/propcomponent.h"
+#include "entity/component/components/selection/selectioncomponent.h"
+#include "entity/component/components/sprite/spritecomponent.h"
+#include "entity/component/components/ui/uicomponent.h"
 
 namespace game
 {
@@ -46,8 +47,9 @@ void ComponentRegistry::registerComponentTypes()
 	registerComponentType<collision::CollisionComponent>();
 	registerComponentType<sprite::SpriteComponent>();
 	registerComponentType<ui::UiComponent>();
+	registerComponentType<fogvision::FogVisionComponent>();
 
-	// order does not matter for these components
+	// order does not matter for these components (no update method)
 	registerComponentType<faction::FactionComponent>();
 	registerComponentType<interaction::InteractionComponent>();
 	registerComponentType<prop::PropComponent>();

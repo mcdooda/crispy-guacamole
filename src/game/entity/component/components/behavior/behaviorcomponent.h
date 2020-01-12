@@ -22,6 +22,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "behavior"; }
+		inline static const char* getVisualName() { return "Behavior"; }
 		inline static bool enableInMapEditor() { return false; }
 		inline static bool enableInEntityEditor() { return false; }
 		inline static int getUpdatePeriod() { return 5; }

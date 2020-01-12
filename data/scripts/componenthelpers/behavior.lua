@@ -134,7 +134,8 @@ local function followAttackTarget(findTargetState)
 					local _, entityRadius = CollisionHelper.getRadius(entity)
 					local _, targetRadius = CollisionHelper.getRadius(currentAttackTarget)
 
-					local followStepDistance = 0.7
+					local followStepDistance = 0.5
+					local minFollowStepDistance = 0.1
 
 					local desiredAttackDistance = attackRange + entityRadius + targetRadius
 					if distance - entityRadius - targetRadius < attackRange * 0.05 then
@@ -148,7 +149,7 @@ local function followAttackTarget(findTargetState)
 					end
 					
 					-- move closer to the target or move back to avoid the "return to position" effect while in combat
-					if followStepDistance ~= 0 then
+					if followStepDistance > minFollowStepDistance then
 						-- normalize direction and multiply by the distance to travel
 						local destination = position2d + move:getNormalized() * followStepDistance
 						entity:clearPath()

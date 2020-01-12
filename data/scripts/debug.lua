@@ -97,6 +97,7 @@ local debugFiles = {
     'profiler',
     'entitydebug',
     'pathfinding',
+    'fog',
     'memorysnapshot',
     'gamespeed'
 }

@@ -16,6 +16,7 @@
 
 #include "debug/debugdisplay.h"
 
+#include "map/map.h"
 #include "map/displaymanager.h"
 
 namespace game
@@ -49,7 +50,7 @@ class BaseMapState : public BaseState
 		bool loadMap(Game& game);
 		bool saveMap(Game& game) const;
 
-		virtual map::Map& getMap() = 0;
+		map::Map& getMap();
 		const map::Map& getMap() const;
 
 		flat::Vector2 getCursorMapPosition(game::Game& game, bool& isOnTile) const;
@@ -147,6 +148,7 @@ class BaseMapState : public BaseState
 		bool updateSelectionWidget(Game& game);
 		void selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
+		void getEntitiesInSelection(const flat::Vector2& bottomLeft, const flat::Vector2& topRight, std::vector<entity::Entity*>& entities) const;
 		void updateSelectedEntities(Game& game, const flat::Vector2& bottomLeft, const flat::Vector2& topRight, bool addToSelection);
 		void clearSelection();
 		bool addToSelectedEntities(Game& game, entity::Entity* entity);
@@ -183,6 +185,8 @@ class BaseMapState : public BaseState
 		// level
 		mod::Mod m_mod;
 
+		map::Map m_map;
+
 		std::map<std::string, entity::faction::Faction> m_factions;
 
 		entity::component::ComponentRegistry m_componentRegistry;
@@ -192,6 +196,8 @@ class BaseMapState : public BaseState
 
 		std::vector<entity::Entity*> m_selectedEntities;
 		flat::lua::SlotProxy<> m_selectionChangedSlotProxy;
+
+		std::vector<entity::Entity*> m_entitiesInSelection;
 
 		entity::EntityHandle m_mouseOverEntity;
 		map::TileIndex m_mouseOverTileIndex;
@@ -221,16 +227,6 @@ class BaseMapState : public BaseState
 		bool m_gamePaused : 1;
 		bool m_pauseNextFrame : 1;
 #endif
-};
-
-template <class MapType>
-class BaseMapStateImpl : public BaseMapState
-{
-	public:
-		map::Map& getMap() override { return m_map; }
-
-	protected:
-		MapType m_map;
 };
 
 template <class Func>

@@ -18,6 +18,7 @@ class PropComponent : public ComponentImpl<PropComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "prop"; }
+		inline static const char* getVisualName() { return "Prop"; }
 		inline static bool requiresUpdate() { return false; }
 
 		void init() override;

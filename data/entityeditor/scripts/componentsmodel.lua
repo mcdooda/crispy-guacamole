@@ -1,3 +1,5 @@
+local Component = assert(Component)
+
 local function sortedByName()
     local componentsSorted = {}
     for componentName, componentFlag in pairs(Component) do

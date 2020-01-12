@@ -59,18 +59,13 @@ void BehaviorComponent::update(float time, float dt)
 {
 	tryInteracting();
 
-	if (!m_owner->isBusy())
-	{
-		m_behaviorRuntime.update(time);
-	}
-
-	/*
 	const int maxTicks = 2;
 	for (int numTicks = 0; !m_owner->isBusy() && numTicks < maxTicks; ++numTicks)
 	{
 		m_behaviorRuntime.update(time);
 	}
 	
+	/*
 #ifdef FLAT_DEBUG
 	const char* entityName = m_owner->getEntityTemplate()->getName().c_str();
 	const char* stateName = m_behaviorRuntime.getCurrentStateName().c_str();

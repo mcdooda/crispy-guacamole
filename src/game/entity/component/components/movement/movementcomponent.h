@@ -34,6 +34,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 	public:
 		inline static const char* getConfigName() { return "movement"; }
+		inline static const char* getVisualName() { return "Movement"; }
 
 		void init() override;
 		void deinit() override;

@@ -15,6 +15,9 @@ return {
     -- faction
     'components/factioncomponent',
 
+    -- fog vision
+    'components/fogvisioncomponent',
+
     -- interaction
     'components/interactioncomponent',
 

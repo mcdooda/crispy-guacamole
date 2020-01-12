@@ -26,6 +26,4 @@ return function(addContainer, makeSeparator, font)
         end)
         navigabilityDebugContainer:addChild(simplifyPathsCheckbox.container)
     end
-
-    navigabilityDebugContainer:addChild(makeSeparator())
 end

@@ -42,6 +42,8 @@ void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 		brush->setRadius(radius);
 	}
 
+	FLAT_CHECK_FLOAT(m_brushPosition);
+
 	m_brushTiles.clear();
 	brush->getTiles(mapEditorState.getMap(), m_brushPosition, m_brushTiles);
 

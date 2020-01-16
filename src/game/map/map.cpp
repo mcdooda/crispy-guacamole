@@ -69,18 +69,24 @@ bool Map::load(Game& game, const mod::Mod& mod)
 
 	io::Reader reader(game, mod, *this);
 
+	bool loadedFromFile = false;
 	if (reader.canRead())
 	{
 		reader.read();
-		m_isLoaded = true;
-		setFogType(fog::Fog::FogType::NONE);
-		return true;
+		loadedFromFile = true;
 	}
 	else
 	{
 		setBounds(0, 1, 0, 1);
-		return false;
+		setAxes(
+			flat::Vector2(-20.f, 10.f),
+			flat::Vector2(20.f, 10.f),
+			flat::Vector2(0, 20.f)
+		);
 	}
+	m_isLoaded = true;
+	setFogType(fog::Fog::FogType::NONE);
+	return loadedFromFile;
 }
 
 bool Map::save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const

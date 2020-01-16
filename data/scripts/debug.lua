@@ -59,7 +59,7 @@ local function addContainer(title)
     widget:setMargin(0, 0, 5, 0)
     widget:setPositionPolicy(Widget.PositionPolicy.TOP_RIGHT)
     widget:setBackgroundColor(0xFFFFFFFF)
-    
+
     local container = Widget.makeColumnFlow()
     container:setPadding(2)
     local visible = false
@@ -99,7 +99,8 @@ local debugFiles = {
     'pathfinding',
     'fog',
     'memorysnapshot',
-    'gamespeed'
+    'gamespeed',
+    'icons'
 }
 
 for i = 1, #debugFiles do

@@ -16,11 +16,11 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/factioncomponent',
+      name = 'components/interactioncomponent',
     },
     {
       loadArguments = {
-        'human',
+        '',
       },
       name = 'string',
     },

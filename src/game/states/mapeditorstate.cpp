@@ -72,6 +72,13 @@ void MapEditorState::setEditorMode(std::unique_ptr<editor::MapEditorMode>&& edit
 	getStateMachine().setState(std::move(editorMode));
 }
 
+void MapEditorState::draw(game::Game& game)
+{
+	getEditorMode()->preDraw(game);
+	Super::draw(game);
+	getEditorMode()->postDraw(game);
+}
+
 entity::component::ComponentFlags MapEditorState::getComponentsFilter() const
 {
 	return m_componentRegistry.getMapEditorComponentsFilter();

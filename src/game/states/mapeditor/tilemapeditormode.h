@@ -2,6 +2,7 @@
 #define GAME_STATES_EDITOR_TILEMAPEDITORMODE_H
 
 #include "mapeditormode.h"
+#include "map/tile.h"
 
 namespace game
 {
@@ -29,8 +30,13 @@ class TileMapEditorMode : public MapEditorMode
 
 		inline void setTileTemplate(const std::shared_ptr<const map::TileTemplate>& tileTemplate) { m_tileTemplate = tileTemplate; }
 
+		void preDraw(Game& game) override;
+		void postDraw(Game& game) override;
+
 	private:
 		std::shared_ptr<const map::TileTemplate> m_tileTemplate;
+
+		std::vector<map::Tile> m_temporaryTiles;
 };
 
 } // editor

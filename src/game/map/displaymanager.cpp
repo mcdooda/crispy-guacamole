@@ -142,6 +142,11 @@ void DisplayManager::movePropIndex(PropIndex fromIndex, PropIndex toIndex)
 	m_propCellIndices.erase(fromIndex);
 }
 
+void DisplayManager::addTemporaryObject(const MapObject* mapObject)
+{
+	m_temporaryObjects.push_back(mapObject);
+}
+
 void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;
@@ -188,7 +193,7 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 
 	// put everything into a single vector
 	std::vector<const MapObject*> objects;
-	objects.reserve(numEntities + tiles.size() + props.size());
+	objects.reserve(numEntities + tiles.size() + props.size() + m_temporaryObjects.size());
 	for (const entity::Entity* entity : entities)
 	{
 		if (entity != nullptr)
@@ -204,6 +209,8 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 	{
 		objects.push_back(prop);
 	}
+	objects.insert(objects.end(), m_temporaryObjects.begin(), m_temporaryObjects.end());
+	m_temporaryObjects.clear();
 
 	{
 		FLAT_PROFILE("Display Manager Sort Objects");

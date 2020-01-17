@@ -306,6 +306,32 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 	}
 }
 
+void TileMapEditorMode::preDraw(Game& game)
+{
+	map::Map& map = game.getStateMachine().getState()->as<MapEditorState>().getMap();
+	m_temporaryTiles.reserve(m_brushTileSlots.size());
+	flat::render::SpriteSynchronizer& synchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, 0);
+	for (const map::brush::TileSlotEffect& tileSlotEffect : m_brushTileSlots)
+	{
+		if (!map::isValidTile(map.getTileIndex(tileSlotEffect.position)))
+		{
+			map::Tile& tile = m_temporaryTiles.emplace_back();
+			const flat::Vector3 position(tileSlotEffect.position.x, tileSlotEffect.position.y, 0.f);
+			const flat::Vector2 position2d(map.getTransform() * position);
+			tile.synchronizeSpriteTo(map, synchronizer);
+			tile.setSpritePosition(position2d);
+			tile.updateWorldSpaceAABB(position);
+			tile.getSprite().setColor(flat::video::Color(1.f, 1.f, 1.f, 0.3f));
+			map.getDisplayManager().addTemporaryObject(&tile);
+		}
+	}
+}
+
+void TileMapEditorMode::postDraw(Game& game)
+{
+	m_temporaryTiles.clear();
+}
+
 } // editor
 } // states
 } // game

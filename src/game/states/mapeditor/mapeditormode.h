@@ -40,7 +40,8 @@ public:
 	virtual void handleShortcuts(MapEditorState& mapEditorState) {}
 	virtual bool canSelectEntities() const { return false; }
 
-	virtual void draw() const {}
+	virtual void preDraw(Game& game) {}
+	virtual void postDraw(Game& game) {}
 
 protected:
 	void eachSelectedTile(std::function<void(map::TileIndex, float)> func) const;

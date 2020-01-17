@@ -49,6 +49,8 @@ class DisplayManager final
 		void updateProp(PropIndex propIndex, const Prop* prop);
 		void movePropIndex(PropIndex fromIndex, PropIndex toIndex);
 
+		void addTemporaryObject(const MapObject* mapObject);
+
 		void sortAndDraw(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
 
 		const MapObject* getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position) const;
@@ -89,6 +91,8 @@ class DisplayManager final
 
 		std::unique_ptr<PropQuadTree> m_propQuadtree;
 		std::unordered_map<PropIndex, int> m_propCellIndices;
+
+		std::vector<const MapObject*> m_temporaryObjects;
 
 #ifdef FLAT_DEBUG
 		size_t m_numOpaqueObjects;

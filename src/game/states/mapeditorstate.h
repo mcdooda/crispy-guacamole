@@ -37,6 +37,8 @@ class MapEditorState : public BaseMapState, public flat::state::Agent
 		editor::MapEditorMode* getEditorMode();
 		void setEditorMode(std::unique_ptr<editor::MapEditorMode>&& editorMode);
 
+		void draw(game::Game& game) override;
+
 	protected:
 		entity::component::ComponentFlags getComponentsFilter() const override;
 		

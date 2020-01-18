@@ -74,9 +74,16 @@ void MapEditorState::setEditorMode(std::unique_ptr<editor::MapEditorMode>&& edit
 
 void MapEditorState::draw(game::Game& game)
 {
-	getEditorMode()->preDraw(game);
+	const bool mouseOverUi = isMouseOverUi(game);
+	if (!mouseOverUi)
+	{
+		getEditorMode()->preDraw(game);
+	}
 	Super::draw(game);
-	getEditorMode()->postDraw(game);
+	if (!mouseOverUi)
+	{
+		getEditorMode()->postDraw(game);
+	}
 }
 
 entity::component::ComponentFlags MapEditorState::getComponentsFilter() const

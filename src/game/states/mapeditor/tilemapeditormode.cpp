@@ -321,7 +321,7 @@ void TileMapEditorMode::preDraw(Game& game)
 			tile.synchronizeSpriteTo(map, synchronizer);
 			tile.setSpritePosition(position2d);
 			tile.updateWorldSpaceAABB(position);
-			tile.getSprite().setColor(flat::video::Color(1.f, 1.f, 1.f, 0.3f));
+			tile.getSprite().setColor(flat::video::Color(1.f, 1.f, 1.f, tileSlotEffect.effect));
 			map.getDisplayManager().addTemporaryObject(&tile);
 		}
 	}

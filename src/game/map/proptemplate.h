@@ -16,6 +16,7 @@ class PropTemplate
 		~PropTemplate();
 
 		inline std::shared_ptr<const flat::video::Texture> getRandomTexture(Game& game) const { return m_texturePack.getRandomTexture(game); }
+		inline std::shared_ptr<const flat::video::Texture> getFirstTexture() const { return m_texturePack.getFirstTexture(); }
 
 	private:
 		void loadPropConfig(Game& game, const std::string& path);

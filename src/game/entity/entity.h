@@ -69,7 +69,7 @@ class Entity final : public map::MapObject
 		flat::render::BaseSprite& getSprite() override;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
-		void addToMap(map::Map* map);
+		bool addToMap(map::Map* map);
 		void removeFromMap();
 
 #ifdef FLAT_DEBUG
@@ -95,7 +95,8 @@ class Entity final : public map::MapObject
 		void cacheComponents();
 		void initComponents();
 		void deinitComponents();
-		inline void resetComponents() { deinitComponents(); initComponents(); }
+
+		void reset();
 
 		template <class ComponentType>
 		inline const ComponentType* getComponent() const;
@@ -158,6 +159,9 @@ class Entity final : public map::MapObject
 #endif
 
 		map::TileIndex getTileIndexFromPosition() const;
+
+		inline void setGhost() { m_isGhost = true; }
+		inline bool isGhost() const { return m_isGhost; }
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -200,6 +204,7 @@ class Entity final : public map::MapObject
 		bool m_markedForDelete : 1;
 		bool m_aabbDirty : 1;
 		bool m_aabbCanChange : 1;
+		bool m_isGhost : 1;
 #ifdef FLAT_DEBUG
 		bool m_debug : 1;
 #endif

@@ -158,6 +158,11 @@ void GameState::handleDebugInputs(Game & game)
 			entity->setDebug(true);
 			entity->setDebugAllComponents(true);
 		}
+		if (m_ghostEntity != nullptr)
+		{
+			m_ghostEntity->setDebug(true);
+			m_ghostEntity->setDebugAllComponents(true);
+		}
 	}
 	else if (keyboard->isJustPressed(K(F2)))
 	{
@@ -165,6 +170,11 @@ void GameState::handleDebugInputs(Game & game)
 		{
 			entity->setDebug(false);
 			entity->setDebugAllComponents(false);
+		}
+		if (m_ghostEntity != nullptr)
+		{
+			m_ghostEntity->setDebug(false);
+			m_ghostEntity->setDebugAllComponents(false);
 		}
 	}
 }

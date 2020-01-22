@@ -30,7 +30,8 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_selected(false),
 	m_markedForDelete(false),
 	m_aabbDirty(false),
-	m_aabbCanChange(true)
+	m_aabbCanChange(true),
+	m_isGhost(false)
 #ifdef FLAT_DEBUG
 	, m_debug(false)
 #endif
@@ -128,14 +129,14 @@ const flat::render::ProgramSettings& Entity::getProgramSettings() const
 	return getEntityProgramSettings();
 }
 
-void Entity::addToMap(map::Map* map)
+bool Entity::addToMap(map::Map* map)
 {
 	FLAT_ASSERT(map != nullptr && m_map == nullptr);
-	m_map = map;
 
 	updateAABB();
 
-	m_cellIndex = m_map->addEntity(this);
+	m_map = map;
+	m_cellIndex = map->addEntity(this);
 	addedToMap(this, map);
 	positionChanged(m_position);
 	headingChanged(m_heading);
@@ -143,9 +144,18 @@ void Entity::addToMap(map::Map* map)
 
 	updateAABB();
 
+	if (!map->isOnTiles(m_worldSpaceAABB))
+	{
+		m_map = nullptr;
+		map->removeEntity(this, m_cellIndex);
+		m_cellIndex = -1;
+		return false;
+	}
+
 #ifdef FLAT_DEBUG
 	checkSpriteAABB();
 #endif
+	return true;
 }
 
 void Entity::removeFromMap()
@@ -422,6 +432,15 @@ void Entity::deinitComponents()
 	{
 		component->deinit();
 	}
+}
+
+void Entity::reset()
+{
+	deinitComponents();
+	initComponents();
+	setHeading(0.f);
+	setElevation(0.f);
+	m_aabbCanChange = true;
 }
 
 const component::Component* Entity::findComponent(component::ComponentFlags componentFlag) const

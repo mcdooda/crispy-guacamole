@@ -209,6 +209,8 @@ class Map
 
 		inline fog::Fog& getFog() { return *m_fog; }
 
+		bool isOnTiles(const flat::AABB2& aabb) const;
+
 		inline bool isLoaded() const { return m_isLoaded; }
 
 #ifdef FLAT_DEBUG

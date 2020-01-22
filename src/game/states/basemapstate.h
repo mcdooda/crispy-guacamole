@@ -104,7 +104,7 @@ class BaseMapState : public BaseState
 		void unlockCamera();
 		flat::Vector2 convertToCameraPosition(const flat::Vector3& position) const;
 
-		void addEntityToMap(entity::Entity* entity);
+		bool addEntityToMap(entity::Entity* entity);
 		void removeEntityFromMap(entity::Entity* entity);
 
 		inline const flat::video::View& getGameView() const { return m_gameView; }
@@ -128,7 +128,7 @@ class BaseMapState : public BaseState
 		
 	protected:
 		void update(game::Game& game) override;
-		void addGhostEntity(game::Game& game);
+		bool addGhostEntity(game::Game& game);
 		void removeGhostEntity(game::Game& game);
 		void setCameraCenter(const flat::Vector3& cameraCenter);
 		void updateGameView(game::Game& game);

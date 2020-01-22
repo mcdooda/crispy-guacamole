@@ -901,6 +901,27 @@ fog::Fog::FogType Map::getFogType() const
 	return m_fog->getFogType();
 }
 
+bool Map::isOnTiles(const flat::AABB2& aabb) const
+{
+	const int minX = static_cast<int>(aabb.min.x);
+	const int minY = static_cast<int>(aabb.min.y);
+	const int maxX = static_cast<int>(aabb.max.x);
+	const int maxY = static_cast<int>(aabb.max.y);
+
+	for (int x = minX; x <= maxX; ++x)
+	{
+		for (int y = minY; y <= maxY; ++y)
+		{
+			if (!isValidTile(getTileIndex(x, y)))
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 void Map::setAxes(const flat::Vector2& xAxis,
                   const flat::Vector2& yAxis,
                   const flat::Vector2& zAxis)

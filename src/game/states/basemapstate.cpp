@@ -439,6 +439,7 @@ void BaseMapState::setGhostTemplate(Game& game, const std::shared_ptr<const enti
 	componentFlags &= ~behavior::BehaviorComponent::getFlag();
 	componentFlags &= ~collision::CollisionComponent::getFlag();
 	m_ghostEntity = createEntity(game, ghostTemplate, componentFlags);
+	m_ghostEntity->setGhost();
 }
 
 void BaseMapState::clearGhostTemplate()
@@ -478,14 +479,19 @@ void BaseMapState::destroyEntity(entity::Entity* entity)
 	m_entityPool.destroyEntity(entity);
 }
 
-void BaseMapState::addEntityToMap(entity::Entity* entity)
+bool BaseMapState::addEntityToMap(entity::Entity* entity)
 {
 	FLAT_PROFILE("Add entity to map");
 	m_entityUpdater.registerEntity(entity);
-	entity->addToMap(&m_map);
+	if (!entity->addToMap(&m_map))
+	{
+		m_entityUpdater.unregisterEntity(entity);
+		return false;
+	}
 	flat::time::Clock& clock = getGameClock();
 	m_displayManager.addEntity(entity);
 	m_entityUpdater.updateSingleEntity(entity, clock.getTime(), clock.getDT());
+	return true;
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)
@@ -546,7 +552,7 @@ void BaseMapState::update(game::Game& game)
 	//debugCursorPosition(game);
 }
 
-void BaseMapState::addGhostEntity(game::Game& game)
+bool BaseMapState::addGhostEntity(game::Game& game)
 {
 	if (m_ghostEntity != nullptr && !isMouseOverUi(game) && !isSelecting() && !m_mouseOverEntity.isValid())
 	{
@@ -558,31 +564,33 @@ void BaseMapState::addGhostEntity(game::Game& game)
 			map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
 			if (tileIndex != map::TileIndex::INVALID_TILE)
 			{
-				m_ghostEntity->resetComponents();
-				m_ghostEntity->setHeading(0.f);
-				m_ghostEntity->setElevation(0.f);
+				m_ghostEntity->reset();
 				flat::Vector3 ghostPosition(cursorPosition, m_map.getTileZ(tileIndex));
 				m_ghostEntity->setPosition(ghostPosition);
-				addEntityToMap(m_ghostEntity);
-				flat::render::BaseSprite& sprite = m_ghostEntity->getSprite();
-				flat::video::Color color;
-				if (canPlaceGhostEntity(tileIndex))
+				if (addEntityToMap(m_ghostEntity))
 				{
-					color = flat::video::Color::WHITE;
-					color.a = 0.6f;
-				}
-				else
-				{
-					color = flat::video::Color::BLACK;
-				}
-				sprite.setColor(color);
+					flat::render::BaseSprite& sprite = m_ghostEntity->getSprite();
+					flat::video::Color color;
+					if (canPlaceGhostEntity(tileIndex))
+					{
+						color = flat::video::Color::WHITE;
+						color.a = 0.6f;
+					}
+					else
+					{
+						color = flat::video::Color::BLACK;
+					}
+					sprite.setColor(color);
 
 #ifdef FLAT_DEBUG
-				m_ghostEntity->debugDraw(m_debugDisplay);
+					m_ghostEntity->debugDraw(m_debugDisplay);
 #endif
+					return true;
+				}
 			}
 		}
 	}
+	return false;
 }
 
 void BaseMapState::removeGhostEntity(game::Game & game)
@@ -689,9 +697,14 @@ void BaseMapState::draw(game::Game& game)
 	{
 		FLAT_PROFILE("Draw map");
 
-		addGhostEntity(game);
+		const bool addedGhostEntity = addGhostEntity(game);
+
 		m_displayManager.sortAndDraw(game, m_map.getFog(), m_gameView);
-		removeGhostEntity(game);
+
+		if (addedGhostEntity)
+		{
+			removeGhostEntity(game);
+		}
 	}
 	
 #ifdef FLAT_DEBUG

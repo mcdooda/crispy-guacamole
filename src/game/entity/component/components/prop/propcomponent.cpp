@@ -33,19 +33,23 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 	const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
 
-	// occupy the tile
 	const PropComponentTemplate* propComponentTemplate = getTemplate();
 	const int width = propComponentTemplate->getWidth();
 	const int height = propComponentTemplate->getHeight();
-	for (int i = 0; i < width; ++i)
+
+	// occupy the tile unless it's a ghost entity
+	if (!m_owner->isGhost())
 	{
-		for (int j = 0; j < height; ++j)
+		for (int i = 0; i < width; ++i)
 		{
-			map::TileIndex tileToOccupyIndex = map->getTileIndexIfNavigable(tilePosition.x - i, tilePosition.y - j, map::Navigability::ALL);
-			//FLAT_ASSERT(tileToOccupy != nullptr);
-			if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
+			for (int j = 0; j < height; ++j)
 			{
-				map->setTileNavigability(tileToOccupyIndex, map::Navigability::NONE);
+				map::TileIndex tileToOccupyIndex = map->getTileIndexIfNavigable(tilePosition.x - i, tilePosition.y - j, map::Navigability::ALL);
+				//FLAT_ASSERT(tileToOccupy != nullptr);
+				if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
+				{
+					map->setTileNavigability(tileToOccupyIndex, map::Navigability::NONE);
+				}
 			}
 		}
 	}
@@ -77,23 +81,26 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 
 bool PropComponent::removedFromMap(Entity* entity)
 {
-	map::Map* map = m_owner->getMap();
-	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
-	const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
-
-	const PropComponentTemplate* propComponentTemplate = getTemplate();
-	const int width = propComponentTemplate->getWidth();
-	const int height = propComponentTemplate->getHeight();
-	for (int i = 0; i < width; ++i)
+	if (!m_owner->isGhost())
 	{
-		for (int j = 0; j < height; ++j)
+		map::Map* map = m_owner->getMap();
+		map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+		FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
+		const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
+
+		const PropComponentTemplate* propComponentTemplate = getTemplate();
+		const int width = propComponentTemplate->getWidth();
+		const int height = propComponentTemplate->getHeight();
+		for (int i = 0; i < width; ++i)
 		{
-			map::TileIndex tileToOccupyIndex = map->getTileIndex(tilePosition.x - i, tilePosition.y - j);
-			//FLAT_ASSERT(tileToOccupy != nullptr);
-			if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
+			for (int j = 0; j < height; ++j)
 			{
-				map->resetTileNavigabilityFromTemplate(tileToOccupyIndex);
+				map::TileIndex tileToOccupyIndex = map->getTileIndex(tilePosition.x - i, tilePosition.y - j);
+				//FLAT_ASSERT(tileToOccupy != nullptr);
+				if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
+				{
+					map->resetTileNavigabilityFromTemplate(tileToOccupyIndex);
+				}
 			}
 		}
 	}

@@ -95,12 +95,11 @@ local debugFiles = {
     'stats',
     'drawstats',
     'profiler',
+    'memorysnapshot',
     'entitydebug',
     'pathfinding',
     'fog',
-    'memorysnapshot',
-    'gamespeed',
-    'icons'
+    'gamespeed'
 }
 
 for i = 1, #debugFiles do

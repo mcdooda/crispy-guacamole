@@ -15,7 +15,7 @@ namespace map
 class TileTemplate
 {
 	public:
-		TileTemplate(Game& game, const std::string& name);
+		TileTemplate(const std::string& name, Game& game);
 		~TileTemplate();
 
 		inline const std::string& getName() const { return m_name; }

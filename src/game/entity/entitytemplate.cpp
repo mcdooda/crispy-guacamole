@@ -7,7 +7,7 @@ namespace game
 namespace entity
 {
 
-EntityTemplate::EntityTemplate(Game& game, const component::ComponentRegistry& componentRegistry, const std::string& path, const std::string& name) :
+EntityTemplate::EntityTemplate(const std::string& name, Game& game, const component::ComponentRegistry& componentRegistry, const std::string& path) :
 	m_path(path),
 	m_name(name),
 	m_componentFlags(0)

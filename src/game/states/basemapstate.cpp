@@ -348,18 +348,18 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
 	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(game, m_componentRegistry, entityTemplatePath, entityTemplateName);
+	return m_entityTemplateManager.getResource(entityTemplateName, game, m_componentRegistry, entityTemplatePath);
 }
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
 {
-	return m_tileTemplateManager.getResource(game, tileTemplateName);
+	return m_tileTemplateManager.getResource(tileTemplateName, game);
 }
 
 std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
 {
 	std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
-	return m_propTemplateManager.getResource(game, propTemplatePath);
+	return m_propTemplateManager.getResource(propTemplatePath, game);
 }
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(

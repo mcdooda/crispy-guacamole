@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -25,6 +25,7 @@ script {
       2,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/propcomponent',
@@ -43,13 +44,13 @@ script {
     },
     {
       loadArguments = {
-        1,
+        2,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        2,
       },
       name = 'number',
     },

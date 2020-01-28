@@ -20,7 +20,7 @@ return {
     },
     {
       loadArguments = {
-        false,
+        true,
       },
       name = 'boolean',
     },

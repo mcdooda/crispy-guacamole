@@ -36,6 +36,15 @@ void LifeComponent::init()
 		}
 	);
 
+	m_damageTakenSlotProxy.init(
+		&damageTaken,
+		[this](lua_State* L, int amount, Entity* instigator)
+		{
+			lua_pushinteger(L, amount);
+			lua::pushEntity(L, instigator);
+		}
+	);
+
 	m_diedSlotProxy.init(
 		&die,
 		[](lua_State* L) {}
@@ -76,7 +85,7 @@ void LifeComponent::kill()
 	}
 }
 
-void LifeComponent::dealDamage(int damage)
+void LifeComponent::dealDamage(int damage, Entity* instigator)
 {
 	if (!m_spawning && !m_despawning && m_health > 0 && damage > 0)
 	{
@@ -84,6 +93,7 @@ void LifeComponent::dealDamage(int damage)
 		const int previousHealth = m_health;
 		m_health -= damage;
 		healthChanged(previousHealth);
+		damageTaken(damage, instigator);
 		if (m_health == 0)
 		{
 			onDie();
@@ -113,6 +123,16 @@ int LifeComponent::addHealthChangedCallback(lua_State* L, int index)
 void LifeComponent::removeHealthChangeCallback(int index)
 {
 	m_healthChangedSlotProxy.removeCallback(index);
+}
+
+int LifeComponent::addDamageTakenCallback(lua_State* L, int index)
+{
+	return m_damageTakenSlotProxy.addCallback(L, index);
+}
+
+void LifeComponent::removeDamageTakenCallback(int index)
+{
+	m_damageTakenSlotProxy.removeCallback(index);
 }
 
 int LifeComponent::addDiedCallback(lua_State * L, int index)

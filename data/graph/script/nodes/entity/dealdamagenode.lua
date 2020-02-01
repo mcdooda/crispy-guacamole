@@ -10,6 +10,7 @@ function DealDamageNode:buildPins()
     self.entityInPin = self:addInputPin(flat.types['CG.Entity'], 'Entity')
     self.amountInPin = self:addInputPin(flat.types.NUMBER, 'Amount')
     self.delayInPin = self:addInputPin(flat.types.NUMBER, 'Delay')
+    self.instigatorInPin = self:addInputPin(flat.types['CG.Entity'], 'Instigator')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
 end
@@ -19,8 +20,9 @@ function DealDamageNode:execute(runtime, inputPin)
     local entity = runtime:readPin(self.entityInPin)
     local amount = runtime:readPin(self.amountInPin)
     local delay = runtime:readPin(self.delayInPin)
+    local instigator = runtime:readOptionalPin(self.instigatorInPin)
 
-    AttackHelper.dealDamageAfterDelay(entity, amount, delay)
+    AttackHelper.dealDamageAfterDelay(entity, amount, delay, instigator)
 
     runtime:impulse(self.impulseOutPin)
 end

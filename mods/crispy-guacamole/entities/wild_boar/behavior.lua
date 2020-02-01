@@ -19,4 +19,8 @@ function states:wander(boar)
 	end
 end
 
+function states:onDamageTaken(boar, amount, instigator)
+	--print(amount, instigator)
+end
+
 return states

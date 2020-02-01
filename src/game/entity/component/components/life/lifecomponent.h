@@ -31,7 +31,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		void update(float currentTime, float elapsedTime) override;
 
 		void kill();
-		void dealDamage(int damage);
+		void dealDamage(int damage, Entity* instigator = nullptr);
 
 		void setHealth(int health);
 		inline int getHealth() const { return m_health; }
@@ -40,6 +40,9 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		int addHealthChangedCallback(lua_State* L, int index);
 		void removeHealthChangeCallback(int index);
 
+		int addDamageTakenCallback(lua_State* L, int index);
+		void removeDamageTakenCallback(int index);
+
 		int addDiedCallback(lua_State* L, int index);
 		void removeDiedCallback(int index);
 
@@ -47,6 +50,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 
 	public:
 		flat::Slot<int> healthChanged;
+		flat::Slot<int, Entity*> damageTaken;
 		flat::Slot<> live;
 		flat::Slot<> die;
 
@@ -60,6 +64,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 
 	private:
 		flat::lua::SlotProxy<int> m_healthChangedSlotProxy;
+		flat::lua::SlotProxy<int, Entity*> m_damageTakenSlotProxy;
 		flat::lua::SlotProxy<> m_diedSlotProxy;
 		EntityThread m_spawnDespawnThread;
 		int m_health;

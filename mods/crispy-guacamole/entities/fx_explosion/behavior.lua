@@ -8,7 +8,7 @@ function states:init(explosion)
     for i = 1, #nearbyEntities do
         local entity = nearbyEntities[i]
         if entity:isLiving() then
-            entity:dealDamage(4)
+            entity:dealDamage(1)
         end
     end
     explosion:playAnimation 'explode'

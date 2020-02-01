@@ -139,6 +139,7 @@ int open(Game& game)
 		{"getHealth",                l_Entity_getHealth},
 		{"getMaxHealth",             l_Entity_getMaxHealth},
 		{"healthChanged",            l_Entity_healthChanged},
+		{"damageTaken",              l_Entity_damageTaken},
 		{"died",                     l_Entity_died},
 
 		// selection
@@ -982,8 +983,9 @@ int l_Entity_dealDamage(lua_State* L)
 
 	Entity& entity = getEntity(L, 1);
 	const int damage = static_cast<int>(luaL_checkinteger(L, 2));
+	Entity* instigator = getEntityPtr(L, 3);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
-	lifeComponent.dealDamage(damage);
+	lifeComponent.dealDamage(damage, instigator);
 	return 0;
 }
 
@@ -1017,6 +1019,14 @@ int l_Entity_healthChanged(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lifeComponent.addHealthChangedCallback(L, 2);
+	return 0;
+}
+
+int l_Entity_damageTaken(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lifeComponent.addDamageTakenCallback(L, 2);
 	return 0;
 }
 
@@ -1173,7 +1183,7 @@ Entity& getEntity(lua_State* L, int index)
 
 Entity* getEntityPtr(lua_State* L, int index)
 {
-	if (lua_isnil(L, index))
+	if (lua_isnoneornil(L, index))
 	{
 		return nullptr;
 	}

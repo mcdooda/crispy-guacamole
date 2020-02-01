@@ -8,6 +8,7 @@
 #include "entity/component/componenttype.h"
 
 #include "entity/component/components/detection/detectioncomponent.h"
+#include "entity/component/components/life/lifecomponent.h"
 
 namespace game
 {
@@ -35,6 +36,15 @@ void BehaviorComponent::init()
 			detectionComponent->entityLeftVisionRange.on(this, &BehaviorComponent::entityLeftVisionRange);
 		}
 	}
+
+	life::LifeComponent* lifeComponent = m_owner->getComponent<life::LifeComponent>();
+	if (lifeComponent != nullptr)
+	{
+		if (m_behaviorRuntime.isEventHandled<DamageTakenBehaviorEvent>())
+		{
+			lifeComponent->damageTaken.on(this, &BehaviorComponent::damageTaken);
+		}
+	}
 }
 
 void BehaviorComponent::deinit()
@@ -51,6 +61,15 @@ void BehaviorComponent::deinit()
 		if (m_behaviorRuntime.isEventHandled<EntityLeftVisionRangeBehaviorEvent>())
 		{
 			detectionComponent->entityLeftVisionRange.off(this);
+		}
+	}
+
+	life::LifeComponent* lifeComponent = m_owner->getComponent<life::LifeComponent>();
+	if (lifeComponent != nullptr)
+	{
+		if (m_behaviorRuntime.isEventHandled<DamageTakenBehaviorEvent>())
+		{
+			lifeComponent->damageTaken.off(this);
 		}
 	}
 }
@@ -136,6 +155,12 @@ bool BehaviorComponent::entityEnteredVisionRange(Entity* entity)
 bool BehaviorComponent::entityLeftVisionRange(Entity* entity)
 {
 	m_behaviorRuntime.handleEvent<EntityLeftVisionRangeBehaviorEvent>(entity);
+	return true;
+}
+
+bool BehaviorComponent::damageTaken(int amount, Entity* instigator)
+{
+	m_behaviorRuntime.handleEvent<DamageTakenBehaviorEvent>(amount, instigator);
 	return true;
 }
 

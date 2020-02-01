@@ -56,6 +56,8 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		bool entityEnteredVisionRange(Entity* entity);
 		bool entityLeftVisionRange(Entity* entity);
 
+		bool damageTaken(int amount, Entity* instigator);
+
 		void tryInteracting();
 		void cancelInteraction();
 		

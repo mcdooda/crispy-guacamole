@@ -81,7 +81,7 @@ bool Map::load(Game& game, const mod::Mod& mod)
 		setAxes(
 			flat::Vector2(-20.f, 10.f),
 			flat::Vector2(20.f, 10.f),
-			flat::Vector2(0, 20.f)
+			flat::Vector2(0, -20.f)
 		);
 	}
 	m_isLoaded = true;

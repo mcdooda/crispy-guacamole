@@ -3,147 +3,186 @@ return {
     {
       1,
       1,
-      4,
-      1,
-    },
-    {
-      1,
-      2,
-      5,
-      1,
-    },
-    {
-      1,
-      3,
-      10,
-      1,
-    },
-    {
-      1,
-      3,
-      11,
-      2,
-    },
-    {
-      1,
-      3,
-      9,
-      1,
-    },
-    {
-      1,
-      4,
-      8,
-      1,
-    },
-    {
-      2,
-      1,
-      1,
-      1,
-    },
-    {
-      3,
-      1,
-      1,
-      2,
-    },
-    {
-      5,
-      2,
-      6,
-      1,
-    },
-    {
-      6,
-      1,
-      11,
-      1,
-    },
-    {
       7,
       1,
-      6,
+    },
+    {
+      1,
       2,
+      12,
+      1,
+    },
+    {
+      1,
+      3,
+      8,
+      1,
+    },
+    {
+      1,
+      3,
+      12,
+      2,
+    },
+    {
+      1,
+      3,
+      9,
+      5,
+    },
+    {
+      2,
+      1,
+      1,
+      1,
+    },
+    {
+      3,
+      1,
+      1,
+      2,
+    },
+    {
+      4,
+      1,
+      1,
+      3,
+    },
+    {
+      5,
+      1,
+      1,
+      4,
+    },
+    {
+      6,
+      1,
+      1,
+      5,
     },
     {
       8,
       1,
-      5,
-      2,
-    },
-    {
       9,
-      1,
-      6,
-      3,
+      2,
     },
     {
       10,
       1,
-      6,
+      9,
+      3,
+    },
+    {
+      11,
+      1,
+      9,
       4,
     },
     {
       12,
       1,
+      9,
       1,
+    },
+    {
+      13,
+      1,
+      12,
       3,
+    },
+    {
+      14,
+      1,
+      12,
+      4,
+    },
+    {
+      15,
+      1,
+      12,
+      5,
     },
   },
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/projectilecomponent',
+      name = 'components/attackcomponent',
     },
     {
       loadArguments = {
-        30,
+        0.5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        12,
+        1,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
     {
       loadArguments = {
         {
           5,
-          'Table',
+          'Component',
         },
       },
       name = 'script/scriptoutput',
     },
     {
-      name = 'script/condition',
+      name = 'entity/getattacktarget',
     },
     {
-      name = 'entity/spawnentity',
+      name = 'entity/dealdamage',
     },
     {
       loadArguments = {
-        'fx_explosion',
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.20000000298023,
+      },
+      name = 'number',
+    },
+    {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        'reap',
       },
       name = 'string',
     },
     {
-      name = 'entity/isvalidentity',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'entity/getheading',
-    },
-    {
-      name = 'entity/despawnentity',
+      loadArguments = {
+        1,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
     },

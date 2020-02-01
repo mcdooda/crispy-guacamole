@@ -20,11 +20,13 @@ class LifeComponentTemplate : public ComponentTemplate
 
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSpawnFunc() const { return m_spawnFunc; }
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getDespawnFunc() const { return m_despawnFunc; }
+		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getDamageTakenFunc() const { return m_damageTakenFunc; }
 		inline int getMaxHealth() const { return m_maxHealth; }
 
 	private:
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_spawnFunc;
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_despawnFunc;
+		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_damageTakenFunc;
 		int m_maxHealth;
 };
 

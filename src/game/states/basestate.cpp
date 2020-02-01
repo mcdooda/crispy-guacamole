@@ -20,7 +20,7 @@ void BaseState::enter(Game& game)
 	initLua(game);
 	initRender(game);
 	resetViews(game);
-	game.input->clearFrameEvents();
+	game.input->clearAllEvents();
 	game.time->setPreferedFrameRate(60.f);
 }
 

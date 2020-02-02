@@ -53,6 +53,9 @@ class Entity final : public map::MapObject
 		void setElevation(float elevation);
 		inline float getElevation() const { return m_elevation; }
 
+		inline void setInstigator(Entity* instigator) { m_instigator = instigator; }
+		inline Entity* getInstigator() const { return m_instigator.getEntity(); }
+
 		inline flat::Vector3 getForward() const
 		{
 			flat::Vector3 forward;
@@ -193,6 +196,8 @@ class Entity final : public map::MapObject
 		float m_elevation;
 
 		flat::lua::UniqueLuaReference<LUA_TTABLE> m_extraData;
+
+		EntityHandle m_instigator;
 		
 		map::Map* m_map;
 		int m_cellIndex;

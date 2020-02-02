@@ -19,12 +19,9 @@
 #include "../../map/map.h"
 #include "../../map/tile.h"
 
-namespace game
-{
-namespace entity
-{
-using namespace component;
-namespace lua
+using namespace game::entity::component;
+
+namespace game::entity::lua
 {
 
 using LuaEntityHandle = flat::lua::SharedCppValue<EntityHandle>;
@@ -73,6 +70,9 @@ int open(Game& game)
 		{"lookAtEntity",             l_Entity_lookAtEntity},
 
 		{"cancelCurrentActions",     l_Entity_cancelCurrentActions},
+
+		{"setInstigator",            l_Entity_setInstigator},
+		{"getInstigator",            l_Entity_getInstigator},
 
 		// ui
 		{"setUiOffset",              l_Entity_setUiOffset},
@@ -455,6 +455,22 @@ int l_Entity_cancelCurrentActions(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	entity.cancelCurrentActions();
 	return 0;
+}
+
+int l_Entity_setInstigator(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity& instigator = getEntity(L, 2);
+	entity.setInstigator(&instigator);
+	return 0;
+}
+
+int l_Entity_getInstigator(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity* instigator = entity.getInstigator();
+	pushEntity(L, instigator);
+	return 1;
 }
 
 int l_Entity_setUiOffset(lua_State* L)
@@ -1128,17 +1144,20 @@ int l_Entity_spawn(lua_State* L)
 	}
 
 	// heading
-	float heading = static_cast<float>(luaL_optnumber(L, 3, 0.f));
+	const float heading = static_cast<float>(luaL_optnumber(L, 3, 0.f));
 
 	// elevation
-	float elevation = static_cast<float>(luaL_optnumber(L, 4, 0.f));
+	const float elevation = static_cast<float>(luaL_optnumber(L, 4, 0.f));
+
+	// instigator
+	Entity* instigator = getEntityPtr(L, 5);
 
 	// components flags
-	component::ComponentFlags componentFlags = static_cast<component::ComponentFlags>(luaL_optinteger(L, 5, component::AllComponents));
+	const component::ComponentFlags componentFlags = static_cast<component::ComponentFlags>(luaL_optinteger(L, 6, component::AllComponents));
 	luaL_argcheck(L, componentFlags != 0, 2, "componentFlags must not be zero");
 
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
-	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation, componentFlags);
+	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation, instigator, componentFlags);
 	pushEntity(L, entity);
 	return 1;
 }
@@ -1204,9 +1223,4 @@ void pushEntity(lua_State* L, Entity* entity)
 	}
 }
 
-} // lua
-} // entity
-} // game
-
-
-
+} // game::entity::lua

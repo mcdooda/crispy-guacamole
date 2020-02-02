@@ -86,6 +86,12 @@ return {
     'entity/setposition',
     'entity/getforward',
 
+    'entity/setinstigator',
+    'entity/getinstigator',
+
+    'entity/setextradatafield',
+    'entity/getextradatafield',
+
     'entity/isvalidentity',
     'entity/iscomponentenabled',
     'entity/disablecomponent',

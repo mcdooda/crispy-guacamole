@@ -53,6 +53,9 @@ int l_Entity_lookAtEntity(lua_State* L);
 
 int l_Entity_cancelCurrentActions(lua_State* L);
 
+int l_Entity_setInstigator(lua_State* L);
+int l_Entity_getInstigator(lua_State* L);
+
 // ui
 int l_Entity_setUiOffset(lua_State* L);
 int l_Entity_setUiVisible(lua_State* L);

@@ -32,6 +32,12 @@ return {
     },
     {
       1,
+      3,
+      7,
+      1,
+    },
+    {
+      1,
       4,
       8,
       1,
@@ -64,7 +70,7 @@ return {
       7,
       1,
       6,
-      2,
+      6,
     },
     {
       8,
@@ -85,10 +91,22 @@ return {
       4,
     },
     {
-      12,
+      14,
       1,
       1,
       3,
+    },
+    {
+      15,
+      1,
+      6,
+      5,
+    },
+    {
+      16,
+      1,
+      6,
+      2,
     },
   },
   nodeType = 'script',
@@ -124,10 +142,7 @@ return {
       name = 'entity/spawnentity',
     },
     {
-      loadArguments = {
-        'fx_explosion',
-      },
-      name = 'string',
+      name = 'entity/getinstigator',
     },
     {
       name = 'entity/isvalidentity',
@@ -146,6 +161,30 @@ return {
         true,
       },
       name = 'boolean',
+    },
+    {
+      loadArguments = {
+        'fx_explosion',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'fx_explosion',
+      },
+      name = 'string',
     },
   },
 }

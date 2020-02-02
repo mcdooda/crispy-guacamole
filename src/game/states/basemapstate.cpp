@@ -368,6 +368,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	const flat::Vector3& position,
 	float heading,
 	float elevation,
+	entity::Entity* instigator,
 	entity::component::ComponentFlags componentFlags,
 	entity::component::ComponentFlags enabledComponentFlags
 )
@@ -375,6 +376,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	FLAT_PROFILE("Spawn entity");
 
 	entity::Entity* entity = createEntity(game, entityTemplate, componentFlags);
+	entity->setInstigator(instigator);
 
 	{
 		FLAT_PROFILE("Disable useless components");

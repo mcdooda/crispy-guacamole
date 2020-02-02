@@ -16,13 +16,13 @@ return {
       3,
       1,
       1,
-      2,
+      4,
     },
     {
       4,
       1,
       1,
-      4,
+      2,
     },
     {
       6,
@@ -50,15 +50,15 @@ return {
     },
     {
       loadArguments = {
-        0.0099999997764826,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
         false,
       },
       name = 'boolean',
+    },
+    {
+      loadArguments = {
+        0.0099999997764826,
+      },
+      name = 'number',
     },
     {
       loadArguments = {

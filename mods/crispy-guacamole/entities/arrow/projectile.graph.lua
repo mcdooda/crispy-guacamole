@@ -9,37 +9,31 @@ return {
     {
       1,
       2,
-      5,
+      15,
       1,
     },
     {
       1,
       3,
-      10,
-      1,
-    },
-    {
-      1,
-      3,
-      11,
+      8,
       2,
     },
     {
       1,
-      3,
+      4,
       9,
       1,
     },
     {
       1,
-      3,
-      7,
-      1,
+      4,
+      10,
+      2,
     },
     {
       1,
       4,
-      8,
+      14,
       1,
     },
     {
@@ -55,58 +49,52 @@ return {
       2,
     },
     {
-      5,
-      2,
       6,
       1,
-    },
-    {
-      6,
       1,
-      11,
-      1,
-    },
-    {
-      7,
-      1,
-      6,
-      6,
-    },
-    {
-      8,
-      1,
-      5,
-      2,
+      3,
     },
     {
       9,
       1,
-      6,
+      13,
+      2,
+    },
+    {
+      11,
+      1,
+      10,
       3,
     },
     {
+      12,
+      1,
+      10,
+      4,
+    },
+    {
+      13,
+      1,
       10,
       1,
-      6,
-      4,
     },
     {
       14,
       1,
-      1,
-      3,
+      10,
+      5,
     },
     {
       15,
       1,
-      6,
-      5,
+      8,
+      1,
     },
     {
-      16,
-      1,
-      6,
+      15,
       2,
+      13,
+      1,
     },
   },
   nodeType = 'script',
@@ -136,25 +124,10 @@ return {
       name = 'script/scriptoutput',
     },
     {
-      name = 'script/condition',
-    },
-    {
-      name = 'entity/spawnentity',
-    },
-    {
-      name = 'entity/getinstigator',
-    },
-    {
-      name = 'entity/isvalidentity',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'entity/getheading',
-    },
-    {
-      name = 'entity/despawnentity',
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
     {
       loadArguments = {
@@ -169,10 +142,19 @@ return {
       name = 'string',
     },
     {
+      name = 'entity/despawnentity',
+    },
+    {
+      name = 'entity/isvalidentity',
+    },
+    {
+      name = 'entity/dealdamage',
+    },
+    {
       loadArguments = {
-        true,
+        1,
       },
-      name = 'boolean',
+      name = 'number',
     },
     {
       loadArguments = {
@@ -181,10 +163,16 @@ return {
       name = 'number',
     },
     {
+      name = 'script/condition',
+    },
+    {
+      name = 'entity/getinstigator',
+    },
+    {
       loadArguments = {
-        'fx_explosion',
+        3,
       },
-      name = 'string',
+      name = 'script/impulseall',
     },
   },
 }

@@ -146,7 +146,7 @@ return {
     },
     {
       loadArguments = {
-        1,
+        10000,
       },
       name = 'number',
     },

@@ -12,6 +12,7 @@ function FireProjectileNode:buildPins()
     self.projectileNameInPin = self:addInputPin(flat.types.STRING, 'Projectile')
     self.attachPointPin = self:addInputPin(flat.types.STRING, 'Attach Point')
     self.delayInPin = self:addInputPin(flat.types.NUMBER, 'Delay')
+    self.followTargetInPin = self:addInputPin(flat.types.BOOLEAN, 'Follow Target')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
     self.firedOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Fired')
@@ -26,9 +27,9 @@ function FireProjectileNode:execute(runtime, inputPin)
     local projectileName = runtime:readPin(self.projectileNameInPin)
     local attachPoint = runtime:readPin(self.attachPointPin)
     local delay = runtime:readPin(self.delayInPin)
+    local followTarget = runtime:readPin(self.followTargetInPin)
 
-    local timer = game.Timer()
-    timer:onEnd(function()
+    local function fireProjectile()
         if not entity:isValid() or not target:isValid() then
             return
         end
@@ -37,13 +38,24 @@ function FireProjectileNode:execute(runtime, inputPin)
         local projectile = spawnProjectile(entity, attachPoint, target)
 
         if projectile then
+            if followTarget then
+                projectile:setProjectileTarget(target)
+            end
+
             runtime:writePin(self.projectileOutPin, projectile)
             runtime:impulse(self.firedOutPin)
         else
             runtime:impulse(self.failedOutPin)
         end
-    end)
-    timer:start(delay)
+    end
+
+    if delay > 0 then
+        local timer = game.Timer()
+        timer:onEnd(fireProjectile)
+        timer:start(delay)
+    else
+        fireProjectile()
+    end
 
     runtime:impulse(self.impulseOutPin)
 end

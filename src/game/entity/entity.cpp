@@ -84,6 +84,15 @@ void Entity::setZ(float z)
 	m_aabbDirty = true;
 }
 
+flat::Vector3 Entity::getCenter() const
+{
+	if (m_collisionComponent != nullptr)
+	{
+		return m_collisionComponent->getCenter();
+	}
+	return m_position;
+}
+
 void Entity::setHeading(float heading, float epsilon)
 {
 	const float difference = std::abs(flat::angle_clamp_pi(heading - m_heading));

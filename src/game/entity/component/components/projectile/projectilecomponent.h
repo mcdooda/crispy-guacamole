@@ -35,6 +35,8 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		void setSpeed(const flat::Vector3& speed);
 		inline const flat::Vector3& getSpeed() const { return m_speed; }
 
+		void setTarget(Entity* target) { m_target = target; }
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
@@ -42,6 +44,9 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		bool removedFromMap(Entity* entity);
 		bool headingChanged(float heading);
 		bool elevationChanged(float heading);
+
+		void checkTargetCollision();
+
 		bool collided(Entity* collidedEntity, map::TileIndex collidedTileIndex, const flat::Vector3& normal);
 		bool collidedWithEntity(Entity* collidedEntity, const flat::Vector3& normal);
 		bool collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal);
@@ -53,6 +58,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		void updateSpriteRotation() const;
 		
 	private:
+		EntityHandle m_target;
 		flat::Vector3 m_speed;
 };
 

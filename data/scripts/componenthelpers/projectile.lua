@@ -30,12 +30,12 @@ end
 local function createSpawner(templateName)
     local template = Path.requireComponentTemplate(templateName, 'projectile')
     return function(position, target)
-        return spawn(templateName, template, position, target:getPosition())
+        return spawn(templateName, template, position, target:getCenter())
     end
 end
 
 local function spawnFromEntity(templateName, template, entity, attachPoint, target)
-    return spawn(templateName, template, entity:getAttachPoint(attachPoint), target:getPosition(), entity)
+    return spawn(templateName, template, entity:getAttachPoint(attachPoint), target:getCenter(), entity)
 end
 
 local function createSpawnerFromEntity(templateName)

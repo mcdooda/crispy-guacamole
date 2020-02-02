@@ -57,6 +57,7 @@ int open(Game& game)
 
 		{"setPosition",              l_Entity_setPosition},
 		{"getPosition",              l_Entity_getPosition},
+		{"getCenter",                l_Entity_getCenter},
 
 		{"setHeading",               l_Entity_setHeading},
 		{"getHeading",               l_Entity_getHeading},
@@ -150,6 +151,7 @@ int open(Game& game)
 		// projectile
 		{"setProjectileSpeed",       l_Entity_setProjectileSpeed},
 		{"getProjectileSpeed",       l_Entity_getProjectileSpeed},
+		{"setProjectileTarget",      l_Entity_setProjectileTarget},
 
 		// player controller
 		{"setGamepadIndex",          l_Entity_setGamepadIndex},
@@ -372,6 +374,13 @@ int l_Entity_getPosition(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	flat::lua::pushVector3(L, entity.getPosition());
+	return 1;
+}
+
+int l_Entity_getCenter(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::lua::pushVector3(L, entity.getCenter());
 	return 1;
 }
 
@@ -1097,6 +1106,15 @@ int l_Entity_getProjectileSpeed(lua_State* L)
 	projectile::ProjectileComponent& projectileComponent = getComponent<projectile::ProjectileComponent>(L, entity);
 	flat::lua::pushVector3(L, projectileComponent.getSpeed());
 	return 1;
+}
+
+int l_Entity_setProjectileTarget(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Entity& target = getEntity(L, 2);
+	projectile::ProjectileComponent& projectileComponent = getComponent<projectile::ProjectileComponent>(L, entity);
+	projectileComponent.setTarget(&target);
+	return 0;
 }
 
 int l_Entity_setGamepadIndex(lua_State* L)

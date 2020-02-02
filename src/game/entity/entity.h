@@ -43,6 +43,7 @@ class Entity final : public map::MapObject
 		void setZ(float z);
 		inline const flat::Vector3& getPosition() const { return m_position; }
 		inline const flat::Vector2& getPosition2d() const { return reinterpret_cast<const flat::Vector2&>(m_position); }
+		flat::Vector3 getCenter() const;
 		
 		inline const map::Map* getMap() const { return m_map; }
 		inline map::Map* getMap() { return m_map; }

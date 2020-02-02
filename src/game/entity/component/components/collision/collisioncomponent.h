@@ -28,6 +28,8 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 		void getAABB(flat::AABB3& aabb) const;
 		float getBottom(float z) const;
 
+		flat::Vector3 getCenter() const;
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	public:

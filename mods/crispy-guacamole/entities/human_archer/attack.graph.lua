@@ -37,12 +37,6 @@ return {
       2,
     },
     {
-      1,
-      3,
-      18,
-      3,
-    },
-    {
       2,
       1,
       1,
@@ -115,18 +109,6 @@ return {
       3,
     },
     {
-      14,
-      2,
-      18,
-      1,
-    },
-    {
-      14,
-      3,
-      18,
-      2,
-    },
-    {
       15,
       1,
       14,
@@ -143,6 +125,12 @@ return {
       1,
       1,
       5,
+    },
+    {
+      18,
+      1,
+      14,
+      7,
     },
   },
   nodeType = 'script',
@@ -238,7 +226,10 @@ return {
       name = 'boolean',
     },
     {
-      name = 'entity/setinstigator',
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
   },
 }

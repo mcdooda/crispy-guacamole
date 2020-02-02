@@ -58,7 +58,7 @@ void BaseState::update(Game& game)
 
 void BaseState::clearScreen(Game& game)
 {
-	game.video->setClearColor(flat::video::Color::BLACK);
+	game.video->setClearColor(flat::video::Color(0.2f));
 	game.video->clear();
 }
 

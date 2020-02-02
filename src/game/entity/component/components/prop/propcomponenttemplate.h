@@ -1,15 +1,10 @@
 #ifndef GAME_ENTITY_COMPONENT_PROP_PROPCOMPONENTTEMPLATE_H
 #define GAME_ENTITY_COMPONENT_PROP_PROPCOMPONENTTEMPLATE_H
 
-#include "../../componenttemplate.h"
+#include "entity/component/componenttemplate.h"
+#include "map/navigability.h"
 
-namespace game
-{
-namespace entity
-{
-namespace component
-{
-namespace prop
+namespace game::entity::component::prop
 {
 
 class PropComponentTemplate : public ComponentTemplate
@@ -17,18 +12,16 @@ class PropComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
-		inline int getWidth() const { return m_width; }
-		inline int getHeight() const { return m_height; }
+		inline int getWidth() const { return m_size.x; }
+		inline int getHeight() const { return m_size.y; }
+		inline map::Navigability getNavigability() const { return m_navigability; }
 
 	private:
-		int m_width;
-		int m_height;
+		flat::Vector2i m_size;
+		map::Navigability m_navigability;
 };
 
-} // prop
-} // component
-} // entity
-} // game
+} // game::entity::component::prop
 
 #endif // GAME_ENTITY_COMPONENT_PROP_PROPCOMPONENTTEMPLATE_H
 

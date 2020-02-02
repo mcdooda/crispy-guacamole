@@ -24,6 +24,18 @@ return {
       3,
       2,
     },
+    {
+      6,
+      1,
+      1,
+      2,
+    },
+    {
+      7,
+      1,
+      6,
+      1,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -53,6 +65,15 @@ return {
         2,
       },
       name = 'number',
+    },
+    {
+      name = 'script/luavariable',
+    },
+    {
+      loadArguments = {
+        'Map.Navigability.NONE',
+      },
+      name = 'string',
     },
   },
 }

@@ -36,6 +36,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 	const PropComponentTemplate* propComponentTemplate = getTemplate();
 	const int width = propComponentTemplate->getWidth();
 	const int height = propComponentTemplate->getHeight();
+	const map::Navigability navigability = getTemplate()->getNavigability();
 
 	// occupy the tile unless it's a ghost entity
 	if (!m_owner->isGhost())
@@ -48,7 +49,7 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 				//FLAT_ASSERT(tileToOccupy != nullptr);
 				if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
 				{
-					map->setTileNavigability(tileToOccupyIndex, map::Navigability::NONE);
+					map->setTileNavigability(tileToOccupyIndex, navigability);
 				}
 			}
 		}

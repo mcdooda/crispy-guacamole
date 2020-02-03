@@ -11,6 +11,10 @@
 
 #include "mod/mod.h"
 
+#include "states/basemapstate.h"
+
+#include "game.h"
+
 namespace game
 {
 namespace map
@@ -53,7 +57,7 @@ void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
 		)
 	{
 		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplateName);
-		TileIndex tileIndex = createTile(tilePosition, tile.z, tile.tileTemplateVariantIndex, tileTemplate);
+		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
 		if (propTemplateName != nullptr)
 		{
 			const std::string texturePath = mod.getTexturePath("props/" + *propTemplateName);

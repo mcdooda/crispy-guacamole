@@ -9,6 +9,7 @@
 #include "map/tile.h"
 #include "map/prop.h"
 #include "map/fog/fog.h"
+#include "map/io/mapfile.h"
 
 #include "entity/entity.h"
 #include "entity/entityhelper.h"

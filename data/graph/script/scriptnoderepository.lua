@@ -15,6 +15,9 @@ return {
     -- faction
     'components/factioncomponent',
 
+    -- fog vision
+    'components/fogvisioncomponent',
+
     -- interaction
     'components/interactioncomponent',
 
@@ -82,6 +85,12 @@ return {
     'entity/getposition',
     'entity/setposition',
     'entity/getforward',
+
+    'entity/setinstigator',
+    'entity/getinstigator',
+
+    'entity/setextradatafield',
+    'entity/getextradatafield',
 
     'entity/isvalidentity',
     'entity/iscomponentenabled',

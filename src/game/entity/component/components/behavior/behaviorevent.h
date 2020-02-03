@@ -29,10 +29,18 @@ class EntityEnteredVisionRangeBehaviorEvent : public BehaviorEvent
 
 class EntityLeftVisionRangeBehaviorEvent : public BehaviorEvent
 {
-public:
-	inline static const char* getMethodName() { return "onEntityLeftVisionRange"; }
+	public:
+		inline static const char* getMethodName() { return "onEntityLeftVisionRange"; }
 
-	static int push(lua_State* L, Entity* entity);
+		static int push(lua_State* L, Entity* entity);
+};
+
+class DamageTakenBehaviorEvent : public BehaviorEvent
+{
+	public:
+		inline static const char* getMethodName() { return "onDamageTaken"; }
+
+		static int push(lua_State* L, int amount, Entity* instigator);
 };
 
 class PlayerMoveOrderEvent : public BehaviorEvent

@@ -3,8 +3,8 @@
 
 #include <flat.h>
 #include <set>
-#include "detectioncomponenttemplate.h"
-#include "../../component.h"
+#include "entity/component/component.h"
+#include "entity/component/components/detection/detectioncomponenttemplate.h"
 
 namespace game
 {
@@ -19,7 +19,9 @@ class DetectionComponent : public ComponentImpl<DetectionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "detection"; }
-		inline static int getUpdatePeriod() { return 20; } // TODO: detection component quadtree, update self/nearby when moving 
+		inline static const char* getVisualName() { return "Detection"; }
+		inline static bool enableInMapEditor() { return false; }
+		inline static int getUpdatePeriod() { return 20; } // TODO: update self/nearby when moving 
 
 		void init() override;
 		void deinit() override;

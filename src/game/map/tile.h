@@ -38,10 +38,11 @@ class Tile final : public MapObject
 {
 	public:
 		Tile();
-		Tile(const Tile&) = delete;
+		Tile(const Tile&) = default;
 		Tile(Tile&& tile);
 		~Tile() override;
 
+		Tile& operator=(const Tile& tile) = default;
 		Tile& operator=(Tile&& tile);
 
 		void synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer& spriteSynchronizer);

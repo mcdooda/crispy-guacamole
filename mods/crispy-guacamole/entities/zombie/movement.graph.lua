@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -31,10 +31,11 @@ script {
       1,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       loadArguments = {
-        2,
+        20,
       },
       name = 'number',
     },

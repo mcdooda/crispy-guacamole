@@ -22,20 +22,22 @@ class TileMapEditorMode;
 class ZoneMapEditorMode;
 }
 
-class MapEditorState : public BaseMapStateImpl<map::Map>, public flat::state::Agent
+class MapEditorState : public BaseMapState, public flat::state::Agent
 {
 	friend class editor::MapEditorMode;
 	friend class editor::EntityMapEditorMode;
 	friend class editor::PropMapEditorMode;
 	friend class editor::TileMapEditorMode;
 	friend class editor::ZoneMapEditorMode;
-	using Super = BaseMapStateImpl<map::Map>;
+	using Super = BaseMapState;
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
 
 		editor::MapEditorMode* getEditorMode();
 		void setEditorMode(std::unique_ptr<editor::MapEditorMode>&& editorMode);
+
+		void draw(game::Game& game) override;
 
 	protected:
 		entity::component::ComponentFlags getComponentsFilter() const override;

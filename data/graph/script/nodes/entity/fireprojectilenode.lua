@@ -12,8 +12,12 @@ function FireProjectileNode:buildPins()
     self.projectileNameInPin = self:addInputPin(flat.types.STRING, 'Projectile')
     self.attachPointPin = self:addInputPin(flat.types.STRING, 'Attach Point')
     self.delayInPin = self:addInputPin(flat.types.NUMBER, 'Delay')
+    self.followTargetInPin = self:addInputPin(flat.types.BOOLEAN, 'Follow Target')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
+    self.firedOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Fired')
+    self.projectileOutPin = self:addOutputPin(flat.types['CG.Entity'], 'Projectile')
+    self.failedOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Failed')
 end
 
 function FireProjectileNode:execute(runtime, inputPin)
@@ -23,16 +27,35 @@ function FireProjectileNode:execute(runtime, inputPin)
     local projectileName = runtime:readPin(self.projectileNameInPin)
     local attachPoint = runtime:readPin(self.attachPointPin)
     local delay = runtime:readPin(self.delayInPin)
-    local timer = game.Timer()
-    timer:onEnd(function()
+    local followTarget = runtime:readPin(self.followTargetInPin)
+
+    local function fireProjectile()
         if not entity:isValid() or not target:isValid() then
             return
         end
 
         local spawnProjectile = ProjectileHelper.createSpawnerFromEntity(projectileName)
-        spawnProjectile(entity, attachPoint, target)
-    end)
-    timer:start(delay)
+        local projectile = spawnProjectile(entity, attachPoint, target)
+
+        if projectile then
+            if followTarget then
+                projectile:setProjectileTarget(target)
+            end
+
+            runtime:writePin(self.projectileOutPin, projectile)
+            runtime:impulse(self.firedOutPin)
+        else
+            runtime:impulse(self.failedOutPin)
+        end
+    end
+
+    if delay > 0 then
+        local timer = game.Timer()
+        timer:onEnd(fireProjectile)
+        timer:start(delay)
+    else
+        fireProjectile()
+    end
 
     runtime:impulse(self.impulseOutPin)
 end

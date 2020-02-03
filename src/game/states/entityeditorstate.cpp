@@ -59,6 +59,7 @@ void EntityEditorState::spawnEntity(Game& game)
 		position,
 		0.f,
 		0.f,
+		nullptr,
 		entity::component::AllComponents,
 		m_componentRegistry.getEntityEditorComponentsFilter()
 	);

@@ -20,7 +20,7 @@ void BaseState::enter(Game& game)
 	initLua(game);
 	initRender(game);
 	resetViews(game);
-	game.input->clearFrameEvents();
+	game.input->clearAllEvents();
 	game.time->setPreferedFrameRate(60.f);
 }
 
@@ -58,7 +58,7 @@ void BaseState::update(Game& game)
 
 void BaseState::clearScreen(Game& game)
 {
-	game.video->setClearColor(flat::video::Color::BLACK);
+	game.video->setClearColor(flat::video::Color(0.2f));
 	game.video->clear();
 }
 

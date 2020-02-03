@@ -15,10 +15,14 @@ class Entity;
 }
 namespace map
 {
-class Map;
 class MapObject;
 class Tile;
 class Prop;
+
+namespace fog
+{
+class Fog;
+}
 
 class DisplayManager final
 {
@@ -28,6 +32,8 @@ class DisplayManager final
 
 	public:
 		DisplayManager();
+
+		void clear();
 		
 		void addEntity(const entity::Entity* entity);
 		void removeEntity(const entity::Entity* entity);
@@ -43,12 +49,14 @@ class DisplayManager final
 		void updateProp(PropIndex propIndex, const Prop* prop);
 		void movePropIndex(PropIndex fromIndex, PropIndex toIndex);
 
-		void sortAndDraw(Game& game, const Map& map, const flat::video::View& view);
+		void addTemporaryObject(const MapObject* mapObject);
 
-		const MapObject* getObjectAtPosition(const Map& map, const flat::Vector2& position) const;
+		void sortAndDraw(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
+
+		const MapObject* getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position) const;
 		void getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const;
 
-		TileIndex getTileIndexAtPosition(const Map& map, const flat::Vector2& position) const;
+		TileIndex getTileIndexAtPosition(const map::fog::Fog& fog, const flat::Vector2& position) const;
 
 #ifdef FLAT_DEBUG
 		const flat::AABB2& getEntityCellAABB(const entity::Entity* entity) const;
@@ -83,6 +91,8 @@ class DisplayManager final
 
 		std::unique_ptr<PropQuadTree> m_propQuadtree;
 		std::unordered_map<PropIndex, int> m_propCellIndices;
+
+		std::vector<const MapObject*> m_temporaryObjects;
 
 #ifdef FLAT_DEBUG
 		size_t m_numOpaqueObjects;

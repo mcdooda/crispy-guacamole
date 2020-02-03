@@ -21,6 +21,7 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "attack"; }
+		inline static const char* getVisualName() { return "Attack"; }
 
 		void init() override;
 		void deinit() override;

@@ -16,6 +16,7 @@
 
 #include "debug/debugdisplay.h"
 
+#include "map/map.h"
 #include "map/displaymanager.h"
 
 namespace game
@@ -49,7 +50,7 @@ class BaseMapState : public BaseState
 		bool loadMap(Game& game);
 		bool saveMap(Game& game) const;
 
-		virtual map::Map& getMap() = 0;
+		map::Map& getMap();
 		const map::Map& getMap() const;
 
 		flat::Vector2 getCursorMapPosition(game::Game& game, bool& isOnTile) const;
@@ -73,6 +74,7 @@ class BaseMapState : public BaseState
 			const flat::Vector3& position,
 			float heading = 0.f,
 			float elevation = 0.f,
+			entity::Entity* instigator = nullptr,
 			entity::component::ComponentFlags componentFlags = entity::component::AllComponents,
 			entity::component::ComponentFlags enabledComponentFlags = entity::component::AllComponents
 		);
@@ -103,7 +105,7 @@ class BaseMapState : public BaseState
 		void unlockCamera();
 		flat::Vector2 convertToCameraPosition(const flat::Vector3& position) const;
 
-		void addEntityToMap(entity::Entity* entity);
+		bool addEntityToMap(entity::Entity* entity);
 		void removeEntityFromMap(entity::Entity* entity);
 
 		inline const flat::video::View& getGameView() const { return m_gameView; }
@@ -127,7 +129,7 @@ class BaseMapState : public BaseState
 		
 	protected:
 		void update(game::Game& game) override;
-		void addGhostEntity(game::Game& game);
+		bool addGhostEntity(game::Game& game);
 		void removeGhostEntity(game::Game& game);
 		void setCameraCenter(const flat::Vector3& cameraCenter);
 		void updateGameView(game::Game& game);
@@ -173,9 +175,9 @@ class BaseMapState : public BaseState
 		
 	protected:
 		// resource loading
-		flat::resource::StrongResourceManager<entity::EntityTemplate, Game&, const entity::component::ComponentRegistry&, std::string, std::string> m_entityTemplateManager;
-		flat::resource::StrongResourceManager<map::TileTemplate, Game&, std::string> m_tileTemplateManager;
-		flat::resource::StrongResourceManager<map::PropTemplate, Game&, std::string> m_propTemplateManager;
+		flat::resource::StrongResourceManager<entity::EntityTemplate, std::string, Game&, const entity::component::ComponentRegistry&, std::string> m_entityTemplateManager;
+		flat::resource::StrongResourceManager<map::TileTemplate, std::string, Game&> m_tileTemplateManager;
+		flat::resource::StrongResourceManager<map::PropTemplate, std::string, Game&> m_propTemplateManager;
 		
 		// rendering settings
 		flat::render::ProgramSettings m_entityRender;
@@ -183,6 +185,8 @@ class BaseMapState : public BaseState
 		
 		// level
 		mod::Mod m_mod;
+
+		map::Map m_map;
 
 		std::map<std::string, entity::faction::Faction> m_factions;
 
@@ -224,16 +228,6 @@ class BaseMapState : public BaseState
 		bool m_gamePaused : 1;
 		bool m_pauseNextFrame : 1;
 #endif
-};
-
-template <class MapType>
-class BaseMapStateImpl : public BaseMapState
-{
-	public:
-		map::Map& getMap() override { return m_map; }
-
-	protected:
-		MapType m_map;
 };
 
 template <class Func>

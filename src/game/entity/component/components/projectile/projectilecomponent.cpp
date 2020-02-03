@@ -5,14 +5,9 @@
 #include "../../../entity.h"
 #include "../../../lua/entity.h"
 #include "../../../../map/map.h"
+#include "../collision/collisionbox.h"
 
-namespace game
-{
-namespace entity
-{
-namespace component
-{
-namespace projectile
+namespace game::entity::component::projectile
 {
 
 void ProjectileComponent::init()
@@ -20,10 +15,7 @@ void ProjectileComponent::init()
 	m_owner->addedToMap.on(this, &ProjectileComponent::addedToMap);
 	m_owner->removedFromMap.on(this, &ProjectileComponent::removedFromMap);
 	m_owner->headingChanged.on(this, &ProjectileComponent::headingChanged);
-	if (getTemplate()->getWeight() != 0.f)
-	{
-		m_owner->elevationChanged.on(this, &ProjectileComponent::elevationChanged);
-	}
+	m_owner->elevationChanged.on(this, &ProjectileComponent::elevationChanged);
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
@@ -56,26 +48,42 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
 
+	const float speed = flat::length(m_speed);
+
+	flat::Vector3 newSpeed = m_speed;
+
+	// compute speed depending on weight
 	const float weight = getTemplate()->getWeight();
 	const flat::Vector3& position = m_owner->getPosition();
 	flat::Vector3 newPosition;
 	if (weight == 0.f)
 	{
-		const float speed = flat::length(m_speed);
-		const float heading = m_owner->getHeading();
-		const float elevation = m_owner->getElevation();
-
-		flat::Vector3 forward = m_owner->getForward();
-
-		m_speed = forward * speed;
-		newPosition = position + m_speed * elapsedTime;
+		const flat::Vector3 forward = m_owner->getForward();
+		newSpeed = forward * speed;
 	}
 	else
 	{
-		const flat::Vector3 oldSpeed = m_speed;
-		m_speed.z -= weight * elapsedTime;
-		newPosition = position + (oldSpeed + m_speed) * 0.5f * elapsedTime;
+		newSpeed.z -= weight * elapsedTime;
 	}
+
+	// compute speed to follow the target
+	Entity* target = m_target.getEntity();
+	if (target != nullptr)
+	{
+		const flat::Vector3 direction = flat::normalize(target->getCenter() - m_owner->getPosition());
+		const flat::Vector2 direction2d = flat::normalize(flat::Vector2(direction));
+
+		const float newSpeedXY = std::sqrt(flat::square(newSpeed.x) + flat::square(newSpeed.y));
+		newSpeed.x = direction2d.x * newSpeedXY;
+		newSpeed.y = direction2d.y * newSpeedXY;
+
+		if (flat::dot(direction, flat::normalize(m_speed)) > flat::dot(direction, flat::normalize(newSpeed)))
+		{
+			newSpeed = direction * getTemplate()->getSpeed();
+		}
+	}
+
+	newPosition = position + (m_speed + newSpeed) * 0.5f * elapsedTime;
 
 	const map::TileIndex tileIndex = map->getTileIndex(newPosition.x, newPosition.y);
 	if (tileIndex == map::TileIndex::INVALID_TILE)
@@ -85,23 +93,25 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	else
 	{
 		m_owner->setPosition(newPosition);
-		if (weight != 0.f)
-		{
-			const float speedXY = getSpeedXY();
-			const float elevation = std::atan2(m_speed.z, speedXY);
-			m_owner->setElevation(elevation);
-		}
+		setSpeed(newSpeed);
+		checkTargetCollision();
 	}
 }
 
 void ProjectileComponent::setSpeed(const flat::Vector3& speed)
 {
-	m_speed = speed;
-	const float heading = std::atan2(speed.y, speed.x);
-	m_owner->setHeading(heading);
-	const float speedXY = getSpeedXY();
-	const float elevation = std::atan2(speed.z, speedXY);
-	m_owner->setElevation(elevation);
+	if (speed != m_speed)
+	{
+		m_speed = speed;
+		const float heading = std::atan2(speed.y, speed.x);
+		m_owner->setHeading(heading);
+		FLAT_ASSERT(flat::distance(m_speed, speed) < 0.1f);
+
+		const float speedXY = getSpeedXY();
+		const float elevation = std::atan2(speed.z, speedXY);
+		m_owner->setElevation(elevation);
+		FLAT_ASSERT(flat::distance(m_speed, speed) < 0.1f);
+	}
 }
 
 bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map)
@@ -157,10 +167,6 @@ bool ProjectileComponent::removedFromMap(Entity* entity)
 
 bool ProjectileComponent::headingChanged(float heading)
 {
-	const float speedXY = getSpeedXY();
-	m_speed.x = std::cos(heading) * speedXY;
-	m_speed.y = std::sin(heading) * speedXY;
-
 	if (m_owner->hasSprite() && getTemplate()->getRotateSprite())
 	{
 		updateSpriteRotation();
@@ -171,20 +177,39 @@ bool ProjectileComponent::headingChanged(float heading)
 
 bool ProjectileComponent::elevationChanged(float elevation)
 {
-	FLAT_ASSERT(getTemplate()->getWeight() != 0.f);
-	const float speed = getTemplate()->getSpeed();
-	const float horizontalSpeed = speed * std::cos(elevation);
-	const float heading = m_owner->getHeading();
-	m_speed.x = std::cos(heading) * horizontalSpeed;
-	m_speed.y = std::sin(heading) * horizontalSpeed;
-	m_speed.z = std::sin(elevation) * speed;
-
 	if (m_owner->hasSprite() && getTemplate()->getRotateSprite())
 	{
 		updateSpriteRotation();
 	}
 
 	return true;
+}
+
+void ProjectileComponent::checkTargetCollision()
+{
+	Entity* target = m_target.getEntity();
+	if (target == nullptr)
+	{
+		return;
+	}
+
+	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
+	if (collisionComponent == nullptr || collisionComponent->getTemplate()->shouldSeparateFromOtherEntities())
+	{
+		return;
+	}
+
+	collision::CollisionComponent* targetCollisionComponent = target->getComponent<collision::CollisionComponent>();
+	if (collisionComponent == nullptr)
+	{
+		return;
+	}
+
+	flat::Vector3 penetration;
+	if (collision::CollisionBox::collides(m_owner->getPosition(), target->getPosition(), collisionComponent->getTemplate()->getCollisionBox(), targetCollisionComponent->getTemplate()->getCollisionBox(), penetration))
+	{
+		collidedWithEntity(target, flat::normalize(penetration));
+	}
 }
 
 bool ProjectileComponent::collided(Entity* collidedEntity, map::TileIndex collidedTileIndex, const flat::Vector3& normal)
@@ -218,7 +243,7 @@ bool ProjectileComponent::collidedWithMap(map::TileIndex tileIndex, const flat::
 
 float ProjectileComponent::getSpeedXY() const
 {
-	return std::sqrt(m_speed.x * m_speed.x + m_speed.y * m_speed.y);
+	return std::sqrt(flat::square(m_speed.x) + flat::square(m_speed.y));
 }
 
 bool ProjectileComponent::updateSpritePosition(const flat::Vector3& position)
@@ -263,10 +288,4 @@ void ProjectileComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 }
 #endif
 
-} // projectile
-} // component
-} // entity
-} // game
-
-
-
+} // game::entity::component::projectile

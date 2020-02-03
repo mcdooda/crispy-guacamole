@@ -18,6 +18,7 @@ class UiComponent : public ComponentImpl<UiComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "ui"; }
+		inline static const char* getVisualName() { return "UI"; }
 		inline static bool enableInMapEditor() { return false; }
 
 		void init() override;

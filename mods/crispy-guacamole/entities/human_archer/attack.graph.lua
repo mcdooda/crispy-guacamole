@@ -126,6 +126,12 @@ return {
       1,
       5,
     },
+    {
+      18,
+      1,
+      14,
+      7,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -212,6 +218,12 @@ return {
         0.30000001192093,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
     {
       loadArguments = {

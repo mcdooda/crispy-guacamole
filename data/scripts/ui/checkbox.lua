@@ -38,7 +38,7 @@ function Checkbox:new(value, text, state)
 
 
     local label = Widget.makeText(text, table.unpack(UiSettings.defaultFont))
-    label:setMargin(0, 5, 1, 5)
+    label:setMargin(3)
 
     container:addChild(label)
 

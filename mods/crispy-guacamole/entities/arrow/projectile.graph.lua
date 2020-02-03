@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -9,31 +9,31 @@ script {
     {
       1,
       2,
-      5,
+      15,
       1,
     },
     {
       1,
       3,
-      10,
-      1,
-    },
-    {
-      1,
-      3,
-      11,
+      8,
       2,
     },
     {
       1,
-      3,
+      4,
       9,
       1,
     },
     {
       1,
       4,
-      8,
+      10,
+      2,
+    },
+    {
+      1,
+      4,
+      14,
       1,
     },
     {
@@ -49,48 +49,55 @@ script {
       2,
     },
     {
-      5,
-      2,
       6,
       1,
-    },
-    {
-      6,
       1,
-      11,
-      1,
-    },
-    {
-      7,
-      1,
-      6,
-      2,
-    },
-    {
-      8,
-      1,
-      5,
-      2,
+      3,
     },
     {
       9,
       1,
-      6,
-      3,
+      13,
+      2,
     },
     {
-      10,
+      11,
       1,
-      6,
-      4,
+      10,
+      3,
     },
     {
       12,
       1,
+      10,
+      4,
+    },
+    {
+      13,
       1,
-      3,
+      10,
+      1,
+    },
+    {
+      14,
+      1,
+      10,
+      5,
+    },
+    {
+      15,
+      1,
+      8,
+      1,
+    },
+    {
+      15,
+      2,
+      13,
+      1,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/projectilecomponent',
@@ -117,10 +124,16 @@ script {
       name = 'script/scriptoutput',
     },
     {
-      name = 'script/condition',
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
     {
-      name = 'entity/spawnentity',
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
     {
       loadArguments = {
@@ -129,22 +142,37 @@ script {
       name = 'string',
     },
     {
-      name = 'entity/isvalidentity',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'entity/getheading',
-    },
-    {
       name = 'entity/despawnentity',
     },
     {
+      name = 'entity/isvalidentity',
+    },
+    {
+      name = 'entity/dealdamage',
+    },
+    {
       loadArguments = {
-        true,
+        1,
       },
-      name = 'boolean',
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'entity/getinstigator',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'script/impulseall',
     },
   },
 }

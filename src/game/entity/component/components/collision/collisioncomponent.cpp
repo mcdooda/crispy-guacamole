@@ -36,6 +36,13 @@ float CollisionComponent::getBottom(float z) const
 	return collisionBox.getBottom(z);
 }
 
+flat::Vector3 CollisionComponent::getCenter() const
+{
+	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
+	const CollisionBox& collisionBox = collisionComponentTemplate->getCollisionBox();
+	return collisionBox.getCenter(m_owner->getPosition());
+}
+
 void CollisionComponent::separateFromNearbyEntities()
 {
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();

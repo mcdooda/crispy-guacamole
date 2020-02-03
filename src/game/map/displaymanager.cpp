@@ -1,12 +1,14 @@
 #include <execution>
 
-#include "displaymanager.h"
-#include "mapobject.h"
-#include "map.h"
-#include "tile.h"
-#include "prop.h"
-#include "../entity/entity.h"
-#include "../game.h"
+#include "map/displaymanager.h"
+#include "map/mapobject.h"
+#include "map/tile.h"
+#include "map/prop.h"
+#include "map/fog/fog.h"
+
+#include "entity/entity.h"
+
+#include "game.h"
 
 #define DEBUG_DRAW 0
 
@@ -29,6 +31,18 @@ DisplayManager::DisplayManager()
 	m_entityQuadtree = std::make_unique<EntityQuadTree>(quadtreeAABB);
 	m_tileQuadtree = std::make_unique<TileQuadTree>(quadtreeAABB);
 	m_propQuadtree = std::make_unique<PropQuadTree>(quadtreeAABB);
+}
+
+void DisplayManager::clear()
+{
+	//m_entityQuadtree->clear();
+	//m_entityCellIndices.clear();
+
+	m_tileQuadtree->clear();
+	m_tileCellIndices.clear();
+
+	m_propQuadtree->clear();
+	m_propCellIndices.clear();
 }
 
 void DisplayManager::addEntity(const entity::Entity* entity)
@@ -128,46 +142,65 @@ void DisplayManager::movePropIndex(PropIndex fromIndex, PropIndex toIndex)
 	m_propCellIndices.erase(fromIndex);
 }
 
-void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::View& view)
+void DisplayManager::addTemporaryObject(const MapObject* mapObject)
+{
+	m_temporaryObjects.push_back(mapObject);
+}
+
+void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
 
-	std::vector<const MapObject*> objects;
-	objects.reserve(1024);
+	// entities
+	std::vector<const entity::Entity*> entities;
+	entities.reserve(1024);
 	{
 		FLAT_PROFILE("Display Manager Get Entities");
-		m_entityQuadtree->getObjects(screenAABB, objects);
+		m_entityQuadtree->getObjects(screenAABB, entities);
 	}
-#ifdef DEBUG_DRAW
-	int numEntities = static_cast<int>(objects.size());
-#endif
+	int numEntities = static_cast<int>(entities.size());
+	for (int i = 0, e = numEntities; i < e; ++i)
+	{
+		const entity::Entity* entity = entities[i];
+		const TileIndex tileIndex = entity->getTileIndexFromPosition();
+		if (!fog.isTileDiscovered(tileIndex))
+		{
+			entities[i] = nullptr;
+			--numEntities;
+		}
+	}
 
+	// tiles
 	std::vector<TileIndex> tileIndices;
 	tileIndices.reserve(1024);
 	{
 		FLAT_PROFILE("Display Manager Get Tiles");
 		m_tileQuadtree->getObjects(screenAABB, tileIndices);
 	}
-#ifdef DEBUG_DRAW
-	int numTiles = static_cast<int>(tileIndices.size());
-#endif
 	std::vector<const Tile*> tiles;
-	map.getTilesFromIndices(tileIndices, tiles);
+	fog.getTilesFromIndices(tileIndices, tiles);
 
+	// props
 	std::vector<PropIndex> propIndices;
 	propIndices.reserve(1024);
 	{
 		FLAT_PROFILE("Display Manager Get Props");
 		m_propQuadtree->getObjects(screenAABB, propIndices);
 	}
-#ifdef DEBUG_DRAW
-	int numProps = static_cast<int>(propIndices.size());
-#endif
 	std::vector<const Prop*> props;
-	map.getPropsFromIndices(propIndices, props);
+	fog.getPropsFromIndices(propIndices, props);
 
-	objects.reserve(objects.size() + tiles.size() + props.size());
+	// put everything into a single vector
+	std::vector<const MapObject*> objects;
+	objects.reserve(numEntities + tiles.size() + props.size() + m_temporaryObjects.size());
+	for (const entity::Entity* entity : entities)
+	{
+		if (entity != nullptr)
+		{
+			objects.push_back(entity);
+		}
+	}
 	for (const Tile* tile : tiles)
 	{
 		objects.push_back(tile);
@@ -176,6 +209,8 @@ void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::
 	{
 		objects.push_back(prop);
 	}
+	objects.insert(objects.end(), m_temporaryObjects.begin(), m_temporaryObjects.end());
+	m_temporaryObjects.clear();
 
 	{
 		FLAT_PROFILE("Display Manager Sort Objects");
@@ -250,7 +285,7 @@ void DisplayManager::sortAndDraw(Game& game, const Map& map, const flat::video::
 	glDisable(GL_DEPTH_TEST);
 }
 
-const MapObject* DisplayManager::getObjectAtPosition(const Map& map, const flat::Vector2& position) const
+const MapObject* DisplayManager::getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position) const
 {
 	std::vector<const MapObject*> objects;
 	objects.reserve(16);
@@ -260,13 +295,13 @@ const MapObject* DisplayManager::getObjectAtPosition(const Map& map, const flat:
 	tileIndices.reserve(8);
 	m_tileQuadtree->getObjects(position, tileIndices);
 	std::vector<const Tile*> tiles;
-	map.getTilesFromIndices(tileIndices, tiles);
+	fog.getTilesFromIndices(tileIndices, tiles);
 
 	std::vector<PropIndex> propIndices;
 	propIndices.reserve(8);
 	m_propQuadtree->getObjects(position, propIndices);
 	std::vector<const Prop*> props;
-	map.getPropsFromIndices(propIndices, props);
+	fog.getPropsFromIndices(propIndices, props);
 
 	objects.reserve(objects.size() + tiles.size() + props.size());
 	objects.insert(objects.end(), tiles.begin(), tiles.end());
@@ -296,7 +331,7 @@ void DisplayManager::getEntitiesInAABB(const flat::AABB2& aabb, std::vector<cons
 	m_entityQuadtree->getObjects(aabb, entities);
 }
 
-TileIndex DisplayManager::getTileIndexAtPosition(const Map& map, const flat::Vector2& position) const
+TileIndex DisplayManager::getTileIndexAtPosition(const map::fog::Fog& fog, const flat::Vector2& position) const
 {
 	std::vector<const Tile*> tiles;
 	{
@@ -304,7 +339,7 @@ TileIndex DisplayManager::getTileIndexAtPosition(const Map& map, const flat::Vec
 		tileIndices.reserve(8);
 		m_tileQuadtree->getObjects(position, tileIndices);
 
-		map.getTilesFromIndices(tileIndices, tiles);
+		fog.getTilesFromIndices(tileIndices, tiles);
 		sortTiles(tiles);
 	}
 
@@ -319,7 +354,7 @@ TileIndex DisplayManager::getTileIndexAtPosition(const Map& map, const flat::Vec
 		sprite.getPixel(position, color);
 		if (color.a > 0.5f)
 		{
-			return map.getTileIndex(tile);
+			return fog.getTileIndex(tile);
 		}
 	}
 

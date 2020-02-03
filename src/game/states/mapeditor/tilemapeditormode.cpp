@@ -1,11 +1,9 @@
 #include <unordered_set>
-#include "tilemapeditormode.h"
-#include "../mapeditorstate.h"
-#include "../../game.h"
-#include "../../map/tile.h"
-#include "../../map/prop.h"
-#include "../../map/tiletemplate.h"
-#include "../../map/brush/spherebrush.h"
+#include "states/mapeditor/tilemapeditormode.h"
+#include "states/mapeditorstate.h"
+#include "map/tiletemplate.h"
+#include "map/brush/spherebrush.h"
+#include "game.h"
 
 namespace game
 {
@@ -43,6 +41,8 @@ void TileMapEditorMode::updateBrushTiles(MapEditorState& mapEditorState)
 		radius = std::max(std::min(radius, 30.f), 1.f);
 		brush->setRadius(radius);
 	}
+
+	FLAT_CHECK_FLOAT(m_brushPosition);
 
 	m_brushTiles.clear();
 	brush->getTiles(mapEditorState.getMap(), m_brushPosition, m_brushTiles);
@@ -91,8 +91,7 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 		float random = m_game.random->nextFloat(0.f, 1.f);
 		if (random <= effect)
 		{
-			flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, 0);
-			map.synchronizeTileSpriteTo(tileIndex, spriteSynchronizer);
+			map.replaceTile(tileIndex, m_tileTemplate, 0);
 
 			tilesToUpdate.insert(tileIndex);
 
@@ -104,8 +103,8 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 				if (adjacentTileIndex != map::TileIndex::INVALID_TILE)
 				{
 					std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(adjacentTileIndex);
-					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
-					if (getSelectTile)
+					const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectTile = tileTemplate->getSelectTile();
+					if (selectTile)
 					{
 						tilesToUpdate.insert(adjacentTileIndex);
 					}
@@ -126,10 +125,10 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 	{
 		int tileVariantIndex = -1;
 		std::shared_ptr<const map::TileTemplate> tileTemplate = map.getTileTemplate(tileIndex);
-		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectTile = tileTemplate->getSelectTile();
-		if (getSelectTile)
+		const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectTile = tileTemplate->getSelectTile();
+		if (selectTile)
 		{
-			getSelectTile.callFunction(
+			selectTile.callFunction(
 				[&map, tileIndex](lua_State* L)
 				{
 					auto pushTileTemplateName = [&map, tileIndex, L](int dx, int dy)
@@ -177,7 +176,7 @@ void TileMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState, 
 		}
 		FLAT_ASSERT(tileVariantIndex >= 0);
 		flat::render::SpriteSynchronizer& spriteSynchronizer = map.getTileSpriteSynchronizer(tileTemplate, tileVariantIndex);
-		map.synchronizeTileSpriteTo(tileIndex, spriteSynchronizer);
+		map.replaceTile(tileIndex, tileTemplate, tileVariantIndex);
 	}
 }
 
@@ -301,11 +300,36 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 			const map::TileIndex tileIndex = map.getTileIndex(position);
 			if (tileIndex == map::TileIndex::INVALID_TILE)
 			{
-				map::TileIndex tileIndex = map.createTile(position, 0.f, 0, m_tileTemplate);
-				map.setTileDirty(tileIndex);
+				map::TileIndex tileIndex = map.createTile(position, 0.f, m_tileTemplate, 0);
 			}
 		});
 	}
+}
+
+void TileMapEditorMode::preDraw(Game& game)
+{
+	map::Map& map = game.getStateMachine().getState()->as<MapEditorState>().getMap();
+	m_temporaryTiles.reserve(m_brushTileSlots.size());
+	flat::render::SpriteSynchronizer& synchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, 0);
+	for (const map::brush::TileSlotEffect& tileSlotEffect : m_brushTileSlots)
+	{
+		if (!map::isValidTile(map.getTileIndex(tileSlotEffect.position)))
+		{
+			map::Tile& tile = m_temporaryTiles.emplace_back();
+			const flat::Vector3 position(tileSlotEffect.position.x, tileSlotEffect.position.y, 0.f);
+			const flat::Vector2 position2d(map.getTransform() * position);
+			tile.synchronizeSpriteTo(map, synchronizer);
+			tile.setSpritePosition(position2d);
+			tile.updateWorldSpaceAABB(position);
+			tile.getSprite().setColor(flat::video::Color(1.f, 1.f, 1.f, tileSlotEffect.effect));
+			map.getDisplayManager().addTemporaryObject(&tile);
+		}
+	}
+}
+
+void TileMapEditorMode::postDraw(Game& game)
+{
+	m_temporaryTiles.clear();
 }
 
 } // editor

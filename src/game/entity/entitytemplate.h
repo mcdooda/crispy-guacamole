@@ -19,7 +19,7 @@ class ComponentTemplate;
 class EntityTemplate final
 {
 	public:
-		EntityTemplate(Game& game, const component::ComponentRegistry& componentRegistry, const std::string& path, const std::string& name);
+		EntityTemplate(const std::string& name, Game& game, const component::ComponentRegistry& componentRegistry, const std::string& path);
 		~EntityTemplate();
 
 		inline component::ComponentFlags getComponentFlags() const { return m_componentFlags; }

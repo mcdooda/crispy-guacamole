@@ -17,6 +17,7 @@ class PlayerControllerComponent : public ComponentImpl<PlayerControllerComponent
 {
 	public:
 		inline static const char* getConfigName() { return "playercontroller"; }
+		inline static const char* getVisualName() { return "Player Controller"; }
 		inline static bool enableInMapEditor() { return false; }
 		inline static int getUpdatePeriod() { return 1; }
 

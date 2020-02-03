@@ -6,10 +6,11 @@
 
 #include <flat.h>
 
-#include "tile.h"
-#include "../entity/entity.h"
-#include "../debug/debugdisplay.h"
-#include "../entity/entityhelper.h"
+#include "map/tile.h"
+#include "map/io/mapfile.h"
+#include "entity/entity.h"
+#include "entity/entityhelper.h"
+#include "debug/debugdisplay.h"
 
 namespace game
 {
@@ -80,6 +81,9 @@ class Map
 	public:
 		Map();
 		~Map();
+
+		void setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile);
+		void getState(io::MapFile& mapFile) const;
 
 		void update(float currentTime);
 

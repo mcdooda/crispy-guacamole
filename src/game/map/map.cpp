@@ -7,7 +7,9 @@
 #include "io/reader.h"
 #include "io/writer.h"
 #include "displaymanager.h"
-#include "../mod/mod.h"
+#include "mod/mod.h"
+#include "states/basemapstate.h"
+#include "game.h"
 
 namespace game
 {
@@ -30,6 +32,40 @@ Map::Map() :
 Map::~Map()
 {
 	
+}
+
+void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
+{
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+
+	setAxes(mapFile.getXAxis(), mapFile.getYAxis(), mapFile.getZAxis());
+	setBounds(mapFile.getMinX(), mapFile.getMaxX(), mapFile.getMinY(), mapFile.getMaxY());
+
+	m_tiles.reserve(mapFile.getTilesCount());
+	mapFile.eachTile(
+		[this, &game, &mod, &baseMapState]
+		(
+			const flat::Vector2i& tilePosition,
+			const io::MapFile::Tile& tile,
+			const std::string& tileTemplateName,
+			const std::string* propTemplateName
+		)
+	{
+		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplateName);
+		TileIndex tileIndex = createTile(tilePosition, tile.z, tile.tileTemplateVariantIndex, tileTemplate);
+		if (propTemplateName != nullptr)
+		{
+			const std::string texturePath = mod.getTexturePath("props/" + *propTemplateName);
+			const std::shared_ptr<const flat::video::FileTexture>& texture = game.video->getTexture(texturePath);
+			setTilePropTexture(tileIndex, texture);
+		}
+	});
+	updateAllTiles();
+}
+
+void Map::getState(io::MapFile& mapFile) const
+{
+
 }
 
 void Map::update(float currentTime)

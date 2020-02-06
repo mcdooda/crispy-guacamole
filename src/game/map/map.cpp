@@ -46,6 +46,7 @@ void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
 	setAxes(mapFile.getXAxis(), mapFile.getYAxis(), mapFile.getZAxis());
 	setBounds(mapFile.getMinX(), mapFile.getMaxX(), mapFile.getMinY(), mapFile.getMaxY());
 
+	// tiles
 	m_tiles.reserve(mapFile.getTilesCount());
 	mapFile.eachTile(
 		[this, &game, &mod, &baseMapState]
@@ -66,6 +67,46 @@ void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
 		}
 	});
 	updateAllTiles();
+
+	// entities
+	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;
+	entityTemplates.reserve(mapFile.getEntityTemplates().size());
+	for (const std::string& entityTemplateName : mapFile.getEntityTemplates())
+	{
+		const std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
+		entityTemplates.push_back(entityTemplate);
+	}
+
+	for (const io::MapFile::Entity& entity : mapFile.getEntities())
+	{
+		const std::shared_ptr<const entity::EntityTemplate> entityTemplate = entityTemplates[entity.entityTemplateIndex];
+		if (entityTemplate->getComponentFlags() != 0)
+		{
+			const TileIndex tileIndex = getTileIndex(entity.position.x, entity.position.y);
+			FLAT_ASSERT(isValidTile(tileIndex));
+			const flat::Vector3 position(entity.position.x, entity.position.y, getTileZ(tileIndex));
+			baseMapState.spawnEntityAtPosition(game, entityTemplate, position);
+		}
+		else
+		{
+			std::cerr << "Entity '" << entityTemplate->getName() << "' does not exist anymore" << std::endl;
+		}
+	}
+
+	// zones
+	for (const io::MapFile::Zone& fileZone : mapFile.getZones())
+	{
+		std::shared_ptr<Zone> zone = addZone(fileZone.name);
+		for (const io::MapFile::Zone::Rectangle& fileRectangle : fileZone.rectangles)
+		{
+			Zone::Rectangle rectangle;
+			rectangle.minX = fileRectangle.minX;
+			rectangle.minY = fileRectangle.minY;
+			rectangle.maxX = fileRectangle.maxX;
+			rectangle.maxY = fileRectangle.maxY;
+			zone->addRectangle(rectangle);
+		}
+	}
 }
 
 void Map::getState(io::MapFile& mapFile) const

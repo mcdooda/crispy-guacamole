@@ -75,6 +75,11 @@ public:
 	template <class Func>
 	inline void eachTile(Func func) const;
 
+	const std::vector<std::string>& getEntityTemplates() const { return m_entityTemplates; }
+	const std::vector<Entity>& getEntities() const { return m_entities; }
+
+	const std::vector<Zone>& getZones() const { return m_zones; }
+
 private:
 	void processTiles(flat::file::serialize::Processor& processor);
 	Tile* getTileIfExists(const flat::Vector2i& tilePosition);

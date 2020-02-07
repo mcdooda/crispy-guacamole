@@ -9,6 +9,7 @@
 #include "map/tile.h"
 #include "map/prop.h"
 #include "map/fog/fog.h"
+#include "map/io/mapfile.h"
 
 #include "entity/entity.h"
 #include "entity/entityhelper.h"
@@ -84,6 +85,9 @@ class Map
 	public:
 		Map();
 		~Map();
+
+		void setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile);
+		void getState(io::MapFile& mapFile) const;
 
 		void update(float currentTime);
 

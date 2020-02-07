@@ -134,6 +134,8 @@ class BaseMapState : public BaseState
 		void setCameraCenter(const flat::Vector3& cameraCenter);
 		void updateGameView(game::Game& game);
 		void updateCameraView();
+
+		void initLua(Game& game) override;
 		
 		void draw(game::Game& game) override;
 		

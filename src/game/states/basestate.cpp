@@ -8,6 +8,10 @@
 #include "mod/lua/mod.h"
 
 #include "map/pathfinder/pathfinder.h"
+#include "map/lua/zone.h"
+#include "map/brush/lua/brush.h"
+
+#include "entity/lua/entity.h"
 
 namespace game
 {
@@ -85,6 +89,10 @@ void BaseState::initLua(Game& game)
 		states::lua::mapeditor::open(L);
 		states::lua::entityeditor::open(L);
 		mod::lua::open(L);
+
+		entity::lua::open(game);
+		map::lua::zone::open(game);
+		map::brush::lua::open(game);
 	}
 	game.ui->reset();
 	game.notify->reset();

@@ -7,9 +7,7 @@
 #include "map/map.h"
 #include "map/tile.h"
 #include "map/tiletemplate.h"
-#include "map/brush/lua/brush.h"
 #include "map/lua/map.h"
-#include "map/lua/zone.h"
 #include "map/pathfinder/pathfinder.h"
 #include "map/proptemplate.h"
 #include "map/fog/nofog.h"
@@ -23,7 +21,6 @@
 #include "entity/component/components/selection/selectioncomponent.h"
 #include "entity/component/lua/componentregistry.h"
 #include "entity/faction/lua/faction.h"
-#include "entity/lua/entity.h"
 
 namespace game
 {
@@ -55,23 +52,6 @@ void BaseMapState::enter(Game& game)
 	m_gamePaused = false;
 	m_pauseNextFrame = false;
 #endif
-	
-	// init lua then
-	initLua(game);
-	lua_State* L = game.lua->state;
-	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-		entity::lua::open(game);
-		entity::component::lua::open(L, m_componentRegistry);
-		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
-		map::lua::map::open(L);
-		map::lua::zone::open(game);
-		map::brush::lua::open(game);
-		editor::lua::open(L);
-
-		flat::lua::doFile(L, "data/common/init.lua");
-	}
 	
 	// ui
 	buildUi(game);
@@ -689,6 +669,23 @@ void BaseMapState::updateCameraView()
 	m_gameView.flipY();
 	m_gameView.zoom(m_cameraZoom);
 	m_gameView.move(m_cameraCenter2d);
+}
+
+void BaseMapState::initLua(Game& game)
+{
+	Super::initLua(game);
+
+	lua_State* L = game.lua->state;
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		entity::component::lua::open(L, m_componentRegistry);
+		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
+		map::lua::map::open(L);
+		editor::lua::open(L);
+
+		flat::lua::doFile(L, "data/common/init.lua");
+	}
 }
 
 void BaseMapState::draw(game::Game& game)

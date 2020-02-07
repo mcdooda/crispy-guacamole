@@ -1,6 +1,6 @@
 local ScriptNode = flat.require 'graph/script/scriptnode'
 local PinTypes = flat.require 'graph/pintypes'
-local Wave = require 'mods/crispy-guacamole/scripts/wave'
+local Wave = require 'data/game/scripts/wave'
 
 local MakeLinearWaveNode = ScriptNode:inherit 'Make Linear Wave'
 

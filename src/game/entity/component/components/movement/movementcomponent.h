@@ -7,20 +7,16 @@
 
 #include "entity/component/component.h"
 
-namespace game
-{
-namespace map
+#include "map/pathfinder/path.h"
+
+namespace game::map
 {
 class Map;
 class Tile;
 class Zone;
 }
-namespace entity
-{
-namespace component
-{
 
-namespace movement
+namespace game::entity::component::movement
 {
 
 class MovementComponent : public ComponentImpl<MovementComponentTemplate>
@@ -39,12 +35,12 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
-		
+
 		bool isBusy() const override;
 		void cancelCurrentAction() override;
-		
+
 		void moveTo(const flat::Vector2& destination, Entity* interactionEntity = nullptr);
-		
+
 		void jump();
 
 		inline bool isTouchingGround() const { return m_isTouchingGround; }
@@ -64,7 +60,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 	public:
 		flat::Slot<> movementStarted;
 		flat::Slot<> movementStopped;
-		
+
 	private:
 		bool isMovingAlongPath() const;
 		flat::Vector2 getCurrentMovementDirection() const;
@@ -94,10 +90,10 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void debugDrawAvoidanceArea(debug::DebugDisplay& debugDisplay) const;
 		void debugDrawEntity(debug::DebugDisplay& debugDisplay) const;
 #endif
-		
+
 	private:
 		// the path is a deque because the first point is removed once it's reached
-		std::vector<flat::Vector2> m_currentPath;
+		map::pathfinder::Path m_currentPath;
 		int m_nextPathPointIndex;
 
 		// an entity pathfinding can be restricted to avoid getting outside of a given region (or zone)
@@ -121,10 +117,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 #endif
 };
 
-} // movement
-} // component
-} // entity
-} // game
+} // game::entity::component::movement
 
 #endif // GAME_ENTITY_COMPONENT_MOVEMENT_MOVEMENTCOMPONENT_H
 

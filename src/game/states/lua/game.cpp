@@ -169,15 +169,15 @@ int l_game_openMap(lua_State* L)
 int l_game_setGhostEntity(lua_State* L)
 {
 	const char* ghostTemplateName = luaL_checkstring(L, 1);
-	flat::lua::UniqueLuaReference<LUA_TFUNCTION> canPlaceGhostEntity;
-	canPlaceGhostEntity.setIfNotNil(L, 2);
+	flat::lua::UniqueLuaReference<LUA_TFUNCTION> ghostEntitiesPositions;
+	ghostEntitiesPositions.setIfNotNil(L, 2);
 	flat::lua::UniqueLuaReference<LUA_TFUNCTION> onGhostEntityPlaced;
 	onGhostEntityPlaced.setIfNotNil(L, 3);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	GameState& gameState = game.getStateMachine().getState()->to<GameState>();
 	std::shared_ptr<const entity::EntityTemplate> ghostTemplate = gameState.getEntityTemplate(game, ghostTemplateName);
 	gameState.setGhostTemplate(game, ghostTemplate);
-	gameState.setCanPlaceGhostEntity(std::move(canPlaceGhostEntity));
+	gameState.setGhostEntitiesPositions(std::move(ghostEntitiesPositions));
 	gameState.setOnGhostEntityPlaced(std::move(onGhostEntityPlaced));
 	return 0;
 }

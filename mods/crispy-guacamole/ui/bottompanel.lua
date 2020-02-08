@@ -128,33 +128,106 @@ local function setUnit(unitTemplateName, units)
 
     do
         local function build(entityTemplateName)
-            game.setGhostEntity(
-                entityTemplateName,
-                function(tiles)
-                    -- TODO: check same altitude and ground navigation capability
-                    return true
-                end,
-                function(tiles)
-                    local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
-                    tiles:eachTile(function(tile)
-                        local x, y = Map.getTilePosition(tile)
-                        if x + y > bottomTilePosition:x() + bottomTilePosition:y() then
-                            bottomTilePosition:x(x)
-                            bottomTilePosition:y(y)
-                        end
-                    end)
-                    -- spawn construction site and interact
-                    local building = Entity.spawn(entityTemplateName, bottomTilePosition)
-                    building:enterState 'under_construction'
-                    for _, unit in pairs(units) do
-                        if unit:canInteractWith(building) then
-                            unit:cancelCurrentActions()
-                            unit:interactWith(building)
-                        end
+            local buildingTypeData = EntityData.get(entityTemplateName)
+            local firstPos
+            local path
+            if buildingTypeData and buildingTypeData.type then
+                game.setGhostEntity(
+                    entityTemplateName,
+                    function(tiles)
+                        -- TODO: check same altitude and ground navigation capability
+                        return tiles:getPositions()
+                    end,
+                    function(tiles)
+                        local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
+                        tiles:eachTile(function(tile)
+                            local x, y = Map.getTilePosition(tile)
+                            if x + y > bottomTilePosition:x() + bottomTilePosition:y() then
+                                bottomTilePosition:x(x)
+                                bottomTilePosition:y(y)
+                            end
+                        end)
+                        firstPos = bottomTilePosition
+                        game.setGhostEntity(entityTemplateName,
+                            function(tiles)
+                                local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
+                                tiles:eachTile(function(tile)
+                                    local x, y = Map.getTilePosition(tile)
+                                    if x + y > bottomTilePosition:x() + bottomTilePosition:y() then
+                                        bottomTilePosition:x(x)
+                                        bottomTilePosition:y(y)
+                                    end
+                                end)
+                                local newPath = Map.findPath(firstPos, bottomTilePosition, 1, Map.Navigability.GROUND)
+                                if path == nil then
+                                    return newPath:getPoints()
+                                else
+                                    local tmp = path:copy()
+                                    tmp:insert(newPath)
+                                    return tmp:getPoints()
+                                end
+                            end,
+                            function(tiles, continueAction)
+                                local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
+                                tiles:eachTile(function(tile)
+                                    local x, y = Map.getTilePosition(tile)
+                                    if x + y > bottomTilePosition:x() + bottomTilePosition:y() then
+                                        bottomTilePosition:x(x)
+                                        bottomTilePosition:y(y)
+                                    end
+                                end)
+                                if path ~= nil then
+                                    path:insert(Map.findPath(firstPos, bottomTilePosition, 1, Map.Navigability.GROUND))
+                                else
+                                    path = Map.findPath(firstPos, bottomTilePosition, 1, Map.Navigability.GROUND)
+                                end
+                                firstPos = bottomTilePosition
+                                if not continueAction then
+                                    path:eachTile(function(position)
+                                        -- spawn construction site and interact
+                                        local building = Entity.spawn(entityTemplateName, position)
+                                        building:enterState 'under_construction'
+                                        for _, unit in pairs(units) do
+                                            if unit:canInteractWith(building) then
+                                                unit:cancelCurrentActions()
+                                                unit:interactWith(building)
+                                            end
+                                        end
+                                    end)
+                                end
+                                return false, false
+                            end)
+                        return false, true
                     end
-                    return false
-                end
-            )
+                )
+            else
+                game.setGhostEntity(
+                    entityTemplateName,
+                    function(tiles)
+                        return tiles:getPositions()
+                    end,
+                    function(tiles)
+                        local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
+                        tiles:eachTile(function(tile)
+                            local x, y = Map.getTilePosition(tile)
+                            if x + y > bottomTilePosition:x() + bottomTilePosition:y() then
+                                bottomTilePosition:x(x)
+                                bottomTilePosition:y(y)
+                            end
+                        end)
+                        -- spawn construction site and interact
+                        local building = Entity.spawn(entityTemplateName, bottomTilePosition)
+                        building:enterState 'under_construction'
+                        for _, unit in pairs(units) do
+                            if unit:canInteractWith(building) then
+                                unit:cancelCurrentActions()
+                                unit:interactWith(building)
+                            end
+                        end
+                        return false, false
+                    end
+                )
+            end
         end
 
         if unitData and unitData.buildings then

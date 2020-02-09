@@ -381,7 +381,12 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 		entity->setElevation(elevation);
 	}
 
-	addEntityToMap(entity);
+	if (!addEntityToMap(entity))
+	{
+		destroyEntity(entity);
+		game.notify->warn(std::string("Cannot spawn entity ") + entityTemplate->getName());
+		return nullptr;
+	}
 
 #ifdef FLAT_DEBUG
 	entity->checkSpriteAABB();

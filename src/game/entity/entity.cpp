@@ -155,9 +155,7 @@ bool Entity::addToMap(map::Map* map)
 
 	if (!map->isOnTiles(m_worldSpaceAABB))
 	{
-		m_map = nullptr;
-		map->removeEntity(this, m_cellIndex);
-		m_cellIndex = -1;
+		removeFromMap();
 		return false;
 	}
 

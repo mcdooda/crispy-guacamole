@@ -1,5 +1,4 @@
 return {
-  nodeType = 'script',
   links = {
     {
       1,
@@ -169,7 +168,14 @@ return {
       1,
       3,
     },
+    {
+      22,
+      1,
+      6,
+      5,
+    },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/projectilecomponent',
@@ -257,6 +263,12 @@ return {
         true,
       },
       name = 'boolean',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
   },
 }

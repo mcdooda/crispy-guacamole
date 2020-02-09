@@ -171,40 +171,13 @@ return {
     },
     {
       loadArguments = {
-        'build',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
         'stand',
       },
       name = 'string',
     },
     {
       loadArguments = {
-        2,
+        1,
       },
       name = 'number',
     },
@@ -216,7 +189,34 @@ return {
     },
     {
       loadArguments = {
-        0.15000000596046,
+        0.20000000298023,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'build',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
       },
       name = 'number',
     },

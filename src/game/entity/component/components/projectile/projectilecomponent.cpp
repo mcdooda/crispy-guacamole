@@ -233,6 +233,12 @@ bool ProjectileComponent::collided(Entity* collidedEntity, map::TileIndex collid
 
 bool ProjectileComponent::collidedWithEntity(Entity* collidedEntity, const flat::Vector3& normal)
 {
+	sprite::SpriteComponent* spriteComponent = collidedEntity->getComponent<sprite::SpriteComponent>();
+	if (spriteComponent != nullptr && m_owner->hasSprite())
+	{
+		spriteComponent->attachSprite(static_cast<flat::render::Sprite&>(m_owner->getSprite()));
+	}
+
 	return collided(collidedEntity, map::TileIndex::INVALID_TILE, normal);
 }
 

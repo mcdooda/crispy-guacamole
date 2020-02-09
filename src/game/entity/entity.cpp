@@ -1,12 +1,14 @@
-#include "entity.h"
-#include "entitytemplate.h"
-#include "component/components/behavior/behaviorcomponent.h"
-#include "component/components/collision/collisioncomponent.h"
-#include "component/components/movement/movementcomponent.h"
-#include "component/components/selection/selectioncomponent.h"
-#include "../map/map.h"
-#include "../map/tile.h"
-#include "../map/displaymanager.h"
+#include "entity/entity.h"
+#include "entity/entitytemplate.h"
+#include "entity/component/components/behavior/behaviorcomponent.h"
+#include "entity/component/components/collision/collisioncomponent.h"
+#include "entity/component/components/movement/movementcomponent.h"
+#include "entity/component/components/selection/selectioncomponent.h"
+#include "entity/component/components/sprite/spritecomponent.h"
+
+#include "map/map.h"
+#include "map/displaymanager.h"
+#include "map/tile.h"
 
 namespace game
 {
@@ -19,6 +21,7 @@ Entity::Entity(const std::shared_ptr<const EntityTemplate>& entityTemplate, Enti
 	m_behaviorComponent(nullptr),
 	m_collisionComponent(nullptr),
 	m_movementComponent(nullptr),
+	m_spriteComponent(nullptr),
 	m_sprite(nullptr),
 	m_id(id),
 	m_heading(0.f),
@@ -131,6 +134,14 @@ flat::render::BaseSprite& Entity::getSprite()
 {
 	FLAT_ASSERT(m_sprite != nullptr);
 	return *m_sprite;
+}
+
+void Entity::pushAttachedSprites(std::vector<const MapObject*>& objects) const
+{
+	if (m_spriteComponent != nullptr)
+	{
+		m_spriteComponent->pushAttachedSprites(objects);
+	}
 }
 
 const flat::render::ProgramSettings& Entity::getProgramSettings() const
@@ -405,9 +416,10 @@ void Entity::addComponent(component::Component* component)
 
 void Entity::cacheComponents()
 {
-	m_behaviorComponent = findComponent<component::behavior::BehaviorComponent>();
+	m_behaviorComponent  = findComponent<component::behavior::BehaviorComponent>();
 	m_collisionComponent = findComponent<component::collision::CollisionComponent>();
-	m_movementComponent = findComponent<component::movement::MovementComponent>();
+	m_movementComponent  = findComponent<component::movement::MovementComponent>();
+	m_spriteComponent    = findComponent<component::sprite::SpriteComponent>();
 }
 
 void Entity::initComponents()

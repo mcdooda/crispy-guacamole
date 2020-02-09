@@ -21,6 +21,7 @@ class Component;
 namespace behavior  { class BehaviorComponent; }
 namespace collision { class CollisionComponent; }
 namespace movement  { class MovementComponent; }
+namespace sprite    { class SpriteComponent; }
 }
 
 class Entity final : public map::MapObject
@@ -71,6 +72,7 @@ class Entity final : public map::MapObject
 		inline void clearSprite() { m_sprite = nullptr; }
 		inline bool hasSprite() const { return m_sprite != nullptr; }
 		flat::render::BaseSprite& getSprite() override;
+		void pushAttachedSprites(std::vector<const MapObject*>& objects) const;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
 		bool addToMap(map::Map* map);
@@ -187,6 +189,7 @@ class Entity final : public map::MapObject
 		component::behavior::BehaviorComponent*   m_behaviorComponent;
 		component::collision::CollisionComponent* m_collisionComponent;
 		component::movement::MovementComponent*   m_movementComponent;
+		component::sprite::SpriteComponent*       m_spriteComponent;
 
 		flat::render::Sprite* m_sprite;
 		
@@ -283,6 +286,17 @@ template <>
 inline component::movement::MovementComponent* Entity::getComponent()
 {
 	return m_movementComponent;
+}
+
+template <>
+inline const component::sprite::SpriteComponent* Entity::getComponent() const
+{
+	return m_spriteComponent;
+}
+template <>
+inline component::sprite::SpriteComponent* Entity::getComponent()
+{
+	return m_spriteComponent;
 }
 
 } // entity

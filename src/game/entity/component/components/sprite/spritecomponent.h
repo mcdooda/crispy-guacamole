@@ -17,6 +17,17 @@ namespace sprite
 class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 {
 	public:
+		struct AttachedSprite : public map::MapObject
+		{
+			flat::render::Sprite sprite;
+			flat::Matrix4 relativeTransform;
+
+			flat::render::BaseSprite& getSprite() override;
+			const flat::render::ProgramSettings& getProgramSettings() const override;
+			bool isEntity() const override;
+		};
+
+	public:
 		inline static const char* getConfigName() { return "sprite"; }
 		inline static const char* getVisualName() { return "Sprite"; }
 
@@ -41,6 +52,9 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 
 		inline const AnimationDescription* getCurrentAnimationDescription() const { return m_currentAnimationDescription; }
 		inline bool hasInfiniteLoop() const { return m_sprite.hasInfiniteLoop(); }
+
+		void attachSprite(const flat::render::Sprite& otherSprite);
+		void pushAttachedSprites(std::vector<const map::MapObject*>& objects) const;
 		
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 		
@@ -52,9 +66,13 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool removedFromMap(Entity* entity);
 
 		bool updateSpritePosition(const flat::Vector3& position);
+
+		void updateAttachedSprites();
 		
 	private:
 		flat::render::AnimatedSprite m_sprite;
+		std::vector<AttachedSprite> m_attachedSprites;
+
 		const AnimationDescription* m_cycleAnimationDescription;
 		const AnimationDescription* m_currentAnimationDescription;
 		bool m_isCycleAnimated;

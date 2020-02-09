@@ -193,24 +193,33 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 
 	// put everything into a single vector
 	std::vector<const MapObject*> objects;
-	objects.reserve(numEntities + tiles.size() + props.size() + m_temporaryObjects.size());
+	objects.reserve(tiles.size() + props.size() + m_temporaryObjects.size() + numEntities);
+
+	// tiles
+	for (const Tile* tile : tiles)
+	{
+		objects.push_back(tile);
+	}
+
+	// props
+	for (const Prop* prop : props)
+	{
+		objects.push_back(prop);
+	}
+
+	// temporary objects
+	objects.insert(objects.end(), m_temporaryObjects.begin(), m_temporaryObjects.end());
+	m_temporaryObjects.clear();
+
+	// entities and attached sprites
 	for (const entity::Entity* entity : entities)
 	{
 		if (entity != nullptr)
 		{
 			objects.push_back(entity);
+			entity->pushAttachedSprites(objects);
 		}
 	}
-	for (const Tile* tile : tiles)
-	{
-		objects.push_back(tile);
-	}
-	for (const Prop* prop : props)
-	{
-		objects.push_back(prop);
-	}
-	objects.insert(objects.end(), m_temporaryObjects.begin(), m_temporaryObjects.end());
-	m_temporaryObjects.clear();
 
 	{
 		FLAT_PROFILE("Display Manager Sort Objects");

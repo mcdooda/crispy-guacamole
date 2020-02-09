@@ -177,9 +177,32 @@ bool SpriteComponent::getAttachPoint(const std::string& attachPointName, flat::V
 	return false;
 }
 
+void SpriteComponent::attachSprite(const flat::render::Sprite& otherSprite)
+{
+	const flat::Matrix4& transform = m_sprite.getModelMatrix();
+	const flat::Matrix4& otherTransform = otherSprite.getModelMatrix();
+	AttachedSprite& attachedSprite = m_attachedSprites.emplace_back();
+	attachedSprite.sprite = otherSprite;
+	attachedSprite.relativeTransform = flat::inverse(transform) * otherTransform;
+	attachedSprite.updateRenderHash();
+}
+
+void SpriteComponent::pushAttachedSprites(std::vector<const map::MapObject*>& objects) const
+{
+	if (!m_attachedSprites.empty())
+	{
+		objects.reserve(objects.size() + m_attachedSprites.size());
+		for (const AttachedSprite& attachedSprite : m_attachedSprites)
+		{
+			objects.push_back(&attachedSprite);
+		}
+	}
+}
+
 void SpriteComponent::update(float currentTime, float elapsedTime)
 {
 	m_sprite.update(currentTime);
+	updateAttachedSprites();
 
 	if (!m_sprite.isAnimated())
 	{
@@ -256,6 +279,30 @@ bool SpriteComponent::updateSpritePosition(const flat::Vector3& position)
 	flat::Vector2 position2d(map->getTransform() * position);
 	m_owner->getSprite().setPosition(position2d);
 
+	return true;
+}
+
+void SpriteComponent::updateAttachedSprites()
+{
+	for (AttachedSprite& attachedSprite : m_attachedSprites)
+	{
+		attachedSprite.sprite.setModelMatrix(m_sprite.getModelMatrix() * attachedSprite.relativeTransform);
+		attachedSprite.setWorldSpaceAABB(m_owner->getWorldSpaceAABB());
+	}
+}
+
+flat::render::BaseSprite& SpriteComponent::AttachedSprite::getSprite()
+{
+	return sprite;
+}
+
+const flat::render::ProgramSettings& SpriteComponent::AttachedSprite::getProgramSettings() const
+{
+	return Entity::getEntityProgramSettings();
+}
+
+bool SpriteComponent::AttachedSprite::isEntity() const
+{
 	return true;
 }
 

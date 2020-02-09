@@ -1,8 +1,8 @@
 #include <iostream>
-#include "detectioncomponent.h"
-#include "detectioncomponenttemplate.h"
-#include "../../../entity.h"
-#include "../../../../map/map.h"
+#include "entity/component/components/detection/detectioncomponent.h"
+#include "entity/component/components/detection/detectioncomponenttemplate.h"
+#include "entity/entity.h"
+#include "map/map.h"
 
 namespace game
 {
@@ -26,6 +26,11 @@ void DetectionComponent::deinit()
 void DetectionComponent::update(float currentTime, float elapsedTime)
 {
 	const map::Map* map = m_owner->getMap();
+	if (!map->isLoaded())
+	{
+		return;
+	}
+
 	FLAT_ASSERT(map != nullptr);
 
 	const float visionRange = getTemplate()->getVisionRange();

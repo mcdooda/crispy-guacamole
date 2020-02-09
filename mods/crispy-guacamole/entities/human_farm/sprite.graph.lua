@@ -125,7 +125,7 @@ return {
     },
     {
       loadArguments = {
-        1,
+        2,
       },
       name = 'number',
     },
@@ -134,7 +134,7 @@ return {
     },
     {
       loadArguments = {
-        1,
+        5,
       },
       name = 'number',
     },
@@ -143,13 +143,13 @@ return {
     },
     {
       loadArguments = {
-        25,
+        70,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        18,
+        15,
       },
       name = 'number',
     },
@@ -165,33 +165,6 @@ return {
         },
       },
       name = 'script/array',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'stand',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
     },
     {
       name = 'components/spriteanimation',
@@ -216,7 +189,34 @@ return {
     },
     {
       loadArguments = {
-        0,
+        1,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'stand',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.15000000596046,
       },
       name = 'number',
     },

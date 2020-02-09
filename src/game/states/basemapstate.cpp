@@ -7,13 +7,11 @@
 #include "map/map.h"
 #include "map/tile.h"
 #include "map/tiletemplate.h"
-#include "map/brush/lua/brush.h"
 #include "map/lua/map.h"
 #include "map/lua/zone.h"
-#include "map/pathfinder/path.h"
-#include "map/pathfinder/pathfinder.h"
-#include "map/pathfinder/lua/path.h"
 #include "map/proptemplate.h"
+#include "map/fog/nofog.h"
+#include "map/brush/lua/brush.h"
 
 #include "entity/entityhelper.h"
 #include "entity/entitytemplate.h"
@@ -24,7 +22,6 @@
 #include "entity/component/components/selection/selectioncomponent.h"
 #include "entity/component/lua/componentregistry.h"
 #include "entity/faction/lua/faction.h"
-#include "entity/lua/entity.h"
 
 namespace game
 {
@@ -56,25 +53,6 @@ void BaseMapState::enter(Game& game)
 	m_gamePaused = false;
 	m_pauseNextFrame = false;
 #endif
-
-	// init lua then
-	initLua(game);
-	lua_State* L = game.lua->state;
-	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-
-		entity::lua::open(game);
-		entity::component::lua::open(L, m_componentRegistry);
-		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
-		map::lua::map::open(L);
-		map::lua::zone::open(game);
-		map::brush::lua::open(game);
-		game::map::pathfinder::lua::open(game);
-		editor::lua::open(L);
-
-		flat::lua::doFile(L, "data/common/init.lua");
-	}
-
 	// ui
 	buildUi(game);
 	game.input->pushContext(m_gameInputContext);
@@ -120,9 +98,7 @@ void BaseMapState::enter(Game& game)
 #ifdef FLAT_DEBUG
 	}
 #endif
-
-	map::Map& map = getMap();
-	map.setDisplayManager(&m_displayManager);
+	m_map.setDisplayManager(&m_displayManager);
 	loadMap(game);
 
 	// reset the camera *after* loading the map so it's centered on the map
@@ -131,7 +107,7 @@ void BaseMapState::enter(Game& game)
 	{
 #endif
 		int minX, maxX, minY, maxY;
-		map.getBounds(minX, maxX, minY, maxY);
+		m_map.getBounds(minX, maxX, minY, maxY);
 		flat::Vector3 cameraCenter((maxX + minX) / 2.f, (maxY + minY) / 2.f, 0.f);
 		setCameraCenter(cameraCenter);
 #ifdef FLAT_DEBUG
@@ -176,7 +152,6 @@ void BaseMapState::execute(Game& game)
 
 void BaseMapState::exit(Game& game)
 {
-	map::Map& map = getMap();
 	std::vector<entity::Entity*> entities = m_entityUpdater.getEntities();
 	for (entity::Entity* entity : entities)
 	{
@@ -199,19 +174,22 @@ void BaseMapState::setModPath(const std::string& modPath)
 
 bool BaseMapState::loadMap(Game& game)
 {
-	map::Map& map = getMap();
-	return map.load(game, m_mod);
+	return m_map.load(game, m_mod);
 }
 
 bool BaseMapState::saveMap(Game& game) const
 {
-	const map::Map& map = getMap();
-	return map.save(m_mod, game.mapName, m_entityUpdater.getEntities());
+	return m_map.save(m_mod, game.mapName, m_entityUpdater.getEntities());
+}
+
+map::Map& BaseMapState::getMap()
+{
+	return m_map;
 }
 
 const map::Map& BaseMapState::getMap() const
 {
-	return const_cast<BaseMapState*>(this)->getMap();
+	return m_map;
 }
 
 flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTile) const
@@ -219,9 +197,8 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 	const flat::Vector2& cursorPosition = m_gameInputContext->getMouseInputContext().getPosition();
 	flat::Vector2 gameViewPosition = m_gameView.getRelativePosition(cursorPosition);
 
-	const map::Map& map = getMap();
-	const flat::Vector2& xAxis = map.getXAxis();
-	const flat::Vector2& yAxis = map.getYAxis();
+	const flat::Vector2& xAxis = m_map.getXAxis();
+	const flat::Vector2& yAxis = m_map.getYAxis();
 
 	auto gameViewToMap = [&xAxis, &yAxis](const flat::Vector2& screenPosition)
 	{
@@ -236,10 +213,10 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 
 	if (m_mouseOverTileIndex != map::TileIndex::INVALID_TILE)
 	{
-		const flat::Vector2& spritePosition = getMap().getTileSprite(m_mouseOverTileIndex).getPosition();
+		const flat::Vector2& spritePosition = m_map.getTileSprite(m_mouseOverTileIndex).getPosition();
 		flat::Vector2 delta = gameViewToMap(gameViewPosition - spritePosition);
 
-		const flat::Vector2i& xy = getMap().getTileXY(m_mouseOverTileIndex);
+		const flat::Vector2i& xy = m_map.getTileXY(m_mouseOverTileIndex);
 		flat::Vector2 tileCenter = flat::Vector2(xy.x, xy.y);
 		flat::Vector2 mapPositionOnTile = tileCenter + delta;
 		if (mapPositionOnTile.x <= tileCenter.x + 0.5f && mapPositionOnTile.y <= tileCenter.y + 0.5f)
@@ -260,7 +237,7 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 				adjacentTilePosition = flat::Vector2(tileCenter.x, tileCenter.y + 0.5f + flat::EPSILON);
 			}
 
-			map::TileIndex adjacentTileIndex = map.getTileIndex(adjacentTilePosition.x, adjacentTilePosition.y);
+			map::TileIndex adjacentTileIndex = m_map.getTileIndex(adjacentTilePosition.x, adjacentTilePosition.y);
 			if (adjacentTileIndex != map::TileIndex::INVALID_TILE)
 			{
 				mapPosition = adjacentTilePosition;
@@ -284,16 +261,15 @@ void BaseMapState::debugCursorPosition(Game& game)
 	flat::Vector2 position2d = getCursorMapPosition(game, cursorOnTile);
 	flat::Vector3 position3d(position2d, 0.f);
 	flat::video::Color color = flat::video::Color::RED;
-	map::Map& map = getMap();
-	map::TileIndex tileIndex = map.getTileIndex(position2d.x, position2d.y);
-	if (tileIndex != map::TileIndex::INVALID_TILE)
+	map::TileIndex tileIndex = m_map.getFog().getTileIndex(position2d.x, position2d.y);
+	if (map::isValidTile(tileIndex))
 	{
-		const float tileZ = map.getTileZ(tileIndex);
+		const float tileZ = m_map.getTileZ(tileIndex);
 		position3d.z = tileZ;
 		color = flat::video::Color::BLUE;
 
 		{
-			const flat::Vector2i& xy = map.getTileXY(tileIndex);
+			const flat::Vector2i& xy = m_map.getTileXY(tileIndex);
 			flat::Vector3 position3d(xy.x, xy.y, tileZ);
 			m_debugDisplay.add3dLine(position3d + flat::Vector3(-0.5f, -0.5f, 0.f), position3d + flat::Vector3(0.5f, -0.5f, 0.f));
 			m_debugDisplay.add3dLine(position3d + flat::Vector3(0.5f, -0.5f, 0.f), position3d + flat::Vector3(0.5f, 0.5f, 0.f));
@@ -301,8 +277,8 @@ void BaseMapState::debugCursorPosition(Game& game)
 			m_debugDisplay.add3dLine(position3d + flat::Vector3(-0.5f, 0.5f, 0.f), position3d + flat::Vector3(-0.5f, -0.5f, 0.f));
 		}
 
-		const map::Tile* tile = map.getTileFromIndex(tileIndex);
-		const flat::AABB2& tileAABB = tile->getAABB();
+		const map::Tile& tile = m_map.getTileFromIndex(tileIndex);
+		const flat::AABB2& tileAABB = tile.getAABB();
 		m_debugDisplay.add2dAABB(tileAABB, flat::video::Color::GREEN);
 
 		const flat::AABB2& cellAABB = m_displayManager.getTileCellAABB(tileIndex);
@@ -345,19 +321,19 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
-	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(game, m_componentRegistry, entityTemplatePath, entityTemplateName);
+	const std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
+	return m_entityTemplateManager.getResource(entityTemplateName, game, m_componentRegistry, entityTemplatePath);
 }
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
 {
-	return m_tileTemplateManager.getResource(game, tileTemplateName);
+	return m_tileTemplateManager.getResource(tileTemplateName, game);
 }
 
 std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
 {
-	std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
-	return m_propTemplateManager.getResource(game, propTemplatePath);
+	const std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
+	return m_propTemplateManager.getResource(propTemplatePath, game);
 }
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(
@@ -366,6 +342,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	const flat::Vector3& position,
 	float heading,
 	float elevation,
+	entity::Entity* instigator,
 	entity::component::ComponentFlags componentFlags,
 	entity::component::ComponentFlags enabledComponentFlags
 )
@@ -373,6 +350,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	FLAT_PROFILE("Spawn entity");
 
 	entity::Entity* entity = createEntity(game, entityTemplate, componentFlags);
+	entity->setInstigator(instigator);
 
 	{
 		FLAT_PROFILE("Disable useless components");
@@ -465,14 +443,19 @@ void BaseMapState::destroyEntity(entity::Entity* entity)
 	m_entityPool.destroyEntity(entity);
 }
 
-void BaseMapState::addEntityToMap(entity::Entity* entity)
+bool BaseMapState::addEntityToMap(entity::Entity* entity)
 {
 	FLAT_PROFILE("Add entity to map");
 	m_entityUpdater.registerEntity(entity);
-	entity->addToMap(&getMap());
+	if (!entity->addToMap(&m_map))
+	{
+		m_entityUpdater.unregisterEntity(entity);
+		return false;
+	}
 	flat::time::Clock& clock = getGameClock();
 	m_displayManager.addEntity(entity);
 	m_entityUpdater.updateSingleEntity(entity, clock.getTime(), clock.getDT());
+	return true;
 }
 
 void BaseMapState::removeEntityFromMap(entity::Entity* entity)
@@ -543,7 +526,7 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 		if (isOnTile)
 		{
 			map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
-			map::TileIndex tileIndex = getMap().getTileIndexIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
+			map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
 			if (tileIndex != map::TileIndex::INVALID_TILE)
 			{
 				using namespace entity::component;
@@ -555,8 +538,8 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 				entities.reserve(tiles.size());
 				for (const auto& tile: tiles)
 				{
-					flat::Vector3 ghostPosition(tile, getMap().getTileZ(getMap().getTileIndex(tile)));
-					entities.push_back(spawnEntityAtPosition(game, m_ghostTemplate, ghostPosition, 0.f, 0.f, componentFlags));
+					flat::Vector3 ghostPosition(tile, m_map.getTileZ(m_map.getTileIndex(tile)));
+					entities.push_back(spawnEntityAtPosition(game, m_ghostTemplate, ghostPosition, 0.f, 0.f, nullptr, componentFlags));
 					flat::render::BaseSprite& sprite = entities.back()->getSprite();
 					flat::video::Color color = flat::video::Color::WHITE;
 					color.a = 0.6f;
@@ -581,8 +564,7 @@ void BaseMapState::updateGameView(game::Game& game)
 	const auto& keyboard = m_gameInputContext->getKeyboardInputContext();
 	const auto& mouse = m_gameInputContext->getMouseInputContext();
 	
-	const map::Map& map = getMap();
-	const flat::Vector2& xAxis = map.getXAxis();
+	const flat::Vector2& xAxis = m_map.getXAxis();
 	flat::Vector2 speed(-xAxis.x, xAxis.y);
 	speed /= m_cameraZoom;
 	
@@ -629,7 +611,6 @@ void BaseMapState::setCameraCenter(const flat::Vector2& cameraCenter)
 
 void BaseMapState::setCameraCenter(const flat::Vector3& cameraCenter)
 {
-	const map::Map& map = getMap();
 	setCameraCenter(convertToCameraPosition(cameraCenter));
 }
 
@@ -650,8 +631,7 @@ void BaseMapState::unlockCamera()
 
 flat::Vector2 BaseMapState::convertToCameraPosition(const flat::Vector3& position) const
 {
-	const map::Map& map = getMap();
-	return flat::Vector2(map.getTransform() * position);
+	return flat::Vector2(m_map.getTransform() * position);
 }
 
 void BaseMapState::updateCameraView()
@@ -660,6 +640,23 @@ void BaseMapState::updateCameraView()
 	m_gameView.flipY();
 	m_gameView.zoom(m_cameraZoom);
 	m_gameView.move(m_cameraCenter2d);
+}
+
+void BaseMapState::initLua(Game& game)
+{
+	Super::initLua(game);
+
+	lua_State* L = game.lua->state;
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+
+		entity::component::lua::open(L, m_componentRegistry);
+		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
+		map::lua::map::open(L);
+		editor::lua::open(L);
+
+		flat::lua::doFile(L, "data/common/init.lua");
+	}
 }
 
 void BaseMapState::draw(game::Game& game)
@@ -671,23 +668,23 @@ void BaseMapState::draw(game::Game& game)
 		FLAT_PROFILE("Draw map");
 
 		std::vector<entity::Entity*> ghosts = addGhostEntities(game);
-		m_displayManager.sortAndDraw(game, getMap(), m_gameView);
+		m_displayManager.sortAndDraw(game, m_map.getFog(), m_gameView);
 		for(entity::Entity* ghost: ghosts)
 		{
 			despawnEntity(ghost);
 		}
 	}
-	
+
 #ifdef FLAT_DEBUG
 	{
 		FLAT_PROFILE("Draw debug");
 
-		getMap().debugDraw(m_debugDisplay);
+		m_map.debugDraw(m_debugDisplay);
 		m_entityUpdater.debugDraw(m_debugDisplay);
 		m_debugDisplay.drawElements(game, m_gameView);
 	}
 #endif
-	
+
 	Super::draw(game);
 }
 
@@ -734,9 +731,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
 	entity::Entity* newMouseOverEntity = nullptr;
 
-	const map::Map& map = getMap();
-
-	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(m_displayManager.getObjectAtPosition(map, viewMousePosition));
+	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(m_displayManager.getObjectAtPosition(m_map.getFog(), viewMousePosition));
 	if (mouseOverObject != nullptr)
 	{
 		if (mouseOverObject->isEntity())
@@ -744,14 +739,14 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 			entity::Entity* entity = static_cast<entity::Entity*>(mouseOverObject);
 			newMouseOverEntity = entity;
 		}
-		
+
 		if (mouseOverObject->isTile())
 		{
-			m_mouseOverTileIndex = map.getTileIndex(static_cast<const map::Tile*>(mouseOverObject));
+			m_mouseOverTileIndex = m_map.getFog().getTileIndex(static_cast<const map::Tile*>(mouseOverObject));
 		}
 		else
 		{
-			m_mouseOverTileIndex = m_displayManager.getTileIndexAtPosition(map, viewMousePosition);
+			m_mouseOverTileIndex = m_displayManager.getTileIndexAtPosition(m_map.getFog(), viewMousePosition);
 		}
 	}
 
@@ -1089,14 +1084,14 @@ void BaseMapState::handleGameActionInputs(Game& game)
 				if (cursorOnTile)
 				{
 					map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
-					map::TileIndex tileIndex = getMap().getTileIndexIfNavigable(position2d.x, position2d.y, navigabilityMask);
+					map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(position2d.x, position2d.y, navigabilityMask);
 					if (tileIndex != map::TileIndex::INVALID_TILE)
 					{
 						bool continueAction = keyboard.isPressed(K(LSHIFT));
 						const bool createEntity = onGhostEntityPlaced(tileIndex, continueAction);
 						if (createEntity)
 						{
-							flat::Vector3 position(position2d.x, position2d.y, getMap().getTileZ(tileIndex));
+							flat::Vector3 position(position2d.x, position2d.y, m_map.getTileZ(tileIndex));
 							spawnEntityAtPosition(game, m_ghostTemplate, position);
 						}
 						if (!continueAction)
@@ -1263,9 +1258,13 @@ void BaseMapState::updateEntities()
 	{
 #endif
 
+	m_map.getFog().preUpdate();
+
 	despawnEntities();
 	const flat::time::Clock& clock = getGameClock();
 	m_entityUpdater.updateAllEntities(clock.getTime(), clock.getDT());
+
+	m_map.getFog().postUpdate();
 
 #ifdef FLAT_DEBUG
 	}
@@ -1277,7 +1276,7 @@ void BaseMapState::updateMap()
 	FLAT_PROFILE("Update map");
 
 	const flat::time::Clock& clock = getGameClock();
-	getMap().update(clock.getTime());
+	m_map.update(clock.getTime());
 }
 
 #ifdef FLAT_DEBUG

@@ -1,5 +1,5 @@
 local yield = coroutine.yield
-local Wave = require 'mods/crispy-guacamole/scripts/wave'
+local Wave = require 'data/game/scripts/wave'
 local states = {}
 local moveTileZBy = Map.moveTileZBy
 

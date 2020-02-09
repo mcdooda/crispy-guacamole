@@ -16,6 +16,7 @@ namespace lua
 int open(lua_State* L, const ComponentRegistry& componentRegistry);
 
 int l_Components_allExcept(lua_State* L);
+int l_Components_getVisualName(lua_State* L);
 
 // private
 int setComponentFlagsTable(lua_State* L, const ComponentRegistry& componentRegistry);

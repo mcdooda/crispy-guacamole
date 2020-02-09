@@ -4,7 +4,7 @@ local atan2 = atan
 
 local Path = require 'data/scripts/path'
 
-local function spawn(templateName, template, position, targetPosition)
+local function spawn(templateName, template, position, targetPosition, instigator)
     -- compute initial heading and elevation
     local heading = atan2(targetPosition:y() - position:y(), targetPosition:x() - position:x())
     local dXY = (targetPosition - position):toVector2():length()
@@ -24,18 +24,18 @@ local function spawn(templateName, template, position, targetPosition)
         return
     end
 
-    return Entity.spawn(templateName, position, heading, elevation)
+    return Entity.spawn(templateName, position, heading, elevation, instigator)
 end
 
 local function createSpawner(templateName)
     local template = Path.requireComponentTemplate(templateName, 'projectile')
     return function(position, target)
-        return spawn(templateName, template, position, target:getPosition())
+        return spawn(templateName, template, position, target:getCenter())
     end
 end
 
 local function spawnFromEntity(templateName, template, entity, attachPoint, target)
-    return spawn(templateName, template, entity:getAttachPoint(attachPoint), target:getPosition())
+    return spawn(templateName, template, entity:getAttachPoint(attachPoint), target:getCenter(), entity)
 end
 
 local function createSpawnerFromEntity(templateName)

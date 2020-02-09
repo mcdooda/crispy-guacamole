@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -24,7 +24,20 @@ script {
       3,
       2,
     },
+    {
+      6,
+      1,
+      1,
+      2,
+    },
+    {
+      7,
+      1,
+      6,
+      1,
+    },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/propcomponent',
@@ -52,6 +65,15 @@ script {
         1,
       },
       name = 'number',
+    },
+    {
+      name = 'script/luavariable',
+    },
+    {
+      loadArguments = {
+        'Map.Navigability.NONE',
+      },
+      name = 'string',
     },
   },
 }

@@ -16,9 +16,11 @@ void PropComponentTemplate::load(Game& game, lua_State* L, const std::string& en
 
 	// prop size
 	lua_getfield(L, -1, "size");
-	flat::Vector2 size = flat::lua::getVector2(L, -1);
-	m_width = static_cast<int>(size.x);
-	m_height = static_cast<int>(size.y);
+	m_size = flat::lua::getVector2(L, -1);
+
+	// navigability
+	lua_getfield(L, -2, "navigability");
+	m_navigability = static_cast<map::Navigability>(luaL_checkinteger(L, -1));
 
 	lua_pop(L, 1);
 }

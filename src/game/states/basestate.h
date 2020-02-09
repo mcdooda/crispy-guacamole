@@ -25,7 +25,7 @@ class BaseState : public flat::state::StateImpl<Game>
 		void resetViews(Game& game);
 
 		// lua
-		void initLua(Game& game);
+		virtual void initLua(Game& game);
 
 		// ui
 		void updateUi(Game& game);

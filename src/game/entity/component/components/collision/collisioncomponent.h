@@ -21,11 +21,14 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 {
 	public:
 		inline static const char* getConfigName() { return "collision"; }
+		inline static const char* getVisualName() { return "Collision"; }
 
 		void update(float currentTime, float elapsedTime) override;
 
 		void getAABB(flat::AABB3& aabb) const;
 		float getBottom(float z) const;
+
+		flat::Vector3 getCenter() const;
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 

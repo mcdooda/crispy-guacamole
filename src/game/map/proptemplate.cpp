@@ -7,7 +7,7 @@ namespace game
 namespace map
 {
 
-PropTemplate::PropTemplate(Game& game, const std::string& path)
+PropTemplate::PropTemplate(const std::string& path, Game& game)
 {
 	loadPropConfig(game, path);
 }

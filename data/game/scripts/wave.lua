@@ -1,6 +1,5 @@
 local sin = math.sin
 local yield = coroutine.yield
-local moveTileZBy = Map.moveTileZBy
 
 local function waveShape(age, distance, progression, effect)
     return -sin(age * 10 + distance) * progression * effect
@@ -25,6 +24,7 @@ local function circular(position2d, radius, height, duration, onEnd, shape)
     shape = shape or waveShape
     local timer = game.Timer()
     timer:onUpdate(coroutine.wrap(function(timer, age)
+        local moveTileZBy = Map.moveTileZBy
         local _
         local progression, prevProgression = 0, 0
         local prevAge = age
@@ -47,6 +47,7 @@ local function circular(position2d, radius, height, duration, onEnd, shape)
         end
     end))
     timer:onEnd(function()
+        local moveTileZBy = Map.moveTileZBy
         -- reset tiles to their initial position
         for tile, tileDz in pairs(tilesDz) do
             moveTileZBy(tile, -tileDz)

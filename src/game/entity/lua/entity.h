@@ -39,6 +39,7 @@ int l_Entity_getExtraData(lua_State* L);
 
 int l_Entity_setPosition(lua_State* L);
 int l_Entity_getPosition(lua_State* L);
+int l_Entity_getCenter(lua_State* L);
 
 int l_Entity_setHeading(lua_State* L);
 int l_Entity_getHeading(lua_State* L);
@@ -52,6 +53,9 @@ int l_Entity_getForward(lua_State* L);
 int l_Entity_lookAtEntity(lua_State* L);
 
 int l_Entity_cancelCurrentActions(lua_State* L);
+
+int l_Entity_setInstigator(lua_State* L);
+int l_Entity_getInstigator(lua_State* L);
 
 // ui
 int l_Entity_setUiOffset(lua_State* L);
@@ -118,6 +122,7 @@ int l_Entity_setHealth(lua_State* L);
 int l_Entity_getHealth(lua_State* L);
 int l_Entity_getMaxHealth(lua_State* L);
 int l_Entity_healthChanged(lua_State* L);
+int l_Entity_damageTaken(lua_State* L);
 int l_Entity_died(lua_State* L);
 
 // selection
@@ -128,6 +133,7 @@ int l_Entity_click(lua_State* L);
 // projectile
 int l_Entity_setProjectileSpeed(lua_State* L);
 int l_Entity_getProjectileSpeed(lua_State* L);
+int l_Entity_setProjectileTarget(lua_State* L);
 
 // player controller
 int l_Entity_setGamepadIndex(lua_State* L);

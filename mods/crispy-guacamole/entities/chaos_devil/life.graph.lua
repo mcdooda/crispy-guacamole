@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -13,13 +13,14 @@ script {
       1,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/lifecomponent',
     },
     {
       loadArguments = {
-        1500,
+        50,
       },
       name = 'number',
     },

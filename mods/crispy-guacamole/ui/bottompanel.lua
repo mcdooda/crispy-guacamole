@@ -131,7 +131,7 @@ local function setUnit(unitTemplateName, units)
             local buildingTypeData = EntityData.get(entityTemplateName)
             local firstPos
             local path
-            if buildingTypeData and buildingTypeData.type then
+            if buildingTypeData and buildingTypeData.pathType then
                 game.setGhostEntity(
                     entityTemplateName,
                     function(tiles)

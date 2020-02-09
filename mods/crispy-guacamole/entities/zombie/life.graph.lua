@@ -15,7 +15,7 @@ return {
     {
       1,
       3,
-      12,
+      3,
       1,
     },
     {
@@ -27,14 +27,20 @@ return {
     {
       1,
       4,
-      12,
+      3,
       2,
     },
     {
       3,
       1,
+      10,
       1,
-      1,
+    },
+    {
+      3,
+      2,
+      10,
+      2,
     },
     {
       4,
@@ -75,14 +81,8 @@ return {
     {
       12,
       1,
-      10,
       1,
-    },
-    {
-      12,
-      2,
-      10,
-      2,
+      1,
     },
   },
   nodeType = 'script',
@@ -100,10 +100,7 @@ return {
       name = 'script/scriptoutput',
     },
     {
-      loadArguments = {
-        100,
-      },
-      name = 'number',
+      name = 'entity/clearcycleanimation',
     },
     {
       loadArguments = {
@@ -148,7 +145,10 @@ return {
       name = 'boolean',
     },
     {
-      name = 'entity/clearcycleanimation',
+      loadArguments = {
+        10000,
+      },
+      name = 'number',
     },
   },
 }

@@ -7,10 +7,15 @@
 
 #include <flat.h>
 
-#include "tile.h"
-#include "../entity/entity.h"
-#include "../debug/debugdisplay.h"
-#include "../entity/entityhelper.h"
+#include "map/tile.h"
+#include "map/prop.h"
+#include "map/fog/fog.h"
+#include "map/io/mapfile.h"
+
+#include "entity/entity.h"
+#include "entity/entityhelper.h"
+
+#include "debug/debugdisplay.h"
 
 namespace game
 {
@@ -82,10 +87,16 @@ class Map
 		Map();
 		~Map();
 
+		void setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile);
+		void getState(io::MapFile& mapFile) const;
+
 		void update(float currentTime);
 
 		void setDisplayManager(DisplayManager* displayManager) { m_displayManager = displayManager; }
 		inline DisplayManager& getDisplayManager() const { FLAT_ASSERT(m_displayManager != nullptr); return *m_displayManager; }
+
+		void addAllTilesToDisplayManager() const;
+		void addAllPropsToDisplayManager() const;
 
 		void operator=(Map&&) = delete;
 		void operator=(const Map&) = delete;
@@ -96,11 +107,12 @@ class Map
 		void setBounds(int minX, int maxX, int minY, int maxY);
 		void getBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
-
-		// get tiles
-		TileIndex createTile(const flat::Vector2i& xy, float z, uint16_t tileTemplateVariantIndex, std::shared_ptr<const TileTemplate> tileTemplate);
+		// tiles
+		TileIndex createTile(const flat::Vector2i& xy, float z, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex);
 		void deleteTile(TileIndex tileIndex);
 		void deleteTile(const flat::Vector2i& tilePosition);
+
+		void replaceTile(TileIndex tileIndex, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex);
 
 		TileIndex getTileIndex(int x, int y) const;
 		TileIndex getTileIndex(const flat::Vector2i& position) const;
@@ -113,9 +125,10 @@ class Map
 
 		void getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const;
 
-#ifdef FLAT_DEBUG
-		const Tile* getTileFromIndex(TileIndex tileIndex) const;
-#endif
+		const Tile& getTileFromIndex(TileIndex tileIndex) const;
+
+		int getTilesCount() const { return static_cast<int>(m_tiles.size()); }
+		int getPropsCount() const { return static_cast<int>(m_props.size()); }
 
 		void getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::vector<const Prop*>& props) const;
 
@@ -138,16 +151,17 @@ class Map
 		void updateTileNavigabilityDebug(TileIndex tileIndex);
 #endif
 
-		void setTileColor(TileIndex tileIndex, const flat::video::Color& color);
+		void setTileColor(TileIndex tileIndex, const flat::video::Color& color, bool updatePropColor = true);
 		const flat::video::Color& getTileColor(TileIndex tileIndex) const;
 
 		void setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::video::Texture> texture);
 		void removeTileProp(TileIndex tileIndex);
 		const Prop* getTileProp(TileIndex tileIndex) const;
+		PropIndex getTilePropIndex(TileIndex tileIndex) const;
+		const Prop& getPropFromIndex(PropIndex propIndex) const;
 
 		const flat::render::BaseSprite& getTileSprite(TileIndex tileIndex) const;
 		flat::render::BaseSprite& getTileSprite(TileIndex tileIndex);
-		void synchronizeTileSpriteTo(TileIndex tileIndex, flat::render::SpriteSynchronizer& synchronizer);
 
 		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
 		const std::shared_ptr<const TileTemplate> getTileTemplate(TileIndex tileIndex) const;
@@ -199,6 +213,15 @@ class Map
 
 		bool straightPathExists(const flat::Vector2& from, const flat::Vector2& to, float jumpHeight, Navigability navigability) const;
 
+		void setFogType(fog::Fog::FogType fogType);
+		fog::Fog::FogType getFogType() const;
+
+		inline fog::Fog& getFog() { return *m_fog; }
+
+		bool isOnTiles(const flat::AABB2& aabb) const;
+
+		inline bool isLoaded() const { return m_isLoaded; }
+
 #ifdef FLAT_DEBUG
 		void enableTileIndicesDebug(bool enable) { m_enableTileIndicesDebug = enable; }
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
@@ -219,6 +242,8 @@ class Map
 
 	protected:
 		DisplayManager* m_displayManager;
+
+		std::unique_ptr<map::fog::Fog> m_fog;
 
 		flat::Matrix3 m_transform;
 		flat::Matrix3 m_invTransform;
@@ -256,6 +281,8 @@ class Map
 
 		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
 
+		bool m_isLoaded;
+
 #ifdef FLAT_DEBUG
 		bool m_enableTileIndicesDebug;
 		bool m_enableNavigabilityDebug;
@@ -280,7 +307,7 @@ void Map::eachTile(Func func) const
 template <class Func>
 void Map::eachNeighborTiles(TileIndex tileIndex, Func func) const
 {
-	FLAT_ASSERT(m_neighborTiles.size() == m_tiles.size());
+	FLAT_ASSERT_MSG(m_neighborTiles.size() == m_tiles.size(), "Neighbors: %zu, tiles: %zu", m_neighborTiles.size(), m_tiles.size());
 	const NeighborTiles& neighborTiles = m_neighborTiles[tileIndex];
 	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
 	{

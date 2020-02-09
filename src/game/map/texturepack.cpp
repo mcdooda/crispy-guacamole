@@ -41,6 +41,12 @@ const std::shared_ptr<const flat::video::Texture>& TexturePack::getRandomTexture
 	return m_textures.at(randomIndex).first;
 }
 
+const std::shared_ptr<const flat::video::Texture>& TexturePack::getFirstTexture() const
+{
+	FLAT_ASSERT(!m_textures.empty());
+	return m_textures.front().first;
+}
+
 } // map
 } // game
 

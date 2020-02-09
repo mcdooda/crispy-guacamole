@@ -43,6 +43,7 @@ class Entity final : public map::MapObject
 		void setZ(float z);
 		inline const flat::Vector3& getPosition() const { return m_position; }
 		inline const flat::Vector2& getPosition2d() const { return reinterpret_cast<const flat::Vector2&>(m_position); }
+		flat::Vector3 getCenter() const;
 		
 		inline const map::Map* getMap() const { return m_map; }
 		inline map::Map* getMap() { return m_map; }
@@ -52,6 +53,9 @@ class Entity final : public map::MapObject
 
 		void setElevation(float elevation);
 		inline float getElevation() const { return m_elevation; }
+
+		inline void setInstigator(Entity* instigator) { m_instigator = instigator; }
+		inline Entity* getInstigator() const { return m_instigator.getEntity(); }
 
 		inline flat::Vector3 getForward() const
 		{
@@ -69,7 +73,7 @@ class Entity final : public map::MapObject
 		flat::render::BaseSprite& getSprite() override;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
-		void addToMap(map::Map* map);
+		bool addToMap(map::Map* map);
 		void removeFromMap();
 
 #ifdef FLAT_DEBUG
@@ -95,7 +99,8 @@ class Entity final : public map::MapObject
 		void cacheComponents();
 		void initComponents();
 		void deinitComponents();
-		inline void resetComponents() { deinitComponents(); initComponents(); }
+
+		void reset();
 
 		template <class ComponentType>
 		inline const ComponentType* getComponent() const;
@@ -158,6 +163,9 @@ class Entity final : public map::MapObject
 #endif
 
 		map::TileIndex getTileIndexFromPosition() const;
+
+		inline void setGhost() { m_isGhost = true; }
+		inline bool isGhost() const { return m_isGhost; }
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
@@ -189,6 +197,8 @@ class Entity final : public map::MapObject
 		float m_elevation;
 
 		flat::lua::UniqueLuaReference<LUA_TTABLE> m_extraData;
+
+		EntityHandle m_instigator;
 		
 		map::Map* m_map;
 		int m_cellIndex;
@@ -200,6 +210,7 @@ class Entity final : public map::MapObject
 		bool m_markedForDelete : 1;
 		bool m_aabbDirty : 1;
 		bool m_aabbCanChange : 1;
+		bool m_isGhost : 1;
 #ifdef FLAT_DEBUG
 		bool m_debug : 1;
 #endif

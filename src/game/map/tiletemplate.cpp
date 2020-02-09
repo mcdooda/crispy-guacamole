@@ -8,7 +8,7 @@ namespace game
 namespace map
 {
 
-TileTemplate::TileTemplate(Game& game, const std::string& name) :
+TileTemplate::TileTemplate(const std::string& name, Game& game) :
 	m_name(name)
 {
 	const mod::Mod& mod = game.getStateMachine().getState()->as<states::BaseMapState>().getMod();

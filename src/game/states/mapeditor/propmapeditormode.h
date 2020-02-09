@@ -28,8 +28,13 @@ class PropMapEditorMode : public MapEditorMode
 
 		inline void setPropTemplate(const std::shared_ptr<const map::PropTemplate>& propTemplate) { m_propTemplate = propTemplate; }
 
+		void preDraw(Game& game) override;
+		void postDraw(Game& game) override;
+
 	private:
 		std::shared_ptr<const map::PropTemplate> m_propTemplate;
+
+		std::vector<map::Prop> m_temporaryProps;
 };
 
 } // editor

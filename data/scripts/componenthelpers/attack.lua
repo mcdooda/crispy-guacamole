@@ -4,11 +4,11 @@ local function getTemplate(entity)
     return Path.requireComponentTemplateIfExists(entity:getTemplateName(), 'attack')
 end 
 
-local function dealDamageAfterDelay(target, damage, delay)
+local function dealDamageAfterDelay(target, damage, delay, instigator)
 	local timer = game.Timer()
 	timer:onEnd(function()
         if target:isValid() then
-            target:dealDamage(damage)
+            target:dealDamage(damage, instigator)
         end
     end)
     timer:start(delay)

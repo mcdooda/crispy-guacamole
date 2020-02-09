@@ -6,6 +6,7 @@
 #include "map/tile.h"
 #include "map/pathfinder/pathfinder.h"
 #include "map/pathfinder/lua/path.h"
+#include "map/fog/fog.h"
 
 #include "states/mapeditorstate.h"
 #include "entity/lua/entity.h"
@@ -44,6 +45,9 @@ int open(lua_State* L)
 		{"moveTileZBy",                   l_Map_moveTileZBy},
 		{"findPath",                      l_Map_findPath},
 
+		{"setFogType",                    l_Map_setFogType},
+		{"getFogType",                    l_Map_getFogType},
+
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Map_lib_m, 0);
@@ -60,8 +64,19 @@ int open(lua_State* L)
 	flat::lua::table::pushTable(L, navigabilityTable);
 	lua_settable(L, -3);
 
+	lua_pushstring(L, "FogType");
+	static const flat::lua::table::KeyValuePair<int> fogTypeTable[] = {
+		{"NONE", fog::Fog::FogType::NONE},
+		{"HARD", fog::Fog::FogType::HARD},
+		{"SOFT", fog::Fog::FogType::SOFT},
+
+		{nullptr, 0},
+	};
+	flat::lua::table::pushTable(L, fogTypeTable);
+	lua_settable(L, -3);
+
 	lua_setglobal(L, "Map");
-	
+
 	return 0;
 }
 
@@ -76,9 +91,8 @@ int l_Map_load(lua_State* L)
 	std::string mapName = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	game.mapName = mapName;
-	flat::state::State* state = game.getStateMachine().getState();
-	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
-	bool mapLoaded = baseMapState.loadMap(game);
+	states::BaseMapState& mapState = getMapState(L);
+	bool mapLoaded = mapState.loadMap(game);
 	lua_pushboolean(L, mapLoaded);
 	return 1;
 }
@@ -131,9 +145,7 @@ int l_Map_debug_enableSimplifyPath(lua_State* L)
 
 int l_Map_getNumEntities(lua_State* L)
 {
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	flat::state::State* state = game.getStateMachine().getState();
-	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
+	const states::BaseMapState& baseMapState = getMapState(L);
 	lua_pushinteger(L, baseMapState.getEntityUpdater().getEntities().size());
 	return 1;
 }
@@ -160,10 +172,8 @@ static int locIterateOverSelectedEntities(lua_State*L)
 {
 	luaL_checktype(L, 1, LUA_TNIL);
 
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	flat::state::State* state = game.getStateMachine().getState();
-	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
-	const std::vector<entity::Entity*>& selectedEntities = baseMapState.getSelectedEntities();
+	const states::BaseMapState& mapState = getMapState(L);
+	const std::vector<entity::Entity*>& selectedEntities = mapState.getSelectedEntities();
 
 	int index = static_cast<int>(luaL_checkinteger(L, 2));
 	if (index >= selectedEntities.size())
@@ -189,9 +199,7 @@ int l_Map_eachSelectedEntity(lua_State* L)
 
 int l_Map_selectionChanged(lua_State* L)
 {
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	flat::state::State* state = game.getStateMachine().getState();
-	states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	states::BaseMapState& mapState = getMapState(L);
 	mapState.addSelectionChangedCallback(L, 1);
 	return 0;
 }
@@ -200,12 +208,11 @@ int l_Map_getEntitiesOfType(lua_State* L)
 {
 	const char* entityTemplateName = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	flat::state::State* state = game.getStateMachine().getState();
-	states::BaseMapState& baseMapState = state->as<states::BaseMapState>();
-	std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
+	states::BaseMapState& mapState = getMapState(L);
+	std::shared_ptr<const entity::EntityTemplate> entityTemplate = mapState.getEntityTemplate(game, entityTemplateName);
 	lua_newtable(L);
 	int i = 1;
-	baseMapState.eachEntityOfType(entityTemplate, [L, &i](entity::Entity* entity)
+	mapState.eachEntityOfType(entityTemplate, [L, &i](entity::Entity* entity)
 	{
 		entity::lua::pushEntity(L, entity);
 		lua_rawseti(L, -2, i);
@@ -229,7 +236,7 @@ int l_Map_getZone(lua_State* L)
 
 int l_Map_getTilePosition(lua_State* L)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
 	const Map& map = getMap(L);
 	const flat::Vector2i& position = map.getTileXY(tileIndex);
 	float z = map.getTileZ(tileIndex);
@@ -241,7 +248,7 @@ int l_Map_getTilePosition(lua_State* L)
 
 int l_Map_getTileZ(lua_State* L)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
 	const Map& map = getMap(L);
 	lua_pushnumber(L, map.getTileZ(tileIndex));
 	return 1;
@@ -249,8 +256,8 @@ int l_Map_getTileZ(lua_State* L)
 
 int l_Map_setTileZ(lua_State* L)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
-	float z = static_cast<float>(luaL_checknumber(L, 2));
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	const float z = static_cast<float>(luaL_checknumber(L, 2));
 	Map& map = getMap(L);
 	map.setTileZ(tileIndex, z);
 	return 0;
@@ -258,8 +265,8 @@ int l_Map_setTileZ(lua_State* L)
 
 int l_Map_moveTileZBy(lua_State* L)
 {
-	TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
-	float dz = static_cast<float>(luaL_checknumber(L, 2));
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	const float dz = static_cast<float>(luaL_checknumber(L, 2));
 	Map& map = getMap(L);
 	map.moveTileZBy(tileIndex, dz);
 	return 0;
@@ -279,11 +286,31 @@ int l_Map_findPath(lua_State* L)
 	return 1;
 }
 
-game::map::Map& getMap(lua_State* L)
+int l_Map_setFogType(lua_State* L)
+{
+	const fog::Fog::FogType fogType = static_cast<fog::Fog::FogType>(luaL_checkinteger(L, 1));
+	Map& map = getMap(L);
+	map.setFogType(fogType);
+	return 0;
+}
+
+int l_Map_getFogType(lua_State* L)
+{
+	const Map& map = getMap(L);
+	lua_pushinteger(L, static_cast<lua_Integer>(map.getFogType()));
+	return 1;
+}
+
+states::BaseMapState& getMapState(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
-	states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	return state->as<states::BaseMapState>();
+}
+
+game::map::Map& getMap(lua_State* L)
+{
+	states::BaseMapState& mapState = getMapState(L);
 	return mapState.getMap();
 }
 

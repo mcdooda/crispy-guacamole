@@ -1,4 +1,5 @@
-script {
+return {
+  nodeType = 'script',
   links = {
     {
       5,

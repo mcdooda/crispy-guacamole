@@ -1,4 +1,4 @@
-script {
+return {
   links = {
     {
       1,
@@ -115,13 +115,14 @@ script {
       4,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/attackcomponent',
     },
     {
       loadArguments = {
-        0.050000000745058,
+        0.5,
       },
       name = 'number',
     },

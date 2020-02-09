@@ -1,4 +1,5 @@
-script {
+return {
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/attackcomponent',

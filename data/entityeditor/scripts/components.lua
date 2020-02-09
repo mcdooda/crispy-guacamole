@@ -133,7 +133,7 @@ function ComponentSelectionPanel:buildComponentTabs()
 
         local componentTab = Widget.makeColumnFlow()
         componentTab:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
-        local componentNameLabel = Widget.makeText(componentName, table.unpack(UiSettings.defaultFont))
+        local componentNameLabel = Widget.makeText(Components.getVisualName(Component[componentName]), table.unpack(UiSettings.defaultFont))
 
         self.componentNameLabels[componentName] = componentNameLabel
         self:updateTabColor(componentName)
@@ -313,14 +313,6 @@ function ComponentDetailsPanel:editCurrentComponent()
                     ComponentSelectionPanel:updateCurrentTab()
                     return false
                 end)
-            end,
-            function(graphPath)
-                local modPath = Mod.getPath()
-                local regex = '^' .. modPath:gsub('%-', '%%-') .. '(.+)$'
-                local relativePath, matches = graphPath:gsub(regex, '%1')
-                if matches > 0 then
-                    return ([[return flat.graph.script.run(Mod.getPath() .. '%s')]]):format(relativePath)
-                end
             end
         )
     end

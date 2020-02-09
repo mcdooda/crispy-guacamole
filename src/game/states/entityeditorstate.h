@@ -9,9 +9,9 @@ namespace game
 namespace states
 {
 
-class EntityEditorState : public BaseMapStateImpl<map::Map>
+class EntityEditorState : public BaseMapState
 {
-	using Super = BaseMapStateImpl<map::Map>;
+	using Super = BaseMapState;
 	public:
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;

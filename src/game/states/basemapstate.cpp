@@ -419,7 +419,9 @@ void BaseMapState::clearGhostTemplate()
 std::vector<flat::Vector2> BaseMapState::ghostEntitiesPositions(map::TileIndex tileIndex) const
 {
 	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
-	return {};
+	std::vector<flat::Vector2> result;
+	result.push_back(m_map.getTileXY(tileIndex));
+	return result;
 }
 
 bool BaseMapState::onGhostEntityPlaced(map::TileIndex tileIndex, bool& continueAction)

@@ -108,6 +108,7 @@ return {
     'game/gamedt',
     'game/gametime',
     'game/sleep',
+    'game/timer',
 
     -- controller
     'controller/buttonpressed',

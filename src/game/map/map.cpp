@@ -346,6 +346,32 @@ TileIndex Map::getTileIndex(const Tile* tile) const
 	return static_cast<TileIndex>(tile - &m_tiles[0]);
 }
 
+std::vector<TileIndex> Map::getTilesIndices(const std::vector<flat::Vector2>& positions) const
+{
+	std::vector<TileIndex> indices;
+	indices.reserve(positions.size());
+	for(const flat::Vector2& position: positions)
+	{
+		TileIndex index = getTileIndex(position);
+		if (index != TileIndex::INVALID_TILE)
+		{
+			indices.push_back(index);
+		}
+	}
+	return indices;
+}
+
+std::vector<flat::Vector2> Map::getTilesPositions(const std::vector<TileIndex>& indices) const
+{
+	std::vector<flat::Vector2> position;
+	position.reserve(indices.size());
+	for(const TileIndex& index: indices)
+	{
+		position.push_back(getTileXY(index));
+	}
+	return position;
+}
+
 void Map::getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const
 {
 	FLAT_PROFILE("Map Get Tiles From Indices");
@@ -967,6 +993,25 @@ bool Map::getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) cons
 	return false;
 }
 
+bool Map::straightPathExists(const flat::Vector2& from, const flat::Vector2& to, float jumpHeight, Navigability navigabilityMask) const
+{
+	FLAT_ASSERT(isTileNavigable(getTileIndex(from), navigabilityMask));
+	const float delta = 0.4f;
+	const flat::Vector2 move = to - from;
+	const flat::Vector2 segment = flat::normalize(move) * delta;
+	const float numSegments = flat::length(move) / delta;
+	float previousZ = getTileZ(getTileIndex(from));
+	for (float f = 1.f; f <= numSegments; ++f)
+	{
+		const flat::Vector2 point = from + segment * f;
+		map::TileIndex tileIndex = getTileIndexIfNavigable(point.x, point.y,  navigabilityMask);
+		if (tileIndex == TileIndex::INVALID_TILE || getTileZ(tileIndex) > previousZ + jumpHeight)
+			return false;
+		previousZ = getTileZ(tileIndex);
+	}
+	return true;
+}
+
 void Map::setFogType(fog::Fog::FogType fogType)
 {
 	m_displayManager->clear();
@@ -997,7 +1042,6 @@ bool Map::isOnTiles(const flat::AABB2& aabb) const
 			}
 		}
 	}
-
 	return true;
 }
 

@@ -6,6 +6,7 @@
 
 #include "../navigability.h"
 #include "../map.h"
+#include "path.h"
 
 namespace game
 {
@@ -31,11 +32,7 @@ public:
 	Pathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask);
 	virtual ~Pathfinder() {}
 
-	bool findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const;
-
-#ifdef FLAT_DEBUG
-	static void enableSimplifyPath(bool shouldSimplifyPath) { Pathfinder::shouldSimplifyPath = shouldSimplifyPath; }
-#endif
+	void findPath(const flat::Vector2& from, const flat::Vector2& to, Path& path) const;
 
 protected:
 	virtual TileIndex getTileIndexIfNavigable(float x, float y, map::Navigability navigabilityMask) const;
@@ -45,15 +42,12 @@ protected:
 		const flat::Vector2& from,
 		const flat::Vector2& to,
 		std::vector<flat::Vector2>& path) const;
-	void simplifyPath(std::vector<flat::Vector2>& path) const;
-	bool isStraightPath(const flat::Vector2& from, const flat::Vector2& to) const;
 	virtual void eachNeighborTiles(TileIndex tile, std::function<void(TileIndex)> func) const;
 
-protected:
-#ifdef FLAT_DEBUG
-	static bool shouldSimplifyPath;
-#endif
+private:
+	bool findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const;
 
+protected:
 	const Map& m_map;
 	float m_jumpHeight;
 	map::Navigability m_navigabilityMask;

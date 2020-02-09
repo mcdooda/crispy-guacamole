@@ -8,9 +8,10 @@
 #include "map/tile.h"
 #include "map/tiletemplate.h"
 #include "map/lua/map.h"
-#include "map/pathfinder/pathfinder.h"
+#include "map/lua/zone.h"
 #include "map/proptemplate.h"
 #include "map/fog/nofog.h"
+#include "map/brush/lua/brush.h"
 
 #include "entity/entityhelper.h"
 #include "entity/entitytemplate.h"
@@ -52,14 +53,13 @@ void BaseMapState::enter(Game& game)
 	m_gamePaused = false;
 	m_pauseNextFrame = false;
 #endif
-	
 	// ui
 	buildUi(game);
 	game.input->pushContext(m_gameInputContext);
-	
+
 	// rendering settings
 	m_entityRender.program.load("data/shaders/sprite/entityspritebatch.frag", "data/shaders/sprite/entityspritebatch.vert");
-	
+
 	m_entityRender.settings.textureUniform              = m_entityRender.program.getUniform<flat::video::Texture>("objectTexture");
 	m_entityRender.settings.viewProjectionMatrixUniform = m_entityRender.program.getUniform<flat::Matrix4>("vpMatrix");
 
@@ -83,7 +83,7 @@ void BaseMapState::enter(Game& game)
 	m_terrainRender.settings.depthAttribute              = m_terrainRender.program.getAttribute("depth");
 
 	map::Tile::setTileProgramSettings(m_terrainRender);
-	
+
 	initRender(game);
 
 
@@ -98,7 +98,6 @@ void BaseMapState::enter(Game& game)
 #ifdef FLAT_DEBUG
 	}
 #endif
-	
 	m_map.setDisplayManager(&m_displayManager);
 	loadMap(game);
 
@@ -122,11 +121,6 @@ void BaseMapState::enter(Game& game)
 
 	m_mouseOverEntity = nullptr;
 	m_mouseOverTileIndex = map::TileIndex::INVALID_TILE;
-	m_ghostEntity = nullptr;
-
-#ifdef FLAT_DEBUG
-	map::pathfinder::Pathfinder::enableSimplifyPath(true);
-#endif
 }
 
 void BaseMapState::execute(Game& game)
@@ -149,7 +143,7 @@ void BaseMapState::execute(Game& game)
 			}
 		});
 	}
-	
+
 	update(game);
 
 	clearScreen(game);
@@ -327,7 +321,7 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
-	std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
+	const std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
 	return m_entityTemplateManager.getResource(entityTemplateName, game, m_componentRegistry, entityTemplatePath);
 }
 
@@ -338,7 +332,7 @@ std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Gam
 
 std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
 {
-	std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
+	const std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
 	return m_propTemplateManager.getResource(propTemplatePath, game);
 }
 
@@ -420,32 +414,22 @@ void BaseMapState::setGhostTemplate(Game& game, const std::shared_ptr<const enti
 {
 	clearGhostTemplate();
 	m_ghostTemplate = ghostTemplate;
-	using namespace entity::component;
-	ComponentFlags componentFlags = AllComponents;
-	componentFlags &= ~attack::AttackComponent::getFlag();
-	componentFlags &= ~behavior::BehaviorComponent::getFlag();
-	componentFlags &= ~collision::CollisionComponent::getFlag();
-	m_ghostEntity = createEntity(game, ghostTemplate, componentFlags);
-	m_ghostEntity->setGhost();
 }
 
 void BaseMapState::clearGhostTemplate()
 {
-	if (m_ghostEntity != nullptr)
-	{
-		destroyEntity(m_ghostEntity);
-	}
 	m_ghostTemplate.reset();
-	m_ghostEntity = nullptr;
 }
 
-bool BaseMapState::canPlaceGhostEntity(map::TileIndex tileIndex) const
+std::vector<flat::Vector2> BaseMapState::ghostEntitiesPositions(map::TileIndex tileIndex) const
 {
 	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
-	return true;
+	std::vector<flat::Vector2> result;
+	result.push_back(m_map.getTileXY(tileIndex));
+	return result;
 }
 
-bool BaseMapState::onGhostEntityPlaced(map::TileIndex tileIndex)
+bool BaseMapState::onGhostEntityPlaced(map::TileIndex tileIndex, bool& continueAction)
 {
 	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 	return true;
@@ -539,53 +523,42 @@ void BaseMapState::update(game::Game& game)
 	//debugCursorPosition(game);
 }
 
-bool BaseMapState::addGhostEntity(game::Game& game)
+std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 {
-	if (m_ghostEntity != nullptr && !isMouseOverUi(game) && !isSelecting() && !m_mouseOverEntity.isValid())
+	std::vector<entity::Entity*> entities;
+	if (!isMouseOverUi(game) && !isSelecting() && !m_mouseOverEntity.isValid() && m_ghostTemplate != nullptr)
 	{
 		bool isOnTile;
 		flat::Vector2 cursorPosition = getCursorMapPosition(game, isOnTile);
 		if (isOnTile)
 		{
-			map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostEntity);
+			map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
 			map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
 			if (tileIndex != map::TileIndex::INVALID_TILE)
 			{
-				m_ghostEntity->reset();
-				flat::Vector3 ghostPosition(cursorPosition, m_map.getTileZ(tileIndex));
-				m_ghostEntity->setPosition(ghostPosition);
-				if (addEntityToMap(m_ghostEntity))
+				using namespace entity::component;
+				ComponentFlags componentFlags = AllComponents;
+				componentFlags &= ~attack::AttackComponent::getFlag();
+				componentFlags &= ~behavior::BehaviorComponent::getFlag();
+				componentFlags &= ~collision::CollisionComponent::getFlag();
+				const std::vector<flat::Vector2> tiles = ghostEntitiesPositions(tileIndex);
+				entities.reserve(tiles.size());
+				for (const auto& tile: tiles)
 				{
-					flat::render::BaseSprite& sprite = m_ghostEntity->getSprite();
-					flat::video::Color color;
-					if (canPlaceGhostEntity(tileIndex))
-					{
-						color = flat::video::Color::WHITE;
-						color.a = 0.6f;
-					}
-					else
-					{
-						color = flat::video::Color::BLACK;
-					}
+					flat::Vector3 ghostPosition(tile, m_map.getTileZ(m_map.getTileIndex(tile)));
+					entities.push_back(spawnEntityAtPosition(game, m_ghostTemplate, ghostPosition, 0.f, 0.f, nullptr, componentFlags));
+					flat::render::BaseSprite& sprite = entities.back()->getSprite();
+					flat::video::Color color = flat::video::Color::WHITE;
+					color.a = 0.6f;
 					sprite.setColor(color);
-
 #ifdef FLAT_DEBUG
-					m_ghostEntity->debugDraw(m_debugDisplay);
+					entities.back()->debugDraw(m_debugDisplay);
 #endif
-					return true;
 				}
 			}
 		}
 	}
-	return false;
-}
-
-void BaseMapState::removeGhostEntity(game::Game & game)
-{
-	if (m_ghostEntity != nullptr && m_ghostEntity->getMap() != nullptr)
-	{
-		removeEntityFromMap(m_ghostEntity);
-	}
+	return entities;
 }
 
 void BaseMapState::updateGameView(game::Game& game)
@@ -701,16 +674,14 @@ void BaseMapState::draw(game::Game& game)
 	{
 		FLAT_PROFILE("Draw map");
 
-		const bool addedGhostEntity = addGhostEntity(game);
-
+		std::vector<entity::Entity*> ghosts = addGhostEntities(game);
 		m_displayManager.sortAndDraw(game, m_map.getFog(), m_gameView);
-
-		if (addedGhostEntity)
+		for(entity::Entity* ghost: ghosts)
 		{
-			removeGhostEntity(game);
+			despawnEntity(ghost);
 		}
 	}
-	
+
 #ifdef FLAT_DEBUG
 	{
 		FLAT_PROFILE("Draw debug");
@@ -720,7 +691,7 @@ void BaseMapState::draw(game::Game& game)
 		m_debugDisplay.drawElements(game, m_gameView);
 	}
 #endif
-	
+
 	Super::draw(game);
 }
 
@@ -775,7 +746,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 			entity::Entity* entity = static_cast<entity::Entity*>(mouseOverObject);
 			newMouseOverEntity = entity;
 		}
-		
+
 		if (mouseOverObject->isTile())
 		{
 			m_mouseOverTileIndex = m_map.getFog().getTileIndex(static_cast<const map::Tile*>(mouseOverObject));
@@ -1121,14 +1092,16 @@ void BaseMapState::handleGameActionInputs(Game& game)
 				{
 					map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
 					map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(position2d.x, position2d.y, navigabilityMask);
-					if (tileIndex != map::TileIndex::INVALID_TILE && canPlaceGhostEntity(tileIndex))
+					if (tileIndex != map::TileIndex::INVALID_TILE)
 					{
-						if (onGhostEntityPlaced(tileIndex))
+						bool continueAction = keyboard.isPressed(K(LSHIFT));
+						const bool createEntity = onGhostEntityPlaced(tileIndex, continueAction);
+						if (createEntity)
 						{
 							flat::Vector3 position(position2d.x, position2d.y, m_map.getTileZ(tileIndex));
 							spawnEntityAtPosition(game, m_ghostTemplate, position);
 						}
-						if (!keyboard.isPressed(K(LSHIFT)))
+						if (!continueAction)
 						{
 							clearGhostTemplate();
 						}

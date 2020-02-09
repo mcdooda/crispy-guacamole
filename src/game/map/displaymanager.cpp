@@ -317,7 +317,7 @@ const MapObject* DisplayManager::getObjectAtPosition(const map::fog::Fog& fog, c
 	objects.insert(objects.end(), props.begin(), props.end());
 
 	sortObjects(objects);
-	
+
 	// look for a visible pixel in the objects' sprite
 	for (int i = static_cast<int>(objects.size()) - 1; i >= 0; --i)
 	{

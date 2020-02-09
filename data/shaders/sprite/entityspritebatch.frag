@@ -18,6 +18,7 @@ void main()
 		{
 			discard;
 		}
+		outColor.a = color2.a;
 	}
 	else
 	{

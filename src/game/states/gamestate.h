@@ -3,7 +3,8 @@
 
 #include <flat.h>
 #include "basemapstate.h"
-#include "../map/map.h"
+#include "map/map.h"
+#include "map/pathfinder/path.h"
 
 namespace game
 {
@@ -17,11 +18,10 @@ class GameState : public BaseMapState
 		void enter(Game& game) override final;
 		void execute(Game& game) override final;
 
-		void setCanPlaceGhostEntity(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& canPlaceGhostEntity);
+		void setGhostEntitiesPositions(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& canPlaceGhostEntity);
 		void setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& onGhostEntityPlaced);
-
-		bool canPlaceGhostEntity(map::TileIndex tileIndex) const override;
-		bool onGhostEntityPlaced(map::TileIndex tileIndex) override;
+		std::vector<flat::Vector2> ghostEntitiesPositions(map::TileIndex tileIndex) const override;
+		bool onGhostEntityPlaced(map::TileIndex tileIndex, bool& continueAction) override;
 
 	protected:
 		void startLevelScript(Game& game);
@@ -34,7 +34,7 @@ class GameState : public BaseMapState
 	private:
 		flat::lua::Thread m_levelThread;
 
-		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_canPlaceGhostEntity;
+		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_ghostEntitiesPositions;
 		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_onGhostEntityPlaced;
 };
 
@@ -42,5 +42,3 @@ class GameState : public BaseMapState
 } // game
 
 #endif // GAME_STATES_GAMESTATE_H
-
-

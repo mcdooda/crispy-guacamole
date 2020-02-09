@@ -165,9 +165,6 @@ int open(Game& game)
 	static const luaL_Reg Entity_lib_f[] = {
 		{"spawn",              l_Entity_spawn},
 
-		{"setGhostTemplate",   l_Entity_setGhostTemplate},
-		{"clearGhostTemplate", l_Entity_clearGhostTemplate},
-
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Entity_lib_f, 0);
@@ -1178,27 +1175,6 @@ int l_Entity_spawn(lua_State* L)
 	Entity* entity = baseMapState.spawnEntityAtPosition(game, entityTemplate, position, heading, elevation, instigator, componentFlags);
 	pushEntity(L, entity);
 	return 1;
-}
-
-int l_Entity_setGhostTemplate(lua_State* L)
-{
-	const char* ghostTemplateName = luaL_checkstring(L, 1);
-
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-
-	const std::shared_ptr<const EntityTemplate>& ghostTemplate = baseMapState.getEntityTemplate(game, ghostTemplateName);
-
-	baseMapState.setGhostTemplate(game, ghostTemplate);
-	return 0;
-}
-
-int l_Entity_clearGhostTemplate(lua_State* L)
-{
-	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
-	baseMapState.clearGhostTemplate();
-	return 0;
 }
 
 EntityHandle getEntityHandle(lua_State* L, int index)

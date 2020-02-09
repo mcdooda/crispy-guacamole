@@ -2,7 +2,11 @@
 #include "../game.h"
 #include "../entity/entity.h"
 #include "../entity/entitytemplate.h"
-#include "../map/brush/lua/tilescontainer.h"
+#include "map/pathfinder/path.h"
+#include "map/pathfinder/lua/path.h"
+#include "map/brush/lua/brush.h"
+#include "map/brush/lua/tilescontainer.h"
+#include "lua/table.h"
 
 #ifdef FLAT_DEBUG
 #include "mapeditorstate.h"
@@ -17,7 +21,7 @@ void GameState::enter(Game& game)
 {
 	Super::enter(game);
 	game.time->setNoLimitFrameRate();
-	
+
 #ifdef FLAT_DEBUG
 	if (!m_isReloading)
 	{
@@ -26,7 +30,7 @@ void GameState::enter(Game& game)
 #ifdef FLAT_DEBUG
 	}
 #endif
-	
+
 	startLevelScript(game);
 }
 
@@ -44,9 +48,9 @@ void GameState::execute(Game& game)
 	updateLevelScript();
 }
 
-void GameState::setCanPlaceGhostEntity(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& canPlaceGhostEntity)
+void GameState::setGhostEntitiesPositions(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& ghostEntitiesPositions)
 {
-	m_canPlaceGhostEntity = std::move(canPlaceGhostEntity);
+	m_ghostEntitiesPositions = std::move(ghostEntitiesPositions);
 }
 
 void GameState::setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& onGhostEntityPlaced)
@@ -54,46 +58,48 @@ void GameState::setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTI
 	m_onGhostEntityPlaced = std::move(onGhostEntityPlaced);
 }
 
-bool GameState::canPlaceGhostEntity(map::TileIndex tileIndex) const
+std::vector<flat::Vector2> GameState::ghostEntitiesPositions(map::TileIndex tileIndex) const
 {
 	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
-	if (m_canPlaceGhostEntity)
+	std::vector<flat::Vector2> points;
+	if (m_ghostEntitiesPositions)
 	{
-		bool canPlaceEntity = false;
-		m_canPlaceGhostEntity.callFunction(
+		m_ghostEntitiesPositions.callFunction(
 			[tileIndex](lua_State* L)
 			{
 				map::brush::TilesContainer* tilesContainer = new map::brush::TilesContainer();
-				tilesContainer->emplace_back(tileIndex, 1.f);
+				tilesContainer->push_back({tileIndex, 1.f});
 				map::brush::lua::pushTilesContainer(L, tilesContainer);
 			},
 			1,
-			[&canPlaceEntity](lua_State* L)
+			[&points](lua_State* L)
 			{
-				canPlaceEntity = lua_toboolean(L, -1) == 1;
+				points = flat::lua::table::getArray<flat::Vector2>(L, 1);
 			}
 		);
-		return canPlaceEntity;
+		return points;
 	}
-	return true;
+	return points;
 }
 
-bool GameState::onGhostEntityPlaced(map::TileIndex tileIndex)
+bool GameState::onGhostEntityPlaced(map::TileIndex tileIndex, bool& continueAction)
 {
-	if (m_canPlaceGhostEntity)
+	if (m_ghostEntitiesPositions)
 	{
 		bool placeEntity = false;
 		m_onGhostEntityPlaced.callFunction(
-			[tileIndex](lua_State* L)
+			[tileIndex, continueAction](lua_State* L)
 			{
 				map::brush::TilesContainer* tilesContainer = new map::brush::TilesContainer();
 				tilesContainer->emplace_back(tileIndex, 1.f);
 				map::brush::lua::pushTilesContainer(L, tilesContainer);
+				lua_pushboolean(L, continueAction);
 			},
-			1,
-			[&placeEntity](lua_State* L)
+			2,
+			[&placeEntity, &continueAction](lua_State* L)
 			{
-				placeEntity = lua_toboolean(L, -1) == 1;
+				placeEntity = lua_toboolean(L, -2) == 1;
+				continueAction |= lua_toboolean(L, -1) == 1;
 			}
 		);
 		return placeEntity;
@@ -158,11 +164,6 @@ void GameState::handleDebugInputs(Game & game)
 			entity->setDebug(true);
 			entity->setDebugAllComponents(true);
 		}
-		if (m_ghostEntity != nullptr)
-		{
-			m_ghostEntity->setDebug(true);
-			m_ghostEntity->setDebugAllComponents(true);
-		}
 	}
 	else if (keyboard->isJustPressed(K(F2)))
 	{
@@ -170,11 +171,6 @@ void GameState::handleDebugInputs(Game & game)
 		{
 			entity->setDebug(false);
 			entity->setDebugAllComponents(false);
-		}
-		if (m_ghostEntity != nullptr)
-		{
-			m_ghostEntity->setDebug(false);
-			m_ghostEntity->setDebugAllComponents(false);
 		}
 	}
 }

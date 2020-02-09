@@ -10,6 +10,7 @@
 #include "map/map.h"
 #include "map/tile.h"
 #include "map/scopednavigabilityalteration.h"
+#include "map/pathfinder/path.h"
 #include "map/pathfinder/pathfinder.h"
 #include "map/pathfinder/zonepathfinder.h"
 
@@ -68,7 +69,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 	{
 		progressAlongPath(elapsedTime);
 	}
-	
+
 	if (!m_isTouchingGround)
 	{
 		fall(elapsedTime);
@@ -100,7 +101,7 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 	}
 	else
 	{
-		startingPoint = m_currentPath.back();
+		startingPoint = m_currentPath.getLastPoint();
 	}
 
 	if (flat::distance2(destination, startingPoint) < flat::square(MIN_DISTANCE_TO_DESTINATION))
@@ -108,7 +109,7 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 		// the destination is close, no need to move
 		return;
 	}
-	
+
 	map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
 
@@ -141,18 +142,19 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 		);
 	}
 
-	std::vector<flat::Vector2> path;
-	if (pathfinder->findPath(startingPoint, destination, path))
+	map::pathfinder::Path path;
+	pathfinder->findPath(startingPoint, destination, path);
+	path.simplify(*map, jumpHeight, navigabilityMask);
+	if (path.getPointsCount() >= 2)
 	{
-		FLAT_ASSERT(path.size() >= 2);
 		// insert the new path at the end of the current path
 		// the first point of the new path is not inserted as it is the same as the last point of the current path
-		m_currentPath.insert(m_currentPath.end(), path.begin() + 1, path.end());
+		m_currentPath.insertPath(path);
 	}
 	else
 	{
 		// if the destination is not reachable, still move towards that direction
-		m_currentPath.push_back(destination);
+		m_currentPath.insertPoint(destination);
 	}
 
 	if (!isMovingAlongPath())
@@ -178,13 +180,13 @@ bool MovementComponent::isMovingAlongPath() const
 flat::Vector2 MovementComponent::getCurrentMovementDirection() const
 {
 	FLAT_ASSERT(isMovingAlongPath());
-	return m_currentPath[m_nextPathPointIndex] - m_owner->getPosition2d();
+	return m_currentPath.getPoint(m_nextPathPointIndex) - m_owner->getPosition2d();
 }
 
 const flat::Vector2& MovementComponent::getNextPathPoint() const
 {
 	FLAT_ASSERT(isMovingAlongPath());
-	return m_currentPath[m_nextPathPointIndex];
+	return m_currentPath.getPoint(m_nextPathPointIndex);
 }
 
 void MovementComponent::progressAlongPath(float elapsedTime)
@@ -227,7 +229,7 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 	const bool reachedNextPathPoint = nextPathPointOvertaken || flat::length2(newMovementDirection) < flat::square(EntityHelper::getRadius(m_owner));
 	if (reachedNextPathPoint)
 	{
-		if (m_nextPathPointIndex < m_currentPath.size() - 1)
+		if (m_nextPathPointIndex < m_currentPath.getPointsCount() - 1)
 		{
 			++m_nextPathPointIndex;
 		}
@@ -375,7 +377,7 @@ void MovementComponent::fall(float elapsedTime)
 void MovementComponent::startMovement()
 {
 	FLAT_ASSERT(!isMovingAlongPath());
-	FLAT_ASSERT(!m_currentPath.empty());
+	FLAT_ASSERT(!m_currentPath.isEmpty());
 	m_nextPathPointIndex = 0;
 }
 
@@ -490,9 +492,9 @@ void MovementComponent::debugDrawCurrentPath(debug::DebugDisplay& debugDisplay) 
 	FLAT_ASSERT(map != nullptr);
 
 	flat::Vector3 previousPoint = m_owner->getPosition();
-	for (int i = m_nextPathPointIndex, e = static_cast<int>(m_currentPath.size()); i < e; ++i)
+	for (int i = m_nextPathPointIndex, e = static_cast<int>(m_currentPath.getPointsCount()); i < e; ++i)
 	{
-		const flat::Vector2& point2d = m_currentPath[i];
+		const flat::Vector2& point2d = m_currentPath.getPoint(i);
 		const map::TileIndex tileIndex = map->getTileIndex(point2d);
 		FLAT_ASSERT(map::isValidTile(tileIndex));
 		flat::Vector3 point(point2d, map->getTileZ(tileIndex));

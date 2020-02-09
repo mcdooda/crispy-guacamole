@@ -44,6 +44,8 @@ int l_Map_getTileZ(lua_State* L);
 int l_Map_setTileZ(lua_State* L);
 int l_Map_moveTileZBy(lua_State* L);
 
+int l_Map_findPath(lua_State* L);
+
 int l_Map_setFogType(lua_State* L);
 int l_Map_getFogType(lua_State* L);
 

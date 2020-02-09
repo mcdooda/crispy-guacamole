@@ -18,6 +18,7 @@
 
 #include "map/map.h"
 #include "map/displaymanager.h"
+#include "map/pathfinder/path.h"
 
 namespace game
 {
@@ -43,7 +44,7 @@ class BaseMapState : public BaseState
 		void enter(Game& game) override;
 		void execute(Game& game) override;
 		void exit(Game& game) override;
-		
+
 		void setModPath(const std::string& modPath);
 		const mod::Mod& getMod() const { return m_mod; }
 
@@ -88,8 +89,9 @@ class BaseMapState : public BaseState
 
 		void setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate);
 		void clearGhostTemplate();
-		virtual bool canPlaceGhostEntity(map::TileIndex tileIndex) const;
-		virtual bool onGhostEntityPlaced(map::TileIndex tileIndex);
+		entity::Entity* addGhostEntityAt(Game& game, const flat::Vector3& position);
+		virtual std::vector<flat::Vector2> ghostEntitiesPositions(map::TileIndex tileIndex) const;
+		virtual bool onGhostEntityPlaced(map::TileIndex tileIndex, bool& continueAction);
 
 		entity::Entity* createEntity(
 			Game& game,
@@ -126,19 +128,18 @@ class BaseMapState : public BaseState
 		void setGamePause(Game& game, bool pause, bool pauseNextFrame);
 		inline bool isGamePaused() const { return m_gamePaused; }
 #endif
-		
+
 	protected:
 		void update(game::Game& game) override;
-		bool addGhostEntity(game::Game& game);
-		void removeGhostEntity(game::Game& game);
+		std::vector<entity::Entity*> addGhostEntities(game::Game& game);
 		void setCameraCenter(const flat::Vector3& cameraCenter);
 		void updateGameView(game::Game& game);
 		void updateCameraView();
 
 		void initLua(Game& game) override;
-		
+
 		void draw(game::Game& game) override;
-		
+
 		void buildUi(game::Game& game);
 
 		virtual entity::component::ComponentFlags getComponentsFilter() const;
@@ -174,17 +175,17 @@ class BaseMapState : public BaseState
 
 	public:
 		flat::Slot<> selectionChanged;
-		
+
 	protected:
 		// resource loading
 		flat::resource::StrongResourceManager<entity::EntityTemplate, std::string, Game&, const entity::component::ComponentRegistry&, std::string> m_entityTemplateManager;
 		flat::resource::StrongResourceManager<map::TileTemplate, std::string, Game&> m_tileTemplateManager;
 		flat::resource::StrongResourceManager<map::PropTemplate, std::string, Game&> m_propTemplateManager;
-		
+
 		// rendering settings
 		flat::render::ProgramSettings m_entityRender;
 		flat::render::ProgramSettings m_terrainRender;
-		
+
 		// level
 		mod::Mod m_mod;
 
@@ -206,8 +207,7 @@ class BaseMapState : public BaseState
 		map::TileIndex m_mouseOverTileIndex;
 
 		std::shared_ptr<const entity::EntityTemplate> m_ghostTemplate;
-		entity::Entity* m_ghostEntity;
-		
+
 		flat::video::View m_gameView;
 		flat::Vector2 m_cameraCenter2d;
 		float m_cameraZoom;
@@ -216,7 +216,7 @@ class BaseMapState : public BaseState
 		// time
 		std::shared_ptr<flat::time::Clock> m_gameClock;
 		std::shared_ptr<flat::lua::timer::TimerContainer> m_gameTimerContainer;
-		
+
 		// ui
 		std::shared_ptr<flat::input::context::InputContext> m_gameInputContext;
 		flat::Vector2 m_mouseDownPosition;

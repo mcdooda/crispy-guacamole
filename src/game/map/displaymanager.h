@@ -34,7 +34,7 @@ class DisplayManager final
 		DisplayManager();
 
 		void clear();
-		
+
 		void addEntity(const entity::Entity* entity);
 		void removeEntity(const entity::Entity* entity);
 		void updateEntity(const entity::Entity* entity);

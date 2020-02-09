@@ -15,6 +15,8 @@ int openTilesContainer(flat::Flat& flat);
 
 int l_TilesContainer_eachTile(lua_State* L);
 
+int l_TilesContainer_getPositions(lua_State* L);
+
 // private
 TilesContainer& getTilesContainer(lua_State* L, int index);
 void pushTilesContainer(lua_State* L, TilesContainer* tilesContainer);

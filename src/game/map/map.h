@@ -3,6 +3,7 @@
 
 #include <deque>
 #include <functional>
+#include <set>
 
 #include <flat.h>
 
@@ -99,14 +100,13 @@ class Map
 
 		void operator=(Map&&) = delete;
 		void operator=(const Map&) = delete;
-		
+
 		bool load(Game& game, const mod::Mod& mod);
 		bool save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const;
 
 		void setBounds(int minX, int maxX, int minY, int maxY);
 		void getBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
-		
 		// tiles
 		TileIndex createTile(const flat::Vector2i& xy, float z, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex);
 		void deleteTile(TileIndex tileIndex);
@@ -119,6 +119,9 @@ class Map
 		inline TileIndex getTileIndex(float x, float y) const { return getTileIndex(static_cast<int>(std::round(x)), static_cast<int>(std::round(y))); }
 		inline TileIndex getTileIndex(const flat::Vector2& position) const { return getTileIndex(position.x, position.y); }
 		TileIndex getTileIndex(const Tile* tile) const;
+		std::vector<TileIndex> getTilesIndices(const std::vector<flat::Vector2>& positions) const;
+		std::vector<flat::Vector2> getTilesPositions(const std::vector<TileIndex>& indices) const;
+
 
 		void getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const;
 
@@ -166,14 +169,14 @@ class Map
 #ifdef FLAT_DEBUG
 		void checkTilePropIndicesIntegrity() const;
 #endif
-		
+
 		// axes
 		inline const flat::Matrix3& getTransform() const { return m_transform; }
 		inline const flat::Matrix3& getInvTransform() const { return m_invTransform; }
 		inline const flat::Vector2& getXAxis() const { return m_xAxis; }
 		inline const flat::Vector2& getYAxis() const { return m_yAxis; }
 		inline const flat::Vector2& getZAxis() const { return m_zAxis; }
-		
+
 		// entities
 		int addEntity(entity::Entity* entity);
 		void removeEntity(entity::Entity* entity, int cellIndex);
@@ -208,6 +211,8 @@ class Map
 		bool getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) const;
 		inline const std::map<std::string, std::shared_ptr<Zone>>& getZones() const { return m_zones; }
 
+		bool straightPathExists(const flat::Vector2& from, const flat::Vector2& to, float jumpHeight, Navigability navigability) const;
+
 		void setFogType(fog::Fog::FogType fogType);
 		fog::Fog::FogType getFogType() const;
 
@@ -221,7 +226,7 @@ class Map
 		void enableTileIndicesDebug(bool enable) { m_enableTileIndicesDebug = enable; }
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
 #endif // FLAT_DEBUG
-		
+
 	protected:
 		void setAxes(const flat::Vector2& xAxis,
 		             const flat::Vector2& yAxis,
@@ -234,7 +239,7 @@ class Map
 		void addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex);
 
 		void updateTileNormal(TileIndex tileIndex);
-		
+
 	protected:
 		DisplayManager* m_displayManager;
 
@@ -282,7 +287,7 @@ class Map
 		bool m_enableTileIndicesDebug;
 		bool m_enableNavigabilityDebug;
 #endif
-		
+
 	private:
 		friend class io::Reader;
 		friend class io::Writer;

@@ -10,6 +10,7 @@
 #include "map/pathfinder/pathfinder.h"
 #include "map/lua/zone.h"
 #include "map/brush/lua/brush.h"
+#include "map/pathfinder/lua/path.h"
 
 #include "entity/lua/entity.h"
 
@@ -93,6 +94,7 @@ void BaseState::initLua(Game& game)
 		entity::lua::open(game);
 		map::lua::zone::open(game);
 		map::brush::lua::open(game);
+		game::map::pathfinder::lua::open(game);
 	}
 	game.ui->reset();
 	game.notify->reset();

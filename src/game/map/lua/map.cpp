@@ -5,19 +5,13 @@
 
 #include "map/tile.h"
 #include "map/pathfinder/pathfinder.h"
+#include "map/pathfinder/lua/path.h"
 #include "map/fog/fog.h"
 
 #include "states/mapeditorstate.h"
-
 #include "entity/lua/entity.h"
 
-namespace game
-{
-namespace map
-{
-namespace lua
-{
-namespace map
+namespace game::map::lua::map
 {
 
 int open(lua_State* L)
@@ -49,6 +43,7 @@ int open(lua_State* L)
 		{"getTileZ",                      l_Map_getTileZ},
 		{"setTileZ",                      l_Map_setTileZ},
 		{"moveTileZBy",                   l_Map_moveTileZBy},
+		{"findPath",                      l_Map_findPath},
 
 		{"setFogType",                    l_Map_setFogType},
 		{"getFogType",                    l_Map_getFogType},
@@ -81,7 +76,7 @@ int open(lua_State* L)
 	lua_settable(L, -3);
 
 	lua_setglobal(L, "Map");
-	
+
 	return 0;
 }
 
@@ -142,8 +137,8 @@ int l_Map_debug_enableTileIndicesDebug(lua_State* L)
 
 int l_Map_debug_enableSimplifyPath(lua_State* L)
 {
-	bool enable = lua_toboolean(L, 1) == 1;
-	pathfinder::Pathfinder::enableSimplifyPath(enable);
+	const bool enable = lua_toboolean(L, 1) == 1;
+	pathfinder::Path::enableSimplifyPath(enable);
 	return 0;
 }
 #endif // FLAT_DEBUG
@@ -277,6 +272,20 @@ int l_Map_moveTileZBy(lua_State* L)
 	return 0;
 }
 
+int l_Map_findPath(lua_State* L)
+{
+	const flat::Vector2& from = flat::lua::getVector2(L, 1);
+	const flat::Vector2& to = flat::lua::getVector2(L, 2);
+	const float jumpHeight = static_cast<Navigability>(luaL_checkinteger(L, 3));
+	const Navigability navigability = static_cast<Navigability>(luaL_checkinteger(L, 4));
+	const Map& map = getMap(L);
+	pathfinder::Pathfinder pathfinder(map, jumpHeight, navigability);
+	std::shared_ptr<pathfinder::Path> path = std::make_shared<pathfinder::Path>();
+	pathfinder.findPath(from, to, *path);
+	game::map::pathfinder::lua::pushPath(L, path);
+	return 1;
+}
+
 int l_Map_setFogType(lua_State* L)
 {
 	const fog::Fog::FogType fogType = static_cast<fog::Fog::FogType>(luaL_checkinteger(L, 1));
@@ -305,7 +314,4 @@ game::map::Map& getMap(lua_State* L)
 	return mapState.getMap();
 }
 
-} // map
-} // lua
-} // map
-} // game
+} // game::map::lua::map

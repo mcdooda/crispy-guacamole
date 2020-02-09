@@ -41,7 +41,7 @@ class MapEditorState : public BaseMapState, public flat::state::Agent
 
 	protected:
 		entity::component::ComponentFlags getComponentsFilter() const override;
-		
+
 	private:
 		void saveOnCtrlS(Game& game);
 };

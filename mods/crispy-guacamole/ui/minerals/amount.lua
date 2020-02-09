@@ -22,7 +22,7 @@ return {
             widget:addChild(amountContainer)
         end
 
-        entity:setUiOffset(flat.Vector2(-mineralsAmountWidgetWidth / 2, 20))
+        entity:setUiOffset(flat.Vector2(-mineralsAmountWidgetWidth / 2, 40))
 
         Widget.getRoot():addChild(widget)
 

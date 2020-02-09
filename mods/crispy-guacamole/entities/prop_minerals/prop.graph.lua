@@ -36,18 +36,6 @@ return {
       1,
       2,
     },
-    {
-      9,
-      1,
-      8,
-      1,
-    },
-    {
-      11,
-      1,
-      10,
-      1,
-    },
   },
   nodeType = 'script',
   nodes = {
@@ -86,24 +74,6 @@ return {
     },
     {
       name = 'script/luavariable',
-    },
-    {
-      name = 'script/luavariable',
-    },
-    {
-      loadArguments = {
-        'Map.Navigability.GROUND',
-      },
-      name = 'string',
-    },
-    {
-      name = 'script/luavariable',
-    },
-    {
-      loadArguments = {
-        'test',
-      },
-      name = 'string',
     },
   },
 }

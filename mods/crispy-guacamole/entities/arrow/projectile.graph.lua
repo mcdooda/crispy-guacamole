@@ -9,13 +9,43 @@ return {
     {
       1,
       2,
-      15,
+      13,
       1,
     },
     {
       1,
       3,
+      15,
+      2,
+    },
+    {
+      1,
+      3,
       8,
+      1,
+    },
+    {
+      1,
+      3,
+      14,
+      1,
+    },
+    {
+      1,
+      3,
+      22,
+      2,
+    },
+    {
+      1,
+      3,
+      21,
+      2,
+    },
+    {
+      1,
+      3,
+      24,
       2,
     },
     {
@@ -29,12 +59,6 @@ return {
       4,
       10,
       2,
-    },
-    {
-      1,
-      4,
-      14,
-      1,
     },
     {
       2,
@@ -55,10 +79,22 @@ return {
       3,
     },
     {
+      8,
+      1,
+      19,
+      2,
+    },
+    {
       9,
       1,
       13,
       2,
+    },
+    {
+      10,
+      1,
+      24,
+      1,
     },
     {
       11,
@@ -79,22 +115,64 @@ return {
       1,
     },
     {
+      13,
+      2,
+      22,
+      1,
+    },
+    {
       14,
       1,
       10,
       5,
     },
     {
-      15,
-      1,
-      8,
+      16,
+      3,
+      19,
       1,
     },
     {
-      15,
-      2,
-      13,
+      17,
       1,
+      16,
+      2,
+    },
+    {
+      18,
+      1,
+      16,
+      3,
+    },
+    {
+      19,
+      1,
+      15,
+      1,
+    },
+    {
+      20,
+      1,
+      21,
+      3,
+    },
+    {
+      21,
+      1,
+      16,
+      1,
+    },
+    {
+      22,
+      1,
+      21,
+      1,
+    },
+    {
+      23,
+      1,
+      22,
+      3,
     },
   },
   nodeType = 'script',
@@ -142,7 +220,7 @@ return {
       name = 'string',
     },
     {
-      name = 'entity/despawnentity',
+      name = 'entity/isvalidentity',
     },
     {
       name = 'entity/isvalidentity',
@@ -169,10 +247,46 @@ return {
       name = 'entity/getinstigator',
     },
     {
+      name = 'entity/despawnentity',
+    },
+    {
+      name = 'game/timer',
+    },
+    {
       loadArguments = {
         3,
       },
-      name = 'script/impulseall',
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        'collision',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/disablecomponent',
+    },
+    {
+      name = 'entity/disablecomponent',
+    },
+    {
+      loadArguments = {
+        'projectile',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/despawnentity',
     },
   },
 }

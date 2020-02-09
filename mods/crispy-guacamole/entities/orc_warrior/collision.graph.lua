@@ -10,19 +10,19 @@ return {
       3,
       1,
       1,
-      1,
+      3,
     },
     {
       4,
       1,
       1,
-      2,
+      1,
     },
     {
       5,
       1,
       1,
-      3,
+      2,
     },
     {
       6,
@@ -53,19 +53,19 @@ return {
     },
     {
       loadArguments = {
+        0.80000001192093,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
         'cylinder',
       },
       name = 'string',
     },
     {
       loadArguments = {
-        0.25,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        1,
+        0.20000000298023,
       },
       name = 'number',
     },

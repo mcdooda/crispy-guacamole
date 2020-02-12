@@ -148,7 +148,8 @@ local function setUnit(unitTemplateName, units)
                             end
                         end)
                         firstPos = bottomTilePosition
-                        game.setGhostEntity(entityTemplateName,
+                        game.setGhostEntity(
+                            entityTemplateName,
                             function(tiles)
                                 local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
                                 tiles:eachTile(function(tile)

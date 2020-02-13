@@ -62,7 +62,7 @@ function BuildingIcon:build(parent)
                     self.towerData.template,
                     function(tiles)
                         if Money:getAmount() < self.towerData.cost then
-                            return false
+                            return
                         end
 
                         local isInsideBuildableZone = true
@@ -71,14 +71,17 @@ function BuildingIcon:build(parent)
                                 isInsideBuildableZone = false
                             end
                         end)
-                        return isInsideBuildableZone
+                        if isInsideBuildableZone then
+                            return tiles:getPosition()
+                        end
+                        return
                     end,
                     function(tiles)
                         Money:sub(self.towerData.cost)
                         if self.towerData.onPlace then
                             self.towerData.onPlace()
                         end
-                        return true
+                        return false, false
                     end
                 )
             end)

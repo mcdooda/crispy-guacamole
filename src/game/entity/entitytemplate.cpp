@@ -80,40 +80,37 @@ component::ComponentTemplate* EntityTemplate::loadComponentTemplate(Game& game, 
 	return componentTemplate;
 }
 
-void EntityTemplate::loadComponentTemplateSafe(Game& game, const component::ComponentType& componentType, component::ComponentTemplate*& componentTemplate) const
+void EntityTemplate::loadComponentTemplateSafe(lua_State* L, Game& game, const component::ComponentType& componentType, component::ComponentTemplate*& componentTemplate) const
 {
-	lua_State* L = game.lua->state;
-	{
-		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-		std::string configPath = m_path + componentType.getConfigName() + ".lua";
-		int code = luaL_loadfile(L, configPath.c_str());
+	std::string configPath = m_path + componentType.getConfigName() + ".lua";
+	int code = luaL_loadfile(L, configPath.c_str());
+	if (code == LUA_OK)
+	{
+		code = lua_pcall(L, 0, 1, 0);
 		if (code == LUA_OK)
 		{
-			code = lua_pcall(L, 0, 1, 0);
-			if (code == LUA_OK)
-			{
-				componentTemplate = componentType.loadConfigFile(game, L, m_path);
-				lua_pop(L, 1); // pop config table
-				return;
-			}
-			else
-			{
-				std::cerr << "Error while loading " << componentType.getConfigName() << " component on " << m_name << ":" << std::endl
-					<< luaL_checkstring(L, -1) << std::endl << std::endl;
-				lua_pop(L, 1); // pop config table
-			}
-		}
-		else if (code == LUA_ERRFILE)
-		{
-			// LUA_ERRFILE -> component does not exist -> not an error -> pop error message and continue
-			lua_pop(L, 1);
+			componentTemplate = componentType.loadConfigFile(game, L, m_path);
+			lua_pop(L, 1); // pop config table
+			return;
 		}
 		else
 		{
-			flat::lua::printStack(L);
-			luaL_error(L, "luaL_loadfile failed with error %s", flat::lua::codeToString(code));
+			std::cerr << "Error while loading " << componentType.getConfigName() << " component on " << m_name << ":" << std::endl
+				<< luaL_checkstring(L, -1) << std::endl << std::endl;
+			lua_pop(L, 1); // pop config table
 		}
+	}
+	else if (code == LUA_ERRFILE)
+	{
+		// LUA_ERRFILE -> component does not exist -> not an error -> pop error message and continue
+		lua_pop(L, 1);
+	}
+	else
+	{
+		flat::lua::printStack(L);
+		luaL_error(L, "luaL_loadfile failed with error %s", flat::lua::codeToString(code));
 	}
 }
 

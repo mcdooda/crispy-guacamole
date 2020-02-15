@@ -90,7 +90,7 @@ class BaseMapState : public BaseState
 		void setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate);
 		void clearGhostTemplate();
 		entity::Entity* addGhostEntityAt(Game& game, const flat::Vector3& position);
-		virtual std::vector<flat::Vector2> ghostEntitiesPositions(map::TileIndex tileIndex) const;
+		virtual std::vector<flat::Vector2> getGhostEntityPositions(const flat::Vector2& cursorPosition, map::TileIndex tileIndex) const;
 		virtual bool onGhostEntityPlaced(map::TileIndex tileIndex, bool& continueAction);
 
 		entity::Entity* createEntity(

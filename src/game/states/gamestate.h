@@ -20,7 +20,7 @@ class GameState : public BaseMapState
 
 		void setGhostEntitiesPositions(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& canPlaceGhostEntity);
 		void setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTION>&& onGhostEntityPlaced);
-		std::vector<flat::Vector2> ghostEntitiesPositions(map::TileIndex tileIndex) const override;
+		std::vector<flat::Vector2> getGhostEntityPositions(const flat::Vector2& cursorPosition, map::TileIndex tileIndex) const override;
 		bool onGhostEntityPlaced(map::TileIndex tileIndex, bool& continueAction) override;
 
 	protected:

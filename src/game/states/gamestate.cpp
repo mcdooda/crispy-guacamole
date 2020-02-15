@@ -58,15 +58,16 @@ void GameState::setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTI
 	m_onGhostEntityPlaced = std::move(onGhostEntityPlaced);
 }
 
-std::vector<flat::Vector2> GameState::ghostEntitiesPositions(map::TileIndex tileIndex) const
+std::vector<flat::Vector2> GameState::getGhostEntityPositions(const flat::Vector2& cursorPosition, map::TileIndex tileIndex) const
 {
 	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
 	std::vector<flat::Vector2> points;
 	if (m_ghostEntitiesPositions)
 	{
 		m_ghostEntitiesPositions.callFunction(
-			[tileIndex](lua_State* L)
+			[&cursorPosition, tileIndex](lua_State* L)
 			{
+				flat::lua::pushVector2(L, cursorPosition);
 				map::brush::TilesContainer* tilesContainer = new map::brush::TilesContainer();
 				tilesContainer->push_back({tileIndex, 1.f});
 				map::brush::lua::pushTilesContainer(L, tilesContainer);
@@ -74,7 +75,10 @@ std::vector<flat::Vector2> GameState::ghostEntitiesPositions(map::TileIndex tile
 			1,
 			[&points](lua_State* L)
 			{
-				points = flat::lua::table::getArray<flat::Vector2>(L, 1);
+				if (!lua_isnoneornil(L, 1))
+				{
+					points = flat::lua::table::getArray<flat::Vector2>(L, 1);
+				}
 			}
 		);
 		return points;

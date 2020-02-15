@@ -421,17 +421,15 @@ void BaseMapState::clearGhostTemplate()
 	m_ghostTemplate.reset();
 }
 
-std::vector<flat::Vector2> BaseMapState::ghostEntitiesPositions(map::TileIndex tileIndex) const
+std::vector<flat::Vector2> BaseMapState::getGhostEntityPositions(const flat::Vector2& cursorPosition, map::TileIndex tileIndex) const
 {
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
-	std::vector<flat::Vector2> result;
-	result.push_back(m_map.getTileXY(tileIndex));
-	return result;
+	FLAT_ASSERT(map::isValidTile(tileIndex));
+	return { cursorPosition };
 }
 
 bool BaseMapState::onGhostEntityPlaced(map::TileIndex tileIndex, bool& continueAction)
 {
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
+	FLAT_ASSERT(map::isValidTile(tileIndex));
 	return true;
 }
 
@@ -529,19 +527,19 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 	if (!isMouseOverUi(game) && !isSelecting() && !m_mouseOverEntity.isValid() && m_ghostTemplate != nullptr)
 	{
 		bool isOnTile;
-		flat::Vector2 cursorPosition = getCursorMapPosition(game, isOnTile);
+		const flat::Vector2 cursorPosition = getCursorMapPosition(game, isOnTile);
 		if (isOnTile)
 		{
-			map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
-			map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
-			if (tileIndex != map::TileIndex::INVALID_TILE)
+			const map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
+			const map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
+			if (map::isValidTile(tileIndex))
 			{
 				using namespace entity::component;
 				ComponentFlags componentFlags = AllComponents;
 				componentFlags &= ~attack::AttackComponent::getFlag();
 				componentFlags &= ~behavior::BehaviorComponent::getFlag();
 				componentFlags &= ~collision::CollisionComponent::getFlag();
-				const std::vector<flat::Vector2> tiles = ghostEntitiesPositions(tileIndex);
+				const std::vector<flat::Vector2> tiles = getGhostEntityPositions(cursorPosition, tileIndex);
 				entities.reserve(tiles.size());
 				for (const auto& tile: tiles)
 				{

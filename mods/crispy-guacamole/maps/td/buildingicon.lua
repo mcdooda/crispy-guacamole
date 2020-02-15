@@ -60,7 +60,7 @@ function BuildingIcon:build(parent)
                 local buildableZone = Map.getZone 'Buildable'
                 game.setGhostEntity(
                     self.towerData.template,
-                    function(tiles)
+                    function(cursorPosition, tiles)
                         if Money:getAmount() < self.towerData.cost then
                             return
                         end
@@ -72,7 +72,7 @@ function BuildingIcon:build(parent)
                             end
                         end)
                         if isInsideBuildableZone then
-                            return tiles:getPosition()
+                            return { cursorPosition }
                         end
                         return
                     end,
@@ -81,7 +81,7 @@ function BuildingIcon:build(parent)
                         if self.towerData.onPlace then
                             self.towerData.onPlace()
                         end
-                        return false, false
+                        return true, false
                     end
                 )
             end)

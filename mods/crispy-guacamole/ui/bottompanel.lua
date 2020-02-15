@@ -134,9 +134,9 @@ local function setUnit(unitTemplateName, units)
             if buildingTypeData and buildingTypeData.pathType then
                 game.setGhostEntity(
                     entityTemplateName,
-                    function(tiles)
+                    function(cursorPosition, tiles)
                         -- TODO: check same altitude and ground navigation capability
-                        return tiles:getPositions()
+                        return { cursorPosition }
                     end,
                     function(tiles)
                         local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
@@ -150,7 +150,7 @@ local function setUnit(unitTemplateName, units)
                         firstPos = bottomTilePosition
                         game.setGhostEntity(
                             entityTemplateName,
-                            function(tiles)
+                            function(cursorPosition, tiles)
                                 local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
                                 tiles:eachTile(function(tile)
                                     local x, y = Map.getTilePosition(tile)
@@ -204,8 +204,8 @@ local function setUnit(unitTemplateName, units)
             else
                 game.setGhostEntity(
                     entityTemplateName,
-                    function(tiles)
-                        return tiles:getPositions()
+                    function(cursorPosition, tiles)
+                        return { cursorPosition }
                     end,
                     function(tiles)
                         local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)

@@ -56,7 +56,7 @@ for i = 1, #waves do
             local entity = Entity.spawn(
                 entityTemplate,
                 startZonePosition,
-                nil, nil,
+                nil, nil, nil,
                 Components.allExcept(Component.behavior)
             )
             entity:getExtraData().isWaveEntity = true

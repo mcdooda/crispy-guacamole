@@ -34,7 +34,7 @@ class GameState : public BaseMapState
 	private:
 		flat::lua::Thread m_levelThread;
 
-		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_ghostEntitiesPositions;
+		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_getGhostEntityPositions;
 		flat::lua::UniqueLuaReference<LUA_TFUNCTION> m_onGhostEntityPlaced;
 };
 

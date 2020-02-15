@@ -19,6 +19,7 @@ using LuaPath = flat::lua::SharedCppValue<std::shared_ptr<Path>>;
 
 int open(Game& game);
 int l_Path_getPoints(lua_State* L);
+int l_Path_getUniqueTilePositions(lua_State* L);
 int l_Path_copy(lua_State* L);
 int l_Path_insert(lua_State* L);
 int l_Path_eachTile(lua_State* L);

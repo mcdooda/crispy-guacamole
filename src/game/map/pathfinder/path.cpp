@@ -37,6 +37,17 @@ void Path::simplify(const Map& map, float jumpHeight, Navigability navigabilityM
 #endif // FLAT_DEBUG
 }
 
+std::vector<flat::Vector2> Path::getUniqueTilePositions() const
+{
+	std::vector<flat::Vector2> uniqueTilePositions = m_positions;
+	if (uniqueTilePositions.size() > 0)
+	{
+		// remove duplicates
+		uniqueTilePositions.erase(std::unique(uniqueTilePositions.begin(), uniqueTilePositions.end()), uniqueTilePositions.end());
+	}
+	return uniqueTilePositions;
+}
+
 void Path::insertPath(const Path& path)
 {
 	m_positions.insert(m_positions.end(), path.m_positions.begin() + 1, path.m_positions.end());

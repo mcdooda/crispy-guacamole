@@ -161,11 +161,11 @@ local function setUnit(unitTemplateName, units)
                                 end)
                                 local newPath = Map.findPath(firstPos, bottomTilePosition, 1, Map.Navigability.GROUND)
                                 if path == nil then
-                                    return newPath:getPoints()
+                                    return newPath:getUniqueTilePositions()
                                 else
                                     local tmp = path:copy()
                                     tmp:insert(newPath)
-                                    return tmp:getPoints()
+                                    return tmp:getUniqueTilePositions()
                                 end
                             end,
                             function(tiles, continueAction)

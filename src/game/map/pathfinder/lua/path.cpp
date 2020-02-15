@@ -15,10 +15,11 @@ int open(Game& game)
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	static const luaL_Reg Path_lib_m[] = {
-		{"getPoints",    l_Path_getPoints},
-		{"copy",         l_Path_copy},
-		{"insert",       l_Path_insert},
-		{"eachTile",     l_Path_eachTile},
+		{"getPoints",              l_Path_getPoints},
+		{"getUniqueTilePositions", l_Path_getUniqueTilePositions},
+		{"copy",                   l_Path_copy},
+		{"insert",                 l_Path_insert},
+		{"eachTile",               l_Path_eachTile},
 		{nullptr, nullptr}
 	};
 	game.lua->registerClass<LuaPath>("CG.Path", Path_lib_m);
@@ -42,6 +43,13 @@ int l_Path_getPoints(lua_State* L)
 	return 1;
 }
 
+int l_Path_getUniqueTilePositions(lua_State* L)
+{
+	std::shared_ptr<Path> path = getPath(L, 1);
+	flat::lua::table::pushVector(L, path->getUniqueTilePositions());
+	return 1;
+}
+
 int l_Path_copy(lua_State* L)
 {
 	std::shared_ptr<Path> path = getPath(L, 1);
@@ -62,7 +70,7 @@ int l_Path_eachTile(lua_State* L)
 {
 	std::shared_ptr<Path> path = getPath(L, 1);
 	luaL_checktype(L, 2, LUA_TFUNCTION);
-	for (const flat::Vector2& position : path->getPoints())
+	for (const flat::Vector2& position : path->getUniqueTilePositions())
 	{
 		lua_pushvalue(L, 2);
 		flat::lua::pushVector2(L, position);

@@ -28,6 +28,7 @@ class Path
         void simplify(const Map& map, float jumpHeight, Navigability navigabilityMask);
 
         inline const std::vector<flat::Vector2>& getPoints() const { return m_positions; }
+        std::vector<flat::Vector2> getUniqueTilePositions() const;
         inline const flat::Vector2& getPoint(int index) const { return m_positions[index]; }
         inline int getPointsCount() const { return static_cast<int>(m_positions.size()); }
         inline const flat::Vector2& getLastPoint() const { return m_positions.back(); }

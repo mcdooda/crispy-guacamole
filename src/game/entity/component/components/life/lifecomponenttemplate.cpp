@@ -34,7 +34,7 @@ void LifeComponentTemplate::load(Game& game, lua_State* L, const std::string& en
 	lua_getfield(L, -4, "maxHealth");
 	m_maxHealth = static_cast<int>(luaL_checkinteger(L, -1));
 	
-	lua_pop(L, 3);
+	lua_pop(L, 4);
 }
 
 } // life

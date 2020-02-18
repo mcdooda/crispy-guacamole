@@ -111,6 +111,8 @@ void BehaviorRuntime::updateCurrentState()
 		if (status == LUA_OK)
 		{
 			m_thread.reset();
+
+			// checking result: expecting nil for leaving the behavior or a string for entering a new state
 			if (lua_type(L, -1) == LUA_TSTRING)
 			{
 				FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
@@ -127,14 +129,17 @@ void BehaviorRuntime::updateCurrentState()
 
 				if (lua_isnil(L, -1))
 				{
-					luaL_error(L, "'%s' has no '%s' state", m_entity->getTemplateName().c_str(), stateName);
+					FLAT_CONSOLE_COLOR(LIGHT_RED);
+					std::cerr << "Entity '" << m_entity->getTemplateName() << "' has no '" << stateName << "' state"  << std::endl;
 				}
+				else
+				{
+					luaL_checktype(L, -1, LUA_TFUNCTION);
 
-				luaL_checktype(L, -1, LUA_TFUNCTION);
-
-				// set thread function
-				m_thread.set(L, -1);
-				FLAT_DEBUG_ONLY(m_currentStateName = stateName;)
+					// set thread function
+					m_thread.set(L, -1);
+					FLAT_DEBUG_ONLY(m_currentStateName = stateName;)
+				}
 
 				lua_pop(L, 2);
 			}
@@ -144,10 +149,12 @@ void BehaviorRuntime::updateCurrentState()
 			}
 			else
 			{
-				luaL_error(L, "Behavior thread returned invalid value '%s'", lua_tostring(L, -1));
+				FLAT_CONSOLE_COLOR(LIGHT_RED);
+				std::cerr << "Entity '" << m_entity->getTemplateName() << "' behavior thread returned an invalid value '" << lua_tostring(L, -1) << "'" << std::endl;
 			}
 		}
 
+		// pop resume result
 		lua_pop(L, 1);
 	}
 }

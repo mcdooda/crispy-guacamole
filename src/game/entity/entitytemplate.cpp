@@ -91,27 +91,31 @@ void EntityTemplate::loadComponentTemplateSafe(lua_State* L, Game& game, const c
 		code = lua_pcall(L, 0, 1, 0);
 		if (code == LUA_OK)
 		{
-			componentTemplate = componentType.loadConfigFile(game, L, m_path);
-			lua_pop(L, 1); // pop config table
-			return;
-		}
-		else
-		{
-			std::cerr << "Error while loading " << componentType.getConfigName() << " component on " << m_name << ":" << std::endl
-				<< luaL_checkstring(L, -1) << std::endl << std::endl;
-			lua_pop(L, 1); // pop config table
+			if (lua_istable(L, -1))
+			{
+				componentTemplate = componentType.loadConfigFile(game, L, m_path);
+				lua_pop(L, 1);
+				return;
+			}
+			else
+			{
+				lua_pushstring(L, "table expected from component file");
+			}
 		}
 	}
 	else if (code == LUA_ERRFILE)
 	{
 		// LUA_ERRFILE -> component does not exist -> not an error -> pop error message and continue
 		lua_pop(L, 1);
+		return;
 	}
-	else
-	{
-		flat::lua::printStack(L);
-		luaL_error(L, "luaL_loadfile failed with error %s", flat::lua::codeToString(code));
-	}
+
+	FLAT_LUA_IGNORE_ALL_STACK_GROWTH();
+	luaL_error(L, "Error %s while loading component '%s' for entity '%s':\n%s",
+		flat::lua::codeToString(code),
+		componentType.getConfigName(),
+		m_name.c_str(),
+		luaL_checkstring(L, -1));
 }
 
 } // entity

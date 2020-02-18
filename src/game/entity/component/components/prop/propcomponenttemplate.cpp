@@ -22,7 +22,7 @@ void PropComponentTemplate::load(Game& game, lua_State* L, const std::string& en
 	lua_getfield(L, -2, "navigability");
 	m_navigability = static_cast<map::Navigability>(luaL_checkinteger(L, -1));
 
-	lua_pop(L, 1);
+	lua_pop(L, 2);
 }
 
 } // prop

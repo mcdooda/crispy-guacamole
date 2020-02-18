@@ -544,7 +544,14 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 				for (const auto& tile: tiles)
 				{
 					flat::Vector3 ghostPosition(tile, m_map.getTileZ(m_map.getTileIndex(tile)));
-					entities.push_back(spawnEntityAtPosition(game, m_ghostTemplate, ghostPosition, 0.f, 0.f, nullptr, componentFlags));
+
+					entity::Entity* ghost = spawnEntityAtPosition(game, m_ghostTemplate, ghostPosition, 0.f, 0.f, nullptr, componentFlags);
+					if (ghost == nullptr)
+					{
+						continue;
+					}
+
+					entities.push_back(ghost);
 					flat::render::BaseSprite& sprite = entities.back()->getSprite();
 					flat::video::Color color = flat::video::Color::WHITE;
 					color.a = 0.6f;

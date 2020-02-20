@@ -41,7 +41,7 @@ local function entityAssetIcon(entityTemplateName, size)
 end
 
 local function tileAssetIcon(tileTemplateName, size)
-    local preview = Preview.tile(tileTemplateName, 1, true, 1)
+    local preview = Preview.tile(tileTemplateName, 1, false, 1)
     preview:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP)
     preview:setPosition(0, -16)
     return makeAssetIconWidget(tileTemplateName, preview, size)

@@ -1,6 +1,6 @@
 local Path = require 'data/scripts/path'
 local ModData = require 'data/editor/scripts/moddata'
-local Preview = require 'data/scripts/preview'
+local AssetIcon = require 'data/scripts/asseticon'
 local UiSettings = require 'data/scripts/ui/uisettings'
 
 local Slider = require 'data/scripts/ui/slider'
@@ -9,27 +9,37 @@ local TextInput = require 'data/scripts/ui/textinput'
 local root = Widget.getRoot()
 do
 	local leftPanel = Widget.makeColumnFlow()
-	leftPanel:setBackgroundColor(0x444444FF)
+	leftPanel:setBackgroundColor(0x666666FF)
 	leftPanel:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
-	leftPanel:setSize(128,0)
-	leftPanel:setPadding(0,0,0,0)
+	leftPanel:setSize(302, 0)
+	leftPanel:setPadding(0)
 
 	local content = Widget.makeColumnFlow()
 	content:setSizePolicy(Widget.SizePolicy.EXPAND)
 	content:setAllowScrollY(true)
 
-	local contentChildren = {}
+	local contentLines = {}
+	local iconPerLine = 3
+	local iconSize = 90
+	local iconMargin = 8
 
 	local function addContent(widget)
-		content:addChild(widget)
-		contentChildren[#contentChildren + 1] = widget
+		local contentLine
+		if #contentLines == 0 or contentLines[#contentLines]:getChildrenCount() == iconPerLine then
+			contentLine = Widget.makeLineFlow()
+			contentLines[#contentLines + 1] = contentLine
+			content:addChild(contentLine)
+		else
+			contentLine = contentLines[#contentLines]
+		end
+		contentLine:addChild(widget)
 	end
 
 	local function clearContent()
-		for i = 1, #contentChildren do
-			contentChildren[i]:removeFromParent()
+		for i = 1, #contentLines do
+			contentLines[i]:removeFromParent()
 		end
-		contentChildren = {}
+		contentLines = {}
 	end
 
 	do
@@ -73,12 +83,12 @@ do
 			Editor.setTile(ModData.tiles.names[1])
 			for i = 1, #ModData.tiles.names do
 				local tileName = ModData.tiles.names[i]
-				local preview = Preview.tile(tileName, 1, true, 1, true)
-				preview:setMargin(10, 0, 0, 7)
-				preview:click(function()
+				local assetIcon = AssetIcon.tile(tileName, iconSize)
+				assetIcon:setMargin(iconMargin, 0, 0, iconMargin)
+				assetIcon:click(function()
 					Editor.setTile(tileName)
 				end)
-				addContent(preview)
+				addContent(assetIcon)
 			end
 		end
 
@@ -87,12 +97,12 @@ do
 			Editor.setProp(ModData.props.names[1])
 			for i = 1,  #ModData.props.names do
 				local propName = ModData.props.names[i]
-				local preview = Preview.prop(propName, ModData.props.getHighest(propName), 2, true)
-				preview:setMargin(10, 0, 0, 7)
-				preview:click(function()
+				local assetIcon = AssetIcon.prop(propName, iconSize)
+				assetIcon:setMargin(iconMargin, 0, 0, iconMargin)
+				assetIcon:click(function()
 					Editor.setProp(propName)
 				end)
-				addContent(preview)
+				addContent(assetIcon)
 			end
 		end
 
@@ -102,12 +112,12 @@ do
 			for i = 1, #ModData.entities.names do
 				local entityName = ModData.entities.names[i]
 
-				local preview = Preview.entity(entityName, nil, false, 2, true)
-				preview:setMargin(10, 0, 0, 7)
-				preview:click(function()
+				local assetIcon = AssetIcon.entity(entityName, iconSize)
+				assetIcon:setMargin(iconMargin, 0, 0, iconMargin)
+				assetIcon:click(function()
 					Editor.setEntity(entityName)
 				end)
-				addContent(preview)
+				addContent(assetIcon)
 			end
 		end
 
@@ -184,48 +194,3 @@ do
 
 	root:addChild(leftPanel)
 end
-
---[[
-do
-	local a = Widget.makeFixedSize(50, 50)
-	a:setBackgroundColor(0xFF0000FF)
-	a:setPositionPolicy(Widget.PositionPolicy.BOTTOM_LEFT)
-	a:setPadding(2)
-
-	local positionPolicies = {
-		Widget.PositionPolicy.TOP_LEFT,
-		Widget.PositionPolicy.CENTER_X     + Widget.PositionPolicy.TOP,
-		Widget.PositionPolicy.TOP_RIGHT,
-		Widget.PositionPolicy.RIGHT        + Widget.PositionPolicy.CENTER_Y,
-		Widget.PositionPolicy.BOTTOM_RIGHT,
-		Widget.PositionPolicy.CENTER_X     + Widget.PositionPolicy.BOTTOM,
-		Widget.PositionPolicy.BOTTOM_LEFT,
-		Widget.PositionPolicy.LEFT         + Widget.PositionPolicy.CENTER_Y
-	}
-	for i = 1, #positionPolicies do
-		local positionPolicy = positionPolicies[i]
-		local b = Widget.makeFixedSize(10, 10)
-		b:setBackgroundColor(0x00FF00FF)
-		b:setPositionPolicy(positionPolicy)
-		a:addChild(b)
-	end
-
-	do
-		local c = Widget.makeFixedSize(32, 32)
-		c:setBackground 'data/editor/interface/widgets/checkbox.png'
-		c:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
-		c:setBackgroundPosition(0.5, 0)
-		c:setPositionPolicy(Widget.PositionPolicy.CENTER)
-		a:addChild(c)
-	end
-
-	local w, h = a:getSize()
-	Timer.start(0, function()
-		local x, y = Mouse.getPosition()
-		x = x + 5
-		y = y - h - 5
-		a:setPosition(x, y)
-	end)
-	root:addChild(a)
-end
---]]

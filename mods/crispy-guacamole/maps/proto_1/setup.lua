@@ -2,7 +2,6 @@ local LevelTasks = require 'data/scripts/leveltasks'
 
 Map.setFogType(Map.FogType.SOFT)
 
-game.setCameraZoom(1)
 local townHalls = Map.getEntitiesOfType 'human_town_hall'
 if townHalls[1] then
     game.setCameraCenter(townHalls[1]:getPosition():toVector2())

@@ -14,9 +14,15 @@ return {
     },
     {
       1,
-      3,
-      10,
       2,
+      11,
+      1,
+    },
+    {
+      1,
+      3,
+      21,
+      6,
     },
     {
       1,
@@ -51,24 +57,6 @@ return {
     {
       1,
       3,
-      30,
-      6,
-    },
-    {
-      1,
-      3,
-      23,
-      6,
-    },
-    {
-      1,
-      3,
-      21,
-      6,
-    },
-    {
-      1,
-      3,
       42,
       6,
     },
@@ -77,6 +65,12 @@ return {
       3,
       28,
       6,
+    },
+    {
+      1,
+      3,
+      11,
+      2,
     },
     {
       2,
@@ -111,50 +105,26 @@ return {
     {
       8,
       1,
-      10,
-      4,
+      21,
+      3,
     },
     {
       9,
       1,
-      10,
-      3,
-    },
-    {
-      10,
-      1,
-      14,
-      1,
-    },
-    {
-      10,
-      1,
-      11,
-      1,
-    },
-    {
-      10,
-      2,
-      11,
-      2,
-    },
-    {
-      10,
-      2,
-      14,
-      2,
-    },
-    {
-      10,
-      3,
-      11,
-      3,
-    },
-    {
-      10,
+      8,
       4,
-      14,
-      3,
+    },
+    {
+      10,
+      1,
+      8,
+      2,
+    },
+    {
+      11,
+      1,
+      36,
+      1,
     },
     {
       12,
@@ -169,10 +139,10 @@ return {
       5,
     },
     {
-      15,
+      14,
       1,
-      30,
-      1,
+      65,
+      2,
     },
     {
       16,
@@ -189,7 +159,7 @@ return {
     {
       16,
       1,
-      77,
+      40,
       1,
     },
     {
@@ -225,8 +195,8 @@ return {
     {
       23,
       1,
-      40,
-      1,
+      28,
+      5,
     },
     {
       24,
@@ -237,7 +207,7 @@ return {
     {
       24,
       1,
-      74,
+      8,
       1,
     },
     {
@@ -255,8 +225,8 @@ return {
     {
       30,
       1,
-      36,
-      1,
+      20,
+      7,
     },
     {
       31,
@@ -267,7 +237,7 @@ return {
     {
       31,
       1,
-      74,
+      8,
       3,
     },
     {
@@ -291,13 +261,7 @@ return {
     {
       31,
       1,
-      23,
-      4,
-    },
-    {
-      31,
-      1,
-      30,
+      28,
       4,
     },
     {
@@ -307,34 +271,16 @@ return {
       3,
     },
     {
-      31,
-      1,
-      28,
-      4,
-    },
-    {
       36,
       1,
-      23,
+      74,
       1,
     },
     {
       40,
       1,
-      21,
-      1,
-    },
-    {
-      40,
-      1,
-      10,
-      1,
-    },
-    {
-      40,
-      1,
-      78,
-      1,
+      69,
+      2,
     },
     {
       42,
@@ -387,8 +333,8 @@ return {
     {
       62,
       1,
-      23,
-      2,
+      42,
+      5,
     },
     {
       63,
@@ -411,8 +357,8 @@ return {
     {
       66,
       1,
-      30,
-      2,
+      21,
+      5,
     },
     {
       67,
@@ -429,26 +375,14 @@ return {
     {
       69,
       1,
-      40,
-      2,
+      20,
+      1,
     },
     {
       70,
       1,
       42,
       2,
-    },
-    {
-      71,
-      1,
-      30,
-      3,
-    },
-    {
-      71,
-      1,
-      23,
-      3,
     },
     {
       72,
@@ -459,74 +393,20 @@ return {
     {
       73,
       1,
-      74,
-      2,
-    },
-    {
-      74,
-      1,
-      21,
+      11,
       3,
     },
     {
-      75,
-      1,
       74,
-      4,
+      1,
+      69,
+      1,
     },
     {
-      76,
-      1,
-      65,
+      74,
       2,
-    },
-    {
-      77,
-      1,
-      78,
-      2,
-    },
-    {
-      78,
-      1,
-      20,
-      1,
-    },
-    {
-      79,
-      1,
-      20,
-      7,
-    },
-    {
-      80,
-      1,
       21,
-      5,
-    },
-    {
-      81,
       1,
-      23,
-      5,
-    },
-    {
-      82,
-      1,
-      28,
-      5,
-    },
-    {
-      83,
-      1,
-      30,
-      5,
-    },
-    {
-      84,
-      1,
-      42,
-      5,
     },
   },
   nodeType = 'script',
@@ -536,7 +416,7 @@ return {
     },
     {
       loadArguments = {
-        10,
+        15,
       },
       name = 'number',
     },
@@ -575,18 +455,21 @@ return {
     },
     {
       loadArguments = {
-        'fire',
+        'data/compounds/script/Circular Position',
       },
-      name = 'string',
+      name = 'compound',
     },
     {
       loadArguments = {
-        8,
+        0.44999998807907,
       },
       name = 'number',
     },
     {
-      name = 'entity/directionalsprite',
+      loadArguments = {
+        0.69999998807907,
+      },
+      name = 'number',
     },
     {
       name = 'entity/playanimation',
@@ -604,7 +487,10 @@ return {
       name = 'boolean',
     },
     {
-      name = 'entity/flipspritex',
+      loadArguments = {
+        1.2000000476837,
+      },
+      name = 'number',
     },
     {
       name = 'entity/lookatentity',
@@ -614,7 +500,7 @@ return {
     },
     {
       loadArguments = {
-        'magical_projectile',
+        'poison_projectile',
       },
       name = 'string',
     },
@@ -638,12 +524,15 @@ return {
     },
     {
       loadArguments = {
-        'fx_smoke_blue',
+        'fx_green_burst',
       },
       name = 'string',
     },
     {
-      name = 'entity/spawnentity',
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
     {
       name = 'entity/getposition',
@@ -676,7 +565,10 @@ return {
       name = 'string',
     },
     {
-      name = 'entity/spawnentity',
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
     {
       name = 'entity/getheading',
@@ -727,7 +619,7 @@ return {
       name = 'number',
     },
     {
-      name = 'game/sleep',
+      name = 'entity/isvalidentity',
     },
     {
       loadArguments = {
@@ -773,7 +665,7 @@ return {
     },
     {
       loadArguments = {
-        0.15000000596046,
+        0.050000000745058,
       },
       name = 'number',
     },
@@ -806,7 +698,7 @@ return {
     },
     {
       loadArguments = {
-        0.15000000596046,
+        0.050000000745058,
       },
       name = 'number',
     },
@@ -848,73 +740,7 @@ return {
     },
     {
       loadArguments = {
-        'fx_charge_big',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        'data/compounds/script/Circular Position',
-      },
-      name = 'compound',
-    },
-    {
-      loadArguments = {
-        'fx_smoke_blue',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        'data/compounds/script/Circular Position',
-      },
-      name = 'compound',
-    },
-    {
-      loadArguments = {
-        'fx_charge',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1.1000000238419,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.69999998807907,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'fx_smoke_blue',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        'data/compounds/script/Circular Position',
-      },
-      name = 'compound',
-    },
-    {
-      loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.69999998807907,
+        0,
       },
       name = 'number',
     },
@@ -926,57 +752,66 @@ return {
     },
     {
       loadArguments = {
-        0.44999998807907,
+        'fx_green_burst',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'data/compounds/script/Circular Position',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        0,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.89999997615814,
+        1.7000000476837,
       },
       name = 'number',
     },
     {
-      name = 'entity/isvalidentity',
+      loadArguments = {
+        1.2000000476837,
+      },
+      name = 'number',
     },
     {
       name = 'script/condition',
     },
     {
       loadArguments = {
-        false,
+        'fx_green_burst',
       },
-      name = 'boolean',
+      name = 'string',
     },
     {
       loadArguments = {
-        0,
+        'data/compounds/script/Circular Position',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        0.5,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0,
+        'attack',
       },
-      name = 'number',
+      name = 'string',
     },
     {
       loadArguments = {
-        0,
+        5,
       },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
+      name = 'script/impulseall',
     },
   },
 }

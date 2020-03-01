@@ -2,6 +2,7 @@ local Path = require 'data/scripts/path'
 local ModData = require 'data/editor/scripts/moddata'
 local AssetIcon = require 'data/scripts/asseticon'
 local UiSettings = require 'data/scripts/ui/uisettings'
+local Icon = require 'data/scripts/ui/icon'
 
 local Slider = require 'data/scripts/ui/slider'
 local TextInput = require 'data/scripts/ui/textinput'
@@ -43,15 +44,8 @@ do
 	end
 
 	do
-		local padding = Widget.makeLineFlow()
-		padding:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.FIXED_Y)
-		padding:setSize(128, 0)
-		leftPanel:addChild(padding)
-	end
-
-	do
 		local modes = Widget.makeLineFlow()
-		modes:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.COMPRESS_Y)
+		modes:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
 
 		local tabs = {}
 		local icons = {}
@@ -186,6 +180,37 @@ do
 			modes:addChild(icon)
 		end
 		enableTab(1)
+
+		do
+			-- spacer
+			local spacer = Widget.makeExpand()
+			modes:addChild(spacer)
+		end
+
+		do
+			local playButton = Widget.makeLineFlow()
+			playButton:setBackgroundColor(0x848484FF)
+			playButton:setMargin(6, 6, 0, 0)
+			playButton:setPadding(0, 4, 0, 4)
+			do
+				local playIcon = Icon:new('play', 18)
+				playIcon.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
+				playButton:addChild(playIcon.container)
+			end
+			do
+				-- Play button
+				local playButtonText = Widget.makeText('Play', 'data/misc/fonts/gnuolane rg.ttf', 22)
+				playButtonText:setPositionPolicy(Widget.PositionPolicy.CENTER)
+				playButton:addChild(playButtonText)
+			end
+			playButton:click(flat.ui.task(function()
+				if flat.ui.confirm 'Are you sure you want to open the map in play mode?' then
+                    game.openMap(Mod.getPath(), Mod.getCurrentMapName())
+                end
+			end))
+
+			modes:addChild(playButton)
+		end
 
 		leftPanel:addChild(modes)
 	end

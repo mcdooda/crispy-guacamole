@@ -7,5 +7,7 @@ return {
         'human_farm',
         'wheat_field',
         'human_town_hall',
+        'human_house',
+        'human_house_middle',
     }
 }

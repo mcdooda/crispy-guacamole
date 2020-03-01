@@ -32,6 +32,12 @@ return {
     },
     {
       1,
+      3,
+      11,
+      6,
+    },
+    {
+      1,
       4,
       6,
       1,
@@ -90,6 +96,12 @@ return {
       11,
       3,
     },
+    {
+      13,
+      1,
+      11,
+      5,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -146,6 +158,12 @@ return {
     },
     {
       name = 'entity/getposition',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
   },
 }

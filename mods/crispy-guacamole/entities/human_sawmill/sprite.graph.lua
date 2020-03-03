@@ -45,65 +45,35 @@ return {
     {
       9,
       1,
-      12,
-      3,
+      10,
+      4,
     },
     {
       10,
       1,
-      12,
-      2,
+      14,
+      1,
     },
     {
       11,
       1,
-      12,
-      4,
+      10,
+      1,
     },
     {
       12,
       1,
-      19,
+      10,
       2,
     },
     {
       13,
       1,
-      12,
-      1,
-    },
-    {
-      14,
-      1,
-      15,
-      2,
-    },
-    {
-      15,
-      1,
-      19,
-      1,
-    },
-    {
-      16,
-      1,
-      15,
+      10,
       3,
     },
     {
-      17,
-      1,
-      15,
-      1,
-    },
-    {
-      18,
-      1,
-      15,
-      4,
-    },
-    {
-      19,
+      14,
       1,
       1,
       3,
@@ -119,13 +89,13 @@ return {
     },
     {
       loadArguments = {
-        20,
+        15,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        54,
+        39,
       },
       name = 'number',
     },
@@ -143,57 +113,24 @@ return {
     },
     {
       loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        2,
+        1,
       },
       name = 'number',
     },
     {
       loadArguments = {
         1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
       },
       name = 'number',
     },
     {
       name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'build',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
     },
     {
       loadArguments = {
@@ -203,16 +140,18 @@ return {
     },
     {
       loadArguments = {
-        0,
+        1,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        {
-          5,
-          '',
-        },
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
         {
           5,
           '',

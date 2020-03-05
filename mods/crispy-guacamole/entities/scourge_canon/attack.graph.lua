@@ -181,6 +181,12 @@ return {
       5,
     },
     {
+      20,
+      2,
+      21,
+      1,
+    },
+    {
       21,
       1,
       51,
@@ -201,7 +207,7 @@ return {
     {
       24,
       1,
-      71,
+      63,
       1,
     },
     {
@@ -217,12 +223,6 @@ return {
       1,
     },
     {
-      24,
-      1,
-      63,
-      1,
-    },
-    {
       30,
       1,
       20,
@@ -231,7 +231,7 @@ return {
     {
       31,
       1,
-      71,
+      63,
       3,
     },
     {
@@ -265,15 +265,9 @@ return {
       4,
     },
     {
-      31,
-      1,
-      63,
-      3,
-    },
-    {
       36,
       1,
-      74,
+      69,
       1,
     },
     {
@@ -321,8 +315,8 @@ return {
     {
       59,
       1,
-      71,
-      4,
+      11,
+      3,
     },
     {
       61,
@@ -383,30 +377,6 @@ return {
       1,
       42,
       2,
-    },
-    {
-      72,
-      1,
-      71,
-      2,
-    },
-    {
-      73,
-      1,
-      11,
-      3,
-    },
-    {
-      74,
-      1,
-      69,
-      1,
-    },
-    {
-      74,
-      2,
-      21,
-      1,
     },
   },
   nodeType = 'script',
@@ -722,9 +692,9 @@ return {
     },
     {
       loadArguments = {
-        0.69999998807907,
+        'attack',
       },
-      name = 'number',
+      name = 'string',
     },
     {
       loadArguments = {
@@ -788,30 +758,6 @@ return {
         'fx_green_burst',
       },
       name = 'string',
-    },
-    {
-      loadArguments = {
-        'data/compounds/script/Circular Position',
-      },
-      name = 'compound',
-    },
-    {
-      loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        5,
-      },
-      name = 'script/impulseall',
     },
   },
 }

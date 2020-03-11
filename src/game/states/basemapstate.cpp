@@ -841,9 +841,13 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		root->addChild(m_selectionWidget);
 	}
 
-	for (entity::Entity* entity : m_entitiesInSelection)
+	for (entity::EntityHandle entityHandle : m_entitiesInSelection)
 	{
-		clearMouseOverColor(entity);
+		entity::Entity* entity = entityHandle.getEntity();
+		if (entity != nullptr)
+		{
+			clearMouseOverColor(entity);
+		}
 	}
 	m_entitiesInSelection.clear();
 
@@ -870,7 +874,7 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		{
 			if (!entity->isSelected())
 			{
-				m_entitiesInSelection.push_back(entity);
+				m_entitiesInSelection.push_back(entity->getHandle());
 				setMouseOverColor(entity);
 			}
 		}

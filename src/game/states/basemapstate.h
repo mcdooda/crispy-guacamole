@@ -201,7 +201,7 @@ class BaseMapState : public BaseState
 		std::vector<entity::Entity*> m_selectedEntities;
 		flat::lua::SlotProxy<> m_selectionChangedSlotProxy;
 
-		std::vector<entity::Entity*> m_entitiesInSelection;
+		std::vector<entity::EntityHandle> m_entitiesInSelection;
 
 		entity::EntityHandle m_mouseOverEntity;
 		map::TileIndex m_mouseOverTileIndex;

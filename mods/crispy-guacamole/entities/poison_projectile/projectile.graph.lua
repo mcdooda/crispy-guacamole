@@ -9,13 +9,13 @@ return {
     {
       1,
       2,
-      9,
+      11,
       1,
     },
     {
       1,
       3,
-      12,
+      6,
       1,
     },
     {
@@ -37,12 +37,6 @@ return {
       6,
     },
     {
-      1,
-      4,
-      6,
-      1,
-    },
-    {
       2,
       1,
       1,
@@ -63,8 +57,8 @@ return {
     {
       6,
       1,
-      9,
-      2,
+      11,
+      3,
     },
     {
       8,
@@ -74,15 +68,9 @@ return {
     },
     {
       9,
-      2,
-      7,
       1,
-    },
-    {
-      9,
-      2,
       11,
-      1,
+      5,
     },
     {
       10,
@@ -91,16 +79,10 @@ return {
       2,
     },
     {
-      12,
-      1,
       11,
-      3,
-    },
-    {
-      13,
       1,
-      11,
-      5,
+      7,
+      1,
     },
   },
   nodeType = 'script',
@@ -136,7 +118,7 @@ return {
       name = 'script/scriptoutput',
     },
     {
-      name = 'entity/isvalidentity',
+      name = 'entity/getposition',
     },
     {
       name = 'entity/despawnentity',
@@ -145,7 +127,10 @@ return {
       name = 'entity/getheading',
     },
     {
-      name = 'script/condition',
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
     {
       loadArguments = {
@@ -155,15 +140,6 @@ return {
     },
     {
       name = 'entity/spawnentity',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
     },
   },
 }

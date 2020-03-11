@@ -18,11 +18,11 @@ do
 	local content = Widget.makeColumnFlow()
 	content:setSizePolicy(Widget.SizePolicy.EXPAND)
 	content:setAllowScrollY(true)
+	content:setPadding(4)
 
 	local contentLines = {}
 	local iconPerLine = 3
-	local iconSize = 90
-	local iconMargin = 8
+	local iconSize = 98
 
 	local function addContent(widget)
 		local contentLine
@@ -77,12 +77,12 @@ do
 			Editor.setTile(ModData.tiles.names[1])
 			for i = 1, #ModData.tiles.names do
 				local tileName = ModData.tiles.names[i]
-				local assetIcon = AssetIcon.tile(tileName, iconSize)
-				assetIcon:setMargin(iconMargin, 0, 0, iconMargin)
-				assetIcon:click(function()
+				local assetIcon = AssetIcon:tile(tileName, iconSize)
+				assetIcon.container:click(function()
+					assetIcon:setSelected(true)
 					Editor.setTile(tileName)
 				end)
-				addContent(assetIcon)
+				addContent(assetIcon.container)
 			end
 		end
 
@@ -91,12 +91,12 @@ do
 			Editor.setProp(ModData.props.names[1])
 			for i = 1,  #ModData.props.names do
 				local propName = ModData.props.names[i]
-				local assetIcon = AssetIcon.prop(propName, iconSize)
-				assetIcon:setMargin(iconMargin, 0, 0, iconMargin)
-				assetIcon:click(function()
+				local assetIcon = AssetIcon:prop(propName, iconSize)
+				assetIcon.container:click(function()
+					assetIcon:setSelected(true)
 					Editor.setProp(propName)
 				end)
-				addContent(assetIcon)
+				addContent(assetIcon.container)
 			end
 		end
 
@@ -106,12 +106,12 @@ do
 			for i = 1, #ModData.entities.names do
 				local entityName = ModData.entities.names[i]
 
-				local assetIcon = AssetIcon.entity(entityName, iconSize)
-				assetIcon:setMargin(iconMargin, 0, 0, iconMargin)
-				assetIcon:click(function()
+				local assetIcon = AssetIcon:entity(entityName, iconSize)
+				assetIcon.container:click(function()
+					assetIcon:setSelected(true)
 					Editor.setEntity(entityName)
 				end)
-				addContent(assetIcon)
+				addContent(assetIcon.container)
 			end
 		end
 

@@ -237,6 +237,14 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 		});
 	}
 
+	if (keyboard.isJustPressed(K(M)))
+	{
+		map.eachTile([&map](map::TileIndex tileIndex)
+		{
+			map.setTileZ(tileIndex, std::round(map.getTileZ(tileIndex)));
+		});
+	}
+
 	if (keyboard.isJustPressed(K(DELETE)))
 	{
 		std::vector<map::TileIndex> tilesToDelete;

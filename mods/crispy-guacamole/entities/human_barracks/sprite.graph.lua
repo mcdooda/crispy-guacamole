@@ -119,13 +119,13 @@ return {
     },
     {
       loadArguments = {
-        32,
+        40,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        57,
+        58,
       },
       name = 'number',
     },

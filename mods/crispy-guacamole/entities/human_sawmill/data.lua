@@ -1,3 +1,3 @@
 return {
-    name = 'Barracks'
+    name = 'Sawmill'
 }

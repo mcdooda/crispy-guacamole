@@ -9,5 +9,6 @@ return {
         'human_town_hall',
         'human_house',
         'human_house_middle',
+        'human_sawmill',
     }
 }

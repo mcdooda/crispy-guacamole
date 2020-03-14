@@ -44,11 +44,11 @@ function states:reapResources(gatherer)
     local targetResource = gatherer:getInteractionEntity()
     local targetResourceData = targetResource:getExtraData()
     local extraData = gatherer:getExtraData()
-    
+
     if extraData.resources and extraData.resources ~= targetResource then
         unlockResource(gatherer)
     end
-    if not targetResource:isValid() then 
+    if not targetResource:isValid() then
         return 'lookForWheat'
     end
     if hasAmountAndNoGatherer(targetResource) then

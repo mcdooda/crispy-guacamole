@@ -10,5 +10,6 @@ return {
         'human_house',
         'human_house_middle',
         'human_sawmill',
+        'human_watchtower',
     }
 }

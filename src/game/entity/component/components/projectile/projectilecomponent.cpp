@@ -200,7 +200,7 @@ void ProjectileComponent::checkTargetCollision()
 	}
 
 	collision::CollisionComponent* targetCollisionComponent = target->getComponent<collision::CollisionComponent>();
-	if (collisionComponent == nullptr)
+	if (targetCollisionComponent == nullptr)
 	{
 		return;
 	}

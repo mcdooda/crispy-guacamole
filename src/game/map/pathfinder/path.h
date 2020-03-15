@@ -12,7 +12,6 @@ class Map;
 namespace game::map::pathfinder
 {
 
-
 class Path
 {
     friend class Pathfinder;

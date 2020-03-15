@@ -78,7 +78,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void triggerStartStopCallbacks();
 
 		void checkIsMidair();
-		void jumpIfNecessary(const flat::Vector2& steering);
+		bool jumpIfNecessary(const flat::Vector2& steering);
 		void fall(float elapsedTime);
 
 		bool snapEntityToTile(Entity* entity, map::Map* map);
@@ -90,12 +90,17 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		void debugDrawSteering(debug::DebugDisplay& debugDisplay) const;
 		void debugDrawAvoidanceArea(debug::DebugDisplay& debugDisplay) const;
 		void debugDrawEntity(debug::DebugDisplay& debugDisplay) const;
+
+		void pathSanityCheck();
 #endif
 
 	private:
 		// the path is a deque because the first point is removed once it's reached
 		map::pathfinder::Path m_currentPath;
 		int m_nextPathPointIndex;
+
+		flat::Vector2 m_destination;
+		entity::EntityHandle m_interactionEntity;
 
 		// an entity pathfinding can be restricted to avoid getting outside of a given region (or zone)
 		std::weak_ptr<const map::Zone> m_restrictionZone;
@@ -112,6 +117,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool m_isStrafing : 1;
 
 		bool m_wasMovingLastFrame : 1;
+
+		bool m_isFollowingPartialPath : 1;
 
 #ifdef FLAT_DEBUG
 		flat::Vector2 m_debugSteering;

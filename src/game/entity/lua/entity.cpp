@@ -1,23 +1,29 @@
 #include <iterator>
+
 #include "entity.h"
-#include "../entity.h"
-#include "../faction/faction.h"
-#include "../component/components/attack/attackcomponent.h"
-#include "../component/components/behavior/behaviorcomponent.h"
-#include "../component/components/detection/detectioncomponent.h"
-#include "../component/components/faction/factioncomponent.h"
-#include "../component/components/interaction/interactioncomponent.h"
-#include "../component/components/life/lifecomponent.h"
-#include "../component/components/movement/movementcomponent.h"
-#include "../component/components/playercontroller/playercontrollercomponent.h"
-#include "../component/components/projectile/projectilecomponent.h"
-#include "../component/components/selection/selectioncomponent.h"
-#include "../component/components/sprite/spritecomponent.h"
-#include "../component/components/ui/uicomponent.h"
-#include "../../states/basemapstate.h"
-#include "../../game.h"
-#include "../../map/map.h"
-#include "../../map/tile.h"
+
+#include "entity/entity.h"
+#include "entity/faction/faction.h"
+#include "entity/component/components/attack/attackcomponent.h"
+#include "entity/component/components/behavior/behaviorcomponent.h"
+#include "entity/component/components/detection/detectioncomponent.h"
+#include "entity/component/components/faction/factioncomponent.h"
+#include "entity/component/components/interaction/interactioncomponent.h"
+#include "entity/component/components/life/lifecomponent.h"
+#include "entity/component/components/movement/movementcomponent.h"
+#include "entity/component/components/playercontroller/playercontrollercomponent.h"
+#include "entity/component/components/projectile/projectilecomponent.h"
+#include "entity/component/components/selection/selectioncomponent.h"
+#include "entity/component/components/sprite/spritecomponent.h"
+#include "entity/component/components/ui/uicomponent.h"
+
+#include "states/basemapstate.h"
+
+#include "map/map.h"
+#include "map/tile.h"
+#include "map/pathfinder/pathfinder.h"
+
+#include "game.h"
 
 using namespace game::entity::component;
 
@@ -506,6 +512,7 @@ int l_Entity_moveTo(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	flat::Vector2 pathPoint = flat::lua::getVector2(L, 2);
 	bool yield = locGetOptBool(L, 3, true);
+
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	movementComponent.moveTo(pathPoint);
 	return locYieldIf(L, yield, 0);

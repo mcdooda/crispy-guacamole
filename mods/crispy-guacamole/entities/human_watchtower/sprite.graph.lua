@@ -3,25 +3,31 @@ return {
     {
       1,
       1,
-      5,
+      14,
       1,
     },
     {
       2,
       1,
       1,
-      1,
+      3,
     },
     {
       3,
       1,
-      2,
+      1,
       1,
     },
     {
       4,
       1,
-      2,
+      3,
+      1,
+    },
+    {
+      5,
+      1,
+      3,
       2,
     },
     {
@@ -45,43 +51,37 @@ return {
     {
       9,
       1,
-      10,
-      4,
+      2,
+      1,
     },
     {
       10,
       1,
-      14,
+      9,
       1,
     },
     {
       11,
       1,
-      10,
-      1,
+      9,
+      2,
     },
     {
       12,
       1,
-      10,
-      2,
+      9,
+      3,
     },
     {
       13,
       1,
-      10,
-      3,
-    },
-    {
-      14,
-      1,
-      1,
-      3,
+      9,
+      4,
     },
     {
       15,
       1,
-      14,
+      2,
       2,
     },
     {
@@ -115,28 +115,32 @@ return {
       name = 'components/spritecomponent',
     },
     {
+      loadArguments = {
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+      },
+      name = 'script/array',
+    },
+    {
       name = 'vector2',
     },
     {
       loadArguments = {
-        12,
+        17,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        41,
+        56,
       },
       name = 'number',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Component',
-        },
-      },
-      name = 'script/scriptoutput',
     },
     {
       name = 'vector2',
@@ -150,12 +154,6 @@ return {
     {
       loadArguments = {
         2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0,
       },
       name = 'number',
     },
@@ -182,16 +180,18 @@ return {
     },
     {
       loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
         {
           5,
-          '',
-        },
-        {
-          5,
-          '',
+          'Component',
         },
       },
-      name = 'script/array',
+      name = 'script/scriptoutput',
     },
     {
       name = 'components/spriteanimation',
@@ -216,7 +216,7 @@ return {
     },
     {
       loadArguments = {
-        0,
+        1,
       },
       name = 'number',
     },

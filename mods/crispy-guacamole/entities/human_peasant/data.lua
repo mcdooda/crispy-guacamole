@@ -2,6 +2,7 @@ return {
     name = 'Peasant',
     buildings = {
         'human_wall',
+        'human_wooden_wall',
         'human_barracks',
         'human_church',
         'human_farm',
@@ -9,5 +10,7 @@ return {
         'human_town_hall',
         'human_house',
         'human_house_middle',
+        'human_sawmill',
+        'human_watchtower',
     }
 }

@@ -6,7 +6,7 @@ local function basicGatherer(buildingName, resourceName)
 	local function getClosestBuilding(gatherer)
 		return EntitiesByType:getClosests(buildingName, gatherer:getPosition():toVector2())[1]
 	end
-	
+
 	local function getClosestResource(gatherer)
 		local building = getClosestBuilding(gatherer)
 		if building then
@@ -84,7 +84,7 @@ local function basicGatherer(buildingName, resourceName)
 		local resources = extraData.resources
 		if not resources or not resources:isValid() then
 			return nil
-		else 
+		else
 			return resources
 		end
 	end
@@ -93,7 +93,7 @@ local function basicGatherer(buildingName, resourceName)
 		local resources = states:addResourceAndGetToNext(gatherer)
 		if not resources then
 			resources = getClosestResource(gatherer)
-		end 
+		end
 		if resources then
 			gatherer:interactWith(resources)
 		end
@@ -143,7 +143,7 @@ local function basicGatherer(buildingName, resourceName)
 			gatherer:interactWith(building)
 			return
 		end
-		
+
 		local health = math.min(building:getHealth() + 1, building:getMaxHealth())
 		building:setHealth(health)
 		gatherer:interactWith(building)
@@ -152,6 +152,6 @@ local function basicGatherer(buildingName, resourceName)
 	return states
 end
 
-return { 
-	basicGatherer = basicGatherer 
-} 
+return {
+	basicGatherer = basicGatherer
+}

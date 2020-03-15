@@ -276,12 +276,20 @@ int l_Map_findPath(lua_State* L)
 {
 	const flat::Vector2& from = flat::lua::getVector2(L, 1);
 	const flat::Vector2& to = flat::lua::getVector2(L, 2);
+	const bool allowPartialPath = lua_isnoneornil(L, 3) ? false : lua_toboolean(L, 3) == 1;
+
 	const float jumpHeight = static_cast<Navigability>(luaL_checkinteger(L, 3));
 	const Navigability navigability = static_cast<Navigability>(luaL_checkinteger(L, 4));
 	const Map& map = getMap(L);
 	pathfinder::Pathfinder pathfinder(map, jumpHeight, navigability);
 	std::shared_ptr<pathfinder::Path> path = std::make_shared<pathfinder::Path>();
-	pathfinder.findPath(from, to, *path);
+
+	pathfinder::Request request;
+	request.from = from;
+	request.to = to;
+	request.allowPartialResult = allowPartialPath;
+
+	pathfinder.findPath(request, *path);
 	game::map::pathfinder::lua::pushPath(L, path);
 	return 1;
 }

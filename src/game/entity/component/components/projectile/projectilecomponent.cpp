@@ -92,6 +92,8 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	}
 	else
 	{
+		const float tileZ = map->getTileZ(tileIndex);
+		newPosition.z = std::max(newPosition.z, tileZ - Entity::MIN_Z_EPSILON);
 		m_owner->setPosition(newPosition);
 		setSpeed(newSpeed);
 		checkTargetCollision();

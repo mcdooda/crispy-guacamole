@@ -1157,7 +1157,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 								{
 									entity->cancelCurrentActions();
 								}
-								entity->moveTo(clickedTilePosition, interactionEntity);
+								entity->moveTo(clickedTilePosition, interactionEntity, false);
 							}
 							if (entity->canInteract())
 							{
@@ -1176,7 +1176,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 							{
 								entity->cancelCurrentActions();
 							}
-							entity->moveTo(clickedTilePosition);
+							entity->moveTo(clickedTilePosition, nullptr, false);
 						}
 					}
 				}

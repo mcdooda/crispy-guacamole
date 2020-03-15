@@ -89,7 +89,7 @@ void MovementComponent::cancelCurrentAction()
 	stopMovement();
 }
 
-void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interactionEntity)
+void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interactionEntity, bool allowPartialPath)
 {
 	// pathfind to destination from the current path's last point or from the entity position
 
@@ -144,8 +144,14 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 	}
 	m_interactionEntity = interactionEntity;
 
+	map::pathfinder::Request request;
+	request.from = startingPoint;
+	request.to = destination;
+	request.allowPartialResult = allowPartialPath;
+
 	map::pathfinder::Path path;
-	map::pathfinder::Pathfinder::Result pathfindingResult = pathfinder->findPath(startingPoint, destination, path);
+	map::pathfinder::Result pathfindingResult = pathfinder->findPath(request, path);
+
 	path.simplify(*map, jumpHeight, navigabilityMask);
 
 	if (m_isFollowingPartialPath)
@@ -158,9 +164,9 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 		// keep the same current destination if the entity was already following a partial path
 		m_destination = destination;
 	}
-	m_isFollowingPartialPath = pathfindingResult == map::pathfinder::Pathfinder::Result::PARTIAL;
+	m_isFollowingPartialPath = pathfindingResult == map::pathfinder::Result::PARTIAL;
 
-	if (path.getPointsCount() >= 2)
+	if (pathfindingResult != map::pathfinder::Result::FAILURE)
 	{
 		// insert the new path at the end of the current path
 		// the first point of the new path is not inserted as it is the same as the last point of the current path

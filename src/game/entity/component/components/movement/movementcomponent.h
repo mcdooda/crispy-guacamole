@@ -40,7 +40,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool isBusy() const override;
 		void cancelCurrentAction() override;
 
-		void moveTo(const flat::Vector2& destination, Entity* interactionEntity = nullptr);
+		void moveTo(const flat::Vector2& destination, Entity* interactionEntity = nullptr, bool allowPartialPath = true);
 
 		void jump();
 

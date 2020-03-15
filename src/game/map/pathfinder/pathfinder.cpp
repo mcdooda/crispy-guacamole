@@ -20,10 +20,10 @@ Pathfinder::Pathfinder(const Map& map, float jumpHeight, map::Navigability navig
 
 }
 
-Pathfinder::Result Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, Path& path) const
+Result Pathfinder::findPath(const Request& request, Path& path) const
 {
 	std::vector<flat::Vector2> points;
-	Result result = findPath(from, to, points);
+	Result result = findPath(request.from, request.to, request.allowPartialResult, points);
 	if (result != Result::FAILURE)
 	{
 		path.m_positions = points;
@@ -31,7 +31,7 @@ Pathfinder::Result Pathfinder::findPath(const flat::Vector2& from, const flat::V
 	return result;
 }
 
-Pathfinder::Result Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const
+Result Pathfinder::findPath(const flat::Vector2& from, const flat::Vector2& to, bool allowPartialResults, std::vector<flat::Vector2>& path) const
 {
 	FLAT_PROFILE("Find path");
 
@@ -87,12 +87,15 @@ Pathfinder::Result Pathfinder::findPath(const flat::Vector2& from, const flat::V
 			return Result::SUCCESS;
 		}
 
-		++currentIteration;
-		if (currentIteration >= DEFAULT_ITERATION_LIMIT)
+		if (allowPartialResults)
 		{
-			reconstructPath(previous, tileIndex, from, to, Result::PARTIAL, path);
-			FLAT_ASSERT(!path.empty());
-			return Result::PARTIAL;
+			++currentIteration;
+			if (currentIteration >= DEFAULT_ITERATION_LIMIT)
+			{
+				reconstructPath(previous, tileIndex, from, to, Result::PARTIAL, path);
+				FLAT_ASSERT(!path.empty());
+				return Result::PARTIAL;
+			}
 		}
 
 		eachNeighborTiles(tileIndex, [&](TileIndex neighborTileIndex)

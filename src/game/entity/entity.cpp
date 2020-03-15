@@ -397,10 +397,10 @@ bool Entity::acceptsPlayerMoveOrder(const flat::Vector2& point, Entity* interact
 	return m_behaviorComponent->handlePlayerMoveOrder(point, interactionEntity);
 }
 
-void Entity::moveTo(const flat::Vector2& point, Entity* interactionEntity)
+void Entity::moveTo(const flat::Vector2& point, Entity* interactionEntity, bool allowPartialPath)
 {
 	FLAT_ASSERT(m_movementComponent != nullptr);
-	m_movementComponent->moveTo(point, interactionEntity);
+	m_movementComponent->moveTo(point, interactionEntity, allowPartialPath);
 }
 
 const std::string& Entity::getTemplateName() const

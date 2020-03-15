@@ -15,18 +15,25 @@ namespace map
 namespace pathfinder
 {
 
+static constexpr int DEFAULT_ITERATION_LIMIT = 1500;
+
+struct Request
+{
+	flat::Vector2 from;
+	flat::Vector2 to;
+	bool allowPartialResult = true;
+};
+
+enum class Result
+{
+	SUCCESS,
+	PARTIAL,
+	FAILURE
+};
+
 class Pathfinder
 {
-public:
-	static constexpr int DEFAULT_ITERATION_LIMIT = 1500;
-
-	enum class Result
-	{
-		SUCCESS,
-		PARTIAL,
-		FAILURE
-	};
-
+protected:
 	struct Node
 	{
 		map::TileIndex tileIndex;
@@ -41,7 +48,7 @@ public:
 	Pathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask);
 	virtual ~Pathfinder() {}
 
-	Result findPath(const flat::Vector2& from, const flat::Vector2& to, Path& path) const;
+	Result findPath(const Request& request, Path& path) const;
 
 protected:
 	virtual TileIndex getTileIndexIfNavigable(float x, float y, map::Navigability navigabilityMask) const;
@@ -55,7 +62,7 @@ protected:
 	virtual void eachNeighborTiles(TileIndex tile, std::function<void(TileIndex)> func) const;
 
 private:
-	Result findPath(const flat::Vector2& from, const flat::Vector2& to, std::vector<flat::Vector2>& path) const;
+	Result findPath(const flat::Vector2& from, const flat::Vector2& to, bool allowPartialResults, std::vector<flat::Vector2>& path) const;
 
 protected:
 	const Map& m_map;

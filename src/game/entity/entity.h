@@ -97,7 +97,7 @@ class Entity final : public map::MapObject
 		// movement
 		bool acceptsMoveOrders() const;
 		bool acceptsPlayerMoveOrder(const flat::Vector2& point, Entity* interactionEntity = nullptr) const;
-		void moveTo(const flat::Vector2& point, Entity* interactionEntity = nullptr);
+		void moveTo(const flat::Vector2& point, Entity* interactionEntity = nullptr, bool allowPartialPath = true);
 		
 		// behavior
 		bool canInteract() const;

@@ -1,3 +1,0 @@
-return {
-	tower = 1
-}

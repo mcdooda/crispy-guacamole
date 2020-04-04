@@ -24,7 +24,7 @@ function states:gatherResources(gatherer)
         gatherer:interactWith(building)
     end
 end
-local function hasAmountAndNoGatherer(wheatField) 
+local function hasAmountAndNoGatherer(wheatField)
     local extraData = wheatField:getExtraData()
     return extraData.amount > 0 and (extraData.gatherer == nil or not extraData.gatherer:isValid())
 end
@@ -55,7 +55,7 @@ function states:reapResources(gatherer)
     end
     if hasAmountAndNoGatherer(targetResource) then
         lockResource(gatherer, targetResource)
-    else 
+    else
         if targetResourceData.gatherer ~= gatherer then
             if extraData.resourcesAmount > 0 then
                 unlockResource(gatherer)
@@ -71,7 +71,7 @@ function states:reapResources(gatherer)
         gatherer:sleep(0.2)
         local collected = targetResourceData:withdraw(1)
         extraData.resourcesAmount = extraData.resourcesAmount + collected
-    else 
+    else
         if targetResourceData.amount == 0 then
             unlockResource(gatherer)
         end
@@ -80,7 +80,15 @@ function states:reapResources(gatherer)
     gatherer:interactWith(targetResource)
 end
 
-function states:onPlayerMoveOrder(gatherer, destination, interactionEntity) 
+function states:onPlayerMoveOrder(gatherer, destination, interactionEntity)
+    local r = math.random(3)
+    if r == 1 then
+        gatherer:playSample('human-ok.wav', 0)
+    elseif r == 2 then
+        gatherer:playSample('human-oui.wav', 0)
+    elseif r == 3 then
+        gatherer:playSample('human-travail.wav', 0)
+    end
     unlockResource(gatherer)
     if interactionEntity == nil then
         return 'wander'
@@ -103,7 +111,7 @@ function lockResource(gatherer, resource)
     resource:getExtraData().gatherer = gatherer
 end
 
-function unlockResource(gatherer) 
+function unlockResource(gatherer)
     local extraData = gatherer:getExtraData()
     if extraData.resources then
         if extraData.resources:getExtraData().gatherer == gatherer then

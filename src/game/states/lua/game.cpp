@@ -35,6 +35,8 @@ int open(lua_State* L)
 
 		{"debug_reloadComponent",      l_game_debug_reloadComponent},
 		{"debug_removeComponent",      l_game_debug_removeComponent},
+
+		{"debug_setVolume",        l_game_debug_setVolume},
 #endif
 
 		{"setCameraCenter",            l_game_setCameraCenter},
@@ -151,6 +153,15 @@ int l_game_debug_removeComponent(lua_State* L)
 	const_cast<entity::EntityTemplate*>(entityTemplate.get())->removeComponent(game, baseMapState.getComponentRegistry(), componentFlag);
 	return 0;
 }
+
+int l_game_debug_setVolume(lua_State* L)
+{
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	const float volume = static_cast<float>(luaL_checknumber(L, 1));
+	game.audio->setVolume(volume);
+	return 0;
+}
+
 #endif // FLAT_DEBUG
 
 int l_game_openMap(lua_State* L)

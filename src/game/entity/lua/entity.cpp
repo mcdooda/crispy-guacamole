@@ -16,6 +16,7 @@
 #include "entity/component/components/selection/selectioncomponent.h"
 #include "entity/component/components/sprite/spritecomponent.h"
 #include "entity/component/components/ui/uicomponent.h"
+#include "entity/component/components/sample/samplecomponent.h"
 
 #include "states/basemapstate.h"
 
@@ -36,7 +37,7 @@ int open(Game& game)
 {
 	lua_State* L = game.lua->state;
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-	
+
 	static const luaL_Reg Entity_lib_m[] = {
 		{"__eq",                     l_Entity_eq},
 		{"__tostring",               l_Entity_tostring},
@@ -162,11 +163,14 @@ int open(Game& game)
 		// player controller
 		{"setGamepadIndex",          l_Entity_setGamepadIndex},
 		{"getGamepadIndex",          l_Entity_getGamepadIndex},
-		
+
+		// sample
+		{"playSample",          	 l_Entity_playSample},
+
 		{nullptr, nullptr}
 	};
 	game.lua->registerClass<LuaEntityHandle>("CG.Entity", Entity_lib_m);
-	
+
 	lua_createtable(L, 0, 3);
 	static const luaL_Reg Entity_lib_f[] = {
 		{"spawn",              l_Entity_spawn},
@@ -175,7 +179,7 @@ int open(Game& game)
 	};
 	luaL_setfuncs(L, Entity_lib_f, 0);
 	lua_setglobal(L, "Entity");
-	
+
 	return 0;
 }
 
@@ -1137,6 +1141,19 @@ int l_Entity_getGamepadIndex(lua_State* L)
 	playercontroller::PlayerControllerComponent& playerControllerComponent = getComponent<playercontroller::PlayerControllerComponent>(L, entity);
 	lua_pushinteger(L, playerControllerComponent.getGamepadIndex() + 1);
 	return 1;
+}
+
+int l_Entity_playSample(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	sample::SampleComponent& sampleComponent = getComponent<sample::SampleComponent>(L, entity);
+	const char* sampleName = luaL_checkstring(L, 2);
+	std::string file = baseMapState.getMod().getSamplePath(sampleName);
+	int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
+	sampleComponent.playSample(game, file, numLoops);
+	return 0;
 }
 
 // static lua functions

@@ -54,6 +54,11 @@ std::string Mod::getFactionsConfigPath() const
 	return m_path + "factions.lua";
 }
 
+std::string Mod::getSamplePath(const std::string& sampleName) const
+{
+	return m_path + "samples/" + sampleName;
+}
+
 } // mod
 } // game
 

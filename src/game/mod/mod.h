@@ -14,7 +14,7 @@ class Mod final
 	public:
 		void setPath(const std::string& path);
 		inline const std::string& getPath() const { return m_path; }
-		
+
 		std::string getScriptPath(const std::string& fileName) const;
 		std::string getTexturePath(const std::string& fileName) const;
 		std::string getTextureRelativePath(const std::string& absolutePath) const;
@@ -23,7 +23,8 @@ class Mod final
 		std::string getTileTemplatePath(const std::string& tileTemplateName) const;
 		std::string getPropTemplatePath(const std::string& propTemplateName) const;
 		std::string getFactionsConfigPath() const;
-		
+		std::string getSamplePath(const std::string& sampleName) const;
+
 	private:
 		std::string m_path;
 };

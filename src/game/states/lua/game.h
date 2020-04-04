@@ -31,6 +31,8 @@ int l_game_debug_getNumFrameTimers(lua_State* L);
 
 int l_game_debug_reloadComponent(lua_State* L);
 int l_game_debug_removeComponent(lua_State* L);
+
+int l_game_debug_setVolume(lua_State* L);
 #endif // FLAT_DEBUG
 
 int l_game_openMap(lua_State* L);

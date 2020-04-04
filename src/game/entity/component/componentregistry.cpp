@@ -14,12 +14,10 @@
 #include "entity/component/components/selection/selectioncomponent.h"
 #include "entity/component/components/sprite/spritecomponent.h"
 #include "entity/component/components/ui/uicomponent.h"
+#include "entity/component/components/sample/samplecomponent.h"
 
-namespace game
-{
-namespace entity
-{
-namespace component
+
+namespace game::entity::component
 {
 
 ComponentRegistry::ComponentRegistry() :
@@ -48,6 +46,7 @@ void ComponentRegistry::registerComponentTypes()
 	registerComponentType<sprite::SpriteComponent>();
 	registerComponentType<ui::UiComponent>();
 	registerComponentType<fogvision::FogVisionComponent>();
+	registerComponentType<sample::SampleComponent>();
 
 	// order does not matter for these components (no update method)
 	registerComponentType<faction::FactionComponent>();
@@ -63,8 +62,6 @@ const ComponentType& ComponentRegistry::getComponentType(ComponentFlags componen
 	return *m_componentTypes[componentTypeId - 1].get();
 }
 
-} // component
-} // entity
-} // game
+} // game::entity::component
 
 

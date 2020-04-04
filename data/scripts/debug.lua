@@ -99,7 +99,8 @@ local debugFiles = {
     'entitydebug',
     'pathfinding',
     'fog',
-    'gamespeed'
+    'gamespeed',
+    'audio'
 }
 
 for i = 1, #debugFiles do

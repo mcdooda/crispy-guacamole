@@ -18,6 +18,10 @@ return {
     -- fog vision
     'components/fogvisioncomponent',
 
+    -- sample
+    'components/samplecomponent',
+    'entity/playsample',
+
     -- interaction
     'components/interactioncomponent',
 

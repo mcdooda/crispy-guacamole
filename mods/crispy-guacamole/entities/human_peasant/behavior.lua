@@ -5,6 +5,8 @@ local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
 
 local states = GathererBehavior.basicGatherer('human_farm', 'wheat_field')
 
+local lockResource, unlockResource
+
 local function getClosestBuilding(gatherer)
     return EntitiesByType:getClosests('human_farm', gatherer:getPosition():toVector2())[1]
 end

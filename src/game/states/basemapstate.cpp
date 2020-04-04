@@ -86,6 +86,7 @@ void BaseMapState::enter(Game& game)
 
 	initRender(game);
 
+	game.lua->doFile("flat-engine/lua/debug/debug.lua");
 
 	// reset the game view *before* loading the map so the ui components can be initialized properly
 #ifdef FLAT_DEBUG
@@ -539,11 +540,11 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 				componentFlags &= ~attack::AttackComponent::getFlag();
 				componentFlags &= ~behavior::BehaviorComponent::getFlag();
 				componentFlags &= ~collision::CollisionComponent::getFlag();
-				const std::vector<flat::Vector2> tiles = getGhostEntityPositions(cursorPosition, tileIndex);
-				entities.reserve(tiles.size());
-				for (const auto& tile: tiles)
+				const std::vector<flat::Vector2> ghostEntityPositions = getGhostEntityPositions(cursorPosition, tileIndex);
+				entities.reserve(ghostEntityPositions.size());
+				for (const flat::Vector2& ghostEntityPosition : ghostEntityPositions)
 				{
-					flat::Vector3 ghostPosition(tile, m_map.getTileZ(m_map.getTileIndex(tile)));
+					flat::Vector3 ghostPosition(ghostEntityPosition, m_map.getTileZ(m_map.getTileIndex(ghostEntityPosition)));
 
 					entity::Entity* ghost = spawnEntityAtPosition(game, m_ghostTemplate, ghostPosition, 0.f, 0.f, nullptr, componentFlags);
 					if (ghost == nullptr)

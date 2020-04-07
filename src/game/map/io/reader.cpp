@@ -7,11 +7,10 @@
 namespace game::map::io
 {
 
-Reader::Reader(Game& game, const mod::Mod& mod, Map& map) :
+Reader::Reader(Game& game, Map& map) :
 	m_game(game),
-	m_mod(mod),
 	m_map(map),
-	m_reader(mod.getMapPath(game.mapName))
+	m_reader(game.mod.getMapPath(game.mapName))
 {
 
 }
@@ -30,7 +29,7 @@ void Reader::read()
 {
 	MapFile mapFile;
 	m_reader.Processor::process(mapFile);
-	m_map.setState(m_game, m_mod, mapFile);
+	m_map.setState(m_game, mapFile);
 }
 
 } // game::map::io

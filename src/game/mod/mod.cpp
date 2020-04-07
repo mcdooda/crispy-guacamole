@@ -13,6 +13,11 @@ void Mod::setPath(const std::string& path)
 		m_path += '/';
 }
 
+std::string Mod::getFilePath(const std::string& fileName) const
+{
+	return m_path + fileName;
+}
+
 std::string Mod::getScriptPath(const std::string& fileName) const
 {
 	return m_path + "scripts/" + fileName;

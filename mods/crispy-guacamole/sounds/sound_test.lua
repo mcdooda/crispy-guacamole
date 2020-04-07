@@ -1,0 +1,1 @@
+return flat.graph.script.run 'mods/crispy-guacamole/sounds/sound_test'

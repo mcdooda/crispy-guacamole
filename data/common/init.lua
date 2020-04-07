@@ -1,6 +1,10 @@
+-- load script nodes
 flat.graph.loadNodeClasses('script', 'data')
-flat.graph.loadCompounds('script', Mod.getPath() .. '/compounds')
+flat.graph.loadCompounds('script', Mod.getFilePath 'compounds')
 flat.graph.loadCompounds('script', 'data/compounds')
+
+-- load sound nodes
+flat.graph.loadNodeClasses('sound', 'data')
 
 flat.registerUniqueObjectGetter(
     'CG.Entity',

@@ -17,10 +17,10 @@ namespace map
 namespace io
 {
 
-Writer::Writer(const mod::Mod& mod, const std::string& mapName, const Map& map) :
-	m_mod(mod),
+Writer::Writer(Game& game, const Map& map) :
+	m_game(game),
 	m_map(map),
-	m_file(mod.getMapPath(mapName).c_str(), std::ofstream::binary)
+	m_file(game.mod.getMapPath(game.mapName).c_str(), std::ofstream::binary)
 {
 
 }
@@ -106,7 +106,7 @@ void Writer::writeHeaders()
 	for (const flat::video::Texture* propTexture : propTexturesOrdered)
 	{
 		const flat::video::FileTexture* propFileTexture = static_cast<const flat::video::FileTexture*>(propTexture);
-		std::string propTextureName = m_mod.getTextureRelativePath(propFileTexture->getFileName());
+		std::string propTextureName = m_game.mod.getTextureRelativePath(propFileTexture->getFileName());
 		propTextureName = propTextureName.substr(propsPrefixSize, propTextureName.size() - propsPrefixSize);
 		write<const std::string&>(propTextureName);
 	}
@@ -219,7 +219,7 @@ void Writer::writeZones()
 std::string Writer::getTileTemplateNameFromTexturePath(const std::string& texturePath) const
 {
 	static const size_t tilesPrefixSize = std::string("tiles/").size();
-	std::string tileTemplateName = m_mod.getTextureRelativePath(texturePath);
+	std::string tileTemplateName = m_game.mod.getTextureRelativePath(texturePath);
 	tileTemplateName = tileTemplateName.substr(tilesPrefixSize, tileTemplateName.size() - tilesPrefixSize);
 	size_t slashIndex = tileTemplateName.find_first_of('/');
 	tileTemplateName = tileTemplateName.substr(0, slashIndex);

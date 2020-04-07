@@ -32,36 +32,33 @@ void Game::setStates()
 
 		case Mode::GAME:
 		{
-			if (modPath.empty() || mapName.empty())
+			if (mod.getPath().empty() || mapName.empty())
 			{
 				wrongArguments();
 			}
 			states::GameState* gameState = new states::GameState();
-			gameState->setModPath(modPath);
 			state.reset(gameState);
 		}
 		break;
 		
 		case Mode::MAPEDITOR:
 		{
-			if (modPath.empty() || mapName.empty())
+			if (mod.getPath().empty() || mapName.empty())
 			{
 				wrongArguments();
 			}
 			states::MapEditorState* mapEditorState = new states::MapEditorState();
-			mapEditorState->setModPath(modPath);
 			state.reset(mapEditorState);
 		}
 		break;
 
 		case Mode::ENTITYEDITOR:
 		{
-			if (modPath.empty() || mapName.empty() || entityName.empty())
+			if (mod.getPath().empty() || mapName.empty() || entityName.empty())
 			{
 				wrongArguments();
 			}
 			states::EntityEditorState* entityEditorState = new states::EntityEditorState();
-			entityEditorState->setModPath(modPath);
 			state.reset(entityEditorState);
 		}
 		break;
@@ -90,25 +87,25 @@ void Game::checkArgs()
 
 					case 'g':
 					mode = Mode::GAME;
-					modPath = argGetString(++i);
+					mod.setPath(argGetString(++i));
 					mapName = argGetString(++i);
 					break;
 					
 					case 'm':
 					mode = Mode::MAPEDITOR;
-					modPath = argGetString(++i);
+					mod.setPath(argGetString(++i));
 					mapName = argGetString(++i);
 					break;
 
 					case 'e':
 					mode = Mode::ENTITYEDITOR;
-					modPath = argGetString(++i);
+					mod.setPath(argGetString(++i));
 					mapName = argGetString(++i);
 					entityName = argGetString(++i);
 					break;
 
 					case 'o':
-					modPath = argGetString(++i);
+					mod.setPath(argGetString(++i));
 					break;
 					
 					default:

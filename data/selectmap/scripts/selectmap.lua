@@ -20,6 +20,11 @@ boxContainer:setPositionPolicy(Widget.PositionPolicy.CENTER)
 boxContainer:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
 boxContainer:setMargin(20)
 
+local function addSpacer()
+    local spacer = Widget.makeFixedSize(20, 1)
+    boxContainer:addChild(spacer)
+end
+
 -- mod path
 do
     local modPathLabel = Widget.makeText(modPath, table.unpack(UiSettings.defaultFont))
@@ -115,11 +120,7 @@ do
     boxContainer:addChild(box)
 end
 
--- spacer
-do
-    local spacer = Widget.makeFixedSize(20, 1)
-    boxContainer:addChild(spacer)
-end
+addSpacer()
 
 -- entities
 do
@@ -190,20 +191,15 @@ do
     boxContainer:addChild(box)
 end
 
--- spacer
-do
-    local spacer = Widget.makeFixedSize(20, 1)
-    boxContainer:addChild(spacer)
-end
+addSpacer()
 
 -- compounds
-do
-    flat.graph.loadNodeClasses('script', 'data')
-    local modCompoundsPath = Mod.getPath() .. '/compounds'
-    local dataCompoundsPath = 'data/compounds'
-    flat.graph.loadCompounds('script', modCompoundsPath)
-    flat.graph.loadCompounds('script', dataCompoundsPath)
-    local compounds = flat.graph.getCompounds 'script'
+local function addCompoundColumn(nodeType, columnName, directories)
+    flat.graph.loadNodeClasses(nodeType, 'data')
+    for directory, _ in pairs(directories) do
+        flat.graph.loadCompounds(nodeType, directory)
+    end
+    local compounds = flat.graph.getCompounds(nodeType)
 
     local box = Widget.makeColumnFlow()
     box:setBackgroundColor(0x666666FF)
@@ -215,7 +211,7 @@ do
         compoundsTitleLine:setSizePolicy(Widget.SizePolicy.EXPAND_X + Widget.SizePolicy.COMPRESS_Y)
 
         do
-            local compoundsLabel = Widget.makeText('- Compounds -', table.unpack(UiSettings.titleFont))
+            local compoundsLabel = Widget.makeText('- ' .. columnName .. ' -', table.unpack(UiSettings.titleFont))
             compoundsLabel:setMargin(5)
             compoundsTitleLine:addChild(compoundsLabel)
         end
@@ -226,15 +222,15 @@ do
         end
 
         do
-            local newMapLabel = Widget.makeText('New', table.unpack(UiSettings.titleFont))
-            newMapLabel:setMargin(5)
-            newMapLabel:click(flat.ui.task(function()
+            local newCompoundLabel = Widget.makeText('New', table.unpack(UiSettings.titleFont))
+            newCompoundLabel:setMargin(5)
+            newCompoundLabel:click(flat.ui.task(function()
                 local compoundName = flat.ui.prompt 'Compound name:'
                 if compoundName and compoundName ~= '' then
                     error 'TODO'
                 end
             end))
-            compoundsTitleLine:addChild(newMapLabel)
+            compoundsTitleLine:addChild(newCompoundLabel)
         end
 
         box:addChild(compoundsTitleLine)
@@ -249,10 +245,11 @@ do
         for i = 1, #compounds do
             local origin
             local compoundPath = compounds[i].path
-            if compoundPath:sub(1, #modCompoundsPath) == modCompoundsPath then
-                origin = 'mod'
-            elseif compoundPath:sub(1, #dataCompoundsPath) == dataCompoundsPath then
-                origin = 'shared'
+            for directory, originName in pairs(directories) do
+                if compoundPath:sub(1, #directory) == directory then
+                    origin = originName
+                    break
+                end
             end
             flat.arrayAdd(compoundList, {
                 name = compounds[i].name,
@@ -282,7 +279,7 @@ do
                 flat.graph.editor.open(
                     Widget.getRoot(),
                     compoundList[i].path,
-                    'script'
+                    nodeType
                 )
                 return true
             end)
@@ -300,5 +297,17 @@ do
 
     boxContainer:addChild(box)
 end
+
+addCompoundColumn('script', 'Compounds', {
+    [Mod.getPath() .. '/compounds'] = 'mod',
+    ['data/compounds']              = 'shared'
+})
+
+addSpacer()
+
+addCompoundColumn('sound', 'Sounds', {
+    [Mod.getPath() .. '/sounds'] = 'mod',
+})
+
 
 Widget.getRoot():addChild(boxContainer)

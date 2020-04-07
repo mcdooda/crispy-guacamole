@@ -15,6 +15,8 @@ class Mod final
 		void setPath(const std::string& path);
 		inline const std::string& getPath() const { return m_path; }
 
+		std::string getFilePath(const std::string& fileName) const;
+
 		std::string getScriptPath(const std::string& fileName) const;
 		std::string getTexturePath(const std::string& fileName) const;
 		std::string getTextureRelativePath(const std::string& absolutePath) const;

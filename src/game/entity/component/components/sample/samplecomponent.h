@@ -13,12 +13,9 @@ class SampleComponent : public ComponentImpl<SampleComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "sample"; }
 		inline static const char* getVisualName() { return "Sample"; }
+		inline static bool requiresUpdate() { return false; }
 
-		void update(float currentTime, float elapsedTime) override;
-		void playSample(flat::Game& game, const std::string& filename, int numloops);
-
-	private:
-		std::vector<flat::audio::Sample> m_samples;
+		void playSample(Game& game, const std::string& filename, int numloops);
 };
 
 } // game::entity::component::sample

@@ -87,7 +87,7 @@ class Map
 		Map();
 		~Map();
 
-		void setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile);
+		void setState(Game& game, const io::MapFile& mapFile);
 		void getState(io::MapFile& mapFile) const;
 
 		void update(float currentTime);
@@ -101,8 +101,8 @@ class Map
 		void operator=(Map&&) = delete;
 		void operator=(const Map&) = delete;
 
-		bool load(Game& game, const mod::Mod& mod);
-		bool save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const;
+		bool load(Game& game);
+		bool save(Game& game, const std::vector<entity::Entity*>& entities) const;
 
 		void setBounds(int minX, int maxX, int minY, int maxY);
 		void getBounds(int& minX, int& maxX, int& minY, int& maxY) const;

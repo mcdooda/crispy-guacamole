@@ -168,19 +168,14 @@ void BaseMapState::exit(Game& game)
 	Super::exit(game);
 }
 
-void BaseMapState::setModPath(const std::string& modPath)
-{
-	m_mod.setPath(modPath);
-}
-
 bool BaseMapState::loadMap(Game& game)
 {
-	return m_map.load(game, m_mod);
+	return m_map.load(game);
 }
 
 bool BaseMapState::saveMap(Game& game) const
 {
-	return m_map.save(m_mod, game.mapName, m_entityUpdater.getEntities());
+	return m_map.save(game, m_entityUpdater.getEntities());
 }
 
 map::Map& BaseMapState::getMap()
@@ -322,7 +317,7 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
-	const std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
+	const std::string entityTemplatePath = game.mod.getEntityTemplatePath(entityTemplateName);
 	return m_entityTemplateManager.getResource(entityTemplateName, game, m_componentRegistry, entityTemplatePath);
 }
 
@@ -333,7 +328,7 @@ std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Gam
 
 std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
 {
-	const std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
+	const std::string propTemplatePath = game.mod.getPropTemplatePath(propTemplateName);
 	return m_propTemplateManager.getResource(propTemplatePath, game);
 }
 
@@ -664,7 +659,7 @@ void BaseMapState::initLua(Game& game)
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 		entity::component::lua::open(L, m_componentRegistry);
-		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
+		entity::faction::lua::open(L, game.mod.getFactionsConfigPath());
 		map::lua::map::open(L);
 		editor::lua::open(L);
 
@@ -1299,7 +1294,6 @@ void BaseMapState::updateMap()
 #ifdef FLAT_DEBUG
 void BaseMapState::copyStateBeforeReload(const BaseMapState& other)
 {
-	setModPath(other.m_mod.getPath());
 	m_gameView = other.m_gameView;
 	m_cameraCenter2d = other.m_cameraCenter2d;
 	m_cameraZoom = other.m_cameraZoom;

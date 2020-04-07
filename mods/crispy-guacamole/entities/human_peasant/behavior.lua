@@ -81,14 +81,7 @@ function states:reapResources(gatherer)
 end
 
 function states:onPlayerMoveOrder(gatherer, destination, interactionEntity)
-    local r = math.random(3)
-    if r == 1 then
-        gatherer:playSample('human-ok.wav', 0)
-    elseif r == 2 then
-        gatherer:playSample('human-oui.wav', 0)
-    elseif r == 3 then
-        gatherer:playSample('human-travail.wav', 0)
-    end
+    flat.graph.sound.play(Mod.getFilePath 'sounds/sound_test')
     unlockResource(gatherer)
     if interactionEntity == nil then
         return 'wander'

@@ -11,8 +11,7 @@ namespace map
 TileTemplate::TileTemplate(const std::string& name, Game& game) :
 	m_name(name)
 {
-	const mod::Mod& mod = game.getStateMachine().getState()->as<states::BaseMapState>().getMod();
-	std::string path = mod.getTileTemplatePath(name);
+	std::string path = game.mod.getTileTemplatePath(name);
 	m_texture = game.video->getTexture(path + "atlas.png");
 	loadTileConfig(game, path);
 }

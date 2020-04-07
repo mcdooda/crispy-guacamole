@@ -119,7 +119,7 @@ void GameState::startLevelScript(Game& game)
 
 		flat::lua::doFile(L, "data/game/scripts/init.lua");
 
-		flat::lua::loadFile(L, m_mod.getMapPath(game.mapName, "setup.lua"));
+		flat::lua::loadFile(L, game.mod.getMapPath(game.mapName, "setup.lua"));
 		if (!lua_isnil(L, -1))
 		{
 			luaL_checktype(L, -1, LUA_TFUNCTION);

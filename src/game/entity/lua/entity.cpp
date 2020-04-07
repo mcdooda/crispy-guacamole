@@ -171,7 +171,7 @@ int open(Game& game)
 	};
 	game.lua->registerClass<LuaEntityHandle>("CG.Entity", Entity_lib_m);
 
-	lua_createtable(L, 0, 3);
+	lua_createtable(L, 0, 1);
 	static const luaL_Reg Entity_lib_f[] = {
 		{"spawn",              l_Entity_spawn},
 
@@ -1147,10 +1147,9 @@ int l_Entity_playSample(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 	sample::SampleComponent& sampleComponent = getComponent<sample::SampleComponent>(L, entity);
 	const char* sampleName = luaL_checkstring(L, 2);
-	std::string file = baseMapState.getMod().getSamplePath(sampleName);
+	std::string file = game.mod.getSamplePath(sampleName);
 	int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
 	sampleComponent.playSample(game, file, numLoops);
 	return 0;

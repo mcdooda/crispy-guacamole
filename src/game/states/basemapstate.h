@@ -45,9 +45,6 @@ class BaseMapState : public BaseState
 		void execute(Game& game) override;
 		void exit(Game& game) override;
 
-		void setModPath(const std::string& modPath);
-		const mod::Mod& getMod() const { return m_mod; }
-
 		bool loadMap(Game& game);
 		bool saveMap(Game& game) const;
 
@@ -187,8 +184,6 @@ class BaseMapState : public BaseState
 		flat::render::ProgramSettings m_terrainRender;
 
 		// level
-		mod::Mod m_mod;
-
 		map::Map m_map;
 
 		std::map<std::string, entity::faction::Faction> m_factions;

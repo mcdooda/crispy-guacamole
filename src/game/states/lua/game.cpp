@@ -169,10 +169,9 @@ int l_game_openMap(lua_State* L)
 	const char* modPath = luaL_checkstring(L, 1);
 	const char* mapName = luaL_checkstring(L, 2);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	game.modPath = modPath;
+	game.mod.setPath(modPath);
 	game.mapName = mapName;
 	std::unique_ptr<GameState> gameState = std::make_unique<GameState>();
-	gameState->setModPath(modPath);
 	game.getStateMachine().setNextState(std::move(gameState));
 	return 1;
 }

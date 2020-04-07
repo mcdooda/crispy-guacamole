@@ -39,7 +39,7 @@ Map::~Map()
 	
 }
 
-void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
+void Map::setState(Game& game, const io::MapFile& mapFile)
 {
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 
@@ -49,7 +49,7 @@ void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
 	// tiles
 	m_tiles.reserve(mapFile.getTilesCount());
 	mapFile.eachTile(
-		[this, &game, &mod, &baseMapState]
+		[this, &game, &baseMapState]
 		(
 			const flat::Vector2i& tilePosition,
 			const io::MapFile::Tile& tile,
@@ -61,7 +61,7 @@ void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
 		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
 		if (propTemplateName != nullptr)
 		{
-			const std::string texturePath = mod.getTexturePath("props/" + *propTemplateName);
+			const std::string texturePath = game.mod.getTexturePath("props/" + *propTemplateName);
 			const std::shared_ptr<const flat::video::FileTexture>& texture = game.video->getTexture(texturePath);
 			setTilePropTexture(tileIndex, texture);
 		}
@@ -142,11 +142,11 @@ void Map::addAllPropsToDisplayManager() const
 	}
 }
 
-bool Map::load(Game& game, const mod::Mod& mod)
+bool Map::load(Game& game)
 {
 	FLAT_ASSERT(!m_isLoaded);
 
-	io::Reader reader(game, mod, *this);
+	io::Reader reader(game, *this);
 
 	bool loadedFromFile = false;
 	if (reader.canRead())
@@ -168,9 +168,9 @@ bool Map::load(Game& game, const mod::Mod& mod)
 	return loadedFromFile;
 }
 
-bool Map::save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const
+bool Map::save(Game& game, const std::vector<entity::Entity*>& entities) const
 {
-	io::Writer writer(mod, mapName, *this);
+	io::Writer writer(game, *this);
 	if (writer.canWrite())
 	{
 		writer.write(entities);

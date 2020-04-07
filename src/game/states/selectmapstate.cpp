@@ -8,9 +8,9 @@ namespace states
 
 void SelectMapState::enter(Game& game)
 {
-	if (game.modPath.empty())
+	if (game.mod.getPath().empty())
 	{
-		game.modPath = "mods/crispy-guacamole";
+		game.mod.setPath("mods/crispy-guacamole");
 	}
 
 	Super::enter(game);

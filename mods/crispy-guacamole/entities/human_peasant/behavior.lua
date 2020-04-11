@@ -1,7 +1,8 @@
 local GathererBehavior = require 'data/scripts/componenthelpers/behaviors/gatherer'
 
-local Money = require 'mods/crispy-guacamole/scripts/money'
-local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
+local Money = require require(Mod.getFilePath 'scripts/money')
+local EntitiesByType = require(Mod.getFilePath 'scripts/entitiesbytype')
+local BarkSystem = require(Mod.getFilePath 'scripts/barksystem')
 
 local states = GathererBehavior.basicGatherer('human_farm', 'wheat_field')
 
@@ -81,7 +82,7 @@ function states:reapResources(gatherer)
 end
 
 function states:onPlayerMoveOrder(gatherer, destination, interactionEntity)
-    flat.graph.sound.play(Mod.getFilePath 'sounds/sound_test')
+    BarkSystem:requestBark(Mod.getFilePath 'sounds/sound_test')
     unlockResource(gatherer)
     if interactionEntity == nil then
         return 'wander'

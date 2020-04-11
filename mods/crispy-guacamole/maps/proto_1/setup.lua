@@ -11,5 +11,5 @@ if townHalls[1] then
 end
 
 LevelTasks:run(
-    
+    'barktask'
 )

@@ -121,4 +121,7 @@ return {
     'controller/leftstickdirection',
     'controller/rightstickdirection',
     'controller/axisvalue',
+
+    -- map
+    'map/settiletemplate',
 }

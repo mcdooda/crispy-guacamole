@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "map.h"
 #include "zone.h"
 
@@ -43,6 +45,8 @@ int open(lua_State* L)
 		{"getTileZ",                      l_Map_getTileZ},
 		{"setTileZ",                      l_Map_setTileZ},
 		{"moveTileZBy",                   l_Map_moveTileZBy},
+		{"setTileTemplate",               l_Map_setTileTemplate},
+
 		{"findPath",                      l_Map_findPath},
 
 		{"setFogType",                    l_Map_setFogType},
@@ -269,6 +273,17 @@ int l_Map_moveTileZBy(lua_State* L)
 	const float dz = static_cast<float>(luaL_checknumber(L, 2));
 	Map& map = getMap(L);
 	map.moveTileZBy(tileIndex, dz);
+	return 0;
+}
+
+int l_Map_setTileTemplate(lua_State* L)
+{
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	const std::string tileTemplateName = luaL_checkstring(L, 2);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	std::shared_ptr<const game::map::TileTemplate> tileTemplate = getMapState(L).getTileTemplate(game, tileTemplateName);
+	Map& map = getMap(L);
+	map.setTileTemplate(tileIndex, tileTemplate);
 	return 0;
 }
 

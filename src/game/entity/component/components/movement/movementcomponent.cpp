@@ -3,6 +3,7 @@
 #include "entity/entity.h"
 #include "entity/entityhelper.h"
 #include "entity/entitytemplate.h"
+#include "entity/lua/entity.h"
 
 #include "entity/component/components/collision/collisioncomponent.h"
 #include "entity/component/components/projectile/projectilecomponent.h"
@@ -32,6 +33,7 @@ void MovementComponent::init()
 	m_movementSpeed = movementComponentTemplate->getDefaultSpeed();
 	m_currentVerticalSpeed = 0.f;
 	m_isTouchingGround = movementComponentTemplate->getSnapToGround();
+	m_hasWalkedOnTileCallback = !movementComponentTemplate->getWalkedOnTile().isEmpty();
 
 	m_isStrafing = false;
 	m_wasMovingLastFrame = false;
@@ -250,7 +252,7 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 		newMovementDirection = nextPathPoint - newPosition2d;
 	}
 
-	m_owner->setPosition2dSweep(newPosition2d);
+	setPosition2d(newPosition2d);
 
 	// has the entity reached the next point on the planned path?
 	const bool reachedNextPathPoint = nextPathPointOvertaken || flat::length2(newMovementDirection) < flat::square(EntityHelper::getRadius(m_owner));
@@ -517,6 +519,24 @@ bool MovementComponent::collidedWithMap(map::TileIndex tileIndex, const flat::Ve
 		}
 	}
 	return true;
+}
+
+void MovementComponent::setPosition2d(const flat::Vector2& newPosition2d)
+{
+	if (m_hasWalkedOnTileCallback && m_isTouchingGround)
+	{
+		map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+		m_owner->setPosition2dSweep(newPosition2d);
+		map::TileIndex newTileIndex = m_owner->getTileIndexFromPosition();
+		if (tileIndex != newTileIndex)
+		{
+			getTemplate()->getWalkedOnTile().call(m_owner, newTileIndex);
+		}
+	}
+	else
+	{
+		m_owner->setPosition2dSweep(newPosition2d);
+	}
 }
 
 #ifdef FLAT_DEBUG

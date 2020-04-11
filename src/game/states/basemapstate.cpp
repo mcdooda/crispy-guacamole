@@ -1283,12 +1283,12 @@ void BaseMapState::updateEntities()
 #endif
 }
 
-void BaseMapState::updateMap()
+void BaseMapState::updateMap(Game& game)
 {
 	FLAT_PROFILE("Update map");
 
 	const flat::time::Clock& clock = getGameClock();
-	m_map.update(clock.getTime());
+	m_map.update(game, clock.getTime());
 }
 
 #ifdef FLAT_DEBUG

@@ -44,7 +44,7 @@ void GameState::execute(Game& game)
 
 	handleGameActionInputs(game);
 	updateEntities();
-	updateMap();
+	updateMap(game);
 	updateLevelScript();
 }
 

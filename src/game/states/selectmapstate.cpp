@@ -15,7 +15,7 @@ void SelectMapState::enter(Game& game)
 
 	Super::enter(game);
 
-	game.assetRepository->addAssetFolder(game.modPath);
+	game.assetRepository->addAssetDirectory(game.modPath);
 	game.assetRepository->scanAllAssets();
 
 	game.lua->doFile("data/selectmap/scripts/selectmap.lua");

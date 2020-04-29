@@ -43,6 +43,7 @@ int l_Map_getTilePosition(lua_State* L);
 int l_Map_getTileZ(lua_State* L);
 int l_Map_setTileZ(lua_State* L);
 int l_Map_moveTileZBy(lua_State* L);
+int l_Map_setTileTemplate(lua_State* L);
 
 int l_Map_findPath(lua_State* L);
 

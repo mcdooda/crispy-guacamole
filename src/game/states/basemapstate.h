@@ -162,7 +162,7 @@ class BaseMapState : public BaseState
 		void handleGameActionInputs(Game& game);
 		void moveToFormation(Game& game);
 		void updateEntities();
-		void updateMap();
+		void updateMap(Game& game);
 
 #ifdef FLAT_DEBUG
 		void copyStateBeforeReload(const BaseMapState& other);

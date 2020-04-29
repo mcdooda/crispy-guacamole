@@ -85,6 +85,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 		bool collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal);
 
+		void setPosition2d(const flat::Vector2& newPosition2d);
+
 #ifdef FLAT_DEBUG
 		void debugDrawCurrentPath(debug::DebugDisplay& debugDisplay) const;
 		void debugDrawSteering(debug::DebugDisplay& debugDisplay) const;
@@ -119,6 +121,8 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool m_wasMovingLastFrame : 1;
 
 		bool m_isFollowingPartialPath : 1;
+
+		bool m_hasWalkedOnTileCallback : 1;
 
 #ifdef FLAT_DEBUG
 		flat::Vector2 m_debugSteering;

@@ -283,7 +283,7 @@ return {
     },
     {
       loadArguments = {
-        'despawn',
+        'death',
       },
       name = 'string',
     },

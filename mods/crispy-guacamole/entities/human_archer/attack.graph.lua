@@ -37,6 +37,12 @@ return {
       2,
     },
     {
+      1,
+      3,
+      19,
+      2,
+    },
+    {
       2,
       1,
       1,
@@ -88,6 +94,12 @@ return {
       10,
       1,
       14,
+      1,
+    },
+    {
+      10,
+      1,
+      19,
       1,
     },
     {
@@ -131,6 +143,12 @@ return {
       1,
       14,
       7,
+    },
+    {
+      20,
+      1,
+      19,
+      3,
     },
   },
   nodeType = 'script',
@@ -230,6 +248,15 @@ return {
         true,
       },
       name = 'boolean',
+    },
+    {
+      name = 'entity/playsound',
+    },
+    {
+      loadArguments = {
+        'fx_arrow1',
+      },
+      name = 'string',
     },
   },
 }

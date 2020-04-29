@@ -3,31 +3,31 @@ return {
     {
       1,
       1,
-      7,
-      1,
-    },
-    {
-      1,
-      2,
-      8,
+      3,
       1,
     },
     {
       1,
       3,
       8,
-      2,
-    },
-    {
-      1,
-      3,
-      15,
       1,
     },
     {
       1,
       3,
-      16,
+      11,
+      1,
+    },
+    {
+      1,
+      4,
+      8,
+      2,
+    },
+    {
+      1,
+      4,
+      11,
       2,
     },
     {
@@ -35,120 +35,66 @@ return {
       1,
       1,
       1,
-    },
-    {
-      3,
-      1,
-      1,
-      2,
     },
     {
       4,
       1,
+      9,
       1,
-      3,
     },
     {
       5,
       1,
-      1,
       4,
+      3,
     },
     {
       6,
       1,
+      4,
+      4,
+    },
+    {
+      7,
       1,
+      4,
       5,
     },
     {
       8,
       1,
-      12,
+      4,
       1,
     },
     {
       8,
-      1,
-      16,
-      1,
-    },
-    {
-      9,
-      1,
-      8,
-      3,
+      2,
+      4,
+      2,
     },
     {
       10,
       1,
-      8,
-      4,
-    },
-    {
-      11,
-      1,
-      8,
-      5,
-    },
-    {
-      13,
-      1,
-      12,
-      3,
-    },
-    {
-      14,
-      1,
-      12,
-      4,
-    },
-    {
-      15,
-      1,
-      12,
+      9,
       2,
     },
     {
-      17,
+      12,
       1,
-      16,
+      11,
       3,
     },
   },
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/attackcomponent',
+      name = 'components/lifecomponent',
     },
     {
       loadArguments = {
-        0.5,
+        100,
       },
       name = 'number',
-    },
-    {
-      loadArguments = {
-        0.80000001192093,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
     },
     {
       loadArguments = {
@@ -164,7 +110,7 @@ return {
     },
     {
       loadArguments = {
-        'attack',
+        'death',
       },
       name = 'string',
     },
@@ -181,29 +127,23 @@ return {
       name = 'boolean',
     },
     {
-      name = 'entity/dealdamage',
+      name = 'entity/clearcycleanimation',
+    },
+    {
+      name = 'game/sleep',
     },
     {
       loadArguments = {
-        10,
+        3,
       },
       name = 'number',
     },
     {
-      loadArguments = {
-        0.20000000298023,
-      },
-      name = 'number',
-    },
-    {
-      name = 'entity/getattacktarget',
-    },
-    {
-      name = 'entity/playsound',
+      name = 'entity/playbark',
     },
     {
       loadArguments = {
-        'fx_air_slash',
+        'human_male1_death',
       },
       name = 'string',
     },

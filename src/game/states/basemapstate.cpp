@@ -500,19 +500,7 @@ void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
-
-	const bool isMouseOverUiBefore = isMouseOverUi(game);
 	Super::update(game);
-	const bool isMouseOverUiAfter = isMouseOverUi(game);
-
-	if (isMouseOverUiBefore && !isMouseOverUiAfter)
-	{
-		game.input->pushContext(m_gameInputContext);
-	}
-	else if (!isMouseOverUiBefore && isMouseOverUiAfter)
-	{
-		game.input->popContext(m_gameInputContext);
-	}
 
 	//debugCursorPosition(game);
 }

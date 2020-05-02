@@ -20,6 +20,7 @@
 #include "entity/component/components/collision/collisioncomponent.h"
 #include "entity/component/components/interaction/interactioncomponent.h"
 #include "entity/component/components/selection/selectioncomponent.h"
+#include "entity/component/components/fogvision/fogvisioncomponent.h"
 #include "entity/component/lua/componentregistry.h"
 #include "entity/faction/lua/faction.h"
 
@@ -523,6 +524,7 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 				componentFlags &= ~attack::AttackComponent::getFlag();
 				componentFlags &= ~behavior::BehaviorComponent::getFlag();
 				componentFlags &= ~collision::CollisionComponent::getFlag();
+				componentFlags &= ~fogvision::FogVisionComponent::getFlag();
 				const std::vector<flat::Vector2> ghostEntityPositions = getGhostEntityPositions(cursorPosition, tileIndex);
 				entities.reserve(ghostEntityPositions.size());
 				for (const flat::Vector2& ghostEntityPosition : ghostEntityPositions)

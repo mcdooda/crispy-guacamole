@@ -1,4 +1,4 @@
-local HealthBar = require 'mods/crispy-guacamole/ui/entity/healthbar'
+local HealthBar = require 'mods/crispy-guacamole/ui/entity/healthbar_short'
 
 local ui = setmetatable({}, { __index = HealthBar })
 

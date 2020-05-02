@@ -66,38 +66,60 @@ local function setBuilding(buildingTemplateName, buildings)
     end
 
     do
-        local function spawnEntities(buildingPosition, numEntities, entityTemplateName)
-            for i = 1, numEntities do
+        local function buildEntity(building, entityToBuild)
+            local buildTimer = game.Timer()
+
+            buildTimer:onUpdate(function(timer, elapsedTime)
+                local t = elapsedTime / entityToBuild.duration
+                if 0 < t and t < 1 then
+                    building:getExtraData().progressChanged(t)
+                end
+            end)
+
+            buildTimer:onEnd(function()
+                local extraData = building:getExtraData()
+                local buildingPosition = building:getPosition():toVector2()
                 local position = flat.Vector2(buildingPosition:x(), buildingPosition:y())
                 position:x(position:x() + 1 + (math.random() - 0.5) * 0.01)
                 position:y(position:y() + 1 + (math.random() - 0.5) * 0.01)
-                Entity.spawn(entityTemplateName, position)
-            end
+
+                Entity.spawn(entityToBuild.entity, position)
+                extraData.progressChanged(0)
+                table.remove(extraData.queue,1)
+                if #extraData.queue > 0 then 
+                    buildEntity(building, extraData.queue[1])
+                end
+            end)
+            buildTimer:start(entityToBuild.duration, false)
         end
 
+        local function addToQueue(building, entityToBuild)
+            local extraData = building:getExtraData()
+            if extraData.queue == nil then
+                extraData.queue = {}
+            end
+            local queue = extraData.queue
+            queue[#queue + 1] = entityToBuild
+
+            if #extraData.queue == 1 then 
+                buildEntity(building, entityToBuild)
+            end
+        end
+        
         if buildingData and buildingData.units then
             for i = 1, #buildingData.units do
                 local unit = buildingData.units[i]
-                local unitData = EntityData.get(unit)
-
+                local unitData = EntityData.get(unit.entity)
                 local lineFlow = Widget.makeLineFlow()
 
                 local position = buildings[1]:getPosition():toVector2()
-
                 do
                     local label = Widget.makeText(unitData.name, table.unpack(Theme.defaultFont))
                     label:setTextColor(Theme.TEXT_COLOR)
                     label:click(function()
-                        spawnEntities(position, 1, unit)
-                    end)
-                    lineFlow:addChild(label)
-                end
-
-                do
-                    local label = Widget.makeText(' x10', table.unpack(Theme.defaultFont))
-                    label:setTextColor(Theme.TEXT_COLOR)
-                    label:click(function()
-                        spawnEntities(position, 10, unit)
+                        for i = 1, #buildings do
+                            addToQueue(buildings[i], unit)
+                        end
                     end)
                     lineFlow:addChild(label)
                 end

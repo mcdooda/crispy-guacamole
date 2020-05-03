@@ -156,36 +156,6 @@ return {
       22,
       4,
     },
-    {
-      27,
-      1,
-      10,
-      3,
-    },
-    {
-      28,
-      1,
-      27,
-      1,
-    },
-    {
-      29,
-      1,
-      27,
-      2,
-    },
-    {
-      30,
-      1,
-      27,
-      3,
-    },
-    {
-      31,
-      1,
-      27,
-      4,
-    },
   },
   nodeType = 'script',
   nodes = {
@@ -227,22 +197,18 @@ return {
     },
     {
       loadArguments = {
-        13,
+        8,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        3,
+        2,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        {
-          5,
-          '',
-        },
         {
           5,
           '',
@@ -277,7 +243,7 @@ return {
     },
     {
       loadArguments = {
-        17,
+        22,
       },
       name = 'number',
     },
@@ -304,7 +270,7 @@ return {
     },
     {
       loadArguments = {
-        6,
+        4,
       },
       name = 'number',
     },
@@ -331,40 +297,13 @@ return {
     },
     {
       loadArguments = {
-        13,
+        8,
       },
       name = 'number',
     },
     {
       loadArguments = {
         0.070000000298023,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'death',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        10,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.050000000745058,
       },
       name = 'number',
     },

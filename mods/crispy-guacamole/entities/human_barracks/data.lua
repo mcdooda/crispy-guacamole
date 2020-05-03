@@ -10,6 +10,10 @@ return {
             duration = 3
         },
         {
+            entity = 'human_crossbowman',
+            duration = 5
+        },
+        {
             entity = 'human_paladin',
             duration = 5
         }

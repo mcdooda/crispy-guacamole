@@ -25,8 +25,8 @@ class Game : public flat::Game
 	public:
 		// mod
 		std::string modPath;
-		std::string mapName;
-		std::string entityName;
+		std::string mapPath;
+		std::string entityPath;
 		
 		// views
 		flat::video::View interfaceView;

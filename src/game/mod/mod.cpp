@@ -29,11 +29,6 @@ std::string Mod::getTextureRelativePath(const std::string& absolutePath) const
 	return absolutePath.substr(m_path.size(), absolutePath.size() - m_path.size());
 }
 
-std::string Mod::getMapPath(const std::string& mapName, const char* fileName) const
-{
-	return m_path + "maps/" + mapName + "/" + fileName;
-}
-
 std::string Mod::getEntityTemplatePath(const std::string& entityTemplateName) const
 {
 	return m_path + "entities/" + entityTemplateName + "/"; // path to a directory

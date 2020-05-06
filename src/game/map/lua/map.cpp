@@ -88,9 +88,9 @@ int l_Map_getName(lua_State* L)
 
 int l_Map_load(lua_State* L)
 {
-	std::string mapName = luaL_checkstring(L, 1);
+	std::string mapPath = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	game.mapName = mapName;
+	game.mapPath = mapPath;
 	states::BaseMapState& mapState = getMapState(L);
 	bool mapLoaded = mapState.loadMap(game);
 	lua_pushboolean(L, mapLoaded);

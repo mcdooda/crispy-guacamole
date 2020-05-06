@@ -29,7 +29,7 @@ namespace io
 class Writer
 {
 	public:
-		Writer(const mod::Mod& mod, const std::string& mapName, const Map& map);
+		Writer(const mod::Mod& mod, const std::string& mapPath, const Map& map);
 		~Writer();
 
 		bool canWrite() const;

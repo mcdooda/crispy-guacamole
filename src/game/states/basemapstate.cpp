@@ -179,7 +179,7 @@ bool BaseMapState::loadMap(Game& game)
 
 bool BaseMapState::saveMap(Game& game) const
 {
-	return m_map.save(m_mod, game.mapName, m_entityUpdater.getEntities());
+	return m_map.save(m_mod, game.mapPath, m_entityUpdater.getEntities());
 }
 
 map::Map& BaseMapState::getMap()

@@ -35,12 +35,12 @@ int open(lua_State* L)
 int l_EntityEditor_openEntity(lua_State* L)
 {
 	const char* modPath = luaL_checkstring(L, 1);
-	const char* mapName = luaL_checkstring(L, 2);
-	const char* entityName = luaL_checkstring(L, 3);
+	const char* mapPath = luaL_checkstring(L, 2);
+	const char* entityPath = luaL_checkstring(L, 3);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	game.modPath = modPath;
-	game.mapName = mapName;
-	game.entityName = entityName;
+	game.mapPath = mapPath;
+	game.entityPath = entityPath;
 	std::unique_ptr<EntityEditorState> gameState = std::make_unique<EntityEditorState>();
 	gameState->setModPath(modPath);
 	game.getStateMachine().setNextState(std::move(gameState));

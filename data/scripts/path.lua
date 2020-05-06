@@ -2,7 +2,7 @@ local require = require
 
 -- mod
 local getModPath = Mod.getPath
-local getCurrentMapName = Mod.getCurrentMapName
+local getCurrentMapPath = Mod.getCurrentMapPath
 
 local function getModFilePath(file)
     return getModPath() .. '/' .. file
@@ -13,12 +13,8 @@ local function requireModFile(file)
 end
 
 -- map
-local function getMapPath()
-    return getModPath() .. '/maps/' .. getCurrentMapName()
-end
-
 local function getMapFilePath(file)
-    return getMapPath() .. '/' .. file
+    return getCurrentMapPath() .. '/' .. file
 end
 
 local function requireMapFile(file)
@@ -105,7 +101,6 @@ return {
     getModFilePath                   = getModFilePath,
     requireModFile                   = requireModFile,
 
-    getMapPath                       = getMapPath,
     getMapFilePath                   = getMapFilePath,
     requireMapFile                   = requireMapFile,
     requireMapConfig                 = requireMapConfig,

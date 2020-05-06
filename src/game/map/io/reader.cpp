@@ -11,7 +11,7 @@ Reader::Reader(Game& game, const mod::Mod& mod, Map& map) :
 	m_game(game),
 	m_mod(mod),
 	m_map(map),
-	m_reader(mod.getMapPath(game.mapName))
+	m_reader(game.mapPath + "/map.gpmap")
 {
 
 }

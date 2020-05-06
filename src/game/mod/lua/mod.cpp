@@ -16,7 +16,7 @@ int open(lua_State* L)
 	lua_createtable(L, 0, 1);
 	static const luaL_Reg Mod_lib_m[] = {
 		{"getPath",           l_Mod_getPath},
-		{"getCurrentMapName", l_Mod_getCurrentMapName},
+		{"getCurrentMapPath", l_Mod_getCurrentMapPath},
 
 		{"getEntities",       l_Mod_getEntities},
 		{"getMaps",           l_Mod_getMaps},
@@ -40,10 +40,10 @@ int l_Mod_getPath(lua_State* L)
 	return 1;
 }
 
-int l_Mod_getCurrentMapName(lua_State* L)
+int l_Mod_getCurrentMapPath(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	lua_pushstring(L, game.mapName.c_str());
+	lua_pushstring(L, game.mapPath.c_str());
 	return 1;
 }
 
@@ -100,8 +100,8 @@ int l_Mod_openEditor(lua_State* L)
 	const char* modPath = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	game.modPath = modPath;
-	game.mapName = "";
-	game.entityName = "";
+	game.mapPath = "";
+	game.entityPath = "";
 	std::unique_ptr<states::SelectMapState> selectMapState = std::make_unique<states::SelectMapState>();
 	game.getStateMachine().setNextState(std::move(selectMapState));
 	return 0;

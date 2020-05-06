@@ -17,10 +17,10 @@ namespace map
 namespace io
 {
 
-Writer::Writer(const mod::Mod& mod, const std::string& mapName, const Map& map) :
+Writer::Writer(const mod::Mod& mod, const std::string& mapPath, const Map& map) :
 	m_mod(mod),
 	m_map(map),
-	m_file(mod.getMapPath(mapName).c_str(), std::ofstream::binary)
+	m_file((mapPath + "/map.gpmap").c_str(), std::ofstream::binary)
 {
 
 }

@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/human_archer/life'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human/human_archer/life'

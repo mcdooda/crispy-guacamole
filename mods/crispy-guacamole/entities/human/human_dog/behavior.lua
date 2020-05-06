@@ -3,7 +3,7 @@ local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 local sqrt = math.sqrt
 local random = math.random
 
-local movement = require 'mods/crispy-guacamole/entities/human_dog/movement'
+local movement = require 'mods/crispy-guacamole/entities/human/human_dog/movement'
 
 local states = {}
 

@@ -1,1 +1,1 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/orc_warrior/movement')
+return flat.graph.script.run(Mod.getPath() .. '/entities/orc/orc_warrior/movement')

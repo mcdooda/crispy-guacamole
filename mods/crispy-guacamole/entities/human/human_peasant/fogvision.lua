@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/human_peasant/fogvision'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human/human_peasant/fogvision'

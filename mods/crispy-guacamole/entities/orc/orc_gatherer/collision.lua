@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/orc_gatherer/collision'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/orc/orc_gatherer/collision'

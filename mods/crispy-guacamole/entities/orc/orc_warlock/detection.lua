@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/orc_warlock/detection'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/orc/orc_warlock/detection'

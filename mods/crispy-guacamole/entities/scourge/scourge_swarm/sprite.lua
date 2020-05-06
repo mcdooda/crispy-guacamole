@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/scourge_swarm/sprite'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/scourge/scourge_swarm/sprite'

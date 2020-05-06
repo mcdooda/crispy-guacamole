@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/human_paladin/detection'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human/human_paladin/detection'

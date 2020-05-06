@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/human_peasant/collision'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human/human_peasant/collision'

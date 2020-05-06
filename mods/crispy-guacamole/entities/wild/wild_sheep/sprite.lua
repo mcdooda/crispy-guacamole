@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/wild_sheep/sprite'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/wild/wild_sheep/sprite'

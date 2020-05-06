@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/scourge_swarm/collision'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/scourge/scourge_swarm/collision'

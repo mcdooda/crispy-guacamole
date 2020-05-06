@@ -1,1 +1,1 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/wild_boar/collision')
+return flat.graph.script.run(Mod.getPath() .. '/entities/wild/wild_boar/collision')

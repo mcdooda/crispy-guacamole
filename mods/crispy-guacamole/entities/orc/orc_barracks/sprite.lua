@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/orc_barracks/sprite'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/orc/orc_barracks/sprite'

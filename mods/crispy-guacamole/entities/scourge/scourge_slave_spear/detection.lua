@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/scourge_slave_spear/detection'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/scourge/scourge_slave_spear/detection'

@@ -178,7 +178,7 @@ class BaseMapState : public BaseState
 
 	protected:
 		// resource loading
-		flat::resource::StrongResourceManager<entity::EntityTemplate, std::string, Game&, const entity::component::ComponentRegistry&, std::string> m_entityTemplateManager;
+		flat::resource::StrongResourceManager<entity::EntityTemplate, std::string, Game&, const entity::component::ComponentRegistry&> m_entityTemplateManager;
 		flat::resource::StrongResourceManager<map::TileTemplate, std::string, Game&> m_tileTemplateManager;
 		flat::resource::StrongResourceManager<map::PropTemplate, std::string, Game&> m_propTemplateManager;
 

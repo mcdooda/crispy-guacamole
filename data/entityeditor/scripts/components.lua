@@ -31,8 +31,8 @@ function EntityState:getEntity()
     return self.entity
 end
 
-function EntityState:getTemplateName()
-    return self:getEntity():getTemplateName()
+function EntityState:getTemplatePath()
+    return self:getEntity():getTemplatePath()
 end
 
 function EntityState:findFirstEnabledComponent()
@@ -47,11 +47,11 @@ function EntityState:findFirstEnabledComponent()
 end
 
 function EntityState:componentFileExists(componentName)
-    return Path.componentFileExists(EntityState:getTemplateName(), componentName)
+    return Path.componentFileExists(EntityState:getTemplatePath(), componentName)
 end
 
 function EntityState:componentIsGraph(componentName)
-    return Path.componentFileExists(EntityState:getTemplateName(), componentName .. '.graph')
+    return Path.componentFileExists(EntityState:getTemplatePath(), componentName .. '.graph')
 end
 
 function EntityState:hasComponent(componentName)
@@ -288,26 +288,26 @@ function ComponentDetailsPanel:shouldEditGraph(componentName)
 end
 
 function ComponentDetailsPanel:editCurrentComponent()
-    local entityTemplateName = EntityState:getTemplateName()
+    local entityTemplatePath = EntityState:getTemplatePath()
     local componentName = ComponentSelectionPanel:getCurrentComponentName()
 
     local editGraph = self:shouldEditGraph(componentName)
 
     if not editGraph then
-        flat.textEditor.open(Path.getComponentPath(entityTemplateName, componentName .. '.lua'))
+        flat.textEditor.open(Path.getComponentPath(entityTemplatePath, componentName .. '.lua'))
     else
         flat.graph.editor.open(
             Widget.getRoot(),
-            Path.getComponentPath(entityTemplateName, componentName),
+            Path.getComponentPath(entityTemplatePath, componentName),
             'script',
-            { entityTemplateName = entityTemplateName },
+            { entityTemplatePath = entityTemplatePath },
             function(isNew)
                 -- kill the entity to respawn a new one with the right components
                 EntityState:getEntity():delete()
-                game.debug_reloadComponent(entityTemplateName, Component[componentName], isNew or EntityState:isComponentBroken(componentName))
+                game.debug_reloadComponent(entityTemplatePath, Component[componentName], isNew or EntityState:isComponentBroken(componentName))
 
                 -- force reload component template
-                Path.requireComponentTemplate(entityTemplateName, componentName, true)
+                Path.requireComponentTemplate(entityTemplatePath, componentName, true)
 
                 EntityEditor.entitySpawned(function(entity)
                     ComponentSelectionPanel:updateCurrentTab()
@@ -319,21 +319,21 @@ function ComponentDetailsPanel:editCurrentComponent()
 end
 
 function ComponentDetailsPanel:removeCurrentComponent()
-    local entityTemplateName = EntityState:getTemplateName()
+    local entityTemplatePath = EntityState:getTemplatePath()
     local componentName = ComponentSelectionPanel:getCurrentComponentName()
 
-    local componentPath = Path.getComponentPath(entityTemplateName, componentName)
+    local componentPath = Path.getComponentPath(entityTemplatePath, componentName)
     os.remove(componentPath .. '.graph.lua')
     os.remove(componentPath .. '.layout.lua')
     os.remove(componentPath .. '.lua')
 
     -- force reload component template
-    Path.requireComponentTemplateIfExists(entityTemplateName, componentName, true)
+    Path.requireComponentTemplateIfExists(entityTemplatePath, componentName, true)
 
     -- kill the entity to respawn a new one with the right components
     EntityState:getEntity():delete()
     EntityEditor.entityDespawned(function()
-        game.debug_removeComponent(entityTemplateName, Component[componentName])
+        game.debug_removeComponent(entityTemplatePath, Component[componentName])
         return false
     end)
     EntityEditor.entitySpawned(function(entity)
@@ -378,9 +378,9 @@ function ComponentDetailsPanel:showComponentDetails(componentName)
     local componentDetailsFile = io.open(componentDetailsFilePath .. '.lua', 'r')
     if componentDetailsFile then
         componentDetailsFile:close()
-        local entityTemplateName = EntityState:getTemplateName()
-        local componentTemplate = Path.requireComponentTemplate(entityTemplateName, componentName)
-        require(componentDetailsFilePath)(self.detailsPanel, entityTemplateName, componentTemplate, function() return EntityState:getEntity() end)
+        local entityTemplatePath = EntityState:getTemplatePath()
+        local componentTemplate = Path.requireComponentTemplate(entityTemplatePath, componentName)
+        require(componentDetailsFilePath)(self.detailsPanel, entityTemplatePath, componentTemplate, function() return EntityState:getEntity() end)
     end
 end
 

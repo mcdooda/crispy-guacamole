@@ -2,7 +2,7 @@ local UiSettings = require 'data/scripts/ui/uisettings'
 local Preview = require 'data/scripts/preview'
 local Icon = require 'data/scripts/ui/icon'
 
-return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
+return function(componentDetailsPanel, entityTemplatePath, componentTemplate, getEntity)
     do
         local label = Widget.makeText(
             'Origin: ' .. componentTemplate.origin:x() .. ', ' .. componentTemplate.origin:y(),
@@ -31,7 +31,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
             end
 
             do
-                local entityPreview = Preview.entity(entityTemplateName)
+                local entityPreview = Preview.entity(entityTemplatePath)
                 entityPreview:setMargin(2)
                 componentDetailsPanel:addChild(entityPreview)
             end
@@ -59,7 +59,7 @@ return function(componentDetailsPanel, entityTemplateName, componentTemplate, ge
                 local animationLine = Widget.makeLineFlow()
 
                 do
-                    local animationPreview = Preview.entity(entityTemplateName, animationName, true)
+                    local animationPreview = Preview.entity(entityTemplatePath, animationName, true)
                     animationPreview:setMargin(2)
                     animationLine:addChild(animationPreview)
                 end

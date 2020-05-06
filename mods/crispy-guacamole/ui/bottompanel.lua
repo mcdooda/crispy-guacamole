@@ -66,12 +66,12 @@ local function setBuilding(buildingTemplateName, buildings)
     end
 
     do
-        local function spawnEntities(buildingPosition, numEntities, entityTemplateName)
+        local function spawnEntities(buildingPosition, numEntities, entityTemplatePath)
             for i = 1, numEntities do
                 local position = flat.Vector2(buildingPosition:x(), buildingPosition:y())
                 position:x(position:x() + 1 + (math.random() - 0.5) * 0.01)
                 position:y(position:y() + 1 + (math.random() - 0.5) * 0.01)
-                Entity.spawn(entityTemplateName, position)
+                Entity.spawn(entityTemplatePath, position)
             end
         end
 
@@ -127,13 +127,13 @@ local function setUnit(unitTemplateName, units)
     end
 
     do
-        local function build(entityTemplateName)
-            local buildingTypeData = EntityData.get(entityTemplateName)
+        local function build(entityTemplatePath)
+            local buildingTypeData = EntityData.get(entityTemplatePath)
             local firstPos
             local path
             if buildingTypeData and buildingTypeData.pathType then
                 game.setGhostEntity(
-                    entityTemplateName,
+                    entityTemplatePath,
                     function(cursorPosition, tiles)
                         -- TODO: check same altitude and ground navigation capability
                         return { cursorPosition }
@@ -149,7 +149,7 @@ local function setUnit(unitTemplateName, units)
                         end)
                         firstPos = bottomTilePosition
                         game.setGhostEntity(
-                            entityTemplateName,
+                            entityTemplatePath,
                             function(cursorPosition, tiles)
                                 local bottomTilePosition = flat.Vector2(-math.huge, -math.huge)
                                 tiles:eachTile(function(tile)
@@ -186,7 +186,7 @@ local function setUnit(unitTemplateName, units)
                                 if not continueAction then
                                     path:eachTile(function(position)
                                         -- spawn construction site and interact
-                                        local building = Entity.spawn(entityTemplateName, position)
+                                        local building = Entity.spawn(entityTemplatePath, position)
                                         building:enterState 'under_construction'
                                         for _, unit in pairs(units) do
                                             if unit:canInteractWith(building) then
@@ -203,7 +203,7 @@ local function setUnit(unitTemplateName, units)
                 )
             else
                 game.setGhostEntity(
-                    entityTemplateName,
+                    entityTemplatePath,
                     function(cursorPosition, tiles)
                         return { cursorPosition }
                     end,
@@ -217,7 +217,7 @@ local function setUnit(unitTemplateName, units)
                             end
                         end)
                         -- spawn construction site and interact
-                        local building = Entity.spawn(entityTemplateName, bottomTilePosition)
+                        local building = Entity.spawn(entityTemplatePath, bottomTilePosition)
                         building:enterState 'under_construction'
                         for _, unit in pairs(units) do
                             if unit:canInteractWith(building) then
@@ -264,7 +264,7 @@ local function buildWidgets()
         local unitsPerType = {}
         local entityTemplates = {}
         for _, selectedEntity in Map.eachSelectedEntity() do
-            local entityTemplate = selectedEntity:getTemplateName()
+            local entityTemplate = selectedEntity:getTemplatePath()
             local entityGroup
             if selectedEntity:hasComponent(Component.prop) then
                 entityGroup = buildingsPerType

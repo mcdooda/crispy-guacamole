@@ -7,9 +7,8 @@ namespace game
 namespace entity
 {
 
-EntityTemplate::EntityTemplate(const std::string& name, Game& game, const component::ComponentRegistry& componentRegistry, const std::string& path) :
+EntityTemplate::EntityTemplate(const std::string& path, Game& game, const component::ComponentRegistry& componentRegistry) :
 	m_path(path),
-	m_name(name),
 	m_componentFlags(0)
 {
 	lua_State* L = game.lua->state;
@@ -84,7 +83,7 @@ void EntityTemplate::loadComponentTemplateSafe(lua_State* L, Game& game, const c
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	std::string configPath = m_path + componentType.getConfigName() + ".lua";
+	std::string configPath = m_path + "/" + componentType.getConfigName() + ".lua";
 	int code = luaL_loadfile(L, configPath.c_str());
 	if (code == LUA_OK)
 	{
@@ -114,7 +113,7 @@ void EntityTemplate::loadComponentTemplateSafe(lua_State* L, Game& game, const c
 	luaL_error(L, "Error %s while loading component '%s' for entity '%s':\n%s",
 		flat::lua::codeToString(code),
 		componentType.getConfigName(),
-		m_name.c_str(),
+		m_path.c_str(),
 		luaL_checkstring(L, -1));
 }
 

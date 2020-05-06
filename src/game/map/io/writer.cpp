@@ -178,7 +178,7 @@ void Writer::writeEntities(const std::vector<entity::Entity*>& entities)
 	write(static_cast<uint16_t>(entityTemplates.size()));
 	for (const entity::EntityTemplate* entityTemplate : entityTemplatesOrdered)
 	{
-		write<const std::string&>(entityTemplate->getName());
+		write<const std::string&>(entityTemplate->getPath());
 	}
 
 	write(static_cast<uint16_t>(entities.size()));

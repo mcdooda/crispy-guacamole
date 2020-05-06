@@ -68,7 +68,7 @@ function states:followTarget(dog)
 end
 
 function states:onEntityEnteredVisionRange(dog, entity)
-	if entity:getTemplateName() == 'wild_sheep' and (not dog:getExtraData().target or not dog:getExtraData().target:isValid()) then
+	if entity:getTemplatePath() == 'wild_sheep' and (not dog:getExtraData().target or not dog:getExtraData().target:isValid()) then
 		dog:getExtraData().target = entity
 		return 'followTarget'
 	end

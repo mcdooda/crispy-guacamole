@@ -30,20 +30,16 @@ local function requireMapConfig()
 end
 
 -- entity
-local function getEntityPath(templateName)
-    return getModPath() .. '/entities/' .. templateName
+local function getEntityFilePath(entityTemplatePath, file)
+    return entityTemplatePath .. '/' .. file
 end
 
-local function getEntityFilePath(entityTemplateName, file)
-    return getEntityPath(entityTemplateName) .. '/' .. file
+local function getComponentPath(entityTemplatePath, componentTemplateName)
+    return getEntityFilePath(entityTemplatePath, componentTemplateName)
 end
 
-local function getComponentPath(entityTemplateName, componentTemplateName)
-    return getEntityFilePath(entityTemplateName, componentTemplateName)
-end
-
-local function componentFileExists(entityTemplateName, componentTemplateName)
-    local file = io.open(getComponentPath(entityTemplateName, componentTemplateName) .. '.lua', 'r')
+local function componentFileExists(entityTemplatePath, componentTemplateName)
+    local file = io.open(getComponentPath(entityTemplatePath, componentTemplateName) .. '.lua', 'r')
     if file then
         file:close()
         return true
@@ -52,17 +48,17 @@ local function componentFileExists(entityTemplateName, componentTemplateName)
     end
 end
 
-local function requireComponentTemplate(entityTemplateName, componentTemplateName, forceReload)
-    local componentPath = getComponentPath(entityTemplateName, componentTemplateName)
+local function requireComponentTemplate(entityTemplatePath, componentTemplateName, forceReload)
+    local componentPath = getComponentPath(entityTemplatePath, componentTemplateName)
     if forceReload then
         package.loaded[componentPath] = nil
     end
     return require(componentPath)
 end
 
-local function requireComponentTemplateIfExists(entityTemplateName, componentTemplateName, forceReload)
+local function requireComponentTemplateIfExists(entityTemplatePath, componentTemplateName, forceReload)
     local componentExists, componentTemplate = pcall(function()
-        return requireComponentTemplate(entityTemplateName, componentTemplateName, forceReload)
+        return requireComponentTemplate(entityTemplatePath, componentTemplateName, forceReload)
     end)
     if componentExists then
         assert(type(componentTemplate) == 'table')
@@ -114,7 +110,6 @@ return {
     requireMapFile                   = requireMapFile,
     requireMapConfig                 = requireMapConfig,
 
-    getEntityPath                    = getEntityPath,
     getEntityFilePath                = getEntityFilePath,
     getComponentPath                 = getComponentPath,
     componentFileExists              = componentFileExists,

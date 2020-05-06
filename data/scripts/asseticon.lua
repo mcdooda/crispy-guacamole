@@ -29,15 +29,15 @@ local function makeAssetIconWidget(assetName, preview, size)
     return assetIcon
 end
 
-local function entityAssetIcon(entityTemplateName, size)
-    local preview = Preview.entity(entityTemplateName, nil, false, 1)
+local function entityAssetIcon(entityTemplatePath, size)
+    local preview = Preview.entity(entityTemplatePath, nil, false, 1)
     local width, height = preview:getSize()
     if width * 2 < size and height * 2 < size then
-        preview = Preview.entity(entityTemplateName, nil, false, 2)
+        preview = Preview.entity(entityTemplatePath, nil, false, 2)
     end
     preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
     preview:setPosition(0, 10)
-    return makeAssetIconWidget(entityTemplateName, preview, size)
+    return makeAssetIconWidget(entityTemplatePath, preview, size)
 end
 
 local function tileAssetIcon(tileTemplateName, size)

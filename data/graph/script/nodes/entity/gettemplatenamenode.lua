@@ -11,7 +11,7 @@ end
 function GetTemplateNameNode:execute(runtime)
     local entity = runtime:readPin(self.entityInPin)
 
-    local name = entity:getTemplateName()
+    local name = entity:getTemplatePath()
 
     runtime:writePin(self.nameOutPin, name)
 end

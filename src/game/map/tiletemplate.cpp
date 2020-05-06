@@ -13,7 +13,7 @@ TileTemplate::TileTemplate(const std::string& name, Game& game) :
 {
 	const mod::Mod& mod = game.getStateMachine().getState()->as<states::BaseMapState>().getMod();
 	std::string path = mod.getTileTemplatePath(name);
-	m_texture = game.video->getTexture(path + "atlas.png");
+	m_texture = game.video->getTexture(path + "/atlas.png");
 	loadTileConfig(game, path);
 }
 

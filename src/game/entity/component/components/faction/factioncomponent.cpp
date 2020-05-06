@@ -19,7 +19,7 @@ const entity::faction::Faction& FactionComponent::getFaction() const
 #ifdef FLAT_DEBUG
 void FactionComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
-	debugDisplay.add3dText(m_owner->getPosition(), getTemplate()->getFaction().getName());
+	debugDisplay.add3dText(m_owner->getPosition(), getFaction().getName());
 }
 #endif
 

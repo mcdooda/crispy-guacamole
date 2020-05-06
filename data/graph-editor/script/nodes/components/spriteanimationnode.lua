@@ -44,8 +44,8 @@ function SpriteAnimationNode:update(spriteAnimationNode, nodeWidget, pinsWidget)
                 local spriteAnimationNodeRuntime = scriptRuntime:getNodeRuntime(spriteAnimationNodeClone)
                 local spriteAnimationName = spriteAnimationNodeRuntime:readOptionalPin(spriteAnimationNodeClone.nameInPin)
                 if spriteAnimationName then
-                    local entityTemplateName = mainWindow.metadata.entityTemplateName
-                    local animationPreview = Preview.sprite(entityTemplateName, spriteComponentTemplate, spriteAnimationName, true)
+                    local entityTemplatePath = mainWindow.metadata.entityTemplatePath
+                    local animationPreview = Preview.sprite(entityTemplatePath, spriteComponentTemplate, spriteAnimationName, true)
                     -- we did it!
                     nodeWidget.previewContainer:addChild(animationPreview)
                 end

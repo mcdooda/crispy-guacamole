@@ -1,1 +1,1 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/chaos_devil/sprite')
+return flat.graph.script.run(Mod.getPath() .. '/entities/chaos/chaos_devil/sprite')

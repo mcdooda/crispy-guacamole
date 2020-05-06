@@ -89,7 +89,7 @@ void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
 		}
 		else
 		{
-			std::cerr << "Entity '" << entityTemplate->getName() << "' does not exist anymore" << std::endl;
+			std::cerr << "Entity '" << entityTemplate->getPath() << "' does not exist anymore" << std::endl;
 		}
 	}
 

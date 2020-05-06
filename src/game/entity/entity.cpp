@@ -281,9 +281,9 @@ void Entity::moveTo(const flat::Vector2& point, Entity* interactionEntity)
 	m_movementComponent->moveTo(point, interactionEntity);
 }
 
-const std::string& Entity::getTemplateName() const
+const std::string& Entity::getTemplatePath() const
 {
-	return m_template->getName();
+	return m_template->getPath();
 }
 
 void Entity::setSelected(bool selected)
@@ -440,7 +440,7 @@ void Entity::initComponents()
 				std::cerr << "Component " << component->getComponentType().getConfigName() << " is busy" << std::endl;
 			}
 		}
-		FLAT_ASSERT_MSG(false, "Entity %s should not be busy right after components init", getTemplateName().c_str());
+		FLAT_ASSERT_MSG(false, "Entity %s should not be busy right after components init", getTemplatePath().c_str());
 	}
 #endif
 }

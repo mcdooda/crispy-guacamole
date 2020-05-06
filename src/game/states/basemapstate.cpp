@@ -321,8 +321,15 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 
 std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
 {
-	const std::string entityTemplatePath = m_mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(entityTemplateName, game, m_componentRegistry, entityTemplatePath);
+	std::string entityTemplatePath = entityTemplateName;
+	if (entityTemplatePath.find('/') == std::string::npos
+		&& entityTemplatePath.find('\\') == std::string::npos)
+	{
+		const flat::tool::Asset* asset = game.assetRepository->findAssetFromName("entity", entityTemplateName);
+		FLAT_ASSERT(asset != nullptr);
+		entityTemplatePath = asset->getPath().string();
+	}
+	return m_entityTemplateManager.getResource(entityTemplatePath, game, m_componentRegistry);
 }
 
 std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
@@ -378,7 +385,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	if (!addEntityToMap(entity))
 	{
 		destroyEntity(entity);
-		game.notify->warn(std::string("Cannot spawn entity ") + entityTemplate->getName());
+		game.notify->warn(std::string("Cannot spawn entity ") + entityTemplate->getPath());
 		return nullptr;
 	}
 

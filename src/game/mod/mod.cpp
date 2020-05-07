@@ -9,23 +9,22 @@ namespace mod
 void Mod::setPath(const std::string& path)
 {
 	m_path = path;
-	if (m_path[m_path.size() - 1] != '/')
-		m_path += '/';
+	FLAT_ASSERT(m_path[m_path.size() - 1] != '/');
 }
 
 std::string Mod::getFilePath(const std::string& fileName) const
 {
-	return m_path + fileName;
+	return m_path + "/" + fileName;
 }
 
 std::string Mod::getScriptPath(const std::string& fileName) const
 {
-	return m_path + "scripts/" + fileName;
+	return m_path + "/scripts/" + fileName;
 }
 
 std::string Mod::getTexturePath(const std::string& fileName) const
 {
-	return m_path + fileName;
+	return m_path + "/" + fileName;
 }
 
 std::string Mod::getTextureRelativePath(const std::string& absolutePath) const
@@ -36,27 +35,27 @@ std::string Mod::getTextureRelativePath(const std::string& absolutePath) const
 
 std::string Mod::getEntityTemplatePath(const std::string& entityTemplateName) const
 {
-	return m_path + "entities/" + entityTemplateName + "/"; // path to a directory
+	return m_path + "/entities/" + entityTemplateName + "/"; // path to a directory
 }
 
 std::string Mod::getTileTemplatePath(const std::string& tileTemplateName) const
 {
-	return m_path + "tiles/" + tileTemplateName + "/"; // path to a directory
+	return m_path + "/tiles/" + tileTemplateName + "/"; // path to a directory
 }
 
 std::string Mod::getPropTemplatePath(const std::string& propTemplateName) const
 {
-	return m_path + "props/" + propTemplateName + "/"; // path to a directory
+	return m_path + "/props/" + propTemplateName + "/"; // path to a directory
 }
 
 std::string Mod::getFactionsConfigPath() const
 {
-	return m_path + "factions.lua";
+	return m_path + "/factions.lua";
 }
 
 std::string Mod::getSamplePath(const std::string& sampleName) const
 {
-	return m_path + "samples/" + sampleName;
+	return m_path + "/samples/" + sampleName;
 }
 
 } // mod

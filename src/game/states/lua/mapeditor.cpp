@@ -32,10 +32,9 @@ int l_MapEditor_openMap(lua_State* L)
 	const char* modPath = luaL_checkstring(L, 1);
 	const char* mapPath = luaL_checkstring(L, 2);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	game.modPath = modPath;
+	game.mod.setPath(modPath);
 	game.mapPath = mapPath;
 	std::unique_ptr<MapEditorState> mapEditorState = std::make_unique<MapEditorState>();
-	mapEditorState->setModPath(modPath);
 	game.getStateMachine().setNextState(std::move(mapEditorState));
 	return 1;
 }

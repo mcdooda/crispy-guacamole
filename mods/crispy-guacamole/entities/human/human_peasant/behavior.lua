@@ -1,9 +1,12 @@
 local GathererBehavior = require 'data/scripts/componenthelpers/behaviors/gatherer'
 
-local Money = require 'mods/crispy-guacamole/scripts/money'
-local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
+local Money = require require(Mod.getFilePath 'scripts/money')
+local EntitiesByType = require(Mod.getFilePath 'scripts/entitiesbytype')
+local BarkSystem = require(Mod.getFilePath 'scripts/barksystem')
 
 local states = GathererBehavior.basicGatherer('human_farm', 'wheat_field')
+
+local lockResource, unlockResource
 
 local function getClosestBuilding(gatherer)
     return EntitiesByType:getClosests('human_farm', gatherer:getPosition():toVector2())[1]
@@ -22,7 +25,7 @@ function states:gatherResources(gatherer)
         gatherer:interactWith(building)
     end
 end
-local function hasAmountAndNoGatherer(wheatField) 
+local function hasAmountAndNoGatherer(wheatField)
     local extraData = wheatField:getExtraData()
     return extraData.amount > 0 and (extraData.gatherer == nil or not extraData.gatherer:isValid())
 end
@@ -44,16 +47,16 @@ function states:reapResources(gatherer)
     local targetResource = gatherer:getInteractionEntity()
     local targetResourceData = targetResource:getExtraData()
     local extraData = gatherer:getExtraData()
-    
+
     if extraData.resources and extraData.resources ~= targetResource then
         unlockResource(gatherer)
     end
-    if not targetResource:isValid() then 
+    if not targetResource:isValid() then
         return 'lookForWheat'
     end
     if hasAmountAndNoGatherer(targetResource) then
         lockResource(gatherer, targetResource)
-    else 
+    else
         if targetResourceData.gatherer ~= gatherer then
             if extraData.resourcesAmount > 0 then
                 unlockResource(gatherer)
@@ -66,10 +69,11 @@ function states:reapResources(gatherer)
 
     if targetResourceData.amount > 0 and extraData.resourcesAmount < 5 then
         gatherer:playAnimation 'reap'
+        BarkSystem:requestBark(Mod.getFilePath 'sounds/fx_air_slash')
         gatherer:sleep(0.2)
         local collected = targetResourceData:withdraw(1)
         extraData.resourcesAmount = extraData.resourcesAmount + collected
-    else 
+    else
         if targetResourceData.amount == 0 then
             unlockResource(gatherer)
         end
@@ -78,7 +82,8 @@ function states:reapResources(gatherer)
     gatherer:interactWith(targetResource)
 end
 
-function states:onPlayerMoveOrder(gatherer, destination, interactionEntity) 
+function states:onPlayerMoveOrder(gatherer, destination, interactionEntity)
+    BarkSystem:requestBark(Mod.getFilePath 'sounds/sound_test')
     unlockResource(gatherer)
     if interactionEntity == nil then
         return 'wander'
@@ -101,7 +106,7 @@ function lockResource(gatherer, resource)
     resource:getExtraData().gatherer = gatherer
 end
 
-function unlockResource(gatherer) 
+function unlockResource(gatherer)
     local extraData = gatherer:getExtraData()
     if extraData.resources then
         if extraData.resources:getExtraData().gatherer == gatherer then

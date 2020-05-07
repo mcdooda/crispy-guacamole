@@ -43,7 +43,7 @@ void MapEditorState::execute(Game& game)
 	saveOnCtrlS(game);
 
 	updateEntities();
-	updateMap();
+	updateMap(game);
 
 #ifdef FLAT_DEBUG
 	const auto& keyboard = game.input->keyboard;

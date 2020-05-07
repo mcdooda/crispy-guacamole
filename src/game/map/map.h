@@ -3,7 +3,7 @@
 
 #include <deque>
 #include <functional>
-#include <set>
+#include <unordered_set>
 
 #include <flat.h>
 
@@ -87,10 +87,10 @@ class Map
 		Map();
 		~Map();
 
-		void setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile);
+		void setState(Game& game, const io::MapFile& mapFile);
 		void getState(io::MapFile& mapFile) const;
 
-		void update(float currentTime);
+		void update(Game& game, float currentTime);
 
 		void setDisplayManager(DisplayManager* displayManager) { m_displayManager = displayManager; }
 		inline DisplayManager& getDisplayManager() const { FLAT_ASSERT(m_displayManager != nullptr); return *m_displayManager; }
@@ -101,8 +101,8 @@ class Map
 		void operator=(Map&&) = delete;
 		void operator=(const Map&) = delete;
 
-		bool load(Game& game, const mod::Mod& mod);
-		bool save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const;
+		bool load(Game& game);
+		bool save(Game& game, const std::vector<entity::Entity*>& entities) const;
 
 		void setBounds(int minX, int maxX, int minY, int maxY);
 		void getBounds(int& minX, int& maxX, int& minY, int& maxY) const;
@@ -112,7 +112,8 @@ class Map
 		void deleteTile(TileIndex tileIndex);
 		void deleteTile(const flat::Vector2i& tilePosition);
 
-		void replaceTile(TileIndex tileIndex, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex);
+		void setTileTemplate(TileIndex tileIndex, const std::shared_ptr<const TileTemplate>& tileTemplate);
+		void setTileTemplateVariant(TileIndex tileIndex, uint16_t tileTemplateVariantIndex);
 
 		TileIndex getTileIndex(int x, int y) const;
 		TileIndex getTileIndex(const flat::Vector2i& position) const;
@@ -201,9 +202,10 @@ class Map
 		template <class Func>
 		inline void eachEntityInCollisionRange(const flat::Vector2& center2d, float range, Func func) const;
 
-		void setTileDirty(TileIndex tileIndex);
+		void setTileNormalDirty(TileIndex tileIndex);
+		void setTileTextureDirty(TileIndex tileIndex);
 
-		void updateDirtyTiles();
+		void updateDirtyTiles(Game& game);
 		void updateAllTiles();
 
 		std::shared_ptr<Zone>& addZone(const std::string& zoneName);
@@ -239,6 +241,7 @@ class Map
 		void addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex);
 
 		void updateTileNormal(TileIndex tileIndex);
+		void updateTileTexture(Game& game, TileIndex tileIndex);
 
 	protected:
 		DisplayManager* m_displayManager;
@@ -264,8 +267,8 @@ class Map
 		std::unordered_map<flat::Vector2i, TileIndex> m_tilePositionToIndex;
 		std::vector<Prop> m_props;
 
-		std::set<TileIndex> m_dirtyTiles;
-		std::set<TileIndex> m_dirtyNormalTiles;
+		std::unordered_set<TileIndex> m_dirtyNormalTiles;
+		std::unordered_set<TileIndex> m_dirtyTextureTiles;
 
 		std::map<std::string, std::shared_ptr<Zone>> m_zones;
 

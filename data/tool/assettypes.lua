@@ -20,7 +20,7 @@ flat.tool.asset.addAssetType(
         print('New entity in ' .. path)
     end,
     function(asset)
-        EntityEditor.openEntity(Mod.getPath(), 'sandbox', asset:getPath())
+        EntityEditor.openEntity(Mod.getPath(), 'mods/crispy-guacamole/maps/sandbox', asset:getPath())
         print('Open entity in editor ' .. asset:getPath())
     end
 )

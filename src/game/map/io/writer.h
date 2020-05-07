@@ -29,7 +29,7 @@ namespace io
 class Writer
 {
 	public:
-		Writer(const mod::Mod& mod, const std::string& mapPath, const Map& map);
+		Writer(Game& game, const Map& map);
 		~Writer();
 
 		bool canWrite() const;
@@ -47,7 +47,7 @@ class Writer
 		std::string getTileTemplateNameFromTexturePath(const std::string& texturePath) const;
 
 	private:
-		const mod::Mod& m_mod;
+		Game& m_game;
 		const Map& m_map;
 
 		std::ofstream m_file;

@@ -25,6 +25,8 @@ int open(lua_State* L)
 
 		{"openEditor",        l_Mod_openEditor},
 
+		{"getFilePath",       l_Mod_getFilePath},
+
 		{nullptr, nullptr}
 	};
 	luaL_setfuncs(L, Mod_lib_m, 0);
@@ -36,7 +38,7 @@ int open(lua_State* L)
 int l_Mod_getPath(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	lua_pushstring(L, game.modPath.c_str());
+	lua_pushstring(L, game.mod.getPath().c_str());
 	return 1;
 }
 
@@ -53,7 +55,7 @@ static int locGetAssetsTable(lua_State* L, const char* assetDirectory)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
 
-	std::shared_ptr<flat::file::Directory> directory = flat::file::Directory::open(game.modPath + "/" + assetDirectory);
+	std::shared_ptr<flat::file::Directory> directory = flat::file::Directory::open(game.mod.getPath() + "/" + assetDirectory);
 
 	lua_createtable(L, 4, 0);
 	int i = 1;
@@ -99,12 +101,20 @@ int l_Mod_openEditor(lua_State* L)
 {
 	const char* modPath = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	game.modPath = modPath;
+	game.mod.setPath(modPath);
 	game.mapPath = "";
 	game.entityPath = "";
 	std::unique_ptr<states::SelectMapState> selectMapState = std::make_unique<states::SelectMapState>();
 	game.getStateMachine().setNextState(std::move(selectMapState));
 	return 0;
+}
+
+int l_Mod_getFilePath(lua_State* L)
+{
+	const char* sampleName = luaL_checkstring(L, 1);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	lua_pushstring(L, game.mod.getFilePath(sampleName).c_str());
+	return 1;
 }
 
 } // lua

@@ -15,13 +15,16 @@ void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	lua_getfield(L, -1, "speed");
+	lua_getfield(L, -1, "walkedOnTile");
+	m_walkedOnTile.setIfNotNil(L, -1);
+
+	lua_getfield(L, -2, "speed");
 	m_speed = static_cast<float>(luaL_checknumber(L, -1));
 
-	lua_getfield(L, -2, "jumpForce");
+	lua_getfield(L, -3, "jumpForce");
 	m_jumpForce = static_cast<float>(luaL_checknumber(L, -1));
 
-	lua_getfield(L, -3, "weight");
+	lua_getfield(L, -4, "weight");
 	m_weight = static_cast<float>(luaL_checknumber(L, -1));
 
 	// compute jump height and distance from jump force and weight
@@ -33,10 +36,10 @@ void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string
 	m_jumpMaxHeight = getJumpHeight(m_jumpDuration / 2.f);
 	m_jumpDistance = m_speed * m_jumpDuration;
 
-	lua_getfield(L, -4, "snapToGround");
+	lua_getfield(L, -5, "snapToGround");
 	m_snapToGround = lua_toboolean(L, -1) == 1;
 
-	lua_getfield(L, -5, "navigabilityMask");
+	lua_getfield(L, -6, "navigabilityMask");
 	if (!lua_isnil(L, -1))
 	{
 		m_navigabilityMask = static_cast<map::Navigability>(luaL_checkinteger(L, -1));
@@ -46,7 +49,7 @@ void MovementComponentTemplate::load(Game& game, lua_State* L, const std::string
 		m_navigabilityMask = map::Navigability::GROUND;
 	}
 
-	lua_pop(L, 5);
+	lua_pop(L, 6);
 }
 
 } // movement

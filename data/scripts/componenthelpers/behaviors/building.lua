@@ -25,7 +25,7 @@ local function basicBuilding()
 			yield()
 		end
 		extraData.buildingInProgress = false
-		
+
 		building:resetInteractionState()
 		init(building)
 	end

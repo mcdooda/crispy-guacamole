@@ -1,23 +1,30 @@
 #include <iterator>
+
 #include "entity.h"
-#include "../entity.h"
-#include "../faction/faction.h"
-#include "../component/components/attack/attackcomponent.h"
-#include "../component/components/behavior/behaviorcomponent.h"
-#include "../component/components/detection/detectioncomponent.h"
-#include "../component/components/faction/factioncomponent.h"
-#include "../component/components/interaction/interactioncomponent.h"
-#include "../component/components/life/lifecomponent.h"
-#include "../component/components/movement/movementcomponent.h"
-#include "../component/components/playercontroller/playercontrollercomponent.h"
-#include "../component/components/projectile/projectilecomponent.h"
-#include "../component/components/selection/selectioncomponent.h"
-#include "../component/components/sprite/spritecomponent.h"
-#include "../component/components/ui/uicomponent.h"
-#include "../../states/basemapstate.h"
-#include "../../game.h"
-#include "../../map/map.h"
-#include "../../map/tile.h"
+
+#include "entity/entity.h"
+#include "entity/faction/faction.h"
+#include "entity/component/components/attack/attackcomponent.h"
+#include "entity/component/components/behavior/behaviorcomponent.h"
+#include "entity/component/components/detection/detectioncomponent.h"
+#include "entity/component/components/faction/factioncomponent.h"
+#include "entity/component/components/interaction/interactioncomponent.h"
+#include "entity/component/components/life/lifecomponent.h"
+#include "entity/component/components/movement/movementcomponent.h"
+#include "entity/component/components/playercontroller/playercontrollercomponent.h"
+#include "entity/component/components/projectile/projectilecomponent.h"
+#include "entity/component/components/selection/selectioncomponent.h"
+#include "entity/component/components/sprite/spritecomponent.h"
+#include "entity/component/components/ui/uicomponent.h"
+#include "entity/component/components/sample/samplecomponent.h"
+
+#include "states/basemapstate.h"
+
+#include "map/map.h"
+#include "map/tile.h"
+#include "map/pathfinder/pathfinder.h"
+
+#include "game.h"
 
 using namespace game::entity::component;
 
@@ -30,7 +37,7 @@ int open(Game& game)
 {
 	lua_State* L = game.lua->state;
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
-	
+
 	static const luaL_Reg Entity_lib_m[] = {
 		{"__eq",                     l_Entity_eq},
 		{"__tostring",               l_Entity_tostring},
@@ -156,12 +163,15 @@ int open(Game& game)
 		// player controller
 		{"setGamepadIndex",          l_Entity_setGamepadIndex},
 		{"getGamepadIndex",          l_Entity_getGamepadIndex},
-		
+
+		// sample
+		{"playSample",          	 l_Entity_playSample},
+
 		{nullptr, nullptr}
 	};
 	game.lua->registerClass<LuaEntityHandle>("CG.Entity", Entity_lib_m);
-	
-	lua_createtable(L, 0, 3);
+
+	lua_createtable(L, 0, 1);
 	static const luaL_Reg Entity_lib_f[] = {
 		{"spawn",              l_Entity_spawn},
 
@@ -169,7 +179,7 @@ int open(Game& game)
 	};
 	luaL_setfuncs(L, Entity_lib_f, 0);
 	lua_setglobal(L, "Entity");
-	
+
 	return 0;
 }
 
@@ -506,6 +516,7 @@ int l_Entity_moveTo(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	flat::Vector2 pathPoint = flat::lua::getVector2(L, 2);
 	bool yield = locGetOptBool(L, 3, true);
+
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
 	movementComponent.moveTo(pathPoint);
 	return locYieldIf(L, yield, 0);
@@ -1130,6 +1141,18 @@ int l_Entity_getGamepadIndex(lua_State* L)
 	playercontroller::PlayerControllerComponent& playerControllerComponent = getComponent<playercontroller::PlayerControllerComponent>(L, entity);
 	lua_pushinteger(L, playerControllerComponent.getGamepadIndex() + 1);
 	return 1;
+}
+
+int l_Entity_playSample(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	sample::SampleComponent& sampleComponent = getComponent<sample::SampleComponent>(L, entity);
+	const char* sampleName = luaL_checkstring(L, 2);
+	std::string file = game.mod.getSamplePath(sampleName);
+	int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
+	sampleComponent.playSample(game, file, numLoops);
+	return 0;
 }
 
 // static lua functions

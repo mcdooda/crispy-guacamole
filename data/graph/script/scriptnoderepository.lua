@@ -18,6 +18,12 @@ return {
     -- fog vision
     'components/fogvisioncomponent',
 
+    -- audio
+    'components/samplecomponent',
+    'entity/playsample',
+    'entity/playsound',
+    'entity/playbark',
+
     -- interaction
     'components/interactioncomponent',
 
@@ -117,4 +123,7 @@ return {
     'controller/leftstickdirection',
     'controller/rightstickdirection',
     'controller/axisvalue',
+
+    -- map
+    'map/settiletemplate',
 }

@@ -139,6 +139,9 @@ int l_Entity_setProjectileTarget(lua_State* L);
 int l_Entity_setGamepadIndex(lua_State* L);
 int l_Entity_getGamepadIndex(lua_State* L);
 
+// sample
+int l_Entity_playSample(lua_State* L);
+
 // static lua functions
 int l_Entity_spawn(lua_State* L);
 

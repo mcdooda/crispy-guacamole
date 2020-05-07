@@ -343,7 +343,7 @@ function ComponentDetailsPanel:removeCurrentComponent()
 end
 
 function ComponentDetailsPanel:setComponent(componentName)
-    local title = componentName:sub(1, 1):upper() .. componentName:sub(2)
+    local title = Components.getVisualName(Component[componentName])
     self.titleLabel:setText(title)
 
     if EntityState:hasComponent(componentName) then

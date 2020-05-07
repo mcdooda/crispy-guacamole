@@ -45,9 +45,6 @@ class BaseMapState : public BaseState
 		void execute(Game& game) override;
 		void exit(Game& game) override;
 
-		void setModPath(const std::string& modPath);
-		const mod::Mod& getMod() const { return m_mod; }
-
 		bool loadMap(Game& game);
 		bool saveMap(Game& game) const;
 
@@ -165,7 +162,7 @@ class BaseMapState : public BaseState
 		void handleGameActionInputs(Game& game);
 		void moveToFormation(Game& game);
 		void updateEntities();
-		void updateMap();
+		void updateMap(Game& game);
 
 #ifdef FLAT_DEBUG
 		void copyStateBeforeReload(const BaseMapState& other);
@@ -187,8 +184,6 @@ class BaseMapState : public BaseState
 		flat::render::ProgramSettings m_terrainRender;
 
 		// level
-		mod::Mod m_mod;
-
 		map::Map m_map;
 
 		std::map<std::string, entity::faction::Faction> m_factions;
@@ -201,7 +196,7 @@ class BaseMapState : public BaseState
 		std::vector<entity::Entity*> m_selectedEntities;
 		flat::lua::SlotProxy<> m_selectionChangedSlotProxy;
 
-		std::vector<entity::Entity*> m_entitiesInSelection;
+		std::vector<entity::EntityHandle> m_entitiesInSelection;
 
 		entity::EntityHandle m_mouseOverEntity;
 		map::TileIndex m_mouseOverTileIndex;

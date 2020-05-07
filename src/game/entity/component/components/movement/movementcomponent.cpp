@@ -3,6 +3,7 @@
 #include "entity/entity.h"
 #include "entity/entityhelper.h"
 #include "entity/entitytemplate.h"
+#include "entity/lua/entity.h"
 
 #include "entity/component/components/collision/collisioncomponent.h"
 #include "entity/component/components/projectile/projectilecomponent.h"
@@ -28,9 +29,11 @@ void MovementComponent::init()
 	const MovementComponentTemplate* movementComponentTemplate = getTemplate();
 
 	m_nextPathPointIndex = INVALID_POINT_INDEX;
+	m_isFollowingPartialPath = false;
 	m_movementSpeed = movementComponentTemplate->getDefaultSpeed();
 	m_currentVerticalSpeed = 0.f;
 	m_isTouchingGround = movementComponentTemplate->getSnapToGround();
+	m_hasWalkedOnTileCallback = !movementComponentTemplate->getWalkedOnTile().isEmpty();
 
 	m_isStrafing = false;
 	m_wasMovingLastFrame = false;
@@ -88,7 +91,7 @@ void MovementComponent::cancelCurrentAction()
 	stopMovement();
 }
 
-void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interactionEntity)
+void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interactionEntity, bool allowPartialPath)
 {
 	// pathfind to destination from the current path's last point or from the entity position
 
@@ -141,11 +144,31 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 			}
 		);
 	}
+	m_interactionEntity = interactionEntity;
+
+	map::pathfinder::Request request;
+	request.from = startingPoint;
+	request.to = destination;
+	request.allowPartialResult = allowPartialPath;
 
 	map::pathfinder::Path path;
-	pathfinder->findPath(startingPoint, destination, path);
+	map::pathfinder::Result pathfindingResult = pathfinder->findPath(request, path);
+
 	path.simplify(*map, jumpHeight, navigabilityMask);
-	if (path.getPointsCount() >= 2)
+
+	if (m_isFollowingPartialPath)
+	{
+		m_currentPath.clear();
+		m_nextPathPointIndex = INVALID_POINT_INDEX;
+	}
+	else
+	{
+		// keep the same current destination if the entity was already following a partial path
+		m_destination = destination;
+	}
+	m_isFollowingPartialPath = pathfindingResult == map::pathfinder::Result::PARTIAL;
+
+	if (pathfindingResult != map::pathfinder::Result::FAILURE)
 	{
 		// insert the new path at the end of the current path
 		// the first point of the new path is not inserted as it is the same as the last point of the current path
@@ -161,6 +184,8 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 	{
 		startMovement();
 	}
+
+	FLAT_DEBUG_ONLY(pathSanityCheck();)
 
 	FLAT_STACK_DESTROY(pathfinder, Pathfinder);
 }
@@ -204,7 +229,10 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 
 	steering = flat::normalize(steering);
 
-	jumpIfNecessary(steering);
+	if (!jumpIfNecessary(steering))
+	{
+		return;
+	}
 
 	if (!m_isStrafing)
 	{
@@ -223,25 +251,36 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 		newPosition2d = nextPathPoint;
 		newMovementDirection = nextPathPoint - newPosition2d;
 	}
-	m_owner->setPosition2d(newPosition2d);
+
+	setPosition2d(newPosition2d);
 
 	// has the entity reached the next point on the planned path?
 	const bool reachedNextPathPoint = nextPathPointOvertaken || flat::length2(newMovementDirection) < flat::square(EntityHelper::getRadius(m_owner));
 	if (reachedNextPathPoint)
 	{
-		if (m_nextPathPointIndex < m_currentPath.getPointsCount() - 1)
+		const bool reachedLastPathPoint = m_nextPathPointIndex >= m_currentPath.getPointsCount() - 1;
+		if (!reachedLastPathPoint)
 		{
 			++m_nextPathPointIndex;
 		}
 		else
 		{
-			stopMovement();
+			if (m_isFollowingPartialPath)
+			{
+				moveTo(m_destination, m_interactionEntity.getEntity());
+			}
+			else
+			{
+				stopMovement();
+			}
 		}
 	}
 }
 
 void MovementComponent::avoidClosestEntity(flat::Vector2& steering) const
 {
+	FLAT_ASSERT(flat::length2(steering) > FLT_EPSILON);
+
 	if (!m_isTouchingGround)
 	{
 		return;
@@ -276,6 +315,7 @@ void MovementComponent::avoidClosestEntity(flat::Vector2& steering) const
 
 		flat::Vector2 absoluteAvoidPosition2d(transform2d * flat::Vector4(relativeAvoidPosition2d, 0.f, 1.f));
 		steering = absoluteAvoidPosition2d - position2d;
+		FLAT_ASSERT(flat::length2(steering) > FLT_EPSILON);
 	}
 }
 
@@ -371,7 +411,7 @@ void MovementComponent::fall(float elapsedTime)
 
 	flat::Vector3 newPosition = m_owner->getPosition();
 	newPosition.z += (previousVerticalSpeed + m_currentVerticalSpeed) * 0.5f * elapsedTime;
-	m_owner->setPosition(newPosition);
+	m_owner->setPositionSweep(newPosition);
 }
 
 void MovementComponent::startMovement()
@@ -383,11 +423,11 @@ void MovementComponent::startMovement()
 
 void MovementComponent::stopMovement()
 {
-	if (isMovingAlongPath())
-	{
-		m_currentPath.clear();
-		m_nextPathPointIndex = INVALID_POINT_INDEX;
-	}
+	m_currentPath.clear();
+	m_nextPathPointIndex = INVALID_POINT_INDEX;
+	m_destination = flat::Vector2();
+	m_interactionEntity = nullptr;
+	m_isFollowingPartialPath = false;
 }
 
 void MovementComponent::triggerStartStopCallbacks()
@@ -421,11 +461,11 @@ void MovementComponent::checkIsMidair()
 	}
 }
 
-void MovementComponent::jumpIfNecessary(const flat::Vector2& steering)
+bool MovementComponent::jumpIfNecessary(const flat::Vector2& steering)
 {
 	if (!m_isTouchingGround)
 	{
-		return;
+		return true;
 	}
 
 	const map::Map* map = m_owner->getMap();
@@ -441,9 +481,18 @@ void MovementComponent::jumpIfNecessary(const flat::Vector2& steering)
 		const float nextTileZ = map->getTileZ(nextTileIndex);
 		if (!flat::areValuesClose(m_owner->getPosition().z, nextTileZ, JUMP_MIN_Z_DIFFERENCE))
 		{
-			jump();
+			if (nextTileZ < m_owner->getPosition().z + getTemplate()->getJumpMaxHeight())
+			{
+				jump();
+			}
+			else
+			{
+				moveTo(m_destination, m_interactionEntity.getEntity());
+				return false;
+			}
 		}
 	}
+	return true;
 }
 
 bool MovementComponent::snapEntityToTile(Entity* entity, map::Map* map)
@@ -470,6 +519,24 @@ bool MovementComponent::collidedWithMap(map::TileIndex tileIndex, const flat::Ve
 		}
 	}
 	return true;
+}
+
+void MovementComponent::setPosition2d(const flat::Vector2& newPosition2d)
+{
+	if (m_hasWalkedOnTileCallback && m_isTouchingGround)
+	{
+		map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+		m_owner->setPosition2dSweep(newPosition2d);
+		map::TileIndex newTileIndex = m_owner->getTileIndexFromPosition();
+		if (tileIndex != newTileIndex)
+		{
+			getTemplate()->getWalkedOnTile().call(m_owner, newTileIndex);
+		}
+	}
+	else
+	{
+		m_owner->setPosition2dSweep(newPosition2d);
+	}
 }
 
 #ifdef FLAT_DEBUG
@@ -500,6 +567,13 @@ void MovementComponent::debugDrawCurrentPath(debug::DebugDisplay& debugDisplay) 
 		flat::Vector3 point(point2d, map->getTileZ(tileIndex));
 		debugDisplay.add3dLine(previousPoint, point);
 		previousPoint = point;
+	}
+
+	if (m_isFollowingPartialPath)
+	{
+		const map::TileIndex tileIndex = map->getTileIndex(m_destination);
+		flat::Vector3 destination(m_destination, map->getTileZ(tileIndex));
+		debugDisplay.add3dLine(previousPoint, destination, flat::video::Color::BLACK);
 	}
 }
 
@@ -539,6 +613,24 @@ void MovementComponent::debugDrawEntity(debug::DebugDisplay& debugDisplay) const
 		FLAT_ASSERT(map::isValidTile(tileIndex));
 		flat::Vector3 positionOnTile(position2d, map->getTileZ(tileIndex));
 		debugDisplay.add3dLine(position, positionOnTile, flat::video::Color::RED);
+	}
+}
+
+void MovementComponent::pathSanityCheck()
+{
+	if (!isMovingAlongPath())
+	{
+		return;
+	}
+
+	const map::Map* map = m_owner->getMap();
+	FLAT_ASSERT(map != nullptr);
+
+	for (int i = 0, e = static_cast<int>(m_currentPath.getPointsCount()); i < e; ++i)
+	{
+		const flat::Vector2& point2d = m_currentPath.getPoint(i);
+		const map::TileIndex tileIndex = map->getTileIndex(point2d);
+		FLAT_ASSERT(map::isValidTile(tileIndex));
 	}
 }
 #endif

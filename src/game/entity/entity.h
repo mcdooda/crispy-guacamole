@@ -27,6 +27,9 @@ namespace sprite    { class SpriteComponent; }
 class Entity final : public map::MapObject
 {
 	public:
+		static constexpr float MIN_Z_EPSILON = 0.1f;
+
+	public:
 		Entity() = delete;
 		Entity(const Entity&) = delete;
 		Entity(Entity&&) = delete;
@@ -42,6 +45,10 @@ class Entity final : public map::MapObject
 		void setPosition(const flat::Vector3& position);
 		void setPosition2d(const flat::Vector2& position2d);
 		void setZ(float z);
+
+		void setPositionSweep(const flat::Vector3& position);
+		void setPosition2dSweep(const flat::Vector2& position2d);
+
 		inline const flat::Vector3& getPosition() const { return m_position; }
 		inline const flat::Vector2& getPosition2d() const { return reinterpret_cast<const flat::Vector2&>(m_position); }
 		flat::Vector3 getCenter() const;
@@ -90,7 +97,7 @@ class Entity final : public map::MapObject
 		// movement
 		bool acceptsMoveOrders() const;
 		bool acceptsPlayerMoveOrder(const flat::Vector2& point, Entity* interactionEntity = nullptr) const;
-		void moveTo(const flat::Vector2& point, Entity* interactionEntity = nullptr);
+		void moveTo(const flat::Vector2& point, Entity* interactionEntity = nullptr, bool allowPartialPath = true);
 		
 		// behavior
 		bool canInteract() const;
@@ -162,6 +169,8 @@ class Entity final : public map::MapObject
 
 #ifdef FLAT_DEBUG
 		void checkSpriteAABB();
+		void checkValidPosition(const flat::Vector3& potentialPosition) const;
+		void checkValidPosition2d(const flat::Vector2& potentialPosition) const;
 #endif
 
 		map::TileIndex getTileIndexFromPosition() const;

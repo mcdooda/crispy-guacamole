@@ -142,7 +142,7 @@ return function(addContainer, makeSeparator, font)
                     local entityTemplateLabel = Widget.makeText(entityTemplatePath, table.unpack(font))
                     entityTemplateLabel:setTextColor(0x000000FF)
                     entityTemplateLabel:click(function()
-                        EntityEditor.openEntity(Mod.getPath(), 'sandbox', entityTemplatePath)
+                        EntityEditor.openEntity(Mod.getPath(), 'mods/crispy-guacamole/maps/sandbox', entityTemplatePath)
                         return true
                     end)
                     entityTemplatePathsContainer:addChild(entityTemplateLabel)

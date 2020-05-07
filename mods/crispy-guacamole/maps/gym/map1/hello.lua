@@ -1,5 +1,5 @@
 local Wave = require 'data/game/scripts/wave'
-for i = 1, 20 do
+for i = 1, 5 do
     print('Frame #' .. i .. ' (' .. tostring(_G) .. ',' .. tostring(_ENV) .. ')')
     coroutine.yield()
 end

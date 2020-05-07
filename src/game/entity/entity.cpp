@@ -5,6 +5,8 @@
 #include "entity/component/components/movement/movementcomponent.h"
 #include "entity/component/components/selection/selectioncomponent.h"
 #include "entity/component/components/sprite/spritecomponent.h"
+#include "entity/component/components/projectile/projectilecomponent.h"
+#include "entity/component/components/prop/propcomponent.h"
 
 #include "map/map.h"
 #include "map/displaymanager.h"
@@ -51,8 +53,14 @@ Entity::~Entity()
 
 void Entity::setPosition(const flat::Vector3& position)
 {
+#ifdef FLAT_DEBUG
+	if (m_map != nullptr)
+	{
+		checkValidPosition(position);
+	}
+#endif
+
 	m_position = position;
-	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID_TILE);
 	if (m_map)
 	{
 		m_cellIndex = m_map->updateEntityPosition(this, m_cellIndex);
@@ -64,16 +72,7 @@ void Entity::setPosition(const flat::Vector3& position)
 
 void Entity::setPosition2d(const flat::Vector2& position2d)
 {
-	m_position.x = position2d.x;
-	m_position.y = position2d.y;
-	FLAT_ASSERT(m_map == nullptr || getTileIndexFromPosition() != map::TileIndex::INVALID_TILE);
-	if (m_map)
-	{
-		m_cellIndex = m_map->updateEntityPosition(this, m_cellIndex);
-		positionChanged(m_position);
-	}
-
-	m_aabbDirty = true;
+	setPosition(flat::Vector3(position2d.x, position2d.y, m_position.z));
 }
 
 void Entity::setZ(float z)
@@ -85,6 +84,129 @@ void Entity::setZ(float z)
 	}
 
 	m_aabbDirty = true;
+}
+
+void Entity::setPositionSweep(const flat::Vector3& newPosition)
+{
+	if (newPosition == m_position)
+	{
+		return;
+	}
+
+	if (!hasComponent<component::collision::CollisionComponent>())
+	{
+		setPosition(newPosition);
+		return;
+	}
+
+	// check is the new position is navigable and backtrack if necessary
+	// this is necessary to avoid penetrating with props when interacting with them or when trying to move to a non navigable tile
+
+	const flat::Vector2 position2d(m_position);
+	FLAT_ASSERT(m_map != nullptr);
+
+	flat::Vector2 newPosition2d(newPosition);
+
+	const map::TileIndex tileIndex = m_map->getTileIndex(newPosition2d);
+	FLAT_ASSERT(map::isValidTile(tileIndex));
+	const float tileZ = m_map->getTileZ(tileIndex);
+
+	bool isFalling = false;
+	if (m_movementComponent != nullptr)
+	{
+		isFalling = !m_movementComponent->isTouchingGround();
+	}
+
+	bool shouldSweepVertically = tileZ - MIN_Z_EPSILON > newPosition.z && isFalling;
+
+	bool shouldSweepHorizontally = false;
+	if (!shouldSweepVertically)
+	{
+		const map::Navigability navigabilityMask = EntityHelper::getNavigabilityMask(this);
+		shouldSweepHorizontally = !m_map->isTileNavigable(tileIndex, navigabilityMask);
+	}
+
+	if (shouldSweepVertically)
+	{
+		setPosition(flat::Vector3(newPosition.x, newPosition.y, tileZ - MIN_Z_EPSILON));
+	}
+	else if (shouldSweepHorizontally)
+	{
+		// check intersection between current segment and tile and backtrack there, let the collision do the rest later
+		const flat::AABB3& tileAABB = m_map->getTileAABB(tileIndex);
+		flat::Vector2 intersection = position2d;
+		if (position2d.x < newPosition2d.x)
+		{
+			if (!flat::geometry::intersection::twoLineSegments(
+				position2d, newPosition2d,
+				flat::Vector2(tileAABB.min), flat::Vector2(tileAABB.min.x, tileAABB.max.y),
+				intersection))
+			{
+				if (position2d.y > newPosition2d.y)
+				{
+					flat::geometry::intersection::twoLineSegments(
+						position2d, newPosition2d,
+						flat::Vector2(tileAABB.min.x, tileAABB.max.y), flat::Vector2(tileAABB.max),
+						intersection);
+				}
+				else
+				{
+					flat::geometry::intersection::twoLineSegments(
+						position2d, newPosition2d,
+						flat::Vector2(tileAABB.min), flat::Vector2(tileAABB.max.x, tileAABB.min.y),
+						intersection);
+				}
+			}
+		}
+		else
+		{
+			if (!flat::geometry::intersection::twoLineSegments(
+				position2d, newPosition2d,
+				flat::Vector2(tileAABB.max.x, tileAABB.min.y), flat::Vector2(tileAABB.max),
+				intersection))
+			{
+				if (position2d.y > newPosition2d.y)
+				{
+					flat::geometry::intersection::twoLineSegments(
+						position2d, newPosition2d,
+						flat::Vector2(tileAABB.min.x, tileAABB.max.y), flat::Vector2(tileAABB.max),
+						intersection);
+				}
+				else
+				{
+					flat::geometry::intersection::twoLineSegments(
+						position2d, newPosition2d,
+						flat::Vector2(tileAABB.min), flat::Vector2(tileAABB.max.x, tileAABB.min.y),
+						intersection);
+				}
+			}
+		}
+
+		newPosition2d.x = intersection.x;
+		newPosition2d.y = intersection.y;
+
+		// move a bit backwards to avoid infinite recursion
+		newPosition2d -= flat::normalize(newPosition2d - position2d) * 0.001f;
+
+		setPositionSweep(flat::Vector3(newPosition2d, newPosition.z));
+	}
+	else
+	{
+		if (newPosition.z > tileZ - MIN_Z_EPSILON)
+		{
+			setPosition(newPosition);
+		}
+		else
+		{
+			// well, still sweep vertically
+			setPosition(flat::Vector3(newPosition.x, newPosition.y, tileZ - MIN_Z_EPSILON));
+		}
+	}
+}
+
+void Entity::setPosition2dSweep(const flat::Vector2& position2d)
+{
+	setPositionSweep(flat::Vector3(position2d.x, position2d.y, m_position.z));
 }
 
 flat::Vector3 Entity::getCenter() const
@@ -275,10 +397,10 @@ bool Entity::acceptsPlayerMoveOrder(const flat::Vector2& point, Entity* interact
 	return m_behaviorComponent->handlePlayerMoveOrder(point, interactionEntity);
 }
 
-void Entity::moveTo(const flat::Vector2& point, Entity* interactionEntity)
+void Entity::moveTo(const flat::Vector2& point, Entity* interactionEntity, bool allowPartialPath)
 {
 	FLAT_ASSERT(m_movementComponent != nullptr);
-	m_movementComponent->moveTo(point, interactionEntity);
+	m_movementComponent->moveTo(point, interactionEntity, allowPartialPath);
 }
 
 const std::string& Entity::getTemplatePath() const
@@ -492,6 +614,31 @@ void Entity::checkSpriteAABB()
 		getSprite().getAABB(spriteAABB);
 		FLAT_ASSERT(spriteAABB == getAABB());
 	}
+}
+
+void Entity::checkValidPosition(const flat::Vector3& potentialPosition) const
+{
+	const map::TileIndex tileIndex = m_map->getTileIndex(flat::Vector2(potentialPosition));
+	FLAT_ASSERT(map::isValidTile(tileIndex));
+
+	if (!hasComponent<component::collision::CollisionComponent>())
+	{
+		return;
+	}
+
+	if (!hasComponent<component::prop::PropComponent>() && !hasComponent<component::projectile::ProjectileComponent>())
+	{
+		const map::Navigability navigabilityMask = EntityHelper::getNavigabilityMask(this);
+		FLAT_ASSERT(m_map->isTileNavigable(tileIndex, navigabilityMask));
+	}
+
+	const float tileZ = m_map->getTileZ(tileIndex);
+	FLAT_ASSERT(potentialPosition.z >= tileZ - MIN_Z_EPSILON);
+}
+
+void Entity::checkValidPosition2d(const flat::Vector2& potentialPosition) const
+{
+	checkValidPosition(flat::Vector3(potentialPosition.x, potentialPosition.y, m_position.z));
 }
 #endif
 

@@ -35,6 +35,8 @@ int open(lua_State* L)
 
 		{"debug_reloadComponent",      l_game_debug_reloadComponent},
 		{"debug_removeComponent",      l_game_debug_removeComponent},
+
+		{"debug_setVolume",        l_game_debug_setVolume},
 #endif
 
 		{"setCameraCenter",            l_game_setCameraCenter},
@@ -151,6 +153,15 @@ int l_game_debug_removeComponent(lua_State* L)
 	const_cast<entity::EntityTemplate*>(entityTemplate.get())->removeComponent(game, baseMapState.getComponentRegistry(), componentFlag);
 	return 0;
 }
+
+int l_game_debug_setVolume(lua_State* L)
+{
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	const float volume = static_cast<float>(luaL_checknumber(L, 1));
+	game.audio->setVolume(volume);
+	return 0;
+}
+
 #endif // FLAT_DEBUG
 
 int l_game_openMap(lua_State* L)
@@ -158,10 +169,9 @@ int l_game_openMap(lua_State* L)
 	const char* modPath = luaL_checkstring(L, 1);
 	const char* mapPath = luaL_checkstring(L, 2);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	game.modPath = modPath;
+	game.mod.setPath(modPath);
 	game.mapPath = mapPath;
 	std::unique_ptr<GameState> gameState = std::make_unique<GameState>();
-	gameState->setModPath(modPath);
 	game.getStateMachine().setNextState(std::move(gameState));
 	return 1;
 }

@@ -99,24 +99,12 @@ void CollisionComponent::separateFromNearbyEntities()
 
 	if (newPosition != position)
 	{
-		m_owner->setPosition(newPosition);
+		m_owner->setPositionSweep(newPosition);
 	}
 }
 
 void CollisionComponent::separateFromAdjacentTiles()
 {
-	/*
-#ifdef FLAT_DEBUG
-	{
-		const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-		FLAT_ASSERT(map::isValidTile(tileIndex));
-		const float tileZ = m_owner->getMap()->getTileZ(tileIndex);
-		const float z = m_owner->getPosition().z;
-		FLAT_ASSERT(tileZ <= z + 1.f);
-	}
-#endif // FLAT_DEBUG
-	*/
-
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
 
@@ -127,6 +115,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 	const flat::Vector2& position2d = m_owner->getPosition2d();
 	
 	flat::Vector3 newPosition = position;
+	//FLAT_DEBUG_ONLY(m_owner->checkValidPosition(newPosition));
 	
 	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
 	const float radius = collisionComponentTemplate->getRadius();
@@ -166,7 +155,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 		if (tileIsValid)
 		{
 			tileZ = map->getTileZ(tileIndex2);
-			if (tileZ < getBottom(newPosition.z) + MIN_Z_EPSILON)
+			if (tileZ < getBottom(newPosition.z) + Entity::MIN_Z_EPSILON)
 			{
 				return;
 			}
@@ -217,6 +206,7 @@ void CollisionComponent::separateFromAdjacentTiles()
 			normal = flat::normalize(flat::Vector3(tileToEntityDirection, 0.f));
 			newPosition = newPosition + normal * -tileToEntityDistance;
 			collidedTileIndex = tileIndex2;
+			//FLAT_DEBUG_ONLY(m_owner->checkValidPosition(newPosition));
 		}
 	};
 
@@ -228,6 +218,8 @@ void CollisionComponent::separateFromAdjacentTiles()
 		}
 	}
 
+	FLAT_DEBUG_ONLY(m_owner->checkValidPosition(newPosition));
+
 	if (position != newPosition)
 	{
 		const map::TileIndex newTileIndex = map->getTileIndex(newPosition.x, newPosition.y);
@@ -237,21 +229,12 @@ void CollisionComponent::separateFromAdjacentTiles()
 			newPosition.z = std::max(newPosition.z, newTileZ);
 		}
 
-		m_owner->setPosition(newPosition);
+		m_owner->setPositionSweep(newPosition);
 		FLAT_ASSERT(flat::length2(normal) > 0.f || !map::isValidTile(collidedTileIndex));
 		onCollidedWithMap(collidedTileIndex, normal);
 	}
 
-#ifdef FLAT_DEBUG
-	{
-		const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-		FLAT_ASSERT(map::isValidTile(tileIndex));
-		FLAT_ASSERT(map->isTileNavigable(tileIndex, navigabilityMask));
-		const float tileZ = m_owner->getMap()->getTileZ(tileIndex);
-		const float z = m_owner->getPosition().z;
-		FLAT_ASSERT(tileZ <= z);
-	}
-#endif // FLAT_DEBUG
+	FLAT_DEBUG_ONLY(m_owner->checkValidPosition(newPosition));
 }
 
 #ifdef FLAT_DEBUG

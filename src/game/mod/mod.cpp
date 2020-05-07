@@ -13,6 +13,11 @@ void Mod::setPath(const std::string& path)
 		m_path += '/';
 }
 
+std::string Mod::getFilePath(const std::string& fileName) const
+{
+	return m_path + fileName;
+}
+
 std::string Mod::getScriptPath(const std::string& fileName) const
 {
 	return m_path + "scripts/" + fileName;
@@ -47,6 +52,11 @@ std::string Mod::getPropTemplatePath(const std::string& propTemplateName) const
 std::string Mod::getFactionsConfigPath() const
 {
 	return m_path + "factions.lua";
+}
+
+std::string Mod::getSamplePath(const std::string& sampleName) const
+{
+	return m_path + "samples/" + sampleName;
 }
 
 } // mod

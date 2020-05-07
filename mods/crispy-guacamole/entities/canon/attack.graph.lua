@@ -49,6 +49,36 @@ return {
       1,
     },
     {
+      1,
+      3,
+      30,
+      6,
+    },
+    {
+      1,
+      3,
+      23,
+      6,
+    },
+    {
+      1,
+      3,
+      21,
+      6,
+    },
+    {
+      1,
+      3,
+      42,
+      6,
+    },
+    {
+      1,
+      3,
+      28,
+      6,
+    },
+    {
       2,
       1,
       1,
@@ -461,6 +491,42 @@ return {
       1,
       20,
       1,
+    },
+    {
+      79,
+      1,
+      20,
+      7,
+    },
+    {
+      80,
+      1,
+      21,
+      5,
+    },
+    {
+      81,
+      1,
+      23,
+      5,
+    },
+    {
+      82,
+      1,
+      28,
+      5,
+    },
+    {
+      83,
+      1,
+      30,
+      5,
+    },
+    {
+      84,
+      1,
+      42,
+      5,
     },
   },
   nodeType = 'script',
@@ -875,6 +941,42 @@ return {
     },
     {
       name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
   },
 }

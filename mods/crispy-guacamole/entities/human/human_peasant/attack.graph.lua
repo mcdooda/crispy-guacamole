@@ -31,6 +31,12 @@ return {
       5,
     },
     {
+      1,
+      3,
+      16,
+      2,
+    },
+    {
       2,
       1,
       1,
@@ -85,6 +91,12 @@ return {
       1,
     },
     {
+      12,
+      1,
+      16,
+      1,
+    },
+    {
       13,
       1,
       12,
@@ -101,6 +113,12 @@ return {
       1,
       12,
       5,
+    },
+    {
+      17,
+      1,
+      16,
+      3,
     },
   },
   nodeType = 'script',
@@ -185,6 +203,15 @@ return {
         false,
       },
       name = 'boolean',
+    },
+    {
+      name = 'entity/playsound',
+    },
+    {
+      loadArguments = {
+        'fx_air_slash',
+      },
+      name = 'string',
     },
   },
 }

@@ -39,9 +39,6 @@ class CollisionComponent : public ComponentImpl<CollisionComponentTemplate>
 	private:
 		void separateFromNearbyEntities();
 		void separateFromAdjacentTiles();
-
-	private:
-		static constexpr float MIN_Z_EPSILON = 0.1f;
 };
 
 } // collision

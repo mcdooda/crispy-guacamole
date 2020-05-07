@@ -2,6 +2,7 @@
 #define GAME_GAME_H
 
 #include <flat/game.h>
+#include "mod/mod.h"
 
 namespace game
 {
@@ -24,7 +25,7 @@ class Game : public flat::Game
 		
 	public:
 		// mod
-		std::string modPath;
+		mod::Mod mod;
 		std::string mapPath;
 		std::string entityPath;
 		

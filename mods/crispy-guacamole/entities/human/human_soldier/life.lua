@@ -1,9 +1,1 @@
-return {
-	maxHealth = 100,
---[[	spawn = function(soldier)
-		soldier:playAnimation 'spawn'
-	end,]]
-	despawn = function(soldier)
-		soldier:playAnimation 'despawn'
-	end
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human_soldier/life'

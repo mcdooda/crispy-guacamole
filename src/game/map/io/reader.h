@@ -23,7 +23,7 @@ namespace io
 class Reader
 {
 	public:
-		Reader(Game& game, const mod::Mod& mod, Map& map);
+		Reader(Game& game, Map& map);
 		~Reader();
 		
 		bool canRead() const;
@@ -31,7 +31,6 @@ class Reader
 
 	private:
 		Game& m_game;
-		const mod::Mod& m_mod;
 		Map& m_map;
 		
 		flat::file::serialize::FileReader m_reader;

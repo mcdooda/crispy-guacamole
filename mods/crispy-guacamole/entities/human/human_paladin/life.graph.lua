@@ -25,6 +25,12 @@ return {
       1,
     },
     {
+      4,
+      1,
+      9,
+      1,
+    },
+    {
       5,
       1,
       4,
@@ -52,6 +58,12 @@ return {
       8,
       2,
       4,
+      2,
+    },
+    {
+      10,
+      1,
+      9,
       2,
     },
   },
@@ -92,12 +104,21 @@ return {
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
     },
     {
       name = 'entity/clearcycleanimation',
+    },
+    {
+      name = 'game/sleep',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
     },
   },
 }

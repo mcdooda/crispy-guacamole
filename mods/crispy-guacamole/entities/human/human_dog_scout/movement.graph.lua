@@ -7,6 +7,18 @@ return {
       1,
     },
     {
+      1,
+      2,
+      7,
+      1,
+    },
+    {
+      1,
+      4,
+      7,
+      2,
+    },
+    {
       2,
       1,
       1,
@@ -44,7 +56,7 @@ return {
     },
     {
       loadArguments = {
-        3,
+        6,
       },
       name = 'number',
     },
@@ -68,6 +80,12 @@ return {
         },
       },
       name = 'script/scriptoutput',
+    },
+    {
+      loadArguments = {
+        'mods/crispy-guacamole/compounds/Make Path',
+      },
+      name = 'compound',
     },
   },
 }

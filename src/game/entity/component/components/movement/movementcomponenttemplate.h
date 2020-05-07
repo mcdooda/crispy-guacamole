@@ -19,6 +19,8 @@ class MovementComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
 
+		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getWalkedOnTile() const { return m_walkedOnTile; }
+
 		inline float getDefaultSpeed() const { return m_speed; }
 		inline float getJumpForce() const { return m_jumpForce; }
 		inline float getWeight() const { return m_weight; }
@@ -33,6 +35,8 @@ class MovementComponentTemplate : public ComponentTemplate
 		inline map::Navigability getNavigabilityMask() const { return m_navigabilityMask; }
 
 	private:
+		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_walkedOnTile;
+
 		float m_speed;
 		float m_jumpForce;
 		float m_weight;

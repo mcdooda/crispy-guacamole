@@ -39,7 +39,7 @@ Map::~Map()
 	
 }
 
-void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
+void Map::setState(Game& game, const io::MapFile& mapFile)
 {
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 
@@ -49,7 +49,7 @@ void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
 	// tiles
 	m_tiles.reserve(mapFile.getTilesCount());
 	mapFile.eachTile(
-		[this, &game, &mod, &baseMapState]
+		[this, &game, &baseMapState]
 		(
 			const flat::Vector2i& tilePosition,
 			const io::MapFile::Tile& tile,
@@ -61,7 +61,7 @@ void Map::setState(Game& game, const mod::Mod& mod, const io::MapFile& mapFile)
 		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
 		if (propTemplateName != nullptr)
 		{
-			const std::string texturePath = mod.getTexturePath("props/" + *propTemplateName);
+			const std::string texturePath = game.mod.getTexturePath("props/" + *propTemplateName);
 			const std::shared_ptr<const flat::video::FileTexture>& texture = game.video->getTexture(texturePath);
 			setTilePropTexture(tileIndex, texture);
 		}
@@ -114,9 +114,9 @@ void Map::getState(io::MapFile& mapFile) const
 
 }
 
-void Map::update(float currentTime)
+void Map::update(Game& game, float currentTime)
 {
-	updateDirtyTiles();
+	updateDirtyTiles(game);
 
 	for (TileSpriteSynchronizer& tileSpriteSynchronizer : m_tileSpriteSynchronizers)
 	{
@@ -142,11 +142,11 @@ void Map::addAllPropsToDisplayManager() const
 	}
 }
 
-bool Map::load(Game& game, const mod::Mod& mod)
+bool Map::load(Game& game)
 {
 	FLAT_ASSERT(!m_isLoaded);
 
-	io::Reader reader(game, mod, *this);
+	io::Reader reader(game, *this);
 
 	bool loadedFromFile = false;
 	if (reader.canRead())
@@ -168,9 +168,9 @@ bool Map::load(Game& game, const mod::Mod& mod)
 	return loadedFromFile;
 }
 
-bool Map::save(const mod::Mod& mod, const std::string& mapName, const std::vector<entity::Entity*>& entities) const
+bool Map::save(Game& game, const std::vector<entity::Entity*>& entities) const
 {
-	io::Writer writer(mod, mapName, *this);
+	io::Writer writer(game, *this);
 	if (writer.canWrite())
 	{
 		writer.write(entities);
@@ -251,7 +251,7 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, const std::shared_p
 	TilePosition& tilePosition = m_tilePositions.emplace_back();
 	tilePosition.xy = xy;
 
-	setTileDirty(tileIndex);
+	setTileNormalDirty(tileIndex);
 
 	if (m_fog != nullptr)
 	{
@@ -314,15 +314,26 @@ void Map::deleteTile(const flat::Vector2i& tilePosition)
 	deleteTile(m_tilePositionToIndex.at(tilePosition));
 }
 
-void Map::replaceTile(TileIndex tileIndex, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex)
+void Map::setTileTemplate(TileIndex tileIndex, const std::shared_ptr<const TileTemplate>& tileTemplate)
 {
-	flat::render::SpriteSynchronizer& synchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
+	flat::render::SpriteSynchronizer& synchronizer = getTileSpriteSynchronizer(tileTemplate, 0);
 	Tile& tile = m_tiles[tileIndex];
 	tile.synchronizeSpriteTo(*this, synchronizer);
 	m_fog->updateTile(tileIndex, &tile);
 
 	TileNavigation& tileNavigation = m_tileNavigations[tileIndex];
 	tileNavigation.navigability = tileTemplate->getNavigability();
+
+	setTileTextureDirty(tileIndex);
+}
+
+void Map::setTileTemplateVariant(TileIndex tileIndex, uint16_t tileTemplateVariantIndex)
+{
+	std::shared_ptr<const map::TileTemplate> tileTemplate = getTileTemplate(tileIndex);
+	flat::render::SpriteSynchronizer& synchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
+	Tile& tile = m_tiles[tileIndex];
+	tile.synchronizeSpriteTo(*this, synchronizer);
+	m_fog->updateTile(tileIndex, &tile);
 }
 
 TileIndex Map::getTileIndex(int x, int y) const
@@ -428,7 +439,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 		m_fog->updateProp(propIndex, &prop);
 	}
 
-	setTileDirty(tileIndex);
+	setTileNormalDirty(tileIndex);
 }
 
 void Map::moveTileZBy(TileIndex tileIndex, float dz)
@@ -899,16 +910,72 @@ void Map::updateTileNormal(TileIndex tileIndex)
 	getTileSprite(tileIndex).setNormal(normal);
 }
 
-void Map::setTileDirty(TileIndex tileIndex)
+void Map::updateTileTexture(Game& game, TileIndex tileIndex)
 {
-	m_dirtyTiles.insert(tileIndex);
+	int tileVariantIndex = -1;
+	std::shared_ptr<const map::TileTemplate> tileTemplate = getTileTemplate(tileIndex);
+	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectTile = tileTemplate->getSelectTile();
+	if (selectTile)
+	{
+		selectTile.callFunction(
+			[this, tileIndex](lua_State* L)
+			{
+				auto pushTileTemplateName = [this, tileIndex, L](int dx, int dy)
+				{
+					const flat::Vector2i& xy = getTileXY(tileIndex);
+					map::TileIndex adjacentTileIndex = getTileIndex(xy.x + dx, xy.y + dy);
+					if (isValidTile(adjacentTileIndex))
+					{
+						lua_pushstring(L, getTileTemplate(adjacentTileIndex)->getName().c_str());
+					}
+					else
+					{
+						lua_pushnil(L);
+					}
+				};
+				pushTileTemplateName(0, -1);
+				pushTileTemplateName(-1, 0);
+				pushTileTemplateName(1, 0);
+				pushTileTemplateName(0, 1);
+				pushTileTemplateName(-1, -1);
+				pushTileTemplateName(-1, 1);
+				pushTileTemplateName(1, 1);
+				pushTileTemplateName(1, -1);
+			},
+			1,
+			[this, &game, &tileVariantIndex, &tileTemplate](lua_State* L)
+			{
+				luaL_checktype(L, -1, LUA_TTABLE);
+				size_t numTileVariants = lua_rawlen(L, 1);
+				std::vector<int> tileVariantIndices(numTileVariants);
+				for (size_t i = 1; i <= numTileVariants; ++i)
+				{
+					lua_rawgeti(L, 1, i);
+					int tileVariantIndex = static_cast<int>(luaL_checkinteger(L, -1));
+					tileVariantIndices[i - 1] = tileVariantIndex - 1;
+					lua_pop(L, 1);
+				}
+				tileVariantIndex = tileTemplate->getRandomTileVariantIndex(game, tileVariantIndices);
+			}
+		);
+	}
+	else
+	{
+		tileVariantIndex = tileTemplate->getRandomTileVariantIndex(game);
+	}
+	FLAT_ASSERT(tileVariantIndex >= 0);
+	setTileTemplateVariant(tileIndex, tileVariantIndex);
+}
+
+void Map::setTileNormalDirty(TileIndex tileIndex)
+{
 	m_dirtyNormalTiles.insert(tileIndex);
 	const flat::Vector2i& tilePosition = getTileXY(tileIndex);
 
 	auto setNeighborNormalTileDirty = [this, &tilePosition](int dx, int dy)
 	{
 		const TileIndex neighborTileIndex = getTileIndex(tilePosition + flat::Vector2i(dx, dy));
-		if (neighborTileIndex != TileIndex::INVALID_TILE)
+		if (isValidTile(neighborTileIndex))
 		{
 			m_dirtyNormalTiles.insert(neighborTileIndex);
 		}
@@ -919,8 +986,37 @@ void Map::setTileDirty(TileIndex tileIndex)
 	setNeighborNormalTileDirty(1, 0);
 }
 
-void Map::updateDirtyTiles()
+void Map::setTileTextureDirty(TileIndex tileIndex)
 {
+	m_dirtyTextureTiles.insert(tileIndex);
+	const flat::Vector2i& tilePosition = getTileXY(tileIndex);
+
+	auto setNeighborTextureTileDirty = [this, &tilePosition](int dx, int dy)
+	{
+		const TileIndex neighborTileIndex = getTileIndex(tilePosition + flat::Vector2i(dx, dy));
+		if (isValidTile(neighborTileIndex))
+		{
+			std::shared_ptr<const map::TileTemplate> tileTemplate = getTileTemplate(neighborTileIndex);
+			const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectTile = tileTemplate->getSelectTile();
+			if (selectTile)
+			{
+				m_dirtyTextureTiles.insert(neighborTileIndex);
+			}
+		}
+	};
+	setNeighborTextureTileDirty(-1, 0);
+	setNeighborTextureTileDirty(0, -1);
+	setNeighborTextureTileDirty(0, 1);
+	setNeighborTextureTileDirty(1, 0);
+	setNeighborTextureTileDirty(-1, -1);
+	setNeighborTextureTileDirty(-1, 1);
+	setNeighborTextureTileDirty(1, 1);
+	setNeighborTextureTileDirty(1, -1);
+}
+
+void Map::updateDirtyTiles(Game& game)
+{
+	// update tile neighbors
 	if (m_neighborTiles.size() < m_tiles.size())
 	{
 		m_neighborTiles.resize(m_tiles.size());
@@ -936,11 +1032,19 @@ void Map::updateDirtyTiles()
 		}
 	}
 
+	// update normals
 	for (TileIndex tileIndex : m_dirtyNormalTiles)
 	{
 		updateTileNormal(tileIndex);
 	}
 	m_dirtyNormalTiles.clear();
+
+	// update textures
+	for (TileIndex tileIndex : m_dirtyTextureTiles)
+	{
+		updateTileTexture(game, tileIndex);
+	}
+	m_dirtyTextureTiles.clear();
 }
 
 void Map::updateAllTiles()

@@ -20,6 +20,7 @@
 #include "entity/component/components/collision/collisioncomponent.h"
 #include "entity/component/components/interaction/interactioncomponent.h"
 #include "entity/component/components/selection/selectioncomponent.h"
+#include "entity/component/components/fogvision/fogvisioncomponent.h"
 #include "entity/component/lua/componentregistry.h"
 #include "entity/faction/lua/faction.h"
 
@@ -86,6 +87,7 @@ void BaseMapState::enter(Game& game)
 
 	initRender(game);
 
+	game.lua->doFile("flat-engine/lua/debug/debug.lua");
 
 	// reset the game view *before* loading the map so the ui components can be initialized properly
 #ifdef FLAT_DEBUG
@@ -167,19 +169,14 @@ void BaseMapState::exit(Game& game)
 	Super::exit(game);
 }
 
-void BaseMapState::setModPath(const std::string& modPath)
-{
-	m_mod.setPath(modPath);
-}
-
 bool BaseMapState::loadMap(Game& game)
 {
-	return m_map.load(game, m_mod);
+	return m_map.load(game);
 }
 
 bool BaseMapState::saveMap(Game& game) const
 {
-	return m_map.save(m_mod, game.mapPath, m_entityUpdater.getEntities());
+	return m_map.save(game, m_entityUpdater.getEntities());
 }
 
 map::Map& BaseMapState::getMap()
@@ -326,7 +323,11 @@ std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(ga
 		&& entityTemplatePath.find('\\') == std::string::npos)
 	{
 		const flat::tool::Asset* asset = game.assetRepository->findAssetFromName("entity", entityTemplateName);
-		FLAT_ASSERT(asset != nullptr);
+		if (asset == nullptr)
+		{
+			// will return an empty entity template
+			return m_entityTemplateManager.getResource(entityTemplatePath, game, m_componentRegistry);
+		}
 		entityTemplatePath = asset->getPath().string();
 	}
 	return m_entityTemplateManager.getResource(entityTemplatePath, game, m_componentRegistry);
@@ -339,7 +340,7 @@ std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Gam
 
 std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
 {
-	const std::string propTemplatePath = m_mod.getPropTemplatePath(propTemplateName);
+	const std::string propTemplatePath = game.mod.getPropTemplatePath(propTemplateName);
 	return m_propTemplateManager.getResource(propTemplatePath, game);
 }
 
@@ -511,19 +512,7 @@ void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
-
-	const bool isMouseOverUiBefore = isMouseOverUi(game);
 	Super::update(game);
-	const bool isMouseOverUiAfter = isMouseOverUi(game);
-
-	if (isMouseOverUiBefore && !isMouseOverUiAfter)
-	{
-		game.input->pushContext(m_gameInputContext);
-	}
-	else if (!isMouseOverUiBefore && isMouseOverUiAfter)
-	{
-		game.input->popContext(m_gameInputContext);
-	}
 
 	//debugCursorPosition(game);
 }
@@ -546,11 +535,12 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 				componentFlags &= ~attack::AttackComponent::getFlag();
 				componentFlags &= ~behavior::BehaviorComponent::getFlag();
 				componentFlags &= ~collision::CollisionComponent::getFlag();
-				const std::vector<flat::Vector2> tiles = getGhostEntityPositions(cursorPosition, tileIndex);
-				entities.reserve(tiles.size());
-				for (const auto& tile: tiles)
+				componentFlags &= ~fogvision::FogVisionComponent::getFlag();
+				const std::vector<flat::Vector2> ghostEntityPositions = getGhostEntityPositions(cursorPosition, tileIndex);
+				entities.reserve(ghostEntityPositions.size());
+				for (const flat::Vector2& ghostEntityPosition : ghostEntityPositions)
 				{
-					flat::Vector3 ghostPosition(tile, m_map.getTileZ(m_map.getTileIndex(tile)));
+					flat::Vector3 ghostPosition(ghostEntityPosition, m_map.getTileZ(m_map.getTileIndex(ghostEntityPosition)));
 
 					entity::Entity* ghost = spawnEntityAtPosition(game, m_ghostTemplate, ghostPosition, 0.f, 0.f, nullptr, componentFlags);
 					if (ghost == nullptr)
@@ -670,7 +660,7 @@ void BaseMapState::initLua(Game& game)
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 		entity::component::lua::open(L, m_componentRegistry);
-		entity::faction::lua::open(L, m_mod.getFactionsConfigPath());
+		entity::faction::lua::open(L, game.mod.getFactionsConfigPath());
 		map::lua::map::open(L);
 		editor::lua::open(L);
 
@@ -848,9 +838,13 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		root->addChild(m_selectionWidget);
 	}
 
-	for (entity::Entity* entity : m_entitiesInSelection)
+	for (entity::EntityHandle entityHandle : m_entitiesInSelection)
 	{
-		clearMouseOverColor(entity);
+		entity::Entity* entity = entityHandle.getEntity();
+		if (entity != nullptr)
+		{
+			clearMouseOverColor(entity);
+		}
 	}
 	m_entitiesInSelection.clear();
 
@@ -877,7 +871,7 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		{
 			if (!entity->isSelected())
 			{
-				m_entitiesInSelection.push_back(entity);
+				m_entitiesInSelection.push_back(entity->getHandle());
 				setMouseOverColor(entity);
 			}
 		}
@@ -1160,7 +1154,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 								{
 									entity->cancelCurrentActions();
 								}
-								entity->moveTo(clickedTilePosition, interactionEntity);
+								entity->moveTo(clickedTilePosition, interactionEntity, false);
 							}
 							if (entity->canInteract())
 							{
@@ -1179,7 +1173,7 @@ void BaseMapState::handleGameActionInputs(Game& game)
 							{
 								entity->cancelCurrentActions();
 							}
-							entity->moveTo(clickedTilePosition);
+							entity->moveTo(clickedTilePosition, nullptr, false);
 						}
 					}
 				}
@@ -1290,18 +1284,17 @@ void BaseMapState::updateEntities()
 #endif
 }
 
-void BaseMapState::updateMap()
+void BaseMapState::updateMap(Game& game)
 {
 	FLAT_PROFILE("Update map");
 
 	const flat::time::Clock& clock = getGameClock();
-	m_map.update(clock.getTime());
+	m_map.update(game, clock.getTime());
 }
 
 #ifdef FLAT_DEBUG
 void BaseMapState::copyStateBeforeReload(const BaseMapState& other)
 {
-	setModPath(other.m_mod.getPath());
 	m_gameView = other.m_gameView;
 	m_cameraCenter2d = other.m_cameraCenter2d;
 	m_cameraZoom = other.m_cameraZoom;

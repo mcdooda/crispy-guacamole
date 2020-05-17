@@ -9,19 +9,25 @@ return {
     {
       1,
       3,
-      4,
+      8,
       1,
     },
     {
       1,
       4,
-      4,
+      8,
       2,
     },
     {
       2,
       1,
       1,
+      1,
+    },
+    {
+      4,
+      1,
+      9,
       1,
     },
     {
@@ -42,6 +48,24 @@ return {
       4,
       5,
     },
+    {
+      8,
+      1,
+      4,
+      1,
+    },
+    {
+      8,
+      2,
+      4,
+      2,
+    },
+    {
+      10,
+      1,
+      9,
+      2,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -50,7 +74,7 @@ return {
     },
     {
       loadArguments = {
-        5,
+        6,
       },
       name = 'number',
     },
@@ -80,9 +104,21 @@ return {
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
+    },
+    {
+      name = 'entity/clearcycleanimation',
+    },
+    {
+      name = 'game/sleep',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
     },
   },
 }

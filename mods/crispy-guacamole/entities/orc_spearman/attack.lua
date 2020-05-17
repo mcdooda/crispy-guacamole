@@ -16,7 +16,7 @@ return {
 		local timer = game.Timer()
 		timer:onEnd(function()
 			if target:isValid() then
-				target:dealDamage(10)
+				target:dealDamage(2)
 			end
 		end)
 		timer:start(0.06)

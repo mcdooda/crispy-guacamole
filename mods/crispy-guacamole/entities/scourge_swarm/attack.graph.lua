@@ -74,13 +74,13 @@ return {
     },
     {
       loadArguments = {
-        0.20000000298023,
+        0.10000000149012,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.5,
+        2,
       },
       name = 'number',
     },
@@ -119,7 +119,7 @@ return {
     },
     {
       loadArguments = {
-        10,
+        1,
       },
       name = 'number',
     },

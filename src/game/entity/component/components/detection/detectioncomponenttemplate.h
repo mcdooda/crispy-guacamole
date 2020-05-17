@@ -15,7 +15,7 @@ namespace detection
 class DetectionComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline float getVisionRange() const { return m_visionRange; }
 

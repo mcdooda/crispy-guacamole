@@ -16,7 +16,7 @@ namespace faction
 class FactionComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline const entity::faction::Faction& getFaction() const { return *m_faction; }
 

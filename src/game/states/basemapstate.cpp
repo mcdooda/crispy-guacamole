@@ -316,21 +316,21 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 	return &it->second;
 }
 
-std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
+std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::filesystem::path& entityTemplateName) const
 {
-	const std::string entityTemplatePath = game.mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(entityTemplateName, game, m_componentRegistry, entityTemplatePath);
+	const std::filesystem::path entityTemplatePath = game.mod.getEntityTemplatePath(entityTemplateName);
+	return m_entityTemplateManager.getResource(entityTemplateName.string(), game, m_componentRegistry, entityTemplatePath.string());
 }
 
-std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
+std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::filesystem::path& tileTemplateName) const
 {
-	return m_tileTemplateManager.getResource(tileTemplateName, game);
+	return m_tileTemplateManager.getResource(tileTemplateName.string(), game);
 }
 
-std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
+std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::filesystem::path& propTemplateName) const
 {
-	const std::string propTemplatePath = game.mod.getPropTemplatePath(propTemplateName);
-	return m_propTemplateManager.getResource(propTemplatePath, game);
+	const std::filesystem::path propTemplatePath = game.mod.getPropTemplatePath(propTemplateName);
+	return m_propTemplateManager.getResource(propTemplatePath.string(), game);
 }
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(
@@ -589,7 +589,7 @@ void BaseMapState::updateGameView(game::Game& game)
 	m_cameraCenter2d += move * uiClock.getDT() * cameraSpeed;
 	updateCameraView();
 
-	if (mouse.wheelJustMoved() && !keyboard.isPressed(K(SPACE)))
+	if (mouse.wheelJustMoved() && !keyboard.isPressed(K(SPACE)) && !isMouseOverUi(game))
 	{
 		const float zoom = m_cameraZoom * static_cast<float>(std::pow(2, mouse.getWheelMove().y));
 		setCameraZoom(zoom);

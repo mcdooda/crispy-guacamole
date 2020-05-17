@@ -36,7 +36,7 @@ public:
 	virtual bool requiresUpdate() const = 0;
 	virtual int getUpdatePeriod() const = 0;
 
-	virtual ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const = 0;
+	virtual ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) const = 0;
 
 	virtual Component* createComponent(flat::containers::DynamicPool& pool) const = 0;
 	virtual void destroyComponent(flat::containers::DynamicPool& pool, Component* component) const = 0;
@@ -61,7 +61,7 @@ public:
 	bool requiresUpdate() const override;
 	int getUpdatePeriod() const override;
 
-	ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const override;
+	ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) const override;
 
 	Component* createComponent(flat::containers::DynamicPool& pool) const override;
 	void destroyComponent(flat::containers::DynamicPool& pool, Component* component) const override;
@@ -110,7 +110,7 @@ inline int ComponentTypeImpl<T>::getUpdatePeriod() const
 }
 
 template <class T>
-ComponentTemplate* ComponentTypeImpl<T>::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath) const
+ComponentTemplate* ComponentTypeImpl<T>::loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) const
 {
 	return T::loadConfigFile(game, L, entityTemplatePath);
 }

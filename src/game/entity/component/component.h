@@ -49,7 +49,7 @@ class Component : public flat::util::Convertible<Component>
 
 		virtual const ComponentType& getComponentType() const = 0;
 
-		static ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
+		static ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath);
 
 		const EntityTemplate& getEntityTemplate() const;
 
@@ -99,7 +99,7 @@ class ComponentImpl : public Component
 		inline static ComponentTypeId getId() { return getType().getComponentTypeId(); }
 		const ComponentType& getComponentType() const override final { return getType(); }
 
-		static ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath);
+		static ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath);
 
 		template <class T = ComponentImpl<ComponentTemplateType>>
 		inline const typename T::TemplateType* getTemplate() const;
@@ -123,7 +123,7 @@ template <class ComponentTemplateType>
 std::shared_ptr<const ComponentType> ComponentImpl<ComponentTemplateType>::type;
 
 template <class ComponentTemplateType>
-inline ComponentTemplate* ComponentImpl<ComponentTemplateType>::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath)
+inline ComponentTemplate* ComponentImpl<ComponentTemplateType>::loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath)
 {
 	ComponentTemplateType* componentTemplate = new ComponentTemplateType();
 	componentTemplate->load(game, L, entityTemplatePath);

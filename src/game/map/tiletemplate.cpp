@@ -8,11 +8,11 @@ namespace game
 namespace map
 {
 
-TileTemplate::TileTemplate(const std::string& name, Game& game) :
+TileTemplate::TileTemplate(const std::filesystem::path& name, Game& game) :
 	m_name(name)
 {
-	std::string path = game.mod.getTileTemplatePath(name);
-	m_texture = game.video->getTexture(path + "atlas.png");
+	std::filesystem::path path = game.mod.getTileTemplatePath(name);
+	m_texture = game.video->getTexture(path / "atlas.png");
 	loadTileConfig(game, path);
 }
 
@@ -63,14 +63,14 @@ int TileTemplate::getRandomTileVariantIndex(Game & game, const std::vector<int>&
 	return randomIndex;
 }
 
-void TileTemplate::loadTileConfig(Game& game, const std::string& path)
+void TileTemplate::loadTileConfig(Game& game, const std::filesystem::path& path)
 {
 	lua_State* L = game.lua->state;
 	{
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-		std::string tileConfigPath = path + "tile.lua";
-		luaL_loadfile(L, tileConfigPath.c_str());
+		std::filesystem::path tileConfigPath = path / "tile.lua";
+		luaL_loadfile(L, tileConfigPath.string().c_str());
 		lua_call(L, 0, 1);
 
 		lua_getfield(L, -1, "probabilities");

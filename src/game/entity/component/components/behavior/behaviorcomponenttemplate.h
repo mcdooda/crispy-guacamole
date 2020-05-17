@@ -16,7 +16,7 @@ namespace behavior
 class BehaviorComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline const Behavior& getBehavior() const { return *m_behavior.get(); }
 

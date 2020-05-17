@@ -16,7 +16,7 @@ namespace attack
 class AttackComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getAttack() const { return m_attack; }
 		inline float getAttackRange() const { return m_attackRange; }

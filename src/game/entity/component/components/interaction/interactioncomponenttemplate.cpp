@@ -9,7 +9,7 @@ namespace component
 namespace interaction
 {
 
-void InteractionComponentTemplate::load(Game& game, lua_State* L, const std::string& entityTemplatePath)
+void InteractionComponentTemplate::load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	

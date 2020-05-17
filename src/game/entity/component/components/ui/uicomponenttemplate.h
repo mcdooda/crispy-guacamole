@@ -15,7 +15,7 @@ namespace ui
 class UiComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline flat::sharp::ui::WidgetFactory& getWidgetFactory() const { return *m_widgetFactory; }
 

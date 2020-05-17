@@ -5,7 +5,7 @@
 namespace game::entity::component::sample
 {
 
-void SampleComponent::playSample(Game& game, const std::string& filename, int numLoops)
+void SampleComponent::playSample(Game& game, const std::filesystem::path& filename, int numLoops)
 {
 	std::shared_ptr<const flat::audio::Chunk> chunk = game.audio->getChunk(filename);
 	game.audio->playChunk(chunk);

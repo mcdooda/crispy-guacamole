@@ -10,11 +10,11 @@ namespace component
 namespace sprite
 {
 
-void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::string& entityTemplatePath)
+void SpriteComponentTemplate::load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	std::shared_ptr<const flat::video::Texture> atlas = game.video->getTexture(entityTemplatePath + "atlas.png");
+	std::shared_ptr<const flat::video::Texture> atlas = game.video->getTexture(entityTemplatePath / "atlas.png");
 	m_spriteDescription.setAtlas(atlas);
 
 	// atlas size

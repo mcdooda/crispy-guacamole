@@ -3,56 +3,62 @@ return {
     {
       1,
       1,
-      3,
-      1,
-    },
-    {
-      1,
-      3,
-      4,
-      1,
-    },
-    {
-      1,
-      4,
-      4,
-      2,
-    },
-    {
-      2,
-      1,
-      1,
-      1,
-    },
-    {
-      5,
-      1,
-      4,
-      3,
-    },
-    {
       6,
       1,
-      4,
-      4,
     },
     {
-      7,
+      2,
+      1,
+      1,
+      1,
+    },
+    {
+      3,
+      1,
+      1,
+      2,
+    },
+    {
+      4,
+      1,
+      1,
+      3,
+    },
+    {
+      5,
+      1,
       1,
       4,
-      5,
     },
   },
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/lifecomponent',
+      name = 'components/movementcomponent',
     },
     {
       loadArguments = {
-        5,
+        0.5,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        7,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
     {
       loadArguments = {
@@ -62,27 +68,6 @@ return {
         },
       },
       name = 'script/scriptoutput',
-    },
-    {
-      name = 'entity/playanimation',
-    },
-    {
-      loadArguments = {
-        'death',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
     },
   },
 }

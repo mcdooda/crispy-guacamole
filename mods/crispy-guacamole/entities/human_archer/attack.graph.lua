@@ -164,7 +164,7 @@ return {
     },
     {
       loadArguments = {
-        1,
+        1.5,
       },
       name = 'number',
     },
@@ -176,7 +176,7 @@ return {
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
     },
@@ -239,7 +239,7 @@ return {
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
     },

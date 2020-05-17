@@ -1,5 +1,4 @@
 return {
-  nodeType = 'script',
   links = {
     {
       1,
@@ -32,6 +31,7 @@ return {
       4,
     },
   },
+  nodeType = 'script',
   nodes = {
     {
       name = 'components/movementcomponent',
@@ -47,7 +47,7 @@ return {
     },
     {
       loadArguments = {
-        2.2000000476837,
+        2.5,
       },
       name = 'number',
     },

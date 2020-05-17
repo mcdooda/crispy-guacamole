@@ -16,19 +16,19 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/lifecomponent',
+      name = 'components/factioncomponent',
     },
     {
       loadArguments = {
-        10,
+        'wild life',
       },
-      name = 'number',
+      name = 'string',
     },
     {
       loadArguments = {
         {
           5,
-          'Table',
+          'Component',
         },
       },
       name = 'script/scriptoutput',

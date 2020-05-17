@@ -69,6 +69,7 @@ function states:reapResources(gatherer)
 
     if targetResourceData.amount > 0 and extraData.resourcesAmount < 5 then
         gatherer:playAnimation 'reap'
+        BarkSystem:requestBark(Mod.getFilePath 'sounds/fx_air_slash')
         gatherer:sleep(0.2)
         local collected = targetResourceData:withdraw(1)
         extraData.resourcesAmount = extraData.resourcesAmount + collected

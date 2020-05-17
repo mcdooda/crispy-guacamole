@@ -18,9 +18,11 @@ return {
     -- fog vision
     'components/fogvisioncomponent',
 
-    -- sample
+    -- audio
     'components/samplecomponent',
     'entity/playsample',
+    'entity/playsound',
+    'entity/playbark',
 
     -- interaction
     'components/interactioncomponent',

@@ -25,6 +25,12 @@ return {
       1,
     },
     {
+      1,
+      3,
+      16,
+      2,
+    },
+    {
       2,
       1,
       1,
@@ -58,6 +64,12 @@ return {
       8,
       1,
       12,
+      1,
+    },
+    {
+      8,
+      1,
+      16,
       1,
     },
     {
@@ -95,6 +107,12 @@ return {
       1,
       12,
       2,
+    },
+    {
+      17,
+      1,
+      16,
+      3,
     },
   },
   nodeType = 'script',
@@ -179,6 +197,15 @@ return {
     },
     {
       name = 'entity/getattacktarget',
+    },
+    {
+      name = 'entity/playsound',
+    },
+    {
+      loadArguments = {
+        'fx_air_slash',
+      },
+      name = 'string',
     },
   },
 }

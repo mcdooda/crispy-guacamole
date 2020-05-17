@@ -20,6 +20,7 @@
 #include "entity/component/components/collision/collisioncomponent.h"
 #include "entity/component/components/interaction/interactioncomponent.h"
 #include "entity/component/components/selection/selectioncomponent.h"
+#include "entity/component/components/fogvision/fogvisioncomponent.h"
 #include "entity/component/lua/componentregistry.h"
 #include "entity/faction/lua/faction.h"
 
@@ -500,19 +501,7 @@ void BaseMapState::setGamePause(Game& game, bool pause, bool pauseNextFrame)
 void BaseMapState::update(game::Game& game)
 {
 	updateGameView(game);
-
-	const bool isMouseOverUiBefore = isMouseOverUi(game);
 	Super::update(game);
-	const bool isMouseOverUiAfter = isMouseOverUi(game);
-
-	if (isMouseOverUiBefore && !isMouseOverUiAfter)
-	{
-		game.input->pushContext(m_gameInputContext);
-	}
-	else if (!isMouseOverUiBefore && isMouseOverUiAfter)
-	{
-		game.input->popContext(m_gameInputContext);
-	}
 
 	//debugCursorPosition(game);
 }
@@ -535,6 +524,7 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 				componentFlags &= ~attack::AttackComponent::getFlag();
 				componentFlags &= ~behavior::BehaviorComponent::getFlag();
 				componentFlags &= ~collision::CollisionComponent::getFlag();
+				componentFlags &= ~fogvision::FogVisionComponent::getFlag();
 				const std::vector<flat::Vector2> ghostEntityPositions = getGhostEntityPositions(cursorPosition, tileIndex);
 				entities.reserve(ghostEntityPositions.size());
 				for (const flat::Vector2& ghostEntityPosition : ghostEntityPositions)

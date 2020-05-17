@@ -156,7 +156,7 @@ return {
     },
     {
       loadArguments = {
-        'idle',
+        'stand',
       },
       name = 'string',
     },
@@ -189,7 +189,7 @@ return {
     },
     {
       loadArguments = {
-        20,
+        21,
       },
       name = 'number',
     },

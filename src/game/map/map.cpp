@@ -53,8 +53,8 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 		(
 			const flat::Vector2i& tilePosition,
 			const io::MapFile::Tile& tile,
-			const std::string& tileTemplateName,
-			const std::string* propTemplateName
+			const std::filesystem::path& tileTemplateName,
+			const std::filesystem::path* propTemplateName
 		)
 	{
 		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplateName);

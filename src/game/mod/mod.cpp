@@ -28,8 +28,7 @@ std::filesystem::path Mod::getTexturePath(const std::filesystem::path& fileName)
 
 std::filesystem::path Mod::getTextureRelativePath(const std::filesystem::path& absolutePath) const
 {
-	// TODO relative path from m_path
-	return absolutePath.filename();
+	return absolutePath.parent_path().stem() / absolutePath.filename();
 }
 
 std::filesystem::path Mod::getMapFilePath(const std::filesystem::path& mapName, const std::filesystem::path& fileName) const

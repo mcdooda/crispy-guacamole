@@ -106,7 +106,7 @@ void Writer::writeHeaders()
 	for (const flat::video::Texture* propTexture : propTexturesOrdered)
 	{
 		const flat::video::FileTexture* propFileTexture = static_cast<const flat::video::FileTexture*>(propTexture);
-		std::filesystem::path propTextureName = m_game.mod.getTextureRelativePath(propFileTexture->getFileName()).parent_path().stem();
+		const std::filesystem::path propTextureName = m_game.mod.getTextureRelativePath(propFileTexture->getFileName());
 		write<const std::string&>(propTextureName.string());
 	}
 

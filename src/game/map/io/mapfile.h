@@ -96,8 +96,8 @@ private:
 	flat::Vector2 m_yAxis;
 	flat::Vector2 m_zAxis;
 
-	std::vector<std::string> m_tileTemplates;
-	std::vector<std::string> m_propTemplates;
+	std::vector<std::filesystem::path> m_tileTemplates;
+	std::vector<std::filesystem::path> m_propTemplates;
 	std::int16_t m_minX;
 	std::int16_t m_maxX;
 	std::int16_t m_minY;
@@ -123,7 +123,7 @@ void MapFile::eachTile(Func func) const
 			const Tile* tile = getTileIfExists(tilePosition);
 			if (tile != nullptr)
 			{
-				const std::string* propTemplate = nullptr;
+				const std::filesystem::path* propTemplate = nullptr;
 				if (tile->propIndex != Tile::INVALID_PROP)
 				{
 					propTemplate = &m_propTemplates[tile->propIndex];

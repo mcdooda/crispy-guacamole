@@ -589,7 +589,7 @@ void BaseMapState::updateGameView(game::Game& game)
 	m_cameraCenter2d += move * uiClock.getDT() * cameraSpeed;
 	updateCameraView();
 
-	if (mouse.wheelJustMoved() && !keyboard.isPressed(K(SPACE)))
+	if (mouse.wheelJustMoved() && !keyboard.isPressed(K(SPACE)) && !isMouseOverUi(game))
 	{
 		const float zoom = m_cameraZoom * static_cast<float>(std::pow(2, mouse.getWheelMove().y));
 		setCameraZoom(zoom);

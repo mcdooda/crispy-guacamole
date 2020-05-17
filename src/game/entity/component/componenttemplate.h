@@ -14,7 +14,7 @@ namespace component
 class ComponentTemplate : public flat::util::Convertible<ComponentTemplate>
 {
 	public:
-		virtual void load(Game& game, lua_State* L, const std::string& entityTemplatePath);
+		virtual void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath);
 };
 
 } // component

@@ -16,7 +16,7 @@ namespace life
 class LifeComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSpawnFunc() const { return m_spawnFunc; }
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getDespawnFunc() const { return m_despawnFunc; }

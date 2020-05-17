@@ -1149,8 +1149,8 @@ int l_Entity_playSample(lua_State* L)
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	sample::SampleComponent& sampleComponent = getComponent<sample::SampleComponent>(L, entity);
 	const char* sampleName = luaL_checkstring(L, 2);
-	std::string file = game.mod.getSamplePath(sampleName);
-	int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
+	const std::filesystem::path file = game.mod.getSamplePath(sampleName);
+	const int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
 	sampleComponent.playSample(game, file, numLoops);
 	return 0;
 }

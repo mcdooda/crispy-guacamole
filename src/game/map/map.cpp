@@ -61,7 +61,7 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
 		if (propTemplateName != nullptr)
 		{
-			const std::string texturePath = game.mod.getTexturePath("props/" + *propTemplateName);
+			const std::filesystem::path texturePath = game.mod.getTexturePath(std::filesystem::path("props") / *propTemplateName);
 			const std::shared_ptr<const flat::video::FileTexture>& texture = game.video->getTexture(texturePath);
 			setTilePropTexture(tileIndex, texture);
 		}
@@ -926,7 +926,7 @@ void Map::updateTileTexture(Game& game, TileIndex tileIndex)
 					map::TileIndex adjacentTileIndex = getTileIndex(xy.x + dx, xy.y + dy);
 					if (isValidTile(adjacentTileIndex))
 					{
-						lua_pushstring(L, getTileTemplate(adjacentTileIndex)->getName().c_str());
+						lua_pushstring(L, getTileTemplate(adjacentTileIndex)->getName().string().c_str());
 					}
 					else
 					{

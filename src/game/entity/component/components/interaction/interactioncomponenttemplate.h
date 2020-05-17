@@ -17,7 +17,7 @@ namespace interaction
 class InteractionComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline const std::string& getBehaviorStateName() const { return m_behaviorStateName; }
 

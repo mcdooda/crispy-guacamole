@@ -1,6 +1,7 @@
 #ifndef GAME_ENTITY_COMPONENT_SAMPLE_SAMPLECOMPONENT_H
 #define GAME_ENTITY_COMPONENT_SAMPLE_SAMPLECOMPONENT_H
 
+#include <filesystem>
 #include "game.h"
 #include "samplecomponenttemplate.h"
 #include "../../component.h"
@@ -15,7 +16,7 @@ class SampleComponent : public ComponentImpl<SampleComponentTemplate>
 		inline static const char* getVisualName() { return "Sample"; }
 		inline static bool requiresUpdate() { return false; }
 
-		void playSample(Game& game, const std::string& filename, int numloops);
+		void playSample(Game& game, const std::filesystem::path& filename, int numloops);
 };
 
 } // game::entity::component::sample

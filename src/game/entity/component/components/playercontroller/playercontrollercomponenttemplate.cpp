@@ -10,7 +10,7 @@ namespace component
 namespace playercontroller
 {
 
-void PlayerControllerComponentTemplate::load(Game& game, lua_State* L, const std::string& entityTemplatePath)
+void PlayerControllerComponentTemplate::load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 	

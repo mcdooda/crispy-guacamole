@@ -12,23 +12,23 @@ namespace mod
 class Mod final
 {
 	public:
-		void setPath(const std::string& path);
-		inline const std::string& getPath() const { return m_path; }
+		void setPath(const std::filesystem::path& path);
+		inline const std::filesystem::path& getPath() const { return m_path; }
 
-		std::string getFilePath(const std::string& fileName) const;
+		std::filesystem::path getFilePath(const std::filesystem::path& fileName) const;
 
-		std::string getScriptPath(const std::string& fileName) const;
-		std::string getTexturePath(const std::string& fileName) const;
-		std::string getTextureRelativePath(const std::string& absolutePath) const;
-		std::string getMapPath(const std::string& mapName, const char* fileName = "map.gpmap") const;
-		std::string getEntityTemplatePath(const std::string& entityTemplateName) const;
-		std::string getTileTemplatePath(const std::string& tileTemplateName) const;
-		std::string getPropTemplatePath(const std::string& propTemplateName) const;
-		std::string getFactionsConfigPath() const;
-		std::string getSamplePath(const std::string& sampleName) const;
+		std::filesystem::path getScriptPath(const std::filesystem::path& fileName) const;
+		std::filesystem::path getTexturePath(const std::filesystem::path& fileName) const;
+		std::filesystem::path getTextureRelativePath(const std::filesystem::path& absolutePath) const;
+		std::filesystem::path getMapFilePath(const std::filesystem::path& mapName, const std::filesystem::path& fileName) const;
+		std::filesystem::path getEntityTemplatePath(const std::filesystem::path& entityTemplateName) const;
+		std::filesystem::path getTileTemplatePath(const std::filesystem::path& tileTemplateName) const;
+		std::filesystem::path getPropTemplatePath(const std::filesystem::path& propTemplateName) const;
+		std::filesystem::path getFactionsConfigPath() const;
+		std::filesystem::path getSamplePath(const std::filesystem::path& sampleName) const;
 
 	private:
-		std::string m_path;
+		std::filesystem::path m_path;
 };
 
 } // mod

@@ -58,9 +58,9 @@ class BaseMapState : public BaseState
 		entity::faction::Faction* getFactionByName(const std::string& factionName);
 		const entity::faction::Faction* getFactionByName(const std::string& factionName) const;
 
-		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const;
-		std::shared_ptr<const map::TileTemplate> getTileTemplate(game::Game& game, const std::string& tileTemplateName) const;
-		std::shared_ptr<const map::PropTemplate> getPropTemplate(game::Game& game, const std::string& propTemplateName) const;
+		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game& game, const std::filesystem::path& entityTemplateName) const;
+		std::shared_ptr<const map::TileTemplate> getTileTemplate(game::Game& game, const std::filesystem::path& tileTemplateName) const;
+		std::shared_ptr<const map::PropTemplate> getPropTemplate(game::Game& game, const std::filesystem::path& propTemplateName) const;
 
 		const entity::component::ComponentRegistry& getComponentRegistry() const { return m_componentRegistry; }
 

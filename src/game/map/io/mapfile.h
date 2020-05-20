@@ -61,22 +61,41 @@ public:
 public:
 	void process(flat::file::serialize::Processor& processor) override;
 
+	// axes and bounds
+	inline void setXAxis(const flat::Vector2& xAxis) { m_xAxis = xAxis; }
+	inline void setYAxis(const flat::Vector2& yAxis) { m_yAxis = yAxis; }
+	inline void setZAxis(const flat::Vector2& zAxis) { m_zAxis = zAxis; }
+
 	inline const flat::Vector2& getXAxis() const { return m_xAxis; }
 	inline const flat::Vector2& getYAxis() const { return m_yAxis; }
 	inline const flat::Vector2& getZAxis() const { return m_zAxis; }
+
+	inline void setMinX(std::int16_t minX) { m_minX = minX; }
+	inline void setMaxX(std::int16_t maxX) { m_maxX = maxX; }
+	inline void setMinY(std::int16_t minY) { m_minY = minY; }
+	inline void setMaxY(std::int16_t maxY) { m_maxY = maxY; }
 
 	inline std::int16_t getMinX() const { return m_minX; }
 	inline std::int16_t getMaxX() const { return m_maxX; }
 	inline std::int16_t getMinY() const { return m_minY; }
 	inline std::int16_t getMaxY() const { return m_maxY; }
 
+	// tiles
+	void addTile(const flat::Vector2i& tilePosition, float z, const std::filesystem::path& tileTemplatePath, std::uint16_t tileTemplateVariantIndex, const std::filesystem::path* propTemplatePath);
+
 	inline size_t getTilesCount() const { return m_tilesByPosition.size(); }
 
 	template <class Func>
 	inline void eachTile(Func func) const;
 
+	// entities
+	void addEntity(const flat::Vector2& position, const std::string& entityTemplateName);
+
 	const std::vector<std::string>& getEntityTemplates() const { return m_entityTemplates; }
 	const std::vector<Entity>& getEntities() const { return m_entities; }
+
+	// zones
+	void addZone(const std::string& name, std::uint32_t color, const std::vector<Zone::Rectangle>& rectangles);
 
 	const std::vector<Zone>& getZones() const { return m_zones; }
 

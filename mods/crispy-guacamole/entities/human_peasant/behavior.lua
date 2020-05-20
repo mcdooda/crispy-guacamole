@@ -4,12 +4,12 @@ local Money = require require(Mod.getFilePath 'scripts/money')
 local EntitiesByType = require(Mod.getFilePath 'scripts/entitiesbytype')
 local BarkSystem = require(Mod.getFilePath 'scripts/barksystem')
 
-local states = GathererBehavior.basicGatherer('human_farm', 'wheat_field')
+local states = GathererBehavior.basicGatherer('human_windmill', 'wheat_field')
 
 local lockResource, unlockResource
 
 local function getClosestBuilding(gatherer)
-    return EntitiesByType:getClosests('human_farm', gatherer:getPosition():toVector2())[1]
+    return EntitiesByType:getClosests('human_windmill', gatherer:getPosition():toVector2())[1]
 end
 function states:gatherResources(gatherer)
     gatherer:setCycleAnimation 'gather'

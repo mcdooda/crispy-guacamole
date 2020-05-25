@@ -41,6 +41,27 @@ do
     Widget.getRoot():addChild(modPathLabel)
 end
 
+-- asset browser
+do
+    local box = Widget.makeColumnFlow()
+    box:setBackgroundColor(0x666666FF)
+    box:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
+    box:setSize(300, 0)
+
+    do
+        local browserContainer = Widget.makeColumnFlow()
+        browserContainer:setSizePolicy(Widget.SizePolicy.EXPAND)
+        browserContainer:setAllowScrollY(true)
+        box:addChild(browserContainer)
+
+        flat.tool.asset.browser(browserContainer, modPath)
+    end
+
+    boxContainer:addChild(box)
+end
+
+addSpacer()
+
 -- compounds
 local function addCompoundColumn(nodeType, columnName, directories)
     flat.graph.loadNodeClasses(nodeType, 'data')
@@ -160,4 +181,4 @@ addCompoundColumn('sound', 'Sounds', {
 
 Widget.getRoot():addChild(boxContainer)
 
-flat.tool.asset.browser(Widget.getRoot(), modPath)
+--flat.tool.asset.openBrowserWindow(Widget.getRoot(), modPath)

@@ -47,19 +47,19 @@ local function makeBottomPanelContainer(title)
     }
 end
 
-local function setBuilding(buildingTemplateName, buildings)
-    local buildingData = EntityData.get(buildingTemplateName)
+local function setBuilding(buildingTemplatePath, buildings)
+    local buildingData = EntityData.get(buildingTemplatePath)
 
     do
         do
-            local label = Widget.makeText(buildingData and buildingData.name or buildingTemplateName, table.unpack(Theme.defaultFont))
+            local label = Widget.makeText(buildingData and buildingData.name or buildingTemplatePath, table.unpack(Theme.defaultFont))
             label:setPositionPolicy(Widget.PositionPolicy.CENTER)
             label:setTextColor(Theme.TEXT_COLOR)
             selectedEntityContainer.addContent(label)
         end
 
         do
-            local unitPreview = Preview.entity(buildingTemplateName, nil, true)
+            local unitPreview = Preview.entity(buildingTemplatePath, nil, true)
             unitPreview:setPositionPolicy(Widget.PositionPolicy.CENTER)
             selectedEntityContainer.addContent(unitPreview)
         end
@@ -130,19 +130,19 @@ local function setBuilding(buildingTemplateName, buildings)
     end
 end
 
-local function setUnit(unitTemplateName, units)
-    local unitData = EntityData.get(unitTemplateName)
+local function setUnit(unitTemplatePath, units)
+    local unitData = EntityData.get(unitTemplatePath)
 
     do
         do
-            local label = Widget.makeText(unitData and unitData.name or unitTemplateName, table.unpack(Theme.defaultFont))
+            local label = Widget.makeText(unitData and unitData.name or unitTemplatePath, table.unpack(Theme.defaultFont))
             label:setPositionPolicy(Widget.PositionPolicy.CENTER)
             label:setTextColor(Theme.TEXT_COLOR)
             selectedEntityContainer.addContent(label)
         end
 
         do
-            local unitPreview = Preview.entity(unitTemplateName, nil, true, 3)
+            local unitPreview = Preview.entity(unitTemplatePath, nil, true, 3)
             unitPreview:setPositionPolicy(Widget.PositionPolicy.CENTER)
             selectedEntityContainer.addContent(unitPreview)
         end
@@ -300,11 +300,11 @@ local function buildWidgets()
             end
         end
 
-        for buildTemplateName, buildings in pairs(buildingsPerType) do
-            setBuilding(buildTemplateName, buildings)
+        for buildTemplatePath, buildings in pairs(buildingsPerType) do
+            setBuilding(buildTemplatePath, buildings)
         end
-        for unitTemplateName, units in pairs(unitsPerType) do
-            setUnit(unitTemplateName, units)
+        for unitTemplatePath, units in pairs(unitsPerType) do
+            setUnit(unitTemplatePath, units)
         end
     end)
 

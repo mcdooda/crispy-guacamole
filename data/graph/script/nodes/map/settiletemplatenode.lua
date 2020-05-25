@@ -6,7 +6,7 @@ local SetTileTemplateNode = ScriptNode:inherit 'Set Tile Template'
 function SetTileTemplateNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')
     self.tileInPin = self:addInputPin(flat.types.NUMBER, 'Tile')
-    self.templateNameInPin = self:addInputPin(flat.types.STRING, 'Template Name')
+    self.templatePathInPin = self:addInputPin(flat.types.STRING, 'Template Name')
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
 end
@@ -14,9 +14,9 @@ end
 function SetTileTemplateNode:execute(runtime, inputPin)
     assert(inputPin == self.impulseInPin)
     local tile = runtime:readPin(self.tileInPin)
-    local templateName = runtime:readPin(self.templateNameInPin)
+    local templatePath = runtime:readPin(self.templatePathInPin)
 
-    Map.setTileTemplate(tile, templateName)
+    Map.setTileTemplate(tile, templatePath)
 
     runtime:impulse(self.impulseOutPin)
 end

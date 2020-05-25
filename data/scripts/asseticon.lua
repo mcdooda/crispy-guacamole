@@ -72,29 +72,29 @@ function AssetIcon:new(assetName, preview, size)
     }, self)
 end
 
-function AssetIcon:entity(entityTemplateName, size)
-    local preview = Preview.entity(entityTemplateName, nil, false, 1)
+function AssetIcon:entity(entityTemplatePath, size)
+    local preview = Preview.entity(entityTemplatePath, nil, false, 1)
     local width, height = preview:getSize()
     if width * 2 < size and height * 2 < size then
         preview = Preview.entity(entityTemplatePath, nil, false, 2)
     end
     preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
     preview:setPosition(0, 10)
-    return self:new(entityTemplateName, preview, size)
+    return self:new(entityTemplatePath, preview, size)
 end
 
-function AssetIcon:tile(tileTemplateName, size)
-    local preview = Preview.tile(tileTemplateName, 1, false, 1)
+function AssetIcon:tile(tileTemplatePath, size)
+    local preview = Preview.tile(tileTemplatePath, 1, false, 1)
     preview:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP)
     preview:setPosition(0, -16)
-    return self:new(tileTemplateName, preview, size)
+    return self:new(tileTemplatePath, preview, size)
 end
 
-function AssetIcon:prop(propTemplateName, size)
-    local preview = Preview.prop(propTemplateName, ModData.props.getHighest(propTemplateName), 1)
+function AssetIcon:prop(propTemplatePath, size)
+    local preview = Preview.prop(propTemplatePath, ModData.props.getHighest(propTemplatePath), 1)
     preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
     preview:setPosition(0, 10)
-    return self:new(propTemplateName, preview, size)
+    return self:new(propTemplatePath, preview, size)
 end
 
 function AssetIcon:setSelected(selected, addToSelection)

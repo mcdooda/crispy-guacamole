@@ -123,12 +123,12 @@ local function startTileSpriteAnimation(preview, tileTemplate, tileVariantIndex)
     return stopAnimation
 end
 
-local function tilePreview(tileTemplateName, tileVariantIndex, loopForever, scale, showTooltip)
-    local tileAtlasPath = Path.getTileFilePath(tileTemplateName, 'atlas.png')
+local function tilePreview(tileTemplatePath, tileVariantIndex, loopForever, scale, showTooltip)
+    local tileAtlasPath = Path.getTileFilePath(tileTemplatePath, 'atlas.png')
     local preview = Widget.makeImage(tileAtlasPath)
     preview:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
     local imageWidth, imageHeight = Image.getSize(tileAtlasPath)
-    local tileTemplate = Path.requireTileFile(tileTemplateName, 'tile')
+    local tileTemplate = Path.requireTileFile(tileTemplatePath, 'tile')
     local animationWidth = tileTemplate.numFrames
     local animationHeight = #tileTemplate.probabilities
     preview:setSize(
@@ -155,7 +155,7 @@ local function tilePreview(tileTemplateName, tileVariantIndex, loopForever, scal
         preview:setBackgroundSize(imageWidth * scale, imageHeight * scale)
     end
     if showTooltip then
-        flat.ui.addTooltip(preview, tileTemplateName)
+        flat.ui.addTooltip(preview, tileTemplatePath)
     end
     return preview
 end

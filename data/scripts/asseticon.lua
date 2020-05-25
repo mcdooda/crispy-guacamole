@@ -1,12 +1,10 @@
-local Preview = require 'data/scripts/preview'
-local ModData = require 'data/editor/scripts/moddata'
 local UiSettings = require 'data/scripts/ui/uisettings'
 
 local AssetIcon = {}
 AssetIcon.__index = AssetIcon
 AssetIcon.selectedIcons = {}
 
-local function makeAssetIconWidget(assetName, preview, size)
+local function makeAssetIconWidget(asset, preview, size, allowSelection)
     local assetIcon = Widget.makeFixedSize(size, size)
 
     do
@@ -16,7 +14,10 @@ local function makeAssetIconWidget(assetName, preview, size)
         previewContainer:setBackground 'data/editor/interface/icons/background.png'
         previewContainer:setBackgroundRepeat(Widget.BackgroundRepeat.REPEAT)
         previewContainer:setPositionPolicy(Widget.PositionPolicy.CENTER)
-        previewContainer:addChild(preview)
+
+        if preview then
+            previewContainer:addChild(preview)
+        end
 
         do
             -- asset name
@@ -27,7 +28,7 @@ local function makeAssetIconWidget(assetName, preview, size)
             textContainer:setPadding(5)
     
             do
-                local text = Widget.makeText(assetName, table.unpack(UiSettings.defaultFont))
+                local text = Widget.makeText(asset:getName(), table.unpack(UiSettings.defaultFont))
                 text:setPositionPolicy(Widget.PositionPolicy.CENTER)
                 textContainer:addChild(text)
             end
@@ -38,16 +39,18 @@ local function makeAssetIconWidget(assetName, preview, size)
         assetIcon:addChild(previewContainer)
     end
 
-    local isSelected = false
+    if allowSelection then
+        local isSelected = false
 
-    assetIcon:click(function()
-        if isSelected then
-            return
-        end
-        isSelected = true
-        assetIcon:setBackgroundColor(0xF39C12FF)
-    end)
-    
+        assetIcon:click(function()
+            if isSelected then
+                return
+            end
+            isSelected = true
+            assetIcon:setBackgroundColor(0xF39C12FF)
+        end)
+    end
+        
     assetIcon:mouseEnter(function()
         if not isSelected then
             assetIcon:setBackgroundColor(0xF1C40FFF)
@@ -60,41 +63,16 @@ local function makeAssetIconWidget(assetName, preview, size)
         end
     end)
 
-    flat.ui.addTooltip(assetIcon, assetName)
+    flat.ui.addTooltip(assetIcon, asset:getPath())
 
     return assetIcon
 end
 
-function AssetIcon:new(assetName, preview, size)
+function AssetIcon:new(asset, preview, size, allowSelection)
     return setmetatable({
         selected = false,
-        container = makeAssetIconWidget(assetName, preview, size)
+        container = makeAssetIconWidget(asset, preview, size, allowSelection)
     }, self)
-end
-
-function AssetIcon:entity(entityTemplatePath, size)
-    local preview = Preview.entity(entityTemplatePath, nil, false, 1)
-    local width, height = preview:getSize()
-    if width * 2 < size and height * 2 < size then
-        preview = Preview.entity(entityTemplatePath, nil, false, 2)
-    end
-    preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
-    preview:setPosition(0, 10)
-    return self:new(entityTemplatePath, preview, size)
-end
-
-function AssetIcon:tile(tileTemplatePath, size)
-    local preview = Preview.tile(tileTemplatePath, 1, false, 1)
-    preview:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP)
-    preview:setPosition(0, -16)
-    return self:new(tileTemplatePath, preview, size)
-end
-
-function AssetIcon:prop(propTemplatePath, size)
-    local preview = Preview.prop(propTemplatePath, ModData.props.getHighest(propTemplatePath), 1)
-    preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
-    preview:setPosition(0, 10)
-    return self:new(propTemplatePath, preview, size)
 end
 
 function AssetIcon:setSelected(selected, addToSelection)

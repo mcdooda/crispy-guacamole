@@ -113,7 +113,7 @@ void EntityTemplate::loadComponentTemplateSafe(lua_State* L, Game& game, const c
 	luaL_error(L, "Error %s while loading component '%s' for entity '%s':\n%s",
 		flat::lua::codeToString(code),
 		componentType.getConfigName(),
-		m_path.c_str(),
+		m_path.string().c_str(),
 		luaL_checkstring(L, -1));
 }
 

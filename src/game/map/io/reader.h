@@ -7,15 +7,9 @@ namespace game
 {
 class Game;
 
-namespace mod
-{
-class Mod;
-}
-
 namespace map
 {
 class Map;
-class TileTemplate;
 
 namespace io
 {
@@ -24,7 +18,6 @@ class Reader
 {
 	public:
 		Reader(Game& game, Map& map);
-		~Reader();
 		
 		bool canRead() const;
 		void read();

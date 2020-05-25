@@ -15,11 +15,6 @@ Reader::Reader(Game& game, Map& map) :
 
 }
 
-Reader::~Reader()
-{
-
-}
-
 bool Reader::canRead() const
 {
 	return m_reader.canRead();

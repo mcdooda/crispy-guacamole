@@ -5,7 +5,7 @@ return {
         'human_wooden_wall',
         'human_barracks',
         'human_church',
-        'human_farm',
+        'human_windmill',
         'wheat_field',
         'human_town_hall',
         'human_house',

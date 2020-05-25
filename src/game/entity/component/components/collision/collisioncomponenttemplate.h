@@ -16,7 +16,7 @@ namespace collision
 class CollisionComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		const CollisionBox& getCollisionBox() const { return m_collisionBox; }
 

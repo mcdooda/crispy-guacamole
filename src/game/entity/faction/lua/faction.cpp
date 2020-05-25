@@ -1,4 +1,5 @@
 #include <iterator>
+#include <flat.h>
 #include "faction.h"
 #include "../factionrelation.h"
 #include "../../../game.h"
@@ -13,12 +14,12 @@ namespace faction
 namespace lua
 {
 
-int open(lua_State* L, const std::string& factionsConfigPath)
+int open(lua_State* L, const std::filesystem::path& factionsConfigPath)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
 	// load function
-	luaL_loadfile(L, factionsConfigPath.c_str());
+	luaL_loadfile(L, factionsConfigPath.string().c_str());
 
 	// setup environment table
 	static const luaL_Reg factionMethods[] = {

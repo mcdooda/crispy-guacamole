@@ -38,14 +38,14 @@ int open(lua_State* L)
 int l_Mod_getPath(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	lua_pushstring(L, game.mod.getPath().c_str());
+	lua_pushstring(L, game.mod.getPath().string().c_str());
 	return 1;
 }
 
 int l_Mod_getCurrentMapPath(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	lua_pushstring(L, game.mapPath.c_str());
+	lua_pushstring(L, game.mapPath.string().c_str());
 	return 1;
 }
 
@@ -55,7 +55,7 @@ static int locGetAssetsTable(lua_State* L, const char* assetDirectory)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
 
-	std::shared_ptr<flat::file::Directory> directory = flat::file::Directory::open(game.mod.getPath() + "/" + assetDirectory);
+	std::shared_ptr<flat::file::Directory> directory = flat::file::Directory::open(game.mod.getPath() / assetDirectory);
 
 	lua_createtable(L, 4, 0);
 	int i = 1;
@@ -111,9 +111,9 @@ int l_Mod_openEditor(lua_State* L)
 
 int l_Mod_getFilePath(lua_State* L)
 {
-	const char* sampleName = luaL_checkstring(L, 1);
+	const char* fileName = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	lua_pushstring(L, game.mod.getFilePath(sampleName).c_str());
+	lua_pushstring(L, game.mod.getFilePath(fileName).string().c_str());
 	return 1;
 }
 

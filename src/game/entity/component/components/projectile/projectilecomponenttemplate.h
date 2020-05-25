@@ -15,7 +15,7 @@ namespace projectile
 class ProjectileComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getCollidedCallback() const { return m_collidedCallback; }
 		inline float getWeight() const { return m_weight; }

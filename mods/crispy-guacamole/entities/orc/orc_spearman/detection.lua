@@ -1,3 +1,1 @@
-return {
-	visionRange = 3
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/orc_warrior/detection'

@@ -133,4 +133,66 @@ void MapFile::processZones(flat::file::serialize::Processor& processor)
 	processor.process<std::uint16_t>(m_zones);
 }
 
+void MapFile::addTile(const flat::Vector2i& tilePosition, float z, const std::filesystem::path& tileTemplatePath, std::uint16_t tileTemplateVariantIndex, const std::filesystem::path* propTemplatePath)
+{
+	Tile* tile = createTile(tilePosition);
+	tile->z = z;
+
+	// tile template
+	{
+		std::vector<std::filesystem::path>::iterator it = std::find(m_tileTemplates.begin(), m_tileTemplates.end(), tileTemplatePath);
+		if (it == m_tileTemplates.end())
+		{
+			tile->tileTemplateIndex = static_cast<std::uint16_t>(m_tileTemplates.size());
+			m_tileTemplates.push_back(tileTemplatePath);
+		}
+		else
+		{
+			tile->tileTemplateIndex = static_cast<std::uint16_t>(it - m_tileTemplates.begin());
+		}
+		tile->tileTemplateVariantIndex = tileTemplateVariantIndex;
+	}
+
+	// prop template
+	if (propTemplatePath != nullptr)
+	{
+		std::vector<std::filesystem::path>::iterator it = std::find(m_propTemplates.begin(), m_propTemplates.end(), *propTemplatePath);
+		if (it == m_propTemplates.end())
+		{
+			tile->propIndex = static_cast<std::uint16_t>(m_propTemplates.size());
+			m_propTemplates.push_back(*propTemplatePath);
+		}
+		else
+		{
+			tile->propIndex = static_cast<std::uint16_t>(it - m_propTemplates.begin());
+		}
+	}
+}
+
+void MapFile::addEntity(const flat::Vector2& position, const std::filesystem::path& entityTemplatePath)
+{
+	std::uint16_t entityTemplateIndex = 0;
+	std::vector<std::filesystem::path>::iterator it = std::find(m_entityTemplates.begin(), m_entityTemplates.end(), entityTemplatePath);
+	if (it == m_entityTemplates.end())
+	{
+		entityTemplateIndex = static_cast<std::uint16_t>(m_entityTemplates.size());
+		m_entityTemplates.push_back(entityTemplatePath);
+	}
+	else
+	{
+		entityTemplateIndex = static_cast<std::uint16_t>(it - m_entityTemplates.begin());
+	}
+	Entity& entity = m_entities.emplace_back();
+	entity.position = position;
+	entity.entityTemplateIndex = entityTemplateIndex;
+}
+
+void MapFile::addZone(const std::string& name, std::uint32_t color, const std::vector<Zone::Rectangle>& rectangles)
+{
+	Zone& zone = m_zones.emplace_back();
+	zone.name = name;
+	zone.color = color;
+	zone.rectangles = rectangles;
+}
+
 } // game::map::io

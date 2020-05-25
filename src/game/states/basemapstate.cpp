@@ -176,7 +176,7 @@ bool BaseMapState::loadMap(Game& game)
 
 bool BaseMapState::saveMap(Game& game) const
 {
-	return m_map.save(game, m_entityUpdater.getEntities());
+	return m_map.save(game);
 }
 
 map::Map& BaseMapState::getMap()
@@ -316,13 +316,14 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 	return &it->second;
 }
 
-std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::string& entityTemplateName) const
+std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::filesystem::path& entityTemplateName) const
 {
-	std::string entityTemplatePath = entityTemplateName;
+	// for backward compatibility, entity names are still valid
+	std::string entityTemplatePath = entityTemplateName.string();
 	if (entityTemplatePath.find('/') == std::string::npos
 		&& entityTemplatePath.find('\\') == std::string::npos)
 	{
-		const flat::tool::Asset* asset = game.assetRepository->findAssetFromName("entity", entityTemplateName);
+		const flat::tool::Asset* asset = game.assetRepository->findAssetFromName("entity", entityTemplatePath);
 		if (asset == nullptr)
 		{
 			// will return an empty entity template
@@ -333,15 +334,15 @@ std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(ga
 	return m_entityTemplateManager.getResource(entityTemplatePath, game, m_componentRegistry);
 }
 
-std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::string& tileTemplateName) const
+std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::filesystem::path& tileTemplateName) const
 {
-	return m_tileTemplateManager.getResource(tileTemplateName, game);
+	return m_tileTemplateManager.getResource(tileTemplateName.string(), game);
 }
 
-std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::string& propTemplateName) const
+std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::filesystem::path& propTemplateName) const
 {
-	const std::string propTemplatePath = game.mod.getPropTemplatePath(propTemplateName);
-	return m_propTemplateManager.getResource(propTemplatePath, game);
+	const std::filesystem::path propTemplatePath = game.mod.getPropTemplatePath(propTemplateName);
+	return m_propTemplateManager.getResource(propTemplatePath.string(), game);
 }
 
 entity::Entity* BaseMapState::spawnEntityAtPosition(
@@ -386,7 +387,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	if (!addEntityToMap(entity))
 	{
 		destroyEntity(entity);
-		game.notify->warn(std::string("Cannot spawn entity ") + entityTemplate->getPath());
+		game.notify->warn(std::string("Cannot spawn entity ") + entityTemplate->getPath().string());
 		return nullptr;
 	}
 
@@ -600,7 +601,7 @@ void BaseMapState::updateGameView(game::Game& game)
 	m_cameraCenter2d += move * uiClock.getDT() * cameraSpeed;
 	updateCameraView();
 
-	if (mouse.wheelJustMoved() && !keyboard.isPressed(K(SPACE)))
+	if (mouse.wheelJustMoved() && !keyboard.isPressed(K(SPACE)) && !isMouseOverUi(game))
 	{
 		const float zoom = m_cameraZoom * static_cast<float>(std::pow(2, mouse.getWheelMove().y));
 		setCameraZoom(zoom);

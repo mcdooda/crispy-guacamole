@@ -43,6 +43,7 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 {
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 
+	// axes and bounds
 	setAxes(mapFile.getXAxis(), mapFile.getYAxis(), mapFile.getZAxis());
 	setBounds(mapFile.getMinX(), mapFile.getMaxX(), mapFile.getMinY(), mapFile.getMaxY());
 
@@ -53,15 +54,15 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 		(
 			const flat::Vector2i& tilePosition,
 			const io::MapFile::Tile& tile,
-			const std::string& tileTemplateName,
-			const std::string* propTemplateName
+			const std::filesystem::path& tileTemplateName,
+			const std::filesystem::path* propTemplateName
 		)
 	{
 		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplateName);
 		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
 		if (propTemplateName != nullptr)
 		{
-			const std::string texturePath = game.mod.getTexturePath("props/" + *propTemplateName);
+			const std::filesystem::path texturePath = game.mod.getTexturePath(std::filesystem::path("props") / *propTemplateName);
 			const std::shared_ptr<const flat::video::FileTexture>& texture = game.video->getTexture(texturePath);
 			setTilePropTexture(tileIndex, texture);
 		}
@@ -71,9 +72,9 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 	// entities
 	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;
 	entityTemplates.reserve(mapFile.getEntityTemplates().size());
-	for (const std::string& entityTemplateName : mapFile.getEntityTemplates())
+	for (const std::filesystem::path& entityTemplatePath : mapFile.getEntityTemplates())
 	{
-		const std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
+		const std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(game, entityTemplatePath);
 		entityTemplates.push_back(entityTemplate);
 	}
 
@@ -109,9 +110,67 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 	}
 }
 
-void Map::getState(io::MapFile& mapFile) const
+void Map::getState(Game& game, io::MapFile& mapFile) const
 {
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
 
+	// axes and bounds
+	mapFile.setXAxis(m_xAxis);
+	mapFile.setYAxis(m_yAxis);
+	mapFile.setZAxis(m_zAxis);
+
+	int minX, maxX, minY, maxY;
+	getActualBounds(minX, maxX, minY, maxY);
+	mapFile.setMinX(minX);
+	mapFile.setMaxX(maxX);
+	mapFile.setMinY(minY);
+	mapFile.setMaxY(maxY);
+
+	// tiles
+	eachTile([this, &mapFile](TileIndex tileIndex)
+	{
+		// tile texture and variant index
+		const flat::render::SynchronizedSprite& tileSprite = static_cast<const flat::render::SynchronizedSprite&>(getTileSprite(tileIndex));
+		const flat::render::SpriteSynchronizer& tileSpriteSynchronizer = tileSprite.getSynchronizer();
+		const std::filesystem::path tileTexture = std::filesystem::path(static_cast<const flat::video::FileTexture*>(tileSprite.getTexture().get())->getFileName()).parent_path().stem();
+		const std::uint16_t tileTemplateVariantIndex = tileSpriteSynchronizer.getCurrentLine();
+
+		// prop
+		std::filesystem::path propTexture;
+		const std::filesystem::path* propTexturePtr = nullptr;
+		const Prop* prop = getTileProp(tileIndex);
+		if (prop != nullptr)
+		{
+			propTexture = static_cast<const flat::video::FileTexture*>(prop->getSprite().getTexture().get())->getFileName();
+			propTexture = propTexture.parent_path().stem() / propTexture.filename();
+			propTexturePtr = &propTexture;
+		}
+
+		mapFile.addTile(getTileXY(tileIndex), getTileZ(tileIndex), tileTexture, tileTemplateVariantIndex, propTexturePtr);
+	});
+
+	// entities
+	for (entity::Entity* entity : baseMapState.getEntityUpdater().getEntities())
+	{
+		mapFile.addEntity(entity->getPosition2d(), entity->getTemplatePath());
+	}
+
+	// zones
+	for (const std::pair<std::string, std::shared_ptr<Zone>>& pair : m_zones)
+	{
+		const Zone* zone = pair.second.get();
+		std::vector<io::MapFile::Zone::Rectangle> mapFileZoneRectangles;
+		const std::vector<Zone::Rectangle>& rectangles = zone->getRectangles();
+		for (const Zone::Rectangle& rectangle : rectangles)
+		{
+			io::MapFile::Zone::Rectangle& mapFileZoneRectangle = mapFileZoneRectangles.emplace_back();
+			mapFileZoneRectangle.minX = rectangle.minX;
+			mapFileZoneRectangle.maxX = rectangle.maxX;
+			mapFileZoneRectangle.minY = rectangle.minY;
+			mapFileZoneRectangle.maxY = rectangle.maxY;
+		}
+		mapFile.addZone(pair.first, zone->getColor(), mapFileZoneRectangles);
+	}
 }
 
 void Map::update(Game& game, float currentTime)
@@ -168,12 +227,12 @@ bool Map::load(Game& game)
 	return loadedFromFile;
 }
 
-bool Map::save(Game& game, const std::vector<entity::Entity*>& entities) const
+bool Map::save(Game& game) const
 {
 	io::Writer writer(game, *this);
 	if (writer.canWrite())
 	{
-		writer.write(entities);
+		writer.write();
 		return true;
 	}
 	return false;
@@ -926,7 +985,7 @@ void Map::updateTileTexture(Game& game, TileIndex tileIndex)
 					map::TileIndex adjacentTileIndex = getTileIndex(xy.x + dx, xy.y + dy);
 					if (isValidTile(adjacentTileIndex))
 					{
-						lua_pushstring(L, getTileTemplate(adjacentTileIndex)->getName().c_str());
+						lua_pushstring(L, getTileTemplate(adjacentTileIndex)->getName().string().c_str());
 					}
 					else
 					{

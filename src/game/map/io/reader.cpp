@@ -10,12 +10,7 @@ namespace game::map::io
 Reader::Reader(Game& game, Map& map) :
 	m_game(game),
 	m_map(map),
-	m_reader(game.mapPath + "/map.gpmap")
-{
-
-}
-
-Reader::~Reader()
+	m_reader(game.mapPath / "map.gpmap")
 {
 
 }

@@ -16,7 +16,7 @@ namespace selection
 class SelectionComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline bool canBeSelected() const { return m_canBeSelected; }
 

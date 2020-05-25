@@ -57,7 +57,7 @@ void Component::debugDraw(debug::DebugDisplay& debugDisplay) const
 }
 #endif
 
-ComponentTemplate* Component::loadConfigFile(Game& game, lua_State* L, const std::string& entityTemplatePath)
+ComponentTemplate* Component::loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath)
 {
 	FLAT_ASSERT_MSG(false, "Missing specialized method T::loadConfigFile()");
 	return nullptr;

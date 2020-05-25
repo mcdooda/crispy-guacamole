@@ -10,7 +10,7 @@ namespace game::entity::component::prop
 class PropComponentTemplate : public ComponentTemplate
 {
 	public:
-		void load(Game& game, lua_State* L, const std::string& entityTemplatePath) override final;
+		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
 		inline int getWidth() const { return m_size.x; }
 		inline int getHeight() const { return m_size.y; }

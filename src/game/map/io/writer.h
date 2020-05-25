@@ -1,23 +1,11 @@
 #ifndef GAME_MAP_IO_WRITER_H
 #define GAME_MAP_IO_WRITER_H
 
-#include <cstdint>
-#include <string>
-#include <fstream>
+#include <flat.h>
 
 namespace game
 {
 class Game;
-
-namespace mod
-{
-class Mod;
-}
-
-namespace entity
-{
-class Entity;
-}
 
 namespace map
 {
@@ -30,53 +18,16 @@ class Writer
 {
 	public:
 		Writer(Game& game, const Map& map);
-		~Writer();
 
 		bool canWrite() const;
-		void write(const std::vector<entity::Entity*>& entities);
-
-	private:
-		void writeHeaders();
-		void writeTiles();
-		void writeEntities(const std::vector<entity::Entity*>& entities);
-		void writeZones();
-
-		template <class T>
-		inline void write(T value);
-
-		std::string getTileTemplateNameFromTexturePath(const std::string& texturePath) const;
+		void write();
 
 	private:
 		Game& m_game;
 		const Map& m_map;
 
-		std::ofstream m_file;
-
-		std::map<const flat::video::Texture*, uint16_t> m_tileTextures;
-		std::map<const flat::video::Texture*, uint16_t> m_propTextures;
+		flat::file::serialize::FileWriter m_writer;
 };
-
-template <class T>
-inline void Writer::write(T value)
-{
-	static_assert(std::is_pod<T>::value, "Generic implementation only for pod types");
-	m_file.write(reinterpret_cast<const char*>(&value), sizeof(T));
-}
-
-template <>
-inline void Writer::write(const std::string& value)
-{
-	uint16_t size = static_cast<uint16_t>(value.size());
-	write<uint16_t>(size);
-	m_file.write(value.data(), size);
-}
-
-template <>
-inline void Writer::write(const flat::Vector2& value)
-{
-	write<float>(value.x);
-	write<float>(value.y);
-}
 
 } // io
 } // map

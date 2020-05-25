@@ -129,7 +129,7 @@ class Entity final : public map::MapObject
 		inline flat::lua::UniqueLuaReference<LUA_TTABLE>& getExtraData() { return m_extraData; }
 
 		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
-		const std::string& getTemplatePath() const;
+		const std::filesystem::path& getTemplatePath() const;
 
 		template <class ComponentType>
 		inline const typename ComponentType::TemplateType* getComponentTemplate() const;

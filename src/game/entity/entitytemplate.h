@@ -19,10 +19,10 @@ class ComponentTemplate;
 class EntityTemplate final
 {
 	public:
-		EntityTemplate(const std::string& path, Game& game, const component::ComponentRegistry& componentRegistry);
+		EntityTemplate(const std::filesystem::path& path, Game& game, const component::ComponentRegistry& componentRegistry);
 		~EntityTemplate();
 
-		inline const std::string& getPath() const { return m_path; }
+		inline const std::filesystem::path& getPath() const { return m_path; }
 
 		inline component::ComponentFlags getComponentFlags() const { return m_componentFlags; }
 
@@ -39,7 +39,7 @@ class EntityTemplate final
 		void loadComponentTemplateSafe(lua_State* L, Game& game, const component::ComponentType& componentType, component::ComponentTemplate*& componentTemplate) const;
 	
 	private:
-		std::string m_path;
+		std::filesystem::path m_path;
 		std::vector<std::unique_ptr<component::ComponentTemplate>> m_componentTemplates;
 		component::ComponentFlags m_componentFlags;
 };

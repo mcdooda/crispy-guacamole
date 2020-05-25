@@ -1,1 +1,1 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/human_windmill/prop')
+return flat.graph.script.run(Mod.getPath() .. '/entities/human/human_windmill/prop')

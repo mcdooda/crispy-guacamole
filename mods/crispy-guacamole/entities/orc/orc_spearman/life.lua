@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/orc_spearman/life'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/orc/orc_spearman/life'

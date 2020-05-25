@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/orc_warrior/detection'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/orc/orc_warrior/detection'

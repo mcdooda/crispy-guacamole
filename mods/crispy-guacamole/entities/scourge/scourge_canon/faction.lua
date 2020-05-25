@@ -1,1 +1,1 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/scourge_canon/faction')
+return flat.graph.script.run(Mod.getPath() .. '/entities/scourge/scourge_canon/faction')

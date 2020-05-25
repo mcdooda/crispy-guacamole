@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/human_sawmill/prop'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human/human_sawmill/prop'

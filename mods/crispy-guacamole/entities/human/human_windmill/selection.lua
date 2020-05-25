@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/human_windmill/selection'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human/human_windmill/selection'

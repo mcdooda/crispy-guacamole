@@ -1,1 +1,1 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/human_windmill/interaction')
+return flat.graph.script.run(Mod.getPath() .. '/entities/human/human_windmill/interaction')

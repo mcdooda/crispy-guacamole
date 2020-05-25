@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/orc_watchtower/interaction'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/orc/orc_watchtower/interaction'

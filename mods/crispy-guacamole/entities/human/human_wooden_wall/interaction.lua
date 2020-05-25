@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/human_wooden_wall/interaction'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/human/human_wooden_wall/interaction'

@@ -1,1 +1,1 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/fx_explosion_orb/sprite')
+return flat.graph.script.run(Mod.getPath() .. '/entities/fx/fx_explosion_orb/sprite')

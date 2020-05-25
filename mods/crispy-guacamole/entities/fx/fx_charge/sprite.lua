@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/fx_charge/sprite'
+return flat.graph.script.run 'mods/crispy-guacamole/entities/fx/fx_charge/sprite'

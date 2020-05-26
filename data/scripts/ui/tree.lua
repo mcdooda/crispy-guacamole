@@ -67,7 +67,7 @@ function Branch:new(name, childs, level)
     nameContainer:setPadding(0,0,0, level * 15)
     nameContainer:setMargin(0)
 
-    state = CLOSED
+    local state = CLOSED
     local iconOpen = Icon:new(state == OPEN and "menuDown" or "menuRight", 12)
     iconOpen.container:setMargin(0,5,0,5)
     local icon = Icon:new(state == OPEN and "folderOpen" or "folderClosed", 12)

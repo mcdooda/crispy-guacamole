@@ -160,15 +160,22 @@ local function tilePreview(tileTemplatePath, tileVariantIndex, loopForever, scal
     return preview
 end
 
-local function propPreview(propName, fileName, scale, showTooltip)
-    local propTexturePath = Path.getPropFilePath(propName, fileName .. '.png')
+local function propPreview(propTemplatePath, scale, showTooltip)
+    local propConfig = Path.requirePropConfig(propTemplatePath)
+    local highestProbabilityTextureName
+    for textureName in pairs(propConfig) do
+        if not highestProbabilityTextureName or propConfig[textureName] > propConfig[highestProbabilityTextureName] then
+            highestProbabilityTextureName = textureName
+        end
+    end
+    local propTexturePath = Path.getPropFilePath(propTemplatePath, highestProbabilityTextureName .. '.png')
     local preview = Widget.makeImage(propTexturePath)
     if scale then
         local w, h = preview:getSize()
         preview:setSize(w * scale, h * scale)
     end
     if showTooltip then
-        flat.ui.addTooltip(preview, propName)
+        flat.ui.addTooltip(preview, propTemplatePath)
     end
     return preview
 end

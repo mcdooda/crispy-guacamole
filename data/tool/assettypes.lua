@@ -66,7 +66,7 @@ flat.tool.asset.addAssetType(
     end,
     function(asset, size, allowSelection)
         local path = asset:getPath()
-        local preview = Preview.prop(path, ModData.props.getHighest(path), 1)
+        local preview = Preview.prop(path, 1)
         preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
         preview:setPosition(0, 10)
         return AssetIcon:new(asset, preview, size, allowSelection)

@@ -63,37 +63,29 @@ local function requireComponentTemplateIfExists(entityTemplatePath, componentTem
 end
 
 -- props
-local function getPropPath(propName)
-    return getModPath() .. '/props/' .. propName
+local function getPropFilePath(propTemplatePath, propFile)
+    return propTemplatePath .. '/' .. propFile
 end
 
-local function getPropFilePath(propName, propFile)
-    return getPropPath(propName) .. '/' .. propFile
+local function requirePropFile(propTemplatePath, propFile)
+    return require(getPropFilePath(propTemplatePath, propFile))
 end
 
-local function requirePropFile(propName, propFile)
-    return require(getPropFilePath(propName, propFile))
-end
-
-local function requirePropConfig(propName)
-    return requirePropFile(propName, 'prop')
+local function requirePropConfig(propTemplatePath)
+    return requirePropFile(propTemplatePath, 'prop')
 end
 
 -- tiles
-local function getTilePath(tileName)
-    return getModPath() .. '/tiles/' .. tileName
+local function getTileFilePath(tileTemplatePath, tileFile)
+    return tileTemplatePath .. '/' .. tileFile
 end
 
-local function getTileFilePath(tileName, tileFile)
-    return getTilePath(tileName) .. '/' .. tileFile
+local function requireTileFile(tileTemplatePath, tileFile)
+    return require(getTileFilePath(tileTemplatePath, tileFile))
 end
 
-local function requireTileFile(tileName, tileFile)
-    return require(getTileFilePath(tileName, tileFile))
-end
-
-local function requireTileConfig(tileName)
-    return requireTileFile(tileName, 'tile')
+local function requireTileConfig(tileTemplatePath)
+    return requireTileFile(tileTemplatePath, 'tile')
 end
 
 return {
@@ -111,12 +103,10 @@ return {
     requireComponentTemplate         = requireComponentTemplate,
     requireComponentTemplateIfExists = requireComponentTemplateIfExists,
 
-    getPropPath                      = getPropPath,
     getPropFilePath                  = getPropFilePath,
     requirePropFile                  = requirePropFile,
     requirePropConfig                = requirePropConfig,
 
-    getTilePath                      = getTilePath,
     getTileFilePath                  = getTileFilePath,
     requireTileFile                  = requireTileFile,
     requireTileConfig                = requireTileConfig

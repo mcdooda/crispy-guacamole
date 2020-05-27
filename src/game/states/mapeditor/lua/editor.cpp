@@ -1,10 +1,10 @@
 #include "editor.h"
-#include "../../../game.h"
-#include "../../mapeditorstate.h"
-#include "../entitymapeditormode.h"
-#include "../propmapeditormode.h"
-#include "../tilemapeditormode.h"
-#include "../zonemapeditormode.h"
+#include "game.h"
+#include "states/mapeditorstate.h"
+#include "states/mapeditor/entitymapeditormode.h"
+#include "states/mapeditor/propmapeditormode.h"
+#include "states/mapeditor/tilemapeditormode.h"
+#include "states/mapeditor/zonemapeditormode.h"
 
 namespace game
 {
@@ -19,22 +19,18 @@ int open(lua_State* L)
 {
 	FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 
-	lua_createtable(L, 0, 6);
+	lua_createtable(L, 0, 9);
 	static const luaL_Reg Editor_lib_m[] = {
-		{"setEntityMode",    l_Editor_setEntityMode},
-		{"setEntity",        l_Editor_setEntity},
+		{"clearSelectedAsset", l_Editor_clearSelectedAsset},
 
-		{"setTileMode",      l_Editor_setTileMode},
-		{"setTile",          l_Editor_setTile},
+		{"setEntity",          l_Editor_setEntity},
+		{"setTile",            l_Editor_setTile},
+		{"setProp",            l_Editor_setProp},
 
-		{"setPropMode",      l_Editor_setPropMode},
-		{"setProp",          l_Editor_setProp},
-
-		{"setZoneMode",      l_Editor_setZoneMode},
-		{"setZone",          l_Editor_setZone},
-		{"addZone",          l_Editor_addZone},
-		{"removeZone",       l_Editor_removeZone},
-		{"getZoneNames",     l_Editor_getZoneNames},
+		{"setZone",            l_Editor_setZone},
+		{"addZone",            l_Editor_addZone},
+		{"removeZone",         l_Editor_removeZone},
+		{"getZoneNames",       l_Editor_getZoneNames},
 
 		{"getBrushPosition", l_Editor_getBrushPosition},
 
@@ -43,6 +39,12 @@ int open(lua_State* L)
 	luaL_setfuncs(L, Editor_lib_m, 0);
 	lua_setglobal(L, "Editor");
 
+	return 0;
+}
+
+int l_Editor_clearSelectedAsset(lua_State* L)
+{
+	clearEditorMode(L);
 	return 0;
 }
 
@@ -55,7 +57,7 @@ int l_Editor_setEntityMode(lua_State* L)
 int l_Editor_setEntity(lua_State* L)
 {
 	const char* entityTemplateName = luaL_checkstring(L, 1);
-	editor::EntityMapEditorMode& entityEditorMode = getEditorMode(L).to<editor::EntityMapEditorMode>();
+	editor::EntityMapEditorMode& entityEditorMode = setEditorMode<editor::EntityMapEditorMode>(L);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::MapEditorState& mapEditorState = getEditorState(L);
 	std::shared_ptr<const entity::EntityTemplate> entityTemplate = mapEditorState.getEntityTemplate(game, entityTemplateName);
@@ -63,50 +65,32 @@ int l_Editor_setEntity(lua_State* L)
 	return 0;
 }
 
-int l_Editor_setTileMode(lua_State* L)
-{
-	setEditorMode<editor::TileMapEditorMode>(L);
-	return 0;
-}
-
 int l_Editor_setTile(lua_State* L)
 {
-	const char* tileTemplateName = luaL_checkstring(L, 1);
-	editor::TileMapEditorMode& tileEditorMode = getEditorMode(L).to<editor::TileMapEditorMode>();
+	const char* tileTemplatePath = luaL_checkstring(L, 1);
+	editor::TileMapEditorMode& tileEditorMode = setEditorMode<editor::TileMapEditorMode>(L);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::MapEditorState& editorState = getEditorState(L);
-	std::shared_ptr<const map::TileTemplate> tileTemplate = editorState.getTileTemplate(game, tileTemplateName);
+	std::shared_ptr<const map::TileTemplate> tileTemplate = editorState.getTileTemplate(game, tileTemplatePath);
 	tileEditorMode.setTileTemplate(tileTemplate);
-	return 0;
-}
-
-int l_Editor_setPropMode(lua_State* L)
-{
-	setEditorMode<editor::PropMapEditorMode>(L);
 	return 0;
 }
 
 int l_Editor_setProp(lua_State* L)
 {
-	const char* propTemplateName = luaL_checkstring(L, 1);
-	editor::PropMapEditorMode& propEditorMode = getEditorMode(L).to<editor::PropMapEditorMode>();
+	const char* propTemplatePath = luaL_checkstring(L, 1);
+	editor::PropMapEditorMode& propEditorMode = setEditorMode<editor::PropMapEditorMode>(L);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	states::MapEditorState& editorState = getEditorState(L);
-	std::shared_ptr<const map::PropTemplate> propTemplate = editorState.getPropTemplate(game, propTemplateName);
+	std::shared_ptr<const map::PropTemplate> propTemplate = editorState.getPropTemplate(game, propTemplatePath);
 	propEditorMode.setPropTemplate(propTemplate);
-	return 0;
-}
-
-int l_Editor_setZoneMode(lua_State* L)
-{
-	setEditorMode<editor::ZoneMapEditorMode>(L);
 	return 0;
 }
 
 int l_Editor_setZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
-	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
+	editor::ZoneMapEditorMode& zoneEditorMode = setEditorMode<editor::ZoneMapEditorMode>(L);
 	states::MapEditorState& mapEditorState = getEditorState(L);
 	const map::Map& map = mapEditorState.getMap();
 	std::shared_ptr<map::Zone> zone;
@@ -125,7 +109,7 @@ int l_Editor_setZone(lua_State* L)
 int l_Editor_addZone(lua_State* L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
-	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
+	editor::ZoneMapEditorMode& zoneEditorMode = setEditorMode<editor::ZoneMapEditorMode>(L);
 	states::MapEditorState& mapEditorState = getEditorState(L);
 	zoneEditorMode.addZone(mapEditorState, zoneName);
 	return 0;
@@ -134,7 +118,7 @@ int l_Editor_addZone(lua_State* L)
 int l_Editor_removeZone(lua_State * L)
 {
 	const char* zoneName = luaL_checkstring(L, 1);
-	editor::ZoneMapEditorMode& zoneEditorMode = getEditorMode(L).to<editor::ZoneMapEditorMode>();
+	editor::ZoneMapEditorMode& zoneEditorMode = setEditorMode<editor::ZoneMapEditorMode>(L);
 	states::MapEditorState& mapEditorState = getEditorState(L);
 	zoneEditorMode.removeZone(mapEditorState, zoneName);
 	return 0;
@@ -181,6 +165,12 @@ states::MapEditorState& getEditorState(lua_State* L)
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	flat::state::State* state = game.getStateMachine().getState();
 	return state->as<states::MapEditorState>();
+}
+
+void clearEditorMode(lua_State* L)
+{
+	states::MapEditorState& editorState = getEditorState(L);
+	editorState.clearEditorMode();
 }
 
 editor::MapEditorMode& getEditorMode(lua_State* L)

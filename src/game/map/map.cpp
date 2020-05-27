@@ -54,11 +54,11 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 		(
 			const flat::Vector2i& tilePosition,
 			const io::MapFile::Tile& tile,
-			const std::filesystem::path& tileTemplateName,
+			const std::filesystem::path& tileTemplatePath,
 			const std::filesystem::path* propTemplateName
 		)
 	{
-		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplateName);
+		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplatePath);
 		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
 		if (propTemplateName != nullptr)
 		{
@@ -985,7 +985,8 @@ void Map::updateTileTexture(Game& game, TileIndex tileIndex)
 					map::TileIndex adjacentTileIndex = getTileIndex(xy.x + dx, xy.y + dy);
 					if (isValidTile(adjacentTileIndex))
 					{
-						lua_pushstring(L, getTileTemplate(adjacentTileIndex)->getName().string().c_str());
+						const std::shared_ptr<const TileTemplate> tileTemplate = getTileTemplate(adjacentTileIndex);
+						lua_pushstring(L, tileTemplate->getName().string().c_str());
 					}
 					else
 					{

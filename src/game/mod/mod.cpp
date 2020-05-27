@@ -32,16 +32,6 @@ std::filesystem::path Mod::getTextureRelativePath(const std::filesystem::path& a
 	return absolutePath.parent_path().stem() / absolutePath.filename();
 }
 
-std::filesystem::path Mod::getTileTemplatePath(const std::filesystem::path& tileTemplateName) const
-{
-	return m_path / "tiles" / tileTemplateName; // path to a directory
-}
-
-std::filesystem::path Mod::getPropTemplatePath(const std::filesystem::path& propTemplateName) const
-{
-	return m_path / "props" / propTemplateName; // path to a directory
-}
-
 std::filesystem::path Mod::getFactionsConfigPath() const
 {
 	return m_path / "factions.lua";

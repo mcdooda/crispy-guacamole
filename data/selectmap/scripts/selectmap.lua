@@ -17,13 +17,16 @@ local function getModDirectories()
     return mods
 end
 
+local columnWidth = 302
+local columnMargin = 24
+
 local boxContainer = Widget.makeLineFlow()
 boxContainer:setPositionPolicy(Widget.PositionPolicy.CENTER)
 boxContainer:setSizePolicy(Widget.SizePolicy.COMPRESS_X + Widget.SizePolicy.EXPAND_Y)
-boxContainer:setMargin(20)
+boxContainer:setMargin(columnMargin)
 
 local function addSpacer()
-    local spacer = Widget.makeFixedSize(20, 1)
+    local spacer = Widget.makeFixedSize(columnMargin, 1)
     boxContainer:addChild(spacer)
 end
 
@@ -46,7 +49,7 @@ do
     local box = Widget.makeColumnFlow()
     box:setBackgroundColor(0x666666FF)
     box:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
-    box:setSize(300, 0)
+    box:setSize(columnWidth, 0)
 
     do
         local browserContainer = Widget.makeColumnFlow()
@@ -73,7 +76,7 @@ local function addCompoundColumn(nodeType, columnName, directories)
     local box = Widget.makeColumnFlow()
     box:setBackgroundColor(0x666666FF)
     box:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.EXPAND_Y)
-    box:setSize(300, 0)
+    box:setSize(columnWidth, 0)
 
     do
         local compoundsTitleLine = Widget.makeLineFlow()

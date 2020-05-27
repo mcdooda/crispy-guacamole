@@ -279,9 +279,9 @@ int l_Map_moveTileZBy(lua_State* L)
 int l_Map_setTileTemplate(lua_State* L)
 {
 	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
-	const std::string tileTemplateName = luaL_checkstring(L, 2);
+	const std::string tileTemplatePath = luaL_checkstring(L, 2);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	std::shared_ptr<const game::map::TileTemplate> tileTemplate = getMapState(L).getTileTemplate(game, tileTemplateName);
+	std::shared_ptr<const game::map::TileTemplate> tileTemplate = getMapState(L).getTileTemplate(game, tileTemplatePath);
 	Map& map = getMap(L);
 	map.setTileTemplate(tileIndex, tileTemplate);
 	return 0;

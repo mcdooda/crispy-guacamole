@@ -8,10 +8,9 @@ namespace game
 namespace map
 {
 
-TileTemplate::TileTemplate(const std::filesystem::path& name, Game& game) :
-	m_name(name)
+TileTemplate::TileTemplate(const std::filesystem::path& path, Game& game) :
+	m_path(path)
 {
-	std::filesystem::path path = game.mod.getTileTemplatePath(name);
 	m_texture = game.video->getTexture(path / "atlas.png");
 	loadTileConfig(game, path);
 }

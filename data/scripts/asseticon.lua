@@ -2,7 +2,6 @@ local UiSettings = require 'data/scripts/ui/uisettings'
 
 local AssetIcon = {}
 AssetIcon.__index = AssetIcon
-AssetIcon.selectedIcons = {}
 
 local function makeAssetIconWidget(asset, preview, size, allowSelection)
     local assetIcon = Widget.makeFixedSize(size, size)
@@ -39,8 +38,8 @@ local function makeAssetIconWidget(asset, preview, size, allowSelection)
         assetIcon:addChild(previewContainer)
     end
 
+    local isSelected = false
     if allowSelection then
-        local isSelected = false
 
         assetIcon:click(function()
             if isSelected then
@@ -78,30 +77,12 @@ end
 function AssetIcon:setSelected(selected, addToSelection)
     if self.selected ~= selected then
         self.selected = selected
-
-        local selectedIcons = getmetatable(self).selectedIcons
-        if selected then
-            if not addToSelection then
-                self:clearSelection()
-            end
-            flat.arrayAdd(selectedIcons, self)
-            self.container:setBackgroundColor(0xF39C12FF)
-        else
-            flat.arrayRemoveValueCyclic(selectedIcons, self)
-            self.container:setBackgroundColor(0)
-        end
+        self.container:setBackgroundColor(selected and 0xF39C12FF or 0)
     end
 end
 
 function AssetIcon:isSelected()
     return self.selected
-end
-
-function AssetIcon:clearSelection()
-    local selectedIcons = getmetatable(self).selectedIcons
-    for i = 1, #selectedIcons do
-        selectedIcons[i]:setSelected(false)
-    end
 end
 
 return AssetIcon

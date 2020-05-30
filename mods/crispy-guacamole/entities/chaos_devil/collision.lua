@@ -1,1 +1,0 @@
-return flat.graph.script.run(Mod.getPath() .. '/entities/chaos_devil/collision')

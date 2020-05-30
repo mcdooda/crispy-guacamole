@@ -32,7 +32,7 @@ void Game::setStates()
 
 		case Mode::GAME:
 		{
-			if (mod.getPath().empty() || mapName.empty())
+			if (mod.getPath().empty() || mapPath.empty())
 			{
 				wrongArguments();
 			}
@@ -43,7 +43,7 @@ void Game::setStates()
 		
 		case Mode::MAPEDITOR:
 		{
-			if (mod.getPath().empty() || mapName.empty())
+			if (mod.getPath().empty() || mapPath.empty())
 			{
 				wrongArguments();
 			}
@@ -54,7 +54,7 @@ void Game::setStates()
 
 		case Mode::ENTITYEDITOR:
 		{
-			if (mod.getPath().empty() || mapName.empty() || entityName.empty())
+			if (mod.getPath().empty() || mapPath.empty() || entityPath.empty())
 			{
 				wrongArguments();
 			}
@@ -88,20 +88,20 @@ void Game::checkArgs()
 					case 'g':
 					mode = Mode::GAME;
 					mod.setPath(argGetString(++i));
-					mapName = argGetString(++i);
+					mapPath = argGetString(++i);
 					break;
 					
 					case 'm':
 					mode = Mode::MAPEDITOR;
 					mod.setPath(argGetString(++i));
-					mapName = argGetString(++i);
+					mapPath = argGetString(++i);
 					break;
 
 					case 'e':
 					mode = Mode::ENTITYEDITOR;
 					mod.setPath(argGetString(++i));
-					mapName = argGetString(++i);
-					entityName = argGetString(++i);
+					mapPath = argGetString(++i);
+					entityPath = argGetString(++i);
 					break;
 
 					case 'o':

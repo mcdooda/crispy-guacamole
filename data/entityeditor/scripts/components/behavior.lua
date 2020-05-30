@@ -1,7 +1,7 @@
 local UiSettings = require 'data/scripts/ui/uisettings'
 local Icon = require 'data/scripts/ui/icon'
 
-return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
+return function(componentDetailsPanel, entityTemplatePath, componentTemplate, getEntity)
     local states = {}
     local events = {}
 

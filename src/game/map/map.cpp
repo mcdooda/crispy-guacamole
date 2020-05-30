@@ -54,11 +54,11 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 		(
 			const flat::Vector2i& tilePosition,
 			const io::MapFile::Tile& tile,
-			const std::filesystem::path& tileTemplateName,
+			const std::filesystem::path& tileTemplatePath,
 			const std::filesystem::path* propTemplateName
 		)
 	{
-		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplateName);
+		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplatePath);
 		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
 		if (propTemplateName != nullptr)
 		{
@@ -72,9 +72,9 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 	// entities
 	std::vector<std::shared_ptr<const entity::EntityTemplate>> entityTemplates;
 	entityTemplates.reserve(mapFile.getEntityTemplates().size());
-	for (const std::string& entityTemplateName : mapFile.getEntityTemplates())
+	for (const std::filesystem::path& entityTemplatePath : mapFile.getEntityTemplates())
 	{
-		const std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(game, entityTemplateName);
+		const std::shared_ptr<const entity::EntityTemplate> entityTemplate = baseMapState.getEntityTemplate(game, entityTemplatePath);
 		entityTemplates.push_back(entityTemplate);
 	}
 
@@ -90,7 +90,7 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 		}
 		else
 		{
-			std::cerr << "Entity '" << entityTemplate->getName() << "' does not exist anymore" << std::endl;
+			std::cerr << "Entity '" << entityTemplate->getPath() << "' does not exist anymore" << std::endl;
 		}
 	}
 
@@ -152,7 +152,7 @@ void Map::getState(Game& game, io::MapFile& mapFile) const
 	// entities
 	for (entity::Entity* entity : baseMapState.getEntityUpdater().getEntities())
 	{
-		mapFile.addEntity(entity->getPosition2d(), entity->getTemplateName());
+		mapFile.addEntity(entity->getPosition2d(), entity->getTemplatePath());
 	}
 
 	// zones
@@ -985,7 +985,8 @@ void Map::updateTileTexture(Game& game, TileIndex tileIndex)
 					map::TileIndex adjacentTileIndex = getTileIndex(xy.x + dx, xy.y + dy);
 					if (isValidTile(adjacentTileIndex))
 					{
-						lua_pushstring(L, getTileTemplate(adjacentTileIndex)->getName().string().c_str());
+						const std::shared_ptr<const TileTemplate> tileTemplate = getTileTemplate(adjacentTileIndex);
+						lua_pushstring(L, tileTemplate->getName().string().c_str());
 					}
 					else
 					{

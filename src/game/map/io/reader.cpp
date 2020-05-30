@@ -10,7 +10,7 @@ namespace game::map::io
 Reader::Reader(Game& game, Map& map) :
 	m_game(game),
 	m_map(map),
-	m_reader(game.mod.getMapFilePath(game.mapName, "map.gpmap").string())
+	m_reader(game.mapPath / "map.gpmap")
 {
 
 }

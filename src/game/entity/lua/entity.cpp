@@ -45,7 +45,7 @@ int open(Game& game)
 		{"isValid",                  l_Entity_isValid},
 		{"delete",                   l_Entity_delete},
 
-		{"getTemplateName",          l_Entity_getTemplateName},
+		{"getTemplatePath",          l_Entity_getTemplatePath},
 		{"hasComponent",             l_Entity_hasComponent},
 		{"decComponentDisableLevel", l_Entity_decComponentDisableLevel},
 		{"incComponentDisableLevel", l_Entity_incComponentDisableLevel},
@@ -207,7 +207,7 @@ int l_Entity_eq(lua_State* L)
 int l_Entity_tostring(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	lua_pushfstring(L, "Entity %s#%d", entity.getTemplateName().c_str(), entity.getId());
+	lua_pushfstring(L, "Entity %s#%d", entity.getTemplatePath().c_str(), entity.getId());
 	return 1;
 }
 
@@ -225,10 +225,10 @@ int l_Entity_delete(lua_State* L)
 	return 0;
 }
 
-int l_Entity_getTemplateName(lua_State* L)
+int l_Entity_getTemplatePath(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	lua_pushstring(L, entity.getTemplateName().c_str());
+	lua_pushstring(L, entity.getTemplatePath().string().c_str());
 	return 1;
 }
 
@@ -790,7 +790,7 @@ int l_Entity_setCycleAnimation(lua_State* L)
 	bool animationExists = spriteComponent.setCycleAnimationByName(animationName);
 	if (!animationExists)
 	{
-		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
+		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().c_str(), animationName);
 	}
 	return 0;
 }
@@ -830,7 +830,7 @@ int l_Entity_playAnimation(lua_State* L)
 	bool animationExists = spriteComponent.playAnimationByName(animationName, numLoops, !yield);
 	if (!animationExists)
 	{
-		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
+		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().c_str(), animationName);
 	}
 	return locYieldIf(L, yield, 0);
 }

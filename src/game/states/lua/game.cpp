@@ -167,10 +167,10 @@ int l_game_debug_setVolume(lua_State* L)
 int l_game_openMap(lua_State* L)
 {
 	const char* modPath = luaL_checkstring(L, 1);
-	const char* mapName = luaL_checkstring(L, 2);
+	const char* mapPath = luaL_checkstring(L, 2);
 	Game& game = flat::lua::getFlatAs<Game>(L);
 	game.mod.setPath(modPath);
-	game.mapName = mapName;
+	game.mapPath = mapPath;
 	std::unique_ptr<GameState> gameState = std::make_unique<GameState>();
 	game.getStateMachine().setNextState(std::move(gameState));
 	return 1;

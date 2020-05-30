@@ -36,6 +36,7 @@ class MapEditorState : public BaseMapState, public flat::state::Agent
 
 		editor::MapEditorMode* getEditorMode();
 		void setEditorMode(std::unique_ptr<editor::MapEditorMode>&& editorMode);
+		void clearEditorMode();
 
 		void draw(game::Game& game) override;
 

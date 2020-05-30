@@ -43,7 +43,7 @@ void EntityEditorState::execute(Game& game)
 void EntityEditorState::spawnEntity(Game& game)
 {
 	// spawn the edited entity at the center of the Start zone
-	std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, game.entityName);
+	std::shared_ptr<const entity::EntityTemplate> entityTemplate = getEntityTemplate(game, game.entityPath);
 	const map::Map& map = getMap();
 	std::shared_ptr<map::Zone> zone;
 	map.getZone("Start", zone);

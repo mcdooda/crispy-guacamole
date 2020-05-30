@@ -12,7 +12,7 @@ namespace io
 Writer::Writer(Game& game, const Map& map) :
 	m_game(game),
 	m_map(map),
-	m_writer(game.mod.getMapFilePath(game.mapName, "map.gpmap").string())
+	m_writer((game.mapPath / "map.gpmap").string())
 {
 
 }

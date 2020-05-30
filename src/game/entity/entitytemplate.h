@@ -19,12 +19,12 @@ class ComponentTemplate;
 class EntityTemplate final
 {
 	public:
-		EntityTemplate(const std::string& name, Game& game, const component::ComponentRegistry& componentRegistry, const std::filesystem::path &path);
+		EntityTemplate(const std::filesystem::path& path, Game& game, const component::ComponentRegistry& componentRegistry);
 		~EntityTemplate();
 
-		inline component::ComponentFlags getComponentFlags() const { return m_componentFlags; }
+		inline const std::filesystem::path& getPath() const { return m_path; }
 
-		inline const std::string& getName() const { return m_name; }
+		inline component::ComponentFlags getComponentFlags() const { return m_componentFlags; }
 
 		template <class ComponentType>
 		inline const typename ComponentType::TemplateType* getComponentTemplate() const;
@@ -40,7 +40,6 @@ class EntityTemplate final
 	
 	private:
 		std::filesystem::path m_path;
-		std::string m_name;
 		std::vector<std::unique_ptr<component::ComponentTemplate>> m_componentTemplates;
 		component::ComponentFlags m_componentFlags;
 };
@@ -50,7 +49,8 @@ class EntityTemplate final
 template<class ComponentType>
 inline const typename ComponentType::TemplateType* EntityTemplate::getComponentTemplate() const
 {
-	typename component::ComponentTemplate* componentTemplate = m_componentTemplates.at(ComponentType::getId() - 1).get();
+	const std::uint8_t componentTemplateIndex = ComponentType::getId() - 1;
+	typename component::ComponentTemplate* componentTemplate = m_componentTemplates.at(componentTemplateIndex).get();
 	if (componentTemplate == nullptr)
 	{
 		return nullptr;

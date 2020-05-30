@@ -1,7 +1,7 @@
 local Path = require 'data/scripts/path'
 
-local function get(entityTemplateName)
-    return Path.requireComponentTemplateIfExists(entityTemplateName, 'data')
+local function get(entityTemplatePath)
+    return Path.requireComponentTemplateIfExists(entityTemplatePath, 'data')
 end
 
 return {

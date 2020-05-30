@@ -75,7 +75,7 @@ return {
     'entity/directionalsprite',
 
     -- entity
-    'entity/gettemplatename',
+    'entity/gettemplatepath',
 
     'entity/spawnentity',
     'entity/despawnentity',

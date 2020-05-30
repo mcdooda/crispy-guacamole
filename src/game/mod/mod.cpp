@@ -28,27 +28,8 @@ std::filesystem::path Mod::getTexturePath(const std::filesystem::path& fileName)
 
 std::filesystem::path Mod::getTextureRelativePath(const std::filesystem::path& absolutePath) const
 {
+	// TODO fix using the appropriate path function
 	return absolutePath.parent_path().stem() / absolutePath.filename();
-}
-
-std::filesystem::path Mod::getMapFilePath(const std::filesystem::path& mapName, const std::filesystem::path& fileName) const
-{
-	return m_path / "maps" / mapName / fileName;
-}
-
-std::filesystem::path Mod::getEntityTemplatePath(const std::filesystem::path& entityTemplateName) const
-{
-	return m_path / "entities" / entityTemplateName; // path to a directory
-}
-
-std::filesystem::path Mod::getTileTemplatePath(const std::filesystem::path& tileTemplateName) const
-{
-	return m_path / "tiles" / tileTemplateName; // path to a directory
-}
-
-std::filesystem::path Mod::getPropTemplatePath(const std::filesystem::path& propTemplateName) const
-{
-	return m_path / "props" / propTemplateName; // path to a directory
 }
 
 std::filesystem::path Mod::getFactionsConfigPath() const

@@ -169,14 +169,14 @@ void MapFile::addTile(const flat::Vector2i& tilePosition, float z, const std::fi
 	}
 }
 
-void MapFile::addEntity(const flat::Vector2& position, const std::string& entityTemplateName)
+void MapFile::addEntity(const flat::Vector2& position, const std::filesystem::path& entityTemplatePath)
 {
 	std::uint16_t entityTemplateIndex = 0;
-	std::vector<std::string>::iterator it = std::find(m_entityTemplates.begin(), m_entityTemplates.end(), entityTemplateName);
+	std::vector<std::filesystem::path>::iterator it = std::find(m_entityTemplates.begin(), m_entityTemplates.end(), entityTemplatePath);
 	if (it == m_entityTemplates.end())
 	{
 		entityTemplateIndex = static_cast<std::uint16_t>(m_entityTemplates.size());
-		m_entityTemplates.push_back(entityTemplateName);
+		m_entityTemplates.push_back(entityTemplatePath);
 	}
 	else
 	{

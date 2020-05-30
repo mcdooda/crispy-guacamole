@@ -48,7 +48,7 @@ void BehaviorRuntime::enterState(const char* stateName)
 		lua_getfield(L, -1, stateName);
 		if (lua_isnil(L, -1))
 		{
-			luaL_error(L, "'%s' has no '%s' state", m_entity->getTemplateName().c_str(), stateName);
+			luaL_error(L, "'%s' has no '%s' state", m_entity->getTemplatePath().c_str(), stateName);
 		}
 
 		luaL_checktype(L, -1, LUA_TFUNCTION);
@@ -130,7 +130,7 @@ void BehaviorRuntime::updateCurrentState()
 				if (lua_isnil(L, -1))
 				{
 					FLAT_CONSOLE_COLOR(LIGHT_RED);
-					std::cerr << "Entity '" << m_entity->getTemplateName() << "' has no '" << stateName << "' state"  << std::endl;
+					std::cerr << "Entity '" << m_entity->getTemplatePath() << "' has no '" << stateName << "' state"  << std::endl;
 				}
 				else
 				{
@@ -150,7 +150,7 @@ void BehaviorRuntime::updateCurrentState()
 			else
 			{
 				FLAT_CONSOLE_COLOR(LIGHT_RED);
-				std::cerr << "Entity '" << m_entity->getTemplateName() << "' behavior thread returned an invalid value '" << lua_tostring(L, -1) << "'" << std::endl;
+				std::cerr << "Entity '" << m_entity->getTemplatePath() << "' behavior thread returned an invalid value '" << lua_tostring(L, -1) << "'" << std::endl;
 			}
 		}
 

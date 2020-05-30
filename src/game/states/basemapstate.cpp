@@ -316,20 +316,55 @@ const entity::faction::Faction* BaseMapState::getFactionByName(const std::string
 	return &it->second;
 }
 
-std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::filesystem::path& entityTemplateName) const
+std::shared_ptr<const entity::EntityTemplate> BaseMapState::getEntityTemplate(game::Game& game, const std::filesystem::path& entityTemplatePath) const
 {
-	const std::filesystem::path entityTemplatePath = game.mod.getEntityTemplatePath(entityTemplateName);
-	return m_entityTemplateManager.getResource(entityTemplateName.string(), game, m_componentRegistry, entityTemplatePath.string());
+	const flat::tool::Asset* asset = nullptr;
+	if (findAssetForBackwardCompatibility(game, "entity", entityTemplatePath, asset))
+	{
+		if (asset != nullptr)
+		{
+			return m_entityTemplateManager.getResource(asset->getPath().string(), game, m_componentRegistry);
+		}
+		else
+		{
+			// will return an empty entity template
+			return m_entityTemplateManager.getResource(entityTemplatePath.string(), game, m_componentRegistry);
+		}
+	}
+	return m_entityTemplateManager.getResource(entityTemplatePath.string(), game, m_componentRegistry);
 }
 
-std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::filesystem::path& tileTemplateName) const
+std::shared_ptr<const map::TileTemplate> BaseMapState::getTileTemplate(game::Game& game, const std::filesystem::path& tileTemplatePath) const
 {
-	return m_tileTemplateManager.getResource(tileTemplateName.string(), game);
+	const flat::tool::Asset* asset = nullptr;
+	if (findAssetForBackwardCompatibility(game, "tile", tileTemplatePath, asset))
+	{
+		if (asset != nullptr)
+		{
+			return m_tileTemplateManager.getResource(asset->getPath().string(), game);
+		}
+		else
+		{
+			return m_tileTemplateManager.getResource(tileTemplatePath.string(), game);
+		}
+	}
+	return m_tileTemplateManager.getResource(tileTemplatePath.string(), game);
 }
 
-std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::filesystem::path& propTemplateName) const
+std::shared_ptr<const map::PropTemplate> BaseMapState::getPropTemplate(game::Game& game, const std::filesystem::path& propTemplatePath) const
 {
-	const std::filesystem::path propTemplatePath = game.mod.getPropTemplatePath(propTemplateName);
+	const flat::tool::Asset* asset = nullptr;
+	if (findAssetForBackwardCompatibility(game, "prop", propTemplatePath, asset))
+	{
+		if (asset != nullptr)
+		{
+			return m_propTemplateManager.getResource(asset->getPath().string(), game);
+		}
+		else
+		{
+			return m_propTemplateManager.getResource(propTemplatePath.string(), game);
+		}
+	}
 	return m_propTemplateManager.getResource(propTemplatePath.string(), game);
 }
 
@@ -375,7 +410,7 @@ entity::Entity* BaseMapState::spawnEntityAtPosition(
 	if (!addEntityToMap(entity))
 	{
 		destroyEntity(entity);
-		game.notify->warn(std::string("Cannot spawn entity ") + entityTemplate->getName());
+		game.notify->warn(std::string("Cannot spawn entity ") + entityTemplate->getPath().string());
 		return nullptr;
 	}
 
@@ -650,7 +685,6 @@ void BaseMapState::initLua(Game& game)
 
 		entity::component::lua::open(L, m_componentRegistry);
 		entity::faction::lua::open(L, game.mod.getFactionsConfigPath());
-		map::lua::map::open(L);
 		editor::lua::open(L);
 
 		flat::lua::doFile(L, "data/common/init.lua");
@@ -1046,6 +1080,23 @@ bool BaseMapState::forceEntitySelection(Game& game) const
 #else
 	return false;
 #endif
+}
+
+bool BaseMapState::findAssetForBackwardCompatibility(
+	Game& game,
+	const std::string& assetType,
+	const std::filesystem::path& path,
+	const flat::tool::Asset*& asset) const
+{
+	asset = nullptr;
+	const std::string pathAsString = path.string();
+	if (pathAsString.find('/') == std::string::npos
+		&& pathAsString.find('\\') == std::string::npos)
+	{
+		asset = game.assetRepository->findAssetFromName(assetType, pathAsString);
+		return true;
+	}
+	return false;
 }
 
 int BaseMapState::addSelectionChangedCallback(lua_State* L, int index)

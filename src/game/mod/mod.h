@@ -20,10 +20,6 @@ class Mod final
 		std::filesystem::path getScriptPath(const std::filesystem::path& fileName) const;
 		std::filesystem::path getTexturePath(const std::filesystem::path& fileName) const;
 		std::filesystem::path getTextureRelativePath(const std::filesystem::path& absolutePath) const;
-		std::filesystem::path getMapFilePath(const std::filesystem::path& mapName, const std::filesystem::path& fileName) const;
-		std::filesystem::path getEntityTemplatePath(const std::filesystem::path& entityTemplateName) const;
-		std::filesystem::path getTileTemplatePath(const std::filesystem::path& tileTemplateName) const;
-		std::filesystem::path getPropTemplatePath(const std::filesystem::path& propTemplateName) const;
 		std::filesystem::path getFactionsConfigPath() const;
 		std::filesystem::path getSamplePath(const std::filesystem::path& sampleName) const;
 

@@ -35,7 +35,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		void deinit() override;
 
 		void update(float currentTime, float elapsedTime) override;
-		
+
 		bool isBusy() const override;
 
 		void setCycleAnimation(const AnimationDescription& animationDescription);
@@ -44,9 +44,11 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 
 		void setCycleAnimated(bool isCycleAnimated);
 		void resetCycleAnimation();
-		
+
 		void playAnimation(const AnimationDescription& animationDescription, int numLoops = flat::render::AnimatedSprite::INFINITE_LOOP, bool preventBusy = true);
 		bool playAnimationByName(const std::string& animationName, int numLoops, bool preventBusy);
+
+		bool setAnimationProgress(const std::string& animationName, float value);
 
 		bool getAttachPoint(const std::string& attachPointName, flat::Vector3& attachPoint) const;
 
@@ -55,9 +57,9 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 
 		void attachSprite(const flat::render::Sprite& otherSprite);
 		void pushAttachedSprites(std::vector<const map::MapObject*>& objects) const;
-		
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
-		
+
 	private:
 		bool selected();
 		bool deselected();
@@ -68,7 +70,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool updateSpritePosition(const flat::Vector3& position);
 
 		void updateAttachedSprites();
-		
+
 	private:
 		flat::render::AnimatedSprite m_sprite;
 		std::vector<AttachedSprite> m_attachedSprites;

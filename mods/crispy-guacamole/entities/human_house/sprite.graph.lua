@@ -238,7 +238,7 @@ return {
     },
     {
       loadArguments = {
-        2,
+        3,
       },
       name = 'number',
     },
@@ -265,13 +265,13 @@ return {
     },
     {
       loadArguments = {
-        3,
+        2,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        4,
       },
       name = 'number',
     },

@@ -1,4 +1,5 @@
 local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
+local Building = require 'data/scripts/building'
 
 local yield = coroutine.yield
 
@@ -6,7 +7,7 @@ local function basicBuilding()
 	local states = {}
 
 	local function init(building)
-		building:setCycleAnimation 'stand'
+		building:setCycleAnimation('stand')
 	end
 
 	function states:init(building)
@@ -16,9 +17,9 @@ local function basicBuilding()
 	end
 
 	function states:under_construction(building)
-		building:setCycleAnimation 'build'
+		building:clearCycleAnimation()
 		building:setInteractionState 'build'
-		building:setHealth(1)
+		Building.start_construction(building)
 		local extraData = building:getExtraData()
 		extraData.buildingInProgress = true
 		while building:getHealth() < building:getMaxHealth() do

@@ -121,6 +121,7 @@ int open(Game& game)
 		{"setCycleAnimated",         l_Entity_setCycleAnimated},
 		{"resetCycleAnimation",      l_Entity_resetCycleAnimation},
 		{"playAnimation",            l_Entity_playAnimation},
+		{"setAnimationProgress",       l_Entity_setAnimationProgress},
 		{"getAttachPoint",           l_Entity_getAttachPoint},
 		{"flipSpriteX",              l_Entity_flipSpriteX},
 		{"setSpriteRotation",        l_Entity_setSpriteRotation},
@@ -833,6 +834,20 @@ int l_Entity_playAnimation(lua_State* L)
 		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
 	}
 	return locYieldIf(L, yield, 0);
+}
+
+int l_Entity_setAnimationProgress(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const char* animationName = luaL_checkstring(L, 2);
+	const float value = static_cast<float>(luaL_checknumber(L, 3));
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
+	const bool animationExists = spriteComponent.setAnimationProgress(animationName, value);
+	if (!animationExists)
+	{
+		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
+	}
+	return 0;
 }
 
 int l_Entity_getAttachPoint(lua_State* L)

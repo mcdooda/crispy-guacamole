@@ -96,6 +96,7 @@ int l_Entity_clearCycleAnimation(lua_State* L);
 int l_Entity_setCycleAnimated(lua_State* L);
 int l_Entity_resetCycleAnimation(lua_State* L);
 int l_Entity_playAnimation(lua_State* L);
+int l_Entity_setAnimationProgress(lua_State* L);
 int l_Entity_getAttachPoint(lua_State* L);
 int l_Entity_flipSpriteX(lua_State* L);
 int l_Entity_setSpriteRotation(lua_State* L);

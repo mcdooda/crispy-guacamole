@@ -845,7 +845,7 @@ int l_Entity_setAnimationProgress(lua_State* L)
 	const bool animationExists = spriteComponent.setAnimationProgress(animationName, value);
 	if (!animationExists)
 	{
-		luaL_error(L, "%s has no %s animation", entity.getTemplateName().c_str(), animationName);
+		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().c_str(), animationName);
 	}
 	return 0;
 }

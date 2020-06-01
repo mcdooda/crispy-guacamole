@@ -189,7 +189,7 @@ bool SpriteComponent::setAnimationProgress(const std::string& animationName, flo
 
 		m_sprite.setLine(animationDescription->getLine());
 		const float column = animationDescription->getNumFrames() * value;
-		m_sprite.setColumn(column);
+		m_sprite.setColumn(static_cast<int>(column));
 		m_currentAnimationDescription = animationDescription;
 		m_preventBusy = false;
 		m_sprite.setAnimated(false);

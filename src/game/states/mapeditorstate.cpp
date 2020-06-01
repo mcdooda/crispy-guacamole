@@ -31,8 +31,6 @@ void MapEditorState::enter(Game& game)
 	}
 #endif
 
-	getStateMachine().setState(std::make_unique<editor::TileMapEditorMode>(game));
-
 	game.lua->doFile("data/editor/scripts/init.lua");
 }
 
@@ -72,17 +70,23 @@ void MapEditorState::setEditorMode(std::unique_ptr<editor::MapEditorMode>&& edit
 	getStateMachine().setState(std::move(editorMode));
 }
 
+void MapEditorState::clearEditorMode()
+{
+	getStateMachine().setState(nullptr);
+}
+
 void MapEditorState::draw(game::Game& game)
 {
 	const bool mouseOverUi = isMouseOverUi(game);
-	if (!mouseOverUi)
+	editor::MapEditorMode* mapEditorMode = getEditorMode();
+	if (!mouseOverUi && mapEditorMode != nullptr)
 	{
-		getEditorMode()->preDraw(game);
+		mapEditorMode->preDraw(game);
 	}
 	Super::draw(game);
-	if (!mouseOverUi)
+	if (!mouseOverUi && mapEditorMode != nullptr)
 	{
-		getEditorMode()->postDraw(game);
+		mapEditorMode->postDraw(game);
 	}
 }
 
@@ -97,7 +101,7 @@ void MapEditorState::saveOnCtrlS(Game& game)
 	if (keyboard->isPressed(K(LCTRL)) && keyboard->isJustPressed(K(S)))
 	{
 		saveMap(game);
-		game.notify->success(std::string("Map ") + game.mapName + " saved successfully");
+		game.notify->success(std::string("Map ") + game.mapPath.string() + " saved successfully");
 	}
 }
 

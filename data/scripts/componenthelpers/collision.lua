@@ -3,7 +3,7 @@ local Path = require 'data/scripts/path'
 local sqrt = math.sqrt
 
 local function getTemplate(entity)
-    return Path.requireComponentTemplateIfExists(entity:getTemplateName(), 'collision')
+    return Path.requireComponentTemplateIfExists(entity:getTemplatePath(), 'collision')
 end 
 
 local function getRadius(entity)

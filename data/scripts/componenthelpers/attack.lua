@@ -1,7 +1,7 @@
 local Path = require 'data/scripts/path'
 
 local function getTemplate(entity)
-    return Path.requireComponentTemplateIfExists(entity:getTemplateName(), 'attack')
+    return Path.requireComponentTemplateIfExists(entity:getTemplatePath(), 'attack')
 end 
 
 local function dealDamageAfterDelay(target, damage, delay, instigator)

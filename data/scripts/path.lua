@@ -2,7 +2,7 @@ local require = require
 
 -- mod
 local getModPath = Mod.getPath
-local getCurrentMapName = Mod.getCurrentMapName
+local getCurrentMapPath = Mod.getCurrentMapPath
 
 local function getModFilePath(file)
     return getModPath() .. '/' .. file
@@ -13,12 +13,8 @@ local function requireModFile(file)
 end
 
 -- map
-local function getMapPath()
-    return getModPath() .. '/maps/' .. getCurrentMapName()
-end
-
 local function getMapFilePath(file)
-    return getMapPath() .. '/' .. file
+    return getCurrentMapPath() .. '/' .. file
 end
 
 local function requireMapFile(file)
@@ -30,20 +26,16 @@ local function requireMapConfig()
 end
 
 -- entity
-local function getEntityPath(templateName)
-    return getModPath() .. '/entities/' .. templateName
+local function getEntityFilePath(entityTemplatePath, file)
+    return entityTemplatePath .. '/' .. file
 end
 
-local function getEntityFilePath(entityTemplateName, file)
-    return getEntityPath(entityTemplateName) .. '/' .. file
+local function getComponentPath(entityTemplatePath, componentTemplateName)
+    return getEntityFilePath(entityTemplatePath, componentTemplateName)
 end
 
-local function getComponentPath(entityTemplateName, componentTemplateName)
-    return getEntityFilePath(entityTemplateName, componentTemplateName)
-end
-
-local function componentFileExists(entityTemplateName, componentTemplateName)
-    local file = io.open(getComponentPath(entityTemplateName, componentTemplateName) .. '.lua', 'r')
+local function componentFileExists(entityTemplatePath, componentTemplateName)
+    local file = io.open(getComponentPath(entityTemplatePath, componentTemplateName) .. '.lua', 'r')
     if file then
         file:close()
         return true
@@ -52,17 +44,17 @@ local function componentFileExists(entityTemplateName, componentTemplateName)
     end
 end
 
-local function requireComponentTemplate(entityTemplateName, componentTemplateName, forceReload)
-    local componentPath = getComponentPath(entityTemplateName, componentTemplateName)
+local function requireComponentTemplate(entityTemplatePath, componentTemplateName, forceReload)
+    local componentPath = getComponentPath(entityTemplatePath, componentTemplateName)
     if forceReload then
         package.loaded[componentPath] = nil
     end
     return require(componentPath)
 end
 
-local function requireComponentTemplateIfExists(entityTemplateName, componentTemplateName, forceReload)
+local function requireComponentTemplateIfExists(entityTemplatePath, componentTemplateName, forceReload)
     local componentExists, componentTemplate = pcall(function()
-        return requireComponentTemplate(entityTemplateName, componentTemplateName, forceReload)
+        return requireComponentTemplate(entityTemplatePath, componentTemplateName, forceReload)
     end)
     if componentExists then
         assert(type(componentTemplate) == 'table')
@@ -71,37 +63,29 @@ local function requireComponentTemplateIfExists(entityTemplateName, componentTem
 end
 
 -- props
-local function getPropPath(propName)
-    return getModPath() .. '/props/' .. propName
+local function getPropFilePath(propTemplatePath, propFile)
+    return propTemplatePath .. '/' .. propFile
 end
 
-local function getPropFilePath(propName, propFile)
-    return getPropPath(propName) .. '/' .. propFile
+local function requirePropFile(propTemplatePath, propFile)
+    return require(getPropFilePath(propTemplatePath, propFile))
 end
 
-local function requirePropFile(propName, propFile)
-    return require(getPropFilePath(propName, propFile))
-end
-
-local function requirePropConfig(propName)
-    return requirePropFile(propName, 'prop')
+local function requirePropConfig(propTemplatePath)
+    return requirePropFile(propTemplatePath, 'prop')
 end
 
 -- tiles
-local function getTilePath(tileName)
-    return getModPath() .. '/tiles/' .. tileName
+local function getTileFilePath(tileTemplatePath, tileFile)
+    return tileTemplatePath .. '/' .. tileFile
 end
 
-local function getTileFilePath(tileName, tileFile)
-    return getTilePath(tileName) .. '/' .. tileFile
+local function requireTileFile(tileTemplatePath, tileFile)
+    return require(getTileFilePath(tileTemplatePath, tileFile))
 end
 
-local function requireTileFile(tileName, tileFile)
-    return require(getTileFilePath(tileName, tileFile))
-end
-
-local function requireTileConfig(tileName)
-    return requireTileFile(tileName, 'tile')
+local function requireTileConfig(tileTemplatePath)
+    return requireTileFile(tileTemplatePath, 'tile')
 end
 
 return {
@@ -109,24 +93,20 @@ return {
     getModFilePath                   = getModFilePath,
     requireModFile                   = requireModFile,
 
-    getMapPath                       = getMapPath,
     getMapFilePath                   = getMapFilePath,
     requireMapFile                   = requireMapFile,
     requireMapConfig                 = requireMapConfig,
 
-    getEntityPath                    = getEntityPath,
     getEntityFilePath                = getEntityFilePath,
     getComponentPath                 = getComponentPath,
     componentFileExists              = componentFileExists,
     requireComponentTemplate         = requireComponentTemplate,
     requireComponentTemplateIfExists = requireComponentTemplateIfExists,
 
-    getPropPath                      = getPropPath,
     getPropFilePath                  = getPropFilePath,
     requirePropFile                  = requirePropFile,
     requirePropConfig                = requirePropConfig,
 
-    getTilePath                      = getTilePath,
     getTileFilePath                  = getTileFilePath,
     requireTileFile                  = requireTileFile,
     requireTileConfig                = requireTileConfig

@@ -89,9 +89,9 @@ public:
 	inline void eachTile(Func func) const;
 
 	// entities
-	void addEntity(const flat::Vector2& position, const std::string& entityTemplateName);
+	void addEntity(const flat::Vector2& position, const std::filesystem::path& entityTemplatePath);
 
-	const std::vector<std::string>& getEntityTemplates() const { return m_entityTemplates; }
+	const std::vector<std::filesystem::path>& getEntityTemplates() const { return m_entityTemplates; }
 	const std::vector<Entity>& getEntities() const { return m_entities; }
 
 	// zones
@@ -124,7 +124,7 @@ private:
 	std::unordered_map<flat::Vector2i, Tile> m_tilesByPosition;
 
 	// entities
-	std::vector<std::string> m_entityTemplates;
+	std::vector<std::filesystem::path> m_entityTemplates;
 	std::vector<Entity> m_entities;
 
 	// zones

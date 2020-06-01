@@ -8,9 +8,10 @@
 #include "mod/lua/mod.h"
 
 #include "map/pathfinder/pathfinder.h"
-#include "map/lua/zone.h"
 #include "map/brush/lua/brush.h"
 #include "map/pathfinder/lua/path.h"
+#include "map/lua/map.h"
+#include "map/lua/zone.h"
 
 #include "entity/lua/entity.h"
 
@@ -93,6 +94,7 @@ void BaseState::initLua(Game& game)
 
 		entity::lua::open(game);
 		map::lua::zone::open(game);
+		map::lua::map::open(L);
 		map::brush::lua::open(game);
 		game::map::pathfinder::lua::open(game);
 	}

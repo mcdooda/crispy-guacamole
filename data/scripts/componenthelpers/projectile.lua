@@ -4,7 +4,7 @@ local atan2 = atan
 
 local Path = require 'data/scripts/path'
 
-local function spawn(templateName, template, position, targetPosition, instigator)
+local function spawn(templatePath, template, position, targetPosition, instigator)
     -- compute initial heading and elevation
     local heading = atan2(targetPosition:y() - position:y(), targetPosition:x() - position:x())
     local dXY = (targetPosition - position):toVector2():length()
@@ -24,24 +24,24 @@ local function spawn(templateName, template, position, targetPosition, instigato
         return
     end
 
-    return Entity.spawn(templateName, position, heading, elevation, instigator)
+    return Entity.spawn(templatePath, position, heading, elevation, instigator)
 end
 
-local function createSpawner(templateName)
-    local template = Path.requireComponentTemplate(templateName, 'projectile')
+local function createSpawner(templatePath)
+    local template = Path.requireComponentTemplate(templatePath, 'projectile')
     return function(position, target)
-        return spawn(templateName, template, position, target:getCenter())
+        return spawn(templatePath, template, position, target:getCenter())
     end
 end
 
-local function spawnFromEntity(templateName, template, entity, attachPoint, target)
-    return spawn(templateName, template, entity:getAttachPoint(attachPoint), target:getCenter(), entity)
+local function spawnFromEntity(templatePath, template, entity, attachPoint, target)
+    return spawn(templatePath, template, entity:getAttachPoint(attachPoint), target:getCenter(), entity)
 end
 
-local function createSpawnerFromEntity(templateName)
-    local template = Path.requireComponentTemplate(templateName, 'projectile')
+local function createSpawnerFromEntity(templatePath)
+    local template = Path.requireComponentTemplate(templatePath, 'projectile')
     return function(entity, attachPoint, target)
-        return spawnFromEntity(templateName, template, entity, attachPoint, target)
+        return spawnFromEntity(templatePath, template, entity, attachPoint, target)
     end
 end
 

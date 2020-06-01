@@ -58,8 +58,8 @@ class BaseMapState : public BaseState
 		entity::faction::Faction* getFactionByName(const std::string& factionName);
 		const entity::faction::Faction* getFactionByName(const std::string& factionName) const;
 
-		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game& game, const std::filesystem::path& entityTemplateName) const;
-		std::shared_ptr<const map::TileTemplate> getTileTemplate(game::Game& game, const std::filesystem::path& tileTemplateName) const;
+		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game& game, const std::filesystem::path& entityTemplatePath) const;
+		std::shared_ptr<const map::TileTemplate> getTileTemplate(game::Game& game, const std::filesystem::path& tileTemplatePath) const;
 		std::shared_ptr<const map::PropTemplate> getPropTemplate(game::Game& game, const std::filesystem::path& propTemplateName) const;
 
 		const entity::component::ComponentRegistry& getComponentRegistry() const { return m_componentRegistry; }
@@ -158,6 +158,12 @@ class BaseMapState : public BaseState
 		void clickEntity(entity::Entity* entity) const;
 		bool forceEntitySelection(Game& game) const;
 
+		bool findAssetForBackwardCompatibility(
+			Game& game,
+			const std::string& assetType,
+			const std::filesystem::path& path,
+			const flat::tool::Asset*& asset) const;
+
 		// game features
 		void handleGameActionInputs(Game& game);
 		void moveToFormation(Game& game);
@@ -175,7 +181,7 @@ class BaseMapState : public BaseState
 
 	protected:
 		// resource loading
-		flat::resource::StrongResourceManager<entity::EntityTemplate, std::string, Game&, const entity::component::ComponentRegistry&, std::string> m_entityTemplateManager;
+		flat::resource::StrongResourceManager<entity::EntityTemplate, std::string, Game&, const entity::component::ComponentRegistry&> m_entityTemplateManager;
 		flat::resource::StrongResourceManager<map::TileTemplate, std::string, Game&> m_tileTemplateManager;
 		flat::resource::StrongResourceManager<map::PropTemplate, std::string, Game&> m_propTemplateManager;
 

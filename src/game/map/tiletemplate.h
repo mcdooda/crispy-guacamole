@@ -15,10 +15,10 @@ namespace map
 class TileTemplate
 {
 	public:
-		TileTemplate(const std::filesystem::path& name, Game& game);
+		TileTemplate(const std::filesystem::path& path, Game& game);
 		~TileTemplate();
 
-		inline const std::filesystem::path& getName() const { return m_name; }
+		inline std::filesystem::path getName() const { return m_path.stem(); }
 
 		inline const std::shared_ptr<const flat::video::Texture>& getTexture() const { return m_texture; }
 
@@ -39,7 +39,7 @@ class TileTemplate
 		void loadTileConfig(Game& game, const std::filesystem::path& path);
 
 	private:
-		std::filesystem::path m_name;
+		std::filesystem::path m_path;
 		std::shared_ptr<const flat::video::Texture> m_texture;
 		std::vector<float> m_tileVariantProbabilities;
 		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_selectTile;

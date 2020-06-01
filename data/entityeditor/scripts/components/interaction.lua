@@ -1,6 +1,6 @@
 local UiSettings = require 'data/scripts/ui/uisettings'
 
-return function(componentDetailsPanel, entityTemplateName, componentTemplate, getEntity)
+return function(componentDetailsPanel, entityTemplatePath, componentTemplate, getEntity)
     do
         local label = Widget.makeText(
             'Behavior state: ' .. componentTemplate.behaviorStateName,

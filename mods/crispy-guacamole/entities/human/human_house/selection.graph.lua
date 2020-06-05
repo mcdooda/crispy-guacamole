@@ -16,13 +16,13 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/lifecomponent',
+      name = 'components/selectioncomponent',
     },
     {
       loadArguments = {
-        20,
+        true,
       },
-      name = 'number',
+      name = 'boolean',
     },
     {
       loadArguments = {

@@ -143,7 +143,7 @@ return {
     },
     {
       loadArguments = {
-        1,
+        4,
       },
       name = 'number',
     },
@@ -210,13 +210,13 @@ return {
     },
     {
       loadArguments = {
-        1,
+        4,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0,
+        1,
       },
       name = 'number',
     },

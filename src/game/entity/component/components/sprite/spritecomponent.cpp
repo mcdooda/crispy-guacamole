@@ -177,6 +177,27 @@ bool SpriteComponent::getAttachPoint(const std::string& attachPointName, flat::V
 	return false;
 }
 
+bool SpriteComponent::setAnimationProgress(const std::string& animationName, float value)
+{
+	const SpriteDescription& spriteDescription = getTemplate()->getSpriteDescription();
+    const AnimationDescription* animationDescription = spriteDescription.getAnimationDescription(animationName);
+	if (animationDescription != nullptr)
+	{
+		FLAT_ASSERT(value < 1);
+		FLAT_ASSERT(animationDescription->getNumFrames() > 0);
+		FLAT_ASSERT(animationDescription->getLine() >= 0);
+
+		m_sprite.setLine(animationDescription->getLine());
+		const float column = animationDescription->getNumFrames() * value;
+		m_sprite.setColumn(static_cast<int>(column));
+		m_currentAnimationDescription = animationDescription;
+		m_preventBusy = false;
+		m_sprite.setAnimated(false);
+		return true;
+	}
+	return false;
+}
+
 void SpriteComponent::attachSprite(const flat::render::Sprite& otherSprite)
 {
 	const flat::Matrix4& transform = m_sprite.getModelMatrix();

@@ -1,6 +1,7 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
 local Money = require 'mods/crispy-guacamole/scripts/money'
+local Building = require 'data/scripts/building'
 
 local function basicGatherer(buildingName, resourceName)
 	local function getClosestBuilding(gatherer)
@@ -144,8 +145,7 @@ local function basicGatherer(buildingName, resourceName)
 			return
 		end
 
-		local health = math.min(building:getHealth() + 1, building:getMaxHealth())
-		building:setHealth(health)
+		Building.build(building, 1)
 		gatherer:interactWith(building)
 	end
 

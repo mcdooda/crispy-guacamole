@@ -47,9 +47,10 @@ DebugDisplayText::DebugDisplayText(const flat::Vector2& pos, const std::string& 
 	m_color(color),
 	m_backgroundColor(backgroundColor)
 {
-	flat::translateBy(m_transform, pos);
-	flat::scaleBy(m_transform, 0.5f);
 	setText(text, m_color);
+	addBackgroundRectangle();
+	flat::translateBy(m_transform, pos + flat::Vector2(0.f, getComputedSize().y * 0.5f));
+	flat::scaleBy(m_transform, flat::Vector3(0.5f, -0.5f, 1.f));
 }
 
 void DebugDisplayText::draw(const flat::render::RenderSettings& renderSettings) const

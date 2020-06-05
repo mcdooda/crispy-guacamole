@@ -13,7 +13,7 @@ out vec4 color2;
 void main()
 {
 	gl_Position = position * modelMatrix * vpMatrix;
-	uv2 = vec2(uv.x, 1 - uv.y);
+	uv2 = uv;
 	color2 = color;
 }
 

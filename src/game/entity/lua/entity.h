@@ -21,6 +21,7 @@ int l_Entity_isValid(lua_State* L);
 int l_Entity_delete(lua_State* L);
 
 int l_Entity_getTemplatePath(lua_State* L);
+int l_Entity_getTemplateName(lua_State* L);
 int l_Entity_hasComponent(lua_State* L);
 int l_Entity_decComponentDisableLevel(lua_State* L);
 int l_Entity_incComponentDisableLevel(lua_State* L);
@@ -162,7 +163,7 @@ inline T& getComponent(lua_State* L, Entity& entity)
 	T* component = entity.getComponent<T>();
 	if (!component)
 	{
-		luaL_error(L, "%s has no %s component", entity.getTemplatePath().c_str(), T::getConfigName());
+		luaL_error(L, "%s has no %s component", entity.getTemplatePath().string().c_str(), T::getConfigName());
 	}
 	return *component;
 }

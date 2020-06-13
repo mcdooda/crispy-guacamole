@@ -109,7 +109,8 @@ local function setBuilding(buildingTemplatePath, buildings)
         if buildingData and buildingData.units then
             for i = 1, #buildingData.units do
                 local unit = buildingData.units[i]
-                local unitData = EntityData.get(unit.entity)
+                local entityAsset = assert(Asset.findFromName('entity', unit.entity), 'Could not find entity asset ' .. unit.entity)
+                local unitData = assert(EntityData.get(entityAsset:getPath()), 'Could not find unit data for ' .. entityAsset:getPath())
                 local lineFlow = Widget.makeLineFlow()
 
                 local position = buildings[1]:getPosition():toVector2()
@@ -255,15 +256,20 @@ local function setUnit(unitTemplatePath, units)
 
         if unitData and unitData.buildings then
             for i = 1, #unitData.buildings do
-                local building = unitData.buildings[i]
-                local buildingData = EntityData.get(building)
+                local buildingName = unitData.buildings[i]
+                local buildingAsset = assert(Asset.findFromName('entity', buildingName), 'Could not find building ' .. buildingName)
+                if buildingAsset then
+                    local buildingData = assert(EntityData.get(buildingAsset:getPath()), 'Could not find building data for ' .. buildingAsset:getPath())
 
-                local label = Widget.makeText(buildingData.name, table.unpack(Theme.defaultFont))
-                label:setTextColor(Theme.TEXT_COLOR)
-                label:click(function()
-                    build(building)
-                end)
-                buildEntitiesContainer.addContent(label)
+                    if buildingData then
+                        local label = Widget.makeText(buildingData.name, table.unpack(Theme.defaultFont))
+                        label:setTextColor(Theme.TEXT_COLOR)
+                        label:click(function()
+                            build(buildingName)
+                        end)
+                        buildEntitiesContainer.addContent(label)
+                    end
+                end
             end
         end
     end

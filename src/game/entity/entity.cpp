@@ -408,6 +408,11 @@ const std::filesystem::path& Entity::getTemplatePath() const
 	return m_template->getPath();
 }
 
+const std::filesystem::path Entity::getTemplateName() const
+{
+	return m_template->getPath().stem();
+}
+
 void Entity::setSelected(bool selected)
 {
 	FLAT_ASSERT(selected != m_selected);

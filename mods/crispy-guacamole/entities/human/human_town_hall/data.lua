@@ -1,6 +1,9 @@
 return {
     name = 'Town hall',
     units = {
-        'human_peasant'
+        {
+            entity = 'human_peasant',
+            duration = 1
+        }
     }
 }

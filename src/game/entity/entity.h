@@ -130,6 +130,7 @@ class Entity final : public map::MapObject
 
 		inline const std::shared_ptr<const EntityTemplate>& getEntityTemplate() const { return m_template; }
 		const std::filesystem::path& getTemplatePath() const;
+		const std::filesystem::path getTemplateName() const;
 
 		template <class ComponentType>
 		inline const typename ComponentType::TemplateType* getComponentTemplate() const;

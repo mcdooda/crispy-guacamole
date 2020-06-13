@@ -46,6 +46,7 @@ int open(Game& game)
 		{"delete",                   l_Entity_delete},
 
 		{"getTemplatePath",          l_Entity_getTemplatePath},
+		{"getTemplateName",          l_Entity_getTemplateName},
 		{"hasComponent",             l_Entity_hasComponent},
 		{"decComponentDisableLevel", l_Entity_decComponentDisableLevel},
 		{"incComponentDisableLevel", l_Entity_incComponentDisableLevel},
@@ -230,6 +231,13 @@ int l_Entity_getTemplatePath(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	lua_pushstring(L, entity.getTemplatePath().string().c_str());
+	return 1;
+}
+
+int l_Entity_getTemplateName(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	lua_pushstring(L, entity.getTemplateName().string().c_str());
 	return 1;
 }
 

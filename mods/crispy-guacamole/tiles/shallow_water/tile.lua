@@ -5,9 +5,11 @@ local probabilities = {
 	100, 100,
 	100, 100,
 	100,
+	15, -- big bubble
+	10, -- small bubbles
 }
 
-local centerTiles = {1, 2, 3, 4, 5, 6}
+local centerTiles = {1, 2, 3, 4, 5, 6, 14, 15}
 local topLeftTiles = {7}
 local topRightTiles = {8}
 local topLeftRightTiles = {9}

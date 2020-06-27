@@ -7,12 +7,6 @@ return {
       1,
     },
     {
-<<<<<<< HEAD
-      2,
-      1,
-      1,
-      1,
-=======
       1,
       3,
       8,
@@ -89,7 +83,6 @@ return {
       1,
       11,
       3,
->>>>>>> a44c0648628404598110d381cd509ac6f2e43cc3
     },
   },
   nodeType = 'script',
@@ -112,8 +105,6 @@ return {
       },
       name = 'script/scriptoutput',
     },
-<<<<<<< HEAD
-=======
     {
       name = 'entity/playanimation',
     },
@@ -156,6 +147,5 @@ return {
       },
       name = 'string',
     },
->>>>>>> a44c0648628404598110d381cd509ac6f2e43cc3
   },
 }

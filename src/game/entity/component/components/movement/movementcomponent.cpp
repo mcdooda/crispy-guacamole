@@ -234,7 +234,7 @@ void MovementComponent::progressAlongPath(float elapsedTime)
 		return;
 	}
 
-	if (!m_isStrafing)
+	if (!m_isStrafing && flat::length2(steering) > FLT_EPSILON)
 	{
 		m_owner->setHeading(flat::vector2_angle(steering), MIN_HEADING_CHANGE);
 	}

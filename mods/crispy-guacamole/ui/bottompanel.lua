@@ -150,7 +150,8 @@ local function setUnit(unitTemplatePath, units)
     end
 
     do
-        local function build(entityTemplatePath)
+        local function build(buildingAsset)
+            local entityTemplatePath = buildingAsset:getPath()
             local buildingTypeData = EntityData.get(entityTemplatePath)
             local firstPos
             local path
@@ -265,7 +266,7 @@ local function setUnit(unitTemplatePath, units)
                         local label = Widget.makeText(buildingData.name, table.unpack(Theme.defaultFont))
                         label:setTextColor(Theme.TEXT_COLOR)
                         label:click(function()
-                            build(buildingName)
+                            build(buildingAsset)
                         end)
                         buildEntitiesContainer.addContent(label)
                     end

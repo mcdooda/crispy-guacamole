@@ -127,7 +127,7 @@ local function followAttackTarget(findTargetState)
 					local position2d = position:toVector2()
 					local targetPosition = currentAttackTarget:getPosition()
 
-					local useFullPathfinding = true
+					local useFullPathfinding = false
 
 					if useFullPathfinding then
 						entity:clearPath()
@@ -136,33 +136,26 @@ local function followAttackTarget(findTargetState)
 						local targetPosition2d = targetPosition:toVector2()
 						local move = targetPosition2d - position2d
 						local distance = move:length()
-	
+
 						local attackRange = AttackHelper.getTemplate(entity).attackRange
 						local _, entityRadius = CollisionHelper.getRadius(entity)
 						local _, targetRadius = CollisionHelper.getRadius(currentAttackTarget)
-	
+
 						local followStepDistance = 0.5
 						local minFollowStepDistance = 0.1
-	
+
 						local desiredAttackDistance = attackRange + entityRadius + targetRadius
-						if distance - entityRadius - targetRadius < attackRange * 0.05 then
-							-- move away from the target
-							followStepDistance = -attackRange * 0.05
-						else
+						local difference = distance - targetRadius - entityRadius
+						if difference > attackRange then
 							-- move closer to the current attack target but avoid collision
-							local desiredMoveDistance = distance - desiredAttackDistance + 0.01
+							local desiredMoveDistance = distance - attackRange + 0.01
 							followStepDistance = min(desiredMoveDistance, followStepDistance)
 							followStepDistance = max(0, followStepDistance)
-						end
-						
-						-- move closer to the target or move back to avoid the "return to position" effect while in combat
-						if followStepDistance > minFollowStepDistance then
-							-- normalize direction and multiply by the distance to travel
+
 							local destination = position2d + move:getNormalized() * followStepDistance
 							entity:clearPath()
 							entity:moveTo(destination)
 						else
-							-- nothing to do for now
 							yield()
 						end
 					end

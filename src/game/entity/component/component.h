@@ -103,10 +103,10 @@ class ComponentImpl : public Component
 
 		template <class T = ComponentImpl<ComponentTemplateType>>
 		inline const typename T::TemplateType* getTemplate() const;
-		
+
 		template <class T>
 		inline void enableComponent() const;
-		
+
 		template <class T>
 		inline void disableComponent() const;
 

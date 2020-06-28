@@ -97,7 +97,7 @@ void AttackComponent::beginAttack(float currentTime)
 	{
 		disableComponent<movement::MovementComponent>();
 	}
-	
+
 	disableComponent<behavior::BehaviorComponent>();
 
 	attackStarted();

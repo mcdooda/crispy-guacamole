@@ -145,7 +145,7 @@ void LifeComponent::removeDiedCallback(int index)
 	m_diedSlotProxy.removeCallback(index);
 }
 
-bool LifeComponent::addedToMap(Entity* entity, map::Map* map)
+bool LifeComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater)
 {
 	FLAT_ASSERT(entity == m_owner);
 	onLive();

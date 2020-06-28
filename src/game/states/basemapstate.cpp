@@ -484,7 +484,7 @@ bool BaseMapState::addEntityToMap(entity::Entity* entity)
 {
 	FLAT_PROFILE("Add entity to map");
 	m_entityUpdater.registerEntity(entity);
-	if (!entity->addToMap(&m_map))
+	if (!entity->addToMap(&m_map, &m_entityUpdater))
 	{
 		m_entityUpdater.unregisterEntity(entity);
 		return false;
@@ -580,6 +580,11 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 #ifdef FLAT_DEBUG
 					entities.back()->debugDraw(m_debugDisplay);
 #endif
+				}
+
+				for (entity::Entity* entity : entities)
+				{
+					m_entityUpdater.triggerComponentPostCalls(entity);
 				}
 			}
 		}
@@ -701,7 +706,7 @@ void BaseMapState::draw(game::Game& game)
 
 		std::vector<entity::Entity*> ghosts = addGhostEntities(game);
 		m_displayManager.sortAndDraw(game, m_map.getFog(), m_gameView);
-		for(entity::Entity* ghost: ghosts)
+		for (entity::Entity* ghost : ghosts)
 		{
 			despawnEntity(ghost);
 		}

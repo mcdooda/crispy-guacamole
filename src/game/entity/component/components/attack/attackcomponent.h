@@ -12,6 +12,8 @@ namespace game
 {
 namespace entity
 {
+class EntityUpdater;
+
 namespace component
 {
 namespace attack
@@ -51,7 +53,7 @@ class AttackComponent : public ComponentImpl<AttackComponentTemplate>
 
 		bool isBusyForAttacking() const;
 
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 
 	private:
 		EntityHandle m_target;

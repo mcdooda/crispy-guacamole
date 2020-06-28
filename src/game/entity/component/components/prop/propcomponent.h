@@ -2,13 +2,16 @@
 #define GAME_ENTITY_COMPONENT_PROP_PROPCOMPONENT_H
 
 #include <flat.h>
+
 #include "propcomponenttemplate.h"
-#include "../../component.h"
+#include "entity/component/component.h"
 
 namespace game
 {
 namespace entity
 {
+class EntityUpdater;
+
 namespace component
 {
 namespace prop
@@ -24,11 +27,19 @@ class PropComponent : public ComponentImpl<PropComponentTemplate>
 		void init() override;
 		void deinit() override;
 
+		void selectAnimation(
+			const EntityTemplate* topLeftTemplate,
+			const EntityTemplate* topRightTemplate,
+			const EntityTemplate* bottomLeftTemplate,
+			const EntityTemplate* bottomRightTemplate);
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 		bool removedFromMap(Entity* entity);
+
+		void selectAnimationPostCall();
 };
 
 } // prop

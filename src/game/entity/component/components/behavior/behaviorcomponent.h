@@ -13,6 +13,8 @@ class Map;
 }
 namespace entity
 {
+class EntityUpdater;
+
 namespace component
 {
 namespace behavior
@@ -51,7 +53,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 #endif
 		
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 
 		bool entityEnteredVisionRange(Entity* entity);
 		bool entityLeftVisionRange(Entity* entity);

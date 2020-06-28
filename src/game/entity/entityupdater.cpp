@@ -85,6 +85,12 @@ void EntityUpdater::unregisterEntity(Entity* entity)
 			bucket.pop_back();
 		}
 	}
+
+	m_componentPostCalls.erase(std::remove_if(
+		m_componentPostCalls.begin(),
+		m_componentPostCalls.end(),
+		[entity](const std::unique_ptr<ComponentPostCall>& a) { return a->getEntity() == entity; }
+	), m_componentPostCalls.end());
 }
 
 void EntityUpdater::unregisterAllEntities()
@@ -152,6 +158,15 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 	}
 
 	{
+		FLAT_PROFILE("Component post calls");
+		for (std::unique_ptr<ComponentPostCall>& componentPostCall : m_componentPostCalls)
+		{
+			(*componentPostCall)();
+		}
+		m_componentPostCalls.clear();
+	}
+
+	{
 		FLAT_PROFILE("Update AABBs");
 		for (entity::Entity* entity : m_registeredEntities)
 		{
@@ -171,6 +186,25 @@ void EntityUpdater::debugDraw(debug::DebugDisplay& debugDisplay) const
 	}
 }
 #endif
+
+void EntityUpdater::triggerComponentPostCalls(Entity* entity)
+{
+	FLAT_PROFILE("Trigger component post calls for entity");
+	for (int i = static_cast<int>(m_componentPostCalls.size()) - 1; i >= 0; --i)
+	{
+		ComponentPostCall* componentPostCall = m_componentPostCalls[i].get();
+		if (componentPostCall->getEntity() == entity)
+		{
+			(*componentPostCall)();
+			m_componentPostCalls.erase(m_componentPostCalls.begin() + i);
+		}
+	}
+}
+
+game::entity::Entity* ComponentPostCall::getEntity() const
+{
+	return m_component->getOwner();
+}
 
 } // entity
 } // game

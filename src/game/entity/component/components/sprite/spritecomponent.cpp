@@ -277,7 +277,7 @@ bool SpriteComponent::deselected()
 	return true;
 }
 
-bool SpriteComponent::addedToMap(Entity* entity, map::Map* map)
+bool SpriteComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater)
 {
 	updateSpritePosition(entity->getPosition());
 	m_owner->positionChanged.on(this, &SpriteComponent::updateSpritePosition);

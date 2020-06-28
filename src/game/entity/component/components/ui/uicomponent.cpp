@@ -124,7 +124,7 @@ void UiComponent::update(float currentTime, float elapsedTime)
 	}
 }
 
-bool UiComponent::addedToMap(Entity * entity, map::Map * map)
+bool UiComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater)
 {
 	m_addedToMap = true;
 	return true;

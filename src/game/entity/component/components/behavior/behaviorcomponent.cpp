@@ -136,7 +136,7 @@ bool BehaviorComponent::handlePlayerMoveOrder(const flat::Vector2& point, Entity
 	return true;
 }
 
-bool BehaviorComponent::addedToMap(Entity* entity, map::Map* map)
+bool BehaviorComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater)
 {
 	FLAT_ASSERT(entity == m_owner);
 	if (isEnabled())

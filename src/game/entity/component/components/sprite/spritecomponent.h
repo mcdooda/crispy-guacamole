@@ -9,6 +9,8 @@ namespace game
 {
 namespace entity
 {
+class EntityUpdater;
+
 namespace component
 {
 namespace sprite
@@ -64,7 +66,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		bool selected();
 		bool deselected();
 
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 		bool removedFromMap(Entity* entity);
 
 		bool updateSpritePosition(const flat::Vector3& position);

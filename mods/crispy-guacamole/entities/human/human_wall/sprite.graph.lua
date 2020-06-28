@@ -138,6 +138,36 @@ return {
       20,
       4,
     },
+    {
+      25,
+      1,
+      29,
+      1,
+    },
+    {
+      26,
+      1,
+      29,
+      2,
+    },
+    {
+      27,
+      1,
+      29,
+      3,
+    },
+    {
+      28,
+      1,
+      29,
+      4,
+    },
+    {
+      29,
+      1,
+      9,
+      4,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -185,6 +215,10 @@ return {
     },
     {
       loadArguments = {
+        {
+          5,
+          '',
+        },
         {
           5,
           '',
@@ -280,6 +314,33 @@ return {
         1,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        'cross',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        4,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
     },
   },
 }

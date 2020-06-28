@@ -13,6 +13,8 @@ class Map;
 }
 namespace entity
 {
+class EntityUpdater;
+
 namespace component
 {
 namespace life
@@ -55,7 +57,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		flat::Slot<> die;
 
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 
 		void onLive();
 		void onDie();

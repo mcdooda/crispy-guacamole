@@ -9,6 +9,8 @@ namespace game
 {
 namespace entity
 {
+class EntityUpdater;
+
 namespace component
 {
 namespace ui
@@ -30,7 +32,7 @@ class UiComponent : public ComponentImpl<UiComponentTemplate>
 		inline void setWidgetVisible(bool widgetVisible) { m_widgetVisible = widgetVisible; }
 
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 		bool removedFromMap(Entity* entity);
 		bool selected();
 		bool deselected();

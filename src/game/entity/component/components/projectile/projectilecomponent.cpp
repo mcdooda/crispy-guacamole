@@ -116,7 +116,7 @@ void ProjectileComponent::setSpeed(const flat::Vector3& speed)
 	}
 }
 
-bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map)
+bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater)
 {
 	FLAT_ASSERT(m_owner == entity);
 

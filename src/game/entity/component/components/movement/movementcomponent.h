@@ -16,6 +16,8 @@ class Tile;
 class Zone;
 }
 
+class game::entity::EntityUpdater;
+
 namespace game::entity::component::movement
 {
 
@@ -81,7 +83,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		bool jumpIfNecessary(const flat::Vector2& steering);
 		void fall(float elapsedTime);
 
-		bool snapEntityToTile(Entity* entity, map::Map* map);
+		bool snapEntityToTile(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 
 		bool collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal);
 

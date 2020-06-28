@@ -271,7 +271,7 @@ const flat::render::ProgramSettings& Entity::getProgramSettings() const
 	return getEntityProgramSettings();
 }
 
-bool Entity::addToMap(map::Map* map)
+bool Entity::addToMap(map::Map* map, EntityUpdater* entityUpdater)
 {
 	FLAT_ASSERT(map != nullptr && m_map == nullptr);
 
@@ -279,7 +279,7 @@ bool Entity::addToMap(map::Map* map)
 
 	m_map = map;
 	m_cellIndex = map->addEntity(this);
-	addedToMap(this, map);
+	addedToMap(this, map, entityUpdater);
 	positionChanged(m_position);
 	headingChanged(m_heading);
 	elevationChanged(m_elevation);

@@ -12,11 +12,13 @@ class PropComponentTemplate : public ComponentTemplate
 	public:
 		void load(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) override final;
 
+		inline const flat::lua::SharedLuaReference<LUA_TFUNCTION>& getSelectAnimation() const { return m_selectAnimation; }
 		inline int getWidth() const { return m_size.x; }
 		inline int getHeight() const { return m_size.y; }
 		inline map::Navigability getNavigability() const { return m_navigability; }
 
 	private:
+		flat::lua::SharedLuaReference<LUA_TFUNCTION> m_selectAnimation;
 		flat::Vector2i m_size;
 		map::Navigability m_navigability;
 };

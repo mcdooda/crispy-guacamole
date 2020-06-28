@@ -15,6 +15,7 @@ class Game;
 namespace entity
 {
 class EntityTemplate;
+class EntityUpdater;
 namespace component
 {
 class Component;
@@ -82,7 +83,7 @@ class Entity final : public map::MapObject
 		void pushAttachedSprites(std::vector<const MapObject*>& objects) const;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		
-		bool addToMap(map::Map* map);
+		bool addToMap(map::Map* map, EntityUpdater* entityUpdater);
 		void removeFromMap();
 
 #ifdef FLAT_DEBUG
@@ -183,7 +184,7 @@ class Entity final : public map::MapObject
 		flat::Slot<const flat::Vector3&> positionChanged;
 		flat::Slot<float> headingChanged;
 		flat::Slot<float> elevationChanged;
-		flat::Slot<Entity*, map::Map*> addedToMap;
+		flat::Slot<Entity*, map::Map*, EntityUpdater*> addedToMap;
 		flat::Slot<Entity*> removedFromMap;
 		
 	protected:

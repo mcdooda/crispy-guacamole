@@ -14,6 +14,8 @@ class Map;
 namespace entity
 {
 class Entity;
+class EntityUpdater;
+
 namespace component
 {
 namespace projectile
@@ -40,7 +42,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
-		bool addedToMap(Entity* entity, map::Map* map);
+		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 		bool removedFromMap(Entity* entity);
 		bool headingChanged(float heading);
 		bool elevationChanged(float heading);

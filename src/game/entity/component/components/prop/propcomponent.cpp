@@ -1,8 +1,13 @@
 #include "propcomponent.h"
 #include "propcomponenttemplate.h"
-#include "../../../entity.h"
-#include "../../../../map/map.h"
-#include "../../../../map/tile.h"
+
+#include "entity/entity.h"
+#include "entity/entityupdater.h"
+#include "entity/component/components/sprite/spritecomponent.h"
+#include "entity/entitytemplate.h"
+
+#include "map/map.h"
+#include "map/tile.h"
 
 namespace game
 {
@@ -25,7 +30,66 @@ void PropComponent::deinit()
 	m_owner->removedFromMap.off(this);
 }
 
-bool PropComponent::addedToMap(Entity* entity, map::Map* map)
+void PropComponent::selectAnimation(
+	const EntityTemplate* topLeftTemplate,
+	const EntityTemplate* topRightTemplate,
+	const EntityTemplate* bottomLeftTemplate,
+	const EntityTemplate* bottomRightTemplate)
+{
+	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& selectAnimation = getTemplate()->getSelectAnimation();
+	if (selectAnimation)
+	{
+		selectAnimation.callFunction(
+			[topLeftTemplate, topRightTemplate, bottomLeftTemplate, bottomRightTemplate](lua_State* L)
+			{
+				if (topLeftTemplate != nullptr)
+				{
+					lua_pushstring(L, topLeftTemplate->getPath().stem().string().c_str());
+				}
+				else
+				{
+					lua_pushnil(L);
+				}
+
+				if (topRightTemplate != nullptr)
+				{
+					lua_pushstring(L, topRightTemplate->getPath().stem().string().c_str());
+				}
+				else
+				{
+					lua_pushnil(L);
+				}
+
+				if (bottomLeftTemplate != nullptr)
+				{
+					lua_pushstring(L, bottomLeftTemplate->getPath().stem().string().c_str());
+				}
+				else
+				{
+					lua_pushnil(L);
+				}
+
+				if (bottomRightTemplate != nullptr)
+				{
+					lua_pushstring(L, bottomRightTemplate->getPath().stem().string().c_str());
+				}
+				else
+				{
+					lua_pushnil(L);
+				}
+			},
+			1,
+			[this](lua_State* L)
+			{
+				const char* animationName = luaL_checkstring(L, 1);
+				sprite::SpriteComponent* spriteComponent = m_owner->getComponent<sprite::SpriteComponent>();
+				spriteComponent->setCycleAnimationByName(animationName);
+			}
+		);
+	}
+}
+
+bool PropComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater)
 {
 	FLAT_ASSERT(entity == m_owner);
 
@@ -77,6 +141,11 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map)
 		sprite.setPosition(position2d);
 	}
 
+	if (propComponentTemplate->getSelectAnimation())
+	{
+		entityUpdater->addComponentPostCall(this, &PropComponent::selectAnimationPostCall);
+	}
+
 	return true;
 }
 
@@ -106,6 +175,43 @@ bool PropComponent::removedFromMap(Entity* entity)
 		}
 	}
 	return true;
+}
+
+void PropComponent::selectAnimationPostCall()
+{
+	const map::Map* map = m_owner->getMap();
+	flat::Vector2i position2d(m_owner->getPosition2d());
+	auto getPropTemplate = [&position2d, map](int dx, int dy) -> const EntityTemplate*
+	{
+		flat::Vector2i adjacentPropPosition2d = position2d + flat::Vector2i(dx, dy);
+		const map::TileIndex adjacentTileIndex = map->getTileIndex(adjacentPropPosition2d);
+		if (map::isValidTile(adjacentTileIndex))
+		{
+			const EntityTemplate* propEntityTemplate = nullptr;
+			map->eachTileEntity(
+				adjacentTileIndex,
+				[&propEntityTemplate](entity::Entity* entity)
+				{
+					if (entity->hasComponent<prop::PropComponent>())
+					{
+						propEntityTemplate = entity->getEntityTemplate().get();
+					}
+				}
+			);
+			return propEntityTemplate;
+		}
+		else
+		{
+			return nullptr;
+		}
+	};
+
+	selectAnimation(
+		getPropTemplate(0, -1),
+		getPropTemplate(-1, 0),
+		getPropTemplate(1, 0),
+		getPropTemplate(0, 1)
+	);
 }
 
 #ifdef FLAT_DEBUG

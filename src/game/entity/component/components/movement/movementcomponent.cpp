@@ -495,7 +495,7 @@ bool MovementComponent::jumpIfNecessary(const flat::Vector2& steering)
 	return true;
 }
 
-bool MovementComponent::snapEntityToTile(Entity* entity, map::Map* map)
+bool MovementComponent::snapEntityToTile(Entity* entity, map::Map* map, EntityUpdater* entityUpdater)
 {
 	FLAT_ASSERT(entity == m_owner);
 	FLAT_ASSERT(m_isTouchingGround);

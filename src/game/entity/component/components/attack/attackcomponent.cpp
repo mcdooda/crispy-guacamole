@@ -150,7 +150,7 @@ void AttackComponent::endAttack()
 	attackStopped();
 }
 
-bool AttackComponent::addedToMap(Entity * entity, map::Map * map)
+bool AttackComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater)
 {
 	m_lastAttackTime = 0.f;
 	m_attacking = false;

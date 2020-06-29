@@ -936,13 +936,13 @@ void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2&
 	{
 		if (mouseOverEntity->canBeSelected() || forceEntitySelection(game))
 		{
-			if (mouseOverEntity->isSelected()) {
+			if (mouseOverEntity->isSelected())
+			{
 				if (!addToSelection)
 				{
 					clearSelection();
 				}
 				const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getEntityTemplate();
-
 				flat::AABB2 screenAABB;
 				m_gameView.getScreenAABB(screenAABB);
 

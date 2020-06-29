@@ -1,0 +1,1 @@
+return flat.graph.script.run 'mods/crispy-guacamole/entities/forest/forest_blue_slime_treasure/attack'

@@ -57,14 +57,14 @@ return {
     {
       8,
       1,
-      1,
-      3,
+      26,
+      4,
     },
     {
       9,
       1,
-      8,
-      1,
+      30,
+      2,
     },
     {
       10,
@@ -93,8 +93,8 @@ return {
     {
       15,
       1,
-      8,
-      2,
+      30,
+      3,
     },
     {
       16,
@@ -123,8 +123,8 @@ return {
     {
       20,
       1,
-      8,
-      3,
+      30,
+      4,
     },
     {
       21,
@@ -149,6 +149,36 @@ return {
       1,
       20,
       4,
+    },
+    {
+      26,
+      1,
+      30,
+      1,
+    },
+    {
+      27,
+      1,
+      26,
+      1,
+    },
+    {
+      28,
+      1,
+      26,
+      2,
+    },
+    {
+      29,
+      1,
+      26,
+      3,
+    },
+    {
+      30,
+      1,
+      1,
+      3,
     },
   },
   nodeType = 'script',
@@ -182,26 +212,15 @@ return {
     },
     {
       loadArguments = {
-        3,
+        4,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
-        },
+        0.079999998211861,
       },
-      name = 'script/array',
+      name = 'number',
     },
     {
       name = 'components/spriteanimation',
@@ -214,7 +233,7 @@ return {
     },
     {
       loadArguments = {
-        1,
+        2,
       },
       name = 'number',
     },
@@ -250,7 +269,7 @@ return {
     },
     {
       loadArguments = {
-        2,
+        3,
       },
       name = 'number',
     },
@@ -277,7 +296,7 @@ return {
     },
     {
       loadArguments = {
-        3,
+        4,
       },
       name = 'number',
     },
@@ -298,6 +317,48 @@ return {
         'data/compounds/script/Init Sprite',
       },
       name = 'compound',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'spawn',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        9,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+        {
+          5,
+          '',
+        },
+      },
+      name = 'script/array',
     },
   },
 }

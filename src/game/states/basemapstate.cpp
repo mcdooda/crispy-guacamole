@@ -930,34 +930,36 @@ void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePos
 
 void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection)
 {
-	if (!addToSelection)
-	{
-		clearSelection();
-	}
 
 	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
 	if (mouseOverEntity != nullptr)
 	{
 		if (mouseOverEntity->canBeSelected() || forceEntitySelection(game))
 		{
-			const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getEntityTemplate();
-
-			flat::AABB2 screenAABB;
-			m_gameView.getScreenAABB(screenAABB);
-
-			std::vector<const map::MapObject*> entitiesInScreen;
-			m_displayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
-
-			for (const map::MapObject* mapObject : entitiesInScreen)
-			{
-				// TODO: fix these casts
-				entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
-				if (entity->getEntityTemplate() == entityTemplate)
+			if (mouseOverEntity->isSelected()) {
+				if (!addToSelection)
 				{
-					addToSelectedEntities(game, entity);
+					clearSelection();
 				}
+				const std::shared_ptr<const entity::EntityTemplate>& entityTemplate = mouseOverEntity->getEntityTemplate();
+
+				flat::AABB2 screenAABB;
+				m_gameView.getScreenAABB(screenAABB);
+
+				std::vector<const map::MapObject*> entitiesInScreen;
+				m_displayManager.getEntitiesInAABB(screenAABB, entitiesInScreen);
+
+				for (const map::MapObject* mapObject : entitiesInScreen)
+				{
+					// TODO: fix these casts
+					entity::Entity* entity = const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject));
+					if (entity->getEntityTemplate() == entityTemplate)
+					{
+						addToSelectedEntities(game, entity);
+					}
+				}
+				selectionChanged();
 			}
-			selectionChanged();
 		}
 		else
 		{

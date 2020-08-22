@@ -1,3 +1,5 @@
+local Button = require 'data/scripts/ui/button'
+
 return function(addContainer, makeSeparator, font)
     local format = string.format
     local collectgarbage = collectgarbage
@@ -9,17 +11,16 @@ return function(addContainer, makeSeparator, font)
     memorySnapshotContainer:addChild(usedMemoryLabel)
 
     local autoGC = false
-    local autoGCLabel = Widget.makeText('Auto GC: off', table.unpack(font))
-    autoGCLabel:setTextColor(0x000000FF)
-    autoGCLabel:click(function()
+    local autoGCLabel = Button:new(Widget.makeText('Auto GC: off', table.unpack(font)))
+    autoGCLabel.container:click(function()
         autoGC = not autoGC
         if autoGC then
-            autoGCLabel:setText 'Auto GC: on'
+            autoGCLabel.content:setText 'Auto GC: on'
         else
-            autoGCLabel:setText 'Auto GC: off'
+            autoGCLabel.content:setText 'Auto GC: off'
         end
     end)
-    memorySnapshotContainer:addChild(autoGCLabel)
+    memorySnapshotContainer:addChild(autoGCLabel.container)
     
     local timer = flat.Timer()
     timer:onUpdate(function()
@@ -32,19 +33,17 @@ return function(addContainer, makeSeparator, font)
 
     local snapshot
 
-    local snapshotButton = Widget.makeText('Take snapshot', table.unpack(font))
-    snapshotButton:setTextColor(0x000000FF)
-    snapshotButton:click(function()
+    local snapshotButton = Button:new(Widget.makeText('Take snapshot', table.unpack(font)))
+    snapshotButton.container:click(function()
         collectgarbage 'collect'
         snapshot = flat.lua.snapshot.snapshot()
         flat.ui.info 'Lua memory snapshot taken'
     end)
-    memorySnapshotContainer:addChild(snapshotButton)
+    memorySnapshotContainer:addChild(snapshotButton.container)
 
-    local diffButton = Widget.makeText('Save diff file', table.unpack(font))
-    diffButton:setTextColor(0x000000FF)
+    local diffButton =Button:new(Widget.makeText('Save diff file', table.unpack(font)))
     local diffNumber = 1
-    diffButton:click(function()
+    diffButton.container:click(function()
         if snapshot then
             collectgarbage 'collect'
             local snapshot2 = flat.lua.snapshot.snapshot()
@@ -54,5 +53,5 @@ return function(addContainer, makeSeparator, font)
             flat.ui.info('Snapshot diff saved to ' .. diffFile)
         end
     end)
-    memorySnapshotContainer:addChild(diffButton)
+    memorySnapshotContainer:addChild(diffButton.container)
 end

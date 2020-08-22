@@ -1,4 +1,5 @@
 local UiSettings = require 'data/scripts/ui/uisettings'
+local Button = require 'data/scripts/ui/button'
 
 return function(addContainer, makeSeparator, font)
 	local gameSpeedContainer = addContainer 'Game Speed'
@@ -20,46 +21,44 @@ return function(addContainer, makeSeparator, font)
         end
     end
 
+    local buttonsOptions = { padding = {4, 8, 4, 8} }
+
     do
-        local speedDownButton = Widget.makeText(' << ', table.unpack(font))
-        speedDownButton:setTextColor(0x000000FF)
-        speedDownButton:click(function()
+        local speedDownButton = Button:new(Widget.makeText('<<', table.unpack(font)), buttonsOptions)
+        speedDownButton.container:click(function()
             updateGameSpeed(timeSpeed * 0.5)
             game.debug_setTimeSpeed(timeSpeed)
         end)
-        buttonsContainer:addChild(speedDownButton)
+        buttonsContainer:addChild(speedDownButton.container)
     end
 
     do
-        local pauseButton = Widget.makeText(' || ', table.unpack(font))
-        pauseButton:setTextColor(0x000000FF)
-        pauseButton:click(function()
+        local pauseButton = Button:new(Widget.makeText('||', table.unpack(font)), buttonsOptions)
+        pauseButton.container:click(function()
             updateGameSpeed('<pause>')
             timePaused = true
             game.debug_pauseNextFrame()
         end)
-        buttonsContainer:addChild(pauseButton)
+        buttonsContainer:addChild(pauseButton.container)
     end
 
     do
-        local resumeButton = Widget.makeText(' > ', table.unpack(font))
-        resumeButton:setTextColor(0x000000FF)
-        resumeButton:click(function()
+        local resumeButton = Button:new(Widget.makeText('>', table.unpack(font)), buttonsOptions)
+        resumeButton.container:click(function()
             timePaused = false
             updateGameSpeed(timeSpeed)
             game.debug_resume()
         end)
-        buttonsContainer:addChild(resumeButton)
+        buttonsContainer:addChild(resumeButton.container)
     end
 
     do
-        local speedUpButton = Widget.makeText(' >> ', table.unpack(font))
-        speedUpButton:setTextColor(0x000000FF)
-        speedUpButton:click(function()
+        local speedUpButton = Button:new(Widget.makeText('>>', table.unpack(font)), buttonsOptions)
+        speedUpButton.container:click(function()
             updateGameSpeed(timeSpeed * 2)
             game.debug_setTimeSpeed(timeSpeed)
         end)
-        buttonsContainer:addChild(speedUpButton)
+        buttonsContainer:addChild(speedUpButton.container)
     end
 
     gameSpeedContainer:addChild(buttonsContainer)

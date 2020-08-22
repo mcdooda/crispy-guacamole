@@ -209,7 +209,7 @@ int l_Entity_eq(lua_State* L)
 int l_Entity_tostring(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	lua_pushfstring(L, "Entity %s#%d", entity.getTemplatePath().c_str(), entity.getId());
+	lua_pushfstring(L, "Entity %s#%d", entity.getTemplateName().string().c_str(), entity.getId());
 	return 1;
 }
 

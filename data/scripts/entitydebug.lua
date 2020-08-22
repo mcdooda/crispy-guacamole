@@ -1,4 +1,5 @@
 local Checkbox = require 'data/scripts/ui/checkbox'
+local Button = require 'data/scripts/ui/button'
 local format = string.format
 
 return function(addContainer, makeSeparator, font)
@@ -109,51 +110,48 @@ return function(addContainer, makeSeparator, font)
     entityDebugContainer:addChild(makeSeparator())
     -- print extraData
     do
-        local label = Widget.makeText('Print extra data', table.unpack(font))
-        label:setTextColor(0x000000FF)
-        entityDebugContainer:addChild(label)
-
-        label:click(function()
+        local printExtraDataButton = Button:new(Widget.makeText('Print extra data', table.unpack(font)))
+        printExtraDataButton.container:click(function()
             for _, selectedEntity in Map.eachSelectedEntity() do
                 print(selectedEntity)
                 flat.dump(selectedEntity:getExtraData())
             end
         end)
+        entityDebugContainer:addChild(printExtraDataButton.container)
     end
     -- open in editor
     do
-        local label = Widget.makeText('Open in editor', table.unpack(font))
+        local label = Widget.makeText('Open in editor:', table.unpack(font))
         label:setTextColor(0x000000FF)
         entityDebugContainer:addChild(label)
 
         local entityTemplatePathsContainer = Widget.makeColumnFlow()
         entityDebugContainer:addChild(entityTemplatePathsContainer)
 
-        local entityTemplateLabels = {}
+        local entityTemplateButtons = {}
         local timer = flat.Timer()
         timer:onUpdate(function()
             local selectedEntityTemplates = {}
             for _, selectedEntity in Map.eachSelectedEntity() do
-                selectedEntityTemplates[selectedEntity:getTemplatePath()] = true
+                selectedEntityTemplates[selectedEntity:getTemplatePath()] = selectedEntity:getTemplateName()
             end
 
-            for entityTemplatePath in pairs(selectedEntityTemplates) do
-                if not entityTemplateLabels[entityTemplatePath] then
-                    local entityTemplateLabel = Widget.makeText(entityTemplatePath, table.unpack(font))
-                    entityTemplateLabel:setTextColor(0x000000FF)
-                    entityTemplateLabel:click(function()
+            for entityTemplatePath, entityTemplateName in pairs(selectedEntityTemplates) do
+                if not entityTemplateButtons[entityTemplatePath] then
+                    local entityTemplateButton = Button:new(Widget.makeText(entityTemplateName, table.unpack(font)))
+                    entityTemplateButton.container:click(function()
                         EntityEditor.openEntity(Mod.getPath(), 'mods/crispy-guacamole/maps/sandbox', entityTemplatePath)
                         return true
                     end)
-                    entityTemplatePathsContainer:addChild(entityTemplateLabel)
-                    entityTemplateLabels[entityTemplatePath] = entityTemplateLabel
+                    entityTemplatePathsContainer:addChild(entityTemplateButton.container)
+                    entityTemplateButtons[entityTemplatePath] = entityTemplateButton
                 end
             end
 
-            for entityTemplatePath, entityTemplateLabel in pairs(entityTemplateLabels) do
+            for entityTemplatePath, entityTemplateButton in pairs(entityTemplateButtons) do
                 if not selectedEntityTemplates[entityTemplatePath] then
-                    entityTemplateLabels[entityTemplatePath]:removeFromParent()
-                    entityTemplateLabels[entityTemplatePath] = nil
+                    entityTemplateButtons[entityTemplatePath]:removeFromParent()
+                    entityTemplateButtons[entityTemplatePath] = nil
                 end
             end
         end)

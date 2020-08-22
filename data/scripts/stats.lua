@@ -1,3 +1,5 @@
+local Button = require 'data/scripts/ui/button'
+
 return function(addContainer, makeSeparator, font)
 	local format = string.format
 
@@ -20,13 +22,12 @@ return function(addContainer, makeSeparator, font)
 		local highestFps = -math.huge
 		local lowestFps = math.huge
 
-		local resetButton = Widget.makeText('Reset', table.unpack(font))
-		resetButton:setTextColor(0x000000FF)
-		resetButton:click(function()
+		local resetButton = Button:new(Widget.makeText('Reset', table.unpack(font)))
+		resetButton.container:click(function()
 			highestFps = -math.huge
 			lowestFps = math.huge
 		end)
-		statsContainer:addChild(resetButton)
+		statsContainer:addChild(resetButton.container)
 		
 		local getFrameRate = Time.getFrameRate
 

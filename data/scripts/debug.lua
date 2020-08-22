@@ -28,7 +28,7 @@ local function addContainer(title)
     container:setPadding(2)
     local visible = false
 
-    local collapseButtonContainer = Widget.makeFixedSize(120,1)
+    local collapseButtonContainer = Widget.makeFixedSize(150, 1)
     collapseButtonContainer:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.COMPRESS_Y)
     do
         local collapseButton = Widget.makeText(title, table.unpack(UiSettings.defaultFont))
@@ -61,10 +61,10 @@ local debugFiles = {
     'profiler',
     'memorysnapshot',
     'entitydebug',
+    'gamespeed',
     'pathfinding',
     'fog',
-    'gamespeed',
-    'audio'
+    'audio',
 }
 
 for i = 1, #debugFiles do

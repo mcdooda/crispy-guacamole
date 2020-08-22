@@ -29,12 +29,14 @@ function FireProjectileNode:execute(runtime, inputPin)
     local delay = runtime:readPin(self.delayInPin)
     local followTarget = runtime:readPin(self.followTargetInPin)
 
+    local projectileAsset = assert(Asset.findFromName('entity', projectileName), 'Could not find entity asset ' .. projectileName)
+
     local function fireProjectile()
         if not entity:isValid() or not target:isValid() then
             return
         end
 
-        local spawnProjectile = ProjectileHelper.createSpawnerFromEntity(projectileName)
+        local spawnProjectile = ProjectileHelper.createSpawnerFromEntity(projectileAsset:getPath())
         local projectile = spawnProjectile(entity, attachPoint, target)
 
         if projectile then

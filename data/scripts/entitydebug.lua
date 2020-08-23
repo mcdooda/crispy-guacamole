@@ -150,7 +150,7 @@ return function(addContainer, makeSeparator, font)
 
             for entityTemplatePath, entityTemplateButton in pairs(entityTemplateButtons) do
                 if not selectedEntityTemplates[entityTemplatePath] then
-                    entityTemplateButtons[entityTemplatePath]:removeFromParent()
+                    entityTemplateButtons[entityTemplatePath].container:removeFromParent()
                     entityTemplateButtons[entityTemplatePath] = nil
                 end
             end

@@ -65,6 +65,7 @@ local debugFiles = {
     'pathfinding',
     'fog',
     'audio',
+    'procgen',
 }
 
 for i = 1, #debugFiles do

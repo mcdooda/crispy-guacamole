@@ -77,7 +77,8 @@ class BaseMapState : public BaseState
 			entity::component::ComponentFlags enabledComponentFlags = entity::component::AllComponents
 		);
 		void despawnEntity(entity::Entity* entity);
-		void despawnEntities();
+		void despawnMarkedEntities();
+		void despawnAllEntities();
 
 		inline const std::vector<entity::Entity*>& getSelectedEntities() const { return m_selectedEntities; }
 

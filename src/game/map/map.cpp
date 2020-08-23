@@ -39,6 +39,44 @@ Map::~Map()
 	
 }
 
+void Map::reset(Game& game, int width, int height, const std::shared_ptr<const TileTemplate>& tileTemplate)
+{
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+	baseMapState.despawnAllEntities();
+
+	m_displayManager->clear();
+
+	m_tiles.clear();
+	m_tileNavigations.clear();
+	m_tilePositions.clear();
+	m_neighborTiles.clear();
+	m_tilePositionToIndex.clear();
+	m_props.clear();
+
+	m_dirtyNormalTiles.clear();
+	m_dirtyTextureTiles.clear();
+
+	m_zones.clear();
+	m_tileSpriteSynchronizers.clear();
+
+	int tileCount = width * height;
+	m_tiles.reserve(tileCount);
+	// keep sames axes, change bounds
+	setBounds(0, width - 1, 0, height - 1);
+	for (int x = 0; x < width; ++x)
+	{
+		for (int y = 0; y < height; ++y)
+		{
+			const flat::Vector2i tilePosition(x, y);
+			const int randomTileVariantIndex = tileTemplate->getRandomTileVariantIndex(game);
+			createTile(tilePosition, 0.f, tileTemplate, randomTileVariantIndex);
+		}
+	}
+	updateAllTiles();
+
+	setFogType(fog::Fog::FogType::NONE);
+}
+
 void Map::setState(Game& game, const io::MapFile& mapFile)
 {
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();

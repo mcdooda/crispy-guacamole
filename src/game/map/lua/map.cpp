@@ -26,6 +26,8 @@ int open(lua_State* L)
 		{"load",                          l_Map_load},
 		{"save",                          l_Map_save},
 
+		{"reset",                         l_Map_reset},
+
 #ifdef FLAT_DEBUG
 		{"debug_getDrawStats",            l_Map_debug_getDrawStats},
 		{"debug_enableNavigabilityDebug", l_Map_debug_enableNavigabilityDebug},
@@ -109,6 +111,27 @@ int l_Map_save(lua_State* L)
 	bool mapSaved = editorState.saveMap(game);
 	lua_pushboolean(L, mapSaved);
 	return 1;
+}
+
+int l_Map_reset(lua_State* L)
+{
+	int width = static_cast<int>(luaL_checkinteger(L, 1));
+	int height = static_cast<int>(luaL_checkinteger(L, 2));
+	const std::string tileTemplatePath = luaL_checkstring(L, 3);
+
+	Game& game = flat::lua::getFlatAs<Game>(L);
+
+	std::shared_ptr<const game::map::TileTemplate> tileTemplate = getMapState(L).getTileTemplate(game, tileTemplatePath);
+	if (tileTemplate == nullptr)
+	{
+		luaL_error(L, "Could not find tile template '%s'", tileTemplatePath.c_str());
+	}
+
+	Map& map = getMap(L);
+
+	map.reset(game, width, height, tileTemplate);
+
+	return 0;
 }
 
 #ifdef FLAT_DEBUG

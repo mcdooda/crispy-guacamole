@@ -154,11 +154,7 @@ void BaseMapState::execute(Game& game)
 
 void BaseMapState::exit(Game& game)
 {
-	std::vector<entity::Entity*> entities = m_entityUpdater.getEntities();
-	for (entity::Entity* entity : entities)
-	{
-		despawnEntity(entity);
-	}
+	despawnAllEntities();
 	clearGhostTemplate();
 
 	if (!isMouseOverUi(game))
@@ -430,7 +426,7 @@ void BaseMapState::despawnEntity(entity::Entity* entity)
 	destroyEntity(entity);
 }
 
-void BaseMapState::despawnEntities()
+void BaseMapState::despawnMarkedEntities()
 {
 	std::vector<entity::Entity*> entities = m_entityUpdater.getEntities();
 	for (entity::Entity* entity : entities)
@@ -439,6 +435,15 @@ void BaseMapState::despawnEntities()
 		{
 			despawnEntity(entity);
 		}
+	}
+}
+
+void BaseMapState::despawnAllEntities()
+{
+	std::vector<entity::Entity*> entities = m_entityUpdater.getEntities();
+	for (entity::Entity* entity : entities)
+	{
+		despawnEntity(entity);
 	}
 }
 
@@ -1320,7 +1325,7 @@ void BaseMapState::updateEntities()
 
 	m_map.getFog().preUpdate();
 
-	despawnEntities();
+	despawnMarkedEntities();
 	const flat::time::Clock& clock = getGameClock();
 	m_entityUpdater.updateAllEntities(clock.getTime(), clock.getDT());
 

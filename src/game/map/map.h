@@ -87,6 +87,8 @@ class Map
 		Map();
 		~Map();
 
+		void reset(Game& game, int width, int height, const std::shared_ptr<const TileTemplate>& tileTemplate);
+
 		void setState(Game& game, const io::MapFile& mapFile);
 		void getState(Game& game, io::MapFile& mapFile) const;
 

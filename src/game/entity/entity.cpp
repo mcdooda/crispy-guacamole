@@ -218,6 +218,14 @@ flat::Vector3 Entity::getCenter() const
 	return m_position;
 }
 
+void Entity::computeTransform(flat::Matrix4& transform) const
+{
+	transform = flat::Matrix4();
+	flat::translateBy(transform, m_position);
+	flat::rotateZBy(transform, m_heading);
+	flat::rotateYBy(transform, -m_elevation);
+}
+
 void Entity::setHeading(float heading, float epsilon)
 {
 	const float difference = std::abs(flat::angle_clamp_pi(heading - m_heading));

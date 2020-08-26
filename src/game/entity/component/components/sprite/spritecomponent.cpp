@@ -246,6 +246,25 @@ void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
 	debugDisplay.add2dAABB(m_owner->getAABB());
 
+	flat::Matrix4 entityTransform;
+	m_owner->computeTransform(entityTransform);
+
+	debugDisplay.add3dLine(
+		m_owner->getPosition(),
+		flat::Vector3(entityTransform * flat::Vector4(flat::Vector3(1.f, 0.f, 0.f), 1.f)),
+		flat::video::Color::RED
+	);
+	debugDisplay.add3dLine(
+		m_owner->getPosition(),
+		flat::Vector3(entityTransform * flat::Vector4(flat::Vector3(0.f, 1.f, 0.f), 1.f)),
+		flat::video::Color::GREEN
+	);
+	debugDisplay.add3dLine(
+		m_owner->getPosition(),
+		flat::Vector3(entityTransform * flat::Vector4(flat::Vector3(0.f, 0.f, 1.f), 1.f)),
+		flat::video::Color::BLUE
+	);
+
 	// below: debug the owner's sprite's quadtree cell
 	
 	const map::Map* map = m_owner->getMap();
@@ -254,12 +273,12 @@ void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	debugDisplay.add2dAABB(quadtreeCellAABB, flat::video::Color::RED);
 	if (m_currentAnimationDescription != nullptr)
 	{
-		debugDisplay.add3dText(m_owner->getPosition(), m_currentAnimationDescription->getName()
+		debugDisplay.add3dText(m_owner->getPosition() + flat::Vector3(0.f, 0.f, 1.5f), m_currentAnimationDescription->getName()
 			+ " " + std::to_string(m_sprite.getCurrentColumn() + 1) + "/" + std::to_string(m_currentAnimationDescription->getNumFrames()));
 	}
 	else if (m_cycleAnimationDescription != nullptr)
 	{
-		debugDisplay.add3dText(m_owner->getPosition(), m_cycleAnimationDescription->getName()
+		debugDisplay.add3dText(m_owner->getPosition() + flat::Vector3(0.f, 0.f, 1.5f), m_cycleAnimationDescription->getName()
 			+ " " + std::to_string(m_sprite.getCurrentColumn() + 1) + "/" + std::to_string(m_cycleAnimationDescription->getNumFrames()) + " (cycle)");
 	}
 }

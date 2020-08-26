@@ -13,15 +13,9 @@ return {
       2,
     },
     {
-      2,
+      3,
       1,
       5,
-      2,
-    },
-    {
-      3,
-      1,
-      9,
       1,
     },
     {
@@ -39,38 +33,14 @@ return {
     {
       3,
       4,
-      6,
-      1,
-    },
-    {
-      3,
-      4,
-      2,
-      1,
-    },
-    {
-      5,
-      1,
-      4,
-      3,
-    },
-    {
-      6,
-      1,
-      5,
+      7,
       1,
     },
     {
       7,
       1,
-      2,
-      2,
-    },
-    {
-      8,
-      1,
-      6,
-      2,
+      4,
+      3,
     },
   },
   nodeType = 'script',
@@ -89,31 +59,16 @@ return {
       name = 'script/scriptinput',
     },
     {
-      name = 'math/greaterthan',
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
     {
       name = 'entity/headingchanged',
     },
     {
       name = 'entity/flipspritex',
-    },
-    {
-      name = 'math/or',
-    },
-    {
-      name = 'math/lessthan',
-    },
-    {
-      loadArguments = {
-        '5 * pi / 4',
-      },
-      name = 'math/formula',
-    },
-    {
-      loadArguments = {
-        'pi / 4',
-      },
-      name = 'math/formula',
     },
     {
       loadArguments = {
@@ -132,9 +87,9 @@ return {
     },
     {
       loadArguments = {
-        false,
+        'data/compounds/script/Is Looking Left',
       },
-      name = 'boolean',
+      name = 'compound',
     },
   },
 }

@@ -67,7 +67,7 @@ void Map::reset(Game& game, int width, int height, const std::shared_ptr<const T
 	{
 		for (int y = 0; y < height; ++y)
 		{
-			const flat::Vector2i tilePosition(x, y);
+			const flat::Vector2i tilePosition(x - width / 2, y - height / 2);
 			const int randomTileVariantIndex = tileTemplate->getRandomTileVariantIndex(game);
 			createTile(tilePosition, 0.f, tileTemplate, randomTileVariantIndex);
 		}

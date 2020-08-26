@@ -48,6 +48,7 @@ int open(lua_State* L)
 		{"setTileZ",                      l_Map_setTileZ},
 		{"moveTileZBy",                   l_Map_moveTileZBy},
 		{"setTileTemplate",               l_Map_setTileTemplate},
+		{"eachTile",                      l_Map_eachTile},
 
 		{"findPath",                      l_Map_findPath},
 
@@ -307,6 +308,20 @@ int l_Map_setTileTemplate(lua_State* L)
 	std::shared_ptr<const game::map::TileTemplate> tileTemplate = getMapState(L).getTileTemplate(game, tileTemplatePath);
 	Map& map = getMap(L);
 	map.setTileTemplate(tileIndex, tileTemplate);
+	return 0;
+}
+
+int l_Map_eachTile(lua_State* L)
+{
+	luaL_checktype(L, 1, LUA_TFUNCTION);
+	Map& map = getMap(L);
+	map.eachTile([L](TileIndex tileIndex)
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+		lua_pushvalue(L, 1);
+		lua_pushinteger(L, tileIndex);
+		lua_pcall(L, 1, 0, 0);
+	});
 	return 0;
 }
 

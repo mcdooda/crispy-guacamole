@@ -1,10 +1,1 @@
-return {
-	maxHealth = 100,
-	despawn = function(entity)
-		entity:playAnimation 'despawn'
-	end
-	--[[spawn = function(larva)
-		
-	end,
-	]]
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/scourge/scourge_larva/life'

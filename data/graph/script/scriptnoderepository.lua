@@ -73,6 +73,7 @@ return {
     'entity/flipspritex',
     'entity/setspriterotation',
     'entity/directionalsprite',
+    'entity/getattachpoint',
 
     -- entity
     'entity/gettemplatepath',

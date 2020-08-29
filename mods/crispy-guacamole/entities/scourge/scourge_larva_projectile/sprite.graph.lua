@@ -3,7 +3,7 @@ return {
     {
       1,
       1,
-      11,
+      14,
       1,
     },
     {
@@ -33,55 +33,49 @@ return {
     {
       6,
       1,
-      11,
+      13,
       2,
-    },
-    {
-      7,
-      1,
-      6,
-      1,
     },
     {
       8,
       1,
-      6,
+      10,
       2,
     },
     {
       9,
       1,
-      6,
-      3,
+      10,
+      1,
     },
     {
       10,
       1,
-      6,
-      4,
+      12,
+      2,
     },
     {
       11,
       1,
-      12,
-      3,
+      13,
+      1,
     },
     {
       12,
       1,
-      19,
+      7,
       1,
     },
     {
       12,
       2,
-      20,
+      16,
       1,
     },
     {
       12,
       3,
-      20,
+      16,
       2,
     },
     {
@@ -93,32 +87,20 @@ return {
     {
       14,
       1,
-      13,
-      1,
+      12,
+      3,
     },
     {
       15,
       1,
-      13,
-      2,
-    },
-    {
       16,
-      1,
-      12,
-      2,
+      3,
     },
     {
       17,
       1,
       16,
-      1,
-    },
-    {
-      18,
-      1,
-      16,
-      2,
+      4,
     },
   },
   nodeType = 'script',
@@ -140,86 +122,19 @@ return {
     },
     {
       loadArguments = {
-        5,
+        1,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.079999998211861,
-      },
-      name = 'number',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'despawn',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        7,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.079999998211861,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          '',
-        },
-        {
-          5,
-          '',
-        },
-      },
-      name = 'script/array',
-    },
-    {
-      name = 'components/spritecomponent',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        10,
+        1,
       },
       name = 'number',
     },
     {
       loadArguments = {
         14.5,
-      },
-      name = 'number',
-    },
-    {
-      name = 'vector2',
-    },
-    {
-      loadArguments = {
-        7,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        2,
       },
       name = 'number',
     },
@@ -234,9 +149,54 @@ return {
     },
     {
       loadArguments = {
-        'data/compounds/script/Init Sprite',
+        2,
       },
-      name = 'compound',
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        7,
+      },
+      name = 'number',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spritecomponent',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          '',
+        },
+      },
+      name = 'script/array',
+    },
+    {
+      loadArguments = {
+        'rotation_speed',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/setextradatafield',
+    },
+    {
+      loadArguments = {
+        30,
+      },
+      name = 'number',
     },
   },
 }

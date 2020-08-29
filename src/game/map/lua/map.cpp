@@ -320,7 +320,7 @@ int l_Map_eachTile(lua_State* L)
 		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
 		lua_pushvalue(L, 1);
 		lua_pushinteger(L, tileIndex);
-		lua_pcall(L, 1, 0, 0);
+		lua_call(L, 1, 0);
 	});
 	return 0;
 }

@@ -9,7 +9,7 @@ return {
     {
       1,
       2,
-      36,
+      42,
       1,
     },
     {
@@ -225,26 +225,8 @@ return {
     {
       36,
       1,
-      33,
-      1,
-    },
-    {
-      36,
-      2,
-      34,
-      1,
-    },
-    {
-      36,
+      32,
       3,
-      37,
-      1,
-    },
-    {
-      36,
-      4,
-      38,
-      1,
     },
     {
       37,
@@ -279,8 +261,26 @@ return {
     {
       42,
       1,
-      32,
+      33,
+      1,
+    },
+    {
+      42,
+      2,
+      34,
+      1,
+    },
+    {
+      42,
       3,
+      37,
+      1,
+    },
+    {
+      42,
+      4,
+      38,
+      1,
     },
   },
   nodeType = 'script',
@@ -488,9 +488,9 @@ return {
     },
     {
       loadArguments = {
-        6,
+        'idle',
       },
-      name = 'script/impulseall',
+      name = 'string',
     },
     {
       name = 'entity/movementstarted',
@@ -512,9 +512,9 @@ return {
     },
     {
       loadArguments = {
-        'idle',
+        5,
       },
-      name = 'string',
+      name = 'script/impulseall',
     },
   },
 }

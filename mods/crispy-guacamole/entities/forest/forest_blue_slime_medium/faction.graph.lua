@@ -20,7 +20,7 @@ return {
     },
     {
       loadArguments = {
-        'orc',
+        'chaos',
       },
       name = 'string',
     },

@@ -357,7 +357,10 @@ return function(addContainer, makeSeparator, font)
         randomizeButton.container:setFocusable(true)
 
         local function getState()
-            local state = {}
+            local state = {
+                width  = widthInput:getValue(),
+                height = heightInput:getValue()
+            }
             for sliderName, slider in pairs(sliders) do
                 state[sliderName] = slider:getValue()
             end
@@ -365,9 +368,10 @@ return function(addContainer, makeSeparator, font)
         end
 
         local function setState(state)
-            for sliderName, value in pairs(state) do
-                local slider = sliders[sliderName]
-                slider:setValue(value)
+            widthInput:setValue(state.width)
+            heightInput:setValue(state.height)
+            for sliderName, slider in pairs(sliders) do
+                slider:setValue(state[sliderName])
             end
         end
 

@@ -11,10 +11,12 @@ return function(addContainer, makeSeparator, font)
     local noiseFrequencySlider
     local altitudeFactorSlider
     local redistributeAltitudeSlider
-    local grainSlider
+    local altitudeGrainSlider
+    local biomesGrainSlider
     local stepHeightSlider
     local waterLevelSlider
-    local generateSingleIslandCheckbox
+    local islandCurveSlider
+    local islandHeightSlider
 
     do
         local widthLabel = Widget.makeText('Width', table.unpack(font))
@@ -22,7 +24,7 @@ return function(addContainer, makeSeparator, font)
         procGenContainer:addChild(widthLabel)
 
         widthInput = Widget.makeNumberInput(table.unpack(font))
-        widthInput:setValue(50)
+        widthInput:setValue(100)
         widthInput:setSize(40, 15)
         widthInput:setTextColor(0x000000FF)
         widthInput:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.FIXED_Y)
@@ -37,7 +39,7 @@ return function(addContainer, makeSeparator, font)
         procGenContainer:addChild(heightLabel)
 
         heightInput = Widget.makeNumberInput(table.unpack(font))
-        heightInput:setValue(50)
+        heightInput:setValue(100)
         heightInput:setSize(40, 15)
         heightInput:setTextColor(0x000000FF)
         heightInput:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.FIXED_Y)
@@ -53,7 +55,7 @@ return function(addContainer, makeSeparator, font)
         noiseFrequencyLabel:setTextColor(0x000000FF)
         procGenContainer:addChild(noiseFrequencyLabel)
 
-        noiseFrequencySlider = Slider:new(146, 15, 0, 0.2, 0.1)
+        noiseFrequencySlider = Slider:new(146, 15, 0, 0.1, 0.05)
         procGenContainer:addChild(noiseFrequencySlider.container)
     end
 
@@ -82,23 +84,23 @@ return function(addContainer, makeSeparator, font)
     procGenContainer:addChild(makeSeparator())
 
     do
-        local grainLabel = Widget.makeText('Elevation Grain', table.unpack(font))
-        grainLabel:setTextColor(0x000000FF)
-        procGenContainer:addChild(grainLabel)
+        local altitudeGrainLabel = Widget.makeText('Altitude Grain', table.unpack(font))
+        altitudeGrainLabel:setTextColor(0x000000FF)
+        procGenContainer:addChild(altitudeGrainLabel)
 
-        grainSlider = Slider:new(146, 15, 1, 4, 2)
-        procGenContainer:addChild(grainSlider.container)
+        altitudeGrainSlider = Slider:new(146, 15, 1, 4, 2)
+        procGenContainer:addChild(altitudeGrainSlider.container)
     end
 
     procGenContainer:addChild(makeSeparator())
 
     do
-        local grainLabel = Widget.makeText('Biomes Grain', table.unpack(font))
-        grainLabel:setTextColor(0x000000FF)
-        procGenContainer:addChild(grainLabel)
+        local biomesGrainLabel = Widget.makeText('Biomes Grain', table.unpack(font))
+        biomesGrainLabel:setTextColor(0x000000FF)
+        procGenContainer:addChild(biomesGrainLabel)
 
-        local grainSlider = Slider:new(146, 15, 1, 4, 2.5)
-        procGenContainer:addChild(grainSlider.container)
+        biomesGrainSlider = Slider:new(146, 15, 1, 4, 2.5)
+        procGenContainer:addChild(biomesGrainSlider.container)
     end
 
     procGenContainer:addChild(makeSeparator())
@@ -126,78 +128,196 @@ return function(addContainer, makeSeparator, font)
     procGenContainer:addChild(makeSeparator())
 
     do
-        generateSingleIslandCheckbox = Checkbox:new(true, 'Generate Single Island')
-        procGenContainer:addChild(generateSingleIslandCheckbox.container)
+        local islandCurveLabel = Widget.makeText('Island Curve', table.unpack(font))
+        islandCurveLabel:setTextColor(0x000000FF)
+        procGenContainer:addChild(islandCurveLabel)
+
+        islandCurveSlider = Slider:new(146, 15, 0, 10, 1)
+        procGenContainer:addChild(islandCurveSlider.container)
     end
 
     procGenContainer:addChild(makeSeparator())
 
     do
-        local generateButton = Button:new(Widget.makeText('Generate', table.unpack(font)))
-        generateButton.container:click(function()
+        local islandHeightLabel = Widget.makeText('Island Height', table.unpack(font))
+        islandHeightLabel:setTextColor(0x000000FF)
+        procGenContainer:addChild(islandHeightLabel)
+
+        islandHeightSlider = Slider:new(146, 15, 0, 100, 1)
+        procGenContainer:addChild(islandHeightSlider.container)
+    end
+
+    procGenContainer:addChild(makeSeparator())
+
+    do
+        local function clamp(value, min, max)
+            if value < min then
+                return min
+            elseif value > max then
+                return max
+            else
+                return value
+            end
+        end
+
+        local function getTileTemplate(altitude, moisture)
+            local oceanTile                    = 'mods/crispy-guacamole/tiles/water'
+            local beachTile                    = 'mods/crispy-guacamole/tiles/sand'
+            local scorchedTile                 = 'mods/crispy-guacamole/tiles/dirt_light'
+            local bareTile                     = 'mods/crispy-guacamole/tiles/frozen_dirt'
+            local tundraTile                   = 'mods/crispy-guacamole/tiles/snow'
+            local snowTile                     = 'mods/crispy-guacamole/tiles/snow'
+            local temperateDesertTile          = 'mods/crispy-guacamole/tiles/grass_light'
+            local shrubLandTile                = 'mods/crispy-guacamole/tiles/high_grass'
+            local taigaTile                    = 'mods/crispy-guacamole/tiles/snow'
+            local grassLandTile                = 'mods/crispy-guacamole/tiles/grass'
+            local temperateDeciduousForestTile = 'mods/crispy-guacamole/tiles/grass'
+            local temperateRainForestTile      = 'mods/crispy-guacamole/tiles/high_grass'
+            local subtropicalDesertTile        = 'mods/crispy-guacamole/tiles/sand'
+            local tropicalSeasonalForestTile   = 'mods/crispy-guacamole/tiles/high_grass'
+            local tropicalRainForestTile       = 'mods/crispy-guacamole/tiles/high_grass'
+
+            assert(0 <= altitude and altitude <= 1)
+            assert(0 <= moisture and moisture <= 1)
+
+            if altitude <= 0.001 then
+                return oceanTile
+            elseif altitude < 0.1 then
+                return beachTile
+            end
+            
+            if altitude > 0.8 then
+                if moisture < 0.1 then
+                    return scorchedTile
+                elseif moisture < 0.2 then
+                    return bareTile
+                elseif moisture < 0.5 then
+                    return tundraTile
+                else
+                    return snowTile
+                end
+            end
+          
+            if altitude > 0.6 then
+                if moisture < 0.33 then
+                    return temperateDesertTile
+                elseif moisture < 0.66 then
+                    return shrubLandTile
+                else
+                    return taigaTile;
+                end
+            end
+          
+            if altitude > 0.3 then
+                if moisture < 0.16 then
+                    return temperateDesertTile;
+                elseif moisture < 0.50 then
+                    return grassLandTile;
+                elseif moisture < 0.83 then
+                    return temperateDeciduousForestTile;
+                else
+                    return temperateRainForestTile;
+                end
+            end
+          
+            if moisture < 0.16 then
+                return subtropicalDesertTile;
+            elseif moisture < 0.33 then
+                return grassLandTile;
+            elseif moisture < 0.66 then
+                return tropicalSeasonalForestTile;
+            else
+                return tropicalRainForestTile;
+            end
+        end
+
+        local function perlinNoise(x, y, noiseFrequency, grain)
+            local z = 0
+            local maxZ = 0
+            local noiseLevel = 1
+            local levelGrain = grain
+            while levelGrain > 1 do
+                local p = 2 ^ (noiseLevel - 1)
+                z = z + (Perlin:noise(x * noiseFrequency * p, y * noiseFrequency * p) * 0.5 + 0.5) / p
+                maxZ = maxZ + 1 / p
+                levelGrain = levelGrain - 1
+                noiseLevel = noiseLevel + 1
+            end
+            if levelGrain > 0 then
+                noiseLevel = noiseLevel + levelGrain - 1
+                local p = 2 ^ (noiseLevel - 1)
+                z = z + (Perlin:noise(x * noiseFrequency * p, y * noiseFrequency * p) * 0.5 + 0.5) / p
+                maxZ = maxZ + 1 / p
+            end
+            assert(0 <= z and z <= maxZ)
+            return z, maxZ
+        end
+
+        local function generate()
             print 'Generating...'
             local width = widthInput:getValue()
             local height = heightInput:getValue()
             local noiseFrequency = noiseFrequencySlider:getValue()
-            print('noiseFrequency=', noiseFrequency)
             local altitudeFactor = altitudeFactorSlider:getValue()
-            print('altitudeFactor=', altitudeFactor)
             local redistributeAltitude = redistributeAltitudeSlider:getValue()
-            print('redistributeAltitude=', redistributeAltitude)
-            local grain = grainSlider:getValue()
-            print('grain=', grain)
+            local altitudeGrain = altitudeGrainSlider:getValue()
+            local biomesGrain = biomesGrainSlider:getValue()
             local stepHeight = stepHeightSlider:getValue()
-            print('stepHeight=', stepHeight)
             local waterLevel = waterLevelSlider:getValue()
             if stepHeight ~= 0 then
                 waterLevel = math.floor(waterLevel / stepHeight + 0.5) * stepHeight
             end
-            print('waterLevel=', waterLevel)
-            local generateSingleIsland = generateSingleIslandCheckbox:getValue()
+            local islandCurve = islandCurveSlider:getValue()
+            local islandHeight = islandHeightSlider:getValue()
+
+            local minZ, maxZ
 
             Map.reset(width, height, 'mods/crispy-guacamole/tiles/grass')
             Map.eachTile(function(tile)
                 local x, y = Map.getTilePosition(tile)
-                local z = 0
-
-                local noiseLevel = 1
-                local levelGrain = grain
-                while levelGrain > 1 do
-                    local p = 2 ^ (noiseLevel - 1)
-                    z = z + (Perlin:noise(x * noiseFrequency * p, y * noiseFrequency * p) * 0.5 + 0.5) / p
-                    levelGrain = levelGrain - 1
-                    noiseLevel = noiseLevel + 1
-                end
-                if levelGrain > 0 then
-                    noiseLevel = noiseLevel + levelGrain
-                    local p = 2 ^ (noiseLevel - 1)
-                    z = z + (Perlin:noise(x * noiseFrequency * p, y * noiseFrequency * p) * 0.5 + 0.5) / p
-                end
+                local z = perlinNoise(x, y, noiseFrequency, altitudeGrain)
                 z = z ^ redistributeAltitude
                 z = z * altitudeFactor
 
-                if generateSingleIsland then
-                    local distanceToCenter = flat.Vector2(x, y):length()
-                    local distanceToCenterNormalized = distanceToCenter / (math.max(width, height) / 2)
-                    local islandAltitudeFactor = 1 - math.sqrt(distanceToCenterNormalized)
-                    z = z * islandAltitudeFactor
+                -- island curve
+                local distanceToCenter = flat.Vector2(x, y):length()
+                local distanceToCenterNormalized = distanceToCenter / (math.max(width, height) / 2)
+                local islandAltitudeFactor = clamp(1 - distanceToCenterNormalized, 0, 1)
+                z = z + (islandAltitudeFactor ^ islandCurve) * islandHeight
+
+                if z < waterLevel then
+                    z = waterLevel
                 end
 
-                if stepHeight ~= 0 then
-                    z = math.floor(z / stepHeight + 0.5) * stepHeight
-                end
+                Map.setTileZ(tile, z)
 
-                if z >= waterLevel then
-                    Map.setTileZ(tile, z)
-                else
-                    Map.setTileZ(tile, waterLevel)
-                    Map.setTileTemplate(tile, 'mods/crispy-guacamole/tiles/water')
+                if not minZ or z < minZ then
+                    minZ = z
+                end
+                if not maxZ or z > maxZ then
+                    maxZ = z
                 end
             end)
+            Map.eachTile(function(tile)
+                local x, y = Map.getTilePosition(tile)
+                local moisture, maxMoisture = perlinNoise(x + 1000, y + 1000, noiseFrequency, biomesGrain)
+                local z = Map.getTileZ(tile)
+                local normalizedZ = clamp((z - minZ) / (maxZ - minZ), 0, 1)
+                local tileTemplate = getTileTemplate(normalizedZ, moisture / maxMoisture)
+                Map.setTileTemplate(tile, tileTemplate)
+                if stepHeight ~= 0 then
+                    z = math.floor(z / stepHeight + 0.5) * stepHeight
+                    Map.setTileZ(tile, z)
+                end
+            end)
+
             local cameraOrigin = game.convertToCameraPosition(flat.Vector3(0, 0, 0))
             game.setCameraCenter(cameraOrigin)
             print 'Generated!'
-        end)
+        end
+
+        local generateButton = Button:new(Widget.makeText('Generate', table.unpack(font)))
+        generateButton.container:click(generate)
         procGenContainer:addChild(generateButton.container)
     end
 end

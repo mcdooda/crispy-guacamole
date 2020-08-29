@@ -319,5 +319,74 @@ return function(addContainer, makeSeparator, font)
         local generateButton = Button:new(Widget.makeText('Generate', table.unpack(font)))
         generateButton.container:click(generate)
         procGenContainer:addChild(generateButton.container)
+
+        local sliders = {
+            noiseFrequency       = noiseFrequencySlider,
+            altitudeFactor       = altitudeFactorSlider,
+            redistributeAltitude = redistributeAltitudeSlider,
+            altitudeGrain        = altitudeGrainSlider,
+            biomesGrain          = biomesGrainSlider,
+            stepHeight           = stepHeightSlider,
+            waterLevel           = waterLevelSlider,
+            islandCurve          = islandCurveSlider,
+            islandHeight         = islandHeightSlider
+        }
+
+        local randomizeButton = Button:new(Widget.makeText('Randomize', table.unpack(font)))
+        randomizeButton.container:click(function()
+            local sliders = {
+                noiseFrequencySlider,
+                altitudeFactorSlider,
+                redistributeAltitudeSlider,
+                altitudeGrainSlider,
+                biomesGrainSlider,
+                stepHeightSlider,
+                waterLevelSlider,
+                islandCurveSlider,
+                islandHeightSlider
+            }
+            for sliderName, slider in pairs(sliders) do
+                local value = slider.min + math.random() * (slider.max - slider.min)
+                slider:setValue(value)
+            end
+            generate()
+        end)
+        procGenContainer:addChild(randomizeButton.container)
+
+        local randomizeButton = Button:new(Widget.makeText('Copy/Paste', table.unpack(font)))
+        randomizeButton.container:setFocusable(true)
+
+        local function getState()
+            local state = {}
+            for sliderName, slider in pairs(sliders) do
+                state[sliderName] = slider:getValue()
+            end
+            return state
+        end
+
+        local function setState(state)
+            for sliderName, value in pairs(state) do
+                local slider = sliders[sliderName]
+                slider:setValue(value)
+            end
+        end
+
+        randomizeButton.container:copy(function(widget)
+            local clipboardContent = getState()
+            return flat.dumpToString(clipboardContent)
+        end)
+        randomizeButton.container:paste(function(widget, text)
+            local clipboardContent
+            local ok, err = pcall(function()
+                clipboardContent = assert(load('return ' .. text, 'clipboard', 't', {}))()
+            end)
+            if not ok then
+                print('Error:', err)
+                return
+            end
+            setState(clipboardContent)
+            generate()
+        end)
+        procGenContainer:addChild(randomizeButton.container)
     end
 end

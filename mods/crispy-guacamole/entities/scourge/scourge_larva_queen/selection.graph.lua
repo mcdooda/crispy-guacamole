@@ -1,4 +1,5 @@
 return {
+  nodeType = 'script',
   links = {
     {
       1,
@@ -13,22 +14,21 @@ return {
       1,
     },
   },
-  nodeType = 'script',
   nodes = {
     {
-      name = 'components/factioncomponent',
+      name = 'components/selectioncomponent',
     },
     {
       loadArguments = {
-        'chaos',
+        true,
       },
-      name = 'string',
+      name = 'boolean',
     },
     {
       loadArguments = {
         {
           5,
-          'Component',
+          'Table',
         },
       },
       name = 'script/scriptoutput',

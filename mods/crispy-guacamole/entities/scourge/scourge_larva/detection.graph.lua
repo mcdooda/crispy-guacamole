@@ -16,13 +16,13 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/factioncomponent',
+      name = 'components/detectioncomponent',
     },
     {
       loadArguments = {
-        'chaos',
+        5,
       },
-      name = 'string',
+      name = 'number',
     },
     {
       loadArguments = {

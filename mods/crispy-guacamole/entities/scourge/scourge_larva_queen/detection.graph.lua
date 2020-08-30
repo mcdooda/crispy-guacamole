@@ -16,19 +16,19 @@ return {
   nodeType = 'script',
   nodes = {
     {
-      name = 'components/factioncomponent',
+      name = 'components/detectioncomponent',
     },
     {
       loadArguments = {
-        'chaos',
+        8,
       },
-      name = 'string',
+      name = 'number',
     },
     {
       loadArguments = {
         {
           5,
-          'Component',
+          'Table',
         },
       },
       name = 'script/scriptoutput',

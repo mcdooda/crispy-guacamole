@@ -1,6 +1,1 @@
-return {
-	speed = 5,
-	jumpForce = 0,
-	weight = 1,
-	snapToGround = true
-}
+return flat.graph.script.run 'mods/crispy-guacamole/entities/scourge/scourge_larva/movement'

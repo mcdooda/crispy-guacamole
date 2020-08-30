@@ -48,6 +48,8 @@ int l_Map_moveTileZBy(lua_State* L);
 int l_Map_setTileTemplate(lua_State* L);
 int l_Map_eachTile(lua_State* L);
 
+int l_Map_setPropTemplate(lua_State* L);
+
 int l_Map_findPath(lua_State* L);
 
 int l_Map_setFogType(lua_State* L);

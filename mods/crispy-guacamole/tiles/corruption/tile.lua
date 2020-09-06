@@ -112,28 +112,28 @@ idToTile[255] = {47}
 
 local function selectTile(tl, tr, bl, br, t, r, b, l)
     local caseValue = 0
-    if b == "creep" and br == "creep" and bl == "creep" then
+    if b == "corruption" and br == "corruption" and bl == "corruption" then
         caseValue = caseValue + 128
     end
-    if l == "creep" and bl == "creep" and tl == "creep" then
+    if l == "corruption" and bl == "corruption" and tl == "corruption" then
         caseValue = caseValue + 32
     end
-    if r == "creep" and br == "creep" and tr == "creep" then
+    if r == "corruption" and br == "corruption" and tr == "corruption" then
         caseValue = caseValue + 4
     end
-    if t == "creep" and tr == "creep" and tl == "creep" then
+    if t == "corruption" and tr == "corruption" and tl == "corruption" then
         caseValue = caseValue + 1
     end
-    if tr == "creep" then
+    if tr == "corruption" then
         caseValue = caseValue + 2
     end
-    if tl == "creep" then
+    if tl == "corruption" then
         caseValue = caseValue + 8
     end
-    if br == "creep" then
+    if br == "corruption" then
         caseValue = caseValue + 16
     end
-    if bl == "creep" then
+    if bl == "corruption" then
         caseValue = caseValue + 64
     end
     if caseValue == 255 then

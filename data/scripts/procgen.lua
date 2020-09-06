@@ -211,10 +211,11 @@ return function(addContainer, makeSeparator, font)
                 tileTemplate = 'mods/crispy-guacamole/tiles/frozen_dirt',
             },
             tundra = {
-                tileTemplate = 'mods/crispy-guacamole/tiles/blue_grass',
+                tileTemplate = 'mods/crispy-guacamole/tiles/grass',
                 props = {
                     {'mods/crispy-guacamole/props/snow_pine', 0.4},
-                }
+                },
+                color = 0x0000FFFF
             },
             snow = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/snow',

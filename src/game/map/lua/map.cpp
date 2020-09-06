@@ -49,6 +49,7 @@ int open(lua_State* L)
 		{"setTileZ",                      l_Map_setTileZ},
 		{"moveTileZBy",                   l_Map_moveTileZBy},
 		{"setTileTemplate",               l_Map_setTileTemplate},
+		{"setTileColor",                  l_Map_setTileColor},
 		{"eachTile",                      l_Map_eachTile},
 
 		{"setPropTemplate",               l_Map_setPropTemplate},
@@ -289,6 +290,7 @@ int l_Map_setTileZ(lua_State* L)
 {
 	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
 	const float z = static_cast<float>(luaL_checknumber(L, 2));
+	luaL_argcheck(L, z == z, 2, "Invalid number");
 	Map& map = getMap(L);
 	map.setTileZ(tileIndex, z);
 	return 0;
@@ -311,6 +313,15 @@ int l_Map_setTileTemplate(lua_State* L)
 	std::shared_ptr<const game::map::TileTemplate> tileTemplate = getMapState(L).getTileTemplate(game, tileTemplatePath);
 	Map& map = getMap(L);
 	map.setTileTemplate(tileIndex, tileTemplate);
+	return 0;
+}
+
+int l_Map_setTileColor(lua_State* L)
+{
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	uint32_t color = static_cast<uint32_t>(luaL_checkinteger(L, 2));
+	Map& map = getMap(L);
+	map.setTileColor(tileIndex, flat::video::Color(color));
 	return 0;
 }
 

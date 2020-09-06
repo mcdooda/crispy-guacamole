@@ -14,6 +14,7 @@ return function(addContainer, makeSeparator, font)
     local altitudeGrainSlider
     local biomesGrainSlider
     local stepHeightSlider
+    local secondaryStepHeightSlider
     local slopeProbabilitySlider
     local slopeProbabilityThresholdSlider
     local waterLevelSlider
@@ -119,6 +120,17 @@ return function(addContainer, makeSeparator, font)
     procGenContainer:addChild(makeSeparator())
 
     do
+        local secondaryStepHeightLabel = Widget.makeText('Secondary Step Height', table.unpack(font))
+        secondaryStepHeightLabel:setTextColor(0x000000FF)
+        procGenContainer:addChild(secondaryStepHeightLabel)
+
+        secondaryStepHeightSlider = Slider:new(146, 15, 0, 3, 1)
+        procGenContainer:addChild(secondaryStepHeightSlider.container)
+    end
+
+    procGenContainer:addChild(makeSeparator())
+
+    do
         local slopeProbabilityLabel = Widget.makeText('Slope Probability', table.unpack(font))
         slopeProbabilityLabel:setTextColor(0x000000FF)
         procGenContainer:addChild(slopeProbabilityLabel)
@@ -193,14 +205,15 @@ return function(addContainer, makeSeparator, font)
             },
             scorched = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/dirt_light',
+                color = 0xFF0000FF
             },
             bare = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/frozen_dirt',
             },
             tundra = {
-                tileTemplate = 'mods/crispy-guacamole/tiles/snow',
+                tileTemplate = 'mods/crispy-guacamole/tiles/blue_grass',
                 props = {
-                    {'mods/crispy-guacamole/props/snow_pine', 0.8},
+                    {'mods/crispy-guacamole/props/snow_pine', 0.4},
                 }
             },
             snow = {
@@ -214,6 +227,7 @@ return function(addContainer, makeSeparator, font)
             },
             shrubLand = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/high_grass',
+                color = 0x00FF00FF
             },
             taiga = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/snow',
@@ -231,31 +245,36 @@ return function(addContainer, makeSeparator, font)
                 tileTemplate = 'mods/crispy-guacamole/tiles/grass',
                 props = {
                     {'mods/crispy-guacamole/props/pine', 0.4},
-                }
+                },
+                color = 0x008800FF
             },
             temperateRainForest = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/high_grass',
                 props = {
                     {'mods/crispy-guacamole/props/pine', 0.4},
-                }
+                },
+                color = 0x008800FF
             },
             subtropicalDesert = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/sand',
                 props = {
                     {'mods/crispy-guacamole/props/cactus', 1},
-                }
+                },
+                color = 0x880000FF
             },
             tropicalSeasonalForest = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/high_grass',
                 props = {
                     {'mods/crispy-guacamole/props/pine', 0.4},
-                }
+                },
+                color = 0x004400FF
             },
             tropicalRainForest = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/high_grass',
                 props = {
                     {'mods/crispy-guacamole/props/pine', 0.4},
-                }
+                },
+                color = 0x000000FF
             },
         }
 
@@ -346,6 +365,11 @@ return function(addContainer, makeSeparator, font)
             local altitudeGrain = altitudeGrainSlider:getValue()
             local biomesGrain = biomesGrainSlider:getValue()
             local stepHeight = stepHeightSlider:getValue()
+            local secondaryStepHeight = secondaryStepHeightSlider:getValue()
+            if stepHeight ~= 0 and secondaryStepHeight ~= 0 then
+                local numSecondaryStepsPerPrimaryStep = math.floor(stepHeight / secondaryStepHeight + 0.5)
+                secondaryStepHeight = stepHeight / numSecondaryStepsPerPrimaryStep
+            end
             local slopeProbability = slopeProbabilitySlider:getValue()
             local slopeProbabilityThreshold = slopeProbabilityThresholdSlider:getValue()
             local waterLevel = waterLevelSlider:getValue()
@@ -387,20 +411,32 @@ return function(addContainer, makeSeparator, font)
                 local x, y = Map.getTilePosition(tile)
                 local moisture, maxMoisture = perlinNoise(x + 1000, y + 1000, noiseFrequency, biomesGrain)
                 local z = Map.getTileZ(tile)
-                local normalizedZ = clamp((z - minZ) / (maxZ - minZ), 0, 1)
-                local biome = getBiome(normalizedZ, moisture / maxMoisture)
-                Map.setTileTemplate(tile, biome.tileTemplate)
+                local originalZ = z
+
                 if stepHeight ~= 0 and slopeProbability - slopeProbabilityThreshold <= moisture / maxMoisture then
                     local originalZ = z
                     z = math.floor(z / stepHeight + 0.5) * stepHeight
+
+                    -- keep slope but steer towards the step
                     if slopeProbabilityThreshold > 0 and moisture / maxMoisture <= slopeProbability then
                         local alpha = (moisture / maxMoisture - (slopeProbability - slopeProbabilityThreshold)) / slopeProbabilityThreshold
                         assert(0 <= alpha and alpha <= 1)
                         z = z * alpha + originalZ * (1 - alpha)
                         --z = z * (1 - alpha) + originalZ * alpha
                     end
+                end
+
+                if secondaryStepHeight ~= 0 then
+                    z = math.floor(z / secondaryStepHeight + 0.5) * secondaryStepHeight
+                end
+
+                if z ~= originalZ then
                     Map.setTileZ(tile, z)
                 end
+
+                local normalizedZ = clamp((z - minZ) / (maxZ - minZ), 0, 1)
+                local biome = getBiome(normalizedZ, moisture / maxMoisture)
+                Map.setTileTemplate(tile, biome.tileTemplate)
 
                 if biome.props then
                     local v, max = perlinNoise(x - 1000, y - 1000, noiseFrequency * 10, 1)
@@ -413,10 +449,28 @@ return function(addContainer, makeSeparator, font)
                         end
                     end
                 end
+
+                if false and biome.color then
+                    Map.setTileColor(tile, biome.color)
+                --[[
+                else
+                    local color1 = 0xFFFFFFFF
+                    local color2 = 0xAAAAAAFF
+                    --local alpha = math.sin((x + y * 0.5) / 30) * 0.5 + 0.5
+                    local alpha = perlinNoise(x - 1000, y - 1000, noiseFrequency, 1)
+                    local color = (math.floor((color1 >> 24) * (1 - alpha) + (color2 >> 24) * alpha)) << 24
+                                | (math.floor(((color1 >> 16) & 0xFF) * (1 - alpha) + ((color2 >> 16) & 0xFF) * alpha)) << 16
+                                | (math.floor(((color1 >>  8) & 0xFF) * (1 - alpha) + ((color2 >>  8) & 0xFF) * alpha)) <<  8
+                                | (math.floor(((color1 >>  0) & 0xFF) * (1 - alpha) + ((color2 >>  0) & 0xFF) * alpha)) <<  0
+                    Map.setTileColor(tile, color)
+                ]]
+                end
             end)
 
+            --[[
             local cameraOrigin = game.convertToCameraPosition(flat.Vector3(0, 0, 0))
             game.setCameraCenter(cameraOrigin)
+            ]]
             print 'Generated!'
         end
 
@@ -431,6 +485,7 @@ return function(addContainer, makeSeparator, font)
             altitudeGrain             = altitudeGrainSlider,
             biomesGrain               = biomesGrainSlider,
             stepHeight                = stepHeightSlider,
+            secondaryStepHeight       = secondaryStepHeightSlider,
             slopeProbability          = slopeProbabilitySlider,
             slopeProbabilityThreshold = slopeProbabilityThresholdSlider,
             waterLevel                = waterLevelSlider,

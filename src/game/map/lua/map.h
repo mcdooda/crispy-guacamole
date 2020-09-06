@@ -46,6 +46,7 @@ int l_Map_getTileZ(lua_State* L);
 int l_Map_setTileZ(lua_State* L);
 int l_Map_moveTileZBy(lua_State* L);
 int l_Map_setTileTemplate(lua_State* L);
+int l_Map_setTileColor(lua_State* L);
 int l_Map_eachTile(lua_State* L);
 
 int l_Map_setPropTemplate(lua_State* L);

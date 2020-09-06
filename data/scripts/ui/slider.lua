@@ -113,4 +113,8 @@ function Slider:setValue(value)
 	triggerValueChanged(self, value)
 end
 
+function Slider:valueChanged(callback)
+	self.valueChangedCallbacks[#self.valueChangedCallbacks + 1] = callback
+end
+
 return Slider

@@ -60,7 +60,7 @@ class BaseMapState : public BaseState
 
 		std::shared_ptr<const entity::EntityTemplate> getEntityTemplate(game::Game& game, const std::filesystem::path& entityTemplatePath) const;
 		std::shared_ptr<const map::TileTemplate> getTileTemplate(game::Game& game, const std::filesystem::path& tileTemplatePath) const;
-		std::shared_ptr<const map::PropTemplate> getPropTemplate(game::Game& game, const std::filesystem::path& propTemplateName) const;
+		std::shared_ptr<const map::PropTemplate> getPropTemplate(game::Game& game, const std::filesystem::path& propTemplatePath) const;
 
 		const entity::component::ComponentRegistry& getComponentRegistry() const { return m_componentRegistry; }
 

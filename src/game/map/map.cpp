@@ -62,7 +62,7 @@ void Map::reset(Game& game, int width, int height, const std::shared_ptr<const T
 	int tileCount = width * height;
 	m_tiles.reserve(tileCount);
 	// keep sames axes, change bounds
-	setBounds(0, width - 1, 0, height - 1);
+	setBounds(-width / 2 - 1, width / 2 + 1, -height / 2 - 1, height / 2 + 1);
 	for (int x = 0; x < width; ++x)
 	{
 		for (int y = 0; y < height; ++y)
@@ -514,6 +514,8 @@ const flat::Vector2i& Map::getTileXY(TileIndex tileIndex) const
 
 void Map::setTileZ(TileIndex tileIndex, float z)
 {
+	FLAT_ASSERT(z == z);
+
 	// navigation
 	m_tileNavigations[tileIndex].z = z;
 

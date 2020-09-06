@@ -9,6 +9,7 @@
 #include "map/pathfinder/pathfinder.h"
 #include "map/pathfinder/lua/path.h"
 #include "map/fog/fog.h"
+#include "map/proptemplate.h"
 
 #include "states/mapeditorstate.h"
 #include "entity/lua/entity.h"
@@ -48,7 +49,10 @@ int open(lua_State* L)
 		{"setTileZ",                      l_Map_setTileZ},
 		{"moveTileZBy",                   l_Map_moveTileZBy},
 		{"setTileTemplate",               l_Map_setTileTemplate},
+		{"setTileColor",                  l_Map_setTileColor},
 		{"eachTile",                      l_Map_eachTile},
+
+		{"setPropTemplate",               l_Map_setPropTemplate},
 
 		{"findPath",                      l_Map_findPath},
 
@@ -286,6 +290,7 @@ int l_Map_setTileZ(lua_State* L)
 {
 	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
 	const float z = static_cast<float>(luaL_checknumber(L, 2));
+	luaL_argcheck(L, z == z, 2, "Invalid number");
 	Map& map = getMap(L);
 	map.setTileZ(tileIndex, z);
 	return 0;
@@ -311,6 +316,15 @@ int l_Map_setTileTemplate(lua_State* L)
 	return 0;
 }
 
+int l_Map_setTileColor(lua_State* L)
+{
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	uint32_t color = static_cast<uint32_t>(luaL_checkinteger(L, 2));
+	Map& map = getMap(L);
+	map.setTileColor(tileIndex, flat::video::Color(color));
+	return 0;
+}
+
 int l_Map_eachTile(lua_State* L)
 {
 	luaL_checktype(L, 1, LUA_TFUNCTION);
@@ -322,6 +336,18 @@ int l_Map_eachTile(lua_State* L)
 		lua_pushinteger(L, tileIndex);
 		lua_call(L, 1, 0);
 	});
+	return 0;
+}
+
+int l_Map_setPropTemplate(lua_State* L)
+{
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	const std::string propTemplatePath = luaL_checkstring(L, 2);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	std::shared_ptr<const PropTemplate> propTemplate = getMapState(L).getPropTemplate(game, propTemplatePath);
+	Map& map = getMap(L);
+	std::shared_ptr<const flat::video::Texture> texture = propTemplate->getRandomTexture(game);
+	map.setTilePropTexture(tileIndex, texture);
 	return 0;
 }
 

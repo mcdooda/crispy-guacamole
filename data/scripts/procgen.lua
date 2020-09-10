@@ -211,11 +211,12 @@ return function(addContainer, makeSeparator, font)
                 tileTemplate = 'mods/crispy-guacamole/tiles/frozen_dirt',
             },
             tundra = {
-                tileTemplate = 'mods/crispy-guacamole/tiles/grass',
+                tileTemplate = 'mods/crispy-guacamole/tiles/corruption',
                 props = {
-                    {'mods/crispy-guacamole/props/snow_pine', 0.4},
-                },
-                color = 0x0000FFFF
+                    {'mods/crispy-guacamole/props/corruption/corrupted_bush', 0.05},
+                    {'mods/crispy-guacamole/props/corruption/corrupted_plant', 0.05},
+                    {'mods/crispy-guacamole/props/corruption/corrupted_tree', 0.2},
+                }
             },
             snow = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/snow',
@@ -227,8 +228,12 @@ return function(addContainer, makeSeparator, font)
                 tileTemplate = 'mods/crispy-guacamole/tiles/grass_light',
             },
             shrubLand = {
-                tileTemplate = 'mods/crispy-guacamole/tiles/high_grass',
-                color = 0x00FF00FF
+                tileTemplate = 'mods/crispy-guacamole/tiles/corruption',
+                props = {
+                    {'mods/crispy-guacamole/props/corruption/corrupted_bush', 0.2},
+                    {'mods/crispy-guacamole/props/corruption/corrupted_plant', 0.3},
+                    {'mods/crispy-guacamole/props/corruption/corrupted_tree', 0.4},
+                }
             },
             taiga = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/snow',
@@ -369,8 +374,13 @@ return function(addContainer, makeSeparator, font)
             local secondaryStepHeight = secondaryStepHeightSlider:getValue()
             if stepHeight ~= 0 and secondaryStepHeight ~= 0 then
                 local numSecondaryStepsPerPrimaryStep = math.floor(stepHeight / secondaryStepHeight + 0.5)
-                secondaryStepHeight = stepHeight / numSecondaryStepsPerPrimaryStep
+                if numSecondaryStepsPerPrimaryStep ~= 0 then
+                    secondaryStepHeight = stepHeight / numSecondaryStepsPerPrimaryStep
+                else
+                    secondaryStepHeight = 0
+                end
             end
+            assert(secondaryStepHeight == secondaryStepHeight)
             local slopeProbability = slopeProbabilitySlider:getValue()
             local slopeProbabilityThreshold = slopeProbabilityThresholdSlider:getValue()
             local waterLevel = waterLevelSlider:getValue()
@@ -451,7 +461,7 @@ return function(addContainer, makeSeparator, font)
                     end
                 end
 
-                if false and biome.color then
+                if biome.color then
                     Map.setTileColor(tile, biome.color)
                 --[[
                 else

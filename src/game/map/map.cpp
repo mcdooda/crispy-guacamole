@@ -514,7 +514,7 @@ const flat::Vector2i& Map::getTileXY(TileIndex tileIndex) const
 
 void Map::setTileZ(TileIndex tileIndex, float z)
 {
-	FLAT_ASSERT(z == z);
+	FLAT_ASSERT(flat::checkFloat(z));
 
 	// navigation
 	m_tileNavigations[tileIndex].z = z;

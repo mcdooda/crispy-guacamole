@@ -290,7 +290,7 @@ int l_Map_setTileZ(lua_State* L)
 {
 	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
 	const float z = static_cast<float>(luaL_checknumber(L, 2));
-	luaL_argcheck(L, z == z, 2, "Invalid number");
+	luaL_argcheck(L, flat::checkFloat(z), 2, "Invalid number");
 	Map& map = getMap(L);
 	map.setTileZ(tileIndex, z);
 	return 0;

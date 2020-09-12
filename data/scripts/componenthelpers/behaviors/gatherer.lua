@@ -1,11 +1,12 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
-local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
+local EntitiesByType = require(Mod.getFilePath 'scripts/entitiesbytype')
 local Money = require 'mods/crispy-guacamole/scripts/money'
 local Building = require 'data/scripts/building'
 
 local function basicGatherer(buildingName, resourceName)
 	local function getClosestBuilding(gatherer)
-		return EntitiesByType:getClosests(buildingName, gatherer:getPosition():toVector2())[1]
+		local closestBuildings = EntitiesByType:getClosests(buildingName, gatherer:getPosition():toVector2())
+		return closestBuildings[1]
 	end
 
 	local function getClosestResource(gatherer)

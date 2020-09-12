@@ -12,7 +12,7 @@ setmetatable(EntitiesByType.types, {
 
 function EntitiesByType:add(entity)
     assert(entity:isValid())
-    local entitiesOfType = self.types[entity:getTemplatePath()]
+    local entitiesOfType = self.types[entity:getTemplateName()]
     entitiesOfType[#entitiesOfType + 1] = entity
 end
 
@@ -37,17 +37,17 @@ function EntitiesByType:getAll(type)
 end
 
 function EntitiesByType:getClosests(type, position)
-    return EntitiesByType:getClosestsValid(type, position, function(entity) return true end)
+    return self:getClosestsValid(type, position, function(entity) return true end)
 end
 
 
 function EntitiesByType:getClosestsValid(type, position, valid)
-    local entities = EntitiesByType:getAll(type)
+    local entities = self:getAll(type)
     local closestEntities = {}
     local closestEntityDistance2 = math.huge
     for i = 1, #entities do
         local entity = entities[i]
-        if entity:isValid() and entity:getTemplatePath() == type and valid(entity) then
+        if entity:isValid() and valid(entity) then
             local entityPosition = entity:getPosition():toVector2()
             local distance2 = (entityPosition - position):length2()
             if distance2 == closestEntityDistance2 then

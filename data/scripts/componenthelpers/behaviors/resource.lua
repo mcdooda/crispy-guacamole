@@ -1,4 +1,4 @@
-local EntitiesByType = require 'mods/crispy-guacamole/scripts/entitiesbytype'
+local EntitiesByType = require(Mod.getFilePath 'scripts/entitiesbytype')
 
 local function basicResource(baseAmount)
     local states = {}

@@ -87,19 +87,7 @@ return {
     {
       1,
       3,
-      39,
-      2,
-    },
-    {
-      1,
-      3,
-      40,
-      1,
-    },
-    {
-      1,
-      3,
-      42,
+      13,
       2,
     },
     {
@@ -117,7 +105,7 @@ return {
     {
       3,
       3,
-      42,
+      13,
       1,
     },
     {
@@ -185,12 +173,6 @@ return {
       1,
       28,
       1,
-    },
-    {
-      13,
-      1,
-      41,
-      2,
     },
     {
       14,
@@ -342,24 +324,6 @@ return {
       21,
       1,
     },
-    {
-      38,
-      1,
-      39,
-      1,
-    },
-    {
-      40,
-      1,
-      41,
-      1,
-    },
-    {
-      41,
-      1,
-      39,
-      3,
-    },
   },
   nodeType = 'script',
   nodes = {
@@ -410,129 +374,6 @@ return {
     },
     {
       name = 'entity/setstrafing',
-    },
-    {
-      loadArguments = {
-        10,
-      },
-      name = 'number',
-    },
-    {
-      name = 'script/condition',
-    },
-    {
-      loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      name = 'flow/cooldown',
-    },
-    {
-      name = 'script/condition',
-    },
-    {
-      name = 'controller/rightstickdirection',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
-    },
-    {
-      loadArguments = {
-        'atan(y,x)',
-      },
-      name = 'math/formula',
-    },
-    {
-      name = 'controller/axisvalue',
-    },
-    {
-      loadArguments = {
-        'mods/gdf/compounds/script/Fire Missile',
-      },
-      name = 'compound',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
-    },
-    {
-      name = 'math/greaterthan',
-    },
-    {
-      loadArguments = {
-        'missile3',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      name = 'script/condition',
-    },
-    {
-      name = 'controller/axisvalue',
-    },
-    {
-      name = 'math/greaterthan',
-    },
-    {
-      loadArguments = {
-        'TRIGGERLEFT',
-      },
-      name = 'string',
-    },
-    {
-      name = 'math/vector2/vector2split',
-    },
-    {
-      name = 'math/vector2/vector2length',
-    },
-    {
-      name = 'math/greaterthan',
-    },
-    {
-      loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'TRIGGERRIGHT',
-      },
-      name = 'string',
-    },
-    {
-      name = 'entity/setheading',
-    },
-    {
-      name = 'entity/jump',
-    },
-    {
-      name = 'entity/setmidairacceleration',
-    },
-    {
-      name = 'entity/getforward',
-    },
-    {
-      name = 'math/vector3/vector3numbermultiply',
     },
     {
       loadArguments = {
@@ -958,6 +799,114 @@ return {
         },
       },
       name = 'statemachine',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      name = 'flow/cooldown',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'controller/rightstickdirection',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        'atan(y,x)',
+      },
+      name = 'math/formula',
+    },
+    {
+      name = 'controller/axisvalue',
+    },
+    {
+      loadArguments = {
+        'mods/gdf/compounds/script/Fire Missile',
+      },
+      name = 'compound',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      name = 'math/greaterthan',
+    },
+    {
+      loadArguments = {
+        'missile3',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'controller/axisvalue',
+    },
+    {
+      name = 'math/greaterthan',
+    },
+    {
+      loadArguments = {
+        'TRIGGERLEFT',
+      },
+      name = 'string',
+    },
+    {
+      name = 'math/vector2/vector2split',
+    },
+    {
+      name = 'math/vector2/vector2length',
+    },
+    {
+      name = 'math/greaterthan',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        'TRIGGERRIGHT',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/setheading',
+    },
+    {
+      name = 'entity/jump',
     },
   },
 }

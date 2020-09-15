@@ -111,14 +111,14 @@ return {
     {
       1,
       3,
-      53,
+      62,
       2,
     },
     {
       1,
       3,
-      51,
-      1,
+      59,
+      2,
     },
     {
       1,
@@ -135,20 +135,8 @@ return {
     {
       1,
       3,
-      66,
+      13,
       1,
-    },
-    {
-      1,
-      3,
-      70,
-      2,
-    },
-    {
-      1,
-      3,
-      62,
-      2,
     },
     {
       3,
@@ -237,7 +225,7 @@ return {
     {
       13,
       1,
-      60,
+      51,
       2,
     },
     {
@@ -255,7 +243,7 @@ return {
     {
       16,
       1,
-      67,
+      51,
       1,
     },
     {
@@ -463,12 +451,6 @@ return {
       1,
     },
     {
-      48,
-      1,
-      56,
-      1,
-    },
-    {
       49,
       1,
       14,
@@ -483,7 +465,13 @@ return {
     {
       51,
       1,
-      60,
+      62,
+      1,
+    },
+    {
+      51,
+      2,
+      59,
       1,
     },
     {
@@ -493,10 +481,10 @@ return {
       1,
     },
     {
-      54,
-      1,
       53,
       1,
+      59,
+      3,
     },
     {
       55,
@@ -508,90 +496,30 @@ return {
       56,
       1,
       59,
-      3,
+      4,
     },
     {
       57,
       1,
-      56,
-      2,
+      59,
+      5,
     },
     {
       58,
       1,
-      59,
-      1,
-    },
-    {
-      58,
-      2,
-      59,
-      2,
-    },
-    {
-      59,
-      1,
-      53,
-      3,
+      62,
+      4,
     },
     {
       60,
       1,
-      58,
-      1,
+      62,
+      5,
     },
     {
       63,
       1,
       62,
-      3,
-    },
-    {
-      64,
-      1,
-      62,
-      4,
-    },
-    {
-      65,
-      1,
-      62,
-      5,
-    },
-    {
-      66,
-      1,
-      67,
-      2,
-    },
-    {
-      67,
-      1,
-      62,
-      1,
-    },
-    {
-      67,
-      2,
-      70,
-      1,
-    },
-    {
-      68,
-      1,
-      70,
-      4,
-    },
-    {
-      69,
-      1,
-      70,
-      5,
-    },
-    {
-      71,
-      1,
-      70,
       3,
     },
   },
@@ -646,10 +574,7 @@ return {
       name = 'entity/setstrafing',
     },
     {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
+      name = 'entity/ismidair',
     },
     {
       name = 'script/condition',
@@ -835,7 +760,7 @@ return {
       name = 'string',
     },
     {
-      name = 'entity/getforward',
+      name = 'script/condition',
     },
     {
       loadArguments = {
@@ -844,7 +769,10 @@ return {
       name = 'string',
     },
     {
-      name = 'entity/setmidairacceleration',
+      loadArguments = {
+        'shoot',
+      },
+      name = 'string',
     },
     {
       name = 'entity/jump',
@@ -856,22 +784,31 @@ return {
       name = 'boolean',
     },
     {
-      name = 'math/multiply',
-    },
-    {
       loadArguments = {
-        30,
+        1,
       },
       name = 'number',
     },
     {
-      name = 'math/vector3/vector3split',
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
     {
-      name = 'vector3',
+      loadArguments = {
+        1,
+      },
+      name = 'number',
     },
     {
-      name = 'math/vector3/vector3numbermultiply',
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
     {
       loadArguments = {
@@ -887,13 +824,7 @@ return {
             {
               2,
               2,
-              12,
-              2,
-            },
-            {
-              2,
-              2,
-              16,
+              6,
               2,
             },
             {
@@ -905,14 +836,8 @@ return {
             {
               4,
               2,
-              10,
+              8,
               2,
-            },
-            {
-              4,
-              2,
-              16,
-              3,
             },
             {
               5,
@@ -922,21 +847,9 @@ return {
             },
             {
               6,
-              2,
-              10,
-              3,
-            },
-            {
-              6,
-              2,
-              16,
+              1,
               4,
-            },
-            {
-              6,
               2,
-              12,
-              4,
             },
             {
               7,
@@ -946,74 +859,14 @@ return {
             },
             {
               8,
+              1,
               2,
-              10,
-              4,
-            },
-            {
-              8,
-              2,
-              12,
               3,
-            },
-            {
-              8,
-              2,
-              14,
-              2,
             },
             {
               9,
               1,
               8,
-              1,
-            },
-            {
-              10,
-              1,
-              2,
-              3,
-            },
-            {
-              11,
-              1,
-              10,
-              1,
-            },
-            {
-              12,
-              1,
-              4,
-              2,
-            },
-            {
-              13,
-              1,
-              12,
-              1,
-            },
-            {
-              14,
-              1,
-              6,
-              2,
-            },
-            {
-              15,
-              1,
-              14,
-              1,
-            },
-            {
-              16,
-              1,
-              8,
-              2,
-            },
-            {
-              17,
-              1,
-              16,
               1,
             },
           },
@@ -1242,13 +1095,13 @@ return {
             {
               loadArguments = {
                 2,
-                3,
+                6,
                 {
                   links = {
                     {
-                      1,
-                      1,
                       2,
+                      1,
+                      3,
                       1,
                     },
                     {
@@ -1260,148 +1113,68 @@ return {
                     {
                       3,
                       1,
-                      2,
-                      2,
-                    },
-                    {
-                      3,
+                      4,
                       1,
-                      5,
-                      2,
                     },
                     {
                       4,
                       1,
+                      6,
+                      1,
+                    },
+                    {
+                      5,
+                      1,
+                      6,
                       2,
-                      3,
                     },
                     {
                       6,
                       1,
-                      5,
-                      3,
+                      1,
+                      1,
                     },
                   },
                   nodeType = 'script',
                   nodes = {
                     {
-                      name = 'script/init',
-                    },
-                    {
-                      name = 'entity/setcycleanimation',
+                      loadArguments = {
+                        {
+                          1,
+                          'Result',
+                        },
+                      },
+                      name = 'script/scriptoutput',
                     },
                     {
                       name = 'script/getcontext',
                     },
                     {
-                      loadArguments = {
-                        'fly',
-                      },
-                      name = 'string',
+                      name = 'entity/ismidair',
                     },
                     {
-                      name = 'entity/setcycleanimated',
+                      name = 'math/not',
                     },
                     {
-                      loadArguments = {
-                        true,
-                      },
-                      name = 'boolean',
+                      name = 'entity/isfollowingpath',
+                    },
+                    {
+                      name = 'math/and',
                     },
                   },
                 },
               },
-              name = 'statemachine/state',
+              name = 'statemachine/rule',
             },
             {
               loadArguments = {
-                'midair',
+                'ground + moving',
               },
               name = 'string',
             },
             {
               loadArguments = {
                 2,
-                4,
-                {
-                  links = {
-                    {
-                      1,
-                      1,
-                      2,
-                      1,
-                    },
-                    {
-                      2,
-                      1,
-                      5,
-                      1,
-                    },
-                    {
-                      3,
-                      1,
-                      2,
-                      2,
-                    },
-                    {
-                      3,
-                      1,
-                      5,
-                      2,
-                    },
-                    {
-                      4,
-                      1,
-                      2,
-                      3,
-                    },
-                    {
-                      6,
-                      1,
-                      5,
-                      3,
-                    },
-                  },
-                  nodeType = 'script',
-                  nodes = {
-                    {
-                      name = 'script/init',
-                    },
-                    {
-                      name = 'entity/setcycleanimation',
-                    },
-                    {
-                      name = 'script/getcontext',
-                    },
-                    {
-                      loadArguments = {
-                        'fly',
-                      },
-                      name = 'string',
-                    },
-                    {
-                      name = 'entity/setcycleanimated',
-                    },
-                    {
-                      loadArguments = {
-                        true,
-                      },
-                      name = 'boolean',
-                    },
-                  },
-                },
-              },
-              name = 'statemachine/state',
-            },
-            {
-              loadArguments = {
-                'jetpack',
-              },
-              name = 'string',
-            },
-            {
-              loadArguments = {
-                4,
                 5,
                 {
                   links = {
@@ -1488,288 +1261,6 @@ return {
               },
               name = 'string',
             },
-            {
-              loadArguments = {
-                4,
-                6,
-                {
-                  links = {
-                    {
-                      2,
-                      1,
-                      3,
-                      1,
-                    },
-                    {
-                      2,
-                      1,
-                      5,
-                      1,
-                    },
-                    {
-                      3,
-                      1,
-                      4,
-                      1,
-                    },
-                    {
-                      4,
-                      1,
-                      6,
-                      1,
-                    },
-                    {
-                      5,
-                      1,
-                      6,
-                      2,
-                    },
-                    {
-                      6,
-                      1,
-                      1,
-                      1,
-                    },
-                  },
-                  nodeType = 'script',
-                  nodes = {
-                    {
-                      loadArguments = {
-                        {
-                          1,
-                          'Result',
-                        },
-                      },
-                      name = 'script/scriptoutput',
-                    },
-                    {
-                      name = 'script/getcontext',
-                    },
-                    {
-                      name = 'entity/ismidair',
-                    },
-                    {
-                      name = 'math/not',
-                    },
-                    {
-                      name = 'entity/isfollowingpath',
-                    },
-                    {
-                      name = 'math/and',
-                    },
-                  },
-                },
-              },
-              name = 'statemachine/rule',
-            },
-            {
-              loadArguments = {
-                'ground + moving',
-              },
-              name = 'string',
-            },
-            {
-              loadArguments = {
-                2,
-                7,
-                {
-                  links = {
-                    {
-                      1,
-                      1,
-                      2,
-                      1,
-                    },
-                    {
-                      1,
-                      1,
-                      3,
-                      1,
-                    },
-                    {
-                      2,
-                      1,
-                      7,
-                      1,
-                    },
-                    {
-                      3,
-                      1,
-                      4,
-                      1,
-                    },
-                    {
-                      4,
-                      3,
-                      5,
-                      1,
-                    },
-                    {
-                      5,
-                      1,
-                      7,
-                      2,
-                    },
-                    {
-                      6,
-                      1,
-                      5,
-                      2,
-                    },
-                    {
-                      7,
-                      1,
-                      8,
-                      1,
-                    },
-                  },
-                  nodeType = 'script',
-                  nodes = {
-                    {
-                      name = 'script/getcontext',
-                    },
-                    {
-                      name = 'entity/ismidair',
-                    },
-                    {
-                      name = 'entity/getmidairacceleration',
-                    },
-                    {
-                      name = 'math/vector3/vector3split',
-                    },
-                    {
-                      name = 'math/equal',
-                    },
-                    {
-                      loadArguments = {
-                        0,
-                      },
-                      name = 'number',
-                    },
-                    {
-                      name = 'math/and',
-                    },
-                    {
-                      loadArguments = {
-                        {
-                          1,
-                          'Result',
-                        },
-                      },
-                      name = 'script/scriptoutput',
-                    },
-                  },
-                },
-              },
-              name = 'statemachine/rule',
-            },
-            {
-              loadArguments = {
-                'midair + not boosting',
-              },
-              name = 'string',
-            },
-            {
-              loadArguments = {
-                4,
-                8,
-                {
-                  links = {
-                    {
-                      1,
-                      1,
-                      2,
-                      1,
-                    },
-                    {
-                      1,
-                      1,
-                      6,
-                      1,
-                    },
-                    {
-                      2,
-                      1,
-                      3,
-                      1,
-                    },
-                    {
-                      3,
-                      1,
-                      5,
-                      1,
-                    },
-                    {
-                      4,
-                      1,
-                      8,
-                      2,
-                    },
-                    {
-                      6,
-                      1,
-                      7,
-                      1,
-                    },
-                    {
-                      7,
-                      3,
-                      8,
-                      1,
-                    },
-                    {
-                      8,
-                      1,
-                      3,
-                      2,
-                    },
-                  },
-                  nodeType = 'script',
-                  nodes = {
-                    {
-                      name = 'script/getcontext',
-                    },
-                    {
-                      name = 'entity/ismidair',
-                    },
-                    {
-                      name = 'math/and',
-                    },
-                    {
-                      loadArguments = {
-                        0,
-                      },
-                      name = 'number',
-                    },
-                    {
-                      loadArguments = {
-                        {
-                          1,
-                          'Result',
-                        },
-                      },
-                      name = 'script/scriptoutput',
-                    },
-                    {
-                      name = 'entity/getmidairacceleration',
-                    },
-                    {
-                      name = 'math/vector3/vector3split',
-                    },
-                    {
-                      name = 'math/greaterthan',
-                    },
-                  },
-                },
-              },
-              name = 'statemachine/rule',
-            },
-            {
-              loadArguments = {
-                'midair + boosting',
-              },
-              name = 'string',
-            },
           },
         },
       },
@@ -1781,45 +1272,6 @@ return {
     {
       loadArguments = {
         'fly-shoot',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
-    },
-    {
-      name = 'entity/ismidair',
-    },
-    {
-      name = 'script/condition',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
-    },
-    {
-      name = 'entity/playanimation',
-    },
-    {
-      loadArguments = {
-        'shoot',
       },
       name = 'string',
     },

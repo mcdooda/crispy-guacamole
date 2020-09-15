@@ -6,6 +6,8 @@ flat.graph.loadCompounds('script', 'data/compounds')
 -- load sound nodes
 flat.graph.loadNodeClasses('sound', 'data')
 
+flat.graph.loadNodeClasses('statemachine', 'data')
+
 flat.registerUniqueObjectGetter(
     'CG.Entity',
     function(object)

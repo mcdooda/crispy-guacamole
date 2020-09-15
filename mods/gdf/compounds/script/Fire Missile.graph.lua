@@ -26,6 +26,12 @@ return {
     },
     {
       3,
+      2,
+      2,
+      6,
+    },
+    {
+      3,
       3,
       2,
       2,
@@ -126,6 +132,12 @@ return {
       10,
       2,
     },
+    {
+      17,
+      1,
+      2,
+      5,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -219,6 +231,12 @@ return {
     },
     {
       name = 'math/add',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
   },
 }

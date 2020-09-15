@@ -138,7 +138,11 @@ void BehaviorRuntime::updateCurrentState()
 
 					// set thread function
 					m_thread.set(L, -1);
-					FLAT_DEBUG_ONLY(m_currentStateName = stateName;)
+
+#ifdef FLAT_DEBUG
+					m_previousStateName = m_currentStateName;
+					m_currentStateName = stateName;
+#endif
 				}
 
 				lua_pop(L, 2);

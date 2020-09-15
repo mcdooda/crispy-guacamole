@@ -38,8 +38,11 @@ class BehaviorRuntime final
 		void updateCurrentState();
 		void update(float time);
 
-		FLAT_DEBUG_ONLY(inline const std::string& getCurrentStateName() const { return m_currentStateName; })
-		FLAT_DEBUG_ONLY(inline const flat::lua::Thread& getThread() const { return m_thread; })
+#ifdef FLAT_DEBUG
+		inline const std::string& getCurrentStateName() const { return m_currentStateName; }
+		inline const std::string& getPreviousStateName() const { return m_previousStateName; }
+		inline const flat::lua::Thread& getThread() const { return m_thread; }
+#endif
 		
 	private:
 		const Behavior& getBehavior() const;
@@ -49,7 +52,11 @@ class BehaviorRuntime final
 		flat::lua::Thread m_thread;
 		float m_endSleepTime;
 		bool m_hasIdle;
-		FLAT_DEBUG_ONLY(std::string m_currentStateName;)
+
+#ifdef FLAT_DEBUG
+		std::string m_currentStateName;
+		std::string m_previousStateName;
+#endif
 };
 
 template <class EventType, class... T>

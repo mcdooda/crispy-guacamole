@@ -232,21 +232,48 @@ void BehaviorComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 	std::string currentFile;
 	getThreadDebugInfo(currentFile, currentLine);
 
+	const std::string currentStateName = m_behaviorRuntime.getCurrentStateName().empty() ? "<none>" : m_behaviorRuntime.getCurrentStateName();
 	if (currentLine != 0)
 	{
-		debugDisplay.add3dText(
-			m_owner->getPosition(),
-			m_behaviorRuntime.getCurrentStateName() + "\n" + currentFile + ":" + std::to_string(currentLine),
-			flat::video::Color::BLUE
-		);
+		if (m_behaviorRuntime.getPreviousStateName().empty())
+		{
+			debugDisplay.add3dText(
+				m_owner->getPosition(),
+				currentStateName
+					+ "\n" + currentFile + ":" + std::to_string(currentLine),
+				flat::video::Color::BLUE
+			);
+		}
+		else
+		{
+			debugDisplay.add3dText(
+				m_owner->getPosition(),
+				currentStateName
+					+ "\npreviously " + m_behaviorRuntime.getPreviousStateName()
+					+ "\n" + currentFile + ":" + std::to_string(currentLine),
+				flat::video::Color::BLUE
+			);
+		}
 	}
 	else
 	{
-		debugDisplay.add3dText(
-			m_owner->getPosition(),
-			m_behaviorRuntime.getCurrentStateName(),
-			flat::video::Color::RED
-		);
+		if (m_behaviorRuntime.getPreviousStateName().empty())
+		{
+			debugDisplay.add3dText(
+				m_owner->getPosition(),
+				m_behaviorRuntime.getCurrentStateName() + " / previous: " + m_behaviorRuntime.getPreviousStateName(),
+				flat::video::Color::RED
+			);
+		}
+		else
+		{
+			debugDisplay.add3dText(
+				m_owner->getPosition(),
+				currentStateName
+					+ "\npreviously " + m_behaviorRuntime.getPreviousStateName(),
+				flat::video::Color::RED
+			);
+		}
 	}
 
 	Entity* interactionEntity = m_interactionEntity.getEntity();

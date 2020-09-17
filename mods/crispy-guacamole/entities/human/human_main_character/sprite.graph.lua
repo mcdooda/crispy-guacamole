@@ -205,7 +205,7 @@ return {
     },
     {
       loadArguments = {
-        'walk',
+        'move',
       },
       name = 'string',
     },

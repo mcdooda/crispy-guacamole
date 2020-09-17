@@ -7,6 +7,18 @@ return {
       1,
     },
     {
+      1,
+      2,
+      25,
+      1,
+    },
+    {
+      1,
+      3,
+      25,
+      2,
+    },
+    {
       3,
       1,
       1,
@@ -280,6 +292,12 @@ return {
     },
     {
       name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'data/compounds/script/Init Sprite',
+      },
+      name = 'compound',
     },
   },
 }

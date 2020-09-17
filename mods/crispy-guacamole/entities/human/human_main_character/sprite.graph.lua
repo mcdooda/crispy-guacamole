@@ -3,23 +3,11 @@ return {
     {
       1,
       1,
-      17,
+      2,
       1,
     },
     {
-      1,
-      2,
       3,
-      1,
-    },
-    {
-      1,
-      3,
-      3,
-      2,
-    },
-    {
-      2,
       1,
       1,
       1,
@@ -27,158 +15,128 @@ return {
     {
       4,
       1,
-      20,
+      3,
       1,
     },
     {
       5,
       1,
-      1,
+      3,
       2,
     },
     {
       6,
       1,
-      2,
+      1,
       2,
     },
     {
       7,
       1,
-      2,
+      6,
       1,
     },
     {
       8,
       1,
-      9,
+      6,
       2,
     },
     {
       9,
       1,
-      19,
       1,
+      3,
     },
     {
       10,
       1,
-      19,
-      2,
+      9,
+      1,
     },
     {
       11,
       1,
-      9,
-      3,
+      10,
+      1,
     },
     {
       12,
       1,
-      9,
-      4,
+      10,
+      2,
     },
     {
       13,
       1,
-      20,
+      10,
       3,
     },
     {
       14,
       1,
-      20,
-      2,
+      10,
+      4,
     },
     {
       15,
       1,
-      5,
-      1,
+      9,
+      2,
     },
     {
       16,
       1,
-      5,
+      15,
+      1,
+    },
+    {
+      17,
+      1,
+      15,
       2,
     },
     {
       18,
       1,
-      9,
-      1,
+      15,
+      3,
     },
     {
       19,
       1,
-      1,
-      3,
+      15,
+      4,
     },
     {
       20,
       1,
-      19,
-      3,
+      24,
+      1,
     },
     {
       21,
       1,
-      19,
-      4,
+      24,
+      2,
     },
     {
       22,
       1,
-      10,
+      24,
       3,
     },
     {
       23,
       1,
-      20,
+      24,
       4,
     },
     {
       24,
       1,
-      10,
-      1,
-    },
-    {
-      25,
-      1,
-      10,
-      4,
-    },
-    {
-      26,
-      1,
-      10,
-      2,
-    },
-    {
-      27,
-      1,
-      21,
-      1,
-    },
-    {
-      28,
-      1,
-      21,
-      2,
-    },
-    {
-      29,
-      1,
-      21,
+      9,
       3,
-    },
-    {
-      30,
-      1,
-      21,
-      4,
     },
   },
   nodeType = 'script',
@@ -187,32 +145,35 @@ return {
       name = 'components/spritecomponent',
     },
     {
-      name = 'vector2',
-    },
-    {
       loadArguments = {
-        'data/compounds/script/Init Sprite',
+        {
+          5,
+          'Component',
+        },
       },
-      name = 'compound',
-    },
-    {
-      loadArguments = {
-        'despawn',
-      },
-      name = 'string',
+      name = 'script/scriptoutput',
     },
     {
       name = 'vector2',
     },
     {
       loadArguments = {
-        17,
+        12,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        10.5,
+        28,
+      },
+      name = 'number',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      loadArguments = {
+        4,
       },
       name = 'number',
     },
@@ -223,79 +184,18 @@ return {
       name = 'number',
     },
     {
-      name = 'components/spriteanimation',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        11,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        4,
-      },
-      name = 'number',
-    },
-    {
       loadArguments = {
         {
           5,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
-    },
-    {
-      loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
+          '',
         },
         {
           5,
-          'Table',
+          '',
         },
         {
           5,
-          'Table',
-        },
-        {
-          5,
-          'Table',
+          '',
         },
       },
       name = 'script/array',
@@ -304,31 +204,10 @@ return {
       name = 'components/spriteanimation',
     },
     {
-      name = 'components/spriteanimation',
-    },
-    {
       loadArguments = {
-        11,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'spawn',
+        'walk',
       },
       name = 'string',
-    },
-    {
-      loadArguments = {
-        0.11999999731779,
-      },
-      name = 'number',
     },
     {
       loadArguments = {
@@ -338,7 +217,22 @@ return {
     },
     {
       loadArguments = {
-        'move',
+        2,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'death',
       },
       name = 'string',
     },
@@ -356,9 +250,36 @@ return {
     },
     {
       loadArguments = {
-        0.11999999731779,
+        0.10000000149012,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        'attack',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        3,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
     },
   },
 }

@@ -961,7 +961,7 @@ return {
                     },
                     {
                       loadArguments = {
-                        'move',
+                        'walk',
                       },
                       name = 'string',
                     },
@@ -1065,7 +1065,7 @@ return {
                     },
                     {
                       loadArguments = {
-                        'move',
+                        'walk',
                       },
                       name = 'string',
                     },

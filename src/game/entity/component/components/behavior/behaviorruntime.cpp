@@ -48,7 +48,7 @@ void BehaviorRuntime::enterState(const char* stateName)
 		lua_getfield(L, -1, stateName);
 		if (lua_isnil(L, -1))
 		{
-			luaL_error(L, "'%s' has no '%s' state", m_entity->getTemplatePath().c_str(), stateName);
+			luaL_error(L, "'%s' has no '%s' state", m_entity->getTemplatePath().string().c_str(), stateName);
 		}
 
 		luaL_checktype(L, -1, LUA_TFUNCTION);

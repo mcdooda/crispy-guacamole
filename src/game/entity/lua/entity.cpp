@@ -799,7 +799,7 @@ int l_Entity_setCycleAnimation(lua_State* L)
 	bool animationExists = spriteComponent.setCycleAnimationByName(animationName);
 	if (!animationExists)
 	{
-		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().c_str(), animationName);
+		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().string().c_str(), animationName);
 	}
 	return 0;
 }
@@ -839,7 +839,7 @@ int l_Entity_playAnimation(lua_State* L)
 	bool animationExists = spriteComponent.playAnimationByName(animationName, numLoops, !yield);
 	if (!animationExists)
 	{
-		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().c_str(), animationName);
+		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().string().c_str(), animationName);
 	}
 	return locYieldIf(L, yield, 0);
 }
@@ -853,7 +853,7 @@ int l_Entity_setAnimationProgress(lua_State* L)
 	const bool animationExists = spriteComponent.setAnimationProgress(animationName, value);
 	if (!animationExists)
 	{
-		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().c_str(), animationName);
+		luaL_error(L, "%s has no %s animation", entity.getTemplatePath().string().c_str(), animationName);
 	}
 	return 0;
 }

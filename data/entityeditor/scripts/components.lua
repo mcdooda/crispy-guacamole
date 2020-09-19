@@ -313,6 +313,13 @@ function ComponentDetailsPanel:editCurrentComponent()
                     ComponentSelectionPanel:updateCurrentTab()
                     return false
                 end)
+            end,
+            function(graphPath, nodeType)
+                assert(graphPath)
+                assert(nodeType)
+                if nodeType == 'script' then
+                    return ([[return flat.graph.script.run(Mod.getFilePath '%s')]]):format(Mod.getRelativeFilePath(graphPath))
+                end
             end
         )
     end

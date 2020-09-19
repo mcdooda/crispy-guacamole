@@ -123,6 +123,7 @@ local function addCompoundColumn(nodeType, columnName, directories)
                     break
                 end
             end
+            assert(origin, 'Could not find origin for ' .. tostring(compoundPath))
             flat.arrayAdd(compoundList, {
                 name = compounds[i].name,
                 path = compoundPath,
@@ -171,16 +172,15 @@ local function addCompoundColumn(nodeType, columnName, directories)
 end
 
 addCompoundColumn('script', 'Compounds', {
-    [Mod.getPath() .. '/compounds'] = 'mod',
-    ['data/compounds']              = 'shared'
+    [Mod.getFilePath 'compounds'] = 'mod',
+    ['data/compounds']            = 'shared'
 })
 
 addSpacer()
 
 addCompoundColumn('sound', 'Sounds', {
-    [Mod.getPath() .. '/sounds'] = 'mod',
+    [Mod.getFilePath 'sounds'] = 'mod',
 })
-
 
 Widget.getRoot():addChild(boxContainer)
 

@@ -15,17 +15,18 @@ int open(lua_State* L)
 
 	lua_createtable(L, 0, 1);
 	static const luaL_Reg Mod_lib_m[] = {
-		{"getPath",           l_Mod_getPath},
-		{"getCurrentMapPath", l_Mod_getCurrentMapPath},
+		{"getPath",             l_Mod_getPath},
+		{"getCurrentMapPath",   l_Mod_getCurrentMapPath},
 
-		{"getEntities",       l_Mod_getEntities},
-		{"getMaps",           l_Mod_getMaps},
-		{"getProps",          l_Mod_getProps},
-		{"getTiles",          l_Mod_getTiles},
+		{"getEntities",         l_Mod_getEntities},
+		{"getMaps",             l_Mod_getMaps},
+		{"getProps",            l_Mod_getProps},
+		{"getTiles",            l_Mod_getTiles},
 
-		{"openEditor",        l_Mod_openEditor},
+		{"openEditor",          l_Mod_openEditor},
 
-		{"getFilePath",       l_Mod_getFilePath},
+		{"getFilePath",         l_Mod_getFilePath},
+		{"getRelativeFilePath", l_Mod_getRelativeFilePath},
 
 		{nullptr, nullptr}
 	};
@@ -38,7 +39,9 @@ int open(lua_State* L)
 int l_Mod_getPath(lua_State* L)
 {
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	lua_pushstring(L, game.mod.getPath().string().c_str());
+	std::string path = game.mod.getPath().string();
+	flat::lua::formatPathToLua(path);
+	lua_pushstring(L, path.c_str());
 	return 1;
 }
 
@@ -113,7 +116,20 @@ int l_Mod_getFilePath(lua_State* L)
 {
 	const char* fileName = luaL_checkstring(L, 1);
 	Game& game = flat::lua::getFlatAs<Game>(L);
-	lua_pushstring(L, game.mod.getFilePath(fileName).string().c_str());
+	std::string path = game.mod.getFilePath(fileName).string();
+	flat::lua::formatPathToLua(path);
+	lua_pushstring(L, path.c_str());
+	return 1;
+}
+
+int l_Mod_getRelativeFilePath(lua_State* L)
+{
+	std::string path = luaL_checkstring(L, 1);
+	flat::lua::formatPathFromLua(path);
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	std::string relativePath = game.mod.getRelativePath(path).string();
+	flat::lua::formatPathToLua(relativePath);
+	lua_pushstring(L, relativePath.c_str());
 	return 1;
 }
 

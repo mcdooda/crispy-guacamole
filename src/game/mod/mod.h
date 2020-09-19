@@ -16,6 +16,7 @@ class Mod final
 		inline const std::filesystem::path& getPath() const { return m_path; }
 
 		std::filesystem::path getFilePath(const std::filesystem::path& fileName) const;
+		std::filesystem::path getRelativePath(const std::filesystem::path& path) const;
 
 		std::filesystem::path getScriptPath(const std::filesystem::path& fileName) const;
 		std::filesystem::path getTexturePath(const std::filesystem::path& fileName) const;

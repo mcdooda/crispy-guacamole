@@ -9,11 +9,17 @@ namespace mod
 void Mod::setPath(const std::filesystem::path& path)
 {
 	m_path = path;
+	m_path.make_preferred();
 }
 
 std::filesystem::path Mod::getFilePath(const std::filesystem::path& fileName) const
 {
 	return m_path / fileName;
+}
+
+std::filesystem::path Mod::getRelativePath(const std::filesystem::path& path) const
+{
+	return path.lexically_relative(m_path);
 }
 
 std::filesystem::path Mod::getScriptPath(const std::filesystem::path& fileName) const

@@ -454,7 +454,7 @@ return {
                     },
                     {
                       loadArguments = {
-                        'walk',
+                        'move',
                       },
                       name = 'string',
                     },
@@ -549,7 +549,7 @@ return {
                     },
                     {
                       loadArguments = {
-                        'walk',
+                        'move',
                       },
                       name = 'string',
                     },
@@ -558,7 +558,7 @@ return {
                     },
                     {
                       loadArguments = {
-                        'walk',
+                        'move',
                       },
                       name = 'string',
                     },

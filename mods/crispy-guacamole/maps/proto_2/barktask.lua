@@ -1,1 +1,0 @@
-dofile(Mod.getFilePath 'scripts/barktask.lua')

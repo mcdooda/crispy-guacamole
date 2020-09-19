@@ -54,8 +54,20 @@ end
 function LevelTasks:run(...)
     for i = 1, select('#', ...) do
         local file = select(i, ...)
-        local task = assert(loadfile(Path.getMapFilePath(file .. '.lua')))
-        self:addTask(task)
+        
+        local mapFilePath = Path.getMapFilePath(file .. '.lua')
+        local modFilePath = Mod.getFilePath('scripts/' .. file .. '.lua')
+
+        local task = loadfile(mapFilePath)
+        if not task then
+            task = loadfile(modFilePath)
+        end
+
+        if task then
+            self:addTask(task)
+        else
+            error('Could not find level task for \'' .. file .. '\', tried \'' .. mapFilePath .. '\' and \'' .. modFilePath .. '\'')
+        end
     end
     self:loop()
 end

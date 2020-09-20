@@ -41,7 +41,7 @@ class Path
 
     private:
 #ifdef FLAT_DEBUG
-       static bool shouldSimplifyPath;
+        static bool shouldSimplifyPath;
 #endif
         std::vector<flat::Vector2> m_positions;
 };

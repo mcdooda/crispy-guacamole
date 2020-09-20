@@ -68,7 +68,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 
 	checkIsMidair();
 
-	if (isMovingAlongPath())
+	if (isFollowingPath())
 	{
 		progressAlongPath(elapsedTime);
 	}
@@ -83,7 +83,7 @@ void MovementComponent::update(float currentTime, float elapsedTime)
 
 bool MovementComponent::isBusy() const
 {
-	return isMovingAlongPath() || (!isTouchingGround() && getTemplate()->getSnapToGround());
+	return isFollowingPath() || (!isTouchingGround() && getTemplate()->getSnapToGround());
 }
 
 void MovementComponent::cancelCurrentAction()
@@ -96,7 +96,7 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 	// pathfind to destination from the current path's last point or from the entity position
 
 	flat::Vector2 startingPoint;
-	if (!isMovingAlongPath())
+	if (!isFollowingPath())
 	{
 		const flat::Vector3& position = m_owner->getPosition();
 		startingPoint.x = position.x;
@@ -180,7 +180,7 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 		m_currentPath.insertPoint(destination);
 	}
 
-	if (!isMovingAlongPath())
+	if (!isFollowingPath())
 	{
 		startMovement();
 	}
@@ -197,26 +197,26 @@ void MovementComponent::jump()
 	m_currentVerticalSpeed = getTemplate()->getJumpForce();
 }
 
-bool MovementComponent::isMovingAlongPath() const
+bool MovementComponent::isFollowingPath() const
 {
 	return m_nextPathPointIndex != INVALID_POINT_INDEX;
 }
 
 flat::Vector2 MovementComponent::getCurrentMovementDirection() const
 {
-	FLAT_ASSERT(isMovingAlongPath());
+	FLAT_ASSERT(isFollowingPath());
 	return m_currentPath.getPoint(m_nextPathPointIndex) - m_owner->getPosition2d();
 }
 
 const flat::Vector2& MovementComponent::getNextPathPoint() const
 {
-	FLAT_ASSERT(isMovingAlongPath());
+	FLAT_ASSERT(isFollowingPath());
 	return m_currentPath.getPoint(m_nextPathPointIndex);
 }
 
 void MovementComponent::progressAlongPath(float elapsedTime)
 {
-	FLAT_ASSERT(isMovingAlongPath());
+	FLAT_ASSERT(isFollowingPath());
 
 	const flat::Vector2 currentMovementDirection = getCurrentMovementDirection();
 	flat::Vector2 steering = currentMovementDirection;
@@ -359,7 +359,7 @@ const Entity* MovementComponent::getClosestEntityToAvoid(const flat::Vector2& st
 			const movement::MovementComponent* otherMovementComponent = otherEntity->getComponent<movement::MovementComponent>();
 			if (otherMovementComponent == nullptr
 				|| !otherMovementComponent->isTouchingGround()
-				|| (otherMovementComponent->isMovingAlongPath() && flat::dot(steering, otherMovementComponent->getCurrentMovementDirection()) > 0.f))
+				|| (otherMovementComponent->isFollowingPath() && flat::dot(steering, otherMovementComponent->getCurrentMovementDirection()) > 0.f))
 			{
 				return;
 			}
@@ -383,7 +383,7 @@ const Entity* MovementComponent::getClosestEntityToAvoid(const flat::Vector2& st
 
 void MovementComponent::getAvoidanceArea(flat::Vector2& center, float& radius) const
 {
-	FLAT_ASSERT(isMovingAlongPath());
+	FLAT_ASSERT(isFollowingPath());
 	const flat::Vector2& nextPathPoint = getNextPathPoint();
 	const flat::Vector2 position2d(m_owner->getPosition());
 	const float nextPathPointDistance = flat::distance(position2d, nextPathPoint);
@@ -416,7 +416,7 @@ void MovementComponent::fall(float elapsedTime)
 
 void MovementComponent::startMovement()
 {
-	FLAT_ASSERT(!isMovingAlongPath());
+	FLAT_ASSERT(!isFollowingPath());
 	FLAT_ASSERT(!m_currentPath.isEmpty());
 	m_nextPathPointIndex = 0;
 }
@@ -432,7 +432,7 @@ void MovementComponent::stopMovement()
 
 void MovementComponent::triggerStartStopCallbacks()
 {
-	const bool isMovingThisFrame = isMovingAlongPath();
+	const bool isMovingThisFrame = isFollowingPath();
 	if (m_wasMovingLastFrame && !isMovingThisFrame)
 	{
 		movementStopped();
@@ -550,7 +550,7 @@ void MovementComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 
 void MovementComponent::debugDrawCurrentPath(debug::DebugDisplay& debugDisplay) const
 {
-	if (!isMovingAlongPath())
+	if (!isFollowingPath())
 	{
 		return;
 	}
@@ -585,7 +585,7 @@ void MovementComponent::debugDrawSteering(debug::DebugDisplay& debugDisplay) con
 
 void MovementComponent::debugDrawAvoidanceArea(debug::DebugDisplay& debugDisplay) const
 {
-	if (!isMovingAlongPath())
+	if (!isFollowingPath())
 	{
 		return;
 	}
@@ -618,7 +618,7 @@ void MovementComponent::debugDrawEntity(debug::DebugDisplay& debugDisplay) const
 
 void MovementComponent::pathSanityCheck()
 {
-	if (!isMovingAlongPath())
+	if (!isFollowingPath())
 	{
 		return;
 	}

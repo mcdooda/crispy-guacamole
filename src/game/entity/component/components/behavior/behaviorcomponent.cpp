@@ -106,6 +106,11 @@ void BehaviorComponent::enterState(const char* stateName)
 	m_behaviorRuntime.enterState(stateName);
 }
 
+bool BehaviorComponent::hasState(const char* stateName) const
+{
+	return m_behaviorRuntime.hasState(stateName);
+}
+
 bool BehaviorComponent::setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity)
 {
 	if (canInteract(stateName))

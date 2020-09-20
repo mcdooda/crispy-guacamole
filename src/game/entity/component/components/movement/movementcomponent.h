@@ -53,6 +53,9 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		inline void setMovementSpeed(float movementSpeed) { FLAT_ASSERT(movementSpeed > 0.f); m_movementSpeed = movementSpeed; }
 		inline float getMovementSpeed() const { return m_movementSpeed; }
 
+		bool isFollowingPath() const;
+		flat::Vector2 getCurrentMovementDirection() const;
+
 		inline void setStrafing(bool isStrafing) { m_isStrafing = isStrafing; }
 		inline bool isStrafing() const { return m_isStrafing; }
 
@@ -65,8 +68,6 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 		flat::Slot<> movementStopped;
 
 	private:
-		bool isMovingAlongPath() const;
-		flat::Vector2 getCurrentMovementDirection() const;
 		const flat::Vector2& getNextPathPoint() const;
 		void progressAlongPath(float elapsedTime);
 

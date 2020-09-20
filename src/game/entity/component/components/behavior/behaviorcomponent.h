@@ -37,6 +37,7 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		void cancelCurrentAction() override;
 		
 		void enterState(const char* stateName);
+		bool hasState(const char* stateName) const;
 		bool setInteractionIfCompatible(const char* stateName, entity::Entity* interactionEntity);
 		bool canInteract(const char* stateName) const;
 

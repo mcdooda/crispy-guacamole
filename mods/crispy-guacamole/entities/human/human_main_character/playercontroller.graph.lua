@@ -73,6 +73,24 @@ return {
       2,
     },
     {
+      1,
+      3,
+      29,
+      2,
+    },
+    {
+      1,
+      3,
+      32,
+      2,
+    },
+    {
+      1,
+      3,
+      36,
+      4,
+    },
+    {
       3,
       1,
       11,
@@ -82,6 +100,12 @@ return {
       3,
       2,
       15,
+      1,
+    },
+    {
+      3,
+      3,
+      31,
       1,
     },
     {
@@ -245,6 +269,72 @@ return {
       1,
       20,
       1,
+    },
+    {
+      29,
+      1,
+      31,
+      2,
+    },
+    {
+      30,
+      1,
+      29,
+      1,
+    },
+    {
+      31,
+      1,
+      32,
+      1,
+    },
+    {
+      32,
+      2,
+      36,
+      1,
+    },
+    {
+      32,
+      3,
+      34,
+      2,
+    },
+    {
+      32,
+      3,
+      36,
+      2,
+    },
+    {
+      33,
+      1,
+      32,
+      3,
+    },
+    {
+      35,
+      1,
+      34,
+      3,
+    },
+    {
+      36,
+      1,
+      34,
+      1,
+    },
+    {
+      37,
+      1,
+      36,
+      3,
+    },
+    {
+      38,
+      1,
+      34,
+      4,
     },
   },
   nodeType = 'script',
@@ -812,6 +902,51 @@ return {
     },
     {
       name = 'script/condition',
+    },
+    {
+      name = 'controller/buttonjustpressed',
+    },
+    {
+      loadArguments = {
+        'LEFTSHOULDER',
+      },
+      name = 'string',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'entity/eachentityinrange',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
+    },
+    {
+      name = 'entity/enterstate',
+    },
+    {
+      loadArguments = {
+        'followPlayer',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/setextradatafield',
+    },
+    {
+      loadArguments = {
+        'playerToFollow',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
   },
 }

@@ -5,6 +5,7 @@ return {
 
     -- behavior
     'components/behaviorcomponent',
+    'entity/enterstate',
 
     -- collision
     'components/collisioncomponent',
@@ -83,6 +84,8 @@ return {
 
     'entity/lookatentity',
     'entity/jump',
+
+    'entity/eachentityinrange',
 
     'entity/getheading',
     'entity/setheading',

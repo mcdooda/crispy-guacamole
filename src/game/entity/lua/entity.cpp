@@ -88,21 +88,22 @@ int open(Game& game)
 		{"setUiVisible",             l_Entity_setUiVisible},
 
 		// movement
-		{"moveTo",                   l_Entity_moveTo},
-		{"clearPath",                l_Entity_clearPath},
-		{"setSpeed",                 l_Entity_setSpeed},
-		{"getSpeed",                 l_Entity_getSpeed},
-		{"jump",                     l_Entity_jump},
-		{"isTouchingGround",         l_Entity_isTouchingGround},
-		{"setMidairAcceleration",    l_Entity_setMidairAcceleration},
-		{"getMidairAcceleration",    l_Entity_getMidairAcceleration},
-		{"restrictToZone",           l_Entity_restrictToZone},
-		{"setIsStrafing",            l_Entity_setIsStrafing},
-		{"isStrafing",               l_Entity_isStrafing},
-		{"isFollowingPath",          l_Entity_isFollowingPath},
-		{"isMidair",                 l_Entity_isMidair},
-		{"movementStarted",          l_Entity_movementStarted},
-		{"movementStopped",          l_Entity_movementStopped},
+		{"moveTo",                      l_Entity_moveTo},
+		{"clearPath",                   l_Entity_clearPath},
+		{"setSpeed",                    l_Entity_setSpeed},
+		{"getSpeed",                    l_Entity_getSpeed},
+		{"jump",                        l_Entity_jump},
+		{"isTouchingGround",            l_Entity_isTouchingGround},
+		{"setMidairAcceleration",       l_Entity_setMidairAcceleration},
+		{"getMidairAcceleration",       l_Entity_getMidairAcceleration},
+		{"restrictToZone",              l_Entity_restrictToZone},
+		{"setIsStrafing",               l_Entity_setIsStrafing},
+		{"isStrafing",                  l_Entity_isStrafing},
+		{"isFollowingPath",             l_Entity_isFollowingPath},
+		{"getCurrentMovementDirection", l_Entity_getCurrentMovementDirection},
+		{"isMidair",                    l_Entity_isMidair},
+		{"movementStarted",             l_Entity_movementStarted},
+		{"movementStopped",             l_Entity_movementStopped},
 
 		// behavior
 		{"enterState",               l_Entity_enterState},
@@ -122,7 +123,7 @@ int open(Game& game)
 		{"setCycleAnimated",         l_Entity_setCycleAnimated},
 		{"resetCycleAnimation",      l_Entity_resetCycleAnimation},
 		{"playAnimation",            l_Entity_playAnimation},
-		{"setAnimationProgress",       l_Entity_setAnimationProgress},
+		{"setAnimationProgress",     l_Entity_setAnimationProgress},
 		{"getAttachPoint",           l_Entity_getAttachPoint},
 		{"flipSpriteX",              l_Entity_flipSpriteX},
 		{"setSpriteRotation",        l_Entity_setSpriteRotation},
@@ -624,8 +625,24 @@ int l_Entity_isFollowingPath(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
-	bool isFollowingPath = movementComponent.isBusy();
+	bool isFollowingPath = movementComponent.isFollowingPath();
 	lua_pushboolean(L, isFollowingPath);
+	return 1;
+}
+
+int l_Entity_getCurrentMovementDirection(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	movement::MovementComponent& movementComponent = getComponent<movement::MovementComponent>(L, entity);
+	if (movementComponent.isFollowingPath())
+	{
+		const flat::Vector2 movementDirection = flat::normalize(movementComponent.getCurrentMovementDirection());
+		flat::lua::pushVector2(L, movementDirection);
+	}
+	else
+	{
+		flat::lua::pushVector2(L, flat::Vector2(0.f, 0.f));
+	}
 	return 1;
 }
 
@@ -694,8 +711,30 @@ int l_Entity_enterState(lua_State* L)
 
 	Entity& entity = getEntity(L, 1);
 	const char* stateName = luaL_checkstring(L, 2);
-	entity.enterState(stateName);
-	return 0;
+	const bool ignoreErrors = lua_isnoneornil(L, 3) ? false : (lua_toboolean(L, 3) == 1);
+	behavior::BehaviorComponent* behaviorComponent = entity.getComponent<behavior::BehaviorComponent>();
+	bool enteredState = false;
+	if (behaviorComponent == nullptr)
+	{
+		if (!ignoreErrors)
+		{
+			getComponent<behavior::BehaviorComponent>(L, entity);
+		}
+	}
+	else if (!behaviorComponent->hasState(stateName))
+	{
+		if (!ignoreErrors)
+		{
+			luaL_error(L, "The entity does not have a state named '%s'", stateName);
+		}
+	}
+	else
+	{
+		entity.enterState(stateName);
+		enteredState = true;
+	}
+	lua_pushboolean(L, enteredState);
+	return 1;
 }
 
 int l_Entity_sleep(lua_State* L)

@@ -649,7 +649,7 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 	std::map<const MapObject*, int> entitiesDrawnIndex;
 	while (!entitiesToDraw.empty())
 	{
-		const MapObject* mapObject = entitiesToDraw.front();;
+		const MapObject* mapObject = entitiesToDraw.front();
 		entitiesToDraw.pop_front();
 
 		const int entityDrawnIndex = static_cast<int>(entitiesDrawn.size());

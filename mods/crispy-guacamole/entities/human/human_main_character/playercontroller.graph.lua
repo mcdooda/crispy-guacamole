@@ -91,6 +91,78 @@ return {
       4,
     },
     {
+      1,
+      3,
+      39,
+      2,
+    },
+    {
+      1,
+      3,
+      44,
+      1,
+    },
+    {
+      1,
+      3,
+      49,
+      2,
+    },
+    {
+      1,
+      3,
+      53,
+      1,
+    },
+    {
+      1,
+      3,
+      41,
+      2,
+    },
+    {
+      1,
+      3,
+      68,
+      2,
+    },
+    {
+      1,
+      3,
+      51,
+      2,
+    },
+    {
+      1,
+      3,
+      56,
+      6,
+    },
+    {
+      1,
+      3,
+      70,
+      1,
+    },
+    {
+      1,
+      3,
+      71,
+      2,
+    },
+    {
+      1,
+      3,
+      74,
+      2,
+    },
+    {
+      1,
+      3,
+      77,
+      1,
+    },
+    {
       3,
       1,
       11,
@@ -106,6 +178,24 @@ return {
       3,
       3,
       31,
+      1,
+    },
+    {
+      3,
+      4,
+      43,
+      1,
+    },
+    {
+      3,
+      5,
+      52,
+      1,
+    },
+    {
+      3,
+      6,
+      67,
       1,
     },
     {
@@ -165,7 +255,7 @@ return {
     {
       11,
       1,
-      9,
+      55,
       1,
     },
     {
@@ -336,6 +426,300 @@ return {
       34,
       4,
     },
+    {
+      39,
+      1,
+      43,
+      2,
+    },
+    {
+      40,
+      1,
+      39,
+      1,
+    },
+    {
+      41,
+      1,
+      67,
+      2,
+    },
+    {
+      42,
+      1,
+      41,
+      1,
+    },
+    {
+      43,
+      1,
+      56,
+      1,
+    },
+    {
+      44,
+      1,
+      51,
+      3,
+    },
+    {
+      44,
+      1,
+      59,
+      2,
+    },
+    {
+      44,
+      1,
+      54,
+      1,
+    },
+    {
+      45,
+      1,
+      44,
+      2,
+    },
+    {
+      46,
+      1,
+      56,
+      2,
+    },
+    {
+      47,
+      1,
+      56,
+      5,
+    },
+    {
+      48,
+      1,
+      56,
+      4,
+    },
+    {
+      49,
+      1,
+      52,
+      2,
+    },
+    {
+      50,
+      1,
+      49,
+      1,
+    },
+    {
+      52,
+      1,
+      80,
+      1,
+    },
+    {
+      53,
+      1,
+      66,
+      1,
+    },
+    {
+      54,
+      1,
+      58,
+      1,
+    },
+    {
+      55,
+      2,
+      9,
+      1,
+    },
+    {
+      56,
+      1,
+      71,
+      1,
+    },
+    {
+      56,
+      2,
+      71,
+      4,
+    },
+    {
+      57,
+      1,
+      61,
+      1,
+    },
+    {
+      58,
+      1,
+      64,
+      1,
+    },
+    {
+      58,
+      2,
+      64,
+      2,
+    },
+    {
+      58,
+      3,
+      60,
+      3,
+    },
+    {
+      59,
+      1,
+      51,
+      1,
+    },
+    {
+      60,
+      1,
+      59,
+      3,
+    },
+    {
+      61,
+      1,
+      60,
+      1,
+    },
+    {
+      61,
+      2,
+      60,
+      2,
+    },
+    {
+      62,
+      1,
+      66,
+      2,
+    },
+    {
+      63,
+      1,
+      62,
+      2,
+    },
+    {
+      64,
+      1,
+      57,
+      1,
+    },
+    {
+      65,
+      1,
+      62,
+      1,
+    },
+    {
+      66,
+      1,
+      57,
+      2,
+    },
+    {
+      67,
+      1,
+      59,
+      1,
+    },
+    {
+      68,
+      1,
+      55,
+      2,
+    },
+    {
+      69,
+      1,
+      68,
+      1,
+    },
+    {
+      70,
+      1,
+      56,
+      3,
+    },
+    {
+      72,
+      1,
+      71,
+      3,
+    },
+    {
+      73,
+      1,
+      74,
+      3,
+    },
+    {
+      75,
+      1,
+      74,
+      4,
+    },
+    {
+      76,
+      1,
+      74,
+      1,
+    },
+    {
+      77,
+      1,
+      76,
+      2,
+    },
+    {
+      77,
+      1,
+      79,
+      1,
+    },
+    {
+      78,
+      1,
+      77,
+      2,
+    },
+    {
+      79,
+      1,
+      80,
+      3,
+    },
+    {
+      80,
+      1,
+      76,
+      1,
+    },
+    {
+      81,
+      1,
+      80,
+      2,
+    },
+    {
+      82,
+      1,
+      80,
+      4,
+    },
+    {
+      83,
+      1,
+      80,
+      5,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -353,7 +737,7 @@ return {
     },
     {
       loadArguments = {
-        5,
+        7,
       },
       name = 'script/impulseall',
     },
@@ -947,6 +1331,189 @@ return {
         true,
       },
       name = 'boolean',
+    },
+    {
+      name = 'controller/buttonjustpressed',
+    },
+    {
+      loadArguments = {
+        'Y',
+      },
+      name = 'string',
+    },
+    {
+      name = 'controller/buttonpressed',
+    },
+    {
+      loadArguments = {
+        'Y',
+      },
+      name = 'string',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'entity/getextradatafield',
+    },
+    {
+      loadArguments = {
+        'aim_entity',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'player_aim',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      name = 'controller/buttonjustreleased',
+    },
+    {
+      loadArguments = {
+        'Y',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/lookatentity',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'controller/leftstickdirection',
+    },
+    {
+      name = 'entity/getposition',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'entity/spawnentity',
+    },
+    {
+      name = 'math/vector2/vector2add',
+    },
+    {
+      name = 'math/vector3/vector3split',
+    },
+    {
+      name = 'entity/setposition',
+    },
+    {
+      name = 'vector3',
+    },
+    {
+      name = 'math/vector2/vector2split',
+    },
+    {
+      name = 'math/multiply',
+    },
+    {
+      loadArguments = {
+        15,
+      },
+      name = 'number',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      name = 'game/gamedt',
+    },
+    {
+      name = 'math/vector2/vector2numbermultiply',
+    },
+    {
+      name = 'script/condition',
+    },
+    {
+      name = 'controller/buttonpressed',
+    },
+    {
+      loadArguments = {
+        'Y',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/getposition',
+    },
+    {
+      name = 'entity/setextradatafield',
+    },
+    {
+      loadArguments = {
+        'aim_entity',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'aim_entity',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/setextradatafield',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/despawnentity',
+    },
+    {
+      name = 'entity/getextradatafield',
+    },
+    {
+      loadArguments = {
+        'aim_entity',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/getposition',
+    },
+    {
+      name = 'entity/spawnentity',
+    },
+    {
+      loadArguments = {
+        'fx_green_skull_explosion',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
   },
 }

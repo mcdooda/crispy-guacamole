@@ -12,9 +12,11 @@ end
 
 function ButtonPressedNode:execute(runtime)
     local button = runtime:readPin(self.buttonInPin)
+    local entity = runtime:readPin(self.entityInPin)
+    local gamepadIndex = entity:getGamepadIndex()
 
     local buttonId = assert(Gamepads.GamepadButton[button])
-    local pressed = Gamepads.isPressed(0, buttonId)
+    local pressed = Gamepads.isPressed(gamepadIndex, buttonId)
 
     runtime:writePin(self.pressedOutPin, pressed)
 end

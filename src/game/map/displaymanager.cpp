@@ -631,7 +631,7 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 		}
 	}
 
-	std::set<const MapObject*> entitiesToDraw;
+	std::deque<const MapObject*> entitiesToDraw;
 	for (int i = 0, e = static_cast<int>(objects.size()); i < e; ++i)
 	{
 		const MapObject* mapObject = objects[i];
@@ -639,7 +639,7 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 		{
 			if (objectsBehind.count(mapObject) == 0)
 			{
-				entitiesToDraw.insert(mapObject);
+				entitiesToDraw.push_back(mapObject);
 			}
 		}
 	}
@@ -649,9 +649,8 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 	std::map<const MapObject*, int> entitiesDrawnIndex;
 	while (!entitiesToDraw.empty())
 	{
-		std::set<const MapObject*>::iterator it = entitiesToDraw.begin();
-		const MapObject* mapObject = *it;
-		entitiesToDraw.erase(it);
+		const MapObject* mapObject = entitiesToDraw.front();;
+		entitiesToDraw.pop_front();
 
 		const int entityDrawnIndex = static_cast<int>(entitiesDrawn.size());
 		entitiesDrawnIndex[mapObject] = entityDrawnIndex;
@@ -666,7 +665,7 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 				objectsBehind[mapObject2].erase(mapObject);
 				if (objectsBehind[mapObject2].empty())
 				{
-					entitiesToDraw.insert(mapObject2);
+					entitiesToDraw.push_back(mapObject2);
 				}
 			}
 		}

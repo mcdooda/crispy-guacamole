@@ -53,7 +53,7 @@ class DisplayManager final
 
 		void sortAndDraw(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
 
-		const MapObject* getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position) const;
+		const MapObject* getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position, const flat::video::View& view) const;
 		void getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const;
 
 		TileIndex getTileIndexAtPosition(const map::fog::Fog& fog, const flat::Vector2& position) const;
@@ -71,7 +71,7 @@ class DisplayManager final
 #endif
 
 	private:
-		static void sortObjects(std::vector<const MapObject*>& objects);
+		void sortObjects(std::vector<const MapObject*>& objects, const map::fog::Fog& fog, flat::AABB2 screenAABB, bool renderingWholeScreen) const;
 		static void sortTiles(std::vector<const Tile*>& tiles);
 
 #ifdef FLAT_DEBUG

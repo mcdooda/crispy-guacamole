@@ -773,7 +773,7 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	entity::Entity* previousMouseOverEntity = m_mouseOverEntity.getEntity();
 	entity::Entity* newMouseOverEntity = nullptr;
 
-	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(m_displayManager.getObjectAtPosition(m_map.getFog(), viewMousePosition));
+	map::MapObject* mouseOverObject = const_cast<map::MapObject*>(m_displayManager.getObjectAtPosition(m_map.getFog(), viewMousePosition, m_gameView));
 	if (mouseOverObject != nullptr)
 	{
 		if (mouseOverObject->isEntity())

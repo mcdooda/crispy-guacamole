@@ -223,7 +223,7 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 
 	{
 		FLAT_PROFILE("Display Manager Sort Objects");
-		sortObjects(objects);
+		sortObjects(objects, fog, screenAABB, true);
 	}
 
 	{
@@ -294,7 +294,7 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 	glDisable(GL_DEPTH_TEST);
 }
 
-const MapObject* DisplayManager::getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position) const
+const MapObject* DisplayManager::getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position, const flat::video::View& view) const
 {
 	std::vector<const MapObject*> objects;
 	objects.reserve(16);
@@ -316,7 +316,9 @@ const MapObject* DisplayManager::getObjectAtPosition(const map::fog::Fog& fog, c
 	objects.insert(objects.end(), tiles.begin(), tiles.end());
 	objects.insert(objects.end(), props.begin(), props.end());
 
-	sortObjects(objects);
+	flat::AABB2 screenAABB;
+	view.getScreenAABB(screenAABB);
+	sortObjects(objects, fog, screenAABB, false);
 
 	// look for a visible pixel in the objects' sprite
 	for (int i = static_cast<int>(objects.size()) - 1; i >= 0; --i)
@@ -389,7 +391,7 @@ const flat::AABB2& DisplayManager::getTileCellAABB(const map::TileIndex tileInde
 
 // Object sorting
 
-inline bool locSortByDepth(const MapObject* a, const MapObject* b)
+inline bool locSortByDepthXY(const MapObject* a, const MapObject* b)
 {
 	const flat::Vector3 aCenter = a->getWorldSpaceAABB().getCenter();
 	const flat::Vector3 bCenter = b->getWorldSpaceAABB().getCenter();
@@ -410,108 +412,326 @@ inline bool locSortByDepth(const MapObject* a, const MapObject* b)
 	return aDepth < bDepth;
 }
 
-inline bool locSortByAltitude(const MapObject* a, const MapObject* b)
+inline bool locSortByAABB(const MapObject* a, const MapObject* b)
 {
 	const flat::AABB3& aAABB = a->getWorldSpaceAABB();
 	const flat::AABB3& bAABB = b->getWorldSpaceAABB();
-	const float aDepth = aAABB.min.z + 0.01f;
-	const float bDepth = bAABB.max.z;
-	if (aDepth == bDepth)
+	if (flat::AABB3::overlap(aAABB, bAABB))
 	{
-		if (a->getRenderHash() == b->getRenderHash())
-		{
-			return aAABB.getCenter().x < bAABB.getCenter().x;
-		}
-		return a->getRenderHash() < b->getRenderHash();
+		return locSortByDepthXY(a, b);
 	}
-	return aDepth < bDepth;
-}
-
-inline bool spritesOverlap(const MapObject* a, const MapObject* b)
-{
-	return flat::AABB2::overlap(a->getAABB(), b->getAABB());
-}
-
-void DisplayManager::sortObjects(std::vector<const MapObject*>& objects)
-{
-	std::sort(std::execution::par, objects.begin(), objects.end(), locSortByDepth);
-	FLAT_ASSERT(std::is_sorted(objects.begin(), objects.end(), locSortByDepth));
-
+	else if (aAABB.getSize().z == 0.f && bAABB.getSize().z == 0.f && flat::AABB3::overlapInclusive(aAABB, bAABB))
 	{
-#if DEBUG_DRAW
-		for (const MapObject* o : objects)
+		return locSortByDepthXY(a, b);
+	}
+	else if (aAABB.getSize().z == 0.f || bAABB.getSize().z == 0.f)
+	{
+		const float aZ = aAABB.getCenter().z;
+		const float bZ = bAABB.getCenter().z;
+		if (aZ == bZ)
 		{
-			const_cast<MapObject*>(o)->getSprite().setColor(flat::video::Color::WHITE);
+			return locSortByDepthXY(a, b);
+		}
+		else
+		{
+			return aZ < bZ;
+		}
+	}
+	else
+	{
+		const bool aBeforeB = aAABB.max.x < bAABB.min.x || aAABB.max.y < bAABB.min.y || aAABB.max.z < bAABB.min.z;
+		const bool bBeforeA = aAABB.max.x < bAABB.min.x || aAABB.max.y < bAABB.min.y || aAABB.max.z < bAABB.min.z;
+		if (aBeforeB == bBeforeA)
+		{
+			return locSortByDepthXY(a, b);
+		}
+		else
+		{
+			return aBeforeB;
+		}
+	}
+}
+
+void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const map::fog::Fog& fog, flat::AABB2 screenAABB, bool renderingWholeScreen) const
+{
+	// 1st pass: sort by simple depth using x + y
+	std::sort(std::execution::par, objects.begin(), objects.end(), locSortByDepthXY);
+	FLAT_ASSERT(std::is_sorted(objects.begin(), objects.end(), locSortByDepthXY));
+
+#if DEBUG_DRAW
+	for (const MapObject* o : objects)
+	{
+		const_cast<MapObject*>(o)->getSprite().setColor(flat::video::Color::WHITE);
 
 #ifdef FLAT_DEBUG
-			const flat::AABB2& currentSpriteAABB = o->getAABB();
-			flat::AABB2 desiredSpriteAABB;
-			o->getSprite().getAABB(desiredSpriteAABB);
-			FLAT_ASSERT(desiredSpriteAABB == currentSpriteAABB);
+		// ensure that the sprite's AABB is update to date
+		const flat::AABB2& currentSpriteAABB = o->getAABB();
+		flat::AABB2 desiredSpriteAABB;
+		o->getSprite().getAABB(desiredSpriteAABB);
+		FLAT_ASSERT(desiredSpriteAABB == currentSpriteAABB);
 #endif
-		}
+	}
 #endif
 
-		// move entities in front of overlapping tiles if necessary
-		const int size = static_cast<int>(objects.size());
-		int numSwaps = 0;
-		for (int i = 0; i < size; ++i)
+
+	// 2nd pass: move entities in front of tiles if their sprites overlap and the entity is higher in altitude
+	int numTileSwaps = 0;
+	for (int i = 0, e = static_cast<int>(objects.size()); i < e; ++i)
+	{
+		const MapObject* mapObject = objects[i];
+		if (mapObject->isEntity())
 		{
-			const MapObject* mapObject = objects[i];
-			if (mapObject->isEntity())
+			const flat::AABB2& spriteAABB = mapObject->getAABB();
+			const flat::AABB3& AABB = mapObject->getWorldSpaceAABB();
+			const flat::Vector3 center = AABB.getCenter();
+
+			std::vector<TileIndex> overlappingTileIndices;
+			overlappingTileIndices.reserve(16);
 			{
-				const flat::Vector3 aCenter = mapObject->getWorldSpaceAABB().getCenter();
-				const float aDepth = aCenter.x + aCenter.y;
-				int k = 0;
-				for (int j = i + 1; j < size; ++j)
+				FLAT_PROFILE("Display Manager Get Tiles");
+				m_tileQuadtree->getObjects(spriteAABB, overlappingTileIndices);
+			}
+			std::vector<const Tile*> overlappingTiles;
+			fog.getTilesFromIndices(overlappingTileIndices, overlappingTiles);
+
+			// find tiles to move the entity in front of
+			int nearestTileIndex = -1;
+			for (int j = 0; j < static_cast<int>(overlappingTiles.size()); ++j)
+			{
+				const Tile* tile = overlappingTiles[j];
+
+				// ignore the tile if it's not on screen
+				if (!flat::AABB2::overlap(tile->getAABB(), screenAABB))
 				{
-					const MapObject* mapObject2 = objects[j];
-					const flat::Vector3 bCenter = mapObject2->getWorldSpaceAABB().getCenter();
-					const float bDepth = bCenter.x + bCenter.y;
+					continue;
+				}
 
-					if (bDepth > aDepth + 1.f)
-						break;
-
-					if (spritesOverlap(mapObject, mapObject2)
-						&& (mapObject2->isTile() && !locSortByAltitude(mapObject, mapObject2)
-							|| mapObject2->isEntity() && !locSortByDepth(mapObject, mapObject2)))
+				if (!renderingWholeScreen)
+				{
+					if (std::find(objects.begin(), objects.end(), tile) == objects.end())
 					{
-#if DEBUG_DRAW
-						const_cast<MapObject*>(mapObject)->getSprite().setColor(flat::video::Color::RED);
-						const_cast<MapObject*>(mapObject2)->getSprite().setColor(flat::video::Color::BLUE);
-#endif
-						if (mapObject2->isTile() || aDepth != bDepth)
-						{
-							k = j;
-						}
+						continue;
 					}
 				}
-				if (k != 0)
-				{
-					/*while (k < size - 1 && objects[k + 1]->isEntity() && locSortByDepth(mapObject, objects[k + 1]))
-					{
-						++k;
-					}*/
 
 #if DEBUG_DRAW
-					const_cast<MapObject*>(objects[k])->getSprite().setColor(flat::video::Color::GREEN);
+				FLAT_ASSERT(std::find(objects.begin(), objects.end(), tile) != objects.end());
 #endif
+
+				// ignore the tile if it's already behind the entity
+				if (locSortByDepthXY(tile, mapObject))
+				{
+					continue;
+				}
+
+				// if the tile is below the entity in altitude, the entity should be moved forward
+				const flat::AABB3& tileAABB = tile->getWorldSpaceAABB();
+				if (tileAABB.max.z <= AABB.min.z)
+				{
+					if (nearestTileIndex == -1)
+					{
+						nearestTileIndex = j;
+					}
+					else if (!locSortByDepthXY(tile, overlappingTiles[nearestTileIndex]))
+					{
+						nearestTileIndex = j;
+#if DEBUG_DRAW
+						const_cast<Tile*>(tile)->getSprite().setColor(flat::video::Color::GREEN);
+#endif
+					}
+				}
+			}
+
+			// move the entity in front of that tile
+			if (nearestTileIndex != -1)
+			{
+				const MapObject* tile = overlappingTiles[nearestTileIndex];
+				std::vector<const MapObject*>::iterator it = std::find(objects.begin(), objects.end(), tile);
+				FLAT_ASSERT(it != objects.end());
+				const int k = static_cast<int>(it - objects.begin());
+
+				if (k > i)
+				{
 					std::rotate(objects.begin() + i, objects.begin() + i + 1, objects.begin() + k + 1);
-					--i; // avoids to skip the 1st shifted element
-					++numSwaps;
+
+#if DEBUG_DRAW
+					const_cast<MapObject*>(mapObject)->getSprite().setColor(flat::video::Color::RED);
+					const_cast<MapObject*>(tile)->getSprite().setColor(flat::video::Color::BLUE);
+#endif
+
+					++numTileSwaps;
+					FLAT_ASSERT(numTileSwaps < objects.size());
+
+					--i;
 				}
 			}
 		}
+	}
+
+	// 3rd pass: resort entities between each other using their AABB
+	// see https://shaunlebron.github.io/IsometricBlocks/ for AABB depth sorting
+	std::map<const MapObject*, std::set<const MapObject*>> objectsBehind;
+	std::map<const MapObject*, std::set<const MapObject*>> objectsInFront;
+	int numEntities = 0;
+	for (int i = 0, e = static_cast<int>(objects.size()); i < e; ++i)
+	{
+		const MapObject* mapObject = objects[i];
+		if (mapObject->isEntity())
+		{
+			++numEntities;
+
+			const flat::AABB2& spriteAABB = mapObject->getAABB();
+			const flat::AABB3& AABB = mapObject->getWorldSpaceAABB();
+			const flat::Vector3 center = AABB.getCenter();
+
+			std::vector<const entity::Entity*> overlappingEntities;
+			overlappingEntities.reserve(16);
+			m_entityQuadtree->getObjects(spriteAABB, overlappingEntities);
+
+			for (int j = static_cast<int>(overlappingEntities.size() - 1); j >= 0; --j)
+			{
+				const entity::Entity* overlappingEntity = overlappingEntities[j];
+				const TileIndex tileIndex = overlappingEntity->getTileIndexFromPosition();
+				if (!fog.isTileDiscovered(tileIndex)
+				 || overlappingEntity == mapObject
+				 || !flat::AABB2::overlap(overlappingEntity->getAABB(), screenAABB)
+				 || (!renderingWholeScreen && std::find(objects.begin(), objects.end(), overlappingEntity) == objects.end()))
+				{
+					if (!overlappingEntities.empty())
+					{
+						overlappingEntities[j] = overlappingEntities[overlappingEntities.size() - 1];
+						overlappingEntities.pop_back();
+					}
+					else
+					{
+						overlappingEntities.clear();
+					}
+				}
+			}
+
+			for (int j = 0; j < static_cast<int>(overlappingEntities.size()); ++j)
+			{
+				const MapObject* otherMapObject = overlappingEntities[j];
 
 #if DEBUG_DRAW
-		std::cout << "swaps: " << numSwaps << std::endl;
+				FLAT_ASSERT(std::find(objects.begin(), objects.end(), otherMapObject) != objects.end());
+
+				FLAT_ASSERT(locSortByAABB(otherMapObject, mapObject) == !locSortByAABB(mapObject, otherMapObject));
 #endif
+
+				if (locSortByAABB(otherMapObject, mapObject))
+				{
+					objectsBehind[mapObject].insert(otherMapObject);
+				}
+				else
+				{
+					objectsInFront[mapObject].insert(otherMapObject);
+				}
+			}
+		}
 	}
+
+	std::set<const MapObject*> entitiesToDraw;
+	for (int i = 0, e = static_cast<int>(objects.size()); i < e; ++i)
+	{
+		const MapObject* mapObject = objects[i];
+		if (mapObject->isEntity())
+		{
+			if (objectsBehind.count(mapObject) == 0)
+			{
+				entitiesToDraw.insert(mapObject);
+			}
+		}
+	}
+	FLAT_ASSERT(numEntities == 0 || !entitiesToDraw.empty());
+
+	std::vector<const MapObject*> entitiesDrawn;
+	std::map<const MapObject*, int> entitiesDrawnIndex;
+	while (!entitiesToDraw.empty())
+	{
+		std::set<const MapObject*>::iterator it = entitiesToDraw.begin();
+		const MapObject* mapObject = *it;
+		entitiesToDraw.erase(it);
+
+		const int entityDrawnIndex = static_cast<int>(entitiesDrawn.size());
+		entitiesDrawnIndex[mapObject] = entityDrawnIndex;
+		entitiesDrawn.push_back(mapObject);
+
+		std::set<const MapObject*>& objectInFrontOfMapObject = objectsInFront[mapObject];
+		for (std::set<const MapObject*>::iterator it2 = objectInFrontOfMapObject.begin(); it2 != objectInFrontOfMapObject.end(); ++it2)
+		{
+			const MapObject* mapObject2 = *it2;
+			if (!objectsBehind[mapObject2].empty())
+			{
+				objectsBehind[mapObject2].erase(mapObject);
+				if (objectsBehind[mapObject2].empty())
+				{
+					entitiesToDraw.insert(mapObject2);
+				}
+			}
+		}
+	}
+
+	FLAT_ASSERT(entitiesDrawn.size() == numEntities);
+
+	int numEntitySwaps = 0;
+	for (int i = 0, e = static_cast<int>(entitiesDrawn.size() - 1); i < e; ++i)
+	{
+		const MapObject* mapObject1 = entitiesDrawn[i];
+		std::vector<const MapObject*>::iterator it1 = std::find(objects.begin(), objects.end(), mapObject1);
+		FLAT_ASSERT(it1 != objects.end());
+
+		const MapObject* mapObject2 = entitiesDrawn[i + 1];
+		std::vector<const MapObject*>::iterator it2 = std::find(objects.begin(), objects.end(), mapObject2);
+		FLAT_ASSERT(it2 != objects.end());
+
+		if (it1 > it2)
+		{
+			std::rotate(it2, it2 + 1, it1 + 1);
+			++numEntitySwaps;
+		}
+	}
+
+#if DEBUG_DRAW
+	// ensure that this entities are drawn in the expected order
+	int currentEntityIndex = 0;
+	for (int i = 0, e = static_cast<int>(objects.size()); i < e; ++i)
+	{
+		const MapObject* mapObject = objects[i];
+		if (mapObject->isEntity())
+		{
+			std::map<const MapObject*, int>::iterator it = entitiesDrawnIndex.find(mapObject);
+			FLAT_ASSERT(it != entitiesDrawnIndex.end());
+			if (it->second != currentEntityIndex)
+			{
+				for (std::map<const MapObject*, int>::iterator it = entitiesDrawnIndex.begin(); it != entitiesDrawnIndex.end(); ++it)
+				{
+					std::cout << it->first << " -> " << it->second << std::endl;
+				}
+				std::cout << std::endl;
+				FLAT_BREAK();
+			}
+			++currentEntityIndex;
+		}
+	}
+
+	if (renderingWholeScreen)
+	{
+		std::cout << "tile swaps: " << numTileSwaps << std::endl
+		          << "entity swaps: " << numEntitySwaps << std::endl << std::endl;
+
+		for (int i = 0; i < static_cast<int>(entitiesDrawn.size()); ++i)
+		{
+			std::cout << i << " " << static_cast<const entity::Entity*>(entitiesDrawn[i])->getTemplateName() << std::endl;
+		}
+		std::cout << std::endl;
+	}
+#endif
 }
 
 void DisplayManager::sortTiles(std::vector<const Tile*>& tiles)
 {
-	std::sort(std::execution::par, tiles.begin(), tiles.end(), locSortByDepth);
+	std::sort(std::execution::par, tiles.begin(), tiles.end(), locSortByDepthXY);
 }
 
 #ifdef FLAT_DEBUG

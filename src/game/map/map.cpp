@@ -578,6 +578,10 @@ TileIndex Map::getTileIndexIfNavigable(float x, float y, Navigability navigabili
 
 bool Map::isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) const
 {
+	if (navigabilityMask == NONE)
+	{
+		return true;
+	}
 	return (m_tileNavigations[tileIndex].navigability & navigabilityMask) != 0;
 }
 

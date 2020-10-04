@@ -465,7 +465,7 @@ return {
     {
       44,
       1,
-      59,
+      60,
       2,
     },
     {
@@ -549,50 +549,32 @@ return {
     {
       57,
       1,
-      61,
-      1,
-    },
-    {
-      58,
-      1,
-      64,
-      1,
-    },
-    {
-      58,
-      2,
-      64,
-      2,
-    },
-    {
-      58,
-      3,
       60,
       3,
     },
     {
+      58,
+      1,
+      57,
+      1,
+    },
+    {
       59,
+      1,
+      80,
+      4,
+    },
+    {
+      60,
       1,
       51,
       1,
     },
     {
-      60,
-      1,
-      59,
-      3,
-    },
-    {
       61,
       1,
-      60,
-      1,
-    },
-    {
-      61,
-      2,
-      60,
-      2,
+      80,
+      5,
     },
     {
       62,
@@ -609,8 +591,8 @@ return {
     {
       64,
       1,
-      57,
-      1,
+      80,
+      2,
     },
     {
       65,
@@ -627,7 +609,7 @@ return {
     {
       67,
       1,
-      59,
+      60,
       1,
     },
     {
@@ -701,24 +683,6 @@ return {
       1,
       76,
       1,
-    },
-    {
-      81,
-      1,
-      80,
-      2,
-    },
-    {
-      82,
-      1,
-      80,
-      4,
-    },
-    {
-      83,
-      1,
-      80,
-      5,
     },
   },
   nodeType = 'script',
@@ -1411,16 +1375,22 @@ return {
       name = 'math/vector2/vector2add',
     },
     {
-      name = 'math/vector3/vector3split',
+      name = 'math/vector3/vector3tovector2',
     },
     {
-      name = 'entity/setposition',
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
     {
-      name = 'vector3',
+      name = 'entity/setposition2d',
     },
     {
-      name = 'math/vector2/vector2split',
+      loadArguments = {
+        0,
+      },
+      name = 'number',
     },
     {
       name = 'math/multiply',
@@ -1432,7 +1402,10 @@ return {
       name = 'number',
     },
     {
-      name = 'vector2',
+      loadArguments = {
+        'fx_green_skull_explosion',
+      },
+      name = 'string',
     },
     {
       name = 'game/gamedt',
@@ -1496,24 +1469,6 @@ return {
     },
     {
       name = 'entity/spawnentity',
-    },
-    {
-      loadArguments = {
-        'fx_green_skull_explosion',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
     },
   },
 }

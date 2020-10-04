@@ -1,1 +1,1 @@
-return flat.graph.script.run 'mods/crispy-guacamole/entities/wild_sheep/movement'
+return flat.graph.script.run(Mod.getFilePath 'entities/wild/wild_sheep/movement')

@@ -94,6 +94,7 @@ return {
     'entity/setelevation',
     'entity/getposition',
     'entity/setposition',
+    'entity/setposition2d',
     'entity/getforward',
 
     'entity/setinstigator',

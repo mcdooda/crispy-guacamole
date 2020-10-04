@@ -79,6 +79,19 @@ void CollisionComponentTemplate::load(Game& game, lua_State* L, const std::files
 	}
 
 	lua_pop(L, 1);
+
+	lua_getfield(L, -1, "separateFromTiles");
+	if (lua_isnil(L, -1))
+	{
+		m_separateFromTiles = true;
+	}
+	else
+	{
+		luaL_checktype(L, -1, LUA_TBOOLEAN);
+		m_separateFromTiles = lua_toboolean(L, -1) == 1;
+	}
+
+	lua_pop(L, 1);
 }
 
 } // collision

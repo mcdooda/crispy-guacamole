@@ -36,6 +36,12 @@ return {
       1,
       5,
     },
+    {
+      8,
+      1,
+      1,
+      6,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -80,6 +86,12 @@ return {
         },
       },
       name = 'script/scriptoutput',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
     },
   },
 }

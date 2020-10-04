@@ -105,6 +105,10 @@ void CollisionComponent::separateFromNearbyEntities()
 
 void CollisionComponent::separateFromAdjacentTiles()
 {
+	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
+	if (!collisionComponentTemplate->shouldSeparateFromTiles())
+		return;
+
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
 
@@ -117,7 +121,6 @@ void CollisionComponent::separateFromAdjacentTiles()
 	flat::Vector3 newPosition = position;
 	//FLAT_DEBUG_ONLY(m_owner->checkValidPosition(newPosition));
 	
-	const CollisionComponentTemplate* collisionComponentTemplate = getTemplate();
 	const float radius = collisionComponentTemplate->getRadius();
 	const float radius2 = flat::square(radius);
 

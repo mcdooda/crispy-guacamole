@@ -36,6 +36,12 @@ return {
       2,
       1,
     },
+    {
+      8,
+      1,
+      7,
+      6,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -80,6 +86,12 @@ return {
     },
     {
       name = 'components/collisioncomponent',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
   },
 }

@@ -64,6 +64,7 @@ int open(Game& game)
 		{"getExtraData",             l_Entity_getExtraData},
 
 		{"setPosition",              l_Entity_setPosition},
+		{"setPosition2d",            l_Entity_setPosition2d},
 		{"getPosition",              l_Entity_getPosition},
 		{"getCenter",                l_Entity_getCenter},
 
@@ -384,6 +385,27 @@ int l_Entity_setPosition(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	flat::Vector3 position = flat::lua::getVector3(L, 2);
 	entity.setPosition(position);
+	return 0;
+}
+
+int l_Entity_setPosition2d(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::Vector2 position2d = flat::lua::getVector2(L, 2);
+
+	Game& game = flat::lua::getFlatAs<Game>(L);
+	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+
+	flat::Vector3 position = flat::Vector3(position2d, 0.f);
+	const map::TileIndex tileIndex = baseMapState.getMap().getTileIndex(position.x, position.y);
+	if (tileIndex == map::TileIndex::INVALID_TILE)
+	{
+		luaL_error(L, "Trying to set an entity's position outside the map (%f, %f)", position.x, position.y);
+	}
+	position.z = baseMapState.getMap().getTileZ(tileIndex);
+
+	entity.setPosition(position);
+
 	return 0;
 }
 

@@ -39,6 +39,7 @@ int l_Entity_despawn(lua_State* L);
 int l_Entity_getExtraData(lua_State* L);
 
 int l_Entity_setPosition(lua_State* L);
+int l_Entity_setPosition2d(lua_State* L);
 int l_Entity_getPosition(lua_State* L);
 int l_Entity_getCenter(lua_State* L);
 

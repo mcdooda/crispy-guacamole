@@ -147,6 +147,14 @@ map::Navigability EntityHelper::getNavigabilityMask(const EntityTemplate* entity
 	{
 		return movementComponentTemplate->getNavigabilityMask();
 	}
+	const component::collision::CollisionComponentTemplate* collisionComponentTemplate = entityTemplate->getComponentTemplate<component::collision::CollisionComponent>();
+	if (collisionComponentTemplate != nullptr)
+	{
+		if (!collisionComponentTemplate->shouldSeparateFromTiles())
+		{
+			return map::Navigability::NONE;
+		}
+	}
 	return map::Navigability::ALL;
 }
 

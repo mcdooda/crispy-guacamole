@@ -31,7 +31,23 @@ return function(componentDetailsPanel, entityTemplatePath, componentTemplate, ge
     end
     do
         local label = Widget.makeText(
-            'Separate: ' .. (componentTemplate.separate and 'true' or 'false'),
+            'Separate From Entities: ' .. (componentTemplate.separate and 'true' or 'false'),
+            table.unpack(UiSettings.defaultFont)
+        )
+        label:setMargin(2)
+        componentDetailsPanel:addChild(label)
+    end
+    do
+        local label = Widget.makeText(
+            'Separate Same Type: ' .. (componentTemplate.separateSameType and 'true' or 'false'),
+            table.unpack(UiSettings.defaultFont)
+        )
+        label:setMargin(2)
+        componentDetailsPanel:addChild(label)
+    end
+    do
+        local label = Widget.makeText(
+            'Separate From Tiles: ' .. (componentTemplate.separateFromTiles and 'true' or 'false'),
             table.unpack(UiSettings.defaultFont)
         )
         label:setMargin(2)

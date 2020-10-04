@@ -36,6 +36,12 @@ return {
       1,
       5,
     },
+    {
+      8,
+      1,
+      1,
+      6,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -68,6 +74,12 @@ return {
         0.15000000596046,
       },
       name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
     },
     {
       loadArguments = {

@@ -100,7 +100,7 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
 		if (propTemplateName != nullptr)
 		{
-			const std::filesystem::path texturePath = game.mod.getTexturePath(std::filesystem::path("props") / *propTemplateName);
+			const std::filesystem::path texturePath = game.mod.getTexturePath(*propTemplateName);
 			const std::shared_ptr<const flat::video::FileTexture>& texture = game.video->getTexture(texturePath);
 			setTilePropTexture(tileIndex, texture);
 		}
@@ -165,7 +165,7 @@ void Map::getState(Game& game, io::MapFile& mapFile) const
 	mapFile.setMaxY(maxY);
 
 	// tiles
-	eachTile([this, &mapFile](TileIndex tileIndex)
+	eachTile([this, &mapFile, &game](TileIndex tileIndex)
 	{
 		// tile texture and variant index
 		const flat::render::SynchronizedSprite& tileSprite = static_cast<const flat::render::SynchronizedSprite&>(getTileSprite(tileIndex));
@@ -180,7 +180,7 @@ void Map::getState(Game& game, io::MapFile& mapFile) const
 		if (prop != nullptr)
 		{
 			propTexture = static_cast<const flat::video::FileTexture*>(prop->getSprite().getTexture().get())->getFileName();
-			propTexture = propTexture.parent_path().stem() / propTexture.filename();
+			propTexture = game.mod.getRelativePath(propTexture);
 			propTexturePtr = &propTexture;
 		}
 

@@ -163,6 +163,12 @@ return {
       1,
     },
     {
+      1,
+      3,
+      81,
+      2,
+    },
+    {
       3,
       1,
       11,
@@ -513,7 +519,7 @@ return {
     {
       52,
       1,
-      80,
+      81,
       1,
     },
     {
@@ -561,7 +567,7 @@ return {
     {
       59,
       1,
-      80,
+      83,
       4,
     },
     {
@@ -574,7 +580,7 @@ return {
       61,
       1,
       80,
-      5,
+      3,
     },
     {
       62,
@@ -591,8 +597,8 @@ return {
     {
       64,
       1,
-      80,
-      2,
+      83,
+      3,
     },
     {
       65,
@@ -676,13 +682,43 @@ return {
       79,
       1,
       80,
-      3,
+      4,
     },
     {
       80,
       1,
+      83,
+      1,
+    },
+    {
+      81,
+      1,
       76,
       1,
+    },
+    {
+      81,
+      2,
+      80,
+      1,
+    },
+    {
+      81,
+      3,
+      83,
+      2,
+    },
+    {
+      81,
+      3,
+      80,
+      2,
+    },
+    {
+      82,
+      1,
+      81,
+      3,
     },
   },
   nodeType = 'script',
@@ -815,19 +851,31 @@ return {
                     {
                       1,
                       1,
-                      2,
-                      1,
-                    },
-                    {
-                      2,
-                      1,
                       4,
                       1,
                     },
                     {
+                      2,
+                      1,
+                      7,
+                      3,
+                    },
+                    {
                       3,
                       1,
+                      4,
                       2,
+                    },
+                    {
+                      3,
+                      1,
+                      6,
+                      2,
+                    },
+                    {
+                      3,
+                      1,
+                      7,
                       2,
                     },
                     {
@@ -848,30 +896,6 @@ return {
                       7,
                       1,
                     },
-                    {
-                      8,
-                      1,
-                      7,
-                      3,
-                    },
-                    {
-                      9,
-                      1,
-                      4,
-                      2,
-                    },
-                    {
-                      9,
-                      1,
-                      6,
-                      2,
-                    },
-                    {
-                      9,
-                      1,
-                      7,
-                      2,
-                    },
                   },
                   nodeType = 'script',
                   nodes = {
@@ -879,13 +903,13 @@ return {
                       name = 'script/init',
                     },
                     {
-                      name = 'print',
+                      loadArguments = {
+                        false,
+                      },
+                      name = 'boolean',
                     },
                     {
-                      loadArguments = {
-                        'idle',
-                      },
-                      name = 'string',
+                      name = 'script/getcontext',
                     },
                     {
                       name = 'entity/setcycleanimation',
@@ -901,15 +925,6 @@ return {
                     },
                     {
                       name = 'entity/setcycleanimated',
-                    },
-                    {
-                      loadArguments = {
-                        false,
-                      },
-                      name = 'boolean',
-                    },
-                    {
-                      name = 'script/getcontext',
                     },
                   },
                 },
@@ -931,25 +946,19 @@ return {
                     {
                       1,
                       1,
-                      2,
-                      1,
-                    },
-                    {
-                      2,
-                      1,
                       4,
                       1,
                     },
                     {
+                      2,
+                      1,
                       3,
-                      1,
-                      2,
-                      2,
+                      3,
                     },
                     {
                       4,
                       1,
-                      7,
+                      3,
                       1,
                     },
                     {
@@ -967,14 +976,8 @@ return {
                     {
                       6,
                       1,
-                      7,
-                      2,
-                    },
-                    {
-                      8,
-                      1,
-                      7,
                       3,
+                      2,
                     },
                   },
                   nodeType = 'script',
@@ -983,13 +986,13 @@ return {
                       name = 'script/init',
                     },
                     {
-                      name = 'print',
+                      loadArguments = {
+                        true,
+                      },
+                      name = 'boolean',
                     },
                     {
-                      loadArguments = {
-                        'move',
-                      },
-                      name = 'string',
+                      name = 'entity/setcycleanimated',
                     },
                     {
                       name = 'entity/setcycleanimation',
@@ -1002,15 +1005,6 @@ return {
                     },
                     {
                       name = 'script/getcontext',
-                    },
-                    {
-                      name = 'entity/setcycleanimated',
-                    },
-                    {
-                      loadArguments = {
-                        true,
-                      },
-                      name = 'boolean',
                     },
                   },
                 },
@@ -1379,18 +1373,18 @@ return {
     },
     {
       loadArguments = {
-        0,
+        true,
       },
-      name = 'number',
+      name = 'boolean',
     },
     {
       name = 'entity/setposition2d',
     },
     {
       loadArguments = {
-        0,
+        'abilityTargetPosition',
       },
-      name = 'number',
+      name = 'string',
     },
     {
       name = 'math/multiply',
@@ -1403,7 +1397,7 @@ return {
     },
     {
       loadArguments = {
-        'fx_green_skull_explosion',
+        'useAbility',
       },
       name = 'string',
     },
@@ -1468,7 +1462,19 @@ return {
       name = 'entity/getposition',
     },
     {
-      name = 'entity/spawnentity',
+      name = 'entity/setextradatafield',
+    },
+    {
+      name = 'entity/eachentityinrange',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
+    },
+    {
+      name = 'entity/enterstate',
     },
   },
 }

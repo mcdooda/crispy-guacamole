@@ -58,13 +58,13 @@ return {
       2,
       1,
       1,
-      1,
+      3,
     },
     {
       3,
       1,
-      1,
-      2,
+      6,
+      5,
     },
     {
       5,
@@ -166,13 +166,13 @@ return {
       21,
       1,
       1,
-      3,
+      1,
     },
     {
       22,
       1,
-      6,
-      5,
+      1,
+      2,
     },
   },
   nodeType = 'script',
@@ -182,13 +182,13 @@ return {
     },
     {
       loadArguments = {
-        15,
+        true,
       },
-      name = 'number',
+      name = 'boolean',
     },
     {
       loadArguments = {
-        5,
+        0,
       },
       name = 'number',
     },
@@ -260,13 +260,13 @@ return {
     },
     {
       loadArguments = {
-        true,
+        30,
       },
-      name = 'boolean',
+      name = 'number',
     },
     {
       loadArguments = {
-        0,
+        15,
       },
       name = 'number',
     },

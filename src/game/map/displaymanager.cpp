@@ -671,7 +671,9 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 		}
 	}
 
+#if DEBUG_DRAW
 	FLAT_ASSERT(entitiesDrawn.size() == numEntities);
+#endif
 
 	int numEntitySwaps = 0;
 	for (int i = 0, e = static_cast<int>(entitiesDrawn.size() - 1); i < e; ++i)

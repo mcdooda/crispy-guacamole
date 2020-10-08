@@ -29,26 +29,40 @@ end
 
 local function createSpawner(templatePath)
     local template = Path.requireComponentTemplate(templatePath, 'projectile')
-    return function(position, target)
-        return spawn(templatePath, template, position, target:getCenter())
+    return function(position, targetEntity)
+        return spawn(templatePath, template, position, targetEntity:getCenter())
     end
-end
-
-local function spawnFromEntity(templatePath, template, entity, attachPoint, target)
-    return spawn(templatePath, template, entity:getAttachPoint(attachPoint), target:getCenter(), entity)
 end
 
 local function createSpawnerFromEntity(templatePath)
     local template = Path.requireComponentTemplate(templatePath, 'projectile')
-    return function(entity, attachPoint, target)
-        return spawnFromEntity(templatePath, template, entity, attachPoint, target)
+    return function(entity, attachPoint, targetEntity)
+        return spawn(
+            templatePath,
+            template,
+            entity:getAttachPoint(attachPoint),
+            targetEntity:getCenter()
+        )
+    end
+end
+
+local function createSpawnerFromEntityToPosition(templatePath)
+    local template = Path.requireComponentTemplate(templatePath, 'projectile')
+    return function(entity, attachPoint, targetPosition)
+        return spawn(
+            templatePath,
+            template,
+            entity:getAttachPoint(attachPoint),
+            targetPosition
+        )
     end
 end
 
 return {
-    spawn                   = spawn,
-    createSpawner           = createSpawner,
+    spawn                             = spawn,
+    createSpawner                     = createSpawner,
 
-    spawnFromEntity         = spawnFromEntity,
-    createSpawnerFromEntity = createSpawnerFromEntity
+    spawnFromEntity                   = spawnFromEntity,
+    createSpawnerFromEntity           = createSpawnerFromEntity,
+    createSpawnerFromEntityToPosition = createSpawnerFromEntityToPosition
 }

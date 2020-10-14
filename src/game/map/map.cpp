@@ -573,7 +573,7 @@ TileIndex Map::getTileIndexIfNavigable(int x, int y, Navigability navigabilityMa
 
 TileIndex Map::getTileIndexIfNavigable(float x, float y, Navigability navigabilityMask) const
 {
-	return getTileIndexIfNavigable(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)), navigabilityMask);
+	return getTileIndexIfNavigable(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f)), navigabilityMask);
 }
 
 bool Map::isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) const
@@ -652,6 +652,7 @@ void Map::updateTileNavigabilityDebug(TileIndex tileIndex)
 }
 #endif
 
+#pragma optimize("", off)
 void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color, bool updatePropColor)
 {
 	Tile& tile = m_tiles[tileIndex];
@@ -669,6 +670,7 @@ void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color, boo
 		}
 	}
 }
+#pragma optimize("", on)
 
 const flat::video::Color& Map::getTileColor(TileIndex tileIndex) const
 {
@@ -1219,6 +1221,50 @@ bool Map::straightPathExists(const flat::Vector2& from, const flat::Vector2& to,
 	}
 	return true;
 }
+
+#pragma optimize("", off)
+bool Map::navigationRaycast(const flat::Vector2& startPosition, const flat::Vector2& direction, float length, Navigability navigabilityMask, flat::Vector2& endPosition) const
+{
+	FLAT_ASSERT(length > 0.f);
+
+	endPosition = startPosition + direction * length;
+
+	const flat::Vector2 p0 = startPosition + flat::Vector2(0.5f);
+	const flat::Vector2 p1 = endPosition + flat::Vector2(0.5f);
+
+	flat::Vector2 rd = p1 - p0;
+	flat::Vector2 p = glm::floor(p0);
+	flat::Vector2 rdinv(1.f / rd.x, 1.f / rd.y);
+	flat::Vector2 stp = glm::sign(rd);
+	flat::Vector2 delta = glm::min(rdinv * stp, 1.f);
+	// start at intersection of ray with initial cell
+	flat::Vector2 t_max = glm::abs((p + glm::max(stp, flat::Vector2(0.f)) - p0) * rdinv);
+
+	float next_t = 0.f;
+
+	while (true)
+	{
+		const TileIndex tileIndex = getTileIndex(p.x, p.y);
+		if (!isValidTile(tileIndex) || !isTileNavigable(tileIndex, navigabilityMask))
+		{
+			endPosition = startPosition + next_t * rd;
+			return true;
+		}
+
+		next_t = glm::min(t_max.x, t_max.y);
+		if (next_t > 1.0)
+		{
+			break;
+		}
+
+		flat::Vector2 cmp = glm::step(t_max, flat::Vector2(t_max.y, t_max.x));
+		t_max += delta * cmp;
+		p += stp * cmp;
+	}
+
+	return false;
+}
+#pragma optimize("", on)
 
 void Map::setFogType(fog::Fog::FogType fogType)
 {

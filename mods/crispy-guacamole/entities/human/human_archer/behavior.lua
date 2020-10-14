@@ -4,6 +4,8 @@ local BarkSystem = require(Mod.getFilePath 'scripts/barksystem')
 
 local states = BehaviorHelper.basicAttacker()
 
+local followDistance = 2
+
 function states:init(archer)
 
 end
@@ -17,14 +19,19 @@ function states:followPlayer(archer)
     archer:clearPath()
     local playerToFollow = assert(extraData.playerToFollow)
     archer:setSpeed(playerToFollow:getSpeed())
-    local followDistance = 1 + math.random()
     while true do
         if playerToFollow:isValid() then
             local archerPosition = archer:getPosition():toVector2()
 
             local playerToFollowPosition = playerToFollow:getPosition():toVector2()
             if playerToFollow:isFollowingPath() then
-                playerToFollowPosition = playerToFollowPosition + playerToFollow:getCurrentMovementDirection() * followDistance
+                local playerMovementDirection = playerToFollow:getCurrentMovementDirection()
+                local hit, endPosition = Map.navigationRaycast(playerToFollowPosition, playerMovementDirection, followDistance + archer:getRadius(), Map.Navigability.GROUND)
+                if hit then
+                    playerToFollowPosition = endPosition - playerMovementDirection * archer:getRadius()
+                else
+                    playerToFollowPosition = endPosition
+                end
             end
 
             if (archerPosition - playerToFollowPosition):length2() > followDistance * followDistance then

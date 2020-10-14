@@ -131,4 +131,6 @@ return {
 
     -- map
     'map/settiletemplate',
+    'map/navigationraycast',
+    'map/navigabilitymask',
 }

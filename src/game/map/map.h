@@ -119,7 +119,7 @@ class Map
 
 		TileIndex getTileIndex(int x, int y) const;
 		TileIndex getTileIndex(const flat::Vector2i& position) const;
-		inline TileIndex getTileIndex(float x, float y) const { return getTileIndex(static_cast<int>(std::round(x)), static_cast<int>(std::round(y))); }
+		inline TileIndex getTileIndex(float x, float y) const { return getTileIndex(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f))); }
 		inline TileIndex getTileIndex(const flat::Vector2& position) const { return getTileIndex(position.x, position.y); }
 		TileIndex getTileIndex(const Tile* tile) const;
 		std::vector<TileIndex> getTilesIndices(const std::vector<flat::Vector2>& positions) const;
@@ -216,6 +216,7 @@ class Map
 		inline const std::map<std::string, std::shared_ptr<Zone>>& getZones() const { return m_zones; }
 
 		bool straightPathExists(const flat::Vector2& from, const flat::Vector2& to, float jumpHeight, Navigability navigability) const;
+		bool navigationRaycast(const flat::Vector2& startPosition, const flat::Vector2& direction, float length, Navigability navigabilityMask, flat::Vector2& endPosition) const;
 
 		void setFogType(fog::Fog::FogType fogType);
 		fog::Fog::FogType getFogType() const;

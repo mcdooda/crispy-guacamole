@@ -1,7 +1,7 @@
 local BehaviorHelper = require 'data/scripts/componenthelpers/behavior'
 local BarkSystem = require(Mod.getFilePath 'scripts/barksystem')
 
-local followDistance = 3
+local followDistance = 4
 
 local states = {}
 
@@ -20,7 +20,13 @@ function states:followPlayer(dog)
 
             local playerToFollowPosition = playerToFollow:getPosition():toVector2()
             if playerToFollow:isFollowingPath() then
-                playerToFollowPosition = playerToFollowPosition + playerToFollow:getCurrentMovementDirection() * followDistance
+                local playerMovementDirection = playerToFollow:getCurrentMovementDirection()
+                local hit, endPosition = Map.navigationRaycast(playerToFollowPosition, playerMovementDirection, followDistance + dog:getRadius(), Map.Navigability.GROUND)
+                if hit then
+                    playerToFollowPosition = endPosition - playerMovementDirection * dog:getRadius()
+                else
+                    playerToFollowPosition = endPosition
+                end
             end
 
             if (dogPosition - playerToFollowPosition):length2() > followDistance * followDistance then

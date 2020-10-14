@@ -285,8 +285,8 @@ return function(addContainer, makeSeparator, font)
         }
 
         local function getBiome(altitude, moisture)
-            assert(0 <= altitude and altitude <= 1)
-            assert(0 <= moisture and moisture <= 1)
+            assert(0 <= altitude and altitude <= 1, 'Invalid altitude range: ' .. tostring(altitude))
+            assert(0 <= moisture and moisture <= 1, 'Invalid moisture range: ' .. tostring(moisture))
 
             if altitude <= 0.001 then
                 return biomes.ocean
@@ -557,3 +557,77 @@ return function(addContainer, makeSeparator, font)
         procGenContainer:addChild(copyPasteButton.container)
     end
 end
+
+--[[
+
+Cool maps:
+
+{
+  altitudeFactor = 4.5419847328244,
+  altitudeGrain = 3.3650817871094,
+  biomesGrain = 3.8263244628906,
+  height = 100.0,
+  islandCurve = 2.9389312977099,
+  islandHeight = 22.519083969466,
+  noiseFrequency = 0.069384765625,
+  redistributeAltitude = 2.8646946564885,
+  slopeProbability = 0.0,
+  slopeProbabilityThreshold = 0.012599182128906,
+  stepHeight = 3.0,
+  waterLevel = 5.3053435114504,
+  width = 100.0,
+}
+
+{
+  altitudeFactor = 3.7022900763359,
+  altitudeGrain = 1.1539001464844,
+  biomesGrain = 1.4803771972656,
+  height = 100.0,
+  islandCurve = 1.6412213740458,
+  islandHeight = 30.152671755725,
+  noiseFrequency = 0.03714599609375,
+  redistributeAltitude = 3.0322875976563,
+  slopeProbability = 0.21124267578125,
+  slopeProbabilityThreshold = 0.03409423828125,
+  stepHeight = 3.0,
+  waterLevel = 3.7786259541985,
+  width = 100.0,
+}
+
+Big maps with nice slopes
+{
+    altitudeFactor = 6.8255615234375,
+    altitudeGrain = 1.6068115234375,
+    biomesGrain = 2.087786259542,
+    height = 400.0,
+    islandCurve = 1.1749267578125,
+    islandHeight = 18.136596679688,
+    noiseFrequency = 0.033206106870229,
+    redistributeAltitude = 2.5512557983398,
+    secondaryStepHeight = 0.0,
+    slopeProbability = 0.43893129770992,
+    slopeProbabilityThreshold = 0.03530534351145,
+    stepHeight = 3.0,
+    waterLevel = 7.6358032226563,
+    width = 400.0,
+}
+
+Variant of the same
+{
+  altitudeFactor = 2.4045801526718,
+  altitudeGrain = 1.6068115234375,
+  biomesGrain = 2.087786259542,
+  height = 400.0,
+  islandCurve = 1.1749267578125,
+  islandHeight = 16.412213740458,
+  noiseFrequency = 0.025572519083969,
+  redistributeAltitude = 5.3191984732824,
+  secondaryStepHeight = 0.4236641221374,
+  slopeProbability = 0.43893129770992,
+  slopeProbabilityThreshold = 0.05,
+  stepHeight = 3.0,
+  waterLevel = 1.8702290076336,
+  width = 400.0,
+}
+
+]]

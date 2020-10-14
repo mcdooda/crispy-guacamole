@@ -169,7 +169,10 @@ int open(Game& game)
 		{"getGamepadIndex",          l_Entity_getGamepadIndex},
 
 		// sample
-		{"playSample",          	 l_Entity_playSample},
+		{"playSample",               l_Entity_playSample},
+
+		// collision
+		{"getRadius",                l_Entity_getRadius},
 
 		{nullptr, nullptr}
 	};
@@ -1237,6 +1240,15 @@ int l_Entity_playSample(lua_State* L)
 	const int numLoops = static_cast<int>(luaL_optinteger(L, 3, 1));
 	sampleComponent.playSample(game, file, numLoops);
 	return 0;
+}
+
+// COLLISION
+
+int l_Entity_getRadius(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	lua_pushnumber(L, EntityHelper::getRadius(&entity));
+	return 1;
 }
 
 // static lua functions

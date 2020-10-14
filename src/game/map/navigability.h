@@ -9,8 +9,8 @@ namespace map
 enum Navigability : unsigned char
 {
 	NONE   = 0,
-	GROUND = 1 << 1,
-	WATER  = 1 << 2,
+	GROUND = 1 << 0,
+	WATER  = 1 << 1,
 	ALL    = 0xFF
 };
 

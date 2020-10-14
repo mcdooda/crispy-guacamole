@@ -55,6 +55,7 @@ int open(lua_State* L)
 		{"setPropTemplate",               l_Map_setPropTemplate},
 
 		{"findPath",                      l_Map_findPath},
+		{"navigationRaycast",             l_Map_navigationRaycast},
 
 		{"setFogType",                    l_Map_setFogType},
 		{"getFogType",                    l_Map_getFogType},
@@ -371,6 +372,23 @@ int l_Map_findPath(lua_State* L)
 	pathfinder.findPath(request, *path);
 	game::map::pathfinder::lua::pushPath(L, path);
 	return 1;
+}
+
+int l_Map_navigationRaycast(lua_State* L)
+{
+	const flat::Vector2& startPosition = flat::lua::getVector2(L, 1);
+	const flat::Vector2& direction = flat::lua::getVector2(L, 2);
+	const float length = static_cast<float>(luaL_checknumber(L, 3));
+	const Navigability navigabilityMask = static_cast<Navigability>(luaL_checkinteger(L, 4));
+
+	const Map& map = getMap(L);
+	flat::Vector2 endPosition;
+	const bool hit = map.navigationRaycast(startPosition, direction, length, navigabilityMask, endPosition);
+
+	lua_pushboolean(L, hit);
+	flat::lua::pushVector2(L, endPosition);
+
+	return 2;
 }
 
 int l_Map_setFogType(lua_State* L)

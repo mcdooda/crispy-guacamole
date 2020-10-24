@@ -31,7 +31,7 @@ function SpriteAnimationNode:update(spriteAnimationNode, nodeWidget, pinsWidget)
     local ok, err = pcall(function()
         -- we must use a clone of the graph as we need to resolve the compounds
         local scriptClone = mainWindow:getCurrentGraph():clone()
-        scriptClone:resolveCompounds()
+        scriptClone:resolveCompoundsAndReroutes()
         local scriptRuntime = ScriptRuntime:new(scriptClone)
         local spriteComponentNode = getSpriteComponentNode(scriptClone)
         if spriteComponentNode then

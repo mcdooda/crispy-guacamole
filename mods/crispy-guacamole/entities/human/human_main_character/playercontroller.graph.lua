@@ -99,7 +99,7 @@ return {
     {
       9,
       1,
-      122,
+      34,
       1,
     },
     {
@@ -237,20 +237,14 @@ return {
     {
       32,
       2,
-      36,
+      35,
       1,
     },
     {
       32,
       3,
-      36,
-      2,
-    },
-    {
-      32,
+      35,
       3,
-      130,
-      1,
     },
     {
       33,
@@ -259,28 +253,28 @@ return {
       3,
     },
     {
-      35,
-      1,
       34,
-      3,
+      1,
+      12,
+      1,
     },
     {
       36,
       1,
-      34,
+      37,
       1,
     },
     {
       37,
       1,
-      36,
-      3,
+      83,
+      2,
     },
     {
       38,
       1,
-      34,
-      4,
+      31,
+      1,
     },
     {
       39,
@@ -357,7 +351,7 @@ return {
     {
       52,
       1,
-      81,
+      122,
       1,
     },
     {
@@ -531,32 +525,26 @@ return {
     {
       81,
       1,
-      76,
+      82,
       1,
     },
     {
       81,
-      2,
-      80,
       1,
-    },
-    {
-      81,
-      3,
-      124,
-      1,
-    },
-    {
-      81,
-      3,
-      80,
+      49,
       2,
     },
     {
       82,
       1,
-      81,
-      3,
+      122,
+      2,
+    },
+    {
+      82,
+      1,
+      102,
+      1,
     },
     {
       84,
@@ -735,8 +723,8 @@ return {
     {
       98,
       1,
-      49,
-      2,
+      81,
+      1,
     },
     {
       98,
@@ -747,8 +735,8 @@ return {
     {
       99,
       1,
-      36,
-      4,
+      35,
+      2,
     },
     {
       100,
@@ -759,7 +747,7 @@ return {
     {
       100,
       1,
-      102,
+      101,
       1,
     },
     {
@@ -775,15 +763,9 @@ return {
       1,
     },
     {
-      101,
-      1,
-      81,
-      2,
-    },
-    {
       102,
       1,
-      101,
+      104,
       1,
     },
     {
@@ -797,12 +779,6 @@ return {
       1,
       71,
       2,
-    },
-    {
-      103,
-      1,
-      104,
-      1,
     },
     {
       104,
@@ -849,7 +825,7 @@ return {
     {
       110,
       1,
-      123,
+      38,
       1,
     },
     {
@@ -951,55 +927,37 @@ return {
     {
       122,
       1,
-      12,
+      123,
       1,
+    },
+    {
+      122,
+      2,
+      123,
+      2,
     },
     {
       123,
       1,
-      31,
+      76,
       1,
     },
     {
-      124,
-      1,
-      125,
-      1,
-    },
-    {
-      125,
-      1,
-      83,
+      123,
       2,
-    },
-    {
-      127,
-      1,
-      128,
+      80,
       1,
     },
     {
-      128,
-      1,
-      129,
-      1,
-    },
-    {
-      129,
-      1,
-      126,
+      123,
+      3,
+      36,
       1,
     },
     {
-      130,
-      1,
-      131,
-      1,
-    },
-    {
-      131,
-      1,
-      34,
+      123,
+      3,
+      80,
       2,
     },
   },
@@ -1603,28 +1561,19 @@ return {
       name = 'number',
     },
     {
-      name = 'entity/enterstate',
+      name = 'reroute',
     },
     {
-      loadArguments = {
-        'followPlayer',
-      },
-      name = 'string',
+      name = 'joinplayergroup',
     },
     {
-      name = 'entity/setextradatafield',
+      name = 'reroute',
     },
     {
-      loadArguments = {
-        'playerToFollow',
-      },
-      name = 'string',
+      name = 'reroute',
     },
     {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
+      name = 'reroute',
     },
     {
       name = 'controller/buttonjustpressed',
@@ -1801,13 +1750,10 @@ return {
       name = 'entity/setextradatafield',
     },
     {
-      name = 'entity/eachentityinrange',
+      name = 'reroute',
     },
     {
-      loadArguments = {
-        10,
-      },
-      name = 'number',
+      name = 'reroute',
     },
     {
       name = 'entity/enterstate',
@@ -1927,34 +1873,10 @@ return {
       name = 'reroute',
     },
     {
-      name = 'reroute',
+      name = 'getplayergroupentities',
     },
     {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'print',
-    },
-    {
-      name = 'print',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
+      name = 'script/foreach',
     },
   },
 }

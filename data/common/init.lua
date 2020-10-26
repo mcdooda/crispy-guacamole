@@ -1,5 +1,6 @@
 -- load script nodes
 flat.graph.loadNodeClasses('script', 'data')
+flat.graph.loadNodeClasses('script', Mod.getPath())
 flat.graph.loadCompounds('script', Mod.getFilePath 'compounds')
 flat.graph.loadCompounds('script', 'data/compounds')
 

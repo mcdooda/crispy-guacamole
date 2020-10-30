@@ -6,6 +6,7 @@ dofile(Mod.getFilePath 'maps/sandbox/ui.lua')
 Map.setFogType(Map.FogType.SOFT)
 
 LevelTasks:run(
+    'leveltask_initgamepads',
     'leveltask_bark',
     'leveltask_camera'
 )

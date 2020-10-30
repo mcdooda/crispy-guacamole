@@ -1,5 +1,4 @@
 local function addProgressBarToMap(entity, widget, offsetY, bgpicto, fgpicto, widgetWidth, widgetHeight)
-    
     local extraData = entity:getExtraData()
     extraData.progressChanged = flat.Slot:new()
 
@@ -19,13 +18,13 @@ local function addProgressBarToMap(entity, widget, offsetY, bgpicto, fgpicto, wi
 
     progressBar:hide()
     entity:setUiOffset(flat.Vector2(-widgetWidth / 2, offsetY))
-    
+
     extraData.progressChanged:on(function(progress)
         if progress ~= 0 then
             progressBar:show()
             local innerWidgetWidth = progress * innerWidgetMaxWidth
             progressBarInnerWidget:setSize(innerWidgetWidth, innerWidgetHeight)
-        else 
+        else
             progressBar:hide()
         end
     end)

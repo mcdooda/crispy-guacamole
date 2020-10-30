@@ -1,3 +1,0 @@
-return {
-    door = 1,
-}

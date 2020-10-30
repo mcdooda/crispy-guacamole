@@ -14,7 +14,7 @@ function GetExtraDataFieldNode:execute(runtime)
     local entity = runtime:readPin(self.entityInPin)
     local key = runtime:readPin(self.keyInPin)
 
-    local value = entity:getExtraData(key)
+    local value = assert(entity:getExtraData(key), tostring(entity) .. ' has no \'' .. tostring(key) .. '\' extra data field')
 
     runtime:writePin(self.valueOutPin, value)
 end

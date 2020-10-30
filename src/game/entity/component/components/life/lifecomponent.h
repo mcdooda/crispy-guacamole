@@ -39,6 +39,8 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		inline int getHealth() const { return m_health; }
 		inline int getMaxHealth() const { return getTemplate()->getMaxHealth(); }
 
+		inline bool isDespawnPending() const { return m_despawning || m_owner->isMarkedForDelete(); }
+
 		int addHealthChangedCallback(lua_State* L, int index);
 		void removeHealthChangeCallback(int index);
 

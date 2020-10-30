@@ -696,8 +696,6 @@ void BaseMapState::initLua(Game& game)
 		entity::component::lua::open(L, m_componentRegistry);
 		entity::faction::lua::open(L, game.mod.getFactionsConfigPath());
 		editor::lua::open(L);
-
-		flat::lua::doFile(L, "data/common/init.lua");
 	}
 }
 

@@ -7,6 +7,18 @@ return {
       1,
     },
     {
+      1,
+      2,
+      15,
+      1,
+    },
+    {
+      1,
+      3,
+      15,
+      2,
+    },
+    {
       3,
       1,
       1,
@@ -78,6 +90,12 @@ return {
       10,
       4,
     },
+    {
+      16,
+      1,
+      15,
+      3,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -113,7 +131,7 @@ return {
     },
     {
       loadArguments = {
-        1,
+        14,
       },
       name = 'number',
     },
@@ -149,15 +167,24 @@ return {
     },
     {
       loadArguments = {
-        1,
+        14,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        1,
+        0.050000000745058,
       },
       name = 'number',
+    },
+    {
+      name = 'entity/setcycleanimation',
+    },
+    {
+      loadArguments = {
+        'aim',
+      },
+      name = 'string',
     },
   },
 }

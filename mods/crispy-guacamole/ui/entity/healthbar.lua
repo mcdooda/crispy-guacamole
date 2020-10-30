@@ -1,5 +1,3 @@
-
-
 local function addHealthBarToMap(entity, widget, offsetY, bgpicto, fgpicto, widgetWidth, widgetHeight)
     local innerWidgetMaxWidth = widgetWidth - 2
     local innerWidgetHeight = widgetHeight - 2

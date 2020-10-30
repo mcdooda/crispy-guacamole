@@ -1,6 +1,8 @@
 local HealthBar = require 'mods/crispy-guacamole/ui/entity/healthbar_long'
 local ProgressBar = require 'mods/crispy-guacamole/ui/entity/progressbar_long'
-local Action = require 'mods/crispy-guacamole/ui/buttons_action/action'
+local BuildingAction = require 'mods/crispy-guacamole/ui/building/building_action'
+local EntityData = require 'mods/crispy-guacamole/scripts/entitydata'
+
 local ui = setmetatable({}, { __index = HealthBar })
 
 local unitData = {
@@ -26,49 +28,22 @@ local unitData = {
     }
 }
 
-local duration = 0.3
-local easing = flat.easing.easeOut(flat.easing.back)
-local currentTimer
-
-local function animate(buttonA, buttonB, buttonX, buttonY)
-    currentTimer = game.Timer()
-    local destination = 130
-    local origin = 0
-    currentTimer:onUpdate(function(timer, elapsedTime)
-        local t = elapsedTime / duration
-        local result = flat.easing.lerp(t, origin, destination, easing)
-        buttonA.container:setPosition(0, -result)
-        buttonB.container:setPosition(result, 0)
-        buttonX.container:setPosition(-result, 0)
-        buttonY.container:setPosition(0, result)
-    end)
-    currentTimer:onEnd(function()
-        currentTimer = nil
-    end)
-    currentTimer:start(duration, false)
-end
-
 function ui.addedToMap(entity, widget)
-    --HealthBar.addedToMap(entity, widget, 34)
-    --ProgressBar.addedToMap(entity, widget, 80)
+    HealthBar.addedToMap(entity, widget, 34)
+    ProgressBar.addedToMap(entity, widget, 80)
 
     local container = Widget.makeFixedSize(400, 500)
-	local buttonA = Action:new('A', unitData[1], Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP, container)
-	local buttonB = Action:new('B', unitData[2], Widget.PositionPolicy.LEFT + Widget.PositionPolicy.CENTER_Y, container)
-	local buttonX = Action:new('X', unitData[3], Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.CENTER_Y, container)
-	local buttonY = Action:new('Y', unitData[4], Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM, container)
-	buttonA.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
-	buttonB.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
-    buttonX.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
-    buttonY.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
-	local width, height = container:getSize()
+    local width, height = container:getSize()
+
+    local buildingData = EntityData.get(entity:getTemplatePath())
+    flat.dump(buildingData)
+    BuildingAction.buildWidgets(container, entity, buildingData)
+
 	entity:setUiOffset(flat.Vector2(-width / 2, -height / 2 + 50))
     widget:addChild(container)
 
-    Widget.getRoot():addChild(widget)
     entity:selected(function(entity)
         entity:setUiVisible(true)
-        animate(buttonA, buttonB, buttonX, buttonY)
 	end)
 
 	entity:deselected(function(entity)

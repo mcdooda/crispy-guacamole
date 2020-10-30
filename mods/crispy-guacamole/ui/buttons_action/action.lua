@@ -3,6 +3,7 @@ local Path  = require 'data/scripts/path'
 local Theme = require 'mods/crispy-guacamole/ui/theme'
 local UiSettings = require 'data/scripts/ui/uisettings'
 local Preview = require 'data/scripts/preview'
+local BuildEntity = require 'mods/crispy-guacamole/ui/building/build_entity'
 
 local frameHeight = 144
 local frameWidth = 111
@@ -12,12 +13,13 @@ local uiRadius = 350
 local Action = {}
 Action.__index = Action
 
-function Action:new(buttonType, unitData, buttonPositionPolicy, parent)
+function Action:new(buttonType, unit, buttonPositionPolicy, building, parent)
     local o = setmetatable({
-        unitData = unitData,
+        unit = unit,
         button = nil,
         container = nil,
-        animationTimer = nil
+        animationTimer = nil,
+        building = building
     }, self)
     o:build(parent, buttonType, buttonPositionPolicy)
     return o
@@ -63,6 +65,7 @@ function Action:build(parent, buttonType, buttonPositionPolicy)
         do
             self:validateAnimation(buttonPositionPolicy)
             self.button:setPressed(true)
+            BuildEntity.addToQueue(self.building, self.unit)
         end
     end)
     container:gamepadButtonReleased(Gamepads.GamepadButton[buttonType], function()
@@ -81,7 +84,7 @@ function Action:build(parent, buttonType, buttonPositionPolicy)
         local priceContainer = Widget.makeFixedSize(frameWidth, infoHeight)
         priceContainer:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM)
         do
-            local priceLabel = Widget.makeText(tostring(self.unitData.price), table.unpack(UiSettings.defaultFont), 25)
+            local priceLabel = Widget.makeText(tostring(10), table.unpack(UiSettings.defaultFont), 25)
             priceLabel:setPositionPolicy(Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.TOP)
             priceLabel:setPosition(-30, 0)
             priceLabel:setTextColor(0xFFFFFFFF)
@@ -99,16 +102,18 @@ function Action:build(parent, buttonType, buttonPositionPolicy)
     end
 
     do
-        local typeIcon = Widget.makeImage(Path.getModFilePath('ui/buttons_action/type_icon/' .. self.unitData.type .. '.png'))
+        local typeIcon = Widget.makeImage(Path.getModFilePath('ui/buttons_action/type_icon/' .. 'sword' .. '.png'))
         typeIcon:setPosition(10, -frameHeight / 2)
         typeIcon:setSize(30, 30)
         background:addChild(typeIcon)
     end
 
     do
-        local preview = Preview.entity(self.unitData.template, 'move', true, 3)
+        local unitAsset = assert(Asset.findFromName('entity', self.unit.entity), 'Could not find entity asset ' .. self.unit.entity)
+        local unitTemplate = unitAsset:getPath()
+        local preview = Preview.entity(unitTemplate, 'move', true, 3)
         preview:setPositionPolicy(Widget.PositionPolicy.CENTER)
-        local template = Path.requireComponentTemplate(self.unitData.template, 'sprite')
+        local template = Path.requireComponentTemplate(unitTemplate, 'sprite')
         preview:setPosition(template.origin:x(), template.origin:y())
         background:addChild(preview)
     end

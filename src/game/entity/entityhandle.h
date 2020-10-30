@@ -21,6 +21,7 @@ class EntityHandle
 
 		bool isValid() const;
 		inline Entity* getEntity() const { return isValid() ? m_entity : nullptr; }
+		inline EntityId getId() const { return m_id; }
 
 		inline bool operator==(const EntityHandle& other) const { return m_id == other.m_id; }
 		inline bool operator!=(const EntityHandle& other) const { return m_id != other.m_id; }

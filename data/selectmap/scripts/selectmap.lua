@@ -67,10 +67,6 @@ addSpacer()
 
 -- compounds
 local function addCompoundColumn(nodeType, columnName, directories)
-    flat.graph.loadNodeClasses(nodeType, 'data')
-    for directory, _ in pairs(directories) do
-        flat.graph.loadCompounds(nodeType, directory)
-    end
     local compounds = flat.graph.getCompounds(nodeType)
 
     local box = Widget.makeColumnFlow()

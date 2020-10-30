@@ -15,7 +15,12 @@ function GetPlayerGroupEntitiesNode:execute(runtime, inputPin)
     assert(inputPin == self.impulseInPin)
     local playerEntity = runtime:readPin(self.playerEntityInPin)
     
-    local groupEntities = playerEntity:getExtraData().groupEntities
+    local groupEntities = assert(playerEntity:getExtraData().groupEntities, tostring(playerEntity) .. ' has no group entities?')
+
+    -- remove invalid group entities, could be done somewhere else maybe?
+    flat.arrayRemoveIf(groupEntities, function(value)
+        return not value:isValid() or value:isDespawnPending()
+    end)
 
     runtime:writePin(self.groupEntitiesOutPin, groupEntities)
     runtime:impulse(self.impulseOutPin)

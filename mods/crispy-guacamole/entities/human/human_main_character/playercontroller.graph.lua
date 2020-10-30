@@ -15,43 +15,31 @@ return {
     {
       1,
       3,
-      114,
+      54,
       1,
     },
     {
       3,
       1,
-      108,
+      43,
       1,
     },
     {
       3,
       2,
-      109,
+      40,
       1,
     },
     {
       3,
       3,
-      110,
+      57,
       1,
     },
     {
       3,
       4,
-      111,
-      1,
-    },
-    {
-      3,
-      5,
-      112,
-      1,
-    },
-    {
-      3,
-      6,
-      113,
+      70,
       1,
     },
     {
@@ -93,7 +81,7 @@ return {
     {
       9,
       1,
-      121,
+      53,
       1,
     },
     {
@@ -123,7 +111,7 @@ return {
     {
       13,
       1,
-      119,
+      42,
       1,
     },
     {
@@ -237,14 +225,26 @@ return {
     {
       32,
       2,
-      35,
+      45,
       1,
     },
     {
       32,
       3,
-      35,
+      44,
+      1,
+    },
+    {
+      32,
       3,
+      41,
+      2,
+    },
+    {
+      32,
+      3,
+      63,
+      1,
     },
     {
       33,
@@ -261,14 +261,20 @@ return {
     {
       36,
       1,
-      37,
+      39,
       1,
     },
     {
       37,
       1,
-      83,
+      32,
       2,
+    },
+    {
+      37,
+      1,
+      60,
+      1,
     },
     {
       38,
@@ -279,685 +285,391 @@ return {
     {
       39,
       1,
-      43,
-      2,
+      84,
+      1,
     },
     {
       40,
       1,
-      39,
+      15,
       1,
     },
     {
       41,
       1,
-      67,
-      2,
+      48,
+      1,
     },
     {
       42,
-      1,
-      41,
-      1,
-    },
-    {
-      43,
-      1,
-      56,
-      1,
-    },
-    {
-      44,
-      1,
-      84,
-      1,
-    },
-    {
-      45,
-      1,
-      44,
-      2,
-    },
-    {
-      46,
-      1,
-      56,
-      2,
-    },
-    {
-      47,
-      1,
-      56,
-      5,
-    },
-    {
-      48,
-      1,
-      56,
-      4,
-    },
-    {
-      49,
-      1,
-      52,
-      2,
-    },
-    {
-      50,
-      1,
-      49,
-      1,
-    },
-    {
-      52,
-      1,
-      122,
-      1,
-    },
-    {
-      53,
-      1,
-      66,
-      1,
-    },
-    {
-      54,
-      1,
-      58,
-      1,
-    },
-    {
-      55,
-      2,
-      9,
-      1,
-    },
-    {
-      56,
-      1,
-      71,
-      1,
-    },
-    {
-      56,
-      2,
-      71,
-      4,
-    },
-    {
-      57,
-      1,
-      60,
-      3,
-    },
-    {
-      58,
-      1,
-      57,
-      1,
-    },
-    {
-      59,
-      1,
-      83,
-      4,
-    },
-    {
-      60,
-      1,
-      51,
-      1,
-    },
-    {
-      61,
-      1,
-      80,
-      3,
-    },
-    {
-      62,
-      1,
-      66,
-      2,
-    },
-    {
-      63,
-      1,
-      62,
-      2,
-    },
-    {
-      64,
-      1,
-      83,
-      3,
-    },
-    {
-      65,
-      1,
-      62,
-      1,
-    },
-    {
-      66,
-      1,
-      57,
-      2,
-    },
-    {
-      67,
-      1,
-      60,
-      1,
-    },
-    {
-      68,
-      1,
-      55,
-      2,
-    },
-    {
-      69,
-      1,
-      68,
-      1,
-    },
-    {
-      70,
-      1,
-      56,
-      3,
-    },
-    {
-      72,
-      1,
-      71,
-      3,
-    },
-    {
-      73,
-      1,
-      74,
-      3,
-    },
-    {
-      75,
-      1,
-      74,
-      4,
-    },
-    {
-      76,
-      1,
-      74,
-      1,
-    },
-    {
-      77,
-      1,
-      106,
-      1,
-    },
-    {
-      77,
-      1,
-      79,
-      1,
-    },
-    {
-      78,
-      1,
-      77,
-      2,
-    },
-    {
-      79,
-      1,
-      80,
-      4,
-    },
-    {
-      80,
-      1,
-      83,
-      1,
-    },
-    {
-      81,
-      1,
-      82,
-      1,
-    },
-    {
-      81,
-      1,
-      49,
-      2,
-    },
-    {
-      82,
-      1,
-      122,
-      2,
-    },
-    {
-      82,
-      1,
-      102,
-      1,
-    },
-    {
-      84,
-      1,
-      54,
-      1,
-    },
-    {
-      84,
-      1,
-      86,
-      1,
-    },
-    {
-      85,
-      1,
-      51,
-      3,
-    },
-    {
-      86,
-      1,
-      85,
-      1,
-    },
-    {
-      86,
-      1,
-      60,
-      2,
-    },
-    {
-      87,
-      1,
-      12,
-      2,
-    },
-    {
-      87,
-      1,
-      92,
-      1,
-    },
-    {
-      88,
-      1,
-      20,
-      2,
-    },
-    {
-      89,
-      1,
-      23,
-      1,
-    },
-    {
-      89,
-      1,
-      87,
-      1,
-    },
-    {
-      89,
-      1,
-      16,
-      2,
-    },
-    {
-      90,
-      1,
-      89,
-      1,
-    },
-    {
-      90,
-      1,
-      9,
-      2,
-    },
-    {
-      91,
-      1,
-      94,
-      1,
-    },
-    {
-      91,
-      1,
-      68,
-      2,
-    },
-    {
-      91,
-      1,
-      5,
-      1,
-    },
-    {
-      92,
-      1,
-      88,
-      1,
-    },
-    {
-      92,
-      1,
-      22,
-      2,
-    },
-    {
-      93,
-      1,
-      11,
-      2,
-    },
-    {
-      93,
-      1,
-      91,
-      1,
-    },
-    {
-      94,
-      1,
-      90,
-      1,
-    },
-    {
-      94,
-      1,
-      4,
-      1,
-    },
-    {
-      95,
-      1,
-      32,
-      2,
-    },
-    {
-      95,
-      1,
-      99,
-      1,
-    },
-    {
-      96,
-      1,
-      15,
-      2,
-    },
-    {
-      96,
-      1,
-      97,
-      1,
-    },
-    {
-      97,
-      1,
-      29,
-      2,
-    },
-    {
-      97,
-      1,
-      95,
-      1,
-    },
-    {
-      98,
-      1,
-      39,
-      2,
-    },
-    {
-      98,
-      1,
-      81,
-      1,
-    },
-    {
-      98,
-      1,
-      115,
-      1,
-    },
-    {
-      99,
-      1,
-      35,
-      2,
-    },
-    {
-      100,
-      1,
-      98,
-      1,
-    },
-    {
-      100,
-      1,
-      101,
-      1,
-    },
-    {
-      101,
-      1,
-      70,
-      1,
-    },
-    {
-      101,
-      1,
-      105,
-      1,
-    },
-    {
-      102,
-      1,
-      104,
-      1,
-    },
-    {
-      102,
-      1,
-      77,
-      1,
-    },
-    {
-      103,
-      1,
-      71,
-      2,
-    },
-    {
-      104,
-      1,
-      74,
-      2,
-    },
-    {
-      105,
-      1,
-      56,
-      6,
-    },
-    {
-      105,
-      1,
-      103,
-      1,
-    },
-    {
-      106,
-      1,
-      76,
-      2,
-    },
-    {
-      107,
-      1,
-      51,
-      2,
-    },
-    {
-      108,
-      1,
-      11,
-      1,
-    },
-    {
-      109,
-      1,
-      15,
-      1,
-    },
-    {
-      110,
-      1,
-      38,
-      1,
-    },
-    {
-      111,
-      1,
-      43,
-      1,
-    },
-    {
-      112,
-      1,
-      52,
-      1,
-    },
-    {
-      113,
-      1,
-      67,
-      1,
-    },
-    {
-      114,
-      1,
-      93,
-      1,
-    },
-    {
-      114,
-      1,
-      100,
-      1,
-    },
-    {
-      114,
-      1,
-      96,
-      1,
-    },
-    {
-      115,
-      1,
-      44,
-      1,
-    },
-    {
-      115,
-      1,
-      41,
-      2,
-    },
-    {
-      115,
-      1,
-      116,
-      1,
-    },
-    {
-      116,
-      1,
-      117,
-      1,
-    },
-    {
-      117,
-      1,
-      53,
-      1,
-    },
-    {
-      117,
-      1,
-      118,
-      1,
-    },
-    {
-      118,
-      1,
-      107,
-      1,
-    },
-    {
-      119,
       1,
       28,
       2,
     },
     {
-      120,
+      43,
+      1,
+      11,
+      1,
+    },
+    {
+      44,
+      1,
+      62,
+      1,
+    },
+    {
+      45,
+      1,
+      35,
+      1,
+    },
+    {
+      46,
+      1,
+      58,
+      1,
+    },
+    {
+      46,
+      1,
+      9,
+      2,
+    },
+    {
+      47,
+      1,
+      64,
+      1,
+    },
+    {
+      47,
+      1,
+      22,
+      2,
+    },
+    {
+      48,
+      1,
+      51,
+      1,
+    },
+    {
+      49,
+      1,
+      11,
+      2,
+    },
+    {
+      49,
+      1,
+      56,
+      1,
+    },
+    {
+      50,
+      1,
+      46,
+      1,
+    },
+    {
+      50,
+      1,
+      4,
+      1,
+    },
+    {
+      51,
+      1,
+      45,
+      2,
+    },
+    {
+      52,
+      1,
+      15,
+      2,
+    },
+    {
+      52,
+      1,
+      66,
+      1,
+    },
+    {
+      53,
+      1,
+      65,
+      1,
+    },
+    {
+      54,
+      1,
+      49,
+      1,
+    },
+    {
+      54,
+      1,
+      52,
+      1,
+    },
+    {
+      55,
+      2,
+      9,
+      1,
+    },
+    {
+      56,
+      1,
+      50,
+      1,
+    },
+    {
+      56,
+      1,
+      39,
+      2,
+    },
+    {
+      56,
+      1,
+      5,
+      1,
+    },
+    {
+      56,
+      1,
+      79,
+      2,
+    },
+    {
+      56,
+      1,
+      81,
+      2,
+    },
+    {
+      56,
+      1,
+      83,
+      2,
+    },
+    {
+      57,
+      1,
+      38,
+      1,
+    },
+    {
+      58,
+      1,
+      23,
+      1,
+    },
+    {
+      58,
+      1,
+      59,
+      1,
+    },
+    {
+      58,
+      1,
+      16,
+      2,
+    },
+    {
+      59,
+      1,
+      12,
+      2,
+    },
+    {
+      59,
+      1,
+      47,
+      1,
+    },
+    {
+      60,
+      1,
+      61,
+      1,
+    },
+    {
+      60,
+      1,
+      41,
+      1,
+    },
+    {
+      61,
+      1,
+      35,
+      2,
+    },
+    {
+      62,
+      1,
+      35,
+      3,
+    },
+    {
+      63,
+      1,
+      51,
+      2,
+    },
+    {
+      64,
+      1,
+      20,
+      2,
+    },
+    {
+      65,
       1,
       14,
       1,
     },
     {
-      121,
+      66,
       1,
-      120,
-      1,
-    },
-    {
-      122,
-      1,
-      123,
+      69,
       1,
     },
     {
-      122,
+      66,
+      1,
+      71,
+      1,
+    },
+    {
+      68,
       2,
-      123,
+      67,
+      1,
+    },
+    {
+      68,
+      3,
+      67,
+      3,
+    },
+    {
+      69,
+      1,
+      29,
       2,
     },
     {
-      123,
+      69,
       1,
+      37,
+      1,
+    },
+    {
+      70,
+      1,
+      68,
+      1,
+    },
+    {
+      71,
+      1,
+      74,
+      1,
+    },
+    {
+      72,
+      1,
+      68,
+      2,
+    },
+    {
+      73,
+      1,
+      72,
+      1,
+    },
+    {
+      74,
+      1,
+      67,
+      2,
+    },
+    {
+      75,
+      1,
+      72,
+      2,
+    },
+    {
       76,
       1,
+      72,
+      4,
     },
     {
-      123,
+      77,
+      1,
+      72,
+      3,
+    },
+    {
+      78,
+      1,
+      79,
+      1,
+    },
+    {
+      79,
+      1,
+      84,
       2,
+    },
+    {
       80,
+      1,
+      81,
       1,
     },
     {
-      123,
-      3,
-      36,
+      81,
+      1,
+      85,
       1,
     },
     {
-      123,
-      3,
-      80,
+      82,
+      1,
+      83,
+      1,
+    },
+    {
+      83,
+      1,
+      85,
+      2,
+    },
+    {
+      84,
+      1,
+      86,
+      1,
+    },
+    {
+      85,
+      1,
+      86,
+      2,
+    },
+    {
+      86,
+      1,
+      55,
       2,
     },
   },
@@ -1567,316 +1279,202 @@ return {
       name = 'joinplayergroup',
     },
     {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'controller/buttonjustpressed',
-    },
-    {
       loadArguments = {
-        'Y',
+        'A',
       },
       name = 'string',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
     },
     {
       name = 'controller/buttonpressed',
     },
     {
-      loadArguments = {
-        'Y',
-      },
-      name = 'string',
+      name = 'reroute',
+    },
+    {
+      name = 'entity/equalentity',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
     },
     {
       name = 'script/condition',
     },
     {
-      name = 'entity/getextradatafield',
+      name = 'reroute',
     },
     {
-      loadArguments = {
-        'aim_entity',
-      },
-      name = 'string',
+      name = 'reroute',
     },
     {
-      loadArguments = {
-        'player_aim',
-      },
-      name = 'string',
+      name = 'math/not',
     },
     {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
+      name = 'reroute',
     },
     {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
+      name = 'reroute',
     },
     {
-      name = 'controller/buttonjustreleased',
+      name = 'math/and',
     },
     {
-      loadArguments = {
-        'Y',
-      },
-      name = 'string',
+      name = 'reroute',
     },
     {
-      name = 'entity/lookatentity',
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
     },
     {
       name = 'script/condition',
     },
     {
-      name = 'controller/leftstickdirection',
+      name = 'reroute',
     },
     {
-      name = 'entity/getposition',
+      name = 'reroute',
     },
     {
-      name = 'script/condition',
+      name = 'reroute',
     },
     {
-      name = 'entity/spawnentity',
+      name = 'reroute',
     },
     {
-      name = 'math/vector2/vector2add',
+      name = 'reroute',
     },
     {
-      name = 'math/vector3/vector3tovector2',
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'entity/isliving',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
     },
     {
       loadArguments = {
-        true,
+        'mods/crispy-guacamole/compounds/Handle Gamepad Button',
       },
-      name = 'boolean',
-    },
-    {
-      name = 'entity/setposition2d',
-    },
-    {
-      loadArguments = {
-        'abilityTargetPosition',
-      },
-      name = 'string',
-    },
-    {
-      name = 'math/multiply',
-    },
-    {
-      loadArguments = {
-        15,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        'useAbility',
-      },
-      name = 'string',
-    },
-    {
-      name = 'game/gamedt',
-    },
-    {
-      name = 'math/vector2/vector2numbermultiply',
-    },
-    {
-      name = 'script/condition',
-    },
-    {
-      name = 'controller/buttonpressed',
-    },
-    {
-      loadArguments = {
-        'Y',
-      },
-      name = 'string',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'entity/setextradatafield',
-    },
-    {
-      loadArguments = {
-        'aim_entity',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        'aim_entity',
-      },
-      name = 'string',
-    },
-    {
-      name = 'entity/setextradatafield',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
-    },
-    {
-      name = 'entity/despawnentity',
-    },
-    {
-      name = 'entity/getextradatafield',
-    },
-    {
-      loadArguments = {
-        'aim_entity',
-      },
-      name = 'string',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'entity/setextradatafield',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'entity/enterstate',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'getplayergroupentities',
+      name = 'compound',
     },
     {
       name = 'script/foreach',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      loadArguments = {
+        {
+          4,
+          '',
+        },
+        {
+          4,
+          '',
+        },
+        {
+          4,
+          '',
+        },
+        {
+          4,
+          '',
+        },
+      },
+      name = 'script/array',
+    },
+    {
+      loadArguments = {
+        'A',
+      },
+      name = 'string',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      loadArguments = {
+        'B',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'Y',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'X',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'B',
+      },
+      name = 'string',
+    },
+    {
+      name = 'controller/buttonpressed',
+    },
+    {
+      loadArguments = {
+        'X',
+      },
+      name = 'string',
+    },
+    {
+      name = 'controller/buttonpressed',
+    },
+    {
+      loadArguments = {
+        'Y',
+      },
+      name = 'string',
+    },
+    {
+      name = 'controller/buttonpressed',
+    },
+    {
+      name = 'math/or',
+    },
+    {
+      name = 'math/or',
+    },
+    {
+      name = 'math/or',
     },
   },
 }

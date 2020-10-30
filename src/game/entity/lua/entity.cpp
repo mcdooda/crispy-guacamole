@@ -1,4 +1,5 @@
 #include <iterator>
+#include <sstream>
 
 #include "entity.h"
 
@@ -153,6 +154,7 @@ int open(Game& game)
 		{"healthChanged",            l_Entity_healthChanged},
 		{"damageTaken",              l_Entity_damageTaken},
 		{"died",                     l_Entity_died},
+		{"isDespawnPending",         l_Entity_isDespawnPending},
 
 		// selection
 		{"selected",                 l_Entity_selected},
@@ -1158,6 +1160,14 @@ int l_Entity_died(lua_State* L)
 	return 0;
 }
 
+int l_Entity_isDespawnPending(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lua_pushboolean(L, lifeComponent.isDespawnPending());
+	return 1;
+}
+
 // SELECTION
 
 int l_Entity_selected(lua_State* L)
@@ -1308,7 +1318,17 @@ Entity& getEntity(lua_State* L, int index)
 	Entity* entity = entityHandle.getEntity();
 	if (entity == nullptr)
 	{
-		luaL_argerror(L, index, "The entity is not valid anymore");
+		std::stringstream errorMessage;
+		errorMessage << "The entity is not valid ";
+		if (entityHandle.getId() == EntityIdFactory::InvalidId)
+		{
+			errorMessage << "(invalid id)";
+		}
+		else
+		{
+			errorMessage << std::string("(id: ") << std::hex << entityHandle.getId() << ")";
+		}
+		luaL_argerror(L, index, errorMessage.str().c_str());
 	}
 	return *entity;
 }

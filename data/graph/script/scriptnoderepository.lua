@@ -31,6 +31,7 @@ return {
     -- life
     'components/lifecomponent',
     'entity/dealdamage',
+    'entity/isliving',
 
     -- movement
     'components/movementcomponent',
@@ -104,6 +105,7 @@ return {
     'entity/getextradatafield',
 
     'entity/isvalidentity',
+    'entity/equalentity',
     'entity/iscomponentenabled',
     'entity/disablecomponent',
 

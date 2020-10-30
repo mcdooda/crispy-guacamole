@@ -97,6 +97,8 @@ void BaseState::initLua(Game& game)
 		map::lua::map::open(L);
 		map::brush::lua::open(game);
 		game::map::pathfinder::lua::open(game);
+
+		flat::lua::doFile(L, "data/common/init.lua");
 	}
 	game.ui->reset();
 	game.notify->reset();

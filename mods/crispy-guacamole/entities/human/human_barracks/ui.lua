@@ -36,7 +36,6 @@ function ui.addedToMap(entity, widget)
     local width, height = container:getSize()
 
     local buildingData = EntityData.get(entity:getTemplatePath())
-    flat.dump(buildingData)
     BuildingAction.buildWidgets(container, entity, buildingData)
 
 	entity:setUiOffset(flat.Vector2(-width / 2, -height / 2 + 50))

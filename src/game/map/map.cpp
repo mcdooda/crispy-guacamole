@@ -1205,25 +1205,19 @@ bool Map::getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) cons
 
 bool Map::straightPathExists(const flat::Vector2& from, const flat::Vector2& to, float jumpHeight, Navigability navigabilityMask) const
 {
-	FLAT_ASSERT(isTileNavigable(getTileIndex(from), navigabilityMask));
-	const float delta = 0.4f;
-	const flat::Vector2 move = to - from;
-	const flat::Vector2 segment = flat::normalize(move) * delta;
-	const float numSegments = flat::length(move) / delta;
-	float previousZ = getTileZ(getTileIndex(from));
-	for (float f = 1.f; f <= numSegments; ++f)
+	flat::Vector2 direction = to - from;
+	const float length = flat::length(direction);
+	if (length < FLT_EPSILON)
 	{
-		const flat::Vector2 point = from + segment * f;
-		map::TileIndex tileIndex = getTileIndexIfNavigable(point.x, point.y,  navigabilityMask);
-		if (tileIndex == TileIndex::INVALID_TILE || getTileZ(tileIndex) > previousZ + jumpHeight)
-			return false;
-		previousZ = getTileZ(tileIndex);
+		const TileIndex tileIndex = getTileIndex(from);
+		return isTileNavigable(tileIndex, navigabilityMask);
 	}
-	return true;
+	direction = flat::normalize(direction);
+	flat::Vector2 endPosition;
+	return !navigationRaycast(from, direction, length, jumpHeight, navigabilityMask, endPosition);
 }
 
-#pragma optimize("", off)
-bool Map::navigationRaycast(const flat::Vector2& startPosition, const flat::Vector2& direction, float length, Navigability navigabilityMask, flat::Vector2& endPosition) const
+bool Map::navigationRaycast(const flat::Vector2& startPosition, const flat::Vector2& direction, float length, float jumpHeight, Navigability navigabilityMask, flat::Vector2& endPosition) const
 {
 	FLAT_ASSERT(length > 0.f);
 
@@ -1242,6 +1236,19 @@ bool Map::navigationRaycast(const flat::Vector2& startPosition, const flat::Vect
 
 	float next_t = 0.f;
 
+	float previousTileZ = 0.f;
+
+	const TileIndex startTileIndex = getTileIndex(startPosition);
+	if (!isValidTile(startTileIndex) || !isTileNavigable(startTileIndex, navigabilityMask))
+	{
+		endPosition = startPosition;
+		return true;
+	}
+	else
+	{
+		previousTileZ = getTileZ(startTileIndex);
+	}
+
 	while (true)
 	{
 		const TileIndex tileIndex = getTileIndex(p.x, p.y);
@@ -1249,6 +1256,16 @@ bool Map::navigationRaycast(const flat::Vector2& startPosition, const flat::Vect
 		{
 			endPosition = startPosition + next_t * rd;
 			return true;
+		}
+		else
+		{
+			const float tileZ = getTileZ(tileIndex);
+			if (tileZ > previousTileZ + jumpHeight)
+			{
+				endPosition = startPosition + next_t * rd;
+				return true;
+			}
+			previousTileZ = tileZ;
 		}
 
 		next_t = glm::min(t_max.x, t_max.y);
@@ -1264,7 +1281,6 @@ bool Map::navigationRaycast(const flat::Vector2& startPosition, const flat::Vect
 
 	return false;
 }
-#pragma optimize("", on)
 
 void Map::setFogType(fog::Fog::FogType fogType)
 {

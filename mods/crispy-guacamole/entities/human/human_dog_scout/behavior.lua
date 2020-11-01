@@ -21,7 +21,7 @@ function states:followPlayer(dog)
             local playerToFollowPosition = playerToFollow:getPosition():toVector2()
             if playerToFollow:isFollowingPath() then
                 local playerMovementDirection = playerToFollow:getCurrentMovementDirection()
-                local hit, endPosition = Map.navigationRaycast(playerToFollowPosition, playerMovementDirection, followDistance + dog:getRadius(), Map.Navigability.GROUND)
+                local hit, endPosition = Map.navigationRaycast(playerToFollowPosition, playerMovementDirection, followDistance + dog:getRadius(), 0.5, Map.Navigability.GROUND)
                 if hit then
                     playerToFollowPosition = endPosition - playerMovementDirection * dog:getRadius()
                 else

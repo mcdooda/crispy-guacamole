@@ -1,9 +1,14 @@
 #include "entityhelper.h"
-#include "entity.h"
+
+#include "entity/entity.h"
+
 #include "component/components/collision/collisioncomponent.h"
-#include "component/components/prop/propcomponent.h"
 #include "component/components/movement/movementcomponent.h"
-#include "../map/map.h"
+#include "component/components/prop/propcomponent.h"
+#include "component/components/selection/selectioncomponent.h"
+
+#include "map/map.h"
+#include "component/components/sprite/spritecomponent.h"
 
 namespace game
 {
@@ -156,6 +161,68 @@ map::Navigability EntityHelper::getNavigabilityMask(const EntityTemplate* entity
 		}
 	}
 	return map::Navigability::ALL;
+}
+
+void EntityHelper::setColor(Entity* entity, const flat::video::Color& color)
+{
+	entity::component::sprite::SpriteComponent* spriteComponent = entity->getComponent<entity::component::sprite::SpriteComponent>();
+	if (spriteComponent != nullptr)
+	{
+		spriteComponent->setColor(color);
+	}
+}
+
+void EntityHelper::setSelectedColor(Entity* entity)
+{
+	setColor(entity, flat::video::Color::RED);
+}
+
+void EntityHelper::clearSelectedColor(Entity* entity)
+{
+	setColor(entity, flat::video::Color::WHITE);
+}
+
+void EntityHelper::setMouseOverColor(Entity* entity)
+{
+	setColor(entity, flat::video::Color::GREEN);
+}
+
+void EntityHelper::clearMouseOverColor(Entity* entity)
+{
+	if (entity->isSelected())
+	{
+		setSelectedColor(entity);
+	}
+	else
+	{
+		setColor(entity, flat::video::Color::WHITE);
+	}
+}
+
+void EntityHelper::mouseEntered(Entity* entity)
+{
+	entity::component::selection::SelectionComponent* selectionComponent = entity->getComponent<entity::component::selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
+	{
+		selectionComponent->mouseEntered();
+	}
+	else
+	{
+		setMouseOverColor(entity);
+	}
+}
+
+void EntityHelper::mouseLeft(Entity* entity)
+{
+	entity::component::selection::SelectionComponent* selectionComponent = entity->getComponent<entity::component::selection::SelectionComponent>();
+	if (selectionComponent != nullptr)
+	{
+		selectionComponent->mouseLeft();
+	}
+	else
+	{
+		clearMouseOverColor(entity);
+	}
 }
 
 } // entity

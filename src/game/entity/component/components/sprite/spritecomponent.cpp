@@ -25,6 +25,10 @@ void SpriteComponent::init()
 	m_sprite.setAtlasSize(spriteDescription.getAtlasWidth(), spriteDescription.getAtlasHeight());
 	m_owner->setSprite(&m_sprite);
 
+	m_color = flat::video::Color::WHITE;
+	m_colorOverride = flat::video::Color::WHITE;
+	m_hasColorOverride = false;
+
 	m_cycleAnimationDescription = nullptr;
 	m_currentAnimationDescription = nullptr;
 	m_isCycleAnimated = true;
@@ -34,6 +38,8 @@ void SpriteComponent::init()
 	{
 		selectionComponent->selected.on(this, &SpriteComponent::selected);
 		selectionComponent->deselected.on(this, &SpriteComponent::deselected);
+		selectionComponent->mouseEntered.on(this, &SpriteComponent::mouseEntered);
+		selectionComponent->mouseLeft.on(this, &SpriteComponent::mouseLeft);
 	}
 
 	m_owner->addedToMap.on(this, &SpriteComponent::addedToMap);
@@ -220,6 +226,32 @@ void SpriteComponent::pushAttachedSprites(std::vector<const map::MapObject*>& ob
 	}
 }
 
+void SpriteComponent::setColor(const flat::video::Color& color)
+{
+	std::cout << "setColor" << color << std::endl;
+	m_color = color;
+	if (!m_hasColorOverride)
+	{
+		m_sprite.setColor(color);
+	}
+}
+
+void SpriteComponent::setColorOverride(const flat::video::Color& color)
+{
+	std::cout << "setColorOverride" << color << std::endl;
+	m_colorOverride = color;
+	m_hasColorOverride = true;
+	m_sprite.setColor(color);
+}
+
+void SpriteComponent::clearColorOverride()
+{
+	std::cout << "clearColorOverride" << std::endl;
+	m_colorOverride = flat::video::Color::WHITE;
+	m_sprite.setColor(m_color);
+	m_hasColorOverride = false;
+}
+
 void SpriteComponent::update(float currentTime, float elapsedTime)
 {
 	m_sprite.update(currentTime);
@@ -286,13 +318,25 @@ void SpriteComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 
 bool SpriteComponent::selected()
 {
-	m_sprite.setColor(flat::video::Color::RED);
+	EntityHelper::setSelectedColor(m_owner);
 	return true;
 }
 
 bool SpriteComponent::deselected()
 {
-	m_sprite.setColor(flat::video::Color::WHITE);
+	EntityHelper::clearSelectedColor(m_owner);
+	return true;
+}
+
+bool SpriteComponent::mouseEntered()
+{
+	EntityHelper::setMouseOverColor(m_owner);
+	return true;
+}
+
+bool SpriteComponent::mouseLeft()
+{
+	EntityHelper::clearMouseOverColor(m_owner);
 	return true;
 }
 

@@ -145,8 +145,6 @@ class BaseMapState : public BaseState
 		bool isSelecting() const;
 		void updateMouseOverEntity(Game& game);
 		void clearMouseOverEntity();
-		void setMouseOverColor(entity::Entity* entity) const;
-		void clearMouseOverColor(entity::Entity* entity) const;
 		bool updateSelectionWidget(Game& game);
 		void selectClickedEntity(Game& game, const flat::Vector2& mousePosition, bool addToSelection);
 		void selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection);

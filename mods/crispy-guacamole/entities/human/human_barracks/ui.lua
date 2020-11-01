@@ -44,10 +44,12 @@ function ui.addedToMap(entity, widget)
 
     entity:selected(function(entity)
         entity:setUiVisible(true)
+        entity:setSpriteColor(0x0000FFFF)
 	end)
 
 	entity:deselected(function(entity)
-		entity:setUiVisible(false)
+        entity:setUiVisible(false)
+        entity:clearSpriteColor()
     end)
     entity:setUiVisible(false)
 end

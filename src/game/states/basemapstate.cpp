@@ -18,9 +18,10 @@
 #include "entity/component/components/attack/attackcomponent.h"
 #include "entity/component/components/behavior/behaviorcomponent.h"
 #include "entity/component/components/collision/collisioncomponent.h"
+#include "entity/component/components/fogvision/fogvisioncomponent.h"
 #include "entity/component/components/interaction/interactioncomponent.h"
 #include "entity/component/components/selection/selectioncomponent.h"
-#include "entity/component/components/fogvision/fogvisioncomponent.h"
+#include "entity/component/components/sprite/spritecomponent.h"
 #include "entity/component/lua/componentregistry.h"
 #include "entity/faction/lua/faction.h"
 
@@ -794,12 +795,12 @@ void BaseMapState::updateMouseOverEntity(Game& game)
 	{
 		if (previousMouseOverEntity != nullptr)
 		{
-			clearMouseOverColor(previousMouseOverEntity);
+			entity::EntityHelper::mouseLeft(previousMouseOverEntity);
 		}
 
 		if (newMouseOverEntity != nullptr)
 		{
-			setMouseOverColor(newMouseOverEntity);
+			entity::EntityHelper::mouseEntered(newMouseOverEntity);
 		}
 	}
 
@@ -811,24 +812,9 @@ void BaseMapState::clearMouseOverEntity()
 	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
 	if (mouseOverEntity != nullptr)
 	{
-		clearMouseOverColor(mouseOverEntity);
+		entity::EntityHelper::mouseLeft(mouseOverEntity);
 		m_mouseOverEntity = nullptr;
 	}
-}
-
-void BaseMapState::setMouseOverColor(entity::Entity* entity) const
-{
-	entity->getSprite().setColor(flat::video::Color::GREEN);
-}
-
-void BaseMapState::clearMouseOverColor(entity::Entity* entity) const
-{
-	flat::video::Color color = flat::video::Color::WHITE;
-	if (entity->isSelected())
-	{
-		color = flat::video::Color::RED;
-	}
-	entity->getSprite().setColor(color);
 }
 
 bool BaseMapState::updateSelectionWidget(Game& game)
@@ -874,7 +860,7 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 		entity::Entity* entity = entityHandle.getEntity();
 		if (entity != nullptr)
 		{
-			clearMouseOverColor(entity);
+			entity::EntityHelper::mouseLeft(entity);
 		}
 	}
 	m_entitiesInSelection.clear();
@@ -903,7 +889,7 @@ bool BaseMapState::updateSelectionWidget(Game& game)
 			if (!entity->isSelected())
 			{
 				m_entitiesInSelection.push_back(entity->getHandle());
-				setMouseOverColor(entity);
+				entity::EntityHelper::mouseEntered(entity);
 			}
 		}
 		

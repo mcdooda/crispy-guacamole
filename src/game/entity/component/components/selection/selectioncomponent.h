@@ -37,6 +37,8 @@ class SelectionComponent : public ComponentImpl<SelectionComponentTemplate>
 		flat::Slot<> selected;
 		flat::Slot<> deselected;
 		flat::Slot<> click;
+		flat::Slot<> mouseEntered;
+		flat::Slot<> mouseLeft;
 
 	private:
 		flat::lua::SlotProxy<> m_selectedSlotProxy;

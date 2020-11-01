@@ -60,11 +60,18 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		void attachSprite(const flat::render::Sprite& otherSprite);
 		void pushAttachedSprites(std::vector<const map::MapObject*>& objects) const;
 
+		void setColor(const flat::video::Color& color);
+
+		void setColorOverride(const flat::video::Color& color);
+		void clearColorOverride();
+
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
 	private:
 		bool selected();
 		bool deselected();
+		bool mouseEntered();
+		bool mouseLeft();
 
 		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 		bool removedFromMap(Entity* entity);
@@ -77,10 +84,14 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		flat::render::AnimatedSprite m_sprite;
 		std::vector<AttachedSprite> m_attachedSprites;
 
+		flat::video::Color m_color;
+		flat::video::Color m_colorOverride;
+
 		const AnimationDescription* m_cycleAnimationDescription;
 		const AnimationDescription* m_currentAnimationDescription;
 		bool m_isCycleAnimated;
 		bool m_preventBusy;
+		bool m_hasColorOverride;
 };
 
 } // sprite

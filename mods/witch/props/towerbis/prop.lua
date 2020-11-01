@@ -1,3 +1,0 @@
-return {
-	towerbis = 1
-}

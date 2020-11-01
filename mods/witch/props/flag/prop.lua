@@ -1,3 +1,0 @@
-return {
-	flag = 1
-}

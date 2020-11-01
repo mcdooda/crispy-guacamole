@@ -216,7 +216,7 @@ class Map
 		inline const std::map<std::string, std::shared_ptr<Zone>>& getZones() const { return m_zones; }
 
 		bool straightPathExists(const flat::Vector2& from, const flat::Vector2& to, float jumpHeight, Navigability navigability) const;
-		bool navigationRaycast(const flat::Vector2& startPosition, const flat::Vector2& direction, float length, Navigability navigabilityMask, flat::Vector2& endPosition) const;
+		bool navigationRaycast(const flat::Vector2& startPosition, const flat::Vector2& direction, float length, float jumpHeight, Navigability navigabilityMask, flat::Vector2& endPosition) const;
 
 		void setFogType(fog::Fog::FogType fogType);
 		fog::Fog::FogType getFogType() const;

@@ -103,6 +103,8 @@ int l_Entity_setAnimationProgress(lua_State* L);
 int l_Entity_getAttachPoint(lua_State* L);
 int l_Entity_flipSpriteX(lua_State* L);
 int l_Entity_setSpriteRotation(lua_State* L);
+int l_Entity_setSpriteColor(lua_State* L);
+int l_Entity_clearSpriteColor(lua_State* L);
 
 // detection
 int l_Entity_canSee(lua_State* L);

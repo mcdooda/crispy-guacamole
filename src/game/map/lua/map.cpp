@@ -379,11 +379,12 @@ int l_Map_navigationRaycast(lua_State* L)
 	const flat::Vector2& startPosition = flat::lua::getVector2(L, 1);
 	const flat::Vector2& direction = flat::lua::getVector2(L, 2);
 	const float length = static_cast<float>(luaL_checknumber(L, 3));
-	const Navigability navigabilityMask = static_cast<Navigability>(luaL_checkinteger(L, 4));
+	const float jumpHeight = static_cast<float>(luaL_checknumber(L, 4));
+	const Navigability navigabilityMask = static_cast<Navigability>(luaL_checkinteger(L, 5));
 
 	const Map& map = getMap(L);
 	flat::Vector2 endPosition;
-	const bool hit = map.navigationRaycast(startPosition, direction, length, navigabilityMask, endPosition);
+	const bool hit = map.navigationRaycast(startPosition, direction, length, jumpHeight, navigabilityMask, endPosition);
 
 	lua_pushboolean(L, hit);
 	flat::lua::pushVector2(L, endPosition);

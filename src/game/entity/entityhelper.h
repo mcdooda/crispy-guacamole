@@ -26,6 +26,15 @@ class EntityHelper
 
 		static map::Navigability getNavigabilityMask(const Entity* entity);
 		static map::Navigability getNavigabilityMask(const EntityTemplate* entityTemplate);
+
+		static void setColor(Entity* entity, const flat::video::Color& color);
+		static void setSelectedColor(Entity* entity);
+		static void clearSelectedColor(Entity* entity);
+		static void setMouseOverColor(Entity* entity);
+		static void clearMouseOverColor(Entity* entity);
+
+		static void mouseEntered(Entity* entity);
+		static void mouseLeft(Entity* entity);
 };
 
 } // entity

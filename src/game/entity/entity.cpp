@@ -438,6 +438,17 @@ void Entity::setSelected(bool selected)
 			selectionComponent->deselected();
 		}
 	}
+	else
+	{
+		if (selected)
+		{
+			EntityHelper::setSelectedColor(this);
+		}
+		else
+		{
+			EntityHelper::clearSelectedColor(this);
+		}
+	}
 }
 
 #ifdef FLAT_DEBUG

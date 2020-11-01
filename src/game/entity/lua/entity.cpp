@@ -129,6 +129,8 @@ int open(Game& game)
 		{"getAttachPoint",           l_Entity_getAttachPoint},
 		{"flipSpriteX",              l_Entity_flipSpriteX},
 		{"setSpriteRotation",        l_Entity_setSpriteRotation},
+		{"setSpriteColor",           l_Entity_setSpriteColor},
+		{"clearSpriteColor",         l_Entity_clearSpriteColor},
 
 		// detection
 		{"canSee",                   l_Entity_canSee},
@@ -961,6 +963,25 @@ int l_Entity_setSpriteRotation(lua_State* L)
 
 	entity.getSprite().setRotationZ(angle);
 	entity.setAABBDirty();
+	return 0;
+}
+
+int l_Entity_setSpriteColor(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const uint32_t color = static_cast<uint32_t>(luaL_checkinteger(L, 2));
+
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
+	spriteComponent.setColorOverride(flat::video::Color(color));
+	return 0;
+}
+
+int l_Entity_clearSpriteColor(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+
+	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
+	spriteComponent.clearColorOverride();
 	return 0;
 }
 

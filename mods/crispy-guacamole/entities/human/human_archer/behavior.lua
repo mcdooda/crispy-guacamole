@@ -26,7 +26,7 @@ function states:followPlayer(archer)
             local playerToFollowPosition = playerToFollow:getPosition():toVector2()
             if playerToFollow:isFollowingPath() then
                 local playerMovementDirection = playerToFollow:getCurrentMovementDirection()
-                local hit, endPosition = Map.navigationRaycast(playerToFollowPosition, playerMovementDirection, followDistance + archer:getRadius(), Map.Navigability.GROUND)
+                local hit, endPosition = Map.navigationRaycast(playerToFollowPosition, playerMovementDirection, followDistance + archer:getRadius(), 0.5, Map.Navigability.GROUND)
                 if hit then
                     playerToFollowPosition = endPosition - playerMovementDirection * archer:getRadius()
                 else

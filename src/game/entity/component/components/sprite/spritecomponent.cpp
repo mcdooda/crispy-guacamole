@@ -228,7 +228,6 @@ void SpriteComponent::pushAttachedSprites(std::vector<const map::MapObject*>& ob
 
 void SpriteComponent::setColor(const flat::video::Color& color)
 {
-	std::cout << "setColor" << color << std::endl;
 	m_color = color;
 	if (!m_hasColorOverride)
 	{
@@ -238,7 +237,6 @@ void SpriteComponent::setColor(const flat::video::Color& color)
 
 void SpriteComponent::setColorOverride(const flat::video::Color& color)
 {
-	std::cout << "setColorOverride" << color << std::endl;
 	m_colorOverride = color;
 	m_hasColorOverride = true;
 	m_sprite.setColor(color);
@@ -246,7 +244,6 @@ void SpriteComponent::setColorOverride(const flat::video::Color& color)
 
 void SpriteComponent::clearColorOverride()
 {
-	std::cout << "clearColorOverride" << std::endl;
 	m_colorOverride = flat::video::Color::WHITE;
 	m_sprite.setColor(m_color);
 	m_hasColorOverride = false;

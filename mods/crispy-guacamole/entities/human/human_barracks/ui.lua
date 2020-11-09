@@ -36,7 +36,7 @@ function ui.addedToMap(entity, widget)
     local width, height = container:getSize()
 
     local buildingData = EntityData.get(entity:getTemplatePath())
-    BuildingAction.buildWidgets(container, entity, buildingData)
+    local buildingAction = BuildingAction:new(container, entity, buildingData)
 
 	entity:setUiOffset(flat.Vector2(-width / 2, -height / 2 + 50))
     widget:addChild(container)
@@ -44,6 +44,7 @@ function ui.addedToMap(entity, widget)
     entity:selected(function(entity)
         entity:setUiVisible(true)
         entity:setSpriteColor(0x0000FFFF)
+        buildingAction:animateWidgets()
 	end)
 
 	entity:deselected(function(entity)

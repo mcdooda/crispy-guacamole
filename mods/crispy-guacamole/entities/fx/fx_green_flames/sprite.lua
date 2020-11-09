@@ -1,0 +1,1 @@
+return flat.graph.script.run(Mod.getPath() .. '/entities/fx/fx_green_flames/sprite')

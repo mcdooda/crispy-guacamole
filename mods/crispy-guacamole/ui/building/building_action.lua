@@ -1,34 +1,19 @@
 local EntityData = require 'mods/crispy-guacamole/scripts/entitydata'
 local Action = require 'mods/crispy-guacamole/ui/buttons_action/action'
 
-local animationTimer
+local BuildingAction = {}
+BuildingAction.__index = BuildingAction
 
-local function animateWidgets(buttonA, buttonB, buttonX, buttonY)
-    animationTimer = game.Timer()
-    local duration = 0.3
-    local easing = flat.easing.easeOut(flat.easing.back)
-    local destination = 130
-    local origin = 0
-    animationTimer:onUpdate(function(timer, elapsedTime)
-        local t = elapsedTime / duration
-        local result = flat.easing.lerp(t, origin, destination, easing)
-        buttonA.container:setPosition(0, -result)
-        buttonB.container:setPosition(result, 0)
-        buttonX.container:setPosition(-result, 0)
-        buttonY.container:setPosition(0, result)
-    end)
-    animationTimer:onEnd(function()
+function BuildingAction:new(parent, building, buildingData)
+    local o = setmetatable({
+        widgets = nil,
         animationTimer = nil
-    end)
-    animationTimer:start(duration, false)
+    }, self)
+    o:build(parent, building, buildingData)
+    return o
 end
 
-
-local function getUnitData(unit)
-    return assert(EntityData.get(entityAsset:getPath()), 'Could not find unit data for ' .. entityAsset:getPath())
-end
-
-local function buildWidgets(parent, building, buildingData)
+function BuildingAction:build(parent, building, buildingData)
     if buildingData and buildingData.units then
         local buttons = {{'A', Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP},
                          {'B', Widget.PositionPolicy.LEFT + Widget.PositionPolicy.CENTER_Y},
@@ -51,11 +36,30 @@ local function buildWidgets(parent, building, buildingData)
                 widgets[#widgets+1] = button
             end
         end
-        animateWidgets(table.unpack(widgets))
+        self.widgets = widgets
+        self:animateWidgets()
     end
 end
 
-return {
-    buildWidgets = buildWidgets,
-    animateWidgets = animateWidgets
-}
+function BuildingAction:animateWidgets()
+    local buttonA, buttonB, buttonX, buttonY = table.unpack(self.widgets)
+    self.animationTimer = game.Timer()
+    local duration = 0.3
+    local easing = flat.easing.easeOut(flat.easing.back)
+    local destination = 130
+    local origin = 0
+    self.animationTimer:onUpdate(function(timer, elapsedTime)
+        local t = elapsedTime / duration
+        local result = flat.easing.lerp(t, origin, destination, easing)
+        buttonA.container:setPosition(0, -result)
+        buttonB.container:setPosition(result, 0)
+        buttonX.container:setPosition(-result, 0)
+        buttonY.container:setPosition(0, result)
+    end)
+    self.animationTimer:onEnd(function()
+        self.animationTimer = nil
+    end)
+    self.animationTimer:start(duration, false)
+end
+
+return BuildingAction

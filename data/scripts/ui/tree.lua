@@ -222,7 +222,7 @@ function Tree:new(tree, title)
 
         linesContainer:addChild(tempLine.container)
     end
-    local o = setmetatable({
+    local o =  ({
         container  = container,
         currentState = 1,
         tree = tree,

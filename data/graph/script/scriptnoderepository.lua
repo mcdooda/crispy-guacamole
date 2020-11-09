@@ -74,6 +74,7 @@ return {
     'entity/playanimation',
     'entity/flipspritex',
     'entity/setspriterotation',
+    'entity/setspritecolor',
     'entity/directionalsprite',
     'entity/getattachpoint',
 
@@ -102,6 +103,7 @@ return {
     'entity/getinstigator',
 
     'entity/setextradatafield',
+    'entity/clearextradatafield',
     'entity/getextradatafield',
 
     'entity/isvalidentity',

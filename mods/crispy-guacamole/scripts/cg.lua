@@ -10,6 +10,19 @@ local function getPlayers()
     return players
 end
 
+local function getBuildings()
+    local buildingEntityNames = {'human_town_hall', 'human_barracks'}
+    local buildings = {}
+    for i = 1, #buildingEntityNames do
+        local buildingsOfType = Map.getEntitiesOfType(buildingEntityNames[i])
+        for j = 1, #buildingsOfType do
+            buildings[#buildings + 1] = buildingsOfType[j]
+        end
+    end
+    return buildings
+end
+
 return {
-    getPlayers = getPlayers
+    getPlayers   = getPlayers,
+    getBuildings = getBuildings
 }

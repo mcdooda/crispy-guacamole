@@ -1,91 +1,4 @@
 return {
-  nodeType = 'script',
-  nodes = {
-    {
-      name = 'components/attackcomponent',
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        0.050000000745058,
-      },
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        1,
-      },
-    },
-    {
-      name = 'boolean',
-      loadArguments = {
-        true,
-      },
-    },
-    {
-      name = 'boolean',
-      loadArguments = {
-        false,
-      },
-    },
-    {
-      name = 'script/scriptoutput',
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        0,
-      },
-    },
-    {
-      name = 'entity/getattacktarget',
-    },
-    {
-      name = 'entity/lookatentity',
-    },
-    {
-      name = 'entity/playanimation',
-    },
-    {
-      name = 'string',
-      loadArguments = {
-        'attack',
-      },
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        1,
-      },
-    },
-    {
-      name = 'boolean',
-      loadArguments = {
-        false,
-      },
-    },
-    {
-      name = 'entity/dealdamage',
-    },
-    {
-      name = 'number',
-      loadArguments = {
-        10,
-      },
-    },
-    {
-      name = 'boolean',
-      loadArguments = {
-        true,
-      },
-    },
-  },
   links = {
     {
       1,
@@ -114,50 +27,50 @@ return {
     {
       1,
       3,
-      10,
-      2,
+      5,
+      1,
     },
     {
       2,
       1,
       1,
-      1,
+      5,
     },
     {
       3,
       1,
       1,
-      2,
+      4,
     },
     {
       4,
       1,
-      1,
-      3,
+      14,
+      5,
     },
     {
       5,
       1,
+      16,
       1,
-      4,
     },
     {
       7,
       1,
-      14,
-      4,
-    },
-    {
-      8,
-      1,
-      14,
-      2,
+      10,
+      5,
     },
     {
       8,
       1,
       9,
       3,
+    },
+    {
+      8,
+      1,
+      20,
+      1,
     },
     {
       9,
@@ -174,32 +87,161 @@ return {
     {
       11,
       1,
-      10,
-      3,
+      1,
+      2,
     },
     {
       12,
+      1,
+      1,
+      1,
+    },
+    {
+      13,
+      1,
+      1,
+      3,
+    },
+    {
+      15,
       1,
       10,
       4,
     },
     {
-      13,
+      16,
       1,
-      10,
-      5,
+      4,
+      1,
     },
     {
-      15,
+      16,
+      1,
+      10,
+      2,
+    },
+    {
+      17,
+      1,
+      10,
+      3,
+    },
+    {
+      18,
       1,
       14,
       3,
     },
     {
-      16,
+      19,
       1,
+      14,
+      4,
+    },
+    {
+      20,
       1,
-      5,
+      14,
+      2,
+    },
+  },
+  nodeType = 'script',
+  nodes = {
+    {
+      name = 'components/attackcomponent',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      loadArguments = {
+        {
+          5,
+          'Table',
+        },
+      },
+      name = 'script/scriptoutput',
+    },
+    {
+      loadArguments = {
+        false,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/getattacktarget',
+    },
+    {
+      name = 'entity/lookatentity',
+    },
+    {
+      name = 'entity/playanimation',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/dealdamage',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      loadArguments = {
+        'attack',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        10,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      name = 'reroute',
     },
   },
 }

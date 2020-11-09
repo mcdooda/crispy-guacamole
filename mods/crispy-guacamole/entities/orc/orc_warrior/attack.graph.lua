@@ -9,14 +9,14 @@ return {
     {
       1,
       2,
-      18,
+      5,
       1,
     },
     {
       1,
       3,
-      9,
-      2,
+      20,
+      1,
     },
     {
       1,
@@ -25,63 +25,45 @@ return {
       1,
     },
     {
-      1,
-      3,
-      10,
-      2,
-    },
-    {
-      1,
-      3,
-      13,
-      2,
-    },
-    {
       2,
       1,
       1,
-      1,
+      5,
     },
     {
       3,
       1,
       1,
-      2,
+      4,
     },
     {
       4,
       1,
-      1,
-      3,
+      5,
+      2,
     },
     {
       5,
       1,
+      13,
       1,
-      4,
     },
     {
       7,
       1,
-      1,
-      5,
+      10,
+      4,
     },
     {
       8,
       1,
-      14,
-      2,
+      24,
+      1,
     },
     {
       8,
       1,
-      9,
-      3,
-    },
-    {
-      8,
-      1,
-      19,
+      4,
       1,
     },
     {
@@ -129,20 +111,86 @@ return {
     {
       17,
       1,
-      10,
-      4,
+      1,
+      3,
     },
     {
       18,
       1,
-      13,
+      1,
       1,
     },
     {
       19,
       1,
-      18,
+      1,
       2,
+    },
+    {
+      20,
+      1,
+      22,
+      1,
+    },
+    {
+      21,
+      1,
+      10,
+      2,
+    },
+    {
+      22,
+      1,
+      23,
+      1,
+    },
+    {
+      22,
+      1,
+      13,
+      2,
+    },
+    {
+      23,
+      1,
+      26,
+      1,
+    },
+    {
+      23,
+      1,
+      9,
+      2,
+    },
+    {
+      24,
+      1,
+      25,
+      1,
+    },
+    {
+      24,
+      1,
+      9,
+      3,
+    },
+    {
+      25,
+      1,
+      14,
+      2,
+    },
+    {
+      26,
+      1,
+      14,
+      5,
+    },
+    {
+      26,
+      1,
+      21,
+      1,
     },
   },
   nodeType = 'script',
@@ -152,18 +200,6 @@ return {
     },
     {
       loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.5,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
         true,
       },
       name = 'boolean',
@@ -173,6 +209,12 @@ return {
         true,
       },
       name = 'boolean',
+    },
+    {
+      name = 'entity/isvalidentity',
+    },
+    {
+      name = 'script/condition',
     },
     {
       loadArguments = {
@@ -185,9 +227,9 @@ return {
     },
     {
       loadArguments = {
-        true,
+        1,
       },
-      name = 'boolean',
+      name = 'number',
     },
     {
       name = 'entity/getattacktarget',
@@ -230,15 +272,42 @@ return {
     },
     {
       loadArguments = {
-        1,
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
+        0.5,
       },
       name = 'number',
     },
     {
-      name = 'script/condition',
+      loadArguments = {
+        0.5,
+      },
+      name = 'number',
     },
     {
-      name = 'entity/isvalidentity',
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
     },
   },
 }

@@ -28,11 +28,6 @@ function BuildingAction:build(parent, building, buildingData)
             do
                 local button = Action:new(buttons[i][1], unit, Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP, building, parent)
                 button.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
-                --[[label:click(function()
-                    for i = 1, #buildings do
-                        addToQueue(buildings[i], unit)
-                    end
-                end)]]
                 widgets[#widgets+1] = button
             end
         end

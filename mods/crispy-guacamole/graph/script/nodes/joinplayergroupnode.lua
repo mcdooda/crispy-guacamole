@@ -23,7 +23,7 @@ function JoinPlayerGroupNode:execute(runtime, inputPin)
 
     entity:getExtraData().playerToFollow = playerEntity
     entity:enterState('followPlayer', true)
-    
+
     runtime:impulse(self.impulseOutPin)
 end
 

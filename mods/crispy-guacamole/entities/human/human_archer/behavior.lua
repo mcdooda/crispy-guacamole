@@ -45,10 +45,11 @@ function states:followPlayer(archer)
     end
 end
 
-function states:useAbility(archer)
+function states:useAbilityY(archer)
     local extraData = archer:getExtraData()
     local abilityTargetPosition = assert(extraData.abilityTargetPosition)
     extraData.abilityTargetPosition = nil
+    archer:playAnimation("shoot", 1, false)
     do
         local projectileName = 'bouncing_arrow'
         local projectileAsset = assert(Asset.findFromName('entity', projectileName), 'Could not find entity asset ' .. projectileName)

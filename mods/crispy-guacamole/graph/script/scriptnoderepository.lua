@@ -1,4 +1,5 @@
 return {
     'joinplayergroup',
-    'getplayergroupentities'
+    'getplayergroupentities',
+    'updateinteractionbuilding'
 }

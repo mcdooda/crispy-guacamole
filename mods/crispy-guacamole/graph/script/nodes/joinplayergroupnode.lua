@@ -19,7 +19,7 @@ function JoinPlayerGroupNode:execute(runtime, inputPin)
     assert(playerEntity ~= entity)
 
     local groupEntities = playerEntity:getExtraData().groupEntities
-    groupEntities[#groupEntities + 1] = entity
+    flat.arrayAddUnique(groupEntities, entity)
 
     entity:getExtraData().playerToFollow = playerEntity
     entity:enterState('followPlayer', true)

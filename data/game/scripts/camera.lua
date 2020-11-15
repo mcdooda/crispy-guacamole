@@ -26,6 +26,29 @@ local function lockAndMoveTo(worldDestination, duration, easing)
 	currentTimer:start(duration, false)
 end
 
+local random = math.random
+local shakeTimer
+local function shake(duration)
+	duration = duration or 0.1
+	if shakeTimer then
+		shakeTimer:stop()
+	end
+	if duration == 0 then
+		return
+	end
+	local position = game.getCameraCenter()
+	shakeTimer = game.Timer()
+	shakeTimer:onUpdate(function(timer, elapsedTime)
+		local newPosition = flat.Vector2(position:x() + random(3), position:y() + random(3))
+		game.setCameraCenter(newPosition)
+	end)
+	shakeTimer:onEnd(function()
+		shakeTimer = nil
+	end)
+	shakeTimer:start(duration, false)
+end
+
 return {
-	lockAndMoveTo = lockAndMoveTo
+	lockAndMoveTo = lockAndMoveTo,
+	shake = shake
 }

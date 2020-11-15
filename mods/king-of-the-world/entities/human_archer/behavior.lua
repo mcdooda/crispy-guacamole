@@ -28,7 +28,7 @@ function states:init(archer)
 end
 
 function states:idle(archer)
-	
+
 end
 
 function states:onEntityEnteredVisionRange(archer, entity)

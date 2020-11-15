@@ -46,6 +46,12 @@ end
 function states:useAbilityX(paladin)
     local extraData = paladin:getExtraData()
     paladin:playAnimation("cast", 1, false)
+
+    local abilityTargetPosition = assert(extraData.abilityTargetPosition)
+    extraData.abilityTargetPosition = nil
+    do
+        Entity.spawn('fx_fist', abilityTargetPosition)
+    end
     return extraData.previousLoopingState
 end
 

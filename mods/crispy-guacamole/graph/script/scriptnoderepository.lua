@@ -1,5 +1,13 @@
 return {
+    -- player group
     'joinplayergroup',
     'getplayergroupentities',
-    'updateinteractionbuilding'
+
+    -- building interaction
+    'updateinteractionbuilding',
+
+    -- aim
+    'startaiming',
+    'stopaiming',
+    'updateaiming'
 }

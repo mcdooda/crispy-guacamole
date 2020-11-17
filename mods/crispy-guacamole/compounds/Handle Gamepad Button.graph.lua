@@ -3,7 +3,7 @@ return {
     {
       4,
       1,
-      72,
+      11,
       1,
     },
     {
@@ -19,93 +19,117 @@ return {
       1,
     },
     {
-      4,
-      3,
-      72,
-      3,
-    },
-    {
-      4,
-      3,
-      80,
-      1,
-    },
-    {
       5,
       1,
-      79,
+      30,
       2,
     },
     {
       6,
       1,
-      36,
+      27,
+      3,
+    },
+    {
+      7,
+      1,
+      30,
       3,
     },
     {
       8,
       1,
-      7,
-      3,
+      26,
+      1,
     },
     {
-      9,
+      8,
       1,
+      14,
+      2,
+    },
+    {
       10,
-      3,
+      1,
+      35,
+      1,
+    },
+    {
+      10,
+      1,
+      6,
+      1,
     },
     {
       11,
       1,
-      10,
+      25,
+      1,
+    },
+    {
+      11,
+      2,
+      31,
+      1,
+    },
+    {
+      11,
+      3,
+      40,
+      1,
+    },
+    {
+      11,
       4,
+      3,
+      1,
     },
     {
       12,
-      1,
-      10,
-      1,
-    },
-    {
-      13,
       1,
       38,
       1,
     },
     {
-      13,
-      3,
-      15,
-      1,
-    },
-    {
-      13,
-      3,
-      77,
-      1,
-    },
-    {
-      14,
-      1,
-      13,
-      3,
-    },
-    {
-      14,
-      1,
-      9,
-      1,
-    },
-    {
-      15,
-      1,
+      12,
+      2,
       16,
       4,
     },
     {
+      13,
+      1,
+      14,
+      1,
+    },
+    {
+      13,
+      1,
+      29,
+      1,
+    },
+    {
+      14,
+      1,
+      18,
+      2,
+    },
+    {
+      15,
+      1,
+      12,
+      3,
+    },
+    {
+      15,
+      1,
+      7,
+      1,
+    },
+    {
       16,
       1,
-      79,
+      30,
       1,
     },
     {
@@ -123,7 +147,7 @@ return {
     {
       18,
       1,
-      51,
+      9,
       1,
     },
     {
@@ -141,7 +165,7 @@ return {
     {
       20,
       1,
-      54,
+      8,
       1,
     },
     {
@@ -159,80 +183,74 @@ return {
     {
       22,
       1,
-      6,
-      1,
-    },
-    {
-      22,
-      1,
-      26,
-      1,
+      27,
+      2,
     },
     {
       23,
-      1,
-      78,
-      1,
-    },
-    {
-      23,
-      1,
-      13,
-      2,
-    },
-    {
-      24,
-      1,
-      7,
-      2,
-    },
-    {
-      25,
-      1,
-      10,
-      2,
-    },
-    {
-      26,
       1,
       36,
-      6,
-    },
-    {
-      26,
-      1,
-      24,
       1,
     },
     {
-      27,
+      23,
       1,
       12,
       2,
     },
     {
+      24,
+      1,
+      32,
+      1,
+    },
+    {
+      24,
+      1,
+      15,
+      1,
+    },
+    {
+      25,
+      1,
       28,
       1,
-      36,
+    },
+    {
+      26,
+      1,
+      9,
+      2,
+    },
+    {
+      28,
+      1,
+      27,
       1,
     },
     {
       29,
       1,
-      36,
-      2,
+      9,
+      3,
     },
     {
       30,
       1,
-      36,
-      5,
+      19,
+      1,
+    },
+    {
+      30,
+      2,
+      19,
+      3,
     },
     {
       31,
       1,
-      36,
-      4,
+      34,
+      1,
     },
     {
       32,
@@ -243,25 +261,25 @@ return {
     {
       33,
       1,
-      71,
+      10,
       1,
     },
     {
       33,
       1,
-      69,
+      24,
       1,
     },
     {
       33,
       1,
-      70,
+      13,
       1,
     },
     {
       34,
       1,
-      13,
+      12,
       1,
     },
     {
@@ -273,14 +291,8 @@ return {
     {
       36,
       1,
-      7,
-      1,
-    },
-    {
-      36,
+      38,
       2,
-      7,
-      4,
     },
     {
       37,
@@ -302,12 +314,6 @@ return {
     },
     {
       39,
-      1,
-      12,
-      1,
-    },
-    {
-      39,
       2,
       16,
       1,
@@ -327,7 +333,7 @@ return {
     {
       40,
       1,
-      46,
+      18,
       1,
     },
     {
@@ -347,318 +353,6 @@ return {
       1,
       42,
       1,
-    },
-    {
-      44,
-      1,
-      65,
-      1,
-    },
-    {
-      45,
-      1,
-      60,
-      2,
-    },
-    {
-      46,
-      1,
-      50,
-      1,
-    },
-    {
-      47,
-      1,
-      46,
-      2,
-    },
-    {
-      48,
-      1,
-      34,
-      1,
-    },
-    {
-      49,
-      1,
-      59,
-      2,
-    },
-    {
-      50,
-      1,
-      63,
-      1,
-    },
-    {
-      50,
-      3,
-      58,
-      1,
-    },
-    {
-      51,
-      1,
-      50,
-      3,
-    },
-    {
-      52,
-      1,
-      53,
-      1,
-    },
-    {
-      52,
-      1,
-      63,
-      2,
-    },
-    {
-      53,
-      1,
-      59,
-      3,
-    },
-    {
-      54,
-      1,
-      55,
-      1,
-    },
-    {
-      54,
-      1,
-      47,
-      2,
-    },
-    {
-      54,
-      1,
-      76,
-      1,
-    },
-    {
-      55,
-      1,
-      56,
-      1,
-    },
-    {
-      56,
-      1,
-      62,
-      1,
-    },
-    {
-      56,
-      1,
-      57,
-      1,
-    },
-    {
-      57,
-      1,
-      49,
-      1,
-    },
-    {
-      58,
-      1,
-      64,
-      1,
-    },
-    {
-      58,
-      1,
-      52,
-      1,
-    },
-    {
-      60,
-      1,
-      63,
-      3,
-    },
-    {
-      61,
-      1,
-      60,
-      1,
-    },
-    {
-      62,
-      1,
-      45,
-      1,
-    },
-    {
-      63,
-      1,
-      59,
-      1,
-    },
-    {
-      64,
-      1,
-      61,
-      1,
-    },
-    {
-      65,
-      1,
-      45,
-      2,
-    },
-    {
-      66,
-      1,
-      65,
-      2,
-    },
-    {
-      67,
-      1,
-      68,
-      1,
-    },
-    {
-      67,
-      2,
-      48,
-      1,
-    },
-    {
-      67,
-      3,
-      40,
-      1,
-    },
-    {
-      67,
-      4,
-      3,
-      1,
-    },
-    {
-      68,
-      1,
-      28,
-      1,
-    },
-    {
-      69,
-      1,
-      32,
-      1,
-    },
-    {
-      70,
-      1,
-      47,
-      1,
-    },
-    {
-      71,
-      1,
-      35,
-      1,
-    },
-    {
-      72,
-      1,
-      67,
-      1,
-    },
-    {
-      72,
-      2,
-      74,
-      1,
-    },
-    {
-      72,
-      2,
-      75,
-      1,
-    },
-    {
-      73,
-      1,
-      72,
-      2,
-    },
-    {
-      74,
-      1,
-      8,
-      1,
-    },
-    {
-      75,
-      1,
-      18,
-      1,
-    },
-    {
-      75,
-      1,
-      14,
-      1,
-    },
-    {
-      76,
-      1,
-      50,
-      2,
-    },
-    {
-      77,
-      1,
-      27,
-      1,
-    },
-    {
-      78,
-      1,
-      25,
-      1,
-    },
-    {
-      78,
-      1,
-      38,
-      2,
-    },
-    {
-      79,
-      1,
-      19,
-      1,
-    },
-    {
-      79,
-      2,
-      19,
-      3,
-    },
-    {
-      80,
-      1,
-      81,
-      1,
-    },
-    {
-      81,
-      1,
-      82,
-      1,
-    },
-    {
-      82,
-      1,
-      79,
-      3,
     },
   },
   nodeType = 'script',
@@ -708,37 +402,37 @@ return {
       name = 'string',
     },
     {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'entity/setextradatafield',
-    },
-    {
       name = 'reroute',
     },
     {
       name = 'reroute',
     },
     {
-      name = 'entity/setextradatafield',
+      name = 'reroute',
+    },
+    {
+      name = 'updateaiming',
+    },
+    {
+      name = 'reroute',
     },
     {
       loadArguments = {
-        false,
+        6,
       },
-      name = 'boolean',
+      name = 'script/impulseall',
     },
     {
-      name = 'entity/despawnentity',
-    },
-    {
-      name = 'entity/getextradatafield',
+      name = 'stopaiming',
     },
     {
       name = 'reroute',
     },
     {
-      name = 'entity/getposition',
+      name = 'controller/buttonpressed',
+    },
+    {
+      name = 'reroute',
     },
     {
       name = 'entity/setextradatafield',
@@ -747,7 +441,7 @@ return {
       name = 'reroute',
     },
     {
-      name = 'reroute',
+      name = 'script/condition',
     },
     {
       name = 'entity/enterstate',
@@ -774,28 +468,19 @@ return {
       name = 'reroute',
     },
     {
-      name = 'reroute',
+      name = 'startaiming',
     },
     {
       name = 'script/condition',
     },
     {
-      loadArguments = {
-        'player_aim',
-      },
-      name = 'string',
+      name = 'reroute',
     },
     {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
+      name = 'string/concatenate',
     },
     {
-      loadArguments = {
-        0,
-      },
-      name = 'number',
+      name = 'reroute',
     },
     {
       name = 'controller/buttonjustreleased',
@@ -810,7 +495,7 @@ return {
       name = 'controller/buttonjustpressed',
     },
     {
-      name = 'entity/spawnentity',
+      name = 'reroute',
     },
     {
       loadArguments = {
@@ -832,132 +517,6 @@ return {
         'abilityTargetPosition',
       },
       name = 'string',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'game/gamedt',
-    },
-    {
-      name = 'math/vector2/vector2numbermultiply',
-    },
-    {
-      name = 'script/condition',
-    },
-    {
-      name = 'controller/buttonpressed',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'entity/getextradatafield',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'entity/lookatentity',
-    },
-    {
-      name = 'math/vector2/vector2add',
-    },
-    {
-      name = 'math/vector3/vector3tovector2',
-    },
-    {
-      name = 'controller/leftstickdirection',
-    },
-    {
-      name = 'entity/setposition2d',
-    },
-    {
-      name = 'entity/getposition',
-    },
-    {
-      name = 'math/multiply',
-    },
-    {
-      loadArguments = {
-        15,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        6,
-      },
-      name = 'script/impulseall',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'string/concatenate',
-    },
-    {
-      loadArguments = {
-        'aimEntity',
-      },
-      name = 'string',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'reroute',
-    },
-    {
-      name = 'string/concatenate',
-    },
-    {
-      name = 'reroute',
     },
     {
       name = 'reroute',

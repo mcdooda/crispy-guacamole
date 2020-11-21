@@ -1,19 +1,11 @@
-#ifdef FLAT_DEBUG
-#include <sstream>
-#endif
-
 #include "lifecomponent.h"
-#include "../../../entity.h"
-#include "../movement/movementcomponent.h"
-#include "../behavior/behaviorcomponent.h"
 
-namespace game
-{
-namespace entity
-{
-namespace component
-{
-namespace life
+#include "entity/entity.h"
+#include "entity/component/components/attack/attackcomponent.h"
+#include "entity/component/components/behavior/behaviorcomponent.h"
+#include "entity/component/components/movement/movementcomponent.h"
+
+namespace game::entity::component::life
 {
 
 void LifeComponent::init()
@@ -158,8 +150,9 @@ void LifeComponent::onLive()
 
 	m_spawning = true;
 
-	disableComponent<movement::MovementComponent>();
+	disableComponent<attack::AttackComponent>();
 	disableComponent<behavior::BehaviorComponent>();
+	disableComponent<movement::MovementComponent>();
 	
 	live();
 	
@@ -189,8 +182,9 @@ void LifeComponent::onDie()
 
 	m_despawning = true;
 
-	disableComponent<movement::MovementComponent>();
+	disableComponent<attack::AttackComponent>();
 	disableComponent<behavior::BehaviorComponent>();
+	disableComponent<movement::MovementComponent>();
 	
 	const LifeComponentTemplate* lifeComponentTemplate = getTemplate();
 	const flat::lua::SharedLuaReference<LUA_TFUNCTION>& despawnFunc = lifeComponentTemplate->getDespawnFunc();
@@ -225,31 +219,26 @@ void LifeComponent::checkSpawnDespawnThreadFinished()
 			m_spawning = false;
 		}
 		
-		enableComponent<movement::MovementComponent>();
+		enableComponent<attack::AttackComponent>();
 		enableComponent<behavior::BehaviorComponent>();
+		enableComponent<movement::MovementComponent>();
 	}
 }
 
 #ifdef FLAT_DEBUG
 void LifeComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
-	std::stringstream debugString;
-	debugString << m_health << "/" << getMaxHealth() << "hp";
+	std::string debugString = std::to_string(m_health) + "/" + std::to_string(getMaxHealth()) + "hp";
 	if (m_spawning)
 	{
-		debugString << "\n(spawning)";
+		debugString += "\n(spawning)";
 	}
 	else if (m_despawning)
 	{
-		debugString << "\n(despawning)";
+		debugString += "\n(despawning)";
 	}
-	debugDisplay.add3dText(m_owner->getPosition(), debugString.str());
+	debugDisplay.add3dText(m_owner->getPosition(), debugString);
 }
 #endif
 
-} // life
-} // component
-} // entity
-} // game
-
-
+} // game::entity::component::life

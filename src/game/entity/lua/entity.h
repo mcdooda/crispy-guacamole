@@ -53,6 +53,7 @@ int l_Entity_getElevation(lua_State* L);
 int l_Entity_getForward(lua_State* L);
 
 int l_Entity_lookAtEntity(lua_State* L);
+int l_Entity_lookAtPosition(lua_State* L);
 
 int l_Entity_cancelCurrentActions(lua_State* L);
 

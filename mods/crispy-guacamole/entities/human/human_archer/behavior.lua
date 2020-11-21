@@ -45,7 +45,7 @@ function states:followPlayer(archer)
     end
 end
 
-function states:useAbilityY(archer)
+function states:useAbilityB(archer)
     local extraData = archer:getExtraData()
     local abilityTargetPosition = assert(extraData.abilityTargetPosition)
     extraData.abilityTargetPosition = nil

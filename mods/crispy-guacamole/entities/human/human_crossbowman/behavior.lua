@@ -44,7 +44,7 @@ function states:followPlayer(crossbowman)
     end
 end
 
-function states:useAbilityB(crossbowman)
+function states:useAbilityX(crossbowman)
     local extraData = crossbowman:getExtraData()
     local abilityTargetPosition = assert(extraData.abilityTargetPosition)
     extraData.abilityTargetPosition = nil

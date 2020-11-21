@@ -79,6 +79,7 @@ int open(Game& game)
 		{"getForward",               l_Entity_getForward},
 
 		{"lookAtEntity",             l_Entity_lookAtEntity},
+		{"lookAtPosition",           l_Entity_lookAtPosition},
 
 		{"cancelCurrentActions",     l_Entity_cancelCurrentActions},
 
@@ -497,6 +498,20 @@ int l_Entity_lookAtEntity(lua_State* L)
 	Entity& target = getEntity(L, 2);
 	flat::Vector2 entityPosition2d(entity.getPosition());
 	flat::Vector2 targetPosition2d(target.getPosition());
+	if (targetPosition2d != entityPosition2d)
+	{
+		const float heading = flat::vector2_angle(targetPosition2d - entityPosition2d);
+		entity.setHeading(heading);
+	}
+	return 0;
+}
+
+int l_Entity_lookAtPosition(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::Vector3 position = flat::lua::getVector3(L, 2);
+	flat::Vector2 entityPosition2d(entity.getPosition());
+	flat::Vector2 targetPosition2d(position);
 	if (targetPosition2d != entityPosition2d)
 	{
 		const float heading = flat::vector2_angle(targetPosition2d - entityPosition2d);

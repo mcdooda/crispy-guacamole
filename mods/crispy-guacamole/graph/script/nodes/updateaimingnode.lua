@@ -1,6 +1,9 @@
 local ScriptNode = flat.require 'graph/script/scriptnode'
 local PinTypes = flat.require 'graph/pintypes'
 
+local cg = require (Mod.getFilePath 'scripts/cg')
+local EntityData = require (Mod.getFilePath 'scripts/entitydata')
+
 local UpdateAimingNode = ScriptNode:inherit 'Update Aiming'
 
 function UpdateAimingNode:buildPins()
@@ -27,6 +30,20 @@ function UpdateAimingNode:execute(runtime, inputPin)
     assert(inputPin == self.impulseInPin)
     local playerEntity = runtime:readPin(self.playerEntityInPin)
     local buttonName = runtime:readPin(self.buttonNameInPin)
+
+    local entityTemplateForButton = cg.entityNamePerButton[buttonName]
+    local entityTemplateAssetForButton = assert(Asset.findFromName('entity', entityTemplateForButton), 'Could not find entity asset ' .. entityTemplateForButton)
+    local entityData = EntityData.get(entityTemplateAssetForButton:getPath())
+    local aimMode = entityData.aimMode
+
+    local aimingEntities = {}
+    local groupEntities = playerEntity:getExtraData().groupEntities
+    for i = 1, #groupEntities do
+        local groupEntity = groupEntities[i]
+        if groupEntity:isValid() and groupEntity:getTemplateName() == entityTemplateForButton then
+            aimingEntities[#aimingEntities + 1] = groupEntity
+        end
+    end
     
     local extraData = playerEntity:getExtraData()
 
@@ -36,14 +53,17 @@ function UpdateAimingNode:execute(runtime, inputPin)
     local stickDirection = getStickDirection(playerEntity)
 
     mainAimingPosition = mainAimingPosition + flat.Vector3(stickDirection:x(), stickDirection:y(), 0) * game.getDT() * 15
+    extraData[aimPositionKey] = mainAimingPosition
+
+    playerEntity:lookAtPosition(mainAimingPosition)
     
-    local aimEntityKey = 'aimEntity' .. buttonName
-    local aimEntity = extraData[aimEntityKey]
-    aimEntity:setPosition2d(mainAimingPosition:toVector2())
+    local aimEntitiesKey = 'aimEntities' .. buttonName
+    local aimEntities = extraData[aimEntitiesKey]
 
-    extraData[aimPositionKey] = aimEntity:getPosition()
-
-    playerEntity:lookAtEntity(aimEntity)
+    local aimPositions = aimMode.computeAimPositions(playerEntity, mainAimingPosition, aimingEntities)
+    for i = 1, #aimPositions do
+        aimEntities[i]:setPosition2d(aimPositions[i]:toVector2())
+    end
 
     runtime:impulse(self.impulseOutPin)
 end

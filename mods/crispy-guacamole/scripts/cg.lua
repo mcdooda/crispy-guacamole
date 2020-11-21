@@ -22,7 +22,17 @@ local function getBuildings()
     return buildings
 end
 
+local entityNamePerButton = {
+    A = 'human_soldier',
+    B = 'human_archer',
+    X = 'human_crossbowman',
+    Y = 'human_paladin',
+}
+
 return {
     getPlayers   = getPlayers,
-    getBuildings = getBuildings
+    getBuildings = getBuildings,
+
+    -- current game data
+    entityNamePerButton = entityNamePerButton
 }

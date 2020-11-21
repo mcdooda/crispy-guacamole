@@ -23,10 +23,12 @@ function StopAimingNode:execute(runtime, inputPin)
     local mainAimingPosition = extraData[aimPositionKey]
     extraData[aimPositionKey] = nil
 
-    local aimEntityKey = 'aimEntity' .. buttonName
-    local aimEntity = extraData[aimEntityKey]
-    aimEntity:despawn()
-    extraData[aimEntityKey] = nil
+    local aimEntitiesKey = 'aimEntities' .. buttonName
+    local aimEntities = extraData[aimEntitiesKey]
+    for i = 1, #aimEntities do
+        aimEntities[i]:despawn()
+    end
+    extraData[aimEntitiesKey] = nil
 
     runtime:writePin(self.mainAimingPositionOutPin, mainAimingPosition)
     runtime:impulse(self.impulseOutPin)

@@ -43,7 +43,7 @@ function states:followPlayer(paladin)
     end
 end
 
-function states:useAbilityY(paladin)
+function states:useAbility(paladin)
     local extraData = paladin:getExtraData()
     paladin:playAnimation("cast", 1, false)
 

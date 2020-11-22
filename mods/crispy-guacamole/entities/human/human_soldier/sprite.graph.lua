@@ -150,6 +150,36 @@ return {
       22,
       3,
     },
+    {
+      27,
+      1,
+      30,
+      2,
+    },
+    {
+      28,
+      1,
+      30,
+      3,
+    },
+    {
+      29,
+      1,
+      30,
+      4,
+    },
+    {
+      30,
+      1,
+      10,
+      4,
+    },
+    {
+      31,
+      1,
+      30,
+      1,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -167,7 +197,7 @@ return {
     },
     {
       loadArguments = {
-        0.10000000149012,
+        0.090000003576279,
       },
       name = 'number',
     },
@@ -176,13 +206,13 @@ return {
     },
     {
       loadArguments = {
-        16.5,
+        17,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        21,
+        25,
       },
       name = 'number',
     },
@@ -191,18 +221,22 @@ return {
     },
     {
       loadArguments = {
-        8,
+        9,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        3,
+        4,
       },
       name = 'number',
     },
     {
       loadArguments = {
+        {
+          5,
+          '',
+        },
         {
           5,
           '',
@@ -241,13 +275,13 @@ return {
     },
     {
       loadArguments = {
-        3,
+        4,
       },
       name = 'number',
     },
     {
       loadArguments = {
-        0.059999998658895,
+        0.10000000149012,
       },
       name = 'number',
     },
@@ -268,7 +302,7 @@ return {
     },
     {
       loadArguments = {
-        8,
+        9,
       },
       name = 'number',
     },
@@ -304,6 +338,33 @@ return {
         'data/compounds/script/Init Sprite',
       },
       name = 'compound',
+    },
+    {
+      loadArguments = {
+        4,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        9,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.070000000298023,
+      },
+      name = 'number',
+    },
+    {
+      name = 'components/spriteanimation',
+    },
+    {
+      loadArguments = {
+        'cast',
+      },
+      name = 'string',
     },
   },
 }

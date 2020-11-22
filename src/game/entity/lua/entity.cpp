@@ -158,6 +158,7 @@ int open(Game& game)
 		{"damageTaken",              l_Entity_damageTaken},
 		{"died",                     l_Entity_died},
 		{"isDespawnPending",         l_Entity_isDespawnPending},
+		{"isAlive",                  l_Entity_isAlive},
 
 		// selection
 		{"selected",                 l_Entity_selected},
@@ -1201,6 +1202,14 @@ int l_Entity_isDespawnPending(lua_State* L)
 	Entity& entity = getEntity(L, 1);
 	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
 	lua_pushboolean(L, lifeComponent.isDespawnPending());
+	return 1;
+}
+
+int l_Entity_isAlive(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	life::LifeComponent& lifeComponent = getComponent<life::LifeComponent>(L, entity);
+	lua_pushboolean(L, lifeComponent.isAlive());
 	return 1;
 }
 

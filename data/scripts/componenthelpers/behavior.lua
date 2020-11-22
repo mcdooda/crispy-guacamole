@@ -59,8 +59,8 @@ end
 
 local function isValidHostileAttackTarget(entity, target)
 	local isHostile = entity:isHostile(target) or target:isHostile(entity)
-	local isLiving = target:isLiving()
-	return isHostile and isLiving
+	local isAlive = target:isLiving() and target:isAlive()
+	return isHostile and isAlive
 end
 
 --[[

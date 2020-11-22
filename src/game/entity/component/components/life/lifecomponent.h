@@ -40,6 +40,7 @@ class LifeComponent : public ComponentImpl<LifeComponentTemplate>
 		inline int getMaxHealth() const { return getTemplate()->getMaxHealth(); }
 
 		inline bool isDespawnPending() const { return m_despawning || m_owner->isMarkedForDelete(); }
+		inline bool isAlive() const { return !m_spawning && !m_despawning; }
 
 		int addHealthChangedCallback(lua_State* L, int index);
 		void removeHealthChangeCallback(int index);

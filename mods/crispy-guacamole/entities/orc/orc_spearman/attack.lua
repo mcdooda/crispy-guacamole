@@ -15,7 +15,7 @@ return {
 		spearman:playAnimation('attack', 1, false)
 		local timer = game.Timer()
 		timer:onEnd(function()
-			if target:isValid() then
+			if spearman:isValid() and spearman:isAlive() and target:isValid() then
 				target:dealDamage(2)
 			end
 		end)

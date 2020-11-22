@@ -1,5 +1,18 @@
 local None = {
+    computeInitialAimPosition = function(playerEntity, aimingEntities)
+        return playerEntity:getPosition()
+    end,
 
+    computeAimPositions = function(playerEntity, currentMainPosition, aimingEntities)
+        return {}
+    end,
+
+    useAbility = function(aimingEntities, aimPositions)
+        for i = 1, #aimingEntities do
+            local aimingEntity = aimingEntities[i]
+            aimingEntity:enterState 'useAbility'
+        end
+    end
 }
 
 local SingleUnit = {

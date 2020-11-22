@@ -9,32 +9,26 @@ return {
     {
       1,
       2,
-      7,
+      15,
       1,
-    },
-    {
-      1,
-      3,
-      3,
-      2,
-    },
-    {
-      1,
-      3,
-      5,
-      1,
-    },
-    {
-      1,
-      3,
-      8,
-      2,
     },
     {
       1,
       3,
       10,
       1,
+    },
+    {
+      1,
+      3,
+      14,
+      1,
+    },
+    {
+      1,
+      3,
+      15,
+      2,
     },
     {
       4,
@@ -45,14 +39,8 @@ return {
     {
       5,
       1,
-      9,
-      2,
-    },
-    {
-      6,
-      1,
-      5,
-      2,
+      15,
+      3,
     },
     {
       7,
@@ -102,6 +90,30 @@ return {
       8,
       3,
     },
+    {
+      14,
+      1,
+      8,
+      2,
+    },
+    {
+      14,
+      1,
+      3,
+      2,
+    },
+    {
+      15,
+      1,
+      7,
+      1,
+    },
+    {
+      15,
+      3,
+      9,
+      2,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -124,7 +136,10 @@ return {
       name = 'game/gametime',
     },
     {
-      name = 'entity/getextradatafield',
+      loadArguments = {
+        'rotation_speed',
+      },
+      name = 'string',
     },
     {
       loadArguments = {
@@ -158,6 +173,12 @@ return {
     },
     {
       name = 'math/multiply',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'entity/getextradatafield',
     },
   },
 }

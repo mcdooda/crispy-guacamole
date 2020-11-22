@@ -43,15 +43,10 @@ function states:followPlayer(soldier)
     end
 end
 
-function states:useAbilityA(soldier)
+function states:useAbility(soldier)
     local extraData = soldier:getExtraData()
     soldier:playAnimation("cast", 1, false)
 
-    local abilityTargetPosition = assert(extraData.abilityTargetPosition)
-    extraData.abilityTargetPosition = nil
-    do
-        Entity.spawn('fx_fist', abilityTargetPosition)
-    end
     return extraData.previousLoopingState
 end
 

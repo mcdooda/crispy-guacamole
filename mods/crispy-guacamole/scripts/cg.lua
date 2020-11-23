@@ -32,7 +32,6 @@ local function getHostiles(queryInstance)
             hostiles[#hostiles + 1] = visibleEntity
         end
     end
-    flat.dump(hostiles)
     return hostiles
 end
 

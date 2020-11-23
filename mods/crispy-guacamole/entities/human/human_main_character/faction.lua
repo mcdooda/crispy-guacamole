@@ -1,0 +1,1 @@
+return flat.graph.script.run(Mod.getFilePath 'entities/human/human_main_character/faction')

@@ -1,3 +1,5 @@
+local FindInitialAbilityAimPositionEQSTemplate = require(Mod.getFilePath 'eqs/findinitialabilityaimposition')
+
 local None = {
     computeInitialAimPosition = function(playerEntity, aimingEntities)
         return playerEntity:getPosition()
@@ -15,6 +17,15 @@ local None = {
     end
 }
 
+local function computeInitialAimPosition(playerEntity)
+    local initialTargetEntityItem = flat.eqs.run(FindInitialAbilityAimPositionEQSTemplate, playerEntity, flat.eqs.RunMode.SingleBestItem)
+    if initialTargetEntityItem then
+        return initialTargetEntityItem.item:getPosition()
+    else
+        return playerEntity:getPosition() + playerEntity:getForward() * 2
+    end
+end
+
 local SingleUnit = {
 
 }
@@ -22,7 +33,7 @@ local SingleUnit = {
 local AllUnitsSingleTarget = {
 
     computeInitialAimPosition = function(playerEntity, aimingEntities)
-        return playerEntity:getPosition()
+        return computeInitialAimPosition(playerEntity)
     end,
 
     computeAimPositions = function(playerEntity, currentMainPosition, aimingEntities)
@@ -47,7 +58,7 @@ end
 local AllUnitsMultipleTargetsCone = {
 
     computeInitialAimPosition = function(playerEntity, aimingEntities)
-        return playerEntity:getPosition()
+        return computeInitialAimPosition(playerEntity)
     end,
 
     computeAimPositions = function(playerEntity, currentMainPosition, aimingEntities)
@@ -89,7 +100,7 @@ local AllUnitsMultipleTargetsCone = {
 local AllUnitsMultipleTargetsLine = {
 
     computeInitialAimPosition = function(playerEntity, aimingEntities)
-        return playerEntity:getPosition()
+        return computeInitialAimPosition(playerEntity)
     end,
 
     computeAimPositions = function(playerEntity, currentMainPosition, aimingEntities)

@@ -24,17 +24,14 @@ end
 
 local function getHostiles(queryInstance)
     local querier = queryInstance:getQuerier()
-    print('querier', querier)
     local hostiles = {}
     for _, visibleEntity in querier:eachVisibleEntity() do
         local isHostile = querier:isHostile(visibleEntity) or visibleEntity:isHostile(querier)
         local isAlive = visibleEntity:isLiving() and visibleEntity:isAlive()
-        print(_, visibleEntity, isHostile, isAlive)
         if isHostile and isAlive then
             hostiles[#hostiles + 1] = visibleEntity
         end
     end
-    print('hostiles')
     flat.dump(hostiles)
     return hostiles
 end

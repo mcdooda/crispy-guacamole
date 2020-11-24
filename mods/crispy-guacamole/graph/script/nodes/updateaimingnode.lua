@@ -1,10 +1,7 @@
-local ScriptNode = flat.require 'graph/script/scriptnode'
 local PinTypes = flat.require 'graph/pintypes'
+local AimingNodeBase = require(Mod.getFilePath 'graph/script/nodes/aimingnodebase')
 
-local cg = require (Mod.getFilePath 'scripts/cg')
-local EntityData = require (Mod.getFilePath 'scripts/entitydata')
-
-local UpdateAimingNode = ScriptNode:inherit 'Update Aiming'
+local UpdateAimingNode = AimingNodeBase:inherit 'Update Aiming'
 
 function UpdateAimingNode:buildPins()
     self.impulseInPin = self:addInputPin(PinTypes.IMPULSE, 'In')
@@ -31,19 +28,7 @@ function UpdateAimingNode:execute(runtime, inputPin)
     local playerEntity = runtime:readPin(self.playerEntityInPin)
     local buttonName = runtime:readPin(self.buttonNameInPin)
 
-    local entityTemplateForButton = cg.entityNamePerButton[buttonName]
-    local entityTemplateAssetForButton = assert(Asset.findFromName('entity', entityTemplateForButton), 'Could not find entity asset ' .. entityTemplateForButton)
-    local entityData = EntityData.get(entityTemplateAssetForButton:getPath())
-    local aimMode = entityData.aimMode
-
-    local aimingEntities = {}
-    local groupEntities = playerEntity:getExtraData().groupEntities
-    for i = 1, #groupEntities do
-        local groupEntity = groupEntities[i]
-        if groupEntity:isValid() and groupEntity:getTemplateName() == entityTemplateForButton then
-            aimingEntities[#aimingEntities + 1] = groupEntity
-        end
-    end
+    local aimingEntities, aimMode = self:getAimingEntities(playerEntity, buttonName)
     
     local extraData = playerEntity:getExtraData()
 

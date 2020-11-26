@@ -24,4 +24,19 @@ function AimingNodeBase:getAimingEntities(playerEntity, buttonName)
     return aimingEntities, aimMode
 end
 
+function AimingNodeBase:getClosestValidTarget(playerEntity, aimMode, position)
+    local closestHostile
+    local closestHostileDistanceSquared = math.huge
+    for _, visibleEntity in playerEntity:eachVisibleEntity() do
+        if aimMode.isValidTarget(playerEntity, visibleEntity) then
+            local distanceSquared = (position - visibleEntity:getPosition()):length2()
+            if distanceSquared < closestHostileDistanceSquared then
+                closestHostileDistanceSquared = distanceSquared
+                closestHostile = visibleEntity
+            end
+        end
+    end
+    return closestHostile
+end
+
 return AimingNodeBase

@@ -169,6 +169,7 @@ int open(Game& game)
 		{"setProjectileSpeed",       l_Entity_setProjectileSpeed},
 		{"getProjectileSpeed",       l_Entity_getProjectileSpeed},
 		{"setProjectileTarget",      l_Entity_setProjectileTarget},
+		{"setProjectileWeight",      l_Entity_setProjectileWeight},
 
 		// player controller
 		{"setGamepadIndex",          l_Entity_setGamepadIndex},
@@ -1264,6 +1265,15 @@ int l_Entity_setProjectileTarget(lua_State* L)
 	Entity& target = getEntity(L, 2);
 	projectile::ProjectileComponent& projectileComponent = getComponent<projectile::ProjectileComponent>(L, entity);
 	projectileComponent.setTarget(&target);
+	return 0;
+}
+
+int l_Entity_setProjectileWeight(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const float weight = static_cast<float>(luaL_checknumber(L, 2));
+	projectile::ProjectileComponent& projectileComponent = getComponent<projectile::ProjectileComponent>(L, entity);
+	projectileComponent.setWeight(weight);
 	return 0;
 }
 

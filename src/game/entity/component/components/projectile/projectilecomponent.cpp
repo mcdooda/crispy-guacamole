@@ -1,17 +1,21 @@
 #include "projectilecomponent.h"
 #include "projectilecomponenttemplate.h"
-#include "../collision/collisioncomponent.h"
-#include "../sprite/spritecomponent.h"
-#include "../../../entity.h"
-#include "../../../lua/entity.h"
-#include "../../../../map/map.h"
-#include "../collision/collisionbox.h"
+
+#include "entity/entity.h"
+#include "entity/lua/entity.h"
+#include "entity/component/components/collision/collisioncomponent.h"
+#include "entity/component/components/collision/collisionbox.h"
+#include "entity/component/components/sprite/spritecomponent.h"
+
+#include "map/map.h"
 
 namespace game::entity::component::projectile
 {
 
 void ProjectileComponent::init()
 {
+	m_weight = getTemplate()->getWeight();
+
 	m_owner->addedToMap.on(this, &ProjectileComponent::addedToMap);
 	m_owner->removedFromMap.on(this, &ProjectileComponent::removedFromMap);
 	m_owner->headingChanged.on(this, &ProjectileComponent::headingChanged);
@@ -30,10 +34,7 @@ void ProjectileComponent::deinit()
 	m_owner->addedToMap.off(this);
 	m_owner->removedFromMap.off(this);
 	m_owner->headingChanged.off(this);
-	if (getTemplate()->getWeight() != 0.f)
-	{
-		m_owner->elevationChanged.off(this);
-	}
+	m_owner->elevationChanged.off(this);
 
 	collision::CollisionComponent* collisionComponent = m_owner->getComponent<collision::CollisionComponent>();
 	if (collisionComponent != nullptr)
@@ -53,17 +54,16 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	flat::Vector3 newSpeed = m_speed;
 
 	// compute speed depending on weight
-	const float weight = getTemplate()->getWeight();
 	const flat::Vector3& position = m_owner->getPosition();
 	flat::Vector3 newPosition;
-	if (weight == 0.f)
+	if (m_weight == 0.f)
 	{
 		const flat::Vector3 forward = m_owner->getForward();
 		newSpeed = forward * speed;
 	}
 	else
 	{
-		newSpeed.z -= weight * elapsedTime;
+		newSpeed.z -= m_weight * elapsedTime;
 	}
 
 	// compute speed to follow the target

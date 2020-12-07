@@ -52,8 +52,8 @@ function states:useAbility(crossbowman)
     do
         local projectileName = 'explosive_arrow'
         local projectileAsset = assert(Asset.findFromName('entity', projectileName), 'Could not find entity asset ' .. projectileName)
-        local spawnProjectile = ProjectileHelper.createSpawnerFromEntityToPosition(projectileAsset:getPath())
-        spawnProjectile(crossbowman, 'crossbow', abilityTargetPosition)
+        local spawnProjectile = ProjectileHelper.createSpawnerFromEntityToPositionWithSpeed(projectileAsset:getPath())
+        spawnProjectile(crossbowman, 'crossbow', abilityTargetPosition, 17)
     end
     return extraData.previousLoopingState
 end

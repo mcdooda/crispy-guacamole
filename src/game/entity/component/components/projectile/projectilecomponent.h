@@ -37,7 +37,9 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 		void setSpeed(const flat::Vector3& speed);
 		inline const flat::Vector3& getSpeed() const { return m_speed; }
 
-		void setTarget(Entity* target) { m_target = target; }
+		inline void setTarget(Entity* target) { m_target = target; }
+
+		inline void setWeight(float weight) { m_weight = weight; }
 
 		FLAT_DEBUG_ONLY(void debugDraw(debug::DebugDisplay& debugDisplay) const override;)
 
@@ -62,6 +64,7 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 	private:
 		EntityHandle m_target;
 		flat::Vector3 m_speed;
+		float m_weight;
 };
 
 } // projectile

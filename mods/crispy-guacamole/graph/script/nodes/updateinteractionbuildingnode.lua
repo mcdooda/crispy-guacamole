@@ -24,12 +24,18 @@ function UpdateInteractionBuildingNode:execute(runtime)
     assert(not buildingEntity or flat.type(buildingEntity) == flat.types['CG.Entity'])
 
     local playerExtraData = playerEntity:getExtraData()
-    if playerExtraData.interactionBuildingEntity then
-        playerExtraData.interactionBuildingEntity:clearSpriteColor()
+    local isNewBuilding = buildingEntity ~= playerExtraData.interactionBuildingEntity
+
+    if playerExtraData.interactionBuildingEntity and isNewBuilding then
+        local oldBuilding = playerExtraData.interactionBuildingEntity
+        oldBuilding:setSelected(false)
+        oldBuilding:clearSpriteColor()
+        playerExtraData.interactionBuildingEntity = nil
     end
 
-    if buildingEntity then
+    if buildingEntity and isNewBuilding then
         playerExtraData.interactionBuildingEntity = buildingEntity
+        buildingEntity:setSelected(true)
         buildingEntity:setSpriteColor(0xFF0000FF)
     end
 

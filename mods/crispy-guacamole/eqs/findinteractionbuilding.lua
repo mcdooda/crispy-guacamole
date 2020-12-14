@@ -17,8 +17,7 @@ return flat.eqs.template {
             flat.eqs.scoring.linear,
             {
                 line1 = flat.eqs.test.dot.forward(flat.eqs.context.querier),
-                line2 = flat.eqs.test.dot.lineBetween(flat.eqs.context.querier, flat.eqs.context.item),
-                min = 0.5
+                line2 = flat.eqs.test.dot.lineBetween(flat.eqs.context.querier, flat.eqs.context.item)
             }
         )
     }

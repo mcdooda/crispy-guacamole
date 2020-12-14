@@ -138,6 +138,8 @@ int l_Entity_isAlive(lua_State* L);
 int l_Entity_selected(lua_State* L);
 int l_Entity_deselected(lua_State* L);
 int l_Entity_click(lua_State* L);
+int l_Entity_setSelected(lua_State* L);
+int l_Entity_isSelected(lua_State* L);
 
 // projectile
 int l_Entity_setProjectileSpeed(lua_State* L);

@@ -6,6 +6,6 @@ dofile(Mod.getFilePath 'maps/sandbox/ui.lua')
 Map.setFogType(Map.FogType.SOFT)
 
 LevelTasks:run(
-    'leveltask_bark',
-    'leveltask_camera'
+    'barkleveltask',
+    'cameraleveltask'
 )

@@ -164,6 +164,8 @@ int open(Game& game)
 		{"selected",                 l_Entity_selected},
 		{"deselected",               l_Entity_deselected},
 		{"click",                    l_Entity_click},
+		{"setSelected",              l_Entity_setSelected},
+		{"isSelected",               l_Entity_isSelected},
 
 		// projectile
 		{"setProjectileSpeed",       l_Entity_setProjectileSpeed},
@@ -1238,6 +1240,24 @@ int l_Entity_click(lua_State* L)
 	selection::SelectionComponent& selectionComponent = getComponent<selection::SelectionComponent>(L, entity);
 	selectionComponent.addClickCallback(L, 2);
 	return 0;
+}
+
+int l_Entity_setSelected(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const bool selected = lua_toboolean(L, 2) == 1;
+	if (entity.isSelected() != selected)
+	{
+		entity.setSelected(selected);
+	}
+	return 0;
+}
+
+int l_Entity_isSelected(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	lua_pushboolean(L, entity.isSelected());
+	return 1;
 }
 
 // PROJECTILE

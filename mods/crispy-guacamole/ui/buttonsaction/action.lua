@@ -1,9 +1,9 @@
-local Button = require 'mods/crispy-guacamole/ui/buttons_action/button'
+local Button = require 'mods/crispy-guacamole/ui/buttonsaction/button'
 local Path  = require 'data/scripts/path'
 local Theme = require 'mods/crispy-guacamole/ui/theme'
 local UiSettings = require 'data/scripts/ui/uisettings'
 local Preview = require 'data/scripts/preview'
-local BuildEntity = require 'mods/crispy-guacamole/ui/building/build_entity'
+local BuildEntity = require 'mods/crispy-guacamole/ui/building/buildentity'
 
 local frameHeight = 144
 local frameWidth = 111
@@ -26,7 +26,7 @@ function Action:new(buttonType, unit, buttonPositionPolicy, building, parent)
 end
 
 function Action:validateAnimation(buttonPositionPolicy)
-    local externalBorder = Widget.makeImage(Path.getModFilePath 'ui/buttons_action/validate.png')
+    local externalBorder = Widget.makeImage(Path.getModFilePath 'ui/buttonsaction/validate.png')
     externalBorder:setPositionPolicy(Widget.PositionPolicy.CENTER)
     externalBorder:setSize(frameWidth, frameHeight)
 
@@ -62,17 +62,19 @@ function Action:build(parent, buttonType, buttonPositionPolicy)
     local container = Widget.makeFixedSize(150, 210)
 
     container:gamepadButtonPressed(Gamepads.GamepadButton[buttonType], function()
-        if self.building:isSelected() then
+        do
             self:validateAnimation(buttonPositionPolicy)
             self.button:setPressed(true)
             BuildEntity.addToQueue(self.building, self.unit)
         end
     end)
     container:gamepadButtonReleased(Gamepads.GamepadButton[buttonType], function()
-        self.button:setPressed(false)
+        do
+            self.button:setPressed(false)
+        end
     end)
 
-    local background = Widget.makeImage(Path.getModFilePath 'ui/buttons_action/background.png')
+    local background = Widget.makeImage(Path.getModFilePath 'ui/buttonsaction/background.png')
     do
         background:setPositionPolicy(Widget.PositionPolicy.CENTER)
         background:setSize(frameWidth, frameHeight)
@@ -90,7 +92,7 @@ function Action:build(parent, buttonType, buttonPositionPolicy)
         end
 
         do
-            local currencyIcon = Widget.makeImage(Path.getModFilePath 'ui/buttons_action/coin.png')
+            local currencyIcon = Widget.makeImage(Path.getModFilePath 'ui/buttonsaction/coin.png')
             currencyIcon:setSize(21, 21)
             currencyIcon:setPositionPolicy(Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.CENTER_Y)
             currencyIcon:setPosition(-3, 0)
@@ -100,7 +102,7 @@ function Action:build(parent, buttonType, buttonPositionPolicy)
     end
 
     do
-        local typeIcon = Widget.makeImage(Path.getModFilePath('ui/buttons_action/type_icon/' .. 'sword' .. '.png'))
+        local typeIcon = Widget.makeImage(Path.getModFilePath('ui/buttonsaction/typeicon/' .. 'sword' .. '.png'))
         typeIcon:setPosition(10, -frameHeight / 2)
         typeIcon:setSize(30, 30)
         background:addChild(typeIcon)

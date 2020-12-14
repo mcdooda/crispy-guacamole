@@ -1,32 +1,10 @@
 local HealthBar = require 'mods/crispy-guacamole/ui/entity/healthbar_long'
 local ProgressBar = require 'mods/crispy-guacamole/ui/entity/progressbar_long'
-local BuildingAction = require 'mods/crispy-guacamole/ui/building/building_action'
+local BuildingAction = require 'mods/crispy-guacamole/ui/building/buildingaction'
+
 local EntityData = require 'mods/crispy-guacamole/scripts/entitydata'
 
 local ui = setmetatable({}, { __index = HealthBar })
-
-local unitData = {
-    {
-        template = Mod.getFilePath('entities/human/human_soldier'),
-        type = 'sword',
-        price = 10
-    },
-    {
-        template = Mod.getFilePath('entities/human/human_archer'),
-        type = 'bow',
-        price = 20
-    },
-    {
-        template = Mod.getFilePath('entities/human/human_crossbowman'),
-        type = 'bow',
-        price = 70
-    },
-    {
-        template = Mod.getFilePath('entities/human/human_paladin'),
-        type = 'wooden_shield',
-        price = 120
-    }
-}
 
 function ui.addedToMap(entity, widget)
     HealthBar.addedToMap(entity, widget, 34)

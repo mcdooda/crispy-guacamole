@@ -1,5 +1,5 @@
 local EntityData = require 'mods/crispy-guacamole/scripts/entitydata'
-local Action = require 'mods/crispy-guacamole/ui/buttons_action/action'
+local Action = require 'mods/crispy-guacamole/ui/buttonsaction/action'
 
 local BuildingAction = {}
 BuildingAction.__index = BuildingAction

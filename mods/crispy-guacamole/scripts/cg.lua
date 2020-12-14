@@ -22,6 +22,19 @@ local function getBuildings()
     return buildings
 end
 
+local function getHostiles(queryInstance)
+    local querier = queryInstance:getQuerier()
+    local hostiles = {}
+    for _, visibleEntity in querier:eachVisibleEntity() do
+        local isHostile = querier:isHostile(visibleEntity) or visibleEntity:isHostile(querier)
+        local isAlive = visibleEntity:isLiving() and visibleEntity:isAlive()
+        if isHostile and isAlive then
+            hostiles[#hostiles + 1] = visibleEntity
+        end
+    end
+    return hostiles
+end
+
 local entityNamePerButton = {
     A = 'human_soldier',
     B = 'human_archer',
@@ -32,6 +45,7 @@ local entityNamePerButton = {
 return {
     getPlayers   = getPlayers,
     getBuildings = getBuildings,
+    getHostiles  = getHostiles,
 
     -- current game data
     entityNamePerButton = entityNamePerButton

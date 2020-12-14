@@ -51,10 +51,10 @@ function states:useAbility(archer)
     extraData.abilityTargetPosition = nil
     archer:playAnimation("shoot", 1, false)
     do
-        local projectileName = 'bouncing_arrow'
+        local projectileName = 'human_archer_explosive_arrow'
         local projectileAsset = assert(Asset.findFromName('entity', projectileName), 'Could not find entity asset ' .. projectileName)
-        local spawnProjectile = ProjectileHelper.createSpawnerFromEntityToPosition(projectileAsset:getPath())
-        spawnProjectile(archer, 'crossbow', abilityTargetPosition)
+        local spawnProjectile = ProjectileHelper.createSpawnerFromEntityToPositionWithSpeed(projectileAsset:getPath())
+        spawnProjectile(archer, 'crossbow', abilityTargetPosition, 13)
     end
     return extraData.previousLoopingState
 end

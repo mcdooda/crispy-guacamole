@@ -52,14 +52,37 @@ local function requireComponentTemplate(entityTemplatePath, componentTemplateNam
     return require(componentPath)
 end
 
+-- cache component file paths that do not exist
+local nonExistingComponentTemplates = {}
+
 local function requireComponentTemplateIfExists(entityTemplatePath, componentTemplateName, forceReload)
-    local componentExists, componentTemplate = pcall(function()
-        return requireComponentTemplate(entityTemplatePath, componentTemplateName, forceReload)
-    end)
-    if componentExists then
-        assert(type(componentTemplate) == 'table')
-        return componentTemplate
+    local componentPath = getComponentPath(entityTemplatePath, componentTemplateName)
+    local componentTemplate = package.loaded[componentPath]
+    if componentTemplate then
+        if forceReload then
+            package.loaded[componentPath] = nil
+            componentTemplate = require(componentPath)
+        end
+    else
+        if not forceReload and nonExistingComponentTemplates[componentPath] then
+            return nil
+        end
+        local searchers = package.searchers
+        for i = 1, #searchers do
+            local searcher = searchers[i]
+            local loader = searcher(componentPath)
+            if type(loader) == 'function' then
+                package.preload[componentPath] = loader
+                componentTemplate = require(componentPath)
+                assert(type(componentTemplate) == 'table')
+                return componentTemplate
+            end
+        end
+        nonExistingComponentTemplates[componentPath] = true
+        return nil
     end
+    assert(type(componentTemplate) == 'table')
+    return componentTemplate
 end
 
 -- props

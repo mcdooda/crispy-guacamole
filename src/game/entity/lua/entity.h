@@ -143,6 +143,7 @@ int l_Entity_click(lua_State* L);
 int l_Entity_setProjectileSpeed(lua_State* L);
 int l_Entity_getProjectileSpeed(lua_State* L);
 int l_Entity_setProjectileTarget(lua_State* L);
+int l_Entity_setProjectileWeight(lua_State* L);
 
 // player controller
 int l_Entity_setGamepadIndex(lua_State* L);

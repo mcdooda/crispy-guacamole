@@ -448,6 +448,21 @@ void BaseMapState::despawnAllEntities()
 	}
 }
 
+void BaseMapState::setEntitySelected(Game& game, entity::Entity* entity, bool selected)
+{
+	if (entity->isSelected() != selected)
+	{
+		if (selected)
+		{
+			addToSelectedEntities(game, entity);
+		}
+		else
+		{
+			removeFromSelectedEntities(entity);
+		}
+	}
+}
+
 void BaseMapState::setGhostTemplate(Game& game, const std::shared_ptr<const entity::EntityTemplate>& ghostTemplate)
 {
 	clearGhostTemplate();
@@ -919,7 +934,6 @@ void BaseMapState::selectClickedEntity(Game& game, const flat::Vector2& mousePos
 
 void BaseMapState::selectEntitiesOfTypeInScreen(Game& game, const flat::Vector2& mousePosition, bool addToSelection)
 {
-
 	entity::Entity* mouseOverEntity = m_mouseOverEntity.getEntity();
 	if (mouseOverEntity != nullptr)
 	{
@@ -1039,7 +1053,7 @@ void BaseMapState::removeFromSelectedEntities(entity::Entity* entity)
 {
 	if (entity->isSelected())
 	{
-		// remove from selected entities
+		entity->setSelected(false);
 		std::vector<entity::Entity*>::iterator it = std::find(m_selectedEntities.begin(), m_selectedEntities.end(), entity);
 		FLAT_ASSERT(it != m_selectedEntities.end());
 		m_selectedEntities.erase(it);

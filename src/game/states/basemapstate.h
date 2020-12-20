@@ -80,6 +80,7 @@ class BaseMapState : public BaseState
 		void despawnMarkedEntities();
 		void despawnAllEntities();
 
+		void setEntitySelected(Game& game, entity::Entity* entity, bool selected);
 		inline const std::vector<entity::Entity*>& getSelectedEntities() const { return m_selectedEntities; }
 
 		template <class Func>

@@ -1248,7 +1248,9 @@ int l_Entity_setSelected(lua_State* L)
 	const bool selected = lua_toboolean(L, 2) == 1;
 	if (entity.isSelected() != selected)
 	{
-		entity.setSelected(selected);
+		Game& game = flat::lua::getFlatAs<Game>(L);
+		states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
+		baseMapState.setEntitySelected(game, &entity, selected);
 	}
 	return 0;
 }

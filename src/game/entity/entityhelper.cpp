@@ -19,10 +19,20 @@ float EntityHelper::getRadius(const Entity* entity)
 {
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
 	const component::collision::CollisionComponentTemplate* collisionComponentTemplate = entityTemplate->getComponentTemplate<component::collision::CollisionComponent>();
-	return collisionComponentTemplate ? collisionComponentTemplate->getRadius() : 0.f;
+	return collisionComponentTemplate != nullptr ? collisionComponentTemplate->getRadius() : 0.f;
 }
 
-flat::Vector3 EntityHelper::getCenter(const Entity* entity)
+flat::Vector3 EntityHelper::getCollisionCenter(Entity* entity)
+{
+	component::collision::CollisionComponent* collisionComponent = entity->getComponent<component::collision::CollisionComponent>();
+	if (collisionComponent != nullptr)
+	{
+		return collisionComponent->getCenter();
+	}
+	return entity->getPosition();
+}
+
+flat::Vector3 EntityHelper::getBaseCenter(const Entity* entity)
 {
 	const std::shared_ptr<const EntityTemplate>& entityTemplate = entity->getEntityTemplate();
 	const component::prop::PropComponentTemplate* propComponentTemplate = entityTemplate->getComponentTemplate<component::prop::PropComponent>();

@@ -209,15 +209,6 @@ void Entity::setPosition2dSweep(const flat::Vector2& position2d)
 	setPositionSweep(flat::Vector3(position2d.x, position2d.y, m_position.z));
 }
 
-flat::Vector3 Entity::getCenter() const
-{
-	if (m_collisionComponent != nullptr)
-	{
-		return m_collisionComponent->getCenter();
-	}
-	return m_position;
-}
-
 void Entity::computeTransform(flat::Matrix4& transform) const
 {
 	transform = flat::Matrix4();

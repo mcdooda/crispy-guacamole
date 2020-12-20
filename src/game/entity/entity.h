@@ -52,7 +52,6 @@ class Entity final : public map::MapObject
 
 		inline const flat::Vector3& getPosition() const { return m_position; }
 		inline const flat::Vector2& getPosition2d() const { return reinterpret_cast<const flat::Vector2&>(m_position); }
-		flat::Vector3 getCenter() const;
 		void computeTransform(flat::Matrix4& transform) const;
 		
 		inline const map::Map* getMap() const { return m_map; }

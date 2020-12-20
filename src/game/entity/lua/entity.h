@@ -41,7 +41,8 @@ int l_Entity_getExtraData(lua_State* L);
 int l_Entity_setPosition(lua_State* L);
 int l_Entity_setPosition2d(lua_State* L);
 int l_Entity_getPosition(lua_State* L);
-int l_Entity_getCenter(lua_State* L);
+int l_Entity_getCollisionCenter(lua_State* L);
+int l_Entity_getBaseCenter(lua_State* L);
 
 int l_Entity_setHeading(lua_State* L);
 int l_Entity_getHeading(lua_State* L);

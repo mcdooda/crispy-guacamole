@@ -70,7 +70,7 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	Entity* target = m_target.getEntity();
 	if (target != nullptr)
 	{
-		const flat::Vector3 direction = flat::normalize(target->getCenter() - m_owner->getPosition());
+		const flat::Vector3 direction = flat::normalize(EntityHelper::getCollisionCenter(target) - m_owner->getPosition());
 		const flat::Vector2 direction2d = flat::normalize(flat::Vector2(direction));
 
 		const float newSpeedXY = std::sqrt(flat::square(newSpeed.x) + flat::square(newSpeed.y));

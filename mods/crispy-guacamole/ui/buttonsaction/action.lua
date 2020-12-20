@@ -62,16 +62,14 @@ function Action:build(parent, buttonType, buttonPositionPolicy)
     local container = Widget.makeFixedSize(150, 210)
 
     container:gamepadButtonPressed(Gamepads.GamepadButton[buttonType], function()
-        do
+        if self.building:isSelected() then
             self:validateAnimation(buttonPositionPolicy)
             self.button:setPressed(true)
             BuildEntity.addToQueue(self.building, self.unit)
         end
     end)
     container:gamepadButtonReleased(Gamepads.GamepadButton[buttonType], function()
-        do
-            self.button:setPressed(false)
-        end
+        self.button:setPressed(false)
     end)
 
     local background = Widget.makeImage(Path.getModFilePath 'ui/buttonsaction/background.png')

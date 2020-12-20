@@ -67,7 +67,8 @@ int open(Game& game)
 		{"setPosition",              l_Entity_setPosition},
 		{"setPosition2d",            l_Entity_setPosition2d},
 		{"getPosition",              l_Entity_getPosition},
-		{"getCenter",                l_Entity_getCenter},
+		{"getCollisionCenter",       l_Entity_getCollisionCenter},
+		{"getBaseCenter",            l_Entity_getBaseCenter},
 
 		{"setHeading",               l_Entity_setHeading},
 		{"getHeading",               l_Entity_getHeading},
@@ -428,10 +429,17 @@ int l_Entity_getPosition(lua_State* L)
 	return 1;
 }
 
-int l_Entity_getCenter(lua_State* L)
+int l_Entity_getCollisionCenter(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
-	flat::lua::pushVector3(L, entity.getCenter());
+	flat::lua::pushVector3(L, EntityHelper::getCollisionCenter(&entity));
+	return 1;
+}
+
+int l_Entity_getBaseCenter(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	flat::lua::pushVector3(L, EntityHelper::getBaseCenter(&entity));
 	return 1;
 }
 
@@ -829,7 +837,7 @@ int l_Entity_interactWith(lua_State* L)
 	behavior::BehaviorComponent& behaviorComponent = getComponent<behavior::BehaviorComponent>(L, entity);
 	if (behaviorComponent.setInteractionIfCompatible(stateName, &interactionEntity))
 	{
-		entity.moveTo(flat::Vector2(EntityHelper::getCenter(&interactionEntity)), &interactionEntity);
+		entity.moveTo(flat::Vector2(EntityHelper::getBaseCenter(&interactionEntity)), &interactionEntity);
 	}
 
 	return 0;

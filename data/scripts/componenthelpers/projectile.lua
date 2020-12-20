@@ -69,7 +69,7 @@ local function createSpawnerFromEntity(templatePath)
             templatePath,
             template,
             entity:getAttachPoint(attachPoint),
-            targetEntity:getCenter()
+            targetEntity:getCollisionCenter()
         )
     end
 end

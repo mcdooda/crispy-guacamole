@@ -17,7 +17,8 @@ class EntityHelper
 {
 	public:
 		static float getRadius(const Entity* entity);
-		static flat::Vector3 getCenter(const Entity* entity);
+		static flat::Vector3 getCollisionCenter(Entity* entity);
+		static flat::Vector3 getBaseCenter(const Entity* entity);
 		static void eachEntityTile(const Entity* entity, std::function<void(map::TileIndex)> func);
 
 		static bool canCollide(const Entity* a, const Entity* b);

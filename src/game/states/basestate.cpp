@@ -9,15 +9,12 @@
 
 #include "map/pathfinder/pathfinder.h"
 #include "map/brush/lua/brush.h"
-#include "map/pathfinder/lua/path.h"
 #include "map/lua/map.h"
 #include "map/lua/zone.h"
 
 #include "entity/lua/entity.h"
 
-namespace game
-{
-namespace states
+namespace game::states
 {
 
 void BaseState::enter(Game& game)
@@ -96,7 +93,6 @@ void BaseState::initLua(Game& game)
 		map::lua::zone::open(game);
 		map::lua::map::open(L);
 		map::brush::lua::open(game);
-		game::map::pathfinder::lua::open(game);
 
 		flat::lua::doFile(L, "data/common/init.lua");
 	}
@@ -144,6 +140,5 @@ void BaseState::initRender(Game& game)
 	m_uiRender.settings.uvAttribute = m_uiRender.program.getAttribute("uv");
 }
 
-} // states
-} // game
+} // game::states
 

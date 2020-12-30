@@ -93,8 +93,8 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* ent
 {
 	FLAT_ASSERT(entity == m_owner);
 
-	map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
+	const map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
+	FLAT_ASSERT(map::isValidTile(tileIndex));
 	const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
 
 	const PropComponentTemplate* propComponentTemplate = getTemplate();
@@ -109,9 +109,9 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* ent
 		{
 			for (int j = 0; j < height; ++j)
 			{
-				map::TileIndex tileToOccupyIndex = map->getTileIndexIfNavigable(tilePosition.x - i, tilePosition.y - j, map::Navigability::ALL);
-				//FLAT_ASSERT(tileToOccupy != nullptr);
-				if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
+				const flat::Vector2 positionToOccupy(tilePosition.x - i, tilePosition.y - j);
+				const map::TileIndex tileToOccupyIndex = map->findTileIndexIfNavigable(positionToOccupy, map::Navigability::ALL);
+				if (map::isValidTile(tileToOccupyIndex))
 				{
 					map->setTileNavigability(tileToOccupyIndex, navigability);
 				}
@@ -155,7 +155,7 @@ bool PropComponent::removedFromMap(Entity* entity)
 	{
 		map::Map* map = m_owner->getMap();
 		map::TileIndex tileIndex = m_owner->getTileIndexFromPosition();
-		FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
+		FLAT_ASSERT(map::isValidTile(tileIndex));
 		const flat::Vector2i& tilePosition = map->getTileXY(tileIndex);
 
 		const PropComponentTemplate* propComponentTemplate = getTemplate();
@@ -167,7 +167,7 @@ bool PropComponent::removedFromMap(Entity* entity)
 			{
 				map::TileIndex tileToOccupyIndex = map->getTileIndex(tilePosition.x - i, tilePosition.y - j);
 				//FLAT_ASSERT(tileToOccupy != nullptr);
-				if (tileToOccupyIndex != map::TileIndex::INVALID_TILE)
+				if (map::isValidTile(tileToOccupyIndex))
 				{
 					map->resetTileNavigabilityFromTemplate(tileToOccupyIndex);
 				}

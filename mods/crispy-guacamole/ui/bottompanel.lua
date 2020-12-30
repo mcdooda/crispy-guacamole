@@ -185,11 +185,11 @@ local function setUnit(unitTemplatePath, units)
                                 end)
                                 local newPath = Map.findPath(firstPos, bottomTilePosition, 1, Map.Navigability.GROUND)
                                 if path == nil then
-                                    return newPath:getUniqueTilePositions()
+                                    return newPath:getUniqueCellPositions()
                                 else
                                     local tmp = path:copy()
                                     tmp:insert(newPath)
-                                    return tmp:getUniqueTilePositions()
+                                    return tmp:getUniqueCellPositions()
                                 end
                             end,
                             function(tiles, continueAction)
@@ -201,10 +201,11 @@ local function setUnit(unitTemplatePath, units)
                                         bottomTilePosition:y(y)
                                     end
                                 end)
+                                local newPath = Map.findPath(firstPos, bottomTilePosition, 1, Map.Navigability.GROUND, false, false)
                                 if path ~= nil then
-                                    path:insert(Map.findPath(firstPos, bottomTilePosition, 1, Map.Navigability.GROUND))
+                                    path:insert(newPath)
                                 else
-                                    path = Map.findPath(firstPos, bottomTilePosition, 1, Map.Navigability.GROUND)
+                                    path = newPath
                                 end
                                 firstPos = bottomTilePosition
                                 if not continueAction then

@@ -7,7 +7,6 @@
 
 #include "map/tile.h"
 #include "map/pathfinder/pathfinder.h"
-#include "map/pathfinder/lua/path.h"
 #include "map/fog/fog.h"
 #include "map/proptemplate.h"
 
@@ -33,7 +32,6 @@ int open(lua_State* L)
 		{"debug_getDrawStats",            l_Map_debug_getDrawStats},
 		{"debug_enableNavigabilityDebug", l_Map_debug_enableNavigabilityDebug},
 		{"debug_enableTileIndicesDebug",  l_Map_debug_enableTileIndicesDebug},
-		{"debug_enableSimplifyPath",      l_Map_debug_enableSimplifyPath},
 #endif
 
 		{"getNumEntities",                l_Map_getNumEntities},
@@ -165,13 +163,6 @@ int l_Map_debug_enableTileIndicesDebug(lua_State* L)
 	bool enable = lua_toboolean(L, 1) == 1;
 	Map& map = getMap(L);
 	map.enableTileIndicesDebug(enable);
-	return 0;
-}
-
-int l_Map_debug_enableSimplifyPath(lua_State* L)
-{
-	const bool enable = lua_toboolean(L, 1) == 1;
-	pathfinder::Path::enableSimplifyPath(enable);
 	return 0;
 }
 #endif // FLAT_DEBUG
@@ -356,21 +347,23 @@ int l_Map_findPath(lua_State* L)
 {
 	const flat::Vector2& from = flat::lua::getVector2(L, 1);
 	const flat::Vector2& to = flat::lua::getVector2(L, 2);
-	const bool allowPartialPath = lua_isnoneornil(L, 3) ? false : lua_toboolean(L, 3) == 1;
-
 	const float jumpHeight = static_cast<Navigability>(luaL_checkinteger(L, 3));
 	const Navigability navigability = static_cast<Navigability>(luaL_checkinteger(L, 4));
+	const bool allowPartialPath = lua_toboolean(L, 5) == 1;
+	const bool shouldOptimizePath = lua_toboolean(L, 6) == 1;
+
 	const Map& map = getMap(L);
 	pathfinder::Pathfinder pathfinder(map, jumpHeight, navigability);
-	std::shared_ptr<pathfinder::Path> path = std::make_shared<pathfinder::Path>();
+	std::shared_ptr<flat::sharp::ai::navigation::Path> path = std::make_shared<flat::sharp::ai::navigation::Path>();
 
 	pathfinder::Request request;
 	request.from = from;
 	request.to = to;
 	request.allowPartialResult = allowPartialPath;
+	request.shouldOptimizePath = shouldOptimizePath;
 
 	pathfinder.findPath(request, *path);
-	game::map::pathfinder::lua::pushPath(L, path);
+	flat::sharp::ai::navigation::lua::pushPath(L, path);
 	return 1;
 }
 

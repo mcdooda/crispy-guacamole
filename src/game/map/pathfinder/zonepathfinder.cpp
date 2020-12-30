@@ -1,11 +1,7 @@
 #include "zonepathfinder.h"
 #include "../zone.h"
 
-namespace game
-{
-namespace map
-{
-namespace pathfinder
+namespace game::map::pathfinder
 {
 
 ZonePathfinder::ZonePathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask, const Zone* zone) : Pathfinder(map, jumpHeight, navigabilityMask),
@@ -13,29 +9,16 @@ ZonePathfinder::ZonePathfinder(const Map& map, float jumpHeight, map::Navigabili
 {
 }
 
-TileIndex ZonePathfinder::getTileIndexIfNavigable(float x, float y, map::Navigability navigabilityMask) const
+void ZonePathfinder::setupQuery(const Request& request, flat::sharp::ai::navigation::Query& query) const
 {
-	TileIndex tileIndex = Super::getTileIndexIfNavigable(x, y, navigabilityMask);
-	if (m_zone->isTileInside(tileIndex))
+	Super::setupQuery(request, query);
+
+	query.areaFilter = [this](const flat::sharp::ai::navigation::NavigationData& navigationData, flat::sharp::ai::navigation::AreaId cellIndex) -> bool
 	{
-		return tileIndex;
-	}
-	return TileIndex::INVALID_TILE;
+		return m_zone->isTileInside(static_cast<TileIndex>(cellIndex));
+	};
 }
 
-void ZonePathfinder::eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const
-{
-	Super::eachNeighborTiles(tileIndex, [this, &func](TileIndex neighborTileIndex)
-	{
-		if (m_zone->isTileInside(neighborTileIndex))
-		{
-			func(neighborTileIndex);
-		}
-	});
-}
-
-} // pathfinder
-} // map
-} // game
+} // game::map::pathfinder
 
 

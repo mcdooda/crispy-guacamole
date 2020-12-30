@@ -86,7 +86,7 @@ void ProjectileComponent::update(float currentTime, float elapsedTime)
 	newPosition = position + (m_speed + newSpeed) * 0.5f * elapsedTime;
 
 	const map::TileIndex tileIndex = map->getTileIndex(newPosition.x, newPosition.y);
-	if (tileIndex == map::TileIndex::INVALID_TILE)
+	if (!map::isValidTile(tileIndex))
 	{
 		m_owner->markForDelete();
 	}
@@ -221,7 +221,7 @@ bool ProjectileComponent::collided(Entity* collidedEntity, map::TileIndex collid
 		return true;
 	}
 
-	if (collidedTileIndex == map::TileIndex::INVALID_TILE && collidedEntity == nullptr)
+	if (!map::isValidTile(collidedTileIndex) && collidedEntity == nullptr)
 	{
 		m_owner->markForDelete();
 	}
@@ -241,7 +241,7 @@ bool ProjectileComponent::collidedWithEntity(Entity* collidedEntity, const flat:
 		spriteComponent->attachSprite(static_cast<flat::render::Sprite&>(m_owner->getSprite()));
 	}
 
-	return collided(collidedEntity, map::TileIndex::INVALID_TILE, normal);
+	return collided(collidedEntity, map::TileIndex::INVALID_VALUE, normal);
 }
 
 bool ProjectileComponent::collidedWithMap(map::TileIndex tileIndex, const flat::Vector3& normal)

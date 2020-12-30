@@ -18,12 +18,4 @@ return function(addContainer, makeSeparator, font)
         end)
         navigabilityDebugContainer:addChild(tileIndicesCheckbox.container)
     end
-
-    do
-        local simplifyPathsCheckbox = Checkbox:new(true, "Simplify paths")
-        simplifyPathsCheckbox:onValueChanged(function(_, value)
-            Map.debug_enableSimplifyPath(value)
-        end)
-        navigabilityDebugContainer:addChild(simplifyPathsCheckbox.container)
-    end
 end

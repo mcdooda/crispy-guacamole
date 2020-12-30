@@ -38,8 +38,8 @@ void EntityMapEditorMode::applyBrushPrimaryEffect(MapEditorState& mapEditorState
 		{
 			navigabilityMask = movementComponentTemplate->getNavigabilityMask();
 		}
-		map::TileIndex tileIndex = map.getTileIndexIfNavigable(position2d.x, position2d.y, navigabilityMask);
-		if (tileIndex != map::TileIndex::INVALID_TILE)
+		const map::TileIndex tileIndex = map.findTileIndexIfNavigable(position2d, navigabilityMask);
+		if (map::isValidTile(tileIndex))
 		{
 			flat::Vector3 position(position2d.x, position2d.y, map.getTileZ(tileIndex));
 			mapEditorState.spawnEntityAtPosition(m_game, m_entityTemplate, position);

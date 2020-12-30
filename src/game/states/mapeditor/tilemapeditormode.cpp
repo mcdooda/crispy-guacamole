@@ -222,9 +222,9 @@ void TileMapEditorMode::handleShortcuts(MapEditorState& mapEditorState)
 		eachBrushTileSlot([this, &map](const flat::Vector2i& position, float effect)
 		{
 			const map::TileIndex tileIndex = map.getTileIndex(position);
-			if (tileIndex == map::TileIndex::INVALID_TILE)
+			if (!map::isValidTile(tileIndex))
 			{
-				map::TileIndex tileIndex = map.createTile(position, 0.f, m_tileTemplate, 0);
+				map.createTile(position, 0.f, m_tileTemplate, 0);
 			}
 		});
 	}

@@ -123,7 +123,7 @@ void BaseMapState::enter(Game& game)
 	resetViews(game);
 
 	m_mouseOverEntity = nullptr;
-	m_mouseOverTileIndex = map::TileIndex::INVALID_TILE;
+	m_mouseOverTileIndex = map::TileIndex::INVALID_VALUE;
 }
 
 void BaseMapState::execute(Game& game)
@@ -205,7 +205,7 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 	flat::Vector2 mapPosition = gameViewToMap(gameViewPosition);
 	isOnTile = false;
 
-	if (m_mouseOverTileIndex != map::TileIndex::INVALID_TILE)
+	if (map::isValidTile(m_mouseOverTileIndex))
 	{
 		const flat::Vector2& spritePosition = m_map.getTileSprite(m_mouseOverTileIndex).getPosition();
 		flat::Vector2 delta = gameViewToMap(gameViewPosition - spritePosition);
@@ -231,8 +231,8 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 				adjacentTilePosition = flat::Vector2(tileCenter.x, tileCenter.y + 0.5f + flat::EPSILON);
 			}
 
-			map::TileIndex adjacentTileIndex = m_map.getTileIndex(adjacentTilePosition.x, adjacentTilePosition.y);
-			if (adjacentTileIndex != map::TileIndex::INVALID_TILE)
+			const map::TileIndex adjacentTileIndex = m_map.getTileIndex(adjacentTilePosition.x, adjacentTilePosition.y);
+			if (map::isValidTile(adjacentTileIndex))
 			{
 				mapPosition = adjacentTilePosition;
 				isOnTile = true;
@@ -572,7 +572,7 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 		if (isOnTile)
 		{
 			const map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
-			const map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(cursorPosition.x, cursorPosition.y, navigabilityMask);
+			const map::TileIndex tileIndex = m_map.findTileIndexIfNavigable(cursorPosition, navigabilityMask);
 			if (map::isValidTile(tileIndex))
 			{
 				using namespace entity::component;
@@ -773,7 +773,7 @@ bool BaseMapState::isSelecting() const
 
 void BaseMapState::updateMouseOverEntity(Game& game)
 {
-	m_mouseOverTileIndex = map::TileIndex::INVALID_TILE;
+	m_mouseOverTileIndex = map::TileIndex::INVALID_VALUE;
 
 	if ((isSelecting() && !isSmallSelection()) || isMouseOverUi(game))
 	{
@@ -1147,8 +1147,8 @@ void BaseMapState::handleGameActionInputs(Game& game)
 				if (cursorOnTile)
 				{
 					map::Navigability navigabilityMask = entity::EntityHelper::getNavigabilityMask(m_ghostTemplate.get());
-					map::TileIndex tileIndex = m_map.getTileIndexIfNavigable(position2d.x, position2d.y, navigabilityMask);
-					if (tileIndex != map::TileIndex::INVALID_TILE)
+					map::TileIndex tileIndex = m_map.findTileIndexIfNavigable(position2d, navigabilityMask);
+					if (map::isValidTile(tileIndex))
 					{
 						bool continueAction = keyboard.isPressed(K(LSHIFT));
 						const bool createEntity = onGhostEntityPlaced(tileIndex, continueAction);

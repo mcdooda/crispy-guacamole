@@ -30,7 +30,6 @@ int l_Map_reset(lua_State* L);
 int l_Map_debug_getDrawStats(lua_State* L);
 int l_Map_debug_enableNavigabilityDebug(lua_State* L);
 int l_Map_debug_enableTileIndicesDebug(lua_State* L);
-int l_Map_debug_enableSimplifyPath(lua_State* L);
 #endif
 
 int l_Map_getNumEntities(lua_State* L);

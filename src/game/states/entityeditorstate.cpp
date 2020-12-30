@@ -50,7 +50,7 @@ void EntityEditorState::spawnEntity(Game& game)
 	FLAT_ASSERT_MSG(zone != nullptr, "The entity editor map must have a 'Start' zone on a walkable tile");
 	flat::Vector2 zoneCenter = zone->getCenter();
 	map::TileIndex centerTileIndex = map.getTileIndex(zoneCenter.x, zoneCenter.y);
-	FLAT_ASSERT_MSG(centerTileIndex != map::TileIndex::INVALID_TILE, "The entity editor map must have a 'Start' zone on a walkable tile");
+	FLAT_ASSERT_MSG(map::isValidTile(centerTileIndex), "The entity editor map must have a 'Start' zone on a walkable tile");
 	flat::Vector3 position(zoneCenter, map.getTileZ(centerTileIndex) + 1.f);
 
 	entity::Entity* entity = spawnEntityAtPosition(

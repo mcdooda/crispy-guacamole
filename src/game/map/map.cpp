@@ -34,11 +34,6 @@ Map::Map() :
 #endif
 }
 
-Map::~Map()
-{
-	
-}
-
 void Map::reset(Game& game, int width, int height, const std::shared_ptr<const TileTemplate>& tileTemplate)
 {
 	states::BaseMapState& baseMapState = game.getStateMachine().getState()->to<states::BaseMapState>();
@@ -46,11 +41,9 @@ void Map::reset(Game& game, int width, int height, const std::shared_ptr<const T
 
 	m_displayManager->clear();
 
+	m_navigationGrid.clear();
+
 	m_tiles.clear();
-	m_tileNavigations.clear();
-	m_tilePositions.clear();
-	m_neighborTiles.clear();
-	m_tilePositionToIndex.clear();
 	m_props.clear();
 
 	m_dirtyNormalTiles.clear();
@@ -294,9 +287,8 @@ void Map::setBounds(int minX, int maxX, int minY, int maxY)
 	m_entityQuadtree = std::make_unique<EntityQuadTree>(aabb);
 
 	int maxTileCount = (m_maxX - m_minX + 1) * (m_maxY - m_minY + 1);
+	m_navigationGrid.reserveCells(maxTileCount);
 	m_tiles.reserve(maxTileCount);
-	m_tileNavigations.reserve(maxTileCount);
-	m_tilePositions.reserve(maxTileCount);
 	m_props.reserve(maxTileCount);
 }
 
@@ -325,7 +317,11 @@ void Map::getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const
 
 TileIndex Map::createTile(const flat::Vector2i& xy, float z, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex)
 {
+	const flat::sharp::ai::navigation::AreaId cellIndex = m_navigationGrid.createCell(xy, z, tileTemplate->getNavigability());
+
 	const TileIndex tileIndex = static_cast<TileIndex>(m_tiles.size());
+
+	FLAT_ASSERT(cellIndex == tileIndex);
 
 	Tile& tile = m_tiles.emplace_back();
 	flat::render::SpriteSynchronizer& spriteSynchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
@@ -336,17 +332,6 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, const std::shared_p
 	flat::Vector2 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
 	tile.updateWorldSpaceAABB(position);
-
-	// navigation
-	FLAT_ASSERT(m_tilePositionToIndex.find(xy) == m_tilePositionToIndex.end());
-	m_tilePositionToIndex[xy] = tileIndex;
-
-	TileNavigation& tileNavigation = m_tileNavigations.emplace_back();
-	tileNavigation.z = z;
-	tileNavigation.navigability = tileTemplate->getNavigability();
-
-	TilePosition& tilePosition = m_tilePositions.emplace_back();
-	tilePosition.xy = xy;
 
 	setTileNormalDirty(tileIndex);
 
@@ -360,7 +345,9 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, const std::shared_p
 
 void Map::deleteTile(TileIndex tileIndex)
 {
-	FLAT_ASSERT(tileIndex < m_tiles.size());
+	FLAT_ASSERT(isValidTile(tileIndex) && tileIndex < m_tiles.size());
+
+	m_navigationGrid.deleteCell(tileIndex);
 
 #ifdef FLAT_DEBUG
 	//checkTilePropIndicesIntegrity();
@@ -368,14 +355,10 @@ void Map::deleteTile(TileIndex tileIndex)
 
 	removeTileProp(tileIndex);
 
-	TilePosition tilePosition = m_tilePositions.at(tileIndex);
 	if (tileIndex == m_tiles.size() - 1)
 	{
 		m_tiles.pop_back();
 		m_fog->removeTile(tileIndex);
-		m_tilePositionToIndex.erase(tilePosition.xy);
-		m_tileNavigations.pop_back();
-		m_tilePositions.pop_back();
 	}
 	else
 	{
@@ -388,17 +371,10 @@ void Map::deleteTile(TileIndex tileIndex)
 			m_props[movedTilePropIndex].setTileIndex(tileIndex);
 		}
 
-		TilePosition movedTilePosition = m_tilePositions.at(movedTileIndex);
 		m_tiles[tileIndex] = std::move(m_tiles[movedTileIndex]);
 		m_fog->removeTile(tileIndex);
 		m_fog->moveTileIndex(movedTileIndex, tileIndex);
 		m_tiles.pop_back();
-		m_tilePositionToIndex[movedTilePosition.xy] = tileIndex;
-		m_tilePositionToIndex.erase(tilePosition.xy);
-		m_tileNavigations[tileIndex] = m_tileNavigations[movedTileIndex];
-		m_tileNavigations.pop_back();
-		m_tilePositions[tileIndex] = m_tilePositions[movedTileIndex];
-		m_tilePositions.pop_back();
 	}
 
 #ifdef FLAT_DEBUG
@@ -408,18 +384,17 @@ void Map::deleteTile(TileIndex tileIndex)
 
 void Map::deleteTile(const flat::Vector2i& tilePosition)
 {
-	deleteTile(m_tilePositionToIndex.at(tilePosition));
+	deleteTile(getTileIndex(tilePosition));
 }
 
 void Map::setTileTemplate(TileIndex tileIndex, const std::shared_ptr<const TileTemplate>& tileTemplate)
 {
+	m_navigationGrid.setCellNavigability(tileIndex, tileTemplate->getNavigability());
+
 	flat::render::SpriteSynchronizer& synchronizer = getTileSpriteSynchronizer(tileTemplate, 0);
 	Tile& tile = m_tiles[tileIndex];
 	tile.synchronizeSpriteTo(*this, synchronizer);
 	m_fog->updateTile(tileIndex, &tile);
-
-	TileNavigation& tileNavigation = m_tileNavigations[tileIndex];
-	tileNavigation.navigability = tileTemplate->getNavigability();
 
 	setTileTextureDirty(tileIndex);
 }
@@ -438,14 +413,10 @@ TileIndex Map::getTileIndex(int x, int y) const
 	return getTileIndex(flat::Vector2i(x, y));
 }
 
-TileIndex Map::getTileIndex(const flat::Vector2i& position) const
+TileIndex Map::getTileIndex(const flat::Vector2i& xy) const
 {
-	std::unordered_map<flat::Vector2i, TileIndex>::const_iterator it = m_tilePositionToIndex.find(position);
-	if (it != m_tilePositionToIndex.end())
-	{
-		return it->second;
-	}
-	return TileIndex::INVALID_TILE;
+	flat::sharp::ai::navigation::AreaId cellIndex = m_navigationGrid.findCellIndex(flat::Vector2(xy));
+	return static_cast<TileIndex>(cellIndex);
 }
 
 TileIndex Map::getTileIndex(const Tile* tile) const
@@ -460,10 +431,10 @@ std::vector<TileIndex> Map::getTilesIndices(const std::vector<flat::Vector2>& po
 	indices.reserve(positions.size());
 	for(const flat::Vector2& position: positions)
 	{
-		TileIndex index = getTileIndex(position);
-		if (index != TileIndex::INVALID_TILE)
+		const TileIndex tileIndex = getTileIndex(position);
+		if (isValidTile(tileIndex))
 		{
-			indices.push_back(index);
+			indices.push_back(tileIndex);
 		}
 	}
 	return indices;
@@ -509,15 +480,14 @@ void Map::getPropsFromIndices(const std::vector<PropIndex>& propIndices, std::ve
 
 const flat::Vector2i& Map::getTileXY(TileIndex tileIndex) const
 {
-	return m_tilePositions[tileIndex].xy;
+	return m_navigationGrid.getCellXY(tileIndex);
 }
 
 void Map::setTileZ(TileIndex tileIndex, float z)
 {
 	FLAT_ASSERT(flat::checkFloat(z));
 
-	// navigation
-	m_tileNavigations[tileIndex].z = z;
+	m_navigationGrid.setCellZ(tileIndex, z);
 
 	// move sprite and update aabb
 	const flat::Vector2i& xy = getTileXY(tileIndex);
@@ -543,12 +513,12 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 
 void Map::moveTileZBy(TileIndex tileIndex, float dz)
 {
-	setTileZ(tileIndex, m_tileNavigations[tileIndex].z + dz);
+	setTileZ(tileIndex, getTileZ(tileIndex) + dz);
 }
 
 float Map::getTileZ(TileIndex tileIndex) const
 {
-	return m_tileNavigations[tileIndex].z;
+	return m_navigationGrid.getCellZ(tileIndex);
 }
 
 const flat::AABB3& Map::getTileAABB(TileIndex tileIndex) const
@@ -556,43 +526,24 @@ const flat::AABB3& Map::getTileAABB(TileIndex tileIndex) const
 	return m_tiles[tileIndex].getWorldSpaceAABB();
 }
 
-TileIndex Map::getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const
+TileIndex Map::findTileIndexIfNavigable(const flat::Vector2& xy, Navigability navigabilityMask) const
 {
-	TileIndex tileIndex = getTileIndex(x, y);
-	if (tileIndex == TileIndex::INVALID_TILE)
-	{
-		return TileIndex::INVALID_TILE;
-	}
-	if (isTileNavigable(tileIndex, navigabilityMask))
-	{
-		return tileIndex;
-	}
-	return TileIndex::INVALID_TILE;
-}
-
-
-TileIndex Map::getTileIndexIfNavigable(float x, float y, Navigability navigabilityMask) const
-{
-	return getTileIndexIfNavigable(static_cast<int>(std::floor(x + 0.5f)), static_cast<int>(std::floor(y + 0.5f)), navigabilityMask);
+	return m_navigationGrid.findCellIndexIfNavigable(xy, navigabilityMask);
 }
 
 bool Map::isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) const
 {
-	if (navigabilityMask == NONE)
-	{
-		return true;
-	}
-	return (m_tileNavigations[tileIndex].navigability & navigabilityMask) != 0;
+	return m_navigationGrid.isCellNavigable(tileIndex, navigabilityMask);
 }
 
 Navigability Map::getTileNavigability(TileIndex tileIndex) const
 {
-	return m_tileNavigations[tileIndex].navigability;
+	return m_navigationGrid.getCellNavigability(tileIndex);
 }
 
 void Map::setTileNavigability(TileIndex tileIndex, Navigability navigability)
 {
-	m_tileNavigations[tileIndex].navigability = navigability;
+	m_navigationGrid.setCellNavigability(tileIndex, navigability);
 #ifdef FLAT_DEBUG
 	if (m_enableNavigabilityDebug)
 	{
@@ -631,7 +582,7 @@ void Map::enableNavigabilityDebug(bool enable)
 
 void Map::updateTileNavigabilityDebug(TileIndex tileIndex)
 {
-	Navigability navigability = m_tileNavigations[tileIndex].navigability;
+	Navigability navigability = m_navigationGrid.getCellNavigability(tileIndex);
 	flat::video::Color color = flat::video::Color::WHITE;
 	switch (navigability)
 	{
@@ -851,7 +802,7 @@ void Map::checkTilePropIndicesIntegrity() const
 {
 	for (int i = 0; i < m_tiles.size(); ++i)
 	{
-		PropIndex propIndex = m_tiles[i].getPropIndex();
+		const PropIndex propIndex = m_tiles[i].getPropIndex();
 		if (propIndex != PropIndex::INVALID_PROP)
 		{
 			FLAT_ASSERT(m_props[propIndex].getTileIndex() == i);
@@ -860,8 +811,8 @@ void Map::checkTilePropIndicesIntegrity() const
 
 	for (int i = 0; i < m_props.size(); ++i)
 	{
-		TileIndex tileIndex = m_props[i].getTileIndex();
-		if (tileIndex != TileIndex::INVALID_TILE)
+		const TileIndex tileIndex = m_props[i].getTileIndex();
+		if (isValidTile(tileIndex))
 		{
 			FLAT_ASSERT(m_tiles[tileIndex].getPropIndex() == i);
 		}
@@ -897,34 +848,6 @@ int Map::getTileEntityCount(TileIndex tileIndex) const
 	return entityCount;
 }
 
-void Map::addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex)
-{
-	NeighborTiles& neighborTiles = m_neighborTiles[tileIndex];
-	for (size_t i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
-	{
-		if (neighborTiles.neighbors[i] == TileIndex::INVALID_TILE)
-		{
-			neighborTiles.neighbors[i] = neighborTileIndex;
-
-			for (size_t j = i; j > 0 && neighborTiles.neighbors[j] < neighborTiles.neighbors[j - 1]; --j)
-			{
-				std::swap(neighborTiles.neighbors[j], neighborTiles.neighbors[j - 1]);
-			}
-			return;
-		}
-	}
-	FLAT_ASSERT_MSG(false, "Cannot add more than %d neighbors", NeighborTiles::MAX_NEIGHBORS);
-}
-
-void Map::addTileNeighbor(TileIndex tileIndex, const flat::Vector2i& neighborTilePosition)
-{
-	TileIndex neighborTileIndex = getTileIndex(neighborTilePosition);
-	if (neighborTileIndex != TileIndex::INVALID_TILE)
-	{
-		addTileNeighbor(tileIndex, neighborTileIndex);
-	}
-}
-
 void Map::updateTileNormal(TileIndex tileIndex)
 {
 	flat::Vector3 dx(1.f, 0.f, 0.f);
@@ -937,9 +860,9 @@ void Map::updateTileNormal(TileIndex tileIndex)
 
 	// compute dx
 	{
-		TileIndex bottomLeftTileIndex = getTileIndex(xy.x + 1, xy.y);
-		TileIndex topRightTileIndex = getTileIndex(xy.x - 1, xy.y);
-		if (bottomLeftTileIndex != TileIndex::INVALID_TILE && topRightTileIndex != TileIndex::INVALID_TILE)
+		const TileIndex bottomLeftTileIndex = getTileIndex(xy.x + 1, xy.y);
+		const TileIndex topRightTileIndex = getTileIndex(xy.x - 1, xy.y);
+		if (isValidTile(bottomLeftTileIndex) && isValidTile(topRightTileIndex))
 		{
 			const float bottomLeftTileZ = getTileZ(bottomLeftTileIndex);
 			const float topRightTileZ = getTileZ(topRightTileIndex);
@@ -951,7 +874,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 				dx.z = bottomLeftTileZ - topRightTileZ;
 			}
 		}
-		else if (bottomLeftTileIndex != TileIndex::INVALID_TILE)
+		else if (isValidTile(bottomLeftTileIndex))
 		{
 			const float bottomLeftTileZ = getTileZ(bottomLeftTileIndex);
 			if (std::abs(z - bottomLeftTileZ) > minZDifference)
@@ -961,7 +884,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 				dx.z = bottomLeftTileZ - z;
 			}
 		}
-		else if (topRightTileIndex != TileIndex::INVALID_TILE)
+		else if (isValidTile(topRightTileIndex))
 		{
 			const float topRightTileZ = getTileZ(topRightTileIndex);
 			if (std::abs(z - topRightTileZ) > minZDifference)
@@ -975,9 +898,9 @@ void Map::updateTileNormal(TileIndex tileIndex)
 
 	// compute dy
 	{
-		TileIndex bottomRightTileIndex = getTileIndex(xy.x, xy.y + 1);
-		TileIndex topLeftTileIndex = getTileIndex(xy.x, xy.y - 1);
-		if (bottomRightTileIndex != TileIndex::INVALID_TILE && topLeftTileIndex != TileIndex::INVALID_TILE)
+		const TileIndex bottomRightTileIndex = getTileIndex(xy.x, xy.y + 1);
+		const TileIndex topLeftTileIndex = getTileIndex(xy.x, xy.y - 1);
+		if (isValidTile(bottomRightTileIndex) && isValidTile(topLeftTileIndex))
 		{
 			const float bottomRightTileZ = getTileZ(bottomRightTileIndex);
 			const float topLeftTileZ = getTileZ(topLeftTileIndex);
@@ -989,7 +912,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 				dy.z = bottomRightTileZ - topLeftTileZ;
 			}
 		}
-		else if (bottomRightTileIndex != TileIndex::INVALID_TILE)
+		else if (isValidTile(bottomRightTileIndex))
 		{
 			const float bottomRightTileZ = getTileZ(bottomRightTileIndex);
 			if (std::abs(z - bottomRightTileZ) > minZDifference)
@@ -999,7 +922,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 				dy.z = bottomRightTileZ - z;
 			}
 		}
-		else if (topLeftTileIndex != TileIndex::INVALID_TILE)
+		else if (isValidTile(topLeftTileIndex))
 		{
 			const float topLeftTileZ = getTileZ(topLeftTileIndex);
 			if (std::abs(z - topLeftTileZ) > minZDifference)
@@ -1122,21 +1045,7 @@ void Map::setTileTextureDirty(TileIndex tileIndex)
 
 void Map::updateDirtyTiles(Game& game)
 {
-	// update tile neighbors
-	if (m_neighborTiles.size() < m_tiles.size())
-	{
-		m_neighborTiles.resize(m_tiles.size());
-		for (const std::pair<flat::Vector2i, TileIndex>& pair : m_tilePositionToIndex)
-		{
-			const flat::Vector2i& tilePosition = pair.first;
-			const TileIndex tileIndex = pair.second;
-			m_neighborTiles[tileIndex].clear();
-			addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(-1, 0));
-			addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, -1));
-			addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, 1));
-			addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(1, 0));
-		}
-	}
+	m_navigationGrid.updateDirtyAreas();
 
 	// update normals
 	for (TileIndex tileIndex : m_dirtyNormalTiles)
@@ -1155,18 +1064,7 @@ void Map::updateDirtyTiles(Game& game)
 
 void Map::updateAllTiles()
 {
-	m_dirtyNormalTiles.clear();
-	m_neighborTiles.resize(m_tiles.size());
-	for (const std::pair<flat::Vector2i, TileIndex>& pair : m_tilePositionToIndex)
-	{
-		const flat::Vector2i& tilePosition = pair.first;
-		const TileIndex tileIndex = pair.second;
-		m_neighborTiles[tileIndex].clear();
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(-1, 0));
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, -1));
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(0, 1));
-		addTileNeighbor(tileIndex, tilePosition + flat::Vector2i(1, 0));
-	}
+	m_navigationGrid.updateAllAreas();
 
 	m_dirtyNormalTiles.clear();
 	eachTile([this](TileIndex tileIndex)
@@ -1205,81 +1103,28 @@ bool Map::getZone(const std::string& zoneName, std::shared_ptr<Zone>& zone) cons
 
 bool Map::straightPathExists(const flat::Vector2& from, const flat::Vector2& to, float jumpHeight, Navigability navigabilityMask) const
 {
-	flat::Vector2 direction = to - from;
-	const float length = flat::length(direction);
-	if (length < FLT_EPSILON)
-	{
-		const TileIndex tileIndex = getTileIndex(from);
-		return isTileNavigable(tileIndex, navigabilityMask);
-	}
-	direction = flat::normalize(direction);
-	flat::Vector2 endPosition;
-	return !navigationRaycast(from, direction, length, jumpHeight, navigabilityMask, endPosition);
+	flat::sharp::ai::navigation::Query query;
+	query.from = from;
+	query.to = to;
+	query.jumpHeight = jumpHeight;
+	query.navigabilityMask = navigabilityMask;
+	return m_navigationGrid.straightPathExists(query);
 }
 
 bool Map::navigationRaycast(const flat::Vector2& startPosition, const flat::Vector2& direction, float length, float jumpHeight, Navigability navigabilityMask, flat::Vector2& endPosition) const
 {
-	FLAT_ASSERT(length > 0.f);
+	flat::sharp::ai::navigation::RaycastQuery query;
+	query.startPosition = startPosition;
+	query.direction = direction;
+	query.length = length;
+	query.jumpHeight = jumpHeight;
+	query.navigabilityMask = navigabilityMask;
 
-	endPosition = startPosition + direction * length;
+	flat::sharp::ai::navigation::RaycastResult result;
+	m_navigationGrid.navigationRaycast(query, result);
 
-	const flat::Vector2 p0 = startPosition + flat::Vector2(0.5f);
-	const flat::Vector2 p1 = endPosition + flat::Vector2(0.5f);
-
-	flat::Vector2 rd = p1 - p0;
-	flat::Vector2 p = glm::floor(p0);
-	flat::Vector2 rdinv(1.f / rd.x, 1.f / rd.y);
-	flat::Vector2 stp = glm::sign(rd);
-	flat::Vector2 delta = glm::min(rdinv * stp, 1.f);
-	// start at intersection of ray with initial cell
-	flat::Vector2 t_max = glm::abs((p + glm::max(stp, flat::Vector2(0.f)) - p0) * rdinv);
-
-	float next_t = 0.f;
-
-	float previousTileZ = 0.f;
-
-	const TileIndex startTileIndex = getTileIndex(startPosition);
-	if (!isValidTile(startTileIndex) || !isTileNavigable(startTileIndex, navigabilityMask))
-	{
-		endPosition = startPosition;
-		return true;
-	}
-	else
-	{
-		previousTileZ = getTileZ(startTileIndex);
-	}
-
-	while (true)
-	{
-		const TileIndex tileIndex = getTileIndex(p.x, p.y);
-		if (!isValidTile(tileIndex) || !isTileNavigable(tileIndex, navigabilityMask))
-		{
-			endPosition = startPosition + next_t * rd;
-			return true;
-		}
-		else
-		{
-			const float tileZ = getTileZ(tileIndex);
-			if (tileZ > previousTileZ + jumpHeight)
-			{
-				endPosition = startPosition + next_t * rd;
-				return true;
-			}
-			previousTileZ = tileZ;
-		}
-
-		next_t = glm::min(t_max.x, t_max.y);
-		if (next_t > 1.0)
-		{
-			break;
-		}
-
-		flat::Vector2 cmp = glm::step(t_max, flat::Vector2(t_max.y, t_max.x));
-		t_max += delta * cmp;
-		p += stp * cmp;
-	}
-
-	return false;
+	endPosition = result.endPosition;
+	return result.didHit;
 }
 
 void Map::setFogType(fog::Fog::FogType fogType)
@@ -1340,13 +1185,14 @@ void Map::debugDraw(debug::DebugDisplay& debugDisplay) const
 {
 	if (m_enableTileIndicesDebug)
 	{
-		for (int i = 0, e = static_cast<int>(m_tilePositions.size()); i < e; ++i)
+		for (int i = 0, e = static_cast<int>(m_tiles.size()); i < e; ++i)
 		{
-			const TilePosition& tilePosition = m_tilePositions[i];
+			const TileIndex tileIndex = static_cast<TileIndex>(i);
+			const flat::Vector2i& xy = getTileXY(tileIndex);
 			flat::Vector3 position;
-			position.x = static_cast<float>(tilePosition.xy.x);
-			position.y = static_cast<float>(tilePosition.xy.y);
-			position.z = m_tileNavigations[i].z;
+			position.x = static_cast<float>(xy.x);
+			position.y = static_cast<float>(xy.y);
+			position.z = m_navigationGrid.getCellZ(tileIndex);
 			std::string str = std::to_string(i);
 			debugDisplay.add3dText(position, str);
 		}

@@ -131,14 +131,14 @@ void CollisionComponent::separateFromAdjacentTiles()
 	const int minY = static_cast<int>(std::round(m_owner->getPosition().y - radius));
 	const int maxY = static_cast<int>(std::round(m_owner->getPosition().y + radius));
 
-	map::TileIndex collidedTileIndex = map::TileIndex::INVALID_TILE;
+	map::TileIndex collidedTileIndex = map::TileIndex::INVALID_VALUE;
 	float collidedTileZ = -FLT_MAX;
 	flat::Vector3 normal;
 	float closestCollisionDistance = FLT_MAX;
 
 	auto computeTileCollision = [&](int x, int y)
 	{
-		map::TileIndex tileIndex2 = map->getTileIndexIfNavigable(x, y, navigabilityMask);
+		const map::TileIndex tileIndex2 = map->findTileIndexIfNavigable(flat::Vector2(x, y), navigabilityMask);
 		if (tileIndex2 == tileIndex)
 		{
 			const float bottom = getBottom(newPosition.z);

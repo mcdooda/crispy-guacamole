@@ -478,7 +478,7 @@ map::TileIndex Entity::getTileIndexFromPosition() const
 {
 	FLAT_ASSERT(m_map != nullptr);
 	map::TileIndex tileIndex = m_map->getTileIndex(m_position.x, m_position.y);
-	FLAT_ASSERT_MSG(tileIndex != map::TileIndex::INVALID_TILE, "Trying to get a tile that does not exist at position (%f, %f)", m_position.x, m_position.y);
+	FLAT_ASSERT_MSG(map::isValidTile(tileIndex), "Trying to get a tile that does not exist at position (%f, %f)", m_position.x, m_position.y);
 	return tileIndex;
 }
 

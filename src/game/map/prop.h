@@ -13,7 +13,7 @@ namespace map
 class Prop final : public MapObject
 {
 public:
-	Prop() : m_tileIndex(TileIndex::INVALID_TILE) {}
+	Prop() : m_tileIndex(TileIndex::INVALID_VALUE) {}
 
 	flat::render::BaseSprite& getSprite() override;
 	using MapObject::getSprite;

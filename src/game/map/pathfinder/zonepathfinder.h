@@ -3,9 +3,7 @@
 
 #include "pathfinder.h"
 
-namespace game
-{
-namespace map
+namespace game::map
 {
 class Zone;
 namespace pathfinder
@@ -14,21 +12,19 @@ namespace pathfinder
 class ZonePathfinder : public Pathfinder
 {
 	using Super = Pathfinder;
-public:
-	ZonePathfinder() = delete;
-	ZonePathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask, const Zone* zone);
+	public:
+		ZonePathfinder() = delete;
+		ZonePathfinder(const Map& map, float jumpHeight, map::Navigability navigabilityMask, const Zone* zone);
+
+	protected:
+		virtual void setupQuery(const Request& request, flat::sharp::ai::navigation::Query& query) const override;
 
 protected:
-	TileIndex getTileIndexIfNavigable(float x, float y, map::Navigability navigabilityMask) const override;
-	void eachNeighborTiles(TileIndex tileIndex, std::function<void(TileIndex)> func) const override;
-
-protected:
-	const Zone* m_zone;
+		const Zone* m_zone;
 };
 
 } // pathfinder
-} // map
-} // game
+} // game::map
 
 #endif // GAME_MAP_ZONEPATHFINDER_H
 

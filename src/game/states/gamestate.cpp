@@ -1,20 +1,18 @@
 #include "gamestate.h"
-#include "../game.h"
-#include "../entity/entity.h"
-#include "../entity/entitytemplate.h"
-#include "map/pathfinder/path.h"
-#include "map/pathfinder/lua/path.h"
+
+#include "game.h"
+
+#include "entity/entity.h"
+#include "entity/entitytemplate.h"
+
 #include "map/brush/lua/brush.h"
 #include "map/brush/lua/tilescontainer.h"
-#include "lua/table.h"
 
 #ifdef FLAT_DEBUG
 #include "mapeditorstate.h"
 #endif
 
-namespace game
-{
-namespace states
+namespace game::states
 {
 
 void GameState::enter(Game& game)
@@ -60,7 +58,7 @@ void GameState::setOnGhostEntityPlaced(flat::lua::UniqueLuaReference<LUA_TFUNCTI
 
 std::vector<flat::Vector2> GameState::getGhostEntityPositions(const flat::Vector2& cursorPosition, map::TileIndex tileIndex) const
 {
-	FLAT_ASSERT(tileIndex != map::TileIndex::INVALID_TILE);
+	FLAT_ASSERT(map::isValidTile(tileIndex));
 	std::vector<flat::Vector2> points;
 	if (m_getGhostEntityPositions)
 	{
@@ -180,8 +178,7 @@ void GameState::handleDebugInputs(Game & game)
 }
 #endif
 
-} // states
-} // game
+} // game::states
 
 
 

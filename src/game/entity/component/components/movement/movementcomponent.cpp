@@ -11,17 +11,10 @@
 #include "map/map.h"
 #include "map/tile.h"
 #include "map/scopednavigabilityalteration.h"
-#include "map/pathfinder/path.h"
 #include "map/pathfinder/pathfinder.h"
 #include "map/pathfinder/zonepathfinder.h"
 
-namespace game
-{
-namespace entity
-{
-namespace component
-{
-namespace movement
+namespace game::entity::component::movement
 {
 
 void MovementComponent::init()
@@ -151,10 +144,8 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 	request.to = destination;
 	request.allowPartialResult = allowPartialPath;
 
-	map::pathfinder::Path path;
-	map::pathfinder::Result pathfindingResult = pathfinder->findPath(request, path);
-
-	path.simplify(*map, jumpHeight, navigabilityMask);
+	flat::sharp::ai::navigation::Path path;
+	flat::sharp::ai::navigation::Result pathfindingResult = pathfinder->findPath(request, path);
 
 	if (m_isFollowingPartialPath)
 	{
@@ -166,18 +157,18 @@ void MovementComponent::moveTo(const flat::Vector2& destination, Entity* interac
 		// keep the same current destination if the entity was already following a partial path
 		m_destination = destination;
 	}
-	m_isFollowingPartialPath = pathfindingResult == map::pathfinder::Result::PARTIAL;
+	m_isFollowingPartialPath = pathfindingResult == flat::sharp::ai::navigation::Result::PARTIAL;
 
-	if (pathfindingResult != map::pathfinder::Result::FAILURE)
+	if (pathfindingResult != flat::sharp::ai::navigation::Result::FAILURE)
 	{
 		// insert the new path at the end of the current path
 		// the first point of the new path is not inserted as it is the same as the last point of the current path
-		m_currentPath.insertPath(path);
+		m_currentPath.appendPath(path);
 	}
 	else
 	{
 		// if the destination is not reachable, still move towards that direction
-		m_currentPath.insertPoint(destination);
+		m_currentPath.appendPoint(destination);
 	}
 
 	if (!isFollowingPath())
@@ -472,9 +463,9 @@ bool MovementComponent::jumpIfNecessary(const flat::Vector2& steering)
 	FLAT_ASSERT(map != nullptr);
 
 	// very raw approximation of what the next tile could be, could take the whole path into account for more precision
-	flat::Vector2 nextTilePosition = m_owner->getPosition2d() + steering * 0.4f;
+	const flat::Vector2 nextTilePosition = m_owner->getPosition2d() + steering * 0.4f;
 	const map::Navigability navigabilityMask = getTemplate()->getNavigabilityMask();
-	const map::TileIndex nextTileIndex = map->getTileIndexIfNavigable(nextTilePosition.x, nextTilePosition.y, navigabilityMask);
+	const map::TileIndex nextTileIndex = map->findTileIndexIfNavigable(nextTilePosition, navigabilityMask);
 
 	if (map::isValidTile(nextTileIndex))
 	{
@@ -635,7 +626,4 @@ void MovementComponent::pathSanityCheck()
 }
 #endif
 
-} // movement
-} // component
-} // entity
-} // game
+} // game::entity::component::movement

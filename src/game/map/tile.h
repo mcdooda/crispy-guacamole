@@ -14,14 +14,11 @@ namespace map
 class Map;
 class Prop;
 
-enum TileIndex
-{
-	INVALID_TILE = 0xFFFFFFFF
-};
+using TileIndex = flat::sharp::ai::navigation::AreaId;
 
 inline bool isValidTile(TileIndex tileIndex)
 {
-	return tileIndex != TileIndex::INVALID_TILE;
+	return flat::sharp::ai::navigation::isValidArea(tileIndex);
 }
 
 enum PropIndex

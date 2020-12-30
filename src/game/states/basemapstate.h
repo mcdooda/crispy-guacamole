@@ -18,7 +18,6 @@
 
 #include "map/map.h"
 #include "map/displaymanager.h"
-#include "map/pathfinder/path.h"
 
 namespace game
 {

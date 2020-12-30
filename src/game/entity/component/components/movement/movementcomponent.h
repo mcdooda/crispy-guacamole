@@ -7,8 +7,6 @@
 
 #include "entity/component/component.h"
 
-#include "map/pathfinder/path.h"
-
 namespace game::map
 {
 class Map;
@@ -101,7 +99,7 @@ class MovementComponent : public ComponentImpl<MovementComponentTemplate>
 
 	private:
 		// the path is a deque because the first point is removed once it's reached
-		map::pathfinder::Path m_currentPath;
+		flat::sharp::ai::navigation::Path m_currentPath;
 		int m_nextPathPointIndex;
 
 		flat::Vector2 m_destination;

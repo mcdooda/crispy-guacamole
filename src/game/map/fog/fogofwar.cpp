@@ -179,12 +179,12 @@ TileIndex FogOfWar::getTileIndex(const Tile* tile) const
 
 TileIndex FogOfWar::getTileIndex(float x, float y) const
 {
-	TileIndex tileIndex = m_map.getTileIndex(x, y);
+	const TileIndex tileIndex = m_map.getTileIndex(x, y);
 	if (map::isValidTile(tileIndex) && isTileDiscovered(tileIndex))
 	{
 		return tileIndex;
 	}
-	return TileIndex::INVALID_TILE;
+	return TileIndex::INVALID_VALUE;
 }
 
 void FogOfWar::preUpdate()

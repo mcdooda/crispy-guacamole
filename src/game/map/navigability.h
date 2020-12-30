@@ -1,20 +1,13 @@
 #ifndef GAME_MAP_NAVIGABILITY_H
 #define GAME_MAP_NAVIGABILITY_H
 
-namespace game
-{
-namespace map
+#include <flat.h>
+
+namespace game::map
 {
 
-enum Navigability : unsigned char
-{
-	NONE   = 0,
-	GROUND = 1 << 0,
-	WATER  = 1 << 1,
-	ALL    = 0xFF
-};
+using Navigability = flat::sharp::ai::navigation::Navigability;
 
-} // map
-} // game
+} // game::map
 
 #endif // GAME_MAP_NAVIGABILITY_H

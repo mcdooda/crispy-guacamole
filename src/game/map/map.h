@@ -50,42 +50,14 @@ class Map
 	private:
 		using EntityQuadTree = flat::geometry::QuadTree<entity::Entity*, 10, getEntityAABB>;
 
-		struct TileNavigation
-		{
-			float z;
-			Navigability navigability;
-		};
-
-		struct TilePosition
-		{
-			flat::Vector2i xy;
-		};
-
-		struct NeighborTiles
-		{
-			static constexpr int MAX_NEIGHBORS = 4;
-			std::array<TileIndex, MAX_NEIGHBORS> neighbors;
-			NeighborTiles() :
-				neighbors{
-					TileIndex::INVALID_TILE,
-					TileIndex::INVALID_TILE,
-					TileIndex::INVALID_TILE,
-					TileIndex::INVALID_TILE
-				}
-			{}
-
-			void clear()
-			{
-				for (int i = 0; i < MAX_NEIGHBORS; ++i)
-				{
-					neighbors[i] = TileIndex::INVALID_TILE;
-				}
-			}
-		};
-
 	public:
 		Map();
-		~Map();
+		Map(const Map&) = delete;
+		Map(Map&&) = delete;
+		~Map() = default;
+
+		Map& operator=(const Map&) = delete;
+		Map& operator=(Map&&) = delete;
 
 		void reset(Game& game, int width, int height, const std::shared_ptr<const TileTemplate>& tileTemplate);
 
@@ -100,15 +72,13 @@ class Map
 		void addAllTilesToDisplayManager() const;
 		void addAllPropsToDisplayManager() const;
 
-		void operator=(Map&&) = delete;
-		void operator=(const Map&) = delete;
-
 		bool load(Game& game);
 		bool save(Game& game) const;
 
 		void setBounds(int minX, int maxX, int minY, int maxY);
 		void getBounds(int& minX, int& maxX, int& minY, int& maxY) const;
 		void getActualBounds(int& minX, int& maxX, int& minY, int& maxY) const;
+
 		// tiles
 		TileIndex createTile(const flat::Vector2i& xy, float z, const std::shared_ptr<const TileTemplate>& tileTemplate, uint16_t tileTemplateVariantIndex);
 		void deleteTile(TileIndex tileIndex);
@@ -125,7 +95,6 @@ class Map
 		std::vector<TileIndex> getTilesIndices(const std::vector<flat::Vector2>& positions) const;
 		std::vector<flat::Vector2> getTilesPositions(const std::vector<TileIndex>& indices) const;
 
-
 		void getTilesFromIndices(const std::vector<TileIndex>& tileIndices, std::vector<const Tile*>& tiles) const;
 
 		const Tile& getTileFromIndex(TileIndex tileIndex) const;
@@ -141,8 +110,7 @@ class Map
 		float getTileZ(TileIndex tileIndex) const;
 		const flat::AABB3& getTileAABB(TileIndex tileIndex) const;
 
-		TileIndex getTileIndexIfNavigable(int x, int y, Navigability navigabilityMask) const;
-		TileIndex getTileIndexIfNavigable(float x, float y, Navigability navigabilityMask) const;
+		TileIndex findTileIndexIfNavigable(const flat::Vector2& xy, Navigability navigabilityMask) const;
 
 		bool isTileNavigable(TileIndex tileIndex, Navigability navigabilityMask) const;
 		Navigability getTileNavigability(TileIndex tileIndex) const;
@@ -193,12 +161,6 @@ class Map
 		void eachTile(Func func) const;
 
 		template <class Func>
-		void eachNeighborTiles(TileIndex tileIndex, Func func) const;
-
-		template <class Func>
-		void eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, Func func) const;
-
-		template <class Func>
 		inline void eachEntityInRange(const flat::Vector2& center2d, float range, Func func) const;
 
 		template <class Func>
@@ -232,6 +194,8 @@ class Map
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
 #endif // FLAT_DEBUG
 
+		inline const flat::sharp::ai::navigation::AStarGridNavigationData& getNavigationGrid() const { return m_navigationGrid; }
+
 	protected:
 		void setAxes(const flat::Vector2& xAxis,
 		             const flat::Vector2& yAxis,
@@ -239,9 +203,6 @@ class Map
 		void getAxes(flat::Vector2& xAxis,
 					 flat::Vector2& yAxis,
 					 flat::Vector2& zAxis) const;
-
-		void addTileNeighbor(TileIndex tileIndex, const flat::Vector2i& neighborTilePosition);
-		void addTileNeighbor(TileIndex tileIndex, TileIndex neighborTileIndex);
 
 		void updateTileNormal(TileIndex tileIndex);
 		void updateTileTexture(Game& game, TileIndex tileIndex);
@@ -263,11 +224,9 @@ class Map
 		int m_maxY;
 
 		// tiles
+		flat::sharp::ai::navigation::AStarGridNavigationData m_navigationGrid;
+
 		std::vector<Tile> m_tiles;
-		std::vector<TileNavigation> m_tileNavigations;
-		std::vector<TilePosition> m_tilePositions;
-		std::vector<NeighborTiles> m_neighborTiles;
-		std::unordered_map<flat::Vector2i, TileIndex> m_tilePositionToIndex;
 		std::vector<Prop> m_props;
 
 		std::unordered_set<TileIndex> m_dirtyNormalTiles;
@@ -309,38 +268,10 @@ void Map::eachTile(Func func) const
 	}
 }
 
-
-template <class Func>
-void Map::eachNeighborTiles(TileIndex tileIndex, Func func) const
-{
-	FLAT_ASSERT_MSG(m_neighborTiles.size() == m_tiles.size(), "Neighbors: %zu, tiles: %zu", m_neighborTiles.size(), m_tiles.size());
-	const NeighborTiles& neighborTiles = m_neighborTiles[tileIndex];
-	for (int i = 0; i < NeighborTiles::MAX_NEIGHBORS; ++i)
-	{
-		TileIndex neighborTileIndex = neighborTiles.neighbors[i];
-		if (neighborTileIndex == TileIndex::INVALID_TILE)
-			break;
-
-		func(neighborTileIndex);
-	}
-}
-
-
-template <class Func>
-void Map::eachNeighborTilesWithNavigability(TileIndex tileIndex, float jumpHeight, Navigability navigabilityMask, Func func) const
-{
-	const float maxZ = getTileZ(tileIndex) + jumpHeight;
-	eachNeighborTiles(tileIndex, [this, maxZ, navigabilityMask, &func](TileIndex neighborTileIndex)
-	{
-		if (getTileZ(neighborTileIndex) <= maxZ && isTileNavigable(neighborTileIndex, navigabilityMask))
-			func(neighborTileIndex);
-	});
-}
-
 template <typename Func>
 void Map::eachTileEntity(TileIndex tileIndex, Func func) const
 {
-	FLAT_ASSERT(tileIndex != TileIndex::INVALID_TILE);
+	FLAT_ASSERT(isValidTile(tileIndex));
 	const Tile& tile = m_tiles.at(tileIndex);
 	const flat::AABB3& aabb3 = tile.getWorldSpaceAABB();
 	flat::AABB2 tileAABB(

@@ -47,8 +47,8 @@ void Zone::removeRectangle(const Rectangle& rectangle)
 
 bool Zone::isInside(const flat::Vector2& point) const
 {
-	TileIndex tileIndex = m_map.getTileIndex(point.x, point.y);
-	return tileIndex != TileIndex::INVALID_TILE && m_tiles.count(tileIndex) > 0;
+	const TileIndex tileIndex = m_map.getTileIndex(point.x, point.y);
+	return isValidTile(tileIndex) && m_tiles.count(tileIndex) > 0;
 }
 
 void Zone::eachTile(std::function<void(TileIndex tileIndex)> func)
@@ -62,13 +62,15 @@ void Zone::eachTile(std::function<void(TileIndex tileIndex)> func)
 TileIndex Zone::getRandomTile(Game& game) const
 {
 	if (m_tiles.empty())
-		return TileIndex::INVALID_TILE;
+	{
+		return TileIndex::INVALID_VALUE;
+	}
 
 	int randomIndex = game.random->nextInt(0, static_cast<int>(m_tiles.size()) - 1);
 	std::set<TileIndex>::iterator it = m_tiles.begin();
 	std::advance(it, randomIndex);
 	TileIndex tileIndex = *it;
-	FLAT_ASSERT(tileIndex != TileIndex::INVALID_TILE);
+	FLAT_ASSERT(isValidTile(tileIndex));
 	return tileIndex;
 }
 
@@ -113,8 +115,8 @@ void Zone::eachRectangleTile(const Rectangle& rectangle, std::function<void(Tile
 	{
 		for (int y = rectangle.minY; y <= rectangle.maxY; ++y)
 		{
-			TileIndex tileIndex = m_map.getTileIndex(x, y);
-			if (tileIndex != TileIndex::INVALID_TILE)
+			const TileIndex tileIndex = m_map.getTileIndex(x, y);
+			if (isValidTile(tileIndex))
 			{
 				func(tileIndex);
 			}

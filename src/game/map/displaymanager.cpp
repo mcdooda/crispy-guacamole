@@ -369,7 +369,7 @@ TileIndex DisplayManager::getTileIndexAtPosition(const map::fog::Fog& fog, const
 		}
 	}
 
-	return TileIndex::INVALID_TILE;
+	return TileIndex::INVALID_VALUE;
 }
 
 #ifdef FLAT_DEBUG

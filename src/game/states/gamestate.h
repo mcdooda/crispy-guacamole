@@ -4,7 +4,6 @@
 #include <flat.h>
 #include "basemapstate.h"
 #include "map/map.h"
-#include "map/pathfinder/path.h"
 
 namespace game
 {

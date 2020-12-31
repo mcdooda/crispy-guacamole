@@ -411,7 +411,7 @@ int l_Entity_setPosition2d(lua_State* L)
 
 	flat::Vector3 position = flat::Vector3(position2d, 0.f);
 	const map::TileIndex tileIndex = baseMapState.getMap().getTileIndex(position.x, position.y);
-	if (map::isValidTile(tileIndex))
+	if (!map::isValidTile(tileIndex))
 	{
 		luaL_error(L, "Trying to set an entity's position outside the map (%f, %f)", position.x, position.y);
 	}

@@ -108,9 +108,11 @@ int open(Game& game)
 		{"isMidair",                    l_Entity_isMidair},
 		{"movementStarted",             l_Entity_movementStarted},
 		{"movementStopped",             l_Entity_movementStopped},
+		{"getNavigabilityMask",         l_Entity_getNavigabilityMask},
 
 		// behavior
 		{"enterState",               l_Entity_enterState},
+		{"implementsBehavior",       l_Entity_implementsBehavior},
 		{"sleep",                    l_Entity_sleep},
 		{"getInteractionEntity",     l_Entity_getInteractionEntity},
 		{"getInteractionStateName",  l_Entity_getInteractionStateName},
@@ -147,6 +149,7 @@ int open(Game& game)
 		{"setAttackTarget",          l_Entity_setAttackTarget},
 		{"getAttackTarget",          l_Entity_getAttackTarget},
 		{"isInAttackRange",          l_Entity_isInAttackRange},
+		{"getAttackRange",           l_Entity_getAttackRange},
 
 		// life
 		{"isLiving",                 l_Entity_isLiving},
@@ -759,6 +762,14 @@ int l_Entity_movementStopped(lua_State* L)
 	return 0;
 }
 
+int l_Entity_getNavigabilityMask(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	const map::Navigability navigabilityMask = EntityHelper::getNavigabilityMask(&entity);
+	lua_pushinteger(L, navigabilityMask);
+	return 1;
+}
+
 // BEHAVIOR
 
 int l_Entity_enterState(lua_State* L)
@@ -790,6 +801,26 @@ int l_Entity_enterState(lua_State* L)
 		enteredState = true;
 	}
 	lua_pushboolean(L, enteredState);
+	return 1;
+}
+
+int l_Entity_implementsBehavior(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	luaL_checktype(L, 2, LUA_TTABLE);
+
+	behavior::BehaviorComponent* behaviorComponent = entity.getComponent<behavior::BehaviorComponent>();
+	if (behaviorComponent != nullptr)
+	{
+		const behavior::BehaviorComponentTemplate* behaviorComponentTemplate = behaviorComponent->getTemplate();
+		behaviorComponentTemplate->getBehavior().pushStates(L);
+		lua_pushboolean(L, flat::lua::table::implementsInterface(L, -1, 2));
+	}
+	else
+	{
+		lua_pushboolean(L, false);
+	}
+
 	return 1;
 }
 
@@ -1124,6 +1155,15 @@ int l_Entity_isInAttackRange(lua_State* L)
 	Entity& target = getEntity(L, 2);
 	attack::AttackComponent& attackComponent = getComponent<attack::AttackComponent>(L, entity);
 	lua_pushboolean(L, attackComponent.isInAttackRange(&target));
+	return 1;
+}
+
+int l_Entity_getAttackRange(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	attack::AttackComponent& attackComponent = getComponent<attack::AttackComponent>(L, entity);
+	const float attackRange = attackComponent.getTemplate()->getAttackRange();
+	lua_pushnumber(L, attackRange);
 	return 1;
 }
 

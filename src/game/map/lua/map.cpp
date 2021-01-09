@@ -46,9 +46,11 @@ int open(lua_State* L)
 		{"getTileZ",                      l_Map_getTileZ},
 		{"setTileZ",                      l_Map_setTileZ},
 		{"moveTileZBy",                   l_Map_moveTileZBy},
+		{"isTileNavigable",               l_Map_isTileNavigable},
 		{"setTileTemplate",               l_Map_setTileTemplate},
 		{"setTileColor",                  l_Map_setTileColor},
 		{"eachTile",                      l_Map_eachTile},
+		{"getTile",                       l_Map_getTile},
 
 		{"setPropTemplate",               l_Map_setPropTemplate},
 
@@ -297,6 +299,15 @@ int l_Map_moveTileZBy(lua_State* L)
 	return 0;
 }
 
+int l_Map_isTileNavigable(lua_State* L)
+{
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	const Navigability navigabilityMask = static_cast<Navigability>(luaL_checkinteger(L, 2));
+	Map& map = getMap(L);
+	lua_pushboolean(L, map.isTileNavigable(tileIndex, navigabilityMask));
+	return 1;
+}
+
 int l_Map_setTileTemplate(lua_State* L)
 {
 	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
@@ -329,6 +340,15 @@ int l_Map_eachTile(lua_State* L)
 		lua_call(L, 1, 0);
 	});
 	return 0;
+}
+
+int l_Map_getTile(lua_State* L)
+{
+	const flat::Vector2& tilePosition = flat::lua::getVector2(L, 1);
+	Map& map = getMap(L);
+	const TileIndex tileIndex = map.getTileIndex(flat::Vector2i(std::round(tilePosition.x), std::round(tilePosition.y)));
+	lua_pushinteger(L, tileIndex);
+	return 1;
 }
 
 int l_Map_setPropTemplate(lua_State* L)

@@ -1,3 +1,1 @@
-return {
-	visionRange = 6
-}
+return flat.graph.script.run(Mod.getFilePath 'entities/human/human_crossbowman/detection')

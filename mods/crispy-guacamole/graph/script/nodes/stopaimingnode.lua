@@ -34,6 +34,20 @@ function StopAimingNode:execute(runtime, inputPin)
     end
     extraData[aimEntitiesKey] = nil
 
+    -- all entities enter combat, not only the currently aiming ones
+    if aimMode.triggersCombat then
+        print 'Triggering combat'
+        local groupEntities = extraData.groupEntities
+        for i = 1, #groupEntities do
+            local groupEntity = groupEntities[i]
+            if groupEntity:isValid() and groupEntity:getExtraData().currentLoopingState ~= 'combat' then
+                groupEntity:enterState 'combat'
+            end
+        end
+    else
+        print 'Not Triggering combat'
+    end
+
     aimMode.useAbility(aimingEntities, aimPositions)
 
     runtime:impulse(self.impulseOutPin)

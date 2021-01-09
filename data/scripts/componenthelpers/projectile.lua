@@ -27,12 +27,12 @@ local function spawn(templatePath, template, position, targetPosition, instigato
     return Entity.spawn(templatePath, position, heading, elevation, instigator)
 end
 
-local function spawnWithSpeed(templatePath, position, targetPosition, instigator, speed)
+local function spawnIgnoreWeight(templatePath, template, position, targetPosition, instigator)
     -- compute initial heading and weight
     local heading = atan2(targetPosition:y() - position:y(), targetPosition:x() - position:x())
     local dXY = (targetPosition - position):toVector2():length()
     local dZ = targetPosition:z() - position:z()
-    local speedXY = speed
+    local speedXY = template.speed
     local speedZ = speedXY
     local duration = dXY / speedXY
     local elevation = math.pi * 0.25
@@ -87,14 +87,15 @@ local function createSpawnerFromEntityToPosition(templatePath)
     end
 end
 
-local function createSpawnerFromEntityToPositionWithSpeed(templatePath)
-    return function(entity, attachPoint, targetPosition, speed)
-        return spawnWithSpeed(
+local function createSpawnerFromEntityToPositionIgnoreWeight(templatePath)
+    local template = Path.requireComponentTemplate(templatePath, 'projectile')
+    return function(entity, attachPoint, targetPosition)
+        return spawnIgnoreWeight(
             templatePath,
+            template,
             entity:getAttachPoint(attachPoint),
             targetPosition,
-            entity,
-            speed
+            entity
         )
     end
 end
@@ -107,5 +108,5 @@ return {
     createSpawnerFromEntity           = createSpawnerFromEntity,
     createSpawnerFromEntityToPosition = createSpawnerFromEntityToPosition,
 
-    createSpawnerFromEntityToPositionWithSpeed = createSpawnerFromEntityToPositionWithSpeed
+    createSpawnerFromEntityToPositionIgnoreWeight = createSpawnerFromEntityToPositionIgnoreWeight
 }

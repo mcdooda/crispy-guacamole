@@ -1,5 +1,6 @@
 local ScriptNode = flat.require 'graph/script/scriptnode'
 local PinTypes = flat.require 'graph/pintypes'
+local BasicUnitBehavior = require(Mod.getFilePath 'scripts/basicunitbehavior').basicUnit()
 
 local JoinPlayerGroupNode = ScriptNode:inherit 'Join Player Group'
 
@@ -16,13 +17,15 @@ function JoinPlayerGroupNode:execute(runtime, inputPin)
     local playerEntity = runtime:readPin(self.playerEntityInPin)
     local entity = runtime:readPin(self.entityInPin)
 
-    assert(playerEntity ~= entity)
+    if entity:implementsBehavior(BasicUnitBehavior) then
+        assert(playerEntity ~= entity)
 
-    local groupEntities = playerEntity:getExtraData().groupEntities
-    flat.arrayAddUnique(groupEntities, entity)
+        local groupEntities = playerEntity:getExtraData().groupEntities
+        flat.arrayAddUnique(groupEntities, entity)
 
-    entity:getExtraData().playerToFollow = playerEntity
-    entity:enterState('followPlayer', true)
+        entity:getExtraData().playerToFollow = playerEntity
+        entity:enterState('followPlayer', true)
+    end
 
     runtime:impulse(self.impulseOutPin)
 end

@@ -82,9 +82,11 @@ int l_Entity_getCurrentMovementDirection(lua_State* L);
 int l_Entity_isMidair(lua_State* L);
 int l_Entity_movementStarted(lua_State* L);
 int l_Entity_movementStopped(lua_State* L);
+int l_Entity_getNavigabilityMask(lua_State* L);
 
 // behavior
 int l_Entity_enterState(lua_State* L);
+int l_Entity_implementsBehavior(lua_State* L);
 int l_Entity_sleep(lua_State* L);
 int l_Entity_getInteractionEntity(lua_State* L);
 int l_Entity_getInteractionStateName(lua_State* L);
@@ -121,6 +123,7 @@ int l_Entity_isHostile(lua_State* L);
 int l_Entity_setAttackTarget(lua_State* L);
 int l_Entity_getAttackTarget(lua_State* L);
 int l_Entity_isInAttackRange(lua_State* L);
+int l_Entity_getAttackRange(lua_State* L);
 
 // life
 int l_Entity_isLiving(lua_State* L);

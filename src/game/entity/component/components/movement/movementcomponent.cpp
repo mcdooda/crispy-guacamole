@@ -557,6 +557,7 @@ void MovementComponent::debugDrawCurrentPath(debug::DebugDisplay& debugDisplay) 
 		FLAT_ASSERT(map::isValidTile(tileIndex));
 		flat::Vector3 point(point2d, map->getTileZ(tileIndex));
 		debugDisplay.add3dLine(previousPoint, point);
+		debugDisplay.add3dCircle(point, 0.15f, flat::video::Color::BLUE);
 		previousPoint = point;
 	}
 

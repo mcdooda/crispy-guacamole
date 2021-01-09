@@ -36,8 +36,8 @@ function FireProjectileNode:execute(runtime, inputPin)
             return
         end
 
-        local spawnProjectile = ProjectileHelper.createSpawnerFromEntity(projectileAsset:getPath())
-        local projectile = spawnProjectile(entity, attachPoint, target)
+        local spawnProjectile = ProjectileHelper.createSpawnerFromEntityToPositionIgnoreWeight(projectileAsset:getPath())
+        local projectile = spawnProjectile(entity, attachPoint, target:getCollisionCenter())
 
         if projectile then
             if followTarget then

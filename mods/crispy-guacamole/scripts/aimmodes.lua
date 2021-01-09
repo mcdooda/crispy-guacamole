@@ -25,7 +25,9 @@ local None = {
 
     isValidTarget = function(playerEntity, otherEntity)
         return true
-    end
+    end,
+
+    triggersCombat = false
 }
 
 -- Aim mode hostile base
@@ -45,6 +47,8 @@ function AimModeHostileBase.isValidTarget(playerEntity, otherEntity)
     local isAlive = otherEntity:isLiving() and otherEntity:isAlive()
     return isHostile and isAlive
 end
+
+AimModeHostileBase.triggersCombat = true
 
 -- Single unit
 local SingleUnit = AimModeHostileBase:inherit()

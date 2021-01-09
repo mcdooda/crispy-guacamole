@@ -3,13 +3,7 @@
 
 #include <flat.h>
 
-namespace game
-{
-namespace entity
-{
-namespace component
-{
-namespace behavior
+namespace game::entity::component::behavior
 {
 class BehaviorRuntime;
 
@@ -20,19 +14,17 @@ class Behavior
 		Behavior(lua_State* L);
 		~Behavior();
 		
+		void pushStates(lua_State* L) const;
+
 	private:
 		void load(lua_State* L);
-		void pushStates(lua_State*) const;
 		inline lua_State* getLuaState() const { return m_states.getLuaState(); }
 		
 	private:
 		flat::lua::SharedLuaReference<LUA_TTABLE> m_states;
 };
 
-} // behavior
-} // component
-} // entity
-} // game
+} // game::entity::component::behavior
 
 #endif // GAME_ENTITY_COMPONENT_BEHAVIOR_BEHAVIOR_H
 

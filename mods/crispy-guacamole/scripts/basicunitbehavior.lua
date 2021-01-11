@@ -63,7 +63,9 @@ local function basicUnit()
 
                 if not entity:isInAttackRange(attackTarget) then
                     local moveToPosition = self:findCombatMoveToPosition(entity)
-                    entity:moveTo(moveToPosition)
+                    if moveToPosition then
+                        entity:moveTo(moveToPosition)
+                    end
                 end
             end
             coroutine.yield()
@@ -83,8 +85,9 @@ local function basicUnit()
     function states:findCombatMoveToPosition(entity)
         local findCombatMoveToPositionEQSTemplate = require(Mod.getFilePath 'eqs/findcombatmovetoposition')
         local positionItem = flat.eqs.run(findCombatMoveToPositionEQSTemplate, entity, flat.eqs.RunMode.SingleBestItem)
-        assert(positionItem)
-        return positionItem.item
+        if positionItem then
+            return positionItem.item
+        end
     end
 
     function states:onEntityEnteredVisionRange(entity, otherEntity)

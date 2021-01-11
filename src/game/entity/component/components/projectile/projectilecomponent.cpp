@@ -167,7 +167,7 @@ bool ProjectileComponent::removedFromMap(Entity* entity)
 	return true;
 }
 
-bool ProjectileComponent::headingChanged(float heading)
+bool ProjectileComponent::headingChanged(float heading, float previousHeading)
 {
 	if (m_owner->hasSprite() && getTemplate()->getRotateSprite())
 	{

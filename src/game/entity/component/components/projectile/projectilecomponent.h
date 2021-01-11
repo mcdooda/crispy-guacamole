@@ -46,8 +46,8 @@ class ProjectileComponent : public ComponentImpl<ProjectileComponentTemplate>
 	private:
 		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 		bool removedFromMap(Entity* entity);
-		bool headingChanged(float heading);
-		bool elevationChanged(float heading);
+		bool headingChanged(float heading, float previousHeading);
+		bool elevationChanged(float elevation);
 
 		void checkTargetCollision();
 

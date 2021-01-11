@@ -130,7 +130,7 @@ return {
       name = 'script/scriptoutput',
     },
     {
-      name = 'entity/setspriterotation',
+      name = 'entity/setspriterotationz',
     },
     {
       name = 'game/gametime',
@@ -151,7 +151,7 @@ return {
       name = 'script/condition',
     },
     {
-      name = 'entity/setspriterotation',
+      name = 'entity/setspriterotationz',
     },
     {
       name = 'math/multiply',

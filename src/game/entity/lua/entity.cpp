@@ -132,7 +132,9 @@ int open(Game& game)
 		{"setAnimationProgress",     l_Entity_setAnimationProgress},
 		{"getAttachPoint",           l_Entity_getAttachPoint},
 		{"flipSpriteX",              l_Entity_flipSpriteX},
-		{"setSpriteRotation",        l_Entity_setSpriteRotation},
+		{"setSpriteRotationX",       l_Entity_setSpriteRotationX},
+		{"setSpriteRotationY",       l_Entity_setSpriteRotationY},
+		{"setSpriteRotationZ",       l_Entity_setSpriteRotationZ},
 		{"setSpriteColor",           l_Entity_setSpriteColor},
 		{"clearSpriteColor",         l_Entity_clearSpriteColor},
 
@@ -465,14 +467,15 @@ int l_Entity_headingChanged(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	flat::lua::SharedLuaReference<LUA_TFUNCTION> onHeadingChanged(L, 2);
-	entity.headingChanged.on([L, &entity, onHeadingChanged](float heading)
+	entity.headingChanged.on([L, &entity, onHeadingChanged](float heading, float previousHeading)
 	{
 		bool keepCallback = true;
 		onHeadingChanged.callFunction(
-			[&entity, heading](lua_State* L)
+			[&entity, heading, previousHeading](lua_State* L)
 			{
 				entity::lua::pushEntity(L, &entity);
 				lua_pushnumber(L, heading);
+				lua_pushnumber(L, previousHeading);
 			},
 			1,
 			[&keepCallback](lua_State* L)
@@ -1011,7 +1014,33 @@ int l_Entity_flipSpriteX(lua_State* L)
 	return 0;
 }
 
-int l_Entity_setSpriteRotation(lua_State* L)
+int l_Entity_setSpriteRotationX(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	float angle = static_cast<float>(luaL_checknumber(L, 2));
+
+	// check the component is present
+	getComponent<sprite::SpriteComponent>(L, entity);
+
+	entity.getSprite().setRotationX(angle);
+	entity.setAABBDirty();
+	return 0;
+}
+
+int l_Entity_setSpriteRotationY(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	float angle = static_cast<float>(luaL_checknumber(L, 2));
+
+	// check the component is present
+	getComponent<sprite::SpriteComponent>(L, entity);
+
+	entity.getSprite().setRotationY(angle);
+	entity.setAABBDirty();
+	return 0;
+}
+
+int l_Entity_setSpriteRotationZ(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	float angle = static_cast<float>(luaL_checknumber(L, 2));

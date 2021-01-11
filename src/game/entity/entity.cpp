@@ -222,10 +222,11 @@ void Entity::setHeading(float heading, float epsilon)
 	const float difference = std::abs(flat::angle_clamp_pi(heading - m_heading));
 	if (difference >= epsilon)
 	{
+		const float previousHeading = m_heading;
 		m_heading = flat::angle_clamp_0_2pi(heading);
 		if (m_map != nullptr)
 		{
-			headingChanged(m_heading);
+			headingChanged(m_heading, previousHeading);
 		}
 
 		m_aabbDirty = true;
@@ -280,7 +281,7 @@ bool Entity::addToMap(map::Map* map, EntityUpdater* entityUpdater)
 	m_cellIndex = map->addEntity(this);
 	addedToMap(this, map, entityUpdater);
 	positionChanged(m_position);
-	headingChanged(m_heading);
+	headingChanged(m_heading, m_heading);
 	elevationChanged(m_elevation);
 
 	updateAABB();

@@ -182,7 +182,7 @@ class Entity final : public map::MapObject
 		
 	public:
 		flat::Slot<const flat::Vector3&> positionChanged;
-		flat::Slot<float> headingChanged;
+		flat::Slot<float, float> headingChanged;
 		flat::Slot<float> elevationChanged;
 		flat::Slot<Entity*, map::Map*, EntityUpdater*> addedToMap;
 		flat::Slot<Entity*> removedFromMap;

@@ -11,15 +11,17 @@ function HeadingChangedNode:buildPins()
     self.headingChangedOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Heading Changed')
     self.entityOutPin = self:addOutputPin(flat.types['CG.Entity'], 'Entity')
     self.headingOutPin = self:addOutputPin(flat.types.NUMBER, 'Heading')
+    self.previousHeadingOutPin = self:addOutputPin(flat.types.NUMBER, 'Previous Heading')
 end
 
 function HeadingChangedNode:execute(runtime, inputPin)
     assert(inputPin == self.impulseInPin)
     local entity = runtime:readPin(self.entityInPin)
 
-    entity:headingChanged(function()
+    entity:headingChanged(function(entity, heading, previousHeading)
         runtime:writePin(self.entityOutPin, entity)
-        runtime:writePin(self.headingOutPin, entity:getHeading())
+        runtime:writePin(self.headingOutPin, heading)
+        runtime:writePin(self.previousHeadingOutPin, previousHeading)
         runtime:impulse(self.headingChangedOutPin)
         return true
     end)

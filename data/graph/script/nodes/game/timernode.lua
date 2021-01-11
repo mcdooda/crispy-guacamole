@@ -10,6 +10,7 @@ function TimerNode:buildPins()
 
     self.impulseOutPin = self:addOutputPin(PinTypes.IMPULSE, 'Out')
     self.onUpdateOutPin = self:addOutputPin(PinTypes.IMPULSE, 'On Update')
+    self.progressionOutPin = self:addOutputPin(flat.types.NUMBER, 'Progression')
     self.onEndOutPin = self:addOutputPin(PinTypes.IMPULSE, 'On End')
 end
 
@@ -21,7 +22,8 @@ function TimerNode:execute(runtime, inputPin)
     local timer = game.Timer()
 
     if self:isOutputPinPlugged(self.onUpdateOutPin) then
-        timer:onUpdate(function()
+        timer:onUpdate(function(timer, elapsedTime)
+            runtime:writePin(self.progressionOutPin, elapsedTime / duration)
             runtime:impulse(self.onUpdateOutPin)
         end)
     end

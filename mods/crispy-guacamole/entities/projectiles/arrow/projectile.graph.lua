@@ -25,6 +25,12 @@ return {
       1,
     },
     {
+      2,
+      1,
+      27,
+      1,
+    },
+    {
       3,
       1,
       24,
@@ -63,20 +69,14 @@ return {
     {
       11,
       1,
-      30,
-      1,
+      9,
+      2,
     },
     {
       11,
       1,
       12,
       1,
-    },
-    {
-      11,
-      1,
-      9,
-      2,
     },
     {
       12,
@@ -146,8 +146,14 @@ return {
     },
     {
       23,
-      3,
+      4,
       14,
+      1,
+    },
+    {
+      23,
+      5,
+      26,
       1,
     },
     {
@@ -189,14 +195,14 @@ return {
     {
       26,
       1,
-      25,
-      1,
+      14,
+      2,
     },
     {
       27,
       1,
-      25,
-      2,
+      23,
+      4,
     },
     {
       29,
@@ -207,7 +213,13 @@ return {
     {
       30,
       1,
-      14,
+      25,
+      1,
+    },
+    {
+      31,
+      1,
+      25,
       2,
     },
   },
@@ -313,16 +325,10 @@ return {
       name = 'components/projectilecomponent',
     },
     {
-      loadArguments = {
-        30,
-      },
-      name = 'number',
+      name = 'entity/isvalidentity',
     },
     {
-      loadArguments = {
-        12,
-      },
-      name = 'number',
+      name = 'reroute',
     },
     {
       loadArguments = {
@@ -340,7 +346,16 @@ return {
       name = 'boolean',
     },
     {
-      name = 'entity/isvalidentity',
+      loadArguments = {
+        30,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        12,
+      },
+      name = 'number',
     },
   },
 }

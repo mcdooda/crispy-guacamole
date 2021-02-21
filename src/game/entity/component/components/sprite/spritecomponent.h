@@ -91,7 +91,6 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 		const AnimationDescription* m_currentAnimationDescription;
 		bool m_isCycleAnimated;
 		bool m_preventBusy;
-		bool m_hasColorOverride;
 };
 
 } // sprite

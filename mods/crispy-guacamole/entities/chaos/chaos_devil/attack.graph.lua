@@ -15,140 +15,146 @@ return {
     {
       1,
       3,
-      8,
-      2,
-    },
-    {
-      1,
-      3,
-      9,
+      11,
       1,
     },
     {
       1,
       3,
-      10,
-      2,
-    },
-    {
+      23,
       1,
-      3,
-      14,
-      2,
-    },
-    {
-      1,
-      3,
-      3,
-      2,
     },
     {
       2,
       1,
-      14,
-      6,
+      1,
+      1,
+    },
+    {
+      3,
+      1,
+      1,
+      2,
     },
     {
       4,
       1,
-      3,
+      1,
       3,
     },
     {
       5,
       1,
-      14,
-      7,
+      1,
+      4,
     },
     {
       6,
       1,
-      14,
+      1,
+      5,
+    },
+    {
+      8,
+      3,
+      18,
+      3,
+    },
+    {
+      8,
       4,
+      18,
+      1,
     },
     {
-      8,
-      1,
       10,
-      1,
-    },
-    {
-      9,
       1,
       8,
-      3,
-    },
-    {
-      9,
-      1,
-      14,
-      3,
-    },
-    {
-      10,
-      1,
-      14,
-      1,
-    },
-    {
-      10,
-      1,
-      3,
-      1,
+      5,
     },
     {
       11,
       1,
-      10,
-      4,
+      13,
+      1,
     },
     {
       12,
       1,
-      10,
-      5,
+      8,
+      3,
     },
     {
       13,
       1,
-      10,
-      3,
+      12,
+      1,
+    },
+    {
+      13,
+      2,
+      12,
+      2,
+    },
+    {
+      14,
+      1,
+      8,
+      4,
     },
     {
       15,
       1,
-      14,
-      5,
-    },
-    {
-      16,
-      1,
-      1,
-      1,
+      8,
+      6,
     },
     {
       17,
       1,
-      1,
+      16,
       2,
     },
     {
       18,
       1,
+      16,
       1,
-      3,
     },
     {
       19,
       1,
-      1,
-      4,
+      18,
+      2,
     },
     {
       20,
       1,
+      18,
+      4,
+    },
+    {
+      21,
       1,
+      18,
       5,
+    },
+    {
+      22,
+      1,
+      18,
+      6,
+    },
+    {
+      23,
+      1,
+      8,
+      2,
+    },
+    {
+      23,
+      1,
+      22,
+      1,
     },
   },
   nodeType = 'script',
@@ -158,18 +164,15 @@ return {
     },
     {
       loadArguments = {
-        0.62999999523163,
+        0.69999998807907,
       },
       name = 'number',
     },
     {
-      name = 'entity/playsound',
-    },
-    {
       loadArguments = {
-        'fx_arrow1',
+        3,
       },
-      name = 'string',
+      name = 'number',
     },
     {
       loadArguments = {
@@ -179,33 +182,9 @@ return {
     },
     {
       loadArguments = {
-        'arrow',
+        false,
       },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        {
-          5,
-          'Table',
-        },
-      },
-      name = 'script/scriptoutput',
-    },
-    {
-      name = 'entity/lookatentity',
-    },
-    {
-      name = 'entity/getattacktarget',
-    },
-    {
-      name = 'entity/playanimation',
-    },
-    {
-      loadArguments = {
-        1,
-      },
-      name = 'number',
+      name = 'boolean',
     },
     {
       loadArguments = {
@@ -215,22 +194,19 @@ return {
     },
     {
       loadArguments = {
-        'shoot',
+        {
+          5,
+          'Component',
+        },
       },
-      name = 'string',
+      name = 'script/scriptoutput',
     },
     {
-      name = 'entity/fireprojectile',
+      name = 'aiaim',
     },
     {
       loadArguments = {
-        'crossbow',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        5,
+        2,
       },
       name = 'number',
     },
@@ -241,6 +217,15 @@ return {
       name = 'number',
     },
     {
+      name = 'entity/getposition',
+    },
+    {
+      name = 'vector2',
+    },
+    {
+      name = 'math/vector3/vector3split',
+    },
+    {
       loadArguments = {
         true,
       },
@@ -248,15 +233,45 @@ return {
     },
     {
       loadArguments = {
-        false,
+        1,
       },
-      name = 'boolean',
+      name = 'number',
+    },
+    {
+      name = 'game/sleep',
     },
     {
       loadArguments = {
-        true,
+        1,
       },
-      name = 'boolean',
+      name = 'number',
+    },
+    {
+      name = 'entity/spawnentity',
+    },
+    {
+      loadArguments = {
+        'fx_big_smoke',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0,
+      },
+      name = 'number',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
     },
   },
 }

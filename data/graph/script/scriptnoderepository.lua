@@ -76,6 +76,7 @@ return {
     'entity/setspriterotationx',
     'entity/setspriterotationy',
     'entity/setspriterotationz',
+    'entity/setspritescale',
     'entity/setspritecolor',
     'entity/directionalsprite',
     'entity/getattachpoint',

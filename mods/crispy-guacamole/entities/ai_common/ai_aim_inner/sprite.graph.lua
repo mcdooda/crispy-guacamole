@@ -27,98 +27,74 @@ return {
     {
       4,
       1,
+      3,
       1,
-      2,
     },
     {
       5,
       1,
-      1,
-      3,
-    },
-    {
-      6,
-      1,
-      3,
-      1,
-    },
-    {
-      7,
-      1,
       3,
       2,
     },
     {
+      6,
+      1,
+      1,
+      2,
+    },
+    {
+      7,
+      1,
+      6,
+      1,
+    },
+    {
       8,
       1,
-      4,
+      6,
       2,
     },
     {
       9,
       1,
-      4,
       1,
+      3,
     },
     {
       10,
       1,
-      5,
+      9,
       1,
     },
     {
       11,
       1,
       10,
-      4,
+      1,
     },
     {
       12,
       1,
       10,
-      3,
+      2,
     },
     {
       13,
       1,
       10,
-      2,
+      3,
     },
     {
       14,
       1,
       10,
-      1,
-    },
-    {
-      16,
-      1,
-      5,
-      2,
-    },
-    {
-      17,
-      1,
-      16,
-      1,
-    },
-    {
-      18,
-      1,
-      16,
-      2,
-    },
-    {
-      19,
-      1,
-      16,
-      3,
-    },
-    {
-      20,
-      1,
-      16,
       4,
+    },
+    {
+      16,
+      1,
+      15,
+      3,
     },
   },
   nodeType = 'script',
@@ -130,7 +106,7 @@ return {
       loadArguments = {
         {
           5,
-          'Table',
+          'Component',
         },
       },
       name = 'script/scriptoutput',
@@ -139,14 +115,34 @@ return {
       name = 'vector2',
     },
     {
+      loadArguments = {
+        40,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        20,
+      },
+      name = 'number',
+    },
+    {
       name = 'vector2',
     },
     {
       loadArguments = {
-        {
-          5,
-          'Table',
-        },
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        1,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
         {
           5,
           '',
@@ -155,41 +151,17 @@ return {
       name = 'script/array',
     },
     {
-      loadArguments = {
-        11,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        21,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
       name = 'components/spriteanimation',
     },
     {
       loadArguments = {
-        0.090000003576279,
+        'aim',
       },
-      name = 'number',
+      name = 'string',
     },
     {
       loadArguments = {
-        3,
+        1,
       },
       name = 'number',
     },
@@ -201,42 +173,18 @@ return {
     },
     {
       loadArguments = {
-        'move',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        'data/compounds/script/Init Sprite',
-      },
-      name = 'compound',
-    },
-    {
-      name = 'components/spriteanimation',
-    },
-    {
-      loadArguments = {
-        'attack',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        2,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        3,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
         1,
       },
       name = 'number',
+    },
+    {
+      name = 'entity/setcycleanimation',
+    },
+    {
+      loadArguments = {
+        'aim',
+      },
+      name = 'string',
     },
   },
 }

@@ -1,0 +1,1 @@
+return flat.graph.script.run(Mod.getFilePath 'entities/chaos/chaos_devil/attack')

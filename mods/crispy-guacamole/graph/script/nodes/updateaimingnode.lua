@@ -30,48 +30,50 @@ function UpdateAimingNode:execute(runtime, inputPin)
     local buttonName = runtime:readPin(self.buttonNameInPin)
 
     local aimingEntities, aimMode = self:getAimingEntities(playerEntity, buttonName)
-    
-    local extraData = playerEntity:getExtraData()
 
-    local aimPositionKey = 'aimPosition' .. buttonName
-    local mainAimingPosition = extraData[aimPositionKey]
+    if #aimingEntities > 0 then
+        local extraData = playerEntity:getExtraData()
 
-    local stickDirection = getStickDirection(playerEntity)
+        local aimPositionKey = 'aimPosition' .. buttonName
+        local mainAimingPosition = extraData[aimPositionKey]
 
-    mainAimingPosition = mainAimingPosition + flat.Vector3(stickDirection:x(), stickDirection:y(), 0) * game.getDT() * 15
+        local stickDirection = getStickDirection(playerEntity)
 
-    -- apply magnetism if possible
-    do
-        local closestTarget = self:getClosestValidTarget(playerEntity, aimMode, mainAimingPosition)
-        if closestTarget then
-            local aimingToClosestTarget = (closestTarget:getPosition() - mainAimingPosition):toVector2()
-            if stickDirection:dot(aimingToClosestTarget) > 0 or stickDirection:length2() < 0.5 * 0.5 then
-                local aimingToTargetDistance = aimingToClosestTarget:length()
-                local maxSnappingDistance = 2
-                if aimingToTargetDistance > 0 and aimingToTargetDistance < maxSnappingDistance then
-                    local magnetismForce = 1 - aimingToTargetDistance / maxSnappingDistance
-                    local magnetismOffset = aimingToClosestTarget:getNormalized() * game.getDT() * 15 * magnetismForce
-                    local newMainAimingPosition = mainAimingPosition + flat.Vector3(magnetismOffset:x(), magnetismOffset:y(), 0)
-                    if (closestTarget:getPosition() - mainAimingPosition):dot(closestTarget:getPosition() - newMainAimingPosition) < 0 then
-                        mainAimingPosition = closestTarget:getPosition()
-                    else
-                        mainAimingPosition = newMainAimingPosition
+        mainAimingPosition = mainAimingPosition + flat.Vector3(stickDirection:x(), stickDirection:y(), 0) * game.getDT() * 15
+
+        -- apply magnetism if possible
+        do
+            local closestTarget = self:getClosestValidTarget(playerEntity, aimMode, mainAimingPosition)
+            if closestTarget then
+                local aimingToClosestTarget = (closestTarget:getPosition() - mainAimingPosition):toVector2()
+                if stickDirection:dot(aimingToClosestTarget) > 0 or stickDirection:length2() < 0.5 * 0.5 then
+                    local aimingToTargetDistance = aimingToClosestTarget:length()
+                    local maxSnappingDistance = 2
+                    if aimingToTargetDistance > 0 and aimingToTargetDistance < maxSnappingDistance then
+                        local magnetismForce = 1 - aimingToTargetDistance / maxSnappingDistance
+                        local magnetismOffset = aimingToClosestTarget:getNormalized() * game.getDT() * 15 * magnetismForce
+                        local newMainAimingPosition = mainAimingPosition + flat.Vector3(magnetismOffset:x(), magnetismOffset:y(), 0)
+                        if (closestTarget:getPosition() - mainAimingPosition):dot(closestTarget:getPosition() - newMainAimingPosition) < 0 then
+                            mainAimingPosition = closestTarget:getPosition()
+                        else
+                            mainAimingPosition = newMainAimingPosition
+                        end
                     end
                 end
             end
         end
-    end
 
-    extraData[aimPositionKey] = mainAimingPosition
+        extraData[aimPositionKey] = mainAimingPosition
 
-    playerEntity:lookAtPosition(mainAimingPosition)
-    
-    local aimEntitiesKey = 'aimEntities' .. buttonName
-    local aimEntities = extraData[aimEntitiesKey]
+        playerEntity:lookAtPosition(mainAimingPosition)
+        
+        local aimEntitiesKey = 'aimEntities' .. buttonName
+        local aimEntities = extraData[aimEntitiesKey]
 
-    local aimPositions = aimMode.computeAimPositions(playerEntity, mainAimingPosition, aimingEntities)
-    for i = 1, #aimPositions do
-        aimEntities[i]:setPosition2d(aimPositions[i]:toVector2())
+        local aimPositions = aimMode.computeAimPositions(playerEntity, mainAimingPosition, aimingEntities)
+        for i = 1, #aimPositions do
+            aimEntities[i]:setPosition2d(aimPositions[i]:toVector2())
+        end
     end
 
     runtime:impulse(self.impulseOutPin)

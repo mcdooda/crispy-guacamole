@@ -173,28 +173,37 @@ map::Navigability EntityHelper::getNavigabilityMask(const EntityTemplate* entity
 	return map::Navigability::ALL;
 }
 
-void EntityHelper::setColor(Entity* entity, const flat::video::Color& color)
+void EntityHelper::setColorOverride(Entity* entity, const flat::video::Color& color)
 {
 	entity::component::sprite::SpriteComponent* spriteComponent = entity->getComponent<entity::component::sprite::SpriteComponent>();
 	if (spriteComponent != nullptr)
 	{
-		spriteComponent->setColor(color);
+		spriteComponent->setColorOverride(color);
+	}
+}
+
+void EntityHelper::clearColorOverride(Entity* entity)
+{
+	entity::component::sprite::SpriteComponent* spriteComponent = entity->getComponent<entity::component::sprite::SpriteComponent>();
+	if (spriteComponent != nullptr)
+	{
+		spriteComponent->clearColorOverride();
 	}
 }
 
 void EntityHelper::setSelectedColor(Entity* entity)
 {
-	setColor(entity, flat::video::Color::RED);
+	setColorOverride(entity, flat::video::Color::RED);
 }
 
 void EntityHelper::clearSelectedColor(Entity* entity)
 {
-	setColor(entity, flat::video::Color::WHITE);
+	clearColorOverride(entity);
 }
 
 void EntityHelper::setMouseOverColor(Entity* entity)
 {
-	setColor(entity, flat::video::Color::GREEN);
+	setColorOverride(entity, flat::video::Color::GREEN);
 }
 
 void EntityHelper::clearMouseOverColor(Entity* entity)
@@ -205,7 +214,7 @@ void EntityHelper::clearMouseOverColor(Entity* entity)
 	}
 	else
 	{
-		setColor(entity, flat::video::Color::WHITE);
+		clearColorOverride(entity);
 	}
 }
 

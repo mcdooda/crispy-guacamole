@@ -109,8 +109,8 @@ int l_Entity_flipSpriteX(lua_State* L);
 int l_Entity_setSpriteRotationX(lua_State* L);
 int l_Entity_setSpriteRotationY(lua_State* L);
 int l_Entity_setSpriteRotationZ(lua_State* L);
+int l_Entity_setSpriteScale(lua_State* L);
 int l_Entity_setSpriteColor(lua_State* L);
-int l_Entity_clearSpriteColor(lua_State* L);
 
 // detection
 int l_Entity_canSee(lua_State* L);

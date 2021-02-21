@@ -29,14 +29,12 @@ function UpdateInteractionBuildingNode:execute(runtime)
     if playerExtraData.interactionBuildingEntity and isNewBuilding then
         local oldBuilding = playerExtraData.interactionBuildingEntity
         oldBuilding:setSelected(false)
-        oldBuilding:clearSpriteColor()
         playerExtraData.interactionBuildingEntity = nil
     end
 
     if buildingEntity and isNewBuilding then
         playerExtraData.interactionBuildingEntity = buildingEntity
         buildingEntity:setSelected(true)
-        buildingEntity:setSpriteColor(0xFF0000FF)
     end
 
     runtime:writeOptionalPin(self.buildingEntityOutPin, buildingEntity)

@@ -135,8 +135,8 @@ int open(Game& game)
 		{"setSpriteRotationX",       l_Entity_setSpriteRotationX},
 		{"setSpriteRotationY",       l_Entity_setSpriteRotationY},
 		{"setSpriteRotationZ",       l_Entity_setSpriteRotationZ},
+		{"setSpriteScale",           l_Entity_setSpriteScale},
 		{"setSpriteColor",           l_Entity_setSpriteColor},
-		{"clearSpriteColor",         l_Entity_clearSpriteColor},
 
 		// detection
 		{"canSee",                   l_Entity_canSee},
@@ -1053,22 +1053,26 @@ int l_Entity_setSpriteRotationZ(lua_State* L)
 	return 0;
 }
 
+int l_Entity_setSpriteScale(lua_State* L)
+{
+	Entity& entity = getEntity(L, 1);
+	float scale = static_cast<float>(luaL_checknumber(L, 2));
+
+	// check the component is present
+	getComponent<sprite::SpriteComponent>(L, entity);
+
+	entity.getSprite().setScale(flat::Vector2(scale, scale));
+	entity.setAABBDirty();
+	return 0;
+}
+
 int l_Entity_setSpriteColor(lua_State* L)
 {
 	Entity& entity = getEntity(L, 1);
 	const uint32_t color = static_cast<uint32_t>(luaL_checkinteger(L, 2));
 
 	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
-	spriteComponent.setColorOverride(flat::video::Color(color));
-	return 0;
-}
-
-int l_Entity_clearSpriteColor(lua_State* L)
-{
-	Entity& entity = getEntity(L, 1);
-
-	sprite::SpriteComponent& spriteComponent = getComponent<sprite::SpriteComponent>(L, entity);
-	spriteComponent.clearColorOverride();
+	spriteComponent.setColor(flat::video::Color(color));
 	return 0;
 }
 

@@ -27,7 +27,7 @@ void SpriteComponent::init()
 
 	m_color = flat::video::Color::WHITE;
 	m_colorOverride = flat::video::Color::WHITE;
-	m_hasColorOverride = false;
+	m_sprite.setUseColor(false);
 
 	m_cycleAnimationDescription = nullptr;
 	m_currentAnimationDescription = nullptr;
@@ -229,7 +229,7 @@ void SpriteComponent::pushAttachedSprites(std::vector<const map::MapObject*>& ob
 void SpriteComponent::setColor(const flat::video::Color& color)
 {
 	m_color = color;
-	if (!m_hasColorOverride)
+	if (!m_sprite.getUseColor())
 	{
 		m_sprite.setColor(color);
 	}
@@ -238,15 +238,15 @@ void SpriteComponent::setColor(const flat::video::Color& color)
 void SpriteComponent::setColorOverride(const flat::video::Color& color)
 {
 	m_colorOverride = color;
-	m_hasColorOverride = true;
 	m_sprite.setColor(color);
+	m_sprite.setUseColor(true);
 }
 
 void SpriteComponent::clearColorOverride()
 {
 	m_colorOverride = flat::video::Color::WHITE;
 	m_sprite.setColor(m_color);
-	m_hasColorOverride = false;
+	m_sprite.setUseColor(false);
 }
 
 void SpriteComponent::update(float currentTime, float elapsedTime)

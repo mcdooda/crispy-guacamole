@@ -18,37 +18,39 @@ function StopAimingNode:execute(runtime, inputPin)
 
     local aimingEntities, aimMode = self:getAimingEntities(playerEntity, buttonName)
     
-    local extraData = playerEntity:getExtraData()
+    if #aimingEntities > 0 then
+        local extraData = playerEntity:getExtraData()
 
-    local aimPositionKey = 'aimPosition' .. buttonName
-    local mainAimingPosition = extraData[aimPositionKey]
-    extraData[aimPositionKey] = nil
+        local aimPositionKey = 'aimPosition' .. buttonName
+        local mainAimingPosition = extraData[aimPositionKey]
+        extraData[aimPositionKey] = nil
 
-    local aimPositions = {}
+        local aimPositions = {}
 
-    local aimEntitiesKey = 'aimEntities' .. buttonName
-    local aimEntities = extraData[aimEntitiesKey]
-    for i = 1, #aimEntities do
-        aimPositions[i] = aimEntities[i]:getPosition()
-        aimEntities[i]:despawn()
-    end
-    extraData[aimEntitiesKey] = nil
-
-    -- all entities enter combat, not only the currently aiming ones
-    if aimMode.triggersCombat then
-        print 'Triggering combat'
-        local groupEntities = extraData.groupEntities
-        for i = 1, #groupEntities do
-            local groupEntity = groupEntities[i]
-            if groupEntity:isValid() and groupEntity:getExtraData().currentLoopingState ~= 'combat' then
-                groupEntity:enterState 'combat'
-            end
+        local aimEntitiesKey = 'aimEntities' .. buttonName
+        local aimEntities = extraData[aimEntitiesKey]
+        for i = 1, #aimEntities do
+            aimPositions[i] = aimEntities[i]:getPosition()
+            aimEntities[i]:despawn()
         end
-    else
-        print 'Not Triggering combat'
-    end
+        extraData[aimEntitiesKey] = nil
 
-    aimMode.useAbility(aimingEntities, aimPositions)
+        -- all entities enter combat, not only the currently aiming ones
+        if aimMode.triggersCombat then
+            print 'Triggering combat'
+            local groupEntities = extraData.groupEntities
+            for i = 1, #groupEntities do
+                local groupEntity = groupEntities[i]
+                if groupEntity:isValid() and groupEntity:getExtraData().currentLoopingState ~= 'combat' then
+                    groupEntity:enterState 'combat'
+                end
+            end
+        else
+            print 'Not Triggering combat'
+        end
+
+        aimMode.useAbility(aimingEntities, aimPositions)
+    end
 
     runtime:impulse(self.impulseOutPin)
 end

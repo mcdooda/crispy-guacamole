@@ -18,20 +18,22 @@ function StartAimingNode:execute(runtime, inputPin)
 
     local aimingEntities, aimMode = self:getAimingEntities(playerEntity, buttonName)
 
-    local extraData = playerEntity:getExtraData()
+    if #aimingEntities > 0 then
+        local extraData = playerEntity:getExtraData()
 
-    local aimInitialPosition = aimMode.computeInitialAimPosition(playerEntity, aimingEntities)
-    local aimPositionKey = 'aimPosition' .. buttonName
-    extraData[aimPositionKey] = aimInitialPosition
+        local aimInitialPosition = aimMode.computeInitialAimPosition(playerEntity, aimingEntities)
+        local aimPositionKey = 'aimPosition' .. buttonName
+        extraData[aimPositionKey] = aimInitialPosition
 
-    local aimEntitiesKey = 'aimEntities' .. buttonName
-    local aimEntities = {}
+        local aimEntitiesKey = 'aimEntities' .. buttonName
+        local aimEntities = {}
 
-    local aimPositions = aimMode.computeAimPositions(playerEntity, aimInitialPosition, aimingEntities)
-    for i = 1, #aimPositions do
-        aimEntities[#aimEntities + 1] = Entity.spawn('player_aim_small', aimPositions[i])
+        local aimPositions = aimMode.computeAimPositions(playerEntity, aimInitialPosition, aimingEntities)
+        for i = 1, #aimPositions do
+            aimEntities[#aimEntities + 1] = Entity.spawn('player_aim_small', aimPositions[i])
+        end
+        extraData[aimEntitiesKey] = aimEntities
     end
-    extraData[aimEntitiesKey] = aimEntities
 
     runtime:impulse(self.impulseOutPin)
 end

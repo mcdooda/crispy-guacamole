@@ -9,5 +9,8 @@ return {
     -- aim
     'startaiming',
     'stopaiming',
-    'updateaiming'
+    'updateaiming',
+
+    -- AI
+    'aiaim',
 }

@@ -138,14 +138,12 @@ local function followAttackTarget(findTargetState)
 						local distance = move:length()
 
 						local attackRange = AttackHelper.getTemplate(entity).attackRange
-						local _, entityRadius = CollisionHelper.getRadius(entity)
 						local _, targetRadius = CollisionHelper.getRadius(currentAttackTarget)
 
 						local followStepDistance = 0.5
 						local minFollowStepDistance = 0.1
 
-						local desiredAttackDistance = attackRange + entityRadius + targetRadius
-						local difference = distance - targetRadius - entityRadius
+						local difference = distance - targetRadius
 						if difference > attackRange then
 							-- move closer to the current attack target but avoid collision
 							local desiredMoveDistance = distance - attackRange + 0.01

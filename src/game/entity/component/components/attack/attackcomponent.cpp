@@ -46,11 +46,10 @@ bool AttackComponent::isInAttackRange(Entity* target) const
 {
 	const float attackRange = getTemplate()->getAttackRange();
 
-	const float entityRadius = EntityHelper::getRadius(m_owner);
 	const float targetRadius = EntityHelper::getRadius(target);
 
 	float distance2 = flat::length2(target->getPosition() - m_owner->getPosition());
-	return distance2 <= flat::square(attackRange + entityRadius + targetRadius);
+	return distance2 <= flat::square(attackRange + targetRadius);
 }
 
 void AttackComponent::tryBeginAttack(float currentTime)
@@ -175,7 +174,7 @@ void AttackComponent::debugDraw(debug::DebugDisplay& debugDisplay) const
 		debugDisplay.add3dLine(m_owner->getPosition(), target->getPosition(), flat::video::Color::GREEN);
 	}
 
-	debugDisplay.add3dCircle(m_owner->getPosition(), getTemplate()->getAttackRange() + EntityHelper::getRadius(m_owner), flat::video::Color::GREEN, 0.5f);
+	debugDisplay.add3dCircle(m_owner->getPosition(), getTemplate()->getAttackRange(), flat::video::Color::GREEN, 0.5f);
 }
 #endif
 

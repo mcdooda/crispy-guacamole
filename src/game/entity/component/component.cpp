@@ -35,7 +35,17 @@ void Component::deinit()
 
 }
 
+void Component::preUpdate(float time, float dt)
+{
+	FLAT_ASSERT_MSG(false, "This should never be called!");
+}
+
 void Component::update(float time, float dt)
+{
+	FLAT_ASSERT_MSG(false, "This should never be called!");
+}
+
+void Component::postUpdate(float time, float dt)
 {
 	FLAT_ASSERT_MSG(false, "This should never be called!");
 }

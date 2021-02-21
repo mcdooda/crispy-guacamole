@@ -68,6 +68,7 @@ void BaseMapState::enter(Game& game)
 	m_entityRender.settings.positionAttribute           = m_entityRender.program.getAttribute("position");
 	m_entityRender.settings.uvAttribute                 = m_entityRender.program.getAttribute("uv");
 	m_entityRender.settings.colorAttribute              = m_entityRender.program.getAttribute("color");
+	m_entityRender.settings.useColorAttribute           = m_entityRender.program.getAttribute("useColor");
 	//m_entityRender.settings.normalAttribute             = m_entityRender.program.getAttribute("normal");
 	m_entityRender.settings.depthAttribute              = m_entityRender.program.getAttribute("depth");
 
@@ -603,9 +604,10 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 #endif
 				}
 
+				const flat::time::Clock& clock = getGameClock();
 				for (entity::Entity* entity : entities)
 				{
-					m_entityUpdater.triggerComponentPostCalls(entity);
+					m_entityUpdater.triggerComponentPostCalls(entity, clock.getTime(), clock.getDT());
 				}
 			}
 		}

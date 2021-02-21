@@ -3,11 +3,7 @@
 
 #include "component/componentregistry.h"
 
-#include "component/components/life/lifecomponent.h"
-
-namespace game
-{
-namespace entity
+namespace game::entity
 {
 
 EntityUpdater::EntityUpdater(const component::ComponentRegistry& componentRegistry) :
@@ -19,7 +15,7 @@ EntityUpdater::EntityUpdater(const component::ComponentRegistry& componentRegist
 	componentRegistry.eachComponentType(
 		[this](component::ComponentType& componentType)
 		{
-			if (componentType.requiresUpdate())
+			if (componentType.getUpdateType() != component::ComponentUpdateType::NONE)
 			{
 				FLAT_ASSERT(componentType.getUpdatePeriod() >= 1);
 				m_registeredComponents[componentType.getComponentTypeId() - 1].resize(componentType.getUpdatePeriod());
@@ -56,7 +52,7 @@ void EntityUpdater::registerEntity(Entity* entity)
 
 	for (component::Component* component : entity->getComponents())
 	{
-		if (component->componentRequiresUpdate())
+		if (component->getComponentUpdateType() != component::ComponentUpdateType::NONE)
 		{
 			component::ComponentTypeId componentTypeId = component->getComponentType().getComponentTypeId();
 			ComponentBucketList& componentBucketList = m_registeredComponents[componentTypeId - 1];
@@ -74,7 +70,7 @@ void EntityUpdater::unregisterEntity(Entity* entity)
 
 	for (component::Component* component : entity->getComponents())
 	{
-		if (component->componentRequiresUpdate())
+		if (component->getComponentUpdateType() != component::ComponentUpdateType::NONE)
 		{
 			component::ComponentTypeId componentTypeId = component->getComponentType().getComponentTypeId();
 			ComponentBucketList& componentBucketList = m_registeredComponents[componentTypeId - 1];
@@ -112,13 +108,23 @@ void EntityUpdater::updateSingleEntity(Entity* entity, float time, float dt)
 
 	FLAT_ASSERT(entity->getMap() != nullptr);
 
-	for (component::Component* component : entity->getComponents())
 	{
-		if (component->componentRequiresUpdate() && component->isEnabled())
-		{
-			FLAT_PROFILE(component->getComponentType().getConfigName());
-			component->update(time, dt);
-		}
+		FLAT_PROFILE("Pre Update");
+		updateSingleEntityComponents(entity, time, dt, component::ComponentUpdateType::PRE_UPDATE, &component::Component::preUpdate);
+	}
+	{
+		FLAT_PROFILE("Update");
+		updateSingleEntityComponents(entity, time, dt, component::ComponentUpdateType::UPDATE, &component::Component::update);
+	}
+
+	{
+		FLAT_PROFILE("Component post calls");
+		triggerComponentPostCalls(entity, time, dt);
+	}
+
+	{
+		FLAT_PROFILE("Post Update");
+		updateSingleEntityComponents(entity, time, dt, component::ComponentUpdateType::POST_UPDATE, &component::Component::postUpdate);
 	}
 
 	entity->updateAABBIfDirty();
@@ -128,42 +134,30 @@ void EntityUpdater::updateAllEntities(float time, float dt)
 {
 	FLAT_PROFILE("Update all entities");
 
-	for (int i = 0; i < m_registeredComponents.size(); ++i)
 	{
-		const ComponentBucketList& componentBucketList = m_registeredComponents[i];
-		const component::ComponentFlags componentFlag = 1 << (i + 1);
-		const component::ComponentType& componentType = m_componentRegistry.getComponentType(componentFlag);
-		if (componentType.requiresUpdate())
+		FLAT_PROFILE("Pre Update");
+		updateAllEntitiesComponents(time, dt, component::ComponentUpdateType::PRE_UPDATE, &component::Component::preUpdate);
+	}
+	{
+		FLAT_PROFILE("Update");
+		updateAllEntitiesComponents(time, dt, component::ComponentUpdateType::UPDATE,     &component::Component::update);
+	}
+
+	{
+		FLAT_PROFILE("Component post calls");
+		while (!m_componentPostCalls.empty())
 		{
-			const int updatePeriod = componentType.getUpdatePeriod();
-			FLAT_ASSERT(componentBucketList.size() > 0);
-			const ComponentBucket& bucket = componentBucketList[m_updateIndex % updatePeriod];
-
-			const size_t bucketComponentCount = bucket.size();
-			if (bucketComponentCount > 0)
+			std::vector<std::unique_ptr<ComponentPostCall>> componentPostCalls = std::move(m_componentPostCalls);
+			for (std::unique_ptr<ComponentPostCall>& componentPostCall : componentPostCalls)
 			{
-				FLAT_PROFILE(componentType.getConfigName());
-
-				// the bucket can be modified during the update calls so it's not possible to iterate with a modern for loop
-				for (size_t i = 0; i < bucketComponentCount; ++i)
-				{
-					component::Component* component = bucket[i];
-					if (component->isEnabled())
-					{
-						component->update(time, dt);
-					}
-				}
+				(*componentPostCall)(time, dt);
 			}
 		}
 	}
 
 	{
-		FLAT_PROFILE("Component post calls");
-		for (std::unique_ptr<ComponentPostCall>& componentPostCall : m_componentPostCalls)
-		{
-			(*componentPostCall)();
-		}
-		m_componentPostCalls.clear();
+		FLAT_PROFILE("Post Update");
+		updateAllEntitiesComponents(time, dt, component::ComponentUpdateType::POST_UPDATE, &component::Component::postUpdate);
 	}
 
 	{
@@ -187,7 +181,7 @@ void EntityUpdater::debugDraw(debug::DebugDisplay& debugDisplay) const
 }
 #endif
 
-void EntityUpdater::triggerComponentPostCalls(Entity* entity)
+void EntityUpdater::triggerComponentPostCalls(Entity* entity, float time, float dt)
 {
 	FLAT_PROFILE("Trigger component post calls for entity");
 	for (int i = static_cast<int>(m_componentPostCalls.size()) - 1; i >= 0; --i)
@@ -195,8 +189,52 @@ void EntityUpdater::triggerComponentPostCalls(Entity* entity)
 		ComponentPostCall* componentPostCall = m_componentPostCalls[i].get();
 		if (componentPostCall->getEntity() == entity)
 		{
-			(*componentPostCall)();
+			(*componentPostCall)(time, dt);
 			m_componentPostCalls.erase(m_componentPostCalls.begin() + i);
+		}
+	}
+}
+
+void EntityUpdater::updateSingleEntityComponents(Entity* entity, float time, float dt, component::ComponentUpdateType updateType, ComponentUpdateMethod updateMethod)
+{
+	for (component::Component* component : entity->getComponents())
+	{
+		if (component->isEnabled() && (component->getComponentUpdateType() & updateType) == updateType)
+		{
+			FLAT_PROFILE(component->getComponentType().getConfigName());
+			(component->*updateMethod)(time, dt);
+		}
+	}
+}
+
+void EntityUpdater::updateAllEntitiesComponents(float time, float dt, component::ComponentUpdateType updateType, ComponentUpdateMethod updateMethod)
+{
+	for (int i = 0; i < m_registeredComponents.size(); ++i)
+	{
+		const ComponentBucketList& componentBucketList = m_registeredComponents[i];
+		const component::ComponentFlags componentFlag = 1 << (i + 1);
+		const component::ComponentType& componentType = m_componentRegistry.getComponentType(componentFlag);
+		if ((componentType.getUpdateType() & updateType) == updateType)
+		{
+			const int updatePeriod = componentType.getUpdatePeriod();
+			FLAT_ASSERT(componentBucketList.size() > 0);
+			const ComponentBucket& bucket = componentBucketList[m_updateIndex % updatePeriod];
+
+			const size_t bucketComponentCount = bucket.size();
+			if (bucketComponentCount > 0)
+			{
+				FLAT_PROFILE(componentType.getConfigName());
+
+				// the bucket can be modified during the update calls so it's not possible to iterate with a modern for loop
+				for (size_t i = 0; i < bucketComponentCount; ++i)
+				{
+					component::Component* component = bucket[i];
+					if (component->isEnabled())
+					{
+						(component->*updateMethod)(time, dt);
+					}
+				}
+			}
 		}
 	}
 }
@@ -206,7 +244,6 @@ game::entity::Entity* ComponentPostCall::getEntity() const
 	return m_component->getOwner();
 }
 
-} // entity
-} // game
+} // game::entity
 
 

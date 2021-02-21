@@ -4,13 +4,7 @@
 #include "interactioncomponenttemplate.h"
 #include "../../component.h"
 
-namespace game
-{
-namespace entity
-{
-namespace component
-{
-namespace interaction
+namespace game::entity::component::interaction
 {
 
 class InteractionComponent : public ComponentImpl<InteractionComponentTemplate>
@@ -18,7 +12,7 @@ class InteractionComponent : public ComponentImpl<InteractionComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "interaction"; }
 		inline static const char* getVisualName() { return "Interaction"; }
-		inline static bool requiresUpdate() { return false; }
+		inline static ComponentUpdateType getUpdateType() { return ComponentUpdateType::NONE; }
 
 		const std::string& getBehaviorStateName() const;
 
@@ -31,10 +25,7 @@ class InteractionComponent : public ComponentImpl<InteractionComponentTemplate>
 		std::unique_ptr<std::string> m_interactionState;
 };
 
-} // interaction
-} // component
-} // entity
-} // game
+} // game::entity::component::interaction
 
 #endif // GAME_ENTITY_COMPONENT_INTERACTION_INTERACTIONCOMPONENT_H
 

@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "entity/component/componenttype.h"
+
 namespace game
 {
 #ifdef FLAT_DEBUG
@@ -27,7 +29,7 @@ class ComponentPostCall
 
 		Entity* getEntity() const;
 
-		virtual void operator()() = 0;
+		virtual void operator()(float time, float dt) = 0;
 
 	protected:
 		component::Component* m_component;
@@ -37,16 +39,16 @@ template <typename T>
 class ComponentPostCallImpl final : public ComponentPostCall
 {
 	public:
-		using CallbackType = void (T::*)();
+		using CallbackType = void (T::*)(float, float);
 
 	public:
 		ComponentPostCallImpl(T* component, CallbackType callbackMethod) : ComponentPostCall(component),
 			m_callbackMethod(callbackMethod) {}
 
-		void operator()() override
+		void operator()(float time, float dt) override
 		{
 			FLAT_ASSERT(*reinterpret_cast<uint8_t*>(m_component) != FLAT_WIPE_VALUE);
-			return (static_cast<T*>(m_component)->*m_callbackMethod)();
+			return (static_cast<T*>(m_component)->*m_callbackMethod)(time, dt);
 		}
 
 	private:
@@ -79,13 +81,18 @@ class EntityUpdater final
 		std::vector<Entity*>& getEntities() { return m_registeredEntities; }
 
 		template <class T>
-		void addComponentPostCall(T* component, void (T::* callbackMethod)());
+		void addComponentPostCall(T* component, void (T::* callbackMethod)(float, float));
 
-		void triggerComponentPostCalls(Entity* entity);
+		void triggerComponentPostCalls(Entity* entity, float time, float dt);
 
 #ifdef FLAT_DEBUG
 		void debugDraw(debug::DebugDisplay& debugDisplay) const;
 #endif
+
+	private:
+		using ComponentUpdateMethod = void (component::Component::*)(float time, float dt);
+		void updateSingleEntityComponents(Entity* entity, float time, float dt, component::ComponentUpdateType updateType, ComponentUpdateMethod updateMethod);
+		void updateAllEntitiesComponents(float time, float dt, component::ComponentUpdateType updateType, ComponentUpdateMethod updateMethod);
 
 	private:
 		const component::ComponentRegistry& m_componentRegistry;
@@ -97,7 +104,7 @@ class EntityUpdater final
 };
 
 template <class T>
-void EntityUpdater::addComponentPostCall(T* component, void (T::* callbackMethod)())
+void EntityUpdater::addComponentPostCall(T* component, void (T::* callbackMethod)(float, float))
 {
 	m_componentPostCalls.emplace_back(std::make_unique<ComponentPostCallImpl<T>>(component, callbackMethod));
 }

@@ -5,13 +5,7 @@
 #include "selectioncomponenttemplate.h"
 #include "../../component.h"
 
-namespace game
-{
-namespace entity
-{
-namespace component
-{
-namespace selection
+namespace game::entity::component::selection
 {
 
 class SelectionComponent : public ComponentImpl<SelectionComponentTemplate>
@@ -19,7 +13,7 @@ class SelectionComponent : public ComponentImpl<SelectionComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "selection"; }
 		inline static const char* getVisualName() { return "Selection"; }
-		inline static bool requiresUpdate() { return false; }
+		inline static ComponentUpdateType getUpdateType() { return ComponentUpdateType::NONE; }
 
 		void init() override;
 		void deinit() override;
@@ -46,10 +40,7 @@ class SelectionComponent : public ComponentImpl<SelectionComponentTemplate>
 		flat::lua::SlotProxy<> m_clickSlotProxy;
 };
 
-} // selection
-} // component
-} // entity
-} // game
+} // game::entity::component::selection
 
 #endif // GAME_ENTITY_COMPONENT_SELECTION_SELECTIONCOMPONENT_H
 

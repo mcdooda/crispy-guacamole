@@ -177,7 +177,7 @@ bool PropComponent::removedFromMap(Entity* entity)
 	return true;
 }
 
-void PropComponent::selectAnimationPostCall()
+void PropComponent::selectAnimationPostCall(float time, float dt)
 {
 	const map::Map* map = m_owner->getMap();
 	flat::Vector2i position2d(m_owner->getPosition2d());

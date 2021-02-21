@@ -22,7 +22,7 @@ class PropComponent : public ComponentImpl<PropComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "prop"; }
 		inline static const char* getVisualName() { return "Prop"; }
-		inline static bool requiresUpdate() { return false; }
+		inline static ComponentUpdateType getUpdateType() { return ComponentUpdateType::NONE; }
 
 		void init() override;
 		void deinit() override;
@@ -39,7 +39,7 @@ class PropComponent : public ComponentImpl<PropComponentTemplate>
 		bool addedToMap(Entity* entity, map::Map* map, EntityUpdater* entityUpdater);
 		bool removedFromMap(Entity* entity);
 
-		void selectAnimationPostCall();
+		void selectAnimationPostCall(float time, float dt);
 };
 
 } // prop

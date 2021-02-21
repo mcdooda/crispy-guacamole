@@ -22,7 +22,7 @@ class FactionComponent : public ComponentImpl<FactionComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "faction"; }
 		inline static const char* getVisualName() { return "Faction"; }
-		inline static bool requiresUpdate() { return false; }
+		inline static ComponentUpdateType getUpdateType() { return ComponentUpdateType::NONE; }
 
 		const entity::faction::Faction& getFaction() const;
 

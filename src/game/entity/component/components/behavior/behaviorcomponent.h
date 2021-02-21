@@ -27,7 +27,6 @@ class BehaviorComponent : public ComponentImpl<BehaviorComponentTemplate>
 		inline static const char* getVisualName() { return "Behavior"; }
 		inline static bool enableInMapEditor() { return false; }
 		inline static bool enableInEntityEditor() { return false; }
-		inline static int getUpdatePeriod() { return 5; }
 
 		void init() override;
 		void deinit() override;

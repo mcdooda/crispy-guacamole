@@ -18,6 +18,14 @@ using ComponentTypeId = uint8_t;
 using ComponentFlags = uint32_t;
 enum { AllComponents = 0xFFFFFFFF };
 
+enum ComponentUpdateType : uint8_t
+{
+	NONE = 0,
+	PRE_UPDATE = (1 << 0),
+	UPDATE = (1 << 1),
+	POST_UPDATE = (1 << 2)
+};
+
 class ComponentType
 {
 public:
@@ -33,7 +41,7 @@ public:
 	virtual bool enableInMapEditor() const = 0;
 	virtual bool allowEntityInEditor() const = 0;
 
-	virtual bool requiresUpdate() const = 0;
+	virtual ComponentUpdateType getUpdateType() const = 0;
 	virtual int getUpdatePeriod() const = 0;
 
 	virtual ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) const = 0;
@@ -58,7 +66,7 @@ public:
 	bool enableInMapEditor() const override;
 	bool allowEntityInEditor() const override;
 
-	bool requiresUpdate() const override;
+	ComponentUpdateType getUpdateType() const override;
 	int getUpdatePeriod() const override;
 
 	ComponentTemplate* loadConfigFile(Game& game, lua_State* L, const std::filesystem::path& entityTemplatePath) const override;
@@ -98,9 +106,9 @@ bool ComponentTypeImpl<T>::allowEntityInEditor() const
 }
 
 template<class T>
-inline bool ComponentTypeImpl<T>::requiresUpdate() const
+inline ComponentUpdateType ComponentTypeImpl<T>::getUpdateType() const
 {
-	return T::requiresUpdate();
+	return T::getUpdateType();
 }
 
 template<class T>

@@ -14,7 +14,7 @@ class SampleComponent : public ComponentImpl<SampleComponentTemplate>
 	public:
 		inline static const char* getConfigName() { return "sample"; }
 		inline static const char* getVisualName() { return "Sample"; }
-		inline static bool requiresUpdate() { return false; }
+		inline static ComponentUpdateType getUpdateType() { return ComponentUpdateType::NONE; }
 
 		void playSample(Game& game, const std::filesystem::path& filename, int numloops);
 };

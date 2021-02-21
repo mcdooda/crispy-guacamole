@@ -34,11 +34,15 @@ class Component : public flat::util::Convertible<Component>
 
 		virtual void init();
 		virtual void deinit();
+
+		virtual void preUpdate(float time, float dt);
 		virtual void update(float time, float dt);
+		virtual void postUpdate(float time, float dt);
+
 		virtual bool isBusy() const;
 		virtual void cancelCurrentAction();
 
-		virtual bool componentRequiresUpdate() const = 0;
+		virtual ComponentUpdateType getComponentUpdateType() const = 0;
 		virtual int getComponentUpdatePeriod() const = 0;
 
 #ifdef FLAT_DEBUG
@@ -91,7 +95,7 @@ class ComponentImpl : public Component
 		inline static bool enableInEntityEditor() { return true; }
 		inline static bool allowEntityInEditor() { return true; }
 
-		inline static bool requiresUpdate() { return true; }
+		inline static ComponentUpdateType getUpdateType() { return ComponentUpdateType::UPDATE; }
 		inline static int getUpdatePeriod() { return 1; }
 
 		inline static void setType(const std::shared_ptr<const ComponentType>& type) { ComponentImpl::type = type; }
@@ -110,7 +114,7 @@ class ComponentImpl : public Component
 		template <class T>
 		inline void disableComponent() const;
 
-		bool componentRequiresUpdate() const override { return getType().requiresUpdate(); }
+		ComponentUpdateType getComponentUpdateType() const override { return getType().getUpdateType(); }
 		int getComponentUpdatePeriod() const override { return getType().getUpdatePeriod(); }
 
 	private:

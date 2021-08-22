@@ -15,10 +15,7 @@ end
 
 function BuildingAction:build(parent, building, buildingData)
     if buildingData and buildingData.units then
-        local buttons = {{'A', Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP},
-                         {'B', Widget.PositionPolicy.LEFT + Widget.PositionPolicy.CENTER_Y},
-                         {'X', Widget.PositionPolicy.RIGHT + Widget.PositionPolicy.CENTER_Y},
-                         {'Y', Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.BOTTOM}}
+        local buttons = {'A', 'B', 'X', 'Y'}
         local widgets = {}
         for i = 1, #buildingData.units do
             local unit = buildingData.units[i]
@@ -26,7 +23,7 @@ function BuildingAction:build(parent, building, buildingData)
             local unitTemplate = unitAsset:getPath()
             local unitData = assert(EntityData.get(unitTemplate), 'Could not find unit data for ' .. unitTemplate)
             do
-                local button = Action:new(buttons[i][1], unit, Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP, building, parent)
+                local button = Action:new(buttons[i], unit, Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.TOP, building, parent)
                 button.container:setPositionPolicy(Widget.PositionPolicy.CENTER)
                 widgets[#widgets+1] = button
             end

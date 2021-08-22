@@ -16,9 +16,9 @@ end
 
 function Button:setPressed(pressed)
     if(pressed) then
-        self.container:setBackground(Path.getModFilePath('ui/controller/xbox/xbox_' .. self.type .. '_pressed.png'))
+        self.container:setBackground(Path.getModFilePath('ui/controller/buttons/' .. self.type .. '_pressed.png'))
     else
-        self.container:setBackground(Path.getModFilePath('ui/controller/xbox/xbox_' .. self.type .. '.png'))
+        self.container:setBackground(Path.getModFilePath('ui/controller/buttons/' .. self.type .. '.png'))
     end
 end
 

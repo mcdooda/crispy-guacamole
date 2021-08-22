@@ -25,10 +25,34 @@ return {
       2,
     },
     {
+      2,
+      3,
+      8,
+      1,
+    },
+    {
+      4,
+      1,
+      6,
+      1,
+    },
+    {
       5,
       1,
       4,
       3,
+    },
+    {
+      7,
+      1,
+      6,
+      3,
+    },
+    {
+      8,
+      1,
+      6,
+      2,
     },
   },
   nodeType = 'script',
@@ -56,6 +80,18 @@ return {
         'groupEntities',
       },
       name = 'string',
+    },
+    {
+      name = 'entity/addslot',
+    },
+    {
+      loadArguments = {
+        'entityJoinedGroup',
+      },
+      name = 'string',
+    },
+    {
+      name = 'reroute',
     },
   },
 }

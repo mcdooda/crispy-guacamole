@@ -108,6 +108,7 @@ return {
     'entity/setextradatafield',
     'entity/clearextradatafield',
     'entity/getextradatafield',
+    'entity/addslot',
 
     'entity/isvalidentity',
     'entity/equalentity',

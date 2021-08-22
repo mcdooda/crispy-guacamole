@@ -37,7 +37,6 @@ function StopAimingNode:execute(runtime, inputPin)
 
         -- all entities enter combat, not only the currently aiming ones
         if aimMode.triggersCombat then
-            print 'Triggering combat'
             local groupEntities = extraData.groupEntities
             for i = 1, #groupEntities do
                 local groupEntity = groupEntities[i]
@@ -45,8 +44,6 @@ function StopAimingNode:execute(runtime, inputPin)
                     groupEntity:enterState 'combat'
                 end
             end
-        else
-            print 'Not Triggering combat'
         end
 
         aimMode.useAbility(aimingEntities, aimPositions)

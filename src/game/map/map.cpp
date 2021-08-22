@@ -78,23 +78,37 @@ void Map::setState(Game& game, const io::MapFile& mapFile)
 	setAxes(mapFile.getXAxis(), mapFile.getYAxis(), mapFile.getZAxis());
 	setBounds(mapFile.getMinX(), mapFile.getMaxX(), mapFile.getMinY(), mapFile.getMaxY());
 
+	// load tiles
+	std::vector<std::shared_ptr<const TileTemplate>> tileTemplates;
+	mapFile.eachTileTemplate([&tileTemplates, &baseMapState, &game](const std::filesystem::path& tileTemplatePath)
+	{
+		tileTemplates.emplace_back(baseMapState.getTileTemplate(game, tileTemplatePath));
+	});
+
+	// load props
+	std::vector<std::shared_ptr<const flat::video::FileTexture>> propTextures;
+	mapFile.eachPropTemplate([&propTextures, &game](const std::filesystem::path& propTemplateName)
+	{
+		const std::filesystem::path propTexturePath = game.mod.getTexturePath(propTemplateName);
+		propTextures.emplace_back(game.video->getTexture(propTexturePath));
+	});
+
 	// tiles
 	m_tiles.reserve(mapFile.getTilesCount());
 	mapFile.eachTile(
-		[this, &game, &baseMapState]
+		[this, &game, &baseMapState, &tileTemplates, &propTextures]
 		(
 			const flat::Vector2i& tilePosition,
 			const io::MapFile::Tile& tile,
-			const std::filesystem::path& tileTemplatePath,
-			const std::filesystem::path* propTemplateName
+			std::uint16_t tileTemplateIndex,
+			std::uint16_t propIndex
 		)
 	{
-		const std::shared_ptr<const TileTemplate> tileTemplate = baseMapState.getTileTemplate(game, tileTemplatePath);
+		const std::shared_ptr<const TileTemplate>& tileTemplate = tileTemplates.at(tileTemplateIndex);
 		TileIndex tileIndex = createTile(tilePosition, tile.z, tileTemplate, tile.tileTemplateVariantIndex);
-		if (propTemplateName != nullptr)
+		if (propIndex != io::MapFile::Tile::INVALID_PROP)
 		{
-			const std::filesystem::path texturePath = game.mod.getTexturePath(*propTemplateName);
-			const std::shared_ptr<const flat::video::FileTexture>& texture = game.video->getTexture(texturePath);
+			const std::shared_ptr<const flat::video::FileTexture>& texture = propTextures.at(propIndex);
 			setTilePropTexture(tileIndex, texture);
 		}
 	});

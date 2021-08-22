@@ -86,6 +86,12 @@ public:
 	inline size_t getTilesCount() const { return m_tilesByPosition.size(); }
 
 	template <class Func>
+	inline void eachTileTemplate(Func func) const;
+
+	template <class Func>
+	inline void eachPropTemplate(Func func) const;
+
+	template <class Func>
 	inline void eachTile(Func func) const;
 
 	// entities
@@ -132,6 +138,24 @@ private:
 };
 
 template <class Func>
+void game::map::io::MapFile::eachTileTemplate(Func func) const
+{
+	for (const std::filesystem::path& tileTemplate : m_tileTemplates)
+	{
+		func(tileTemplate);
+	}
+}
+
+template <class Func>
+void game::map::io::MapFile::eachPropTemplate(Func func) const
+{
+	for (const std::filesystem::path& propTemplate : m_propTemplates)
+	{
+		func(propTemplate);
+	}
+}
+
+template <class Func>
 void MapFile::eachTile(Func func) const
 {
 	for (std::int16_t x = m_minX; x <= m_maxX; ++x)
@@ -142,12 +166,7 @@ void MapFile::eachTile(Func func) const
 			const Tile* tile = getTileIfExists(tilePosition);
 			if (tile != nullptr)
 			{
-				const std::filesystem::path* propTemplate = nullptr;
-				if (tile->propIndex != Tile::INVALID_PROP)
-				{
-					propTemplate = &m_propTemplates[tile->propIndex];
-				}
-				func(tilePosition, *tile, m_tileTemplates[tile->tileTemplateIndex], propTemplate);
+				func(tilePosition, *tile, tile->tileTemplateIndex, tile->propIndex);
 			}
 		}
 	}

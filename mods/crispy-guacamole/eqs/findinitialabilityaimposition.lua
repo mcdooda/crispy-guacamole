@@ -4,7 +4,7 @@ return flat.eqs.template {
     generator = cg.getHostiles,
     tests = {
         flat.eqs.test.distance(
-            1,
+            2,
             flat.eqs.scoring.inverseLinear,
             {
                 from = flat.eqs.context.querier,

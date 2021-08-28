@@ -13,7 +13,7 @@ local entityBackplateEnabledPicturePath  = 'mods/crispy-guacamole/ui/controller/
 local entityBackplateDisabledPicturePath = 'mods/crispy-guacamole/ui/controller/entitybackplate_disabled.png'
 
 local function makeButton(parent, path)
-    local container = Widget.makeFixedSize(80, 130)
+    local container = Widget.makeFixedSize(70, 120)
     container:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.FIXED_Y)
     container:setPadding(0)
     container:setMargin(0)
@@ -69,8 +69,10 @@ local function setBackplateEnabled(buttonWidget)
 end
 
 local function addEntityPreview(buttonWidget, entity)
-    local entityPreview = Preview.entity(entity:getTemplatePath(), nil, true, 3)
+    local entityPreview, offsetX, offsetY = Preview.entity(entity:getTemplatePath(), nil, true, 3)
+    print(entity:getTemplateName(), entityPreview, offsetX, offsetY)
     entityPreview:setPositionPolicy(Widget.PositionPolicy.CENTER_X + Widget.PositionPolicy.CENTER_Y)
+    entityPreview:setPosition(offsetX, offsetY - 12)
     buttonWidget.previewContainer:addChild(entityPreview)
 end
 
@@ -83,7 +85,7 @@ local function entityJoinedGroup(playerEntity, otherEntity, buttonWidgets)
 end
 
 local function buildWidgets(playerEntity)
-    local container = Widget.makeFixedSize(220, 220)
+    local container = Widget.makeFixedSize(200, 240)
     container:setPositionPolicy(Widget.PositionPolicy.TOP + Widget.PositionPolicy.LEFT)
     container:setSizePolicy(Widget.SizePolicy.FIXED_X + Widget.SizePolicy.FIXED_Y)
     container:setPadding(5)

@@ -76,11 +76,15 @@ local function entitySpritePreview(entityTemplatePath, spriteComponentTemplate, 
         local width, height = preview:getSize()
         preview:setSize(width * scale, height * scale)
         preview:setBackgroundSize(imageWidth * scale, imageHeight * scale)
+    else
+        scale = 1
     end
+    local offsetX = (imageWidth / spriteComponentTemplate.size:x() * 0.5 - spriteComponentTemplate.origin:x()) * scale
+    local offsetY = (-imageHeight / spriteComponentTemplate.size:y() * 0.5 + spriteComponentTemplate.origin:y()) * scale
     if showTooltip then
         flat.ui.addTooltip(preview, entityTemplatePath)
     end
-    return preview
+    return preview, offsetX, offsetY
 end
 
 local function entityPreview(entityTemplatePath, animationName, loopForever, scale, showTooltip)

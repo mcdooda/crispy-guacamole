@@ -15,8 +15,8 @@ return {
     {
       1,
       3,
-      8,
       2,
+      1,
     },
     {
       1,
@@ -25,58 +25,40 @@ return {
       1,
     },
     {
+      2,
       1,
-      3,
-      10,
+      8,
       2,
     },
     {
-      1,
-      3,
-      14,
       2,
+      1,
+      42,
+      1,
     },
     {
-      1,
       3,
-      19,
-      2,
-    },
-    {
       1,
-      3,
       34,
-      2,
-    },
-    {
-      1,
-      3,
-      32,
-      2,
-    },
-    {
-      2,
-      1,
-      1,
-      1,
-    },
-    {
-      3,
-      1,
-      1,
       2,
     },
     {
       4,
       1,
+      32,
+      2,
+    },
+    {
+      4,
       1,
-      3,
+      48,
+      1,
     },
     {
       5,
       1,
       1,
-      4,
+      2,
     },
     {
       6,
@@ -99,20 +81,8 @@ return {
     {
       9,
       1,
-      14,
-      3,
-    },
-    {
-      9,
+      39,
       1,
-      32,
-      3,
-    },
-    {
-      9,
-      1,
-      34,
-      3,
     },
     {
       10,
@@ -151,12 +121,6 @@ return {
       1,
     },
     {
-      14,
-      3,
-      25,
-      2,
-    },
-    {
       15,
       1,
       14,
@@ -172,7 +136,7 @@ return {
       17,
       1,
       1,
-      5,
+      1,
     },
     {
       18,
@@ -253,12 +217,6 @@ return {
       1,
     },
     {
-      32,
-      3,
-      29,
-      2,
-    },
-    {
       33,
       1,
       32,
@@ -294,6 +252,108 @@ return {
       34,
       6,
     },
+    {
+      39,
+      1,
+      14,
+      3,
+    },
+    {
+      39,
+      1,
+      40,
+      1,
+    },
+    {
+      40,
+      1,
+      32,
+      3,
+    },
+    {
+      40,
+      1,
+      41,
+      1,
+    },
+    {
+      41,
+      1,
+      34,
+      3,
+    },
+    {
+      42,
+      1,
+      19,
+      2,
+    },
+    {
+      42,
+      1,
+      10,
+      2,
+    },
+    {
+      42,
+      1,
+      43,
+      1,
+    },
+    {
+      43,
+      1,
+      14,
+      2,
+    },
+    {
+      43,
+      1,
+      44,
+      1,
+    },
+    {
+      44,
+      1,
+      25,
+      2,
+    },
+    {
+      44,
+      1,
+      4,
+      1,
+    },
+    {
+      45,
+      1,
+      1,
+      3,
+    },
+    {
+      46,
+      1,
+      1,
+      4,
+    },
+    {
+      47,
+      1,
+      1,
+      5,
+    },
+    {
+      48,
+      1,
+      3,
+      1,
+    },
+    {
+      48,
+      1,
+      29,
+      2,
+    },
   },
   nodeType = 'script',
   nodes = {
@@ -301,28 +361,19 @@ return {
       name = 'components/attackcomponent',
     },
     {
-      loadArguments = {
-        8,
-      },
-      name = 'number',
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
     },
     {
       loadArguments = {
         1.5,
       },
       name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
-    },
-    {
-      loadArguments = {
-        false,
-      },
-      name = 'boolean',
     },
     {
       loadArguments = {
@@ -383,114 +434,153 @@ return {
     },
     {
       loadArguments = {
+        5,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/playsound',
+    },
+    {
+      loadArguments = {
+        'fx_arrow1',
+      },
+      name = 'string',
+    },
+    {
+      name = 'game/sleep',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.30000001192093,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/playsound',
+    },
+    {
+      loadArguments = {
+        'fx_arrow1',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'arrow',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      name = 'entity/playsound',
+    },
+    {
+      loadArguments = {
+        'fx_arrow1',
+      },
+      name = 'string',
+    },
+    {
+      loadArguments = {
+        'arrow',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/fireprojectile',
+    },
+    {
+      loadArguments = {
+        'crossbow',
+      },
+      name = 'string',
+    },
+    {
+      name = 'entity/fireprojectile',
+    },
+    {
+      loadArguments = {
+        'crossbow',
+      },
+      name = 'string',
+    },
+    {
+      name = 'game/sleep',
+    },
+    {
+      loadArguments = {
+        0.10000000149012,
+      },
+      name = 'number',
+    },
+    {
+      loadArguments = {
+        0.30000001192093,
+      },
+      name = 'number',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      name = 'reroute',
+    },
+    {
+      loadArguments = {
+        true,
+      },
+      name = 'boolean',
+    },
+    {
+      loadArguments = {
         false,
       },
       name = 'boolean',
     },
     {
       loadArguments = {
-        true,
+        false,
       },
       name = 'boolean',
     },
     {
-      name = 'entity/playsound',
-    },
-    {
-      loadArguments = {
-        'fx_arrow1',
-      },
-      name = 'string',
-    },
-    {
-      name = 'game/sleep',
-    },
-    {
-      loadArguments = {
-        0.10000000149012,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.30000001192093,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
-    },
-    {
-      name = 'entity/playsound',
-    },
-    {
-      loadArguments = {
-        'fx_arrow1',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        'arrow',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        true,
-      },
-      name = 'boolean',
-    },
-    {
-      name = 'entity/playsound',
-    },
-    {
-      loadArguments = {
-        'fx_arrow1',
-      },
-      name = 'string',
-    },
-    {
-      loadArguments = {
-        'arrow',
-      },
-      name = 'string',
-    },
-    {
-      name = 'entity/fireprojectile',
-    },
-    {
-      loadArguments = {
-        'crossbow',
-      },
-      name = 'string',
-    },
-    {
-      name = 'entity/fireprojectile',
-    },
-    {
-      loadArguments = {
-        'crossbow',
-      },
-      name = 'string',
-    },
-    {
-      name = 'game/sleep',
-    },
-    {
-      loadArguments = {
-        0.10000000149012,
-      },
-      name = 'number',
-    },
-    {
-      loadArguments = {
-        0.30000001192093,
-      },
-      name = 'number',
+      name = 'reroute',
     },
   },
 }

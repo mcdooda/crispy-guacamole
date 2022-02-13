@@ -264,12 +264,7 @@ void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::vide
 		);
 
 		glDisable(GL_BLEND);
-
-#ifdef FLAT_DEBUG
-		drawBatches(game, view, opaqueObjects, m_numOpaqueObjects, m_numOpaqueDrawCalls);
-#else
-		drawBatches(game, view, opaqueObjects);
-#endif
+		drawSpriteBatches(game, view, opaqueObjects, m_numOpaqueObjects, m_numOpaqueDrawCalls);
 	}
 
 	{
@@ -283,12 +278,7 @@ void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::vide
 		), transparentObjects.end());
 
 		glEnable(GL_BLEND);
-
-#ifdef FLAT_DEBUG
-		drawBatches(game, view, transparentObjects, m_numTransparentObjects, m_numTransparentDrawCalls);
-#else
-		drawBatches(game, view, transparentObjects);
-#endif
+		drawSpriteBatches(game, view, transparentObjects, m_numTransparentObjects, m_numTransparentDrawCalls);
 	}
 
 	glDisable(GL_DEPTH_TEST);
@@ -735,11 +725,7 @@ void DisplayManager::sortTiles(std::vector<const Tile*>& tiles)
 	std::sort(std::execution::par, tiles.begin(), tiles.end(), locSortByDepthXY);
 }
 
-#ifdef FLAT_DEBUG
-void DisplayManager::drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls)
-#else
-void DisplayManager::drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects)
-#endif
+void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls)
 {
 	FLAT_PROFILE("Display Manager Draw Batches");
 
@@ -747,7 +733,6 @@ void DisplayManager::drawBatches(Game& game, const flat::video::View& view, cons
 	numObjects = objects.size();
 	numDrawCalls = 0;
 #endif
-
 
 	flat::video::Window& window = *game.video->window;
 

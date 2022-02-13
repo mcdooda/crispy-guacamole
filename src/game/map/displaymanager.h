@@ -74,11 +74,7 @@ class DisplayManager final
 		void sortObjects(std::vector<const MapObject*>& objects, const map::fog::Fog& fog, flat::AABB2 screenAABB, bool renderingWholeScreen) const;
 		static void sortTiles(std::vector<const Tile*>& tiles);
 
-#ifdef FLAT_DEBUG
-		void drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls);
-#else
-		void drawBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects);
-#endif
+		void drawSpriteBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls);
 		
 	private:
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
@@ -94,13 +90,12 @@ class DisplayManager final
 
 		std::vector<const MapObject*> m_temporaryObjects;
 
-#ifdef FLAT_DEBUG
+		// debug information
 		size_t m_numOpaqueObjects;
 		size_t m_numOpaqueDrawCalls;
 
 		size_t m_numTransparentObjects;
 		size_t m_numTransparentDrawCalls;
-#endif
 };
 
 } // map

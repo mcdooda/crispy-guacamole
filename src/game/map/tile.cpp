@@ -47,10 +47,10 @@ void Tile::synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer&
 	updateRenderHash();
 }
 
-flat::render::BaseSprite& Tile::getSprite()
+flat::render::BaseSprite* Tile::getSprite()
 {
 	FLAT_ASSERT(m_sprite.isSynchronized());
-	return m_sprite;
+	return &m_sprite;
 }
 
 const flat::render::ProgramSettings& Tile::getProgramSettings() const

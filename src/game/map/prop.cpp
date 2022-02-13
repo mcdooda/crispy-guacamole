@@ -6,9 +6,9 @@ namespace game
 namespace map
 {
 
-flat::render::BaseSprite& Prop::getSprite()
+flat::render::BaseSprite* Prop::getSprite()
 {
-	return m_sprite;
+	return &m_sprite;
 }
 
 const flat::render::ProgramSettings& Prop::getProgramSettings() const

@@ -24,7 +24,7 @@ class SpriteComponent : public ComponentImpl<SpriteComponentTemplate>
 			flat::render::Sprite sprite;
 			flat::Matrix4 relativeTransform;
 
-			flat::render::BaseSprite& getSprite() override;
+			flat::render::BaseSprite* getSprite() override;
 			const flat::render::ProgramSettings& getProgramSettings() const override;
 			bool isEntity() const override;
 		};

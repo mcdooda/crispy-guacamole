@@ -1010,7 +1010,7 @@ int l_Entity_flipSpriteX(lua_State* L)
 	// check the component is present
 	getComponent<sprite::SpriteComponent>(L, entity);
 
-	entity.getSprite().setFlipX(flip);
+	entity.getSprite()->setFlipX(flip);
 	return 0;
 }
 
@@ -1022,7 +1022,7 @@ int l_Entity_setSpriteRotationX(lua_State* L)
 	// check the component is present
 	getComponent<sprite::SpriteComponent>(L, entity);
 
-	entity.getSprite().setRotationX(angle);
+	entity.getSprite()->setRotationX(angle);
 	entity.setAABBDirty();
 	return 0;
 }
@@ -1035,7 +1035,7 @@ int l_Entity_setSpriteRotationY(lua_State* L)
 	// check the component is present
 	getComponent<sprite::SpriteComponent>(L, entity);
 
-	entity.getSprite().setRotationY(angle);
+	entity.getSprite()->setRotationY(angle);
 	entity.setAABBDirty();
 	return 0;
 }
@@ -1048,7 +1048,7 @@ int l_Entity_setSpriteRotationZ(lua_State* L)
 	// check the component is present
 	getComponent<sprite::SpriteComponent>(L, entity);
 
-	entity.getSprite().setRotationZ(angle);
+	entity.getSprite()->setRotationZ(angle);
 	entity.setAABBDirty();
 	return 0;
 }
@@ -1061,7 +1061,7 @@ int l_Entity_setSpriteScale(lua_State* L)
 	// check the component is present
 	getComponent<sprite::SpriteComponent>(L, entity);
 
-	entity.getSprite().setScale(flat::Vector2(scale, scale));
+	entity.getSprite()->setScale(flat::Vector2(scale, scale));
 	entity.setAABBDirty();
 	return 0;
 }

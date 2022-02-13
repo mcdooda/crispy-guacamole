@@ -252,10 +252,10 @@ void Entity::setElevation(float elevation)
 	m_aabbDirty = true;
 }
 
-flat::render::BaseSprite& Entity::getSprite()
+flat::render::BaseSprite* Entity::getSprite()
 {
 	FLAT_ASSERT(m_sprite != nullptr);
-	return *m_sprite;
+	return m_sprite;
 }
 
 void Entity::pushAttachedSprites(std::vector<const MapObject*>& objects) const
@@ -624,10 +624,10 @@ component::Component* Entity::findComponent(component::ComponentFlags componentF
 void Entity::checkSpriteAABB()
 {
 	// ensure the sprite AABB is up to date
-	if (hasSprite())
+	if (flat::render::BaseSprite* sprite = getSprite())
 	{
 		flat::AABB2 spriteAABB;
-		getSprite().getAABB(spriteAABB);
+		sprite->getAABB(spriteAABB);
 		FLAT_ASSERT(spriteAABB == getAABB());
 	}
 }

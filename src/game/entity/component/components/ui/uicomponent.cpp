@@ -98,7 +98,7 @@ void UiComponent::update(float currentTime, float elapsedTime)
 		if (flat::AABB2::overlap(screenAABB, spriteAABB))
 		{
 			widget->setVisible(true);
-			flat::Vector2 position2d = m_gameView->getWindowPosition(m_owner->getSprite().getPosition());
+			flat::Vector2 position2d = m_gameView->getWindowPosition(m_owner->getSprite()->getPosition());
 			flat::sharp::ui::Widget::Position widgetPosition = position2d + m_widgetOffset;
 			widget->setPosition(widgetPosition);
 		}

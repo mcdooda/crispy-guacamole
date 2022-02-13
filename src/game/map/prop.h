@@ -15,7 +15,7 @@ class Prop final : public MapObject
 public:
 	Prop() : m_tileIndex(TileIndex::INVALID_VALUE) {}
 
-	flat::render::BaseSprite& getSprite() override;
+	flat::render::BaseSprite* getSprite() override;
 	using MapObject::getSprite;
 
 	const flat::render::ProgramSettings& getProgramSettings() const override;

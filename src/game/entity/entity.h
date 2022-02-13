@@ -78,8 +78,8 @@ class Entity final : public map::MapObject
 		
 		inline void setSprite(flat::render::Sprite* sprite) { FLAT_ASSERT(sprite != nullptr); m_sprite = sprite; }
 		inline void clearSprite() { m_sprite = nullptr; }
-		inline bool hasSprite() const { return m_sprite != nullptr; }
-		flat::render::BaseSprite& getSprite() override;
+		flat::render::BaseSprite* getSprite() override;
+		using MapObject::getSprite;
 		void pushAttachedSprites(std::vector<const MapObject*>& objects) const;
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		

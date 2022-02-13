@@ -208,7 +208,7 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 
 	if (map::isValidTile(m_mouseOverTileIndex))
 	{
-		const flat::Vector2& spritePosition = m_map.getTileSprite(m_mouseOverTileIndex).getPosition();
+		const flat::Vector2& spritePosition = m_map.getTileSprite(m_mouseOverTileIndex)->getPosition();
 		flat::Vector2 delta = gameViewToMap(gameViewPosition - spritePosition);
 
 		const flat::Vector2i& xy = m_map.getTileXY(m_mouseOverTileIndex);
@@ -595,10 +595,10 @@ std::vector<entity::Entity*> BaseMapState::addGhostEntities(game::Game& game)
 					}
 
 					entities.push_back(ghost);
-					flat::render::BaseSprite& sprite = entities.back()->getSprite();
+					flat::render::BaseSprite* sprite = entities.back()->getSprite();
 					flat::video::Color color = flat::video::Color::WHITE;
 					color.a = 0.6f;
-					sprite.setColor(color);
+					sprite->setColor(color);
 #ifdef FLAT_DEBUG
 					entities.back()->debugDraw(m_debugDisplay);
 #endif
@@ -726,7 +726,7 @@ void BaseMapState::draw(game::Game& game)
 		FLAT_PROFILE("Draw map");
 
 		std::vector<entity::Entity*> ghosts = addGhostEntities(game);
-		m_displayManager.sortAndDraw(game, m_map.getFog(), m_gameView);
+		m_displayManager.draw(game, m_map.getFog(), m_gameView);
 		for (entity::Entity* ghost : ghosts)
 		{
 			despawnEntity(ghost);
@@ -991,7 +991,7 @@ void BaseMapState::getEntitiesInSelection(const flat::Vector2& bottomLeft, const
 		FLAT_ASSERT(mapObject->isEntity());
 
 		// check that the sprite origin actually is in the AABB
-		if (selectionAABB.isInside(mapObject->getSprite().getPosition()))
+		if (selectionAABB.isInside(mapObject->getSprite()->getPosition()))
 		{
 			// TODO: fix these casts
 			entities.push_back(const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject)));

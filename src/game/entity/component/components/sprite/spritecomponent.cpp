@@ -352,13 +352,13 @@ bool SpriteComponent::removedFromMap(Entity* entity)
 
 bool SpriteComponent::updateSpritePosition(const flat::Vector3& position)
 {
-	FLAT_ASSERT(m_owner->hasSprite());
+	FLAT_ASSERT(m_owner->getSprite() != nullptr);
 
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
 
 	flat::Vector2 position2d(map->getTransform() * position);
-	m_owner->getSprite().setPosition(position2d);
+	m_owner->getSprite()->setPosition(position2d);
 
 	return true;
 }
@@ -372,9 +372,9 @@ void SpriteComponent::updateAttachedSprites()
 	}
 }
 
-flat::render::BaseSprite& SpriteComponent::AttachedSprite::getSprite()
+flat::render::BaseSprite* SpriteComponent::AttachedSprite::getSprite()
 {
-	return sprite;
+	return &sprite;
 }
 
 const flat::render::ProgramSettings& SpriteComponent::AttachedSprite::getProgramSettings() const

@@ -134,11 +134,11 @@ bool PropComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdater* ent
 	m_owner->setAABBCanChange(false);
 
 	//  update sprite
-	if (m_owner->hasSprite())
+	if (m_owner->getSprite() != nullptr)
 	{
-		flat::render::BaseSprite& sprite = m_owner->getSprite();
+		flat::render::BaseSprite* sprite = m_owner->getSprite();
 		flat::Vector2 position2d(map->getTransform() * position);
-		sprite.setPosition(position2d);
+		sprite->setPosition(position2d);
 	}
 
 	if (propComponentTemplate->getSelectAnimation())

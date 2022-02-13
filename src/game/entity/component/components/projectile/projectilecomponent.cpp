@@ -120,7 +120,7 @@ bool ProjectileComponent::addedToMap(Entity* entity, map::Map* map, EntityUpdate
 {
 	FLAT_ASSERT(m_owner == entity);
 
-	if (m_owner->hasSprite())
+	if (m_owner->getSprite() != nullptr)
 	{
 		m_owner->positionChanged.on(this, &ProjectileComponent::updateSpritePosition);
 
@@ -154,7 +154,7 @@ bool ProjectileComponent::removedFromMap(Entity* entity)
 {
 	FLAT_ASSERT(m_owner == entity);
 
-	if (m_owner->hasSprite())
+	if (m_owner->getSprite() != nullptr)
 	{
 		m_owner->positionChanged.off(this);
 
@@ -169,7 +169,7 @@ bool ProjectileComponent::removedFromMap(Entity* entity)
 
 bool ProjectileComponent::headingChanged(float heading, float previousHeading)
 {
-	if (m_owner->hasSprite() && getTemplate()->getRotateSprite())
+	if (m_owner->getSprite() != nullptr && getTemplate()->getRotateSprite())
 	{
 		updateSpriteRotation();
 	}
@@ -179,7 +179,7 @@ bool ProjectileComponent::headingChanged(float heading, float previousHeading)
 
 bool ProjectileComponent::elevationChanged(float elevation)
 {
-	if (m_owner->hasSprite() && getTemplate()->getRotateSprite())
+	if (m_owner->getSprite() != nullptr && getTemplate()->getRotateSprite())
 	{
 		updateSpriteRotation();
 	}
@@ -236,9 +236,9 @@ bool ProjectileComponent::collided(Entity* collidedEntity, map::TileIndex collid
 bool ProjectileComponent::collidedWithEntity(Entity* collidedEntity, const flat::Vector3& normal)
 {
 	sprite::SpriteComponent* spriteComponent = collidedEntity->getComponent<sprite::SpriteComponent>();
-	if (spriteComponent != nullptr && m_owner->hasSprite())
+	if (spriteComponent != nullptr && m_owner->getSprite() != nullptr)
 	{
-		spriteComponent->attachSprite(static_cast<flat::render::Sprite&>(m_owner->getSprite()));
+		spriteComponent->attachSprite(*static_cast<flat::render::Sprite*>(m_owner->getSprite()));
 	}
 
 	return collided(collidedEntity, map::TileIndex::INVALID_VALUE, normal);
@@ -256,13 +256,13 @@ float ProjectileComponent::getSpeedXY() const
 
 bool ProjectileComponent::updateSpritePosition(const flat::Vector3& position)
 {
-	FLAT_ASSERT(m_owner->hasSprite());
+	FLAT_ASSERT(m_owner->getSprite() != nullptr);
 
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
 
 	flat::Vector2 position2d(map->getTransform() * position);
-	m_owner->getSprite().setPosition(position2d);
+	m_owner->getSprite()->setPosition(position2d);
 	return true;
 }
 
@@ -274,7 +274,7 @@ bool ProjectileComponent::updateSpriteElevation(float elevation)
 
 void ProjectileComponent::updateSpriteRotation() const
 {
-	FLAT_ASSERT(m_owner->hasSprite() && getTemplate()->getRotateSprite());
+	FLAT_ASSERT(m_owner->getSprite() != nullptr && getTemplate()->getRotateSprite());
 
 	const float heading = m_owner->getHeading();
 	const float elevation = m_owner->getElevation();
@@ -286,7 +286,7 @@ void ProjectileComponent::updateSpriteRotation() const
 	FLAT_ASSERT(map != nullptr);
 
 	flat::Vector2 direction2d(map->getTransform() * direction);
-	m_owner->getSprite().setRotationZ(flat::vector2_angle(direction2d));
+	m_owner->getSprite()->setRotationZ(flat::vector2_angle(direction2d));
 }
 
 #ifdef FLAT_DEBUG

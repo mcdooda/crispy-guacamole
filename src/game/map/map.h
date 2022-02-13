@@ -131,8 +131,8 @@ class Map
 		PropIndex getTilePropIndex(TileIndex tileIndex) const;
 		const Prop& getPropFromIndex(PropIndex propIndex) const;
 
-		const flat::render::BaseSprite& getTileSprite(TileIndex tileIndex) const;
-		flat::render::BaseSprite& getTileSprite(TileIndex tileIndex);
+		const flat::render::BaseSprite* getTileSprite(TileIndex tileIndex) const;
+		flat::render::BaseSprite* getTileSprite(TileIndex tileIndex);
 
 		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
 		const std::shared_ptr<const TileTemplate> getTileTemplate(TileIndex tileIndex) const;

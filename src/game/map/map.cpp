@@ -175,9 +175,9 @@ void Map::getState(Game& game, io::MapFile& mapFile) const
 	eachTile([this, &mapFile, &game](TileIndex tileIndex)
 	{
 		// tile texture and variant index
-		const flat::render::SynchronizedSprite& tileSprite = static_cast<const flat::render::SynchronizedSprite&>(getTileSprite(tileIndex));
-		const flat::render::SpriteSynchronizer& tileSpriteSynchronizer = tileSprite.getSynchronizer();
-		const std::filesystem::path tileTexture = std::filesystem::path(static_cast<const flat::video::FileTexture*>(tileSprite.getTexture().get())->getFileName()).parent_path().stem();
+		const flat::render::SynchronizedSprite* tileSprite = static_cast<const flat::render::SynchronizedSprite*>(getTileSprite(tileIndex));
+		const flat::render::SpriteSynchronizer& tileSpriteSynchronizer = tileSprite->getSynchronizer();
+		const std::filesystem::path tileTexture = std::filesystem::path(static_cast<const flat::video::FileTexture*>(tileSprite->getTexture().get())->getFileName()).parent_path().stem();
 		const std::uint16_t tileTemplateVariantIndex = tileSpriteSynchronizer.getCurrentLine();
 
 		// prop
@@ -186,7 +186,7 @@ void Map::getState(Game& game, io::MapFile& mapFile) const
 		const Prop* prop = getTileProp(tileIndex);
 		if (prop != nullptr)
 		{
-			propTexture = static_cast<const flat::video::FileTexture*>(prop->getSprite().getTexture().get())->getFileName();
+			propTexture = static_cast<const flat::video::FileTexture*>(prop->getTexture())->getFileName();
 			propTexture = game.mod.getRelativePath(propTexture);
 			propTexturePtr = &propTexture;
 		}
@@ -617,11 +617,10 @@ void Map::updateTileNavigabilityDebug(TileIndex tileIndex)
 }
 #endif
 
-#pragma optimize("", off)
 void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color, bool updatePropColor)
 {
 	Tile& tile = m_tiles[tileIndex];
-	tile.getSprite().setColor(color);
+	tile.getSprite()->setColor(color);
 	m_fog->updateTile(tileIndex, &tile);
 
 	if (updatePropColor)
@@ -635,11 +634,10 @@ void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color, boo
 		}
 	}
 }
-#pragma optimize("", on)
 
 const flat::video::Color& Map::getTileColor(TileIndex tileIndex) const
 {
-	return m_tiles[tileIndex].getSprite().getColor();
+	return m_tiles[tileIndex].getSprite()->getColor();
 }
 
 void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::video::Texture> texture)
@@ -653,7 +651,7 @@ void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::vi
 		propIndex = static_cast<PropIndex>(m_props.size());
 		isNewProp = true;
 		prop = &m_props.emplace_back();
-		prop->setSpritePosition(tile.getSprite().getPosition());
+		prop->setSpritePosition(tile.getSprite()->getPosition());
 		const flat::Vector2i& xy = getTileXY(tileIndex);
 		const float z = getTileZ(tileIndex);
 		prop->updateWorldSpaceAABB(flat::Vector3(xy.x, xy.y, z));
@@ -751,12 +749,12 @@ const Prop& Map::getPropFromIndex(PropIndex propIndex) const
 	return m_props[propIndex];
 }
 
-const flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex) const
+const flat::render::BaseSprite* Map::getTileSprite(TileIndex tileIndex) const
 {
 	return m_tiles[tileIndex].getSprite();
 }
 
-flat::render::BaseSprite& Map::getTileSprite(TileIndex tileIndex)
+flat::render::BaseSprite* Map::getTileSprite(TileIndex tileIndex)
 {
 	return m_tiles[tileIndex].getSprite();
 }
@@ -799,8 +797,8 @@ flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(const std::shar
 const std::shared_ptr<const TileTemplate> Map::getTileTemplate(TileIndex tileIndex) const
 {
 	const Tile& tile = m_tiles[tileIndex];
-	const flat::render::SynchronizedSprite& sprite = static_cast<const flat::render::SynchronizedSprite&>(tile.getSprite());
-	flat::render::SpriteSynchronizer& synchronizer = sprite.getSynchronizer();
+	const flat::render::SynchronizedSprite* sprite = static_cast<const flat::render::SynchronizedSprite*>(tile.getSprite());
+	flat::render::SpriteSynchronizer& synchronizer = sprite->getSynchronizer();
 	for (const TileSpriteSynchronizer& tileSpriteSynchronizer : m_tileSpriteSynchronizers)
 	{
 		if (&tileSpriteSynchronizer.spriteSynchronizer == &synchronizer)
@@ -949,7 +947,7 @@ void Map::updateTileNormal(TileIndex tileIndex)
 	}
 
 	flat::Vector3 normal = flat::normalize(flat::cross(flat::normalize(dx), flat::normalize(dy)));
-	getTileSprite(tileIndex).setNormal(normal);
+	getTileSprite(tileIndex)->setNormal(normal);
 }
 
 void Map::updateTileTexture(Game& game, TileIndex tileIndex)

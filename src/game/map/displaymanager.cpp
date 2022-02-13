@@ -47,7 +47,7 @@ void DisplayManager::clear()
 
 void DisplayManager::addEntity(const entity::Entity* entity)
 {
-	if (entity->hasSprite())
+	if (entity->getSprite() != nullptr)
 	{
 		entity->updateRenderHash();
 		int cellIndex = m_entityQuadtree->addObject(entity);
@@ -57,7 +57,7 @@ void DisplayManager::addEntity(const entity::Entity* entity)
 
 void DisplayManager::removeEntity(const entity::Entity* entity)
 {
-	if (entity->hasSprite())
+	if (entity->getSprite() != nullptr)
 	{
 		int cellIndex = m_entityCellIndices.at(entity);
 		m_entityQuadtree->removeObject(entity, cellIndex);
@@ -67,7 +67,7 @@ void DisplayManager::removeEntity(const entity::Entity* entity)
 
 void DisplayManager::updateEntity(const entity::Entity* entity)
 {
-	if (entity->hasSprite())
+	if (entity->getSprite() != nullptr)
 	{
 		int cellIndex = m_entityCellIndices.at(entity);
 		int newCellIndex = m_entityQuadtree->updateObject(entity, cellIndex);
@@ -147,7 +147,7 @@ void DisplayManager::addTemporaryObject(const MapObject* mapObject)
 	m_temporaryObjects.push_back(mapObject);
 }
 
-void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
+void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
@@ -236,7 +236,7 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 		{
 			const MapObject* mapObject = objects[i];
 			const float depth = static_cast<float>(numObjects - i) * numObjectsPlusOneInverse;
-			const_cast<flat::render::BaseSprite&>(mapObject->getSprite()).setDepth(depth);
+			const_cast<flat::render::BaseSprite*>(mapObject->getSprite())->setDepth(depth);
 		}
 	}
 
@@ -250,7 +250,7 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 		opaqueObjects.erase(std::remove_if(
 			opaqueObjects.begin(),
 			opaqueObjects.end(),
-			[](const MapObject* a) { return a->getSprite().requiresAlphaBlending(); }
+			[](const MapObject* a) { return a->getSprite()->requiresAlphaBlending(); }
 		), opaqueObjects.end());
 
 		std::sort(
@@ -279,7 +279,7 @@ void DisplayManager::sortAndDraw(Game& game, const map::fog::Fog& fog, const fla
 		transparentObjects.erase(std::remove_if(
 			transparentObjects.begin(),
 			transparentObjects.end(),
-			[](const MapObject* a) { return !a->getSprite().requiresAlphaBlending(); }
+			[](const MapObject* a) { return !a->getSprite()->requiresAlphaBlending(); }
 		), transparentObjects.end());
 
 		glEnable(GL_BLEND);
@@ -324,10 +324,10 @@ const MapObject* DisplayManager::getObjectAtPosition(const map::fog::Fog& fog, c
 	for (int i = static_cast<int>(objects.size()) - 1; i >= 0; --i)
 	{
 		const MapObject* object = objects[i];
-		const flat::render::BaseSprite& sprite = object->getSprite();
+		const flat::render::BaseSprite* sprite = object->getSprite();
 
 		flat::video::Color color;
-		sprite.getPixel(position, color);
+		sprite->getPixel(position, color);
 		if (color.a > 0.5f)
 		{
 			return object;
@@ -359,10 +359,10 @@ TileIndex DisplayManager::getTileIndexAtPosition(const map::fog::Fog& fog, const
 	for (int i = static_cast<int>(tiles.size()) - 1; i >= 0; --i)
 	{
 		const Tile* tile = tiles[i];
-		const flat::render::BaseSprite& sprite = tile->getSprite();
+		const flat::render::BaseSprite* sprite = tile->getSprite();
 
 		flat::video::Color color;
-		sprite.getPixel(position, color);
+		sprite->getPixel(position, color);
 		if (color.a > 0.5f)
 		{
 			return fog.getTileIndex(tile);
@@ -763,7 +763,7 @@ void DisplayManager::drawBatches(Game& game, const flat::video::View& view, cons
 		std::vector<const MapObject*>::const_iterator it2 = it;
 		while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
 		{
-			spriteBatch->add((*it2)->getSprite());
+			spriteBatch->add(*(*it2)->getSprite());
 			++it2;
 		}
 

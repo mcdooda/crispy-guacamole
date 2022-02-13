@@ -102,7 +102,7 @@ void PropMapEditorMode::preDraw(Game& game)
 				flat::Vector2 origin(textureSize.x / 2.f, textureSize.y - textureSize.x / 4.f);
 				prop.setSpriteOrigin(origin);
 				prop.updateRenderHash();
-				prop.getSprite().setColor(flat::video::Color(1.f, 1.f, 1.f, tileSlotEffect.effect));
+				prop.getSprite()->setColor(flat::video::Color(1.f, 1.f, 1.f, tileSlotEffect.effect));
 				map.getDisplayManager().addTemporaryObject(&prop);
 			}
 		}

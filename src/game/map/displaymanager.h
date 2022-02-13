@@ -51,7 +51,7 @@ class DisplayManager final
 
 		void addTemporaryObject(const MapObject* mapObject);
 
-		void sortAndDraw(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
+		void draw(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
 
 		const MapObject* getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position, const flat::video::View& view) const;
 		void getEntitiesInAABB(const flat::AABB2& aabb, std::vector<const MapObject*>& entities) const;

@@ -18,6 +18,7 @@ class Game : public flat::Game
 		
 		void setStates() override;
 		void checkArgs() override;
+		void scanAssets() override;
 		void openWindow() override;
 
 		// make Game& usable as a Resource constructor parameter

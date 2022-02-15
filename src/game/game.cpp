@@ -119,6 +119,17 @@ void Game::checkArgs()
 				std::cerr << "Unhandled argument '" << arg << "'" << std::endl;
 		}
 	}
+
+	if (mod.getPath().empty())
+	{
+		mod.setPath("mods/crispy-guacamole");
+	}
+}
+
+void Game::scanAssets()
+{
+	assetRepository->addAssetDirectory(mod.getPath());
+	Super::scanAssets();
 }
 
 void Game::openWindow()

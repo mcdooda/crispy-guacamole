@@ -71,13 +71,18 @@ class DisplayManager final
 #endif
 
 	private:
+		void drawTiles(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
+		void drawSprites(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
+
 		void sortObjects(std::vector<const MapObject*>& objects, const map::fog::Fog& fog, flat::AABB2 screenAABB, bool renderingWholeScreen) const;
 		static void sortTiles(std::vector<const Tile*>& tiles);
 
 		void drawSpriteBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls);
+		void drawMeshBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls);
 		
 	private:
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
+		std::unique_ptr<flat::render::MeshBatch> m_meshBatch;
 
 		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
 		std::unordered_map<const entity::Entity*, int> m_entityCellIndices;

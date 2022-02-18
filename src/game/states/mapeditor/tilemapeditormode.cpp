@@ -244,6 +244,7 @@ void TileMapEditorMode::preDraw(Game& game)
 			const flat::Vector2 position2d(map.getTransform() * position);
 			tile.synchronizeSpriteTo(map, synchronizer);
 			tile.setSpritePosition(position2d);
+			tile.setMeshPosition(position);
 			tile.updateWorldSpaceAABB(position);
 			tile.getSprite()->setColor(flat::video::Color(1.f, 1.f, 1.f, tileSlotEffect.effect));
 			map.getDisplayManager().addTemporaryObject(&tile);

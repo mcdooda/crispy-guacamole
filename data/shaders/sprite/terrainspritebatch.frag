@@ -16,7 +16,6 @@ void main()
 	{
 		discard;
 	}
-	gl_FragDepth = depth2;
 }
 
 

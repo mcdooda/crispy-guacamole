@@ -9,13 +9,15 @@
 #include "entity/entity.h"
 
 #include "game.h"
+#include "states/basemapstate.h"
 
 #define DEBUG_DRAW 0
+#define DRAW_3D_TILES 1
 
-namespace game
+namespace game::map
 {
-namespace map
-{
+
+inline bool locSortByDepthXY(const MapObject* a, const MapObject* b);
 
 DisplayManager::DisplayManager()
 #ifdef FLAT_DEBUG
@@ -26,6 +28,7 @@ DisplayManager::DisplayManager()
 #endif
 {
 	m_spriteBatch = std::make_unique<flat::render::SpriteBatch>();
+	m_meshBatch = std::make_unique<flat::render::MeshBatch>();
 	const float quadtreeSize = 16384.f;
 	const flat::AABB2 quadtreeAABB(flat::Vector2(-quadtreeSize / 2.f, -quadtreeSize / 2.f), flat::Vector2(quadtreeSize / 2.f, quadtreeSize / 2.f));
 	m_entityQuadtree = std::make_unique<EntityQuadTree>(quadtreeAABB);
@@ -149,6 +152,61 @@ void DisplayManager::addTemporaryObject(const MapObject* mapObject)
 
 void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
 {
+#if DRAW_3D_TILES
+	drawTiles(game, fog, view);
+#endif
+	drawSprites(game, fog, view);
+}
+
+void DisplayManager::drawTiles(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
+{
+	flat::AABB2 screenAABB;
+	view.getScreenAABB(screenAABB);
+
+	std::vector<TileIndex> tileIndices;
+	tileIndices.reserve(1024);
+	{
+		FLAT_PROFILE("Display Manager Get Tiles");
+		m_tileQuadtree->getObjects(screenAABB, tileIndices);
+	}
+	std::vector<const Tile*> tiles;
+	fog.getTilesFromIndices(tileIndices, tiles);
+
+	std::vector<const MapObject*> objects;
+	objects.reserve(tiles.size());
+
+	for (const Tile* tile : tiles)
+	{
+		objects.push_back(tile);
+	}
+
+	/*std::sort(
+		std::execution::par,
+		objects.begin(),
+		objects.end(),
+		locSortByDepthXY
+	);*/
+
+	std::sort(
+		std::execution::par,
+		objects.begin(),
+		objects.end(),
+		[](const MapObject* a, const MapObject* b)
+		{
+			return a->getRenderHash() < b->getRenderHash();
+		}
+	);
+
+	glEnable(GL_DEPTH_TEST);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	drawMeshBatches(game, view, objects, m_numOpaqueObjects, m_numOpaqueDrawCalls);
+
+	glDisable(GL_DEPTH_TEST);
+}
+
+void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
+{
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
 
@@ -172,6 +230,7 @@ void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::vide
 	}
 
 	// tiles
+#if !DRAW_3D_TILES
 	std::vector<TileIndex> tileIndices;
 	tileIndices.reserve(1024);
 	{
@@ -180,6 +239,7 @@ void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::vide
 	}
 	std::vector<const Tile*> tiles;
 	fog.getTilesFromIndices(tileIndices, tiles);
+#endif // !DRAW_3D_TILES
 
 	// props
 	std::vector<PropIndex> propIndices;
@@ -193,6 +253,10 @@ void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::vide
 
 	// put everything into a single vector
 	std::vector<const MapObject*> objects;
+
+#if DRAW_3D_TILES
+	objects.reserve(props.size() + m_temporaryObjects.size() + numEntities);
+#else
 	objects.reserve(tiles.size() + props.size() + m_temporaryObjects.size() + numEntities);
 
 	// tiles
@@ -200,6 +264,7 @@ void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::vide
 	{
 		objects.push_back(tile);
 	}
+#endif
 
 	// props
 	for (const Prop* prop : props)
@@ -463,7 +528,7 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 	}
 #endif
 
-
+#if !DRAW_3D_TILES
 	// 2nd pass: move entities in front of tiles if their sprites overlap and the entity is higher in altitude
 	int numTileSwaps = 0;
 	for (int i = 0, e = static_cast<int>(objects.size()); i < e; ++i)
@@ -557,6 +622,7 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 			}
 		}
 	}
+#endif // !DRAW_3D_TILES
 
 	// 3rd pass: resort entities between each other using their AABB
 	// see https://shaunlebron.github.io/IsometricBlocks/ for AABB depth sorting
@@ -661,9 +727,7 @@ void DisplayManager::sortObjects(std::vector<const MapObject*>& objects, const m
 		}
 	}
 
-#if DEBUG_DRAW
 	FLAT_ASSERT(entitiesDrawn.size() == numEntities);
-#endif
 
 	int numEntitySwaps = 0;
 	for (int i = 0, e = static_cast<int>(entitiesDrawn.size() - 1); i < e; ++i)
@@ -727,7 +791,7 @@ void DisplayManager::sortTiles(std::vector<const Tile*>& tiles)
 
 void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls)
 {
-	FLAT_PROFILE("Display Manager Draw Batches");
+	FLAT_PROFILE("Display Manager Draw Sprite Batches");
 
 #ifdef FLAT_DEBUG
 	numObjects = objects.size();
@@ -748,6 +812,7 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 		std::vector<const MapObject*>::const_iterator it2 = it;
 		while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
 		{
+			FLAT_ASSERT((*it2)->getSprite() != nullptr);
 			spriteBatch->add(*(*it2)->getSprite());
 			++it2;
 		}
@@ -756,7 +821,7 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 		it = it2;
 
 		programSettings.program.use(window);
-		programSettings.settings.viewProjectionMatrixUniform.set(view.getViewProjectionMatrix());
+		programSettings.settings.viewProjectionMatrixUniform.set(viewMatrix);
 		spriteBatch->draw(programSettings.settings, viewMatrix);
 
 #ifdef FLAT_DEBUG
@@ -765,10 +830,62 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 	}
 }
 
+void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls)
+{
+	FLAT_PROFILE("Display Manager Draw Mesh Batches");
+
+#ifdef FLAT_DEBUG
+	numObjects = objects.size();
+	numDrawCalls = 0;
+#endif
+
+	flat::video::Window& window = *game.video->window;
+
+	flat::render::MeshBatch* meshBatch = m_meshBatch.get();
+
+	flat::state::State* state = game.getStateMachine().getState();
+	const states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	const Map& map = mapState.getMap();
+
+	const flat::Matrix4 viewProjectionMatrix = view.getViewProjectionMatrix();
+	const flat::Matrix4 mapAxesMatrix = flat::Matrix4(map.getTransform());
+	const flat::Matrix4 finalViewProjectionMatrix = viewProjectionMatrix * mapAxesMatrix;
+
+	std::vector<const MapObject*>::const_iterator it = objects.begin();
+	std::vector<const MapObject*>::const_iterator end = objects.end();
+
+	/*
+	float minZ = FLT_MAX;
+	float maxZ = -FLT_MAX;
+	*/
+	while (it != end)
+	{
+		meshBatch->clear();
+
+		std::vector<const MapObject*>::const_iterator it2 = it;
+		while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
+		{
+			FLAT_ASSERT((*it2)->getMesh() != nullptr);
+			const flat::render::Mesh& mesh = *(*it2)->getMesh();
+			meshBatch->add(mesh);
+			++it2;
+		}
+
+		const flat::render::ProgramSettings& programSettings = (*it)->getProgramSettings();
+		it = it2;
+
+		programSettings.program.use(window);
+		programSettings.settings.viewProjectionMatrixUniform.set(finalViewProjectionMatrix);
+		meshBatch->draw(programSettings.settings, finalViewProjectionMatrix);
+
+#ifdef FLAT_DEBUG
+		++numDrawCalls;
+#endif
+	}
+
+	//std::cout << "minZ = " << minZ << ", maxZ = " << maxZ << std::endl;
+}
+
 #undef DEBUG_DRAW
 
-} // map
-} // game
-
-
-
+} // game::map

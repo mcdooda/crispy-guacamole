@@ -13,6 +13,7 @@ namespace map
 {
 class Map;
 class Prop;
+class TileTemplate;
 
 using TileIndex = flat::sharp::ai::navigation::AreaId;
 
@@ -44,6 +45,8 @@ class Tile final : public MapObject
 
 		void synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer& spriteSynchronizer);
 
+		void initializeMesh(const Map& map, const TileTemplate& tileTemplate, uint16_t tileTemplateVariantIndex);
+
 		bool isTile() const override { return true; }
 		
 		inline bool hasSprite() const { return m_sprite.getTexture() != nullptr; }
@@ -51,10 +54,15 @@ class Tile final : public MapObject
 		flat::render::BaseSprite* getSprite() override;
 		using MapObject::getSprite;
 
+		flat::render::Mesh* getMesh() override;
+		using MapObject::getMesh;
+
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		void updateWorldSpaceAABB(const flat::Vector3& position);
 
 		inline void setSpritePosition(const flat::Vector2& spritePosition) { m_sprite.setPosition(spritePosition); m_sprite.getAABB(m_spriteAABB); }
+
+		inline void setMeshPosition(const flat::Vector3& meshPosition) { m_mesh.setPosition(meshPosition); }
 
 		inline void setPropIndex(PropIndex propIndex) { m_propIndex = propIndex; }
 		inline PropIndex getPropIndex() const { return m_propIndex; }
@@ -74,6 +82,7 @@ class Tile final : public MapObject
 		static const flat::render::ProgramSettings* tileProgramSettings;
 
 		flat::render::SynchronizedSprite m_sprite;
+		flat::render::Mesh m_mesh;
 		PropIndex m_propIndex;
 };
 

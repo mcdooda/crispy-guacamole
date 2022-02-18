@@ -341,10 +341,13 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, const std::shared_p
 	flat::render::SpriteSynchronizer& spriteSynchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
 	tile.synchronizeSpriteTo(*this, spriteSynchronizer);
 
+	tile.initializeMesh(*this, *tileTemplate, tileTemplateVariantIndex);
+
 	// move sprite and update aabb
 	flat::Vector3 position(xy.x, xy.y, z);
 	flat::Vector2 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
+	tile.setMeshPosition(position);
 	tile.updateWorldSpaceAABB(position);
 
 	setTileNormalDirty(tileIndex);
@@ -509,6 +512,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 	flat::Vector3 position(xy.x, xy.y, z);
 	flat::Vector2 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
+	tile.setMeshPosition(position);
 	tile.updateWorldSpaceAABB(position);
 	m_fog->updateTile(tileIndex, &tile);
 

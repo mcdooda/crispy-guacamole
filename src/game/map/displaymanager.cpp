@@ -155,15 +155,13 @@ void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::vide
 #if DRAW_3D_TILES
 	drawMeshes(game, fog, view);
 #endif
-	//drawSprites(game, fog, view);
+	drawSprites(game, fog, view);
 }
 
 void DisplayManager::drawMeshes(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
-	screenAABB.min *= 3.f;
-	screenAABB.max *= 3.f;
 
 	// tiles
 	std::vector<TileIndex> tileIndices;
@@ -877,9 +875,9 @@ void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, 
 	const Map& map = mapState.getMap();
 
 	const flat::Matrix4 viewProjectionMatrix = view.getViewProjectionMatrix();
-	const float angleAroundZ = std::sin(game.time->defaultClock->getTime() * 0.5f) * flat::PI * 0.125f;
 	flat::Matrix4 mapAxesMatrix = flat::Matrix4(map.getTransform());
-	flat::rotateZBy(mapAxesMatrix, angleAroundZ);
+	//const float angleAroundZ = std::sin(game.time->defaultClock->getTime() * 0.5f)* flat::PI * 0.125f;
+	//flat::rotateZBy(mapAxesMatrix, angleAroundZ);
 	const flat::Matrix4 finalViewProjectionMatrix = viewProjectionMatrix * mapAxesMatrix;
 
 	std::vector<const MapObject*>::const_iterator it = objects.begin();

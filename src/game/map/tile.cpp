@@ -135,8 +135,8 @@ const flat::render::ProgramSettings& Tile::getProgramSettings() const
 
 void Tile::updateWorldSpaceAABB(const flat::Vector3& position)
 {
+	m_worldSpaceAABB.min = position + flat::Vector3(-0.5f, -0.5f, -100.f);
 	m_worldSpaceAABB.max = position + flat::Vector3(0.5f, 0.5f, 0.f);
-	m_worldSpaceAABB.min = position + flat::Vector3(0.5f, 0.5f, -100.f);
 }
 
 } // map

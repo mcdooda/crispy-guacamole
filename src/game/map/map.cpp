@@ -625,6 +625,7 @@ void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color, boo
 {
 	Tile& tile = m_tiles[tileIndex];
 	tile.getSprite()->setColor(color);
+	tile.getMesh()->setColor(color);
 	m_fog->updateTile(tileIndex, &tile);
 
 	if (updatePropColor)
@@ -634,6 +635,7 @@ void Map::setTileColor(TileIndex tileIndex, const flat::video::Color& color, boo
 		{
 			Prop& prop = m_props[propIndex];
 			prop.setSpriteColor(color);
+			prop.getMesh()->setColor(color);
 			m_fog->updateProp(propIndex, &prop);
 		}
 	}
@@ -644,7 +646,7 @@ const flat::video::Color& Map::getTileColor(TileIndex tileIndex) const
 	return m_tiles[tileIndex].getSprite()->getColor();
 }
 
-void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::video::Texture> texture)
+void Map::setTilePropTexture(TileIndex tileIndex, const std::shared_ptr<const flat::video::Texture>& texture)
 {
 	Tile& tile = m_tiles[tileIndex];
 	PropIndex propIndex = tile.getPropIndex();
@@ -652,13 +654,17 @@ void Map::setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::vi
 	Prop* prop = nullptr;
 	if (propIndex == PropIndex::INVALID_PROP)
 	{
+		const flat::Vector2i& xy = getTileXY(tileIndex);
+		const float z = getTileZ(tileIndex);
+		flat::Vector3 propPosition(xy.x, xy.y, z);
+
 		propIndex = static_cast<PropIndex>(m_props.size());
 		isNewProp = true;
 		prop = &m_props.emplace_back();
+		prop->initializeMesh(*this, texture);
 		prop->setSpritePosition(tile.getSprite()->getPosition());
-		const flat::Vector2i& xy = getTileXY(tileIndex);
-		const float z = getTileZ(tileIndex);
-		prop->updateWorldSpaceAABB(flat::Vector3(xy.x, xy.y, z));
+		prop->setMeshPosition(propPosition);
+		prop->updateWorldSpaceAABB(propPosition);
 		tile.setPropIndex(propIndex);
 
 		// remove all navigability
@@ -1180,7 +1186,9 @@ void Map::setAxes(const flat::Vector2& xAxis,
                   const flat::Vector2& yAxis,
                   const flat::Vector2& zAxis)
 {
-	m_transform = flat::Matrix3(flat::Vector3(xAxis, 1.f), flat::Vector3(yAxis, 1.f), flat::Vector3(zAxis, 1.f));
+	const float depthX = -zAxis.y;
+	const float depthY = -zAxis.y;
+	m_transform = flat::Matrix3(flat::Vector3(xAxis, depthX), flat::Vector3(yAxis, depthY), flat::Vector3(zAxis, 0.f));
 	m_invTransform = flat::inverse(m_transform);
 	m_xAxis = xAxis;
 	m_yAxis = yAxis;

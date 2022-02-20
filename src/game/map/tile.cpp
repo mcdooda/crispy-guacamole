@@ -50,6 +50,8 @@ void Tile::synchronizeSpriteTo(const Map& map, flat::render::SpriteSynchronizer&
 
 void Tile::initializeMesh(const Map& map, const TileTemplate& tileTemplate, uint16_t tileTemplateVariantIndex)
 {
+	m_mesh.clearVertices();
+
 	const std::shared_ptr<const flat::video::Texture>& texture = tileTemplate.getTexture();
 
 	m_mesh.setTexture(texture);

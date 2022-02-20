@@ -153,16 +153,19 @@ void DisplayManager::addTemporaryObject(const MapObject* mapObject)
 void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
 {
 #if DRAW_3D_TILES
-	drawTiles(game, fog, view);
+	drawMeshes(game, fog, view);
 #endif
-	drawSprites(game, fog, view);
+	//drawSprites(game, fog, view);
 }
 
-void DisplayManager::drawTiles(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
+void DisplayManager::drawMeshes(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
 {
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
+	screenAABB.min *= 3.f;
+	screenAABB.max *= 3.f;
 
+	// tiles
 	std::vector<TileIndex> tileIndices;
 	tileIndices.reserve(1024);
 	{
@@ -172,20 +175,28 @@ void DisplayManager::drawTiles(Game& game, const map::fog::Fog& fog, const flat:
 	std::vector<const Tile*> tiles;
 	fog.getTilesFromIndices(tileIndices, tiles);
 
+	// props
+	std::vector<PropIndex> propIndices;
+	propIndices.reserve(1024);
+	{
+		FLAT_PROFILE("Display Manager Get Props");
+		m_propQuadtree->getObjects(screenAABB, propIndices);
+	}
+	std::vector<const Prop*> props;
+	fog.getPropsFromIndices(propIndices, props);
+
 	std::vector<const MapObject*> objects;
-	objects.reserve(tiles.size());
+	objects.reserve(tiles.size() + props.size());
 
 	for (const Tile* tile : tiles)
 	{
 		objects.push_back(tile);
 	}
 
-	/*std::sort(
-		std::execution::par,
-		objects.begin(),
-		objects.end(),
-		locSortByDepthXY
-	);*/
+	for (const Prop* prop : props)
+	{
+		objects.push_back(prop);
+	}
 
 	std::sort(
 		std::execution::par,
@@ -229,8 +240,8 @@ void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const fla
 		}
 	}
 
-	// tiles
 #if !DRAW_3D_TILES
+	// tiles
 	std::vector<TileIndex> tileIndices;
 	tileIndices.reserve(1024);
 	{
@@ -239,7 +250,6 @@ void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const fla
 	}
 	std::vector<const Tile*> tiles;
 	fog.getTilesFromIndices(tileIndices, tiles);
-#endif // !DRAW_3D_TILES
 
 	// props
 	std::vector<PropIndex> propIndices;
@@ -250,27 +260,31 @@ void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const fla
 	}
 	std::vector<const Prop*> props;
 	fog.getPropsFromIndices(propIndices, props);
+#endif // !DRAW_3D_TILES
 
 	// put everything into a single vector
 	std::vector<const MapObject*> objects;
 
-#if DRAW_3D_TILES
-	objects.reserve(props.size() + m_temporaryObjects.size() + numEntities);
-#else
-	objects.reserve(tiles.size() + props.size() + m_temporaryObjects.size() + numEntities);
+	size_t numObjects = m_temporaryObjects.size() + numEntities;
+#if !DRAW_3D_TILES
+	numObjects += tiles.size() + props.size();
+#endif // !DRAW_3D_TILES
+	objects.reserve(numObjects);
 
+#if !DRAW_3D_TILES
 	// tiles
 	for (const Tile* tile : tiles)
 	{
 		objects.push_back(tile);
 	}
-#endif
 
 	// props
 	for (const Prop* prop : props)
 	{
 		objects.push_back(prop);
 	}
+#endif // !DRAW_3D_TILES
+
 
 	// temporary objects
 	objects.insert(objects.end(), m_temporaryObjects.begin(), m_temporaryObjects.end());
@@ -288,7 +302,17 @@ void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const fla
 
 	{
 		FLAT_PROFILE("Display Manager Sort Objects");
-		sortObjects(objects, fog, screenAABB, true);
+		//sortObjects(objects, fog, screenAABB, true);
+
+		std::sort(
+			std::execution::par,
+			objects.begin(),
+			objects.end(),
+			[](const MapObject* a, const MapObject* b)
+			{
+				return a->getRenderHash() < b->getRenderHash();
+			}
+		);
 	}
 
 	{
@@ -801,6 +825,11 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 	flat::video::Window& window = *game.video->window;
 
 	flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
+
+	flat::state::State* state = game.getStateMachine().getState();
+	const states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	const Map& map = mapState.getMap();
+
 	const flat::Matrix4& viewMatrix = view.getViewProjectionMatrix();
 
 	std::vector<const MapObject*>::const_iterator it = objects.begin();
@@ -848,7 +877,9 @@ void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, 
 	const Map& map = mapState.getMap();
 
 	const flat::Matrix4 viewProjectionMatrix = view.getViewProjectionMatrix();
-	const flat::Matrix4 mapAxesMatrix = flat::Matrix4(map.getTransform());
+	const float angleAroundZ = std::sin(game.time->defaultClock->getTime() * 0.5f) * flat::PI * 0.125f;
+	flat::Matrix4 mapAxesMatrix = flat::Matrix4(map.getTransform());
+	flat::rotateZBy(mapAxesMatrix, angleAroundZ);
 	const flat::Matrix4 finalViewProjectionMatrix = viewProjectionMatrix * mapAxesMatrix;
 
 	std::vector<const MapObject*>::const_iterator it = objects.begin();

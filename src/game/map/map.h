@@ -125,7 +125,7 @@ class Map
 		void setTileColor(TileIndex tileIndex, const flat::video::Color& color, bool updatePropColor = true);
 		const flat::video::Color& getTileColor(TileIndex tileIndex) const;
 
-		void setTilePropTexture(TileIndex tileIndex, std::shared_ptr<const flat::video::Texture> texture);
+		void setTilePropTexture(TileIndex tileIndex, const std::shared_ptr<const flat::video::Texture>& texture);
 		void removeTileProp(TileIndex tileIndex);
 		const Prop* getTileProp(TileIndex tileIndex) const;
 		PropIndex getTilePropIndex(TileIndex tileIndex) const;

@@ -18,6 +18,9 @@ public:
 	flat::render::BaseSprite* getSprite() override;
 	using MapObject::getSprite;
 
+	flat::render::Mesh* getMesh() override;
+	using MapObject::getMesh;
+
 	const flat::render::ProgramSettings& getProgramSettings() const override;
 
 	void updateWorldSpaceAABB(const flat::Vector3& position);
@@ -27,11 +30,16 @@ public:
 	inline void setSpriteOrigin(const flat::Vector2& spriteOrigin) { m_sprite.setOrigin(spriteOrigin); m_sprite.getAABB(m_spriteAABB); }
 	inline void setSpriteColor(const flat::video::Color& spriteColor) { m_sprite.setColor(spriteColor); }
 
+	inline void setMeshPosition(const flat::Vector3& meshPosition) { m_mesh.setPosition(meshPosition); }
+
 	inline void setTileIndex(TileIndex tileIndex) { m_tileIndex = tileIndex; }
 	inline TileIndex getTileIndex() const { return m_tileIndex; }
 
+	void initializeMesh(const Map& map, const std::shared_ptr<const flat::video::Texture>& texture);
+
 private:
 	flat::render::Sprite m_sprite;
+	flat::render::Mesh m_mesh; // TODO: share vertices between props using the same texture
 	TileIndex m_tileIndex;
 };
 

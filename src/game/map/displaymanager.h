@@ -71,7 +71,7 @@ class DisplayManager final
 #endif
 
 	private:
-		void drawTiles(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
+		void drawMeshes(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
 		void drawSprites(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
 
 		void sortObjects(std::vector<const MapObject*>& objects, const map::fog::Fog& fog, flat::AABB2 screenAABB, bool renderingWholeScreen) const;

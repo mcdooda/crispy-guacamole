@@ -16,6 +16,9 @@ void main()
 	{
 		discard;
 	}
+	//outColor = vec4(uv2.x, uv2.y, 0.0, outColor.a);
+	//outColor = vec4(gl_FragCoord.z, gl_FragCoord.z, gl_FragCoord.z, outColor.a);
+	//outColor = vec4(depth2, depth2, depth2, outColor.a);
 }
 
 

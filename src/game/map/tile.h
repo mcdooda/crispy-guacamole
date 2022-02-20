@@ -82,7 +82,7 @@ class Tile final : public MapObject
 		static const flat::render::ProgramSettings* tileProgramSettings;
 
 		flat::render::SynchronizedSprite m_sprite;
-		flat::render::Mesh m_mesh;
+		flat::render::Mesh m_mesh; // TODO: share meshes between tiles of the same template
 		PropIndex m_propIndex;
 };
 

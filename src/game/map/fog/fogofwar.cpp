@@ -33,6 +33,7 @@ void FogOfWar::init()
 		const TileIndex tileIndex = static_cast<TileIndex>(i);
 		m_observedTiles[tileIndex] = m_map.getTileFromIndex(tileIndex);
 		m_observedTiles[tileIndex].getSprite()->setColor(flat::video::Color::BLACK);
+		m_observedTiles[tileIndex].getMesh()->setColor(flat::video::Color::BLACK);
 		displayManager.addTile(tileIndex, &m_observedTiles[tileIndex]);
 
 		const PropIndex propIndex = m_map.getTilePropIndex(tileIndex);
@@ -49,6 +50,7 @@ void FogOfWar::init()
 		const PropIndex propIndex = static_cast<PropIndex>(i);
 		m_observedProps[propIndex] = m_map.getPropFromIndex(propIndex);
 		m_observedProps[propIndex].getSprite()->setColor(flat::video::Color::BLACK);
+		m_observedProps[propIndex].getMesh()->setColor(flat::video::Color::BLACK);
 		displayManager.addProp(propIndex, &m_observedProps[propIndex]);
 	}
 }
@@ -79,6 +81,7 @@ void FogOfWar::discoverTile(int x, int y, float level)
 	m_frameObservedTiles.insert(tileIndex);
 	m_observedTiles[tileIndex] = m_map.getTileFromIndex(tileIndex);
 	m_observedTiles[tileIndex].getSprite()->setColor(newTileColor);
+	m_observedTiles[tileIndex].getMesh()->setColor(newTileColor);
 
 	PropIndex propIndex = m_map.getTilePropIndex(tileIndex);
 	if (isValidProp(propIndex))
@@ -86,6 +89,7 @@ void FogOfWar::discoverTile(int x, int y, float level)
 		const Prop& prop = m_map.getPropFromIndex(propIndex);
 		m_observedProps[propIndex] = prop;
 		m_observedProps[propIndex].getSprite()->setColor(newTileColor);
+		m_observedProps[propIndex].getMesh()->setColor(newTileColor);
 	}
 }
 
@@ -197,11 +201,13 @@ void FogOfWar::preUpdate()
 		{
 			m_tileDiscoveryLevels[tileIndex] = m_tileDiscoveredLevel;
 			m_observedTiles[tileIndex].getSprite()->setColor(tileDiscoveredColor);
+			m_observedTiles[tileIndex].getMesh()->setColor(tileDiscoveredColor);
 
 			const PropIndex propIndex = m_map.getTilePropIndex(tileIndex);
 			if (isValidProp(propIndex))
 			{
 				m_observedProps[propIndex].getSprite()->setColor(tileDiscoveredColor);
+				m_observedProps[propIndex].getMesh()->setColor(tileDiscoveredColor);
 			}
 		}
 	}

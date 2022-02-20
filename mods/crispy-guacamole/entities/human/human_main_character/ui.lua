@@ -102,9 +102,11 @@ local function buildWidgets(playerEntity)
 
     Widget.getRoot():addChild(container)
 
-    playerEntity:getExtraData().entityJoinedGroup:on(function(entity)
-        entityJoinedGroup(playerEntity, entity, buttonWidgets)
-    end)
+    if playerEntity:getExtraData().entityJoinedGroup then
+        playerEntity:getExtraData().entityJoinedGroup:on(function(entity)
+            entityJoinedGroup(playerEntity, entity, buttonWidgets)
+        end)
+    end
 end
 
 local ui = {}

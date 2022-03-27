@@ -5,7 +5,6 @@ uniform sampler2D objectTexture;
 in vec2 uv2;
 in vec4 color2;
 in float useColor2;
-in float depth2;
 
 out vec4 outColor;
 
@@ -41,7 +40,7 @@ void main()
 		}
 		outColor.a *= color2.a;
 	}
-	gl_FragDepth = depth2;
+	//outColor = vec4(gl_FragCoord.z, gl_FragCoord.z, gl_FragCoord.z, outColor.a);
 }
 
 

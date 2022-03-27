@@ -60,7 +60,7 @@ class Tile final : public MapObject
 		const flat::render::ProgramSettings& getProgramSettings() const override;
 		void updateWorldSpaceAABB(const flat::Vector3& position);
 
-		inline void setSpritePosition(const flat::Vector2& spritePosition) { m_sprite.setPosition(spritePosition); m_sprite.getAABB(m_spriteAABB); }
+		inline void setSpritePosition(const flat::Vector3& spritePosition) { m_sprite.setPosition(spritePosition); m_sprite.getAABB(m_spriteAABB); }
 
 		inline void setMeshPosition(const flat::Vector3& meshPosition) { m_mesh.setPosition(meshPosition); }
 

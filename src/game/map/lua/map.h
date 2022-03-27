@@ -50,6 +50,9 @@ int l_Map_setTileColor(lua_State* L);
 int l_Map_eachTile(lua_State* L);
 int l_Map_getTile(lua_State* L);
 
+int l_Map_eachTileMeshVertex(lua_State* L);
+int l_Map_moveTileMeshVertexZBy(lua_State* L);
+
 int l_Map_setPropTemplate(lua_State* L);
 
 int l_Map_findPath(lua_State* L);

@@ -152,16 +152,33 @@ void DisplayManager::addTemporaryObject(const MapObject* mapObject)
 
 void DisplayManager::draw(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
 {
+	flat::state::State* state = game.getStateMachine().getState();
+	const states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	const Map& map = mapState.getMap();
+	flat::Matrix4 mapAxes = flat::Matrix4(map.getTransform());
+	//const float angleAroundZ = std::sin(game.time->defaultClock->getTime() * 0.5f) * flat::PI * 0.125f;
+	//const float angleAroundZ = flat::PI * 0.1f;
+	//flat::rotateZBy(mapAxes, angleAroundZ);
+
 #if DRAW_3D_TILES
-	drawMeshes(game, fog, view);
+	glEnable(GL_DEPTH_TEST);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	drawMeshes(game, fog, view, mapAxes);
 #endif
-	drawSprites(game, fog, view);
+
+	drawSprites(game, fog, view, mapAxes);
+
+#if DRAW_3D_TILES
+	glDisable(GL_DEPTH_TEST);
+#endif
 }
 
-void DisplayManager::drawMeshes(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
+void DisplayManager::drawMeshes(Game& game, const map::fog::Fog& fog, const flat::video::View& view, const flat::Matrix4& mapAxes)
 {
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
+	//screenAABB.scaleBy(1.5f);
 
 	// tiles
 	std::vector<TileIndex> tileIndices;
@@ -206,26 +223,23 @@ void DisplayManager::drawMeshes(Game& game, const map::fog::Fog& fog, const flat
 		}
 	);
 
-	glEnable(GL_DEPTH_TEST);
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	drawMeshBatches(game, view, objects, m_numOpaqueObjects, m_numOpaqueDrawCalls);
-
-	glDisable(GL_DEPTH_TEST);
+	drawMeshBatches(game, view, objects, mapAxes, m_numOpaqueObjects, m_numOpaqueDrawCalls);
 }
 
-void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const flat::video::View& view)
+void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const flat::video::View& view, const flat::Matrix4& mapAxes)
 {
 	flat::AABB2 screenAABB;
 	view.getScreenAABB(screenAABB);
 
 	// entities
-	std::vector<const entity::Entity*> entities;
-	entities.reserve(1024);
+	flat::state::State* state = game.getStateMachine().getState();
+	const states::BaseMapState& mapState = state->as<states::BaseMapState>();
+	std::vector<entity::Entity*> entities = mapState.getEntityUpdater().getEntities();
+	/*entities.reserve(1024);
 	{
 		FLAT_PROFILE("Display Manager Get Entities");
 		m_entityQuadtree->getObjects(screenAABB, entities);
-	}
+	}*/
 	int numEntities = static_cast<int>(entities.size());
 	for (int i = 0, e = numEntities; i < e; ++i)
 	{
@@ -313,6 +327,7 @@ void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const fla
 		);
 	}
 
+	/*
 	{
 		FLAT_PROFILE("Display Manager Set Objects Depth");
 
@@ -326,9 +341,7 @@ void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const fla
 			const_cast<flat::render::BaseSprite*>(mapObject->getSprite())->setDepth(depth);
 		}
 	}
-
-	glEnable(GL_DEPTH_TEST);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	*/
 
 	{
 		FLAT_PROFILE("Display Manager Draw Opaque Objects");
@@ -351,7 +364,7 @@ void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const fla
 		);
 
 		glDisable(GL_BLEND);
-		drawSpriteBatches(game, view, opaqueObjects, m_numOpaqueObjects, m_numOpaqueDrawCalls);
+		drawSpriteBatches(game, view, opaqueObjects, mapAxes, m_numOpaqueObjects, m_numOpaqueDrawCalls);
 	}
 
 	{
@@ -365,10 +378,8 @@ void DisplayManager::drawSprites(Game& game, const map::fog::Fog& fog, const fla
 		), transparentObjects.end());
 
 		glEnable(GL_BLEND);
-		drawSpriteBatches(game, view, transparentObjects, m_numTransparentObjects, m_numTransparentDrawCalls);
+		drawSpriteBatches(game, view, transparentObjects, mapAxes, m_numTransparentObjects, m_numTransparentDrawCalls);
 	}
-
-	glDisable(GL_DEPTH_TEST);
 }
 
 const MapObject* DisplayManager::getObjectAtPosition(const map::fog::Fog& fog, const flat::Vector2& position, const flat::video::View& view) const
@@ -811,7 +822,7 @@ void DisplayManager::sortTiles(std::vector<const Tile*>& tiles)
 	std::sort(std::execution::par, tiles.begin(), tiles.end(), locSortByDepthXY);
 }
 
-void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls)
+void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, const flat::Matrix4& mapAxes, size_t& numObjects, size_t& numDrawCalls)
 {
 	FLAT_PROFILE("Display Manager Draw Sprite Batches");
 
@@ -824,11 +835,7 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 
 	flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
 
-	flat::state::State* state = game.getStateMachine().getState();
-	const states::BaseMapState& mapState = state->as<states::BaseMapState>();
-	const Map& map = mapState.getMap();
-
-	const flat::Matrix4& viewMatrix = view.getViewProjectionMatrix();
+	const flat::Matrix4& viewProjectionMatrix = view.getViewProjectionMatrix();
 
 	std::vector<const MapObject*>::const_iterator it = objects.begin();
 	std::vector<const MapObject*>::const_iterator end = objects.end();
@@ -840,7 +847,7 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 		while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
 		{
 			FLAT_ASSERT((*it2)->getSprite() != nullptr);
-			spriteBatch->add(*(*it2)->getSprite());
+			spriteBatch->add(*(*it2)->getSprite(), mapAxes);
 			++it2;
 		}
 
@@ -848,8 +855,8 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 		it = it2;
 
 		programSettings.program.use(window);
-		programSettings.settings.viewProjectionMatrixUniform.set(viewMatrix);
-		spriteBatch->draw(programSettings.settings, viewMatrix);
+		programSettings.settings.viewProjectionMatrixUniform.set(viewProjectionMatrix);
+		spriteBatch->draw(programSettings.settings, viewProjectionMatrix);
 
 #ifdef FLAT_DEBUG
 		++numDrawCalls;
@@ -857,7 +864,7 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 	}
 }
 
-void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls)
+void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, const flat::Matrix4& mapAxes, size_t& numObjects, size_t& numDrawCalls)
 {
 	FLAT_PROFILE("Display Manager Draw Mesh Batches");
 
@@ -870,23 +877,11 @@ void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, 
 
 	flat::render::MeshBatch* meshBatch = m_meshBatch.get();
 
-	flat::state::State* state = game.getStateMachine().getState();
-	const states::BaseMapState& mapState = state->as<states::BaseMapState>();
-	const Map& map = mapState.getMap();
-
 	const flat::Matrix4 viewProjectionMatrix = view.getViewProjectionMatrix();
-	flat::Matrix4 mapAxesMatrix = flat::Matrix4(map.getTransform());
-	//const float angleAroundZ = std::sin(game.time->defaultClock->getTime() * 0.5f)* flat::PI * 0.125f;
-	//flat::rotateZBy(mapAxesMatrix, angleAroundZ);
-	const flat::Matrix4 finalViewProjectionMatrix = viewProjectionMatrix * mapAxesMatrix;
+	const flat::Matrix4 finalViewProjectionMatrix = viewProjectionMatrix * mapAxes;
 
 	std::vector<const MapObject*>::const_iterator it = objects.begin();
 	std::vector<const MapObject*>::const_iterator end = objects.end();
-
-	/*
-	float minZ = FLT_MAX;
-	float maxZ = -FLT_MAX;
-	*/
 	while (it != end)
 	{
 		meshBatch->clear();
@@ -911,8 +906,6 @@ void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, 
 		++numDrawCalls;
 #endif
 	}
-
-	//std::cout << "minZ = " << minZ << ", maxZ = " << maxZ << std::endl;
 }
 
 #undef DEBUG_DRAW

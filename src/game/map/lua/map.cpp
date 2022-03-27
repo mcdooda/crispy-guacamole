@@ -52,6 +52,9 @@ int open(lua_State* L)
 		{"eachTile",                      l_Map_eachTile},
 		{"getTile",                       l_Map_getTile},
 
+		{"eachTileMeshVertex",            l_Map_eachTileMeshVertex},
+		{"moveTileMeshVertexZBy",         l_Map_moveTileMeshVertexZBy},
+
 		{"setPropTemplate",               l_Map_setPropTemplate},
 
 		{"findPath",                      l_Map_findPath},
@@ -349,6 +352,34 @@ int l_Map_getTile(lua_State* L)
 	const TileIndex tileIndex = map.getTileIndex(flat::Vector2i(std::round(tilePosition.x), std::round(tilePosition.y)));
 	lua_pushinteger(L, tileIndex);
 	return 1;
+}
+
+int l_Map_eachTileMeshVertex(lua_State* L)
+{
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	luaL_checktype(L, 2, LUA_TFUNCTION);
+	Map& map = getMap(L);
+	flat::render::Mesh* mesh = map.getTileMesh(tileIndex);
+	mesh->eachVertexPosition([L](size_t vertexIndex, flat::Vector3& vertexPosition)
+	{
+		FLAT_LUA_EXPECT_STACK_GROWTH(L, 0);
+		lua_pushvalue(L, 2);
+		lua_pushinteger(L, vertexIndex);
+		flat::lua::pushVector3(L, vertexPosition);
+		lua_call(L, 2, 0);
+	});
+	return 0;
+}
+
+int l_Map_moveTileMeshVertexZBy(lua_State* L)
+{
+	const TileIndex tileIndex = static_cast<TileIndex>(luaL_checkinteger(L, 1));
+	const size_t vertexIndex = static_cast<size_t>(luaL_checkinteger(L, 2));
+	const float dz = static_cast<float>(luaL_checknumber(L, 3));
+	Map& map = getMap(L);
+	flat::render::Mesh* mesh = map.getTileMesh(tileIndex);
+	mesh->getVertexPosition(vertexIndex).z += dz;
+	return 0;
 }
 
 int l_Map_setPropTemplate(lua_State* L)

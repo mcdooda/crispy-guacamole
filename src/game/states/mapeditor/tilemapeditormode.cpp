@@ -241,7 +241,7 @@ void TileMapEditorMode::preDraw(Game& game)
 		{
 			map::Tile& tile = m_temporaryTiles.emplace_back();
 			const flat::Vector3 position(tileSlotEffect.position.x, tileSlotEffect.position.y, 0.f);
-			const flat::Vector2 position2d(map.getTransform() * position);
+			const flat::Vector3 position2d(map.getTransform() * position);
 			tile.synchronizeSpriteTo(map, synchronizer);
 			tile.setSpritePosition(position2d);
 			tile.setMeshPosition(position);

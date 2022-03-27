@@ -357,8 +357,7 @@ bool SpriteComponent::updateSpritePosition(const flat::Vector3& position)
 	const map::Map* map = m_owner->getMap();
 	FLAT_ASSERT(map != nullptr);
 
-	flat::Vector2 position2d(map->getTransform() * position);
-	m_owner->getSprite()->setPosition(position2d);
+	m_owner->getSprite()->setPosition(position);
 
 	return true;
 }

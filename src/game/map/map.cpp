@@ -345,7 +345,7 @@ TileIndex Map::createTile(const flat::Vector2i& xy, float z, const std::shared_p
 
 	// move sprite and update aabb
 	flat::Vector3 position(xy.x, xy.y, z);
-	flat::Vector2 position2d(getTransform() * position);
+	flat::Vector3 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
 	tile.setMeshPosition(position);
 	tile.updateWorldSpaceAABB(position);
@@ -510,7 +510,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 	const flat::Vector2i& xy = getTileXY(tileIndex);
 	Tile& tile = m_tiles[tileIndex];
 	flat::Vector3 position(xy.x, xy.y, z);
-	flat::Vector2 position2d(getTransform() * position);
+	flat::Vector3 position2d(getTransform() * position);
 	tile.setSpritePosition(position2d);
 	tile.setMeshPosition(position);
 	tile.updateWorldSpaceAABB(position);
@@ -522,6 +522,7 @@ void Map::setTileZ(TileIndex tileIndex, float z)
 	{
 		Prop& prop = m_props[propIndex];
 		prop.setSpritePosition(position2d);
+		prop.setMeshPosition(position);
 		prop.updateWorldSpaceAABB(position);
 		m_fog->updateProp(propIndex, &prop);
 	}
@@ -767,6 +768,18 @@ const flat::render::BaseSprite* Map::getTileSprite(TileIndex tileIndex) const
 flat::render::BaseSprite* Map::getTileSprite(TileIndex tileIndex)
 {
 	return m_tiles[tileIndex].getSprite();
+}
+
+
+const flat::render::Mesh* Map::getTileMesh(TileIndex tileIndex) const
+{
+	return m_tiles[tileIndex].getMesh();
+}
+
+
+flat::render::Mesh* Map::getTileMesh(TileIndex tileIndex)
+{
+	return m_tiles[tileIndex].getMesh();
 }
 
 flat::render::SpriteSynchronizer& Map::getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex)

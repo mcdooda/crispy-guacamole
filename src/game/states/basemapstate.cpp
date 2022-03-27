@@ -208,8 +208,8 @@ flat::Vector2 BaseMapState::getCursorMapPosition(game::Game& game, bool& isOnTil
 
 	if (map::isValidTile(m_mouseOverTileIndex))
 	{
-		const flat::Vector2& spritePosition = m_map.getTileSprite(m_mouseOverTileIndex)->getPosition();
-		flat::Vector2 delta = gameViewToMap(gameViewPosition - spritePosition);
+		const flat::Vector3& spritePosition = m_map.getTileSprite(m_mouseOverTileIndex)->getPosition();
+		flat::Vector2 delta = gameViewToMap(gameViewPosition - flat::Vector2(spritePosition));
 
 		const flat::Vector2i& xy = m_map.getTileXY(m_mouseOverTileIndex);
 		flat::Vector2 tileCenter = flat::Vector2(xy.x, xy.y);
@@ -991,7 +991,7 @@ void BaseMapState::getEntitiesInSelection(const flat::Vector2& bottomLeft, const
 		FLAT_ASSERT(mapObject->isEntity());
 
 		// check that the sprite origin actually is in the AABB
-		if (selectionAABB.isInside(mapObject->getSprite()->getPosition()))
+		if (selectionAABB.isInside(flat::Vector2(mapObject->getSprite()->getPosition())))
 		{
 			// TODO: fix these casts
 			entities.push_back(const_cast<entity::Entity*>(static_cast<const entity::Entity*>(mapObject)));

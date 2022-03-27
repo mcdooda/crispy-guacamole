@@ -2,7 +2,7 @@ local sin = math.sin
 local yield = coroutine.yield
 
 local function waveShape(age, distance, progression, effect)
-    return -sin(age * 10 + distance) * progression * effect
+    return -sin(age * 10 - distance) * progression * effect
 end
 
 local function craterShape(age, distance, progression, effect)
@@ -12,13 +12,16 @@ local function craterShape(age, distance, progression, effect)
 end
 
 local function circular(position2d, radius, height, duration, onEnd, shape)
-    local brush = Brush.sphere()
+    local brush = Brush.cone()
     brush:setRadius(radius)
 
     local tiles = brush:getTiles(position2d)
     local tilesDz = {}
     tiles:eachTile(function(tile)
-        tilesDz[tile] = 0
+        tilesDz[tile] = {}
+        Map.eachTileMeshVertex(tile, function(vertexIndex, vertex)
+            tilesDz[tile][vertexIndex] = 0
+        end)
     end)
 
     shape = shape or waveShape
@@ -30,12 +33,16 @@ local function circular(position2d, radius, height, duration, onEnd, shape)
         local prevAge = age
         while true do
             tiles:eachTile(function(tile, effect)
-                local distance = effect * radius
-                local dz = (shape(age, distance, progression, effect)
+                local tileX, tileY = Map.getTilePosition(tile)
+                Map.eachTileMeshVertex(tile, function(vertexIndex, vertex)
+                    local vertexPosition2d = flat.Vector2(tileX + vertex:x(), tileY + vertex:y())
+                    local distance = (position2d - vertexPosition2d):length()
+                    local dz = (shape(age, distance, progression, effect)
                           - shape(prevAge, distance, prevProgression, effect))
                           * height
-                tilesDz[tile] = tilesDz[tile] + dz
-                moveTileZBy(tile, dz)
+                    tilesDz[tile][vertexIndex] = tilesDz[tile][vertexIndex] + dz
+                    Map.moveTileMeshVertexZBy(tile, vertexIndex, dz)
+                end)
             end)
             prevAge = age
             _, age = yield()
@@ -47,10 +54,12 @@ local function circular(position2d, radius, height, duration, onEnd, shape)
         end
     end))
     timer:onEnd(function()
-        local moveTileZBy = Map.moveTileZBy
         -- reset tiles to their initial position
-        for tile, tileDz in pairs(tilesDz) do
-            moveTileZBy(tile, -tileDz)
+        for tile, tileMeshVerticesDz in pairs(tilesDz) do
+            for vertexIndex = 1, #tileMeshVerticesDz do
+                local dz = tileMeshVerticesDz[vertexIndex]
+                Map.moveTileMeshVertexZBy(tile, vertexIndex, -dz)
+            end
         end
 
         if onEnd then

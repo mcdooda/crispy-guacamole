@@ -134,6 +134,9 @@ class Map
 		const flat::render::BaseSprite* getTileSprite(TileIndex tileIndex) const;
 		flat::render::BaseSprite* getTileSprite(TileIndex tileIndex);
 
+		const flat::render::Mesh* getTileMesh(TileIndex tileIndex) const;
+		flat::render::Mesh* getTileMesh(TileIndex tileIndex);
+
 		flat::render::SpriteSynchronizer& getTileSpriteSynchronizer(const std::shared_ptr<const TileTemplate>& tileTemplate, int tileVariantIndex);
 		const std::shared_ptr<const TileTemplate> getTileTemplate(TileIndex tileIndex) const;
 

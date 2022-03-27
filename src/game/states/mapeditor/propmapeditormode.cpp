@@ -94,7 +94,7 @@ void PropMapEditorMode::preDraw(Game& game)
 			{
 				map::Prop& prop = m_temporaryProps.emplace_back();
 				const flat::Vector3 position(tileSlotEffect.position.x, tileSlotEffect.position.y, 0.f);
-				const flat::Vector2 position2d(map.getTransform() * position);
+				const flat::Vector3 position2d(map.getTransform() * position);
 				prop.setSpritePosition(position2d);
 				prop.updateWorldSpaceAABB(position);
 				prop.setSpriteTexture(propTexture);

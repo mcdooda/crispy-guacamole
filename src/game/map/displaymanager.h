@@ -71,14 +71,14 @@ class DisplayManager final
 #endif
 
 	private:
-		void drawMeshes(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
-		void drawSprites(Game& game, const map::fog::Fog& fog, const flat::video::View& view);
+		void drawMeshes(Game& game, const map::fog::Fog& fog, const flat::video::View& view, const flat::Matrix4& mapAxes);
+		void drawSprites(Game& game, const map::fog::Fog& fog, const flat::video::View& view, const flat::Matrix4& mapAxes);
 
 		void sortObjects(std::vector<const MapObject*>& objects, const map::fog::Fog& fog, flat::AABB2 screenAABB, bool renderingWholeScreen) const;
 		static void sortTiles(std::vector<const Tile*>& tiles);
 
-		void drawSpriteBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls);
-		void drawMeshBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, size_t& numObjects, size_t& numDrawCalls);
+		void drawSpriteBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, const flat::Matrix4& mapAxes, size_t& numObjects, size_t& numDrawCalls);
+		void drawMeshBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, const flat::Matrix4& mapAxes, size_t& numObjects, size_t& numDrawCalls);
 		
 	private:
 		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;

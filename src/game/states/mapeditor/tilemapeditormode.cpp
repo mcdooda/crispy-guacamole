@@ -234,7 +234,8 @@ void TileMapEditorMode::preDraw(Game& game)
 {
 	map::Map& map = game.getStateMachine().getState()->as<MapEditorState>().getMap();
 	m_temporaryTiles.reserve(m_brushTileSlots.size());
-	flat::render::SpriteSynchronizer& synchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, 0);
+	constexpr int tileVariantIndex = 0;
+	flat::render::SpriteSynchronizer& synchronizer = map.getTileSpriteSynchronizer(m_tileTemplate, tileVariantIndex);
 	for (const map::brush::TileSlotEffect& tileSlotEffect : m_brushTileSlots)
 	{
 		if (!map::isValidTile(map.getTileIndex(tileSlotEffect.position)))
@@ -243,6 +244,7 @@ void TileMapEditorMode::preDraw(Game& game)
 			const flat::Vector3 position(tileSlotEffect.position.x, tileSlotEffect.position.y, 0.f);
 			const flat::Vector3 position2d(map.getTransform() * position);
 			tile.synchronizeSpriteTo(map, synchronizer);
+			tile.initializeMesh(map, *m_tileTemplate, tileVariantIndex);
 			tile.setSpritePosition(position2d);
 			tile.setMeshPosition(position);
 			tile.updateWorldSpaceAABB(position);

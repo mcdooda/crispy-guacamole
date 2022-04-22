@@ -196,6 +196,9 @@ return function(addContainer, makeSeparator, font)
             end
         end
 
+        local usePerlinColor = false
+        local useBiomeColor = false
+
         local biomes = {
             ocean = {
                 tileTemplate = 'mods/crispy-guacamole/tiles/water'
@@ -461,10 +464,7 @@ return function(addContainer, makeSeparator, font)
                     end
                 end
 
-                if biome.color then
-                    Map.setTileColor(tile, biome.color)
-                --[[
-                else
+                if usePerlinColor then
                     local color1 = 0xFFFFFFFF
                     local color2 = 0xAAAAAAFF
                     --local alpha = math.sin((x + y * 0.5) / 30) * 0.5 + 0.5
@@ -473,8 +473,9 @@ return function(addContainer, makeSeparator, font)
                                 | (math.floor(((color1 >> 16) & 0xFF) * (1 - alpha) + ((color2 >> 16) & 0xFF) * alpha)) << 16
                                 | (math.floor(((color1 >>  8) & 0xFF) * (1 - alpha) + ((color2 >>  8) & 0xFF) * alpha)) <<  8
                                 | (math.floor(((color1 >>  0) & 0xFF) * (1 - alpha) + ((color2 >>  0) & 0xFF) * alpha)) <<  0
-                    Map.setTileColor(tile, color)
-                ]]
+                                Map.setTileColor(tile, color)
+                elseif useBiomeColor and biome.color then
+                    Map.setTileColor(tile, biome.color)
                 end
             end)
 

@@ -408,9 +408,11 @@ void Map::setTileTemplate(TileIndex tileIndex, const std::shared_ptr<const TileT
 {
 	m_navigationGrid.setCellNavigability(tileIndex, tileTemplate->getNavigability());
 
-	flat::render::SpriteSynchronizer& synchronizer = getTileSpriteSynchronizer(tileTemplate, 0);
+	constexpr int tileVariantIndex = 0;
+	flat::render::SpriteSynchronizer& synchronizer = getTileSpriteSynchronizer(tileTemplate, tileVariantIndex);
 	Tile& tile = m_tiles[tileIndex];
 	tile.synchronizeSpriteTo(*this, synchronizer);
+	tile.initializeMesh(*this, *tileTemplate, tileVariantIndex);
 	m_fog->updateTile(tileIndex, &tile);
 
 	setTileTextureDirty(tileIndex);
@@ -422,6 +424,7 @@ void Map::setTileTemplateVariant(TileIndex tileIndex, uint16_t tileTemplateVaria
 	flat::render::SpriteSynchronizer& synchronizer = getTileSpriteSynchronizer(tileTemplate, tileTemplateVariantIndex);
 	Tile& tile = m_tiles[tileIndex];
 	tile.synchronizeSpriteTo(*this, synchronizer);
+	tile.initializeMesh(*this, *tileTemplate, tileTemplateVariantIndex);
 	m_fog->updateTile(tileIndex, &tile);
 }
 

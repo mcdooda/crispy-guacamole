@@ -81,8 +81,8 @@ class DisplayManager final
 		void drawMeshBatches(Game& game, const flat::video::View& view, const std::vector<const MapObject*>& objects, const flat::Matrix4& mapAxes, size_t& numObjects, size_t& numDrawCalls);
 		
 	private:
-		std::unique_ptr<flat::render::SpriteBatch> m_spriteBatch;
-		std::unique_ptr<flat::render::MeshBatch> m_meshBatch;
+		flat::render::SpriteBatch m_spriteBatch;
+		flat::render::MeshBatch m_meshBatch;
 
 		std::unique_ptr<EntityQuadTree> m_entityQuadtree;
 		std::unordered_map<const entity::Entity*, int> m_entityCellIndices;

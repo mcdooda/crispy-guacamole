@@ -27,8 +27,6 @@ DisplayManager::DisplayManager()
 	, m_numTransparentDrawCalls(0)
 #endif
 {
-	m_spriteBatch = std::make_unique<flat::render::SpriteBatch>();
-	m_meshBatch = std::make_unique<flat::render::MeshBatch>();
 	const float quadtreeSize = 16384.f;
 	const flat::AABB2 quadtreeAABB(flat::Vector2(-quadtreeSize / 2.f, -quadtreeSize / 2.f), flat::Vector2(quadtreeSize / 2.f, quadtreeSize / 2.f));
 	m_entityQuadtree = std::make_unique<EntityQuadTree>(quadtreeAABB);
@@ -833,21 +831,19 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 
 	flat::video::Window& window = *game.video->window;
 
-	flat::render::SpriteBatch* spriteBatch = m_spriteBatch.get();
-
 	const flat::Matrix4& viewProjectionMatrix = view.getViewProjectionMatrix();
 
 	std::vector<const MapObject*>::const_iterator it = objects.begin();
 	std::vector<const MapObject*>::const_iterator end = objects.end();
 	while (it != end)
 	{
-		spriteBatch->clear();
+		m_spriteBatch.clear();
 
 		std::vector<const MapObject*>::const_iterator it2 = it;
 		while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
 		{
 			FLAT_ASSERT((*it2)->getSprite() != nullptr);
-			spriteBatch->add(*(*it2)->getSprite(), mapAxes);
+			m_spriteBatch.add(*(*it2)->getSprite(), mapAxes);
 			++it2;
 		}
 
@@ -856,7 +852,7 @@ void DisplayManager::drawSpriteBatches(Game& game, const flat::video::View& view
 
 		programSettings.program.use(window);
 		programSettings.settings.viewProjectionMatrixUniform.set(viewProjectionMatrix);
-		spriteBatch->draw(programSettings.settings, viewProjectionMatrix);
+		m_spriteBatch.draw(programSettings.settings, viewProjectionMatrix);
 
 #ifdef FLAT_DEBUG
 		++numDrawCalls;
@@ -875,8 +871,6 @@ void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, 
 
 	flat::video::Window& window = *game.video->window;
 
-	flat::render::MeshBatch* meshBatch = m_meshBatch.get();
-
 	const flat::Matrix4 viewProjectionMatrix = view.getViewProjectionMatrix();
 	const flat::Matrix4 finalViewProjectionMatrix = viewProjectionMatrix * mapAxes;
 
@@ -884,14 +878,14 @@ void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, 
 	std::vector<const MapObject*>::const_iterator end = objects.end();
 	while (it != end)
 	{
-		meshBatch->clear();
+		m_meshBatch.clear();
 
 		std::vector<const MapObject*>::const_iterator it2 = it;
 		while (it2 != end && (*it2)->getRenderHash() == (*it)->getRenderHash())
 		{
 			FLAT_ASSERT((*it2)->getMesh() != nullptr);
 			const flat::render::Mesh& mesh = *(*it2)->getMesh();
-			meshBatch->add(mesh);
+			m_meshBatch.add(mesh);
 			++it2;
 		}
 
@@ -900,7 +894,7 @@ void DisplayManager::drawMeshBatches(Game& game, const flat::video::View& view, 
 
 		programSettings.program.use(window);
 		programSettings.settings.viewProjectionMatrixUniform.set(finalViewProjectionMatrix);
-		meshBatch->draw(programSettings.settings, finalViewProjectionMatrix);
+		m_meshBatch.draw(programSettings.settings, finalViewProjectionMatrix);
 
 #ifdef FLAT_DEBUG
 		++numDrawCalls;
